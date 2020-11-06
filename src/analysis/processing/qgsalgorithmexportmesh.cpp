@@ -173,6 +173,34 @@ void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), sinkType() ) );
 }
 
+static QgsInterval datasetRelativetime( const QVariant parameterTimeVariant, QgsMeshLayer *meshLayer, const QgsProcessingContext &context )
+{
+  QgsInterval relativeTime( 0 );
+  QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
+  QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
+
+  if ( timeType == QStringLiteral( "dataset-time-step" ) )
+  {
+    QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
+    relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
+  }
+  else if ( timeType == QStringLiteral( "defined-date-time" ) )
+  {
+    QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
+    if ( dateTime.isValid() )
+      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
+  }
+  else if ( timeType == QStringLiteral( "current-context-time" ) )
+  {
+    QDateTime dateTime = context.currentTimeRange().begin();
+    if ( dateTime.isValid() )
+      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
+  }
+
+  return relativeTime;
+}
+
+
 bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT" ), context );
@@ -199,29 +227,9 @@ bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, Qg
 
   QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
 
-  //! Extract the date time used to export dataset values under a relative time
-  QgsInterval relativeTime( 0 );
+  // Extract the date time used to export dataset values under a relative time
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
-
-  QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
-
-  if ( timeType == QStringLiteral( "dataset-time-step" ) )
-  {
-    QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
-    relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
-  }
-  else if ( timeType == QStringLiteral( "defined-date-time" ) )
-  {
-    QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
-  else if ( timeType == QStringLiteral( "current-context-time" ) )
-  {
-    QDateTime dateTime = context.currentTimeRange().begin();
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
+  QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
   switch ( meshElementType() )
   {
@@ -445,6 +453,39 @@ void QgsExportMeshOnGridAlgorithm::initAlgorithm( const QVariantMap &configurati
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), QgsProcessing::TypeVectorPoint ) );
 }
 
+static void extractDatasetValues( const QList<int> &datasetGroups,
+                                  QgsMeshLayer *meshLayer,
+                                  const QgsTriangularMesh &triangularMesh,
+                                  const QgsMesh &nativeMesh,
+                                  const QgsInterval &relativeTime,
+                                  const QSet<int> supportedDataType,
+                                  QList<DataGroup> &datasetPerGroup,
+                                  QgsProcessingFeedback *feedback )
+{
+  for ( int i = 0; i < datasetGroups.count(); ++i )
+  {
+    int  groupIndex = datasetGroups.at( i );
+    QgsMeshDatasetIndex datasetIndex = meshLayer->datasetIndexAtRelativeTime( relativeTime, groupIndex );
+
+    DataGroup dataGroup;
+    dataGroup.metadata = meshLayer->datasetGroupMetadata( datasetIndex );
+    if ( supportedDataType.contains( dataGroup.metadata.dataType() ) )
+    {
+      int valueCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ?
+                       triangularMesh.vertices().count() : nativeMesh.faceCount();
+      dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, valueCount );
+      dataGroup.activeFaces = meshLayer->areFacesActive( datasetIndex, 0, nativeMesh.faceCount() );
+      if ( dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
+      {
+        dataGroup.dataset3dStakedValue = meshLayer->dataset3dValues( datasetIndex, 0, valueCount );
+      }
+      datasetPerGroup.append( dataGroup );
+    }
+    if ( feedback )
+      feedback->setProgress( 100 * i / datasetGroups.count() );
+  }
+}
+
 bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT" ), context );
@@ -460,7 +501,7 @@ bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &paramete
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
   mTriangularMesh = *meshLayer->triangularMesh();
-  QgsMesh *nativeMesh = meshLayer->nativeMesh();
+  const QgsMesh &nativeMesh = *meshLayer->nativeMesh();
 
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
@@ -470,54 +511,11 @@ bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &paramete
     feedback->setProgressText( QObject::tr( "Preparing data" ) );
   }
 
-  QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
-
-  //! Extract the date time used to export dataset values under a relative time
-  QgsInterval relativeTime( 0 );
+  // Extract the date time used to export dataset values under a relative time
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
+  QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
-
-  if ( timeType == QStringLiteral( "dataset-time-step" ) )
-  {
-    QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
-    relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
-  }
-  else if ( timeType == QStringLiteral( "defined-date-time" ) )
-  {
-    QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
-  else if ( timeType == QStringLiteral( "current-context-time" ) )
-  {
-    QDateTime dateTime = context.currentTimeRange().begin();
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
-
-  for ( int i = 0; i < datasetGroups.count(); ++i )
-  {
-    int  groupIndex = datasetGroups.at( i );
-    QgsMeshDatasetIndex datasetIndex = meshLayer->datasetIndexAtRelativeTime( relativeTime, groupIndex );
-
-    DataGroup dataGroup;
-    dataGroup.metadata = meshLayer->datasetGroupMetadata( datasetIndex );
-    if ( supportedDataType().contains( dataGroup.metadata.dataType() ) )
-    {
-      int valueCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ?
-                       mTriangularMesh.vertices().count() : nativeMesh->faceCount();
-      dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, valueCount );
-      dataGroup.activeFaces = meshLayer->areFacesActive( datasetIndex, 0, nativeMesh->faceCount() );
-      if ( dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
-      {
-        dataGroup.dataset3dStakedValue = meshLayer->dataset3dValues( datasetIndex, 0, valueCount );
-      }
-      mDataPerGroup.append( dataGroup );
-    }
-    if ( feedback )
-      feedback->setProgress( 100 * i / datasetGroups.count() );
-  }
+  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, nativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mExportVectorOption = parameterAsInt( parameters, QStringLiteral( "VECTOR_OPTION" ), context );
 
@@ -588,7 +586,6 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
         //extract dataset values for the point
         QgsAttributes attributes;
         int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces().at( triangularFaceIndex );
-
         for ( int i = 0; i < mDataPerGroup.count(); ++i )
         {
           const DataGroup &dataGroup = mDataPerGroup.at( i );
@@ -745,7 +742,6 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
     meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
 
   mTriangularMesh = *meshLayer->triangularMesh();
-  QgsMesh *nativeMesh = meshLayer->nativeMesh();
 
   QList<int> datasetGroups =
     QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
@@ -755,54 +751,11 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
     feedback->setProgressText( QObject::tr( "Preparing data" ) );
   }
 
-  QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
-
-  //! Extract the date time used to export dataset values under a relative time
-  QgsInterval relativeTime( 0 );
+  // Extract the date time used to export dataset values under a relative time
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
+  QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
-  QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
-
-  if ( timeType == QStringLiteral( "dataset-time-step" ) )
-  {
-    QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
-    relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
-  }
-  else if ( timeType == QStringLiteral( "defined-date-time" ) )
-  {
-    QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
-  else if ( timeType == QStringLiteral( "current-context-time" ) )
-  {
-    QDateTime dateTime = context.currentTimeRange().begin();
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
-
-  for ( int i = 0; i < datasetGroups.count(); ++i )
-  {
-    int  groupIndex = datasetGroups.at( i );
-    QgsMeshDatasetIndex datasetIndex = meshLayer->datasetIndexAtRelativeTime( relativeTime, groupIndex );
-
-    DataGroup dataGroup;
-    dataGroup.metadata = meshLayer->datasetGroupMetadata( datasetIndex );
-    if ( supportedDataType().contains( dataGroup.metadata.dataType() ) )
-    {
-      int valueCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ?
-                       mTriangularMesh.vertices().count() : nativeMesh->faceCount();
-      dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, valueCount );
-      dataGroup.activeFaces = meshLayer->areFacesActive( datasetIndex, 0, nativeMesh->faceCount() );
-      if ( dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
-      {
-        dataGroup.dataset3dStakedValue = meshLayer->dataset3dValues( datasetIndex, 0, valueCount );
-      }
-      mDataPerGroup.append( dataGroup );
-    }
-    if ( feedback )
-      feedback->setProgress( 100 * i / datasetGroups.count() );
-  }
+  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -1038,56 +991,13 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     feedback->setProgressText( QObject::tr( "Preparing data" ) );
   }
 
-  QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
-
-  //! Extract the date time used to export dataset values under a relative time
-  QgsInterval relativeTime( 0 );
+  // Extract the date time used to export dataset values under a relative time
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
-
-  QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
-
-  if ( timeType == QStringLiteral( "dataset-time-step" ) )
-  {
-    QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
-    relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
-  }
-  else if ( timeType == QStringLiteral( "defined-date-time" ) )
-  {
-    QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
-  else if ( timeType == QStringLiteral( "current-context-time" ) )
-  {
-    QDateTime dateTime = context.currentTimeRange().begin();
-    if ( dateTime.isValid() )
-      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
-  }
+  QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
 
   mDateTimeString = meshLayer->formatTime( relativeTime.hours() );
 
-  for ( int i = 0; i < datasetGroups.count(); ++i )
-  {
-    int  groupIndex = datasetGroups.at( i );
-    QgsMeshDatasetIndex datasetIndex = meshLayer->datasetIndexAtRelativeTime( relativeTime, groupIndex );
-
-    DataGroup dataGroup;
-    dataGroup.metadata = meshLayer->datasetGroupMetadata( datasetIndex );
-    if ( supportedDataType().contains( dataGroup.metadata.dataType() ) )
-    {
-      int valueCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ?
-                       mTriangularMesh.vertices().count() : mNativeMesh.faceCount();
-      dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, valueCount );
-      dataGroup.activeFaces = meshLayer->areFacesActive( datasetIndex, 0, mNativeMesh.faceCount() );
-      if ( dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
-      {
-        dataGroup.dataset3dStakedValue = meshLayer->dataset3dValues( datasetIndex, 0, valueCount );
-      }
-      mDataPerGroup.append( dataGroup );
-    }
-    if ( feedback )
-      feedback->setProgress( 100 * i / datasetGroups.count() );
-  }
+  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, mNativeMesh, relativeTime, supportedDataType(), mDataPerGroup, feedback );
 
   mLayerRendererSettings = meshLayer->rendererSettings();
 
@@ -1096,7 +1006,6 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-
   //First, if present, average 3D staked dataset value to 2D face value
   const QgsMesh3dAveragingMethod *avgMethod = mLayerRendererSettings.averagingMethod();
   for ( DataGroup &dataGroup : mDataPerGroup )
@@ -1175,6 +1084,8 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
     for ( double level : mLevels )
     {
       QgsGeometry line = contoursExported.exportLines( level, feedback );
+      if ( feedback->isCanceled() )
+        return QVariantMap();
       if ( line.isEmpty() )
         continue;
       QgsAttributes lineAttributes = firstAttributes;
@@ -1191,6 +1102,9 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
     for ( int l = 0; l < mLevels.count() - 1; ++l )
     {
       QgsGeometry polygon = contoursExported.exportPolygons( mLevels.at( l ), mLevels.at( l + 1 ), feedback );
+      if ( feedback->isCanceled() )
+        return QVariantMap();
+
       if ( polygon.isEmpty() )
         continue;
       QgsAttributes polygonAttributes = firstAttributes;
@@ -1205,8 +1119,6 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
 
     if ( feedback )
     {
-      if ( feedback->isCanceled() )
-        return QVariantMap();
       feedback->setProgress( 100 * i / mDataPerGroup.count() );
     }
   }
@@ -1219,3 +1131,193 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
 }
 
 ///@endcond PRIVATE
+
+void QgsMeshExportCrossSection::initAlgorithm( const QVariantMap &configuration )
+{
+  Q_UNUSED( configuration );
+
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+
+  addParameter( new QgsProcessingParameterMeshDatasetGroups(
+                  QStringLiteral( "DATASET_GROUPS" ),
+                  QObject::tr( "Dataset groups" ),
+                  QStringLiteral( "INPUT" ),
+                  supportedDataType() ) );
+
+  addParameter( new QgsProcessingParameterMeshDatasetTime(
+                  QStringLiteral( "DATASET_TIME" ),
+                  QObject::tr( "Dataset time" ),
+                  QStringLiteral( "INPUT" ),
+                  QStringLiteral( "DATASET_GROUPS" ) ) );
+
+  QList<int> datatype;
+  datatype << QgsProcessing::TypeVectorLine;
+  addParameter( new QgsProcessingParameterFeatureSource(
+                  QStringLiteral( "INPUT_LINE" ), QObject::tr( "Lines for data export" ), datatype, QVariant(), false ) );
+
+  addParameter( new QgsProcessingParameterDistance(
+                  QStringLiteral( "RESOLUTION" ), QObject::tr( "Line segmentation resolution" ), 10.0, QStringLiteral( "INPUT_LINE" ), false, 0 ) );
+
+  addParameter( new QgsProcessingParameterNumber(
+                  QStringLiteral( "COORDINATES_DIGITS" ), QObject::tr( "Digits count for coordinates" ), QgsProcessingParameterNumber::Integer, 2 ) );
+
+  addParameter( new QgsProcessingParameterNumber(
+                  QStringLiteral( "DATASET_DIGITS" ), QObject::tr( "Digits count for dataset value" ), QgsProcessingParameterNumber::Integer, 2 ) );
+
+  addParameter( new QgsProcessingParameterFileDestination(
+                  QStringLiteral( "OUTPUT" ), QObject::tr( "Exported data CSV file" ), QObject::tr( "CSV file (*.csv)" ) ) );
+}
+
+bool QgsMeshExportCrossSection::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT" ), context );
+
+  if ( !meshLayer || !meshLayer->isValid() )
+    return false;
+
+  mMeshLayerCrs = meshLayer->crs();
+  mTriangularMesh = *meshLayer->triangularMesh();
+
+  QList<int> datasetGroups =
+    QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
+
+  if ( feedback )
+  {
+    feedback->setProgressText( QObject::tr( "Preparing data" ) );
+  }
+
+  // Extract the date time used to export dataset values under a relative time
+  QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
+  QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
+
+  extractDatasetValues( datasetGroups, meshLayer, mTriangularMesh, *meshLayer->nativeMesh(), relativeTime, supportedDataType(), mDataPerGroup, feedback );
+
+  mLayerRendererSettings = meshLayer->rendererSettings();
+
+  return true;
+}
+
+QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  //First, if present, average 3D staked dataset value to 2D face value
+  const QgsMesh3dAveragingMethod *avgMethod = mLayerRendererSettings.averagingMethod();
+  for ( DataGroup &dataGroup : mDataPerGroup )
+  {
+    if ( dataGroup.dataset3dStakedValue.isValid() )
+      dataGroup.datasetValues = avgMethod->calculate( dataGroup.dataset3dStakedValue );
+  }
+  double resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
+  int datasetDigits = parameterAsInt( parameters, QStringLiteral( "DATASET_DIGITS" ), context );
+  int coordDigits = parameterAsInt( parameters, QStringLiteral( "COORDINATES_DIGITS" ), context );
+
+  QgsProcessingFeatureSource *featureSource = parameterAsSource( parameters, QStringLiteral( "INPUT_LINE" ), context );
+  if ( !featureSource )
+    return QVariantMap();
+
+  QgsCoordinateTransform transform( featureSource->sourceCrs(), mMeshLayerCrs, context.transformContext() );
+
+  QString outputFileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  QFile file( outputFileName );
+  if ( ! file.open( QIODevice::WriteOnly ) )
+    throw QgsProcessingException( QObject::tr( "Unable to create the outputfile" ) );
+
+  QTextStream textStream( &file );
+  QStringList header;
+  header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "offset" );
+  for ( const DataGroup &datagroup : mDataPerGroup )
+    header << datagroup.metadata.name();
+  textStream << header.join( ',' ) << QStringLiteral( "\n" );
+
+  QgsFeatureIterator featIt = featureSource->getFeatures();
+  QgsFeature feat;
+  while ( featIt.nextFeature( feat ) )
+  {
+    int fid = feat.id();
+    QgsGeometry line = feat.geometry();
+    try
+    {
+      line.transform( transform );
+    }
+    catch ( QgsCsException &e )
+    {
+      line = feat.geometry();
+      feedback->reportError( QObject::tr( "Could not transform line to mesh CRS" ) );
+    }
+
+    if ( line.isEmpty() )
+      continue;
+    double offset = 0;
+    while ( offset < line.length() )
+    {
+      if ( feedback->isCanceled() )
+        return QVariantMap();
+
+      QStringList textLine;
+      QgsPointXY point = line.interpolate( offset ).asPoint();
+      int triangularFaceIndex = mTriangularMesh.faceIndexForPoint_v2( point );
+      textLine << QString::number( fid ) << QString::number( point.x(), 'f', coordDigits ) << QString::number( point.y(), 'f', coordDigits ) << QString::number( offset, 'f', coordDigits );
+      if ( triangularFaceIndex >= 0 )
+      {
+        //extract dataset values for the point
+        QgsAttributes attributes;
+        int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces().at( triangularFaceIndex );
+        for ( int i = 0; i < mDataPerGroup.count(); ++i )
+        {
+          const DataGroup &dataGroup = mDataPerGroup.at( i );
+          bool faceActive = dataGroup.activeFaces.active( nativeFaceIndex );
+          if ( !faceActive )
+            continue;
+          QgsMeshDatasetValue value;
+          switch ( dataGroup.metadata.dataType() )
+          {
+            case QgsMeshDatasetGroupMetadata::DataOnEdges:
+              //not supported
+              break;
+            case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+            case QgsMeshDatasetGroupMetadata::DataOnFaces:
+            {
+              value = dataGroup.datasetValues.value( nativeFaceIndex );
+            }
+            break;
+
+            case QgsMeshDatasetGroupMetadata::DataOnVertices:
+            {
+              const QgsMeshFace &face = mTriangularMesh.triangles()[triangularFaceIndex];
+              const int v1 = face[0], v2 = face[1], v3 = face[2];
+              const QgsPoint p1 = mTriangularMesh.vertices()[v1], p2 = mTriangularMesh.vertices()[v2], p3 = mTriangularMesh.vertices()[v3];
+              const QgsMeshDatasetValue val1 = dataGroup.datasetValues.value( v1 );
+              const QgsMeshDatasetValue val2 = dataGroup.datasetValues.value( v2 );
+              const QgsMeshDatasetValue val3 = dataGroup.datasetValues.value( v3 );
+              const double x = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
+              double y = std::numeric_limits<double>::quiet_NaN();
+              bool isVector = dataGroup.metadata.isVector();
+              if ( isVector )
+                y = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
+
+              value = QgsMeshDatasetValue( x, y );
+            }
+            break;
+          }
+          if ( value.x() == std::numeric_limits<double>::quiet_NaN() )
+            textLine.append( " " );
+          else
+            textLine.append( QString::number( value.scalar(), 'f', datasetDigits ) );
+        }
+      }
+      else
+        for ( int i = 0; i < mDataPerGroup.count(); ++i )
+          textLine << " ";
+
+      textStream << textLine.join( ',' ) << QStringLiteral( "\n" );
+
+      offset += resolution;
+    }
+
+  }
+
+  file.close();
+
+  QVariantMap ret;
+  ret[QStringLiteral( "OUTPUT" )] = outputFileName;
+  return ret;
+}
