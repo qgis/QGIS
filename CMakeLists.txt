@@ -242,6 +242,11 @@ IF(WITH_CORE)
     SET(HAVE_PDAL TRUE)
   ENDIF(WITH_PDAL)
 
+  SET (WITH_EPT FALSE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
+  IF(WITH_EPT)
+    SET(HAVE_EPT TRUE)
+  ENDIF(WITH_EPT)
+
   #BUILD WITH QtMobility by default on android only. Other platform can force it
   IF (ANDROID)
       SET (DEFAULT_WITH_QTMOBILITY TRUE)
@@ -355,18 +360,6 @@ IF(WITH_CORE)
   FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
-  FIND_PACKAGE(ZSTD) # for decompression of point clouds
-  SET(HAVE_ZSTD FALSE)
-  IF (ZSTD_FOUND)
-    SET(HAVE_ZSTD TRUE)  # used in qgsconfig.h
-  ENDIF (ZSTD_FOUND)
-
-  SET(HAVE_LAZPERF FALSE)
-  FIND_PACKAGE(LazPerf) # for decompression of point clouds
-  IF (LazPerf_FOUND)
-    SET(HAVE_LAZPERF TRUE)  # used in qgsconfig.h
-  ENDIF (LazPerf_FOUND)
-
   # optional
   IF (WITH_POSTGRESQL)
     FIND_PACKAGE(Postgres) # PostgreSQL provider
@@ -394,6 +387,12 @@ IF(WITH_CORE)
   ELSE (WITH_QTWEBKIT)
     MESSAGE(STATUS "Qt WebKit support DISABLED.")
   ENDIF(WITH_QTWEBKIT)
+
+  IF (WITH_EPT)  # EPT provider
+    FIND_PACKAGE(ZSTD) # for decompression of point clouds
+    FIND_PACKAGE(LazPerf) # for decompression of point clouds
+    SET(HAVE_EPT TRUE)  # used in qgsconfig.h
+  ENDIF (WITH_EPT)
 
   IF (WITH_PDAL)
     FIND_PACKAGE(PDAL) # PDAL provider

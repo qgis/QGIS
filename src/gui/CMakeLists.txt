@@ -349,7 +349,6 @@ SET(QGIS_GUI_SRCS
 
   providers/ept/qgspointcloudsourceselect.cpp
   providers/ept/qgseptproviderguimetadata.cpp
-  providers/ept/qgseptdataitemguiprovider.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -1110,7 +1109,6 @@ SET(QGIS_GUI_HDRS
 
   providers/ept/qgspointcloudsourceselect.h
   providers/ept/qgseptproviderguimetadata.h
-  providers/ept/qgseptdataitemguiprovider.h
 
   raster/qgscolorrampshaderwidget.h
   raster/qgshillshaderendererwidget.h
@@ -1308,9 +1306,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
-  ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/vector
@@ -1370,6 +1368,16 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
 )
+
+IF (WITH_EPT)
+  SET(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
+    providers/ept/qgseptdataitemguiprovider.cpp
+  )
+  SET(QGIS_GUI_HDRS ${QGIS_GUI_HDRS}
+    providers/ept/qgseptdataitemguiprovider.h
+  )
+ENDIF (WITH_EPT)
+
 
 # disable deprecation warnings for classes re-exporting deprecated methods
 IF(MSVC)

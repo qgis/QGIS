@@ -36,7 +36,11 @@
 #include "providers/gdal/qgsgdalprovider.h"
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
+
+#ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
+#endif
+
 #include "qgsruntimeprofiler.h"
 #include "qgsfileutils.h"
 
@@ -139,11 +143,13 @@ void QgsProviderRegistry::init()
     QgsProviderMetadata *vt = new QgsVectorTileProviderMetadata();
     mProviders[ vt->key() ] = vt;
   }
+#ifdef HAVE_EPT
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Create EPT point cloud provider" ) );
     QgsProviderMetadata *pc = new QgsEptProviderMetadata();
     mProviders[ pc->key() ] = pc;
   }
+#endif
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();

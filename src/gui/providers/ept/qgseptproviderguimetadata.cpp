@@ -18,8 +18,12 @@
 #include "qgsapplication.h"
 #include "qgssourceselectprovider.h"
 #include "qgspointcloudsourceselect.h"
+
 #include "qgseptproviderguimetadata.h"
+
+#ifdef HAVE_EPT
 #include "qgseptdataitemguiprovider.h"
+#endif
 
 ///@cond PRIVATE
 
@@ -42,11 +46,13 @@ QgsEptProviderGuiMetadata::QgsEptProviderGuiMetadata()
 {
 }
 
+#ifdef HAVE_EPT
 QList<QgsDataItemGuiProvider *> QgsEptProviderGuiMetadata::dataItemGuiProviders()
 {
   return QList<QgsDataItemGuiProvider *>()
          << new QgsEptDataItemGuiProvider;
 }
+#endif
 
 QList<QgsSourceSelectProvider *> QgsEptProviderGuiMetadata::sourceSelectProviders()
 {
