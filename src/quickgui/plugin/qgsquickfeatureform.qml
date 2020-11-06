@@ -443,6 +443,16 @@ Item {
         }
 
         Connections {
+          target: form.model
+          onDataChanged: {
+            if ( attributeEditorLoader.item && attributeEditorLoader.item.dataUpdated )
+            {
+              attributeEditorLoader.item.dataUpdated( form.model.attributeModel.featureLayerPair.feature )
+            }
+          }
+        }
+
+        Connections {
           target: form
           ignoreUnknownSignals: true
           onSaved: {
