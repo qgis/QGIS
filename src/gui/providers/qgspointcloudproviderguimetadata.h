@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgseptproviderguimetadata.h
+                         qgspointcloudproviderguimetadata.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSEPTPROVIDERGUIMETADATA_H
-#define QGSEPTPROVIDERGUIMETADATA_H
+#ifndef QGPOINTCLOUDPROVIDERGUIMETADATA_H
+#define QGPOINTCLOUDPROVIDERGUIMETADATA_H
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -26,14 +26,22 @@
 
 #include "qgsproviderguimetadata.h"
 
-class QgsEptProviderGuiMetadata: public QgsProviderGuiMetadata
+/**
+ * \ingroup gui
+ * Provides a generic source select widget for point cloud providers.
+ *
+ * The generated widget is provider agnostic, and is not attached to any single individual
+ * provider but rather adapts to all available point cloud providers.
+ *
+ * \since QGIS 3.18
+ */
+class QgsPointCloudProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
-    QgsEptProviderGuiMetadata();
-
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QgsPointCloudProviderGuiMetadata();
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
 };
 
 ///@endcond
 
-#endif // QGSEPTPROVIDERGUIMETADATA_H
+#endif // QGPOINTCLOUDPROVIDERGUIMETADATA_H

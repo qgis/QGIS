@@ -335,6 +335,9 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodelviewtooltemporarymousepan.cpp
   processing/models/qgsmodelviewtoolzoom.cpp
 
+  providers/qgspointcloudproviderguimetadata.cpp
+  providers/qgspointcloudsourceselect.cpp
+
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
 
@@ -346,9 +349,6 @@ SET(QGIS_GUI_SRCS
   providers/ogr/qgsgeopackageitemguiprovider.cpp
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
-
-  providers/ept/qgspointcloudsourceselect.cpp
-  providers/ept/qgseptproviderguimetadata.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -1096,6 +1096,9 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodelviewtooltemporarymousepan.h
   processing/models/qgsmodelviewtoolzoom.h
 
+  providers/qgspointcloudsourceselect.h
+  providers/qgspointcloudproviderguimetadata.h
+
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
   providers/ogr/qgsgeopackageitemguiprovider.h
@@ -1106,9 +1109,6 @@ SET(QGIS_GUI_HDRS
   providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
-
-  providers/ept/qgspointcloudsourceselect.h
-  providers/ept/qgseptproviderguimetadata.h
 
   raster/qgscolorrampshaderwidget.h
   raster/qgshillshaderendererwidget.h
@@ -1306,7 +1306,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
-  ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
+  ${CMAKE_SOURCE_DIR}/src/gui/providers
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
@@ -1370,11 +1370,17 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 IF (WITH_EPT)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
+  )
+
   SET(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
     providers/ept/qgseptdataitemguiprovider.cpp
+    providers/ept/qgseptproviderguimetadata.cpp
   )
   SET(QGIS_GUI_HDRS ${QGIS_GUI_HDRS}
     providers/ept/qgseptdataitemguiprovider.h
+    providers/ept/qgseptproviderguimetadata.h
   )
 ENDIF (WITH_EPT)
 

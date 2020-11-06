@@ -25,7 +25,11 @@
 #include "qgsgdalguiprovider.h"
 #include "qgsogrguiprovider.h"
 #include "qgsvectortileproviderguimetadata.h"
+#include "qgspointcloudproviderguimetadata.h"
+
+#ifdef HAVE_EPT
 #include "qgseptproviderguimetadata.h"
+#endif
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
@@ -71,8 +75,13 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
   QgsProviderGuiMetadata *vt = new QgsVectorTileProviderGuiMetadata();
   mProviders[ vt->key() ] = vt;
 
-  QgsProviderGuiMetadata *cp = new QgsEptProviderGuiMetadata();
-  mProviders[ cp->key() ] = cp;
+#ifdef HAVE_EPT
+  QgsProviderGuiMetadata *ept = new QgsEptProviderGuiMetadata();
+  mProviders[ ept->key() ] = ept;
+#endif
+
+  QgsProviderGuiMetadata *pointcloud = new QgsPointCloudProviderGuiMetadata();
+  mProviders[ pointcloud->key() ] = pointcloud;
 
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
