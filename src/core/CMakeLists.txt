@@ -1656,8 +1656,19 @@ IF (WITH_EPT)
 
   INCLUDE_DIRECTORIES(SYSTEM
     ${ZSTD_INCLUDE_DIR}
-    ${LazPerf_INCLUDE_DIR}
   )
+
+  IF (LazPerf_FOUND)
+    # Use sytem laz-perf
+    INCLUDE_DIRECTORIES(SYSTEM
+      ${LazPerf_INCLUDE_DIR}
+    )
+  ELSE (LazPerf_FOUND)
+    # Use embedded laz-perf from external/laz-perf
+    INCLUDE_DIRECTORIES(SYSTEM
+      ${CMAKE_SOURCE_DIR}/external
+    )
+  ENDIF (LazPerf_FOUND)
 
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptdataitems.cpp
