@@ -47,6 +47,7 @@ class TestQgsEptProvider : public QObject
     void encodeUri();
     void decodeUri();
     void preferredUri();
+    void layerTypesForUri();
     void uriIsBlocklisted();
 
   private:
@@ -112,12 +113,31 @@ void TestQgsEptProvider::decodeUri()
 
 void TestQgsEptProvider::preferredUri()
 {
+  QgsProviderMetadata *eptMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
+  QVERIFY( eptMetadata->capabilities() & QgsProviderMetadata::PriorityForUri );
+
   // test that EPT is the preferred provider for ept.json uris
-  QCOMPARE( QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/ept.json" ) ), QList< QgsProviderMetadata * >() << QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) ) );
-  QCOMPARE( QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/EPT.JSON" ) ), QList< QgsProviderMetadata * >() << QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) ) );
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/ept.json" ) );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "ept" ) );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/EPT.JSON" ) );
+  QCOMPARE( candidates.size(), 1 );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "ept" ) );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
 
   QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ept" ) ) );
   QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ogr" ) ) );
+}
+
+void TestQgsEptProvider::layerTypesForUri()
+{
+  QgsProviderMetadata *eptMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
+  QVERIFY( eptMetadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
+
+  QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.las" ) ), QList< QgsMapLayerType >() );
 }
 
 void TestQgsEptProvider::uriIsBlocklisted()

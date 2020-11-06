@@ -51,11 +51,11 @@ void QgsPointCloudSourceSelect::addButtonClicked()
   {
     // auto determine preferred provider for each path
 
-    const QList< QgsProviderMetadata * > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
+    const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( preferredProviders.empty() )
       continue;
 
-    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 )->key() ) ;
+    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
   }
 }

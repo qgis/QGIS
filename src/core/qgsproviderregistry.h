@@ -283,7 +283,45 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
-     * Returns the metadata for the preferred provider(s) for opening the specified \a uri.
+     * \ingroup core
+     *
+     * Contains information pertaining to a candidate provider.
+     *
+     * \since QGIS 3.18
+     */
+    class CORE_EXPORT ProviderCandidateDetails
+    {
+
+      public:
+
+        /**
+         * Constructor for ProviderCandidateDetails, with the specified provider \a metadata and valid candidate \a layerTypes.
+         */
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes )
+          : mMetadata( metadata )
+          , mLayerTypes( layerTypes )
+        {}
+
+        /**
+         * Returns the candidate provider metadata.
+         */
+        QgsProviderMetadata *metadata() const { return mMetadata; }
+
+        /**
+         * Returns a list of map layer types which are valid options for opening the
+         * target using this candidate provider.
+         */
+        QList<QgsMapLayerType> layerTypes() const { return mLayerTypes; }
+
+      private:
+        QgsProviderMetadata *mMetadata = nullptr;
+
+        QList< QgsMapLayerType > mLayerTypes;
+
+    };
+
+    /**
+     * Returns the details for the preferred provider(s) for opening the specified \a uri.
      *
      * The preferred provider is determined by comparing the priority returned by
      * QgsProviderMetadata::priorityForUri() for all registered providers, and selecting
@@ -298,7 +336,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see shouldDeferUriForOtherProviders()
      * \since QGIS 3.18
      */
-    QList< QgsProviderMetadata *> preferredProvidersForUri( const QString &uri ) const;
+    QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
 
     /**
      * Returns TRUE if the provider with matching \a providerKey should defer handling of
