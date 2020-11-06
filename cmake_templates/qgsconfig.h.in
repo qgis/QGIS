@@ -76,9 +76,7 @@
 
 #cmakedefine HAVE_STATIC_PROVIDERS
 
-#cmakedefine HAVE_ZSTD
-
-#cmakedefine HAVE_LAZPERF
+#cmakedefine HAVE_EPT
 
 #cmakedefine HAVE_PDAL
 #define PDAL_VERSION "${PDAL_VERSION}"

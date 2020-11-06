@@ -20,20 +20,17 @@
 #include "qgspointcloudattribute.h"
 #include "qgsvector3d.h"
 #include "qgsconfig.h"
+#include "qgslogger.h"
 
 #include <QFile>
 #include <iostream>
 #include <memory>
 #include <cstring>
 
-#if defined ( HAVE_ZSTD )
 #include <zstd.h>
-#endif
 
-#if defined ( HAVE_LAZPERF )
 #include "laz-perf/io.hpp"
 #include "laz-perf/common/common.hpp"
-#endif
 
 ///@cond PRIVATE
 
@@ -201,8 +198,6 @@ QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, co
 
 /* *************************************************************************************** */
 
-#if defined(HAVE_ZSTD)
-
 QByteArray decompressZtdStream( const QByteArray &dataCompressed )
 {
   // NOTE: this is very primitive implementation because we expect the uncompressed
@@ -246,20 +241,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
   return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
 }
 
-#else // defined(HAVE_ZSTD)
-QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
-{
-  Q_UNUSED( filename )
-  Q_UNUSED( attributes )
-  Q_UNUSED( requestedAttributes )
-  return nullptr;
-}
-
-#endif // defined(HAVE_ZSTD)
-
 /* *************************************************************************************** */
 
-#if defined ( HAVE_LAZPERF )
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes )
@@ -311,22 +294,12 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     }
   }
   float t = common::since( start );
-  std::cout << "LAZ-PERF Read through the points in " << t << " seconds." << std::endl;
+  QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
   return new QgsPointCloudBlock(
            count,
            requestedAttributes,
            data
          );
 }
-
-#else // defined ( HAVE_LAZPERF )
-QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
-{
-  Q_UNUSED( filename )
-  Q_UNUSED( attributes )
-  Q_UNUSED( requestedAttributes )
-  return nullptr;
-}
-#endif
 
 ///@endcond

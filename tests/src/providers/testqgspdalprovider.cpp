@@ -27,7 +27,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
-#include "qgseptprovider.h"
+#include "qgspdalprovider.h"
 #include "qgsmaplayer.h"
 
 /**

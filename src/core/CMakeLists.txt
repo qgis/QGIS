@@ -204,11 +204,6 @@ SET(QGIS_CORE_SRCS
   providers/ogr/qgsogrdbconnection.cpp
   providers/ogr/qgsogrtransaction.cpp
 
-  providers/ept/qgseptdataitems.cpp
-  providers/ept/qgseptprovider.cpp
-  providers/ept/qgseptdecoder.cpp
-  providers/ept/qgseptpointcloudindex.cpp
-
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgshollowscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
@@ -1384,10 +1379,6 @@ SET(QGIS_CORE_HDRS
   providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
   providers/ogr/qgsogrtransaction.h
-  providers/ept/qgseptdataitems.h
-  providers/ept/qgseptprovider.h
-  providers/ept/qgseptdecoder.h
-  providers/ept/qgseptpointcloudindex.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
@@ -1612,7 +1603,6 @@ INCLUDE_DIRECTORIES(
   providers/gdal
   providers/ogr
   providers/meshmemory
-  providers/ept
   raster
   renderer
   scalebar
@@ -1645,18 +1635,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${ZLIB_INCLUDE_DIRS}
 )
 
-IF (HAVE_ZSTD)
-  INCLUDE_DIRECTORIES(SYSTEM
-    ${ZSTD_INCLUDE_DIR}
-  )
-ENDIF (HAVE_ZSTD)
-
-IF (HAVE_LAZPERF)
-  INCLUDE_DIRECTORIES(SYSTEM
-    ${LazPerf_INCLUDE_DIR}
-  )
-ENDIF (HAVE_LAZPERF)
-
 IF (HAVE_PDAL)
   INCLUDE_DIRECTORIES(SYSTEM
     ${PDAL_INCLUDE_DIR}
@@ -1673,6 +1651,27 @@ IF (HAVE_OPENCL)
     INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
 ENDIF (HAVE_OPENCL)
 
+IF (WITH_EPT)
+  INCLUDE_DIRECTORIES(providers/ept)
+
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${ZSTD_INCLUDE_DIR}
+    ${LazPerf_INCLUDE_DIR}
+  )
+
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      providers/ept/qgseptdataitems.cpp
+      providers/ept/qgseptprovider.cpp
+      providers/ept/qgseptdecoder.cpp
+      providers/ept/qgseptpointcloudindex.cpp
+  )
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+      providers/ept/qgseptdataitems.h
+      providers/ept/qgseptprovider.h
+      providers/ept/qgseptdecoder.h
+      providers/ept/qgseptpointcloudindex.h
+  )
+ENDIF (WITH_EPT)
 
 IF (APPLE)
   # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
@@ -1800,11 +1799,11 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${ZLIB_LIBRARIES}
 )
 
-IF (HAVE_ZSTD)
+IF (WITH_EPT)
   TARGET_LINK_LIBRARIES(qgis_core
     ${ZSTD_LIBRARY}
   )
-ENDIF (HAVE_ZSTD)
+ENDIF (WITH_EPT)
 
 IF (HAVE_PDAL)
   TARGET_LINK_LIBRARIES(qgis_core

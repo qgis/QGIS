@@ -31,7 +31,12 @@ class QgsEptProviderGuiMetadata: public QgsProviderGuiMetadata
   public:
     QgsEptProviderGuiMetadata();
 
+#ifdef HAVE_EPT
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+#endif
+
+    // for now we always include the "ept" provider source select provider, as it actually
+    // forms the generic point cloud source select widget
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
 };
 
