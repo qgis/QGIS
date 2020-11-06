@@ -91,6 +91,11 @@ int QgsProviderMetadata::priorityForUri( const QString & ) const
   return 0;
 }
 
+QList<QgsMapLayerType> QgsProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+
+}
+
 bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const
 {
   return false;

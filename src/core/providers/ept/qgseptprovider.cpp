@@ -100,6 +100,16 @@ int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
   return 0;
 }
 
+QList<QgsMapLayerType> QgsEptProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+    return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
+
+  return QList< QgsMapLayerType>();
+}
+
 bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );

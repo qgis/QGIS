@@ -209,6 +209,26 @@ priority for the same URI.
 
 The default implementation returns 0 for all URIs.
 
+.. warning::
+
+   Not all providers implement this functionality. Check whether :py:func:`~QgsProviderMetadata.capabilities` returns the
+   ProviderMetadataCapability.PriorityForUri to determine whether a specific provider metadata object
+   supports this method.
+
+.. versionadded:: 3.18
+%End
+
+    virtual QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const;
+%Docstring
+Returns a list of valid layer types which the provider can be used with when
+opening the specified ``uri``.
+
+.. warning::
+
+   Not all providers implement this functionality. Check whether :py:func:`~QgsProviderMetadata.capabilities` returns the
+   ProviderMetadataCapability.LayerTypesForUri to determine whether a specific provider metadata object
+   supports this method.
+
 .. versionadded:: 3.18
 %End
 
