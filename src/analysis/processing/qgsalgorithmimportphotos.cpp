@@ -154,7 +154,8 @@ QVariant QgsImportPhotosAlgorithm::extractOrientationFromMetadata( const QVarian
   QVariant orientation;
   if ( metadata.contains( QStringLiteral( "EXIF_Orientation" ) ) )
   {
-    switch ( metadata.value( QStringLiteral( "EXIF_Orientation" ) ).toInt() ) {
+    switch ( metadata.value( QStringLiteral( "EXIF_Orientation" ) ).toInt() )
+    {
       case 1:
         orientation = 0;
         break;
