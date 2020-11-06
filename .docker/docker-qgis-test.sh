@@ -68,12 +68,12 @@ COUNT=0
 while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
 do
   printf "🙏"
-  sleep 3
-  if [[ $(( COUNT++ )) -eq 100 ]]; then
+  sleep 5
+  if [[ $(( COUNT++ )) -eq 200 ]]; then
     break
   fi
 done
-if [[ ${COUNT} -eq 101 ]]; then
+if [[ ${COUNT} -eq 201 ]]; then
   echo "timeout, no oracle, no 🙏"
 else
   echo " done 👀"
