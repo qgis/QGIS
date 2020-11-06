@@ -417,6 +417,9 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     QgsTransaction *createTransaction( const QString &connString ) override;
+
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
 };
 
 #ifdef HAVE_GUI
