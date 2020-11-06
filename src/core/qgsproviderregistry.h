@@ -313,6 +313,14 @@ class CORE_EXPORT QgsProviderRegistry
          */
         QList<QgsMapLayerType> layerTypes() const { return mLayerTypes; }
 
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
       private:
         QgsProviderMetadata *mMetadata = nullptr;
 
