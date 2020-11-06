@@ -61,7 +61,8 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertIsNone(QgsProviderRegistry.instance().createProvider('asdasdasdasdasd', ''))
 
-    def testShouldDeferUriForOtherProviders(self):
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testShouldDeferUriForOtherProvidersEpt(self):
         self.assertTrue(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/ept.json', 'ogr'))
         self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/ept.json', 'ept'))
         self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/my.json', 'ogr'))
@@ -79,6 +80,7 @@ class TestQgsProviderRegistry(unittest.TestCase):
         self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.png.aux.xml'))
         self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.xml'))
 
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testFilePointCloudFilters(self):
         parts = QgsProviderRegistry.instance().filePointCloudFilters().split(';;')
         self.assertTrue(parts[0].startswith('All Supported Files ('))
