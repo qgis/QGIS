@@ -763,31 +763,44 @@ QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &provi
   return findMetadata_( mProviders, providerKey );
 }
 
-QList< QgsProviderMetadata * > QgsProviderRegistry::preferredProvidersForUri( const QString &uri ) const
+QList<QgsProviderRegistry::ProviderCandidateDetails> QgsProviderRegistry::preferredProvidersForUri( const QString &uri ) const
 {
-  QList< QgsProviderMetadata * > res;
+  QList< QgsProviderRegistry::ProviderCandidateDetails > res;
   int maxPriority = 0;
   for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
   {
+    if ( !( it->second->capabilities() & QgsProviderMetadata::PriorityForUri ) )
+      continue;
+
     const int thisProviderPriority = it->second->priorityForUri( uri );
+    if ( thisProviderPriority == 0 )
+      continue;
+
     if ( thisProviderPriority > maxPriority )
     {
       res.clear();
       maxPriority = thisProviderPriority;
     }
     if ( thisProviderPriority == maxPriority )
-      res.append( it->second );
+    {
+      res.append( ProviderCandidateDetails( it->second, it->second->validLayerTypesForUri( uri ) ) );
+    }
   }
   return res;
 }
 
 bool QgsProviderRegistry::shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const
 {
-  const QList< QgsProviderMetadata * > providers = preferredProvidersForUri( uri );
+  const QList< ProviderCandidateDetails > providers = preferredProvidersForUri( uri );
   if ( providers.empty() )
     return false;
 
-  return !providers.contains( QgsProviderRegistry::instance()->providerMetadata( providerKey ) );
+  for ( const ProviderCandidateDetails &provider : providers )
+  {
+    if ( provider.metadata()->key() == providerKey )
+      return false;
+  }
+  return true;
 }
 
 bool QgsProviderRegistry::uriIsBlocklisted( const QString &uri ) const
