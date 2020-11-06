@@ -80,8 +80,12 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
   mProviders[ ept->key() ] = ept;
 #endif
 
-  QgsProviderGuiMetadata *pointcloud = new QgsPointCloudProviderGuiMetadata();
-  mProviders[ pointcloud->key() ] = pointcloud;
+  // only show point cloud option if we have at least one point cloud provider available!
+  if ( !QgsProviderRegistry::instance()->filePointCloudFilters().isEmpty() )
+  {
+    QgsProviderGuiMetadata *pointcloud = new QgsPointCloudProviderGuiMetadata();
+    mProviders[ pointcloud->key() ] = pointcloud;
+  }
 
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
