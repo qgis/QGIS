@@ -155,7 +155,10 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
     }
   }
 
-  setSymbol( new QgsMesh3DSymbol() );
+  std::unique_ptr< QgsMesh3DSymbol > defaultSymbol = qgis::make_unique< QgsMesh3DSymbol >();
+  // set symbol does not take ownership!
+  setSymbol( defaultSymbol.get() );
+
   reloadColorRampShaderMinMax(); //As the symbol is new, the Color ramp shader needs to be initialized with min max value
 }
 
