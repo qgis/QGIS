@@ -1597,7 +1597,7 @@ Emitted when the validity of this layer changed.
 %Docstring
 Emitted when a custom property of the layer has been changed or removed.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
   protected:
