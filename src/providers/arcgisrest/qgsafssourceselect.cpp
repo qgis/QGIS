@@ -168,7 +168,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   ds.removeParam( QStringLiteral( "url" ) );
   ds.setParam( QStringLiteral( "url" ), url );
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsAfsProvider provider( ds.uri(), providerOptions );
+  QgsAfsProvider provider( ds.uri( false ), providerOptions );
   if ( !provider.isValid() )
   {
     return;
@@ -204,7 +204,7 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
   {
     ds.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
-  return ds.uri();
+  return ds.uri( false );
 }
 
 

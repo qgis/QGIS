@@ -375,7 +375,37 @@ QVariantMap QgsAfsProviderMetadata::decodeUri( const QString &uri )
   return components;
 }
 
+<<<<<<< HEAD
 QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+=======
+QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
+
+  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).canConvert< QgsRectangle >() )
+  {
+    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
+    dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
+  }
+
+  if ( !parts.value( QStringLiteral( "crs" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "crs" ), parts.value( QStringLiteral( "crs" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "referer" ) ).toString().isEmpty() )
+  {
+    dsUri.setParam( QStringLiteral( "referer" ), parts.value( QStringLiteral( "referer" ) ).toString() );
+  }
+  if ( !parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() )
+  {
+    dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
+  }
+  return dsUri.uri( false );
+}
+
+QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+>>>>>>> 54b33cdb9c (Fix authentication configuration is lost when adding Arcgis Feature)
 {
   return new QgsAfsProvider( uri, options );
 }

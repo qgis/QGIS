@@ -1261,6 +1261,15 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
   return components;
 }
 
+<<<<<<< HEAD
+=======
+QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
+  return dsUri.uri( false );
+}
+>>>>>>> 54b33cdb9c (Fix authentication configuration is lost when adding Arcgis Feature)
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
