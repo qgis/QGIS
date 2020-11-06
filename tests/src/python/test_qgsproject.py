@@ -15,7 +15,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 import re
-import ogr
+from osgeo import ogr
 import codecs
 from io import BytesIO
 from zipfile import ZipFile
