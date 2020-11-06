@@ -81,10 +81,9 @@ QgsColorRamp *QgsPointCloudRendererConfig::colorRamp() const
   return mColorRamp.get();
 }
 
-void QgsPointCloudRendererConfig::setColorRamp( const QgsColorRamp *value )
+void QgsPointCloudRendererConfig::setColorRamp( QgsColorRamp *value )
 {
-  // TODO should it clone?
-  mColorRamp.reset( value->clone() );
+  mColorRamp.reset( value );
 }
 
 float QgsPointCloudRendererConfig::maximumScreenError() const

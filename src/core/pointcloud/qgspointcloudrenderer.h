@@ -68,8 +68,8 @@ class CORE_EXPORT QgsPointCloudRendererConfig
     //! Returns color ramp
     QgsColorRamp *colorRamp() const;
 
-    //! Sets color ramp
-    void setColorRamp( const QgsColorRamp *value );
+    //! Sets color ramp (ownership is transferrred)
+    void setColorRamp( QgsColorRamp *value SIP_TRANSFER );
 
     //! Returns maximum allowed screen error in pixels
     float maximumScreenError() const;
