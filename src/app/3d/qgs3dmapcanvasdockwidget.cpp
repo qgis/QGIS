@@ -108,7 +108,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   toolBar->addSeparator();
 
   // Map Theme Menu
-  mMapThemeMenu = new QMenu();
+  mMapThemeMenu = new QMenu( this );
   connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &Qgs3DMapCanvasDockWidget::currentMapThemeRenamed );
 
