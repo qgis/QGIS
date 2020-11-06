@@ -356,7 +356,7 @@ long QgsRandomUniformRasterAlgorithm::generateRandomLongValue( std::mt19937 &mer
 
 double QgsRandomUniformRasterAlgorithm::generateRandomDoubleValue( std::mt19937 &mersenneTwister )
 {
-  return mRandomUniformIntDistribution( mersenneTwister );
+  return mRandomUniformDoubleDistribution( mersenneTwister );
 }
 
 //
