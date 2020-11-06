@@ -28,6 +28,14 @@
 
 ///@cond PRIVATE
 
+struct DataGroup
+{
+  QgsMeshDatasetGroupMetadata metadata;
+  QgsMeshDataBlock datasetValues;
+  QgsMeshDataBlock activeFaces;
+  QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
+};
+
 class QgsExportMeshOnElement : public QgsProcessingAlgorithm
 {
 
@@ -48,12 +56,6 @@ class QgsExportMeshOnElement : public QgsProcessingAlgorithm
     virtual QgsWkbTypes::Type sinkGeometryType() const = 0;
     virtual QgsGeometry meshElement( int index ) const = 0;
     virtual QgsMesh::ElementType meshElementType() const = 0;
-
-    struct DataGroup
-    {
-      QgsMeshDatasetGroupMetadata metadata;
-      QgsMeshDataBlock datasetValues;
-    };
 
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateTransform mTransform;
@@ -146,13 +148,6 @@ class QgsExportMeshOnGridAlgorithm : public QgsProcessingAlgorithm
     QSet<int> supportedDataType();
 
     QgsTriangularMesh mTriangularMesh;
-    struct DataGroup
-    {
-      QgsMeshDatasetGroupMetadata metadata;
-      QgsMeshDataBlock datasetValues;
-      QgsMeshDataBlock activeFaces;
-      QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
-    };
 
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateTransform mTransform;
@@ -181,13 +176,6 @@ class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
     QSet<int> supportedDataType();
 
     QgsTriangularMesh mTriangularMesh;
-    struct DataGroup
-    {
-      QgsMeshDatasetGroupMetadata metadata;
-      QgsMeshDataBlock datasetValues;
-      QgsMeshDataBlock activeFaces;
-      QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
-    };
 
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateTransform mTransform;
@@ -225,18 +213,65 @@ class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
     QgsMesh mNativeMesh;
     QVector<double> mLevels;
 
-    struct DataGroup
-    {
-      QgsMeshDatasetGroupMetadata metadata;
-      QgsMeshDataBlock datasetValues;
-      QgsMeshDataBlock activeFaces;
-      QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
-    };
-
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateTransform mTransform;
     QgsMeshRendererSettings mLayerRendererSettings;
     QString mDateTimeString;
+
+};
+
+class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override
+    {
+      return QStringLiteral( "meshexportcrosssection" );
+    }
+    QString displayName() const override
+    {
+      return QObject::tr( "Export cross section from mesh" );
+    }
+    QString group() const override
+    {
+      return QObject::tr( "Mesh" );
+    }
+    QString groupId() const override
+    {
+      return QStringLiteral( "mesh" );
+    }
+    QString shortHelpString() const override
+    {
+      return QObject::tr( "This algorithm extracts mesh's dataset values from line contained in vector layer.\n"
+                          "Each line is discretized with a resolution distance parameter for extraction of values on its vertices." );
+    }
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override
+    {
+      return new QgsMeshExportCrossSection();
+    }
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType()
+    {
+      return QSet<int>(
+      {
+        QgsMeshDatasetGroupMetadata::DataOnVertices,
+        QgsMeshDatasetGroupMetadata::DataOnFaces,
+        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+    }
+
+    QgsTriangularMesh mTriangularMesh;
+    //QgsMesh mNativeMesh;
+
+    QList<DataGroup> mDataPerGroup;
+    QgsCoordinateReferenceSystem mMeshLayerCrs;
+    QgsMeshRendererSettings mLayerRendererSettings;
 
 };
 

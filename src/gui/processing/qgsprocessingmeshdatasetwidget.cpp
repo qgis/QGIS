@@ -623,7 +623,7 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeStepsFromLayer()
 
   for ( qint64 key : timeStep.keys() )
   {
-    QString stringTime = mMeshLayer->formatTime( key / 1000 / 3600 );
+    QString stringTime = mMeshLayer->formatTime( key / 1000.0 / 3600.0 );
     QVariantList data;
     const QgsMeshDatasetIndex &index = timeStep.value( key );
     data << index.group() << index.dataset();
