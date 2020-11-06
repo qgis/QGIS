@@ -67,7 +67,7 @@ QWidget *QgsWmsDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDat
 
 void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), item->name() );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {
@@ -89,7 +89,7 @@ void QgsWmsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 
 void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {
