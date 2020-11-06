@@ -311,6 +311,12 @@ Returns a list of map layer types which are valid options for opening the
 target using this candidate provider.
 %End
 
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     };
 
     QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
