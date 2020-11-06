@@ -196,7 +196,6 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3
   mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( mShadowMapTexture, QPointF( -0.8f, -0.8f ), QSizeF( 0.2f, 0.2f ) );
   mDebugDepthMapPreviewQuad->setEnabled( false );
   mDebugShadowMapPreviewQuad->setEnabled( false );
-//  this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ) );
 }
 
 QgsPreviewQuad *QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
@@ -359,34 +358,49 @@ void QgsShadowRenderingFrameGraph::setupEyeDomeLighting( bool enabled, double st
   mPostprocessingEntity->setEyeDomeLightingDistance( distance );
 }
 
-void QgsShadowRenderingFrameGraph::setupShadowMapDebugging( bool enabled, const QString &corner, double size )
+void QgsShadowRenderingFrameGraph::setupShadowMapDebugging( bool enabled, Qt::Corner corner, double size )
 {
   mDebugShadowMapPreviewQuad->setEnabled( enabled );
   if ( enabled )
   {
-    if ( corner == QStringLiteral( "Top Right" ) )
-      mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
-    else if ( corner == QStringLiteral( "Bottom Right" ) )
-      mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
-    else if ( corner == QStringLiteral( "Top Left" ) )
-      mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
-    else if ( corner == QStringLiteral( "Bottom Left" ) )
-      mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+    switch ( corner )
+    {
+      case Qt::Corner::TopRightCorner:
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
+        break;
+      case Qt::Corner::TopLeftCorner:
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
+        break;
+      case Qt::Corner::BottomRightCorner:
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
+        break;
+      case Qt::Corner::BottomLeftCorner:
+        mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+        break;
+    }
   }
 }
 
-void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, const QString &corner, double size )
+void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Corner corner, double size )
 {
   mDebugDepthMapPreviewQuad->setEnabled( enabled );
+
   if ( enabled )
   {
-    if ( corner == QStringLiteral( "Top Right" ) )
-      mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
-    else if ( corner == QStringLiteral( "Bottom Right" ) )
-      mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
-    else if ( corner == QStringLiteral( "Top Left" ) )
-      mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
-    else if ( corner == QStringLiteral( "Bottom Left" ) )
-      mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+    switch ( corner )
+    {
+      case Qt::Corner::TopRightCorner:
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
+        break;
+      case Qt::Corner::TopLeftCorner:
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
+        break;
+      case Qt::Corner::BottomRightCorner:
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
+        break;
+      case Qt::Corner::BottomLeftCorner:
+        mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+        break;
+    }
   }
 }

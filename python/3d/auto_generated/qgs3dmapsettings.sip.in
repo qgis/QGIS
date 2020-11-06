@@ -454,7 +454,7 @@ Sets the eye dome lighting distance value (contributes to the contrast of the im
 Returns the eye dome lighting distance value (contributes to the contrast of the image)
 %End
 
-    void setDebugShadowMapSettings( bool enabled, const QString &corner, double size );
+    void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
 %Docstring
 Sets the debugging settings of the shadow map
 
@@ -466,7 +466,7 @@ Sets the debugging settings of the shadow map
 %Docstring
 Returns whether the shadow map debugging is enabled
 %End
-    QString debugShadowMapCorner() const;
+    Qt::Corner debugShadowMapCorner() const;
 %Docstring
 Returns the corner where the shadow map preview is displayed
 %End
@@ -475,7 +475,7 @@ Returns the corner where the shadow map preview is displayed
 Returns the size of the shadow map preview
 %End
 
-    void setDebugDepthMapSettings( bool enabled, const QString &corner, double size );
+    void setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size );
 %Docstring
 Sets the debugging settings of the depth map
 
@@ -487,7 +487,7 @@ Sets the debugging settings of the depth map
 %Docstring
 Returns whether the shadow map debugging is enabled
 %End
-    QString debugDepthMapCorner() const;
+    Qt::Corner debugDepthMapCorner() const;
 %Docstring
 Returns the corner where the shadow map preview is displayed
 %End

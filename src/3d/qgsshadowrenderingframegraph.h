@@ -119,9 +119,9 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Sets eye dome lighting shading related settings
     void setupEyeDomeLighting( bool enabled, double strength, int distance );
     //! Sets the shadow map debugging view port
-    void setupShadowMapDebugging( bool enabled, const QString &corner, double size );
+    void setupShadowMapDebugging( bool enabled, Qt::Corner corner, double size );
     //! Sets the depth map debugging view port
-    void setupDepthMapDebugging( bool enabled, const QString &corner, double size );
+    void setupDepthMapDebugging( bool enabled, Qt::Corner corner, double size );
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
