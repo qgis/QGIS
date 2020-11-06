@@ -1659,7 +1659,7 @@ IF (WITH_EPT)
   )
 
   IF (LazPerf_FOUND)
-    # Use sytem laz-perf
+    # Use system laz-perf
     INCLUDE_DIRECTORIES(SYSTEM
       ${LazPerf_INCLUDE_DIR}
     )
