@@ -107,6 +107,14 @@ library object.
 %End
   public:
 
+    enum ProviderMetadataCapability
+    {
+      PriorityForUri,
+      LayerTypesForUri,
+    };
+    typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
+
+
 
     QgsProviderMetadata( const QString &key, const QString &description, const QString &library = QString() );
 %Docstring
@@ -132,6 +140,13 @@ This key string is used for the associative container in :py:class:`QgsProviderR
 This returns descriptive text for the provider
 
 This is used to provide a descriptive list of available data providers.
+%End
+
+    virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
+%Docstring
+Returns the provider metadata capabilities.
+
+.. versionadded:: 3.18
 %End
 
  QString library() const /Deprecated/;
@@ -525,6 +540,10 @@ relating to the connection have been updated.
 
 
 };
+
+QFlags<QgsProviderMetadata::ProviderMetadataCapability> operator|(QgsProviderMetadata::ProviderMetadataCapability f1, QFlags<QgsProviderMetadata::ProviderMetadataCapability> f2);
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

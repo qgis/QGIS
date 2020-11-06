@@ -131,6 +131,12 @@ QgsPdalProvider *QgsPdalProviderMetadata::createProvider( const QString &uri, co
   return new QgsPdalProvider( uri, options, flags );
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsPdalProviderMetadata::capabilities() const
+{
+  return ProviderMetadataCapability::LayerTypesForUri
+         | ProviderMetadataCapability::PriorityForUri;
+}
+
 QList<QgsDataItemProvider *> QgsPdalProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;
