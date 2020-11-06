@@ -29,6 +29,7 @@
 #include "qgsproviderregistry.h"
 #include "qgspdalprovider.h"
 #include "qgsmaplayer.h"
+#include "qgspointcloudlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -49,6 +50,8 @@ class TestQgsPdalProvider : public QObject
     void decodeUri();
     void layerTypesForUri();
     void preferredUri();
+    void brokenPath();
+    void validLayer();
 
   private:
     QString mTestDataDir;
@@ -150,6 +153,24 @@ void TestQgsPdalProvider::preferredUri()
   QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/cloud.las" ), QStringLiteral( "ept" ) ) );
 }
 
+void TestQgsPdalProvider::brokenPath()
+{
+  // test loading a bad layer URI
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "pdal" ) );
+  QVERIFY( !layer->isValid() );
+}
+
+void TestQgsPdalProvider::validLayer()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), QStringLiteral( "layer" ), QStringLiteral( "pdal" ) );
+  QVERIFY( layer->isValid() );
+
+  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QGSCOMPARENEAR( layer->extent().xMinimum(), 498062.0, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMinimum(), 7050992.84, 0.1 );
+  QGSCOMPARENEAR( layer->extent().xMaximum(), 498067.39, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMaximum(), 7050997.04, 0.1 );
+}
 
 QGSTEST_MAIN( TestQgsPdalProvider )
 #include "testqgspdalprovider.moc"
