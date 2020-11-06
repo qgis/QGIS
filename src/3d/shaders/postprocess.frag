@@ -93,7 +93,6 @@ float edlFactor(vec2 coords)
   vec2 neighbours[4] = vec2[4](vec2(-1.0f, 0.0f), vec2(1.0f, 0.0f), vec2(0.0f, -1.0f), vec2(0.0f, 1.0f) );
   float factor = 0.0f;
   float centerDepth = texture2D(depthTexture, coords).r;
-  return linearizeDepth(centerDepth) / farPlane;
   for (int i = 0; i < 4; i++)
   {
     vec2 neighbourCoords = coords + edlDistance * texelSize * neighbours[i];
@@ -123,8 +122,7 @@ void main()
   }
   if (edlEnabled != 0)
   {
-//    float shade = exp(-edlFactor(texCoord) * edlStrength);
-    float f = edlFactor(texCoord);
-    fragColor = vec4(f, f, f, 1.0f);//vec4(fragColor.rgb * shade, fragColor.a);
+    float shade = exp(-edlFactor(texCoord) * edlStrength);
+    fragColor = vec4(fragColor.rgb * shade, fragColor.a);
   }
 }
