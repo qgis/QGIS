@@ -204,8 +204,8 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
 
     // Data source URI API
-    QVariantMap decodeUri( const QString &uri ) override;
-    QString encodeUri( const QVariantMap &parts ) override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
 };
 
 #endif // QGSHANAPROVIDER_H

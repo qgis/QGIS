@@ -1644,7 +1644,7 @@ void QgsHanaProviderMetadata::saveConnection( const QgsAbstractProviderConnectio
   saveConnectionProtected( conn, name );
 }
 
-QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QgsDataSourceUri dsUri { uri };
   QVariantMap uriParts;
@@ -1722,7 +1722,7 @@ QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri )
   return uriParts;
 }
 
-QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   if ( parts.contains( QStringLiteral( "driver" ) ) )
