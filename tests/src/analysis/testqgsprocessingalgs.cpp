@@ -154,7 +154,8 @@ class TestQgsProcessingAlgs: public QObject
     void exportMeshEdges();
     void exportMeshOnGrid();
     void rasterizeMesh();
-    void exporteshContours();
+    void exportMeshContours();
+    void exportMeshCrossSection();
 
   private:
 
@@ -5185,7 +5186,7 @@ void TestQgsProcessingAlgs::rasterizeMesh()
   }
 }
 
-void TestQgsProcessingAlgs::exporteshContours()
+void TestQgsProcessingAlgs::exportMeshContours()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshcontours" ) ) );
   QVERIFY( alg != nullptr );
@@ -5328,6 +5329,109 @@ void TestQgsProcessingAlgs::exporteshContours()
   parameters.insert( QStringLiteral( "CONTOUR_LEVEL_LIST" ), QStringLiteral( "1,2,3" ) );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
+}
+
+void TestQgsProcessingAlgs::exportMeshCrossSection()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshexportcrosssection" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2 << 3;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
+
+  QString outputPath = QDir::tempPath() + "/test.csv";
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+
+  QgsVectorLayer *mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString" ),
+      QStringLiteral( "lines" ),
+      QStringLiteral( "memory" ) );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QStringList wktLines;
+  wktLines << QStringLiteral( "LineString (1500 2200, 2500 2200)" );
+  wktLines << QStringLiteral( "LineString (1500 1500, 1500 3200)" );
+
+  QgsFeatureList flist;
+  for ( const QString &wkt : wktLines )
+  {
+    QgsFeature feat;
+    feat.setGeometry( QgsGeometry::fromWkt( wkt ) );
+    flist << feat;
+  }
+  mLayerLine->dataProvider()->addFeatures( flist );
+  QgsProject::instance()->addMapLayer( mLayerLine );  QgsProject::instance()->addMapLayer( mLayerLine );
+  parameters.insert( QStringLiteral( "INPUT_LINE" ), mLayerLine->name() );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QFile outputFile( outputPath );
+  QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
+  QTextStream textStream( &outputFile );
+  QString header = textStream.readLine();
+  QCOMPARE( header, QStringLiteral( "fid,x,y,offset,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+
+  QStringList expectedLines;
+  expectedLines << QStringLiteral( "1,1500.00,2200.00,0.00,2.50,3.33,2.00" )
+                << QStringLiteral( "1,1600.00,2200.00,100.00,2.60,3.41,2.00" )
+                << QStringLiteral( "1,1700.00,2200.00,200.00,2.70,3.48,2.00" )
+                << QStringLiteral( "1,1800.00,2200.00,300.00,2.80,3.56,2.00" )
+                << QStringLiteral( "1,1900.00,2200.00,400.00,2.90,3.64,2.00" )
+                << QStringLiteral( "1,2000.00,2200.00,500.00,3.00,3.72,2.00" )
+                << QStringLiteral( "1,2100.00,2200.00,600.00,3.10,3.86,3.00" )
+                << QStringLiteral( "1,2200.00,2200.00,700.00,3.20,4.00,3.00" )
+                << QStringLiteral( "1,2300.00,2200.00,800.00,3.30,4.14,3.00" )
+                << QStringLiteral( "1,2400.00,2200.00,900.00,3.40,4.28,3.00" )
+                << QStringLiteral( "1,2500.00,2200.00,1000.00,3.50,4.42,3.00" )
+                << QStringLiteral( "2,1500.00,1500.00,0.00, , , " )
+                << QStringLiteral( "2,1500.00,1600.00,100.00, , , " )
+                << QStringLiteral( "2,1500.00,1700.00,200.00, , , " )
+                << QStringLiteral( "2,1500.00,1800.00,300.00, , , " )
+                << QStringLiteral( "2,1500.00,1900.00,400.00, , , " )
+                << QStringLiteral( "2,1500.00,2000.00,500.00,2.50,3.20,2.00" )
+                << QStringLiteral( "2,1500.00,2100.00,600.00,2.50,3.26,2.00" )
+                << QStringLiteral( "2,1500.00,2200.00,700.00,2.50,3.33,2.00" )
+                << QStringLiteral( "2,1500.00,2300.00,800.00,2.50,3.40,2.00" )
+                << QStringLiteral( "2,1500.00,2400.00,900.00,2.50,3.47,2.00" )
+                << QStringLiteral( "2,1500.00,2500.00,1000.00,2.50,3.54,2.00" )
+                << QStringLiteral( "2,1500.00,2600.00,1100.00,2.50,3.33,2.00" )
+                << QStringLiteral( "2,1500.00,2700.00,1200.00,2.50,3.14,2.00" )
+                << QStringLiteral( "2,1500.00,2800.00,1300.00,2.50,2.97,2.00" )
+                << QStringLiteral( "2,1500.00,2900.00,1400.00,2.50,2.82,2.00" )
+                << QStringLiteral( "2,1500.00,3000.00,1500.00,2.50,2.69,2.00" )
+                << QStringLiteral( "2,1500.00,3100.00,1600.00, , , " )
+                << QStringLiteral( "2,1500.00,3200.00,1700.00, , , " );
+  QString line = textStream.readLine();
+  int i = 0;
+  while ( !line.isEmpty() )
+  {
+    QCOMPARE( line, expectedLines.at( i ) );
+    ++i;
+    line = textStream.readLine();
+  }
+
+  QVERIFY( i == expectedLines.count() );
 }
 
 
