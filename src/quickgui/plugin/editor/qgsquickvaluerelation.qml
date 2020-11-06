@@ -35,6 +35,11 @@ Item {
     combobox.popup.open()
   }
 
+  // Called when data in different fields are changed.
+  function dataUpdated(feature) {
+    vrModel.currentFeature = feature
+  }
+
   id: fieldItem
   enabled: !readOnly
   height: customStyle.fields.height
