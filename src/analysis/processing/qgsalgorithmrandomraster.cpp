@@ -272,9 +272,6 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
   mRandomUpperBound = parameterAsDouble( parameters, QStringLiteral( "UPPER_BOUND" ), context );
   mRandomLowerBound = parameterAsDouble( parameters, QStringLiteral( "LOWER_BOUND" ), context );
 
-  mRandomUniformIntDistribution = std::uniform_int_distribution<long>( mRandomLowerBound, mRandomUpperBound );
-  mRandomUniformDoubleDistribution = std::uniform_real_distribution<double>( mRandomLowerBound, mRandomUpperBound );
-
   if ( mRandomLowerBound > mRandomUpperBound )
     throw QgsProcessingException( QObject::tr( "The chosen lower bound for random number range is greater than the upper bound. The lower bound value must be smaller than the upper bound value." ) );
 
@@ -346,6 +343,10 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
     default:
       break;
   }
+
+  mRandomUniformIntDistribution = std::uniform_int_distribution<long>( mRandomLowerBound, mRandomUpperBound );
+  mRandomUniformDoubleDistribution = std::uniform_real_distribution<double>( mRandomLowerBound, mRandomUpperBound );
+
   return true;
 }
 
@@ -356,7 +357,7 @@ long QgsRandomUniformRasterAlgorithm::generateRandomLongValue( std::mt19937 &mer
 
 double QgsRandomUniformRasterAlgorithm::generateRandomDoubleValue( std::mt19937 &mersenneTwister )
 {
-  return mRandomUniformIntDistribution( mersenneTwister );
+  return mRandomUniformDoubleDistribution( mersenneTwister );
 }
 
 //
