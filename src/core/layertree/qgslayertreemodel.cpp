@@ -1349,6 +1349,14 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 
   if ( !filteredLstNew.isEmpty() )
   {
+    // Make sure it's clear
+    const QModelIndex nodeIndex { node2index( nodeL ) };
+    if ( rowCount( nodeIndex ) > 0 )
+    {
+      beginRemoveRows( node2index( nodeL ), 0, rowCount( nodeIndex ) - 1 );
+      mLegend[nodeL] = LayerLegendData();
+      endRemoveRows();
+    }
     beginInsertRows( node2index( nodeL ), 0, count - 1 );
   }
 
