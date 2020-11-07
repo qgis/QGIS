@@ -116,10 +116,14 @@ namespace QgsMeshUtils
   /**
    * Exports mesh layer's dataset values as raster block
    *
-   * The function always fetches native mesh and dataset data
-   * from data provider and calculates triangular mesh
-   *
-   * \param
+   * \param triangularMesh the triangular mesh of the mesh layer
+   * \param datasetValues dataset values used to build the raster block
+   * \param activeFlags active flag values
+   * \param dataType the data type iof the dataset values
+   * \param transform the coordinate transform used to export the raster block
+   * \param mapUnitsPerPixel map units per pixel for block
+   * \param extent extent of block in destination CRS
+   * \param feedback optional raster feedback object for cancellation/preview
    * \returns raster block with Float::64 values. NULLPTR on error
    *
    * \since QGIS 3.18
@@ -133,7 +137,7 @@ namespace QgsMeshUtils
     double mapUnitsPerPixel,
     const QgsRectangle &extent,
     QgsRasterBlockFeedback *feedback = nullptr
-  ) SIP_FACTORY;
+  ) SIP_SKIP;
 };
 
 #endif // QGSMESHLAYERINTERPOLATOR_H
