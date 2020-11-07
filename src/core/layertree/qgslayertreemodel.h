@@ -472,10 +472,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Returns a temporary render context
     QgsRenderContext *createTemporaryRenderContext() const;
 
-    //! Keep track of the row insertion nested status
-    int mInsertRowsNestedLevel = 0;
-    //! Keep track of the row remove nested status
-    int mRemoveRowsNestedLevel = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

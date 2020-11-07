@@ -32,6 +32,10 @@
 #include <QHeaderView>
 #include <QScrollBar>
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 #include "qgslayertreeviewindicator.h"
 #include "qgslayertreeviewitemdelegate.h"
 
@@ -95,6 +99,12 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
          );
 
   mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( treeModel, this );
+  new ModelTest( mProxyModel, this );
+#endif
+
   mProxyModel->setShowPrivateLayers( mShowPrivateLayers );
   QTreeView::setModel( mProxyModel );
 

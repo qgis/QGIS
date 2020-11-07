@@ -112,6 +112,10 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QList<QgsLayerTreeNode *> children() { return mChildren; }
     //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
+    //! Remove the childrens and sets their parent to null
+    QList<QgsLayerTreeNode *> abandonChildren() SIP_SKIP;
+    //! Set parent to null
+    void makeOrphan() SIP_SKIP;
 
     /**
      * Returns name of the node
