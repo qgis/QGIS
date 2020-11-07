@@ -12954,7 +12954,8 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
     // run layer path through QgsPathResolver so that all inbuilt paths and other localised paths are correctly expanded
     uriElements[ QStringLiteral( "path" ) ] = QgsPathResolver().readPath( uriElements.value( QStringLiteral( "path" ) ).toString() );
   }
-  const QString updatedUri = QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
+  // Not all providers implement decodeUri(), so use original vectorLayerPath if uriElements is empty
+  const QString updatedUri = uriElements.isEmpty() ? vectorLayerPath : QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
   QgsVectorLayer *layer = new QgsVectorLayer( updatedUri, baseName, providerKey, options );
 
   if ( authok && layer->isValid() )
