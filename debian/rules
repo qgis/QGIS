@@ -40,7 +40,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic focal groovy"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bullseye bionic focal groovy"))
 	DISTRIBUTION := sid
 endif
 
@@ -98,7 +98,10 @@ CMAKE_OPTS := \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
 	-DPYTHON_LIBRARY=$(PYTHON_LIBRARY) \
 	-DDOXYGEN_ON_DEMAND=TRUE \
-	-DWITH_QSPATIALITE=TRUE
+	-DWITH_QSPATIALITE=TRUE \
+	-DWITH_3D=TRUE \
+	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
+	-DWITH_PDAL=TRUE
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -115,11 +118,6 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic focal groovy"))
-	CMAKE_OPTS += \
-		-DWITH_3D=TRUE \
-		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
-
 $(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h -a -f /usr/lib/$(DEB_BUILD_MULTIARCH)/cmake/Qt53DExtras/Qt53DExtrasConfig.cmake)
 ifneq (0,$(.SHELLSTATUS))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
@@ -127,8 +125,6 @@ ifneq (0,$(.SHELLSTATUS))
 	        -DQt53DExtras_DIR=$(realpath external/qt3dextra-headers/cmake/Qt53DExtras) \
 		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
 		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
-endif
-
 endif
 
 ifneq (,$(WITH_ORACLE))
