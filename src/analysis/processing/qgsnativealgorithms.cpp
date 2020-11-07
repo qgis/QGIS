@@ -344,6 +344,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMeshRasterizeAlgorithm );
   addAlgorithm( new QgsMeshContoursAlgorithm );
   addAlgorithm( new QgsMeshExportCrossSection );
+  addAlgorithm( new QgsMeshExportTimeSeries );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );

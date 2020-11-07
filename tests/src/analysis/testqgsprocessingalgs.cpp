@@ -156,6 +156,7 @@ class TestQgsProcessingAlgs: public QObject
     void rasterizeMesh();
     void exportMeshContours();
     void exportMeshCrossSection();
+    void exportMeshTimeSeries();
 
   private:
 
@@ -5381,7 +5382,7 @@ void TestQgsProcessingAlgs::exportMeshCrossSection()
   }
   mLayerLine->dataProvider()->addFeatures( flist );
   QgsProject::instance()->addMapLayer( mLayerLine );  QgsProject::instance()->addMapLayer( mLayerLine );
-  parameters.insert( QStringLiteral( "INPUT_LINE" ), mLayerLine->name() );
+  parameters.insert( QStringLiteral( "INPUT_LINES" ), mLayerLine->name() );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
@@ -5424,6 +5425,7 @@ void TestQgsProcessingAlgs::exportMeshCrossSection()
                 << QStringLiteral( "2,1500.00,3200.00,1700.00, , , " );
   QString line = textStream.readLine();
   int i = 0;
+  QVERIFY( !line.isEmpty() );
   while ( !line.isEmpty() )
   {
     QCOMPARE( line, expectedLines.at( i ) );
@@ -5432,6 +5434,138 @@ void TestQgsProcessingAlgs::exportMeshCrossSection()
   }
 
   QVERIFY( i == expectedLines.count() );
+}
+
+void TestQgsProcessingAlgs::exportMeshTimeSeries()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshexporttimeseries" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2 << 3;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetStartTime;
+  datasetStartTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndexStart;
+  datasetIndexStart << 1 << 0;
+  datasetStartTime[QStringLiteral( "value" )] = datasetIndexStart;
+  parameters.insert( QStringLiteral( "STARTING_TIME" ), datasetStartTime );
+
+  QVariantMap datasetEndTime;
+  datasetEndTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndexEnd;
+  datasetIndexEnd << 1 << 1;
+  datasetEndTime[QStringLiteral( "value" )] = datasetIndexEnd;
+  parameters.insert( QStringLiteral( "FINISHING_TIME" ), datasetEndTime );
+
+  //QString outputPath = QDir::tempPath() + "/test.csv";
+  QString outputPath = "/home/vincent/test.csv";
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+
+  QgsVectorLayer *mLayerPoints = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "points" ),
+      QStringLiteral( "memory" ) );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QStringList wktPoints;
+  wktPoints << QStringLiteral( "Point (1500 2200)" );
+  wktPoints << QStringLiteral( "Point (1500 1500)" );
+  wktPoints << QStringLiteral( "Point (2500 2100)" );
+
+  QgsFeatureList flist;
+  for ( const QString &wkt : wktPoints )
+  {
+    QgsFeature feat;
+    feat.setGeometry( QgsGeometry::fromWkt( wkt ) );
+    flist << feat;
+  }
+  mLayerPoints->dataProvider()->addFeatures( flist );
+  QgsProject::instance()->addMapLayer( mLayerPoints );  QgsProject::instance()->addMapLayer( mLayerPoints );
+  parameters.insert( QStringLiteral( "INPUT_POINTS" ), mLayerPoints->name() );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QFile outputFile( outputPath );
+  QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
+  QTextStream textStream( &outputFile );
+  QString header = textStream.readLine();
+  QCOMPARE( header, QStringLiteral( "fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+
+  QStringList expectedLines;
+  expectedLines << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00" );
+
+  QString line = textStream.readLine();
+  int i = 0;
+  QVERIFY( !line.isEmpty() );
+  while ( !line.isEmpty() )
+  {
+    QCOMPARE( line, expectedLines.at( i ) );
+    ++i;
+    line = textStream.readLine();
+  }
+  QVERIFY( i == expectedLines.count() );
+  outputFile.close();
+
+  parameters.insert( QStringLiteral( "TIME_STEP" ), 0.1 );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
+  header = textStream.readLine();
+  QCOMPARE( header, QStringLiteral( "fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+
+  expectedLines.clear();
+  expectedLines << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:06:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:12:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:18:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:24:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:30:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:36:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:42:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:48:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:54:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:06:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:12:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:18:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:24:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:30:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:36:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:42:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:48:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:54:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00" );
+
+  line = textStream.readLine();
+  i = 0;
+  QVERIFY( !line.isEmpty() );
+  while ( !line.isEmpty() )
+  {
+    QCOMPARE( line, expectedLines.at( i ) );
+    ++i;
+    line = textStream.readLine();
+  }
+  QVERIFY( i == expectedLines.count() );
+  outputFile.close();
 }
 
 

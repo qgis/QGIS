@@ -224,33 +224,14 @@ class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
 {
 
   public:
-    QString name() const override
-    {
-      return QStringLiteral( "meshexportcrosssection" );
-    }
-    QString displayName() const override
-    {
-      return QObject::tr( "Export cross section from mesh" );
-    }
-    QString group() const override
-    {
-      return QObject::tr( "Mesh" );
-    }
-    QString groupId() const override
-    {
-      return QStringLiteral( "mesh" );
-    }
-    QString shortHelpString() const override
-    {
-      return QObject::tr( "This algorithm extracts mesh's dataset values from line contained in vector layer.\n"
-                          "Each line is discretized with a resolution distance parameter for extraction of values on its vertices." );
-    }
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
 
   protected:
-    QgsProcessingAlgorithm *createInstance() const override
-    {
-      return new QgsMeshExportCrossSection();
-    }
+    QgsProcessingAlgorithm *createInstance() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -267,11 +248,51 @@ class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
     }
 
     QgsTriangularMesh mTriangularMesh;
-    //QgsMesh mNativeMesh;
 
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateReferenceSystem mMeshLayerCrs;
     QgsMeshRendererSettings mLayerRendererSettings;
+
+};
+
+class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType()
+    {
+      return QSet<int>(
+      {
+        QgsMeshDatasetGroupMetadata::DataOnVertices,
+        QgsMeshDatasetGroupMetadata::DataOnFaces,
+        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+    }
+
+    QgsTriangularMesh mTriangularMesh;
+
+    QgsCoordinateReferenceSystem mMeshLayerCrs;
+    QgsMeshRendererSettings mLayerRendererSettings;
+
+    QList<int> mGroupIndexes;
+    QList<DataGroup> mDatasets;
+    QList<qint64> mRelativeTimeSteps;
+    QStringList mTimeStepString;
+    QMap<qint64, QMap<int, int>> mRelativeTimeToData;
+    QMap<int, QgsMeshDatasetGroupMetadata> mGroupsMetadata;
 
 };
 
