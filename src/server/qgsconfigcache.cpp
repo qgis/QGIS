@@ -43,7 +43,15 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
 {
   if ( ! mProjectCache[ path ] )
   {
+
     std::unique_ptr<QgsProject> prj( new QgsProject() );
+<<<<<<< HEAD
+=======
+
+    // This is required by virtual layers that call QgsProject::instance() inside the constructor :(
+    QgsProject::setInstance( prj.get() );
+
+>>>>>>> 95fc5153fb (Merge pull request #39819 from elpaso/bugfix-server-config-cache-virtual-layers)
     QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
     prj->setBadLayerHandler( badLayerHandler );
     if ( prj->read( path ) )
@@ -96,7 +104,6 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
     }
   }
   return mProjectCache[ path ];
-
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
