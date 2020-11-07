@@ -3820,6 +3820,8 @@ QVariantMap QgsOracleProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[ QStringLiteral( "port" ) ] = dsUri.port();
   if ( ! dsUri.service().isEmpty() )
     uriParts[ QStringLiteral( "service" ) ] = dsUri.service();
+  if ( ! dsUri.param( "dbworkspace" ).isEmpty() )
+    uriParts[ QStringLiteral( "dbworkspace" ) ] = dsUri.param( "dbworkspace" );
   if ( ! dsUri.username().isEmpty() )
     uriParts[ QStringLiteral( "username" ) ] = dsUri.username();
   if ( ! dsUri.password().isEmpty() )
@@ -3828,8 +3830,6 @@ QVariantMap QgsOracleProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
   if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
     uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
-  if ( uri.contains( QStringLiteral( "selectatid=" ), Qt::CaseSensitivity::CaseInsensitive ) )
-    uriParts[ QStringLiteral( "selectatid" ) ] = ! dsUri.selectAtIdDisabled();
   if ( ! dsUri.table().isEmpty() )
     uriParts[ QStringLiteral( "table" ) ] = dsUri.table();
   if ( ! dsUri.schema().isEmpty() )
@@ -3840,10 +3840,12 @@ QVariantMap QgsOracleProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[ QStringLiteral( "srid" ) ] = dsUri.srid();
   if ( uri.contains( QStringLiteral( "estimatedmetadata=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
-  if ( uri.contains( QStringLiteral( "sslmode=" ), Qt::CaseSensitivity::CaseInsensitive ) )
-    uriParts[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
+  if ( ! dsUri.param( "includegeoattributes" ).isEmpty() )
+    uriParts[ QStringLiteral( "includegeoattributes" ) ] = dsUri.param( "includegeoattributes" );
   if ( ! dsUri.sql().isEmpty() )
     uriParts[ QStringLiteral( "sql" ) ] = dsUri.sql();
+  if ( ! dsUri.param( "checkPrimaryKeyUnicity" ).isEmpty() )
+    uriParts[ QStringLiteral( "checkPrimaryKeyUnicity" ) ] = dsUri.param( "checkPrimaryKeyUnicity" );
   if ( ! dsUri.geometryColumn().isEmpty() )
     uriParts[ QStringLiteral( "geometrycolumn" ) ] = dsUri.geometryColumn();
   return uriParts;
@@ -3860,6 +3862,8 @@ QString QgsOracleProviderMetadata::encodeUri( const QVariantMap &parts ) const
     dsUri.setParam( QStringLiteral( "port" ), parts.value( QStringLiteral( "port" ) ).toString() );
   if ( parts.contains( QStringLiteral( "service" ) ) )
     dsUri.setParam( QStringLiteral( "service" ), parts.value( QStringLiteral( "service" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "dbworkspace" ) ) )
+    dsUri.setParam( QStringLiteral( "dbworkspace" ), parts.value( QStringLiteral( "dbworkspace" ) ).toString() );
   if ( parts.contains( QStringLiteral( "username" ) ) )
     dsUri.setUsername( parts.value( QStringLiteral( "username" ) ).toString() );
   if ( parts.contains( QStringLiteral( "password" ) ) )
@@ -3868,8 +3872,6 @@ QString QgsOracleProviderMetadata::encodeUri( const QVariantMap &parts ) const
     dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
   if ( parts.contains( QStringLiteral( "type" ) ) )
     dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<QgsWkbTypes::Type>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
-  if ( parts.contains( QStringLiteral( "selectatid" ) ) )
-    dsUri.setParam( QStringLiteral( "selectatid" ), parts.value( QStringLiteral( "selectatid" ) ).toString() );
   if ( parts.contains( QStringLiteral( "table" ) ) )
     dsUri.setTable( parts.value( QStringLiteral( "table" ) ).toString() );
   if ( parts.contains( QStringLiteral( "schema" ) ) )
@@ -3880,8 +3882,8 @@ QString QgsOracleProviderMetadata::encodeUri( const QVariantMap &parts ) const
     dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
   if ( parts.contains( QStringLiteral( "estimatedmetadata" ) ) )
     dsUri.setParam( QStringLiteral( "estimatedmetadata" ), parts.value( QStringLiteral( "estimatedmetadata" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "sslmode" ) ) )
-    dsUri.setParam( QStringLiteral( "sslmode" ), QgsDataSourceUri::encodeSslMode( static_cast<QgsDataSourceUri::SslMode>( parts.value( QStringLiteral( "sslmode" ) ).toInt( ) ) ) );
+  if ( parts.contains( QStringLiteral( "includegeoattributes" ) ) )
+    dsUri.setParam( QStringLiteral( "includegeoattributes" ), parts.value( QStringLiteral( "includegeoattributes" ) ).toString() );
   if ( parts.contains( QStringLiteral( "sql" ) ) )
     dsUri.setSql( parts.value( QStringLiteral( "sql" ) ).toString() );
   if ( parts.contains( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
