@@ -328,6 +328,11 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
 
 QModelIndex QgsSnappingLayerTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
+  if ( row < 0 || column < 0 || row >= rowCount( parent ) || column >= columnCount( parent ) )
+  {
+    return QModelIndex();
+  }
+
   QModelIndex newIndex = QSortFilterProxyModel::index( row, LayerColumn, parent );
   if ( column == LayerColumn )
     return newIndex;
