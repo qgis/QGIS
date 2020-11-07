@@ -335,7 +335,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionCopy, &QAction::triggered, this, &QgsIdentifyResultsDialog::mActionCopy_triggered );
   connect( mActionAutoFeatureForm, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled );
   connect( mActionHideDerivedAttributes, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled );
-
+  connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp);
   mOpenFormAction->setDisabled( true );
 
   QgsSettings mySettings;
@@ -419,7 +419,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionPrint, &QAction::triggered, this, &QgsIdentifyResultsDialog::printCurrentItem );
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
-  connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
 
   initSelectionModes();
 

@@ -73,6 +73,8 @@
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
          <addaction name="separator"/>
+         <addaction name="mHelpToolAction"/>
+         <addaction name="separator"/>
         </widget>
        </item>
        <item>
@@ -104,6 +106,9 @@
          <property name="rightMargin">
           <number>5</number>
          </property>
+         <property name="bottomMargin">
+          <number>5</number>
+         </property>
          <item>
           <widget class="QLabel" name="lblIdentifyMode">
            <property name="toolTip">
@@ -127,6 +132,29 @@
            </property>
            <property name="minimumContentsLength">
             <number>6</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblViewMode">
+           <property name="toolTip">
+            <string>Select view mode for raster layers</string>
+           </property>
+           <property name="text">
+            <string>View</string>
+           </property>
+           <property name="indent">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cmbViewMode">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
           </widget>
          </item>
@@ -191,55 +219,6 @@
       </layout>
      </widget>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <property name="leftMargin">
-      <number>5</number>
-     </property>
-     <property name="rightMargin">
-      <number>5</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="lblViewMode">
-       <property name="toolTip">
-        <string>Select view mode for raster layers</string>
-       </property>
-       <property name="text">
-        <string>View</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cmbViewMode"/>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>58</width>
-         <height>38</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mHelpToolButton">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Help</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
   <action name="mExpandAction">
@@ -384,6 +363,18 @@
     <string>Hide derived attributes from results</string>
    </property>
   </action>
+  <action name="mHelpToolAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHelpContents.svg</normaloff>:/images/themes/default/mActionHelpContents.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="toolTip">
+    <string>Help</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -395,34 +386,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
