@@ -351,13 +351,6 @@ Updates model when node's name has changed
     void nodeLayerWillBeUnloaded();
     void layerLegendChanged();
 
-    void layerFlagsChanged();
-%Docstring
-Emitted when layer flags have changed.
-
-.. versionadded:: 3.18
-%End
-
     void layerNeedsUpdate();
 
     void legendNodeDataChanged();
