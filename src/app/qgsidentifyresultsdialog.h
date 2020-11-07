@@ -263,13 +263,15 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void mActionCopy_triggered( bool checked );
 
+    void mDeleteFeatureAction_triggered();
+
     void formatChanged( int index );
 
     void printCurrentItem();
 
     void mapLayerActionDestroyed();
-	
-	void showHelp();
+
+    void showHelp();
 
   private:
     QString representValue( QgsVectorLayer *vlayer, const QgsEditorWidgetSetup &setup, const QString &fieldName, const QVariant &value );
@@ -316,7 +318,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsDockWidget *mDock = nullptr;
 
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
-   
+
     QgsMapToolSelectionHandler::SelectionMode mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
 
     void setSelectionMode();

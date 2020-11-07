@@ -333,9 +333,10 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mExpandAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandAction_triggered );
   connect( mCollapseAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mCollapseAction_triggered );
   connect( mActionCopy, &QAction::triggered, this, &QgsIdentifyResultsDialog::mActionCopy_triggered );
+  connect( mDeleteFeatureAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mDeleteFeatureAction_triggered );
   connect( mActionAutoFeatureForm, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled );
   connect( mActionHideDerivedAttributes, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled );
-  connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp);
+  connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp );
   mOpenFormAction->setDisabled( true );
 
   QgsSettings mySettings;
@@ -365,6 +366,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 
   mExpandNewAction->setChecked( mySettings.value( QStringLiteral( "Map/identifyExpand" ), false ).toBool() );
   mActionCopy->setEnabled( false );
+  mDeleteFeatureAction->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
   setColumnText( 0, tr( "Feature" ) );
@@ -1412,6 +1414,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
     if ( featItem->feature().isValid() )
     {
+      mActionPopup->addAction( tr( "Delete Feature" ), this, &QgsIdentifyResultsDialog::mDeleteFeatureAction_triggered );
       mActionPopup->addAction( tr( "Zoom to Feature" ), this, &QgsIdentifyResultsDialog::zoomToFeature );
       mActionPopup->addAction( tr( "Copy Feature" ), this, &QgsIdentifyResultsDialog::copyFeature );
       if ( vlayer )
@@ -1813,8 +1816,11 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
   mActionPrint->setEnabled( false );
 
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( current ) );
-  mActionCopy->setEnabled( featItem && featItem->feature().isValid() );
-  mOpenFormAction->setEnabled( featItem && featItem->feature().isValid() );
+  bool isFeatureSelected = featItem && featItem->feature().isValid();
+
+  mActionCopy->setEnabled( isFeatureSelected );
+  mDeleteFeatureAction->setEnabled( isFeatureSelected );
+  mOpenFormAction->setEnabled( isFeatureSelected );
 
   QgsVectorLayer *vlayer = vectorLayer( current );
   if ( vlayer )
@@ -2076,6 +2082,49 @@ void QgsIdentifyResultsDialog::zoomToFeature()
 
   mCanvas->setExtent( rect, true );
   mCanvas->refresh();
+}
+
+void QgsIdentifyResultsDialog::mDeleteFeatureAction_triggered()
+{
+  QTreeWidgetItem *item = lstResults->currentItem();
+
+  QgsVectorLayer *vlayer = vectorLayer( item );
+
+  QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
+  if ( !featItem )
+    return;
+
+  QgsFeatureId featId = featItem->feature().id();
+  if ( featId == FID_NULL )
+    return;
+
+  try
+  {
+
+    if ( !vlayer->isEditable() )
+    {
+      bool isEditable = vlayer->startEditing();
+      if ( !isEditable )
+      {
+        QMessageBox::warning( this, tr( "Delete Error" ), tr( "Layer %1 is not editable" ).arg( vlayer->name() ), tr( "Ok" ) );
+        return;
+      }
+    }
+
+    vlayer->beginEditCommand( QStringLiteral( "%1 %2 %3" ).arg( tr( "Delete" ), vlayer->name(), QString::number( featId ) ) );
+
+    bool isDeleted = vlayer->deleteFeature( featId );
+    if ( isDeleted )
+      this->featureDeleted( featId );
+
+    vlayer->endEditCommand();
+
+    mCanvas->refresh();
+  }
+  catch ( ... )
+  {
+    QMessageBox::warning( this, tr( "Delete Error" ), tr( "Unable to delete selected feature of type %1." ).arg( vlayer->name() ), tr( "Ok" ) );
+  }
 }
 
 void QgsIdentifyResultsDialog::featureForm()

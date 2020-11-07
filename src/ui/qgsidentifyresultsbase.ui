@@ -70,6 +70,7 @@
          <addaction name="separator"/>
          <addaction name="mClearResultsAction"/>
          <addaction name="separator"/>
+         <addaction name="mDeleteFeatureAction"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
          <addaction name="separator"/>
@@ -281,6 +282,18 @@
     <string>Clear Results</string>
    </property>
   </action>
+  <action name="mDeleteFeatureAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Feature</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete Selected Feature</string>
+   </property>
+  </action>    
   <action name="mActionCopy">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
