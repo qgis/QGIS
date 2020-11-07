@@ -50,9 +50,9 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
 
 QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
 {
-  auto orphans { mChildren };
+  const QList<QgsLayerTreeNode *> orphans { mChildren };
   mChildren.clear();
-  for ( auto orphan : orphans )
+  for ( auto orphan : qgis::as_const( orphans ) )
   {
     orphan->makeOrphan( );
   }
@@ -251,7 +251,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode 
   {
     QgsLayerTreeNode *node = nodes.at( i );
 
-    const auto orphans { node->abandonChildren() };
+    const QList<QgsLayerTreeNode *> orphans { node->abandonChildren() };
 
     emit willAddChildren( this, index + i, index + i );
     mChildren.insert( index + i, node );
