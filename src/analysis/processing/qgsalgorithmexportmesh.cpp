@@ -960,7 +960,7 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   // Prepare levels
   mLevels.clear();
-  // Fisrt, try with the levels list
+  // First, try with the levels list
   QString levelsString = parameterAsString( parameters, QStringLiteral( "CONTOUR_LEVEL_LIST" ), context );
   if ( ! levelsString.isEmpty() )
   {

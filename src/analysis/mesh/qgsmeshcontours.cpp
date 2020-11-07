@@ -49,11 +49,10 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   mTriangularMesh.update( &mNativeMesh );
 }
 
-QgsMeshContours::QgsMeshContours(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMesh &nativeMesh,
-  const QVector<double> &datasetValues,
-  QgsMeshDataBlock scalarActiveFaceFlagValues ):
+QgsMeshContours::QgsMeshContours( const QgsTriangularMesh &triangularMesh,
+                                  const QgsMesh &nativeMesh,
+                                  const QVector<double> &datasetValues,
+                                  const QgsMeshDataBlock scalarActiveFaceFlagValues ):
   mTriangularMesh( triangularMesh )
   , mNativeMesh( nativeMesh )
   , mDatasetValues( datasetValues )

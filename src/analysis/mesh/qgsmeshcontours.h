@@ -62,12 +62,17 @@ class ANALYSIS_EXPORT QgsMeshContours
      * Constructs the mesh contours exporter directly with triangular mesh and dataset values to populate the cache with them.
      * The cache can't be changed.
      * This instance can be used in a thread safe way.
-     * \param layer mesh layer to be associated with this exporter
+     * \param triangularMesh triangular mesh of the meshlayer
+     * \param nativeMesh the native mesh of the mesh layer
+     * \param datasetValues the dataset values to used for creating contours
+     * \param scalarActiveFaceFlagValues active face flag values
+     *
+     * \since QGIS 3.18
      */
     QgsMeshContours( const QgsTriangularMesh &triangularMesh,
                      const QgsMesh &nativeMesh,
                      const QVector<double> &datasetValues,
-                     QgsMeshDataBlock scalarActiveFaceFlagValues );
+                     const QgsMeshDataBlock scalarActiveFaceFlagValues ) SIP_SKIP;
 
 
     ~QgsMeshContours();
@@ -94,8 +99,10 @@ class ANALYSIS_EXPORT QgsMeshContours
      * \returns MultiLineString geometry containing contour lines
      *
      * \note thread safe
+     *
+     * \since QGIS 3.18
      */
-    QgsGeometry exportLines( double value, QgsFeedback *feedback = nullptr );
+    QgsGeometry exportLines( double value, QgsFeedback *feedback = nullptr ) SIP_SKIP;
 
     /**
      * Exports multi polygons representing the areas with values in range for particular dataset
@@ -122,8 +129,10 @@ class ANALYSIS_EXPORT QgsMeshContours
      * \returns MultiPolygon geometry containing contour polygons
      *
      * \note thread safe
+     *
+     * \since QGIS 3.18
      */
-    QgsGeometry exportPolygons( double min_value, double max_value, QgsFeedback *feedback = nullptr );
+    QgsGeometry exportPolygons( double min_value, double max_value, QgsFeedback *feedback = nullptr ) SIP_SKIP;
 
 
   private:
