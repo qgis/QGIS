@@ -181,7 +181,7 @@ void QgsCameraController::resetView( float distance )
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
   QgsCameraPose camPose;
-  if ( mTerrainEntity != nullptr )
+  if ( mTerrainEntity )
     camPose.setCenterPoint( QgsVector3D( worldX, mTerrainEntity->terrainElevationOffset(), worldY ) );
   else
     camPose.setCenterPoint( QgsVector3D( worldX, 0.0f, worldY ) );
