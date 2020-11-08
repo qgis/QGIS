@@ -730,11 +730,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // Raster properties
   //
   spnRed->setValue( mSettings->value( QStringLiteral( "/Raster/defaultRedBand" ), 1 ).toInt() );
-  spnRed->setClearValue( 1 );
   spnGreen->setValue( mSettings->value( QStringLiteral( "/Raster/defaultGreenBand" ), 2 ).toInt() );
-  spnGreen->setClearValue( 2 );
   spnBlue->setValue( mSettings->value( QStringLiteral( "/Raster/defaultBlueBand" ), 3 ).toInt() );
-  spnBlue->setClearValue( 3 );
 
   mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ), QStringLiteral( "nearest neighbour" ) );
   mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
@@ -747,7 +744,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString zoomedOutResampling = mSettings->value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
   mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
   spnOversampling->setValue( mSettings->value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
-  spnOversampling->setClearValue( 2.0 );
   mCbEarlyResampling->setChecked( mSettings->value( QStringLiteral( "/Raster/defaultEarlyResampling" ), false ).toBool() );
 
   initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ),
@@ -765,7 +761,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
                     QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS ) );
 
   spnThreeBandStdDev->setValue( mSettings->value( QStringLiteral( "/Raster/defaultStandardDeviation" ), QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
-  spnThreeBandStdDev->setClearValue( QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR );
 
   mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutLower" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER ) ).toDouble() );
   mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
