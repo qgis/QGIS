@@ -303,8 +303,6 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
-<<<<<<< HEAD
-=======
   // Create an index of all neighbouring vertices
   QgsSpatialIndex neighbourVerticesIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
   int id = 0;
@@ -338,7 +336,6 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   std::unique_ptr<QgsPolygon> snappedErrGeom = qgis::make_unique<QgsPolygon>();
   snappedErrGeom->setExteriorRing( new QgsLineString( snappedRing ) );
 
->>>>>>> 63d875b084 (Merge pull request #39392 from olivierdalang/geometry_fixer_fixes)
   // Merge geometries
   QgsFeaturePool *featurePool = featurePools[ mergeLayerId ];
   std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
