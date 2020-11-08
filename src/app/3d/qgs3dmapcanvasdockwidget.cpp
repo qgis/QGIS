@@ -121,8 +121,42 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   toolBar->addWidget( mBtnMapThemes );
 
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
-                      tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
+  // Options Menu
+  mOptionsMenu = new QMenu( this );
+
+  mBtnOptions = new QToolButton();
+  mBtnOptions->setAutoRaise( true );
+  mBtnOptions->setToolTip( tr( "Options" ) );
+  mBtnOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
+  mBtnOptions->setPopupMode( QToolButton::InstantPopup );
+  mBtnOptions->setMenu( mOptionsMenu );
+
+  toolBar->addWidget( mBtnOptions );
+
+  mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
+  mActionEnableShadows->setCheckable( true );
+  connect( mActionEnableShadows, &QAction::toggled, this, [ = ]( bool enabled )
+  {
+    QgsShadowSettings settings = mCanvas->map()->shadowSettings();
+    settings.setRenderShadows( enabled );
+    mCanvas->map()->setShadowSettings( settings );
+  } );
+  mOptionsMenu->addAction( mActionEnableShadows );
+
+  mActionEnableEyeDome = new QAction( tr( "Show Eye Dome Lighting" ), this );
+  mActionEnableEyeDome->setCheckable( true );
+  connect( mActionEnableEyeDome, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    mCanvas->map()->setEyeDomeLightingEnabled( enabled );
+  } );
+  mOptionsMenu->addAction( mActionEnableEyeDome );
+
+  mOptionsMenu->addSeparator();
+
+  QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
+                                          tr( "Configure…" ), this );
+  connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasDockWidget::configure );
+  mOptionsMenu->addAction( configureAction );
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
@@ -226,6 +260,9 @@ void Qgs3DMapCanvasDockWidget::toggleNavigationWidget( bool visibility )
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
+  whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
+  whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+
   mCanvas->setMap( map );
 
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged );
@@ -310,6 +347,9 @@ void Qgs3DMapCanvasDockWidget::configure()
   if ( !dlg.exec() )
     return;
   applyConfig();
+
+  whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
+  whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
 }
 
 void Qgs3DMapCanvasDockWidget::exportScene()
