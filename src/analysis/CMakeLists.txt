@@ -95,10 +95,6 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmjoinbynearest.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmkmeansclustering.cpp
-  processing/qgsalgorithmlayoutatlastoimage.cpp
-  processing/qgsalgorithmlayoutatlastopdf.cpp
-  processing/qgsalgorithmlayouttoimage.cpp
-  processing/qgsalgorithmlayouttopdf.cpp
   processing/qgsalgorithmlinedensity.cpp
   processing/qgsalgorithmlineintersection.cpp
   processing/qgsalgorithmlinesubstring.cpp
@@ -373,6 +369,16 @@ SET(QGIS_ANALYSIS_HDRS
   vector/qgsgeometrysnappersinglesource.h
   vector/qgszonalstatistics.h
 )
+
+IF(TARGET Qt5::PrintSupport)
+  SET(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
+
+    processing/qgsalgorithmlayoutatlastoimage.cpp
+    processing/qgsalgorithmlayoutatlastopdf.cpp
+    processing/qgsalgorithmlayouttoimage.cpp
+    processing/qgsalgorithmlayouttopdf.cpp
+  )
+ENDIF()
 
 FIND_PACKAGE(EXIV2 REQUIRED)
 
