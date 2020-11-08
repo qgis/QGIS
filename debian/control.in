@@ -485,6 +485,7 @@ Architecture: any
 Depends:
  qgis-providers (= ${binary:Version}),
  python3-qgis (= ${binary:Version}),
+ qt5-image-formats-plugins,
  ${shlibs:Depends},
  ${misc:Depends}
 Description: QGIS server providing various OGC services
