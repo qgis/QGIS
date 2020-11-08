@@ -5180,9 +5180,12 @@ void TestQgsProcessingAlgs::rasterizeMesh()
   {
     for ( int iy = 0; iy < 5; ++iy )
     {
-      QCOMPARE( outputBlock_1->value( iy, ix ), expectedBlock_1->value( iy, ix ) );
-      QCOMPARE( outputBlock_2->value( iy, ix ), expectedBlock_2->value( iy, ix ) );
-      QCOMPARE( outputBlock_3->value( iy, ix ), expectedBlock_3->value( iy, ix ) );
+      if ( !( std::isnan( outputBlock_1->value( iy, ix ) ) && std::isnan( expectedBlock_1->value( iy, ix ) ) ) )
+        QCOMPARE( outputBlock_1->value( iy, ix ), expectedBlock_1->value( iy, ix ) );
+      if ( !( std::isnan( outputBlock_2->value( iy, ix ) ) && std::isnan( expectedBlock_2->value( iy, ix ) ) ) )
+        QCOMPARE( outputBlock_2->value( iy, ix ), expectedBlock_2->value( iy, ix ) );
+      if ( !( std::isnan( outputBlock_2->value( iy, ix ) ) && std::isnan( expectedBlock_2->value( iy, ix ) ) ) )
+        QCOMPARE( outputBlock_3->value( iy, ix ), expectedBlock_3->value( iy, ix ) );
     }
   }
 }
@@ -5353,11 +5356,11 @@ void TestQgsProcessingAlgs::exportMeshCrossSection()
 
   parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
 
-  QString outputPath = QDir::tempPath() + "/test.csv";
+  QString outputPath = QDir::tempPath() + "/test_mesh_xs.csv";
   parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
 
-  QgsVectorLayer *mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString" ),
-      QStringLiteral( "lines" ),
+  QgsVectorLayer *layerLine = new QgsVectorLayer( QStringLiteral( "LineString" ),
+      QStringLiteral( "lines_for_xs" ),
       QStringLiteral( "memory" ) );
 
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
@@ -5380,9 +5383,9 @@ void TestQgsProcessingAlgs::exportMeshCrossSection()
     feat.setGeometry( QgsGeometry::fromWkt( wkt ) );
     flist << feat;
   }
-  mLayerLine->dataProvider()->addFeatures( flist );
-  QgsProject::instance()->addMapLayer( mLayerLine );  QgsProject::instance()->addMapLayer( mLayerLine );
-  parameters.insert( QStringLiteral( "INPUT_LINES" ), mLayerLine->name() );
+  layerLine->dataProvider()->addFeatures( flist );
+  QgsProject::instance()->addMapLayer( layerLine );  QgsProject::instance()->addMapLayer( layerLine );
+  parameters.insert( QStringLiteral( "INPUT_LINES" ), layerLine->name() );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
@@ -5462,12 +5465,11 @@ void TestQgsProcessingAlgs::exportMeshTimeSeries()
   datasetEndTime[QStringLiteral( "value" )] = datasetIndexEnd;
   parameters.insert( QStringLiteral( "FINISHING_TIME" ), datasetEndTime );
 
-  //QString outputPath = QDir::tempPath() + "/test.csv";
-  QString outputPath = "/home/vincent/test.csv";
+  QString outputPath = QDir::tempPath() + "/test_mesh_ts.csv";
   parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
 
-  QgsVectorLayer *mLayerPoints = new QgsVectorLayer( QStringLiteral( "Point" ),
-      QStringLiteral( "points" ),
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "points_for_ts" ),
       QStringLiteral( "memory" ) );
 
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
@@ -5491,9 +5493,9 @@ void TestQgsProcessingAlgs::exportMeshTimeSeries()
     feat.setGeometry( QgsGeometry::fromWkt( wkt ) );
     flist << feat;
   }
-  mLayerPoints->dataProvider()->addFeatures( flist );
-  QgsProject::instance()->addMapLayer( mLayerPoints );  QgsProject::instance()->addMapLayer( mLayerPoints );
-  parameters.insert( QStringLiteral( "INPUT_POINTS" ), mLayerPoints->name() );
+  layerPoints->dataProvider()->addFeatures( flist );
+  QgsProject::instance()->addMapLayer( layerPoints );  QgsProject::instance()->addMapLayer( layerPoints );
+  parameters.insert( QStringLiteral( "INPUT_POINTS" ), layerPoints->name() );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
