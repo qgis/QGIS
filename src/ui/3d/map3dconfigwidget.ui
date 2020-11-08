@@ -179,7 +179,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -205,8 +205,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>239</width>
-                <height>251</height>
+                <width>699</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -228,23 +228,56 @@
                   <string>Terrain</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout1">
-                  <item row="1" column="1" colspan="2">
-                   <widget class="QgsMapLayerComboBox" name="cboTerrainLayer"/>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="labelTerrainLayer">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="labelTerrainResolution">
                     <property name="text">
-                     <string>Elevation</string>
+                     <string>Tile resolution</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1" colspan="2">
+                   <widget class="QgsDoubleSpinBox" name="spinTerrainSkirtHeight">
+                    <property name="suffix">
+                     <string> map units</string>
+                    </property>
+                    <property name="decimals">
+                     <number>1</number>
+                    </property>
+                    <property name="maximum">
+                     <double>10000.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>10.000000000000000</double>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="1" colspan="2">
                    <widget class="QComboBox" name="cboTerrainType"/>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="labelTerrainResolution">
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="labelTerrainSkirtHeight">
                     <property name="text">
-                     <string>Tile resolution</string>
+                     <string>Skirt height</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1" colspan="2">
+                   <widget class="QgsMapLayerComboBox" name="cboTerrainLayer"/>
+                  </item>
+                  <item row="3" column="1" colspan="2">
+                   <widget class="QgsSpinBox" name="spinTerrainResolution">
+                    <property name="suffix">
+                     <string> px</string>
+                    </property>
+                    <property name="maximum">
+                     <number>4096</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelTerrainLayer">
+                    <property name="text">
+                     <string>Elevation</string>
                     </property>
                    </widget>
                   </item>
@@ -262,16 +295,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="1" colspan="2">
-                   <widget class="QgsSpinBox" name="spinTerrainResolution">
-                    <property name="suffix">
-                     <string> px</string>
-                    </property>
-                    <property name="maximum">
-                     <number>4096</number>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="labelTerrainScale">
                     <property name="text">
@@ -279,26 +302,20 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="labelTerrainSkirtHeight">
-                    <property name="text">
-                     <string>Skirt height</string>
+                  <item row="5" column="1" colspan="2">
+                   <widget class="QgsDoubleSpinBox" name="terrainElevationOffsetSpinBox">
+                    <property name="minimum">
+                     <double>-1000.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000.000000000000000</double>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="1" colspan="2">
-                   <widget class="QgsDoubleSpinBox" name="spinTerrainSkirtHeight">
-                    <property name="suffix">
-                     <string> map units</string>
-                    </property>
-                    <property name="decimals">
-                     <number>1</number>
-                    </property>
-                    <property name="maximum">
-                     <double>10000.000000000000000</double>
-                    </property>
-                    <property name="singleStep">
-                     <double>10.000000000000000</double>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Terrain elevation offset</string>
                     </property>
                    </widget>
                   </item>
@@ -477,8 +494,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>133</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -567,8 +584,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>153</width>
+                <height>126</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -666,7 +683,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-22</y>
+                <y>0</y>
                 <width>685</width>
                 <height>632</height>
                </rect>

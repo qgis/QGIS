@@ -104,6 +104,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mMaxTerrainScreenError = elemTerrain.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toFloat();
   mMaxTerrainGroundError = elemTerrain.attribute( QStringLiteral( "max-ground-error" ), QStringLiteral( "1" ) ).toFloat();
   mTerrainShadingEnabled = elemTerrain.attribute( QStringLiteral( "shading-enabled" ), QStringLiteral( "0" ) ).toInt();
+  mTerrainElevationOffset = elemTerrain.attribute( QStringLiteral( "elevation-offset" ), QStringLiteral( "0.0" ) ).toFloat();
+
   QDomElement elemTerrainShadingMaterial = elemTerrain.firstChildElement( QStringLiteral( "shading-material" ) );
   if ( !elemTerrainShadingMaterial.isNull() )
     mTerrainShadingMaterial.readXml( elemTerrainShadingMaterial, context );
@@ -292,6 +294,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( QStringLiteral( "max-terrain-error" ), QString::number( mMaxTerrainScreenError ) );
   elemTerrain.setAttribute( QStringLiteral( "max-ground-error" ), QString::number( mMaxTerrainGroundError ) );
   elemTerrain.setAttribute( QStringLiteral( "shading-enabled" ), mTerrainShadingEnabled ? 1 : 0 );
+  elemTerrain.setAttribute( QStringLiteral( "elevation-offset" ), mTerrainElevationOffset );
+
   QDomElement elemTerrainShadingMaterial = doc.createElement( QStringLiteral( "shading-material" ) );
   mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial, context );
   elemTerrain.appendChild( elemTerrainShadingMaterial );
@@ -411,12 +415,12 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 
 QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
 {
-  return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin );
+  return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin ) + QgsVector3D( 0.0f, mTerrainElevationOffset, 0.0f );
 }
 
 QgsVector3D Qgs3DMapSettings::worldToMapCoordinates( const QgsVector3D &worldCoords ) const
 {
-  return Qgs3DUtils::worldToMapCoordinates( worldCoords, mOrigin );
+  return Qgs3DUtils::worldToMapCoordinates( worldCoords - QgsVector3D( 0.0f, mTerrainElevationOffset, 0.0f ), mOrigin );
 }
 
 void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -567,6 +571,14 @@ void Qgs3DMapSettings::setMaxTerrainGroundError( float error )
 
   mMaxTerrainGroundError = error;
   emit maxTerrainGroundErrorChanged();
+}
+
+void Qgs3DMapSettings::setTerrainElevationOffset( float offset )
+{
+  if ( mTerrainElevationOffset == offset )
+    return;
+  mTerrainElevationOffset = offset;
+  emit terrainElevationOffsetChanged();
 }
 
 float Qgs3DMapSettings::maxTerrainGroundError() const
