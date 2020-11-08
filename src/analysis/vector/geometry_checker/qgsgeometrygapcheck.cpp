@@ -303,6 +303,42 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
+<<<<<<< HEAD
+=======
+  // Create an index of all neighbouring vertices
+  QgsSpatialIndex neighbourVerticesIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
+  int id = 0;
+  for ( const QgsFeature &neighbour : neighbours )
+  {
+    QgsVertexIterator vit = neighbour.geometry().vertices();
+    while ( vit.hasNext() )
+    {
+      QgsPoint pt = vit.next();
+      QgsFeature f;
+      f.setId( id ); // required for SpatialIndex to return the correct result
+      f.setGeometry( QgsGeometry( pt.clone() ) );
+      neighbourVerticesIndex.addFeature( f );
+      id++;
+    }
+  }
+
+  // Snap to the closest vertex
+  QgsPolyline snappedRing;
+  QgsVertexIterator iterator = errGeometry->vertices();
+  while ( iterator.hasNext() )
+  {
+    QgsPoint pt = iterator.next();
+    QgsGeometry closestGeom = neighbourVerticesIndex.geometry( neighbourVerticesIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
+    if ( !closestGeom.isEmpty() )
+    {
+      snappedRing.append( QgsPoint( closestGeom.vertexAt( 0 ) ) );
+    }
+  }
+
+  std::unique_ptr<QgsPolygon> snappedErrGeom = qgis::make_unique<QgsPolygon>();
+  snappedErrGeom->setExteriorRing( new QgsLineString( snappedRing ) );
+
+>>>>>>> 63d875b084 (Merge pull request #39392 from olivierdalang/geometry_fixer_fixes)
   // Merge geometries
   QgsFeaturePool *featurePool = featurePools[ mergeLayerId ];
   std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
