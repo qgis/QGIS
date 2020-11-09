@@ -112,6 +112,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     void setClassData( const QgsPalettedRasterRenderer::ClassData &data );
 
     QgsPalettedRasterRenderer::ClassData classData() const { return mData; }
+    QgsPalettedRasterRenderer::Class classAtIndex( const QModelIndex &index ) const { return mData.at( index.row() ); }
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
@@ -155,6 +156,9 @@ class QgsPalettedRendererProxyModel: public QSortFilterProxyModel
       : QSortFilterProxyModel( parent )
     {
     }
+
+    //! Return sorted class data
+    QgsPalettedRasterRenderer::ClassData classData() const;
 
   protected:
 

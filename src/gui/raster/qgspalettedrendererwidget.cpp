@@ -141,7 +141,7 @@ QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
 
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
 {
-  QgsPalettedRasterRenderer::ClassData classes = mModel->classData();
+  QgsPalettedRasterRenderer::ClassData classes = mProxyModel->classData();
   int bandNumber = mBandComboBox->currentBand();
 
   QgsPalettedRasterRenderer *r = new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, classes );
@@ -342,7 +342,7 @@ void QgsPalettedRendererWidget::applyColorRamp()
 
   disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
 
-  QgsPalettedRasterRenderer::ClassData data = mModel->classData();
+  QgsPalettedRasterRenderer::ClassData data = mProxyModel->classData();
   QgsPalettedRasterRenderer::ClassData::iterator cIt = data.begin();
 
   double numberOfEntries = data.count();
@@ -407,7 +407,7 @@ void QgsPalettedRendererWidget::saveColorTable()
     if ( outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream outputStream( &outputFile );
-      outputStream << QgsPalettedRasterRenderer::classDataToString( mModel->classData() );
+      outputStream << QgsPalettedRasterRenderer::classDataToString( mProxyModel->classData() );
       outputStream.flush();
       outputFile.close();
 
@@ -875,5 +875,17 @@ void QgsPalettedRendererClassGatherer::run()
 
   emit collectedClasses();
 }
+
+
+QgsPalettedRasterRenderer::ClassData QgsPalettedRendererProxyModel::classData() const
+{
+  QgsPalettedRasterRenderer::ClassData data;
+  for ( int i = 0; i < rowCount( ); ++i )
+  {
+    data.push_back( qobject_cast<QgsPalettedRendererModel *>( sourceModel() )->classAtIndex( mapToSource( index( i, 0 ) ) ) );
+  }
+  return data;
+}
+
 
 ///@endcond PRIVATE
