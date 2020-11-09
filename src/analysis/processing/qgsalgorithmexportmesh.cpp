@@ -1253,6 +1253,8 @@ bool QgsMeshExportCrossSection::prepareAlgorithm( const QVariantMap &parameters,
 
 QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  if ( feedback )
+    feedback->setProgress( 0 );
   //First, if present, average 3D staked dataset value to 2D face value
   const QgsMesh3dAveragingMethod *avgMethod = mLayerRendererSettings.averagingMethod();
   for ( DataGroup &dataGroup : mDataPerGroup )
@@ -1282,6 +1284,8 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
     header << datagroup.metadata.name();
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
 
+  int featCount = featureSource->featureCount();
+  int featCounter = 0;
   QgsFeatureIterator featIt = featureSource->getFeatures();
   QgsFeature feat;
   while ( featIt.nextFeature( feat ) )
@@ -1343,6 +1347,13 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
       textStream << textLine.join( ',' ) << QStringLiteral( "\n" );
 
       offset += resolution;
+    }
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100 * featCounter / featCount );
+      if ( feedback->isCanceled() )
+        return QVariantMap();
     }
   }
 
@@ -1553,6 +1564,8 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  if ( feedback )
+    feedback->setProgress( 0 );
   //First, if present, average 3D staked dataset value to 2D face value
   const QgsMesh3dAveragingMethod *avgMethod = mLayerRendererSettings.averagingMethod();
 
@@ -1585,6 +1598,8 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
 
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
 
+  int featCount = featureSource->featureCount();
+  int featCounter = 0;
   QgsFeatureIterator featIt = featureSource->getFeatures();
   QgsFeature feat;
   while ( featIt.nextFeature( feat ) )
@@ -1679,6 +1694,13 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
         }
         textStream << textLine.join( ',' ) << QStringLiteral( "\n" );
       }
+    }
+    featCounter++;
+    if ( feedback )
+    {
+      feedback->setProgress( 100 * featCounter / featCount );
+      if ( feedback->isCanceled() )
+        return QVariantMap();
     }
   }
 
