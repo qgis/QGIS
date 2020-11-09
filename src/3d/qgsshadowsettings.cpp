@@ -30,6 +30,16 @@ QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
 
 }
 
+QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
+{
+  this->mRenderShadows = rhs.mRenderShadows;
+  this->mSelectedDirectionalLight = rhs.mSelectedDirectionalLight;
+  this->mMaximumShadowRenderingDistance = rhs.mMaximumShadowRenderingDistance;
+  this->mShadowBias = rhs.mShadowBias;
+  this->mShadowMapResolution = rhs.mShadowMapResolution;
+  return *this;
+}
+
 void QgsShadowSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );

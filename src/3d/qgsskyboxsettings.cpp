@@ -28,6 +28,14 @@ QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
 
 }
 
+QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
+{
+  this->mSkyboxType = rhs.mSkyboxType;
+  this->mPanoramicTexturePath = rhs.mPanoramicTexturePath;
+  this->mCubeMapFacesPaths = rhs.mCubeMapFacesPaths;
+  return *this;
+}
+
 void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QgsPathResolver &pathResolver = context.pathResolver();

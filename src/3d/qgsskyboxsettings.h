@@ -40,7 +40,7 @@ class _3D_EXPORT QgsSkyboxSettings
     //! copy constructor
     QgsSkyboxSettings( const QgsSkyboxSettings &other );
     //! delete assignment operator
-    QgsSkyboxSettings &operator=( QgsSkyboxSettings const & ) = delete;
+    QgsSkyboxSettings &operator=( QgsSkyboxSettings const &rhs );
 
     //! Reads settings from a DOM \a element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );

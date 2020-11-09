@@ -39,7 +39,7 @@ class _3D_EXPORT QgsShadowSettings
     //! Copy constructor
     QgsShadowSettings( const QgsShadowSettings &other );
     //! delete assignment operator
-    QgsShadowSettings &operator=( QgsShadowSettings const & ) = delete;
+    QgsShadowSettings &operator=( QgsShadowSettings const &rhs );
 
     //! Reads settings from a DOM \a element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );
