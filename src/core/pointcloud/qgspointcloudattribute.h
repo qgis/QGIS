@@ -23,8 +23,6 @@
 #include <QString>
 #include <QVector>
 
-#define SIP_NO_FILE
-
 /**
  * \ingroup core
  *
@@ -74,6 +72,14 @@ class CORE_EXPORT QgsPointCloudAttribute
      */
     static bool isNumeric( DataType type );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsPointCloudAttribute: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->displayType() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     void updateSize();
 
@@ -120,7 +126,7 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     const QgsPointCloudAttribute *find( const QString &attributeName, int &offset ) const;
 
     //! Returns total size of record
-    std::size_t pointRecordSize() const { return mSize; }
+    size_t pointRecordSize() const { return mSize; }
 
   private:
     std::size_t mSize = 0;
