@@ -201,9 +201,11 @@ class TestQgsFieldModel(unittest.TestCase):
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testSetLayer(self):
         m = QgsPointCloudAttributeModel()
+        self.assertIsNone(m.layer())
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/entwine/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
         m.setLayer(layer)
+        self.assertEqual(m.layer(), layer)
         self.assertEqual([a.name() for a in m.attributes().attributes()], ['X', 'Y', 'Z', 'Intensity', 'ReturnNumber', 'NumberOfReturns', 'ScanDirectionFlag', 'EdgeOfFlightLine', 'Classification', 'ScanAngleRank', 'UserData', 'PointSourceId', 'GpsTime', 'Red', 'Green', 'Blue'])
 
 

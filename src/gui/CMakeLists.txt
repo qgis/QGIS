@@ -532,6 +532,7 @@ SET(QGIS_GUI_SRCS
   qgspasswordlineedit.cpp
   qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
+  qgspointcloudattributecombobox.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
   qgsprojectionselectiondialog.cpp
@@ -767,6 +768,7 @@ SET(QGIS_GUI_HDRS
   qgspasswordlineedit.h
   qgspixmaplabel.h
   qgspluginmanagerinterface.h
+  qgspointcloudattributecombobox.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
   qgsprojectionselectiondialog.h

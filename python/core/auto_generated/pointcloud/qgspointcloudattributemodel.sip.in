@@ -46,6 +46,13 @@ Sets the ``layer`` associated with the model.
 .. seealso:: :py:func:`setAttributes`
 %End
 
+    QgsPointCloudLayer *layer();
+%Docstring
+Returns the layer associated with the model.
+
+.. seealso:: :py:func:`setLayer`
+%End
+
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 %Docstring
 Sets the ``attributes`` to include in the model.
