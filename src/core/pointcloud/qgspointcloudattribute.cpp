@@ -27,6 +27,39 @@ QgsPointCloudAttribute::QgsPointCloudAttribute( const QString &name, DataType ty
   updateSize();
 }
 
+QString QgsPointCloudAttribute::displayType() const
+{
+  switch ( mType )
+  {
+    case DataType::Char:
+      return QObject::tr( "Character" );
+    case DataType::Short:
+      return QObject::tr( "Short" );
+    case DataType::Float:
+      return QObject::tr( "Float" );
+    case DataType::Int32:
+      return QObject::tr( "Integer" );
+    case DataType::Double:
+      return QObject::tr( "Double" );
+  }
+  return QString();
+}
+
+bool QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType type )
+{
+  switch ( type )
+  {
+    case DataType::Char:
+      return false;
+    case DataType::Short:
+    case DataType::Float:
+    case DataType::Int32:
+    case DataType::Double:
+      return true;
+  }
+  return false;
+}
+
 void QgsPointCloudAttribute::updateSize()
 {
   switch ( mType )
