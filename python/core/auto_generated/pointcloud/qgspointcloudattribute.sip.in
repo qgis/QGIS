@@ -123,7 +123,14 @@ Returns the attribute at the specified ``index``.
 %Docstring
 Finds the attribute with the name
 
-Returns None if not found
+Returns ``None`` if not found.
+%End
+
+    int indexOf( const QString &name ) const;
+%Docstring
+Returns the index of the attribute with the specified ``name``.
+
+Returns -1 if a matching attribute was not found.
 %End
 
     size_t pointRecordSize() const;

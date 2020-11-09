@@ -121,9 +121,16 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     /**
      * Finds the attribute with the name
      *
-     * Returns nullptr if not found
+     * Returns NULLPTR if not found.
      */
     const QgsPointCloudAttribute *find( const QString &attributeName, int &offset ) const;
+
+    /**
+     * Returns the index of the attribute with the specified \a name.
+     *
+     * Returns -1 if a matching attribute was not found.
+     */
+    int indexOf( const QString &name ) const;
 
     //! Returns total size of record
     size_t pointRecordSize() const { return mSize; }
