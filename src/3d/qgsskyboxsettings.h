@@ -35,9 +35,9 @@ class QDomElement;
 class _3D_EXPORT QgsSkyboxSettings
 {
   public:
-    // default constructor
+    //! default constructor
     QgsSkyboxSettings() = default;
-    // copy constructor
+    //! copy constructor
     QgsSkyboxSettings( const QgsSkyboxSettings &other );
     //! delete assignment operator
     QgsSkyboxSettings &operator=( QgsSkyboxSettings const & ) = delete;
