@@ -64,8 +64,10 @@ class ANALYSIS_EXPORT QgsMeshContours
      * This instance can be used in a thread safe way.
      * \param triangularMesh triangular mesh of the meshlayer
      * \param nativeMesh the native mesh of the mesh layer
-     * \param datasetValues the dataset values to used for creating contours
+     * \param datasetValues the dataset values to used for creating contours defined on vertices
      * \param scalarActiveFaceFlagValues active face flag values
+     *
+     * \note for data on faces, the values are averaged on vertices to define contours
      *
      * \since QGIS 3.18
      */
