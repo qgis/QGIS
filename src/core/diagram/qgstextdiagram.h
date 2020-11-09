@@ -69,7 +69,8 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 
     /**
      * Calculates intersection points between a line and an ellipse
-      \returns intersection points*/
+     * \returns intersection points
+    */
     void lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF> &result ) const;
 };
 

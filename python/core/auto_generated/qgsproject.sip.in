@@ -13,13 +13,14 @@
 
 
 
+
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring
 Encapsulates a QGIS project, including sets of map layers and their styles,
 layouts, annotations, canvases, etc.
 
-QgsProject is available both as a singleton (QgsProject.instance()) and for use as
+QgsProject is available both as a singleton (:py:func:`QgsProject.instance()`) and for use as
 standalone objects. The QGIS project singleton always gives access to the canonical project reference
 open within the main QGIS application.
 
@@ -38,6 +39,7 @@ open within the main QGIS application.
     {
       FlagDontResolveLayers,
       FlagDontLoadLayouts,
+      FlagTrustLayerMetadata,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 
@@ -67,11 +69,29 @@ open within the main QGIS application.
 Returns the QgsProject singleton instance
 %End
 
+    static void setInstance( QgsProject *project );
+%Docstring
+Set the current project singleton instance to ``project``
+
+.. note::
+
+   this method is provided mainly for the server, which caches the projects and (potentially) needs to switch the current instance on every request.
+
+.. warning::
+
+   calling this method can have serious, unintended consequences, including instability, data loss and undefined behavior. Use with EXTREME caution!
+
+.. seealso:: :py:func:`instance`
+
+.. versionadded:: 3.10.11
+%End
+
+
     explicit QgsProject( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Create a new QgsProject.
 
-Most of the time you want to use QgsProject.instance() instead as many components of QGIS work with the singleton.
+Most of the time you want to use :py:func:`QgsProject.instance()` instead as many components of QGIS work with the singleton.
 %End
 
     ~QgsProject();
@@ -84,7 +104,7 @@ Sets the project's title.
 
 .. note::
 
-   Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
+   Since QGIS 3.2 this is just a shortcut to setting the title in the project's :py:func:`~QgsProject.metadata`.
 
 .. seealso:: :py:func:`title`
 
@@ -99,7 +119,7 @@ Returns the project's title.
 
 .. note::
 
-   Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
+   Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's :py:func:`~QgsProject.metadata`.
 %End
 
     QString saveUser() const;
@@ -127,9 +147,16 @@ Returns the date and time when the project was last saved.
 .. versionadded:: 3.14
 %End
 
+    QgsProjectVersion lastSaveVersion() const;
+%Docstring
+Returns the QGIS version which the project was last saved using.
+
+.. versionadded:: 3.14
+%End
+
     bool isDirty() const;
 %Docstring
-Returns ``True`` if the project has been modified since the last write()
+Returns ``True`` if the project has been modified since the last :py:func:`~QgsProject.write`
 %End
 
     void setFileName( const QString &name );
@@ -158,7 +185,7 @@ Sets the original ``path`` associated with the project.
 
 This is intended for use with non-qgs/qgz project files (see :py:class:`QgsCustomProjectOpenHandler`) in order to allow
 custom project open handlers to specify the original file name of the project. For custom project formats,
-it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+it is NOT appropriate to call :py:func:`~QgsProject.setFileName` with the original project path, as this causes the original (non
 QGIS) project file to be overwritten when the project is next saved.
 
 .. seealso:: :py:func:`originalPath`
@@ -172,7 +199,7 @@ Returns the original path associated with the project.
 
 This is intended for use with non-qgs/qgz project files (see :py:class:`QgsCustomProjectOpenHandler`) in order to allow
 custom project open handlers to specify the original file name of the project. For custom project formats,
-it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+it is NOT appropriate to call :py:func:`~QgsProject.setFileName` with the original project path, as this causes the original (non
 QGIS) project file to be overwritten when the project is next saved.
 
 .. seealso:: :py:func:`setOriginalPath`
@@ -187,7 +214,7 @@ Returns QFileInfo object for the project's associated file.
 .. note::
 
    The use of this method is discouraged since QGIS 3.2 as it only works with project files stored
-   in the file system. It is recommended to use absoluteFilePath(), baseName(), lastModifiedTime() as
+   in the file system. It is recommended to use :py:func:`~QgsProject.absoluteFilePath`, :py:func:`~QgsProject.baseName`, :py:func:`~QgsProject.lastModifiedTime` as
    replacements that are aware of the fact that projects may be saved in other project storages.
 
 .. seealso:: :py:func:`fileName`
@@ -200,7 +227,7 @@ Returns QFileInfo object for the project's associated file.
 %Docstring
 Returns pointer to project storage implementation that handles read/write of the project file.
 If the project file is stored in the local file system, returns ``None``.
-The project storage object is inferred from fileName() of the project.
+The project storage object is inferred from :py:func:`~QgsProject.fileName` of the project.
 
 .. versionadded:: 3.2
 %End
@@ -214,7 +241,7 @@ Returns last modified time of the project file as returned by the file system (o
 
     QString absoluteFilePath() const;
 %Docstring
-Returns full absolute path to the project file if the project is stored in a file system - derived from fileName().
+Returns full absolute path to the project file if the project is stored in a file system - derived from :py:func:`~QgsProject.fileName`.
 Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
 
 .. versionadded:: 3.2
@@ -222,7 +249,7 @@ Returns empty string when the project is stored in a project storage (there is n
 
     QString absolutePath() const;
 %Docstring
-Returns full absolute path to the project folder if the project is stored in a file system - derived from fileName().
+Returns full absolute path to the project folder if the project is stored in a file system - derived from :py:func:`~QgsProject.fileName`.
 Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
 
 .. versionadded:: 3.2
@@ -230,7 +257,7 @@ Returns empty string when the project is stored in a project storage (there is n
 
     QString baseName() const;
 %Docstring
-Returns the base name of the project file without the path and without extension - derived from fileName().
+Returns the base name of the project file without the path and without extension - derived from :py:func:`~QgsProject.fileName`.
 
 .. versionadded:: 3.2
 %End
@@ -317,7 +344,7 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
+    bool read( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Reads given project file from the given file.
 
@@ -327,9 +354,9 @@ Reads given project file from the given file.
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read( QgsProject::ReadFlags flags = 0 );
+    bool read( QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
-Reads the project from its currently associated file (see fileName() ).
+Reads the project from its currently associated file (see :py:func:`~QgsProject.fileName` ).
 
 The ``flags`` argument can be used to specify optional flags which control
 the read behavior of projects.
@@ -360,29 +387,29 @@ Writes the project to a file.
 
 .. note::
 
-   calling this implicitly sets the project's filename (see setFileName() )
+   calling this implicitly sets the project's filename (see :py:func:`~QgsProject.setFileName` )
 
 .. note::
 
-   isDirty() will be set to ``False`` if project is successfully written
+   :py:func:`~QgsProject.isDirty` will be set to ``False`` if project is successfully written
 
 .. versionadded:: 3.0
 %End
 
     bool write();
 %Docstring
-Writes the project to its current associated file (see fileName() ).
+Writes the project to its current associated file (see :py:func:`~QgsProject.fileName` ).
 
 :return: ``True`` if project was written successfully
 
 .. note::
 
-   isDirty() will be set to ``False`` if project is successfully written
+   :py:func:`~QgsProject.isDirty` will be set to ``False`` if project is successfully written
 %End
 
     bool writeEntry( const QString &scope, const QString &key, bool value ) /PyName=writeEntryBool/;
 %Docstring
-Write a boolean entry to the project file.
+Write a boolean ``value`` to the project file.
 
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
@@ -394,11 +421,13 @@ a hierarchy of keys and corresponding values
 .. note::
 
    available in Python bindings as writeEntryBool
+
+.. seealso:: :py:func:`readBoolEntry`
 %End
 
     bool writeEntry( const QString &scope, const QString &key, double value ) /PyName=writeEntryDouble/;
 %Docstring
-Write a double entry to the project file.
+Write a double ``value`` to the project file.
 
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
@@ -410,11 +439,13 @@ a hierarchy of keys and corresponding values
 .. note::
 
    available in Python bindings as writeEntryDouble
+
+.. seealso:: :py:func:`readDoubleEntry`
 %End
 
     bool writeEntry( const QString &scope, const QString &key, int value );
 %Docstring
-Write an integer entry to the project file.
+Write an integer ``value`` to the project file.
 
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
@@ -422,11 +453,13 @@ a hierarchy of keys and corresponding values
 .. note::
 
    The key string must be valid xml tag names in order to be saved to the file.
+
+.. seealso:: :py:func:`readNumEntry`
 %End
 
     bool writeEntry( const QString &scope, const QString &key, const QString &value );
 %Docstring
-Write a string entry to the project file.
+Write a string ``value`` to the project file.
 
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
@@ -434,11 +467,13 @@ a hierarchy of keys and corresponding values
 .. note::
 
    The key string must be valid xml tag names in order to be saved to the file.
+
+.. seealso:: :py:func:`readEntry`
 %End
 
     bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 %Docstring
-Write a string list entry to the project file.
+Write a string list ``value`` to the project file.
 
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
@@ -446,47 +481,104 @@ a hierarchy of keys and corresponding values
 .. note::
 
    The key string must be valid xml tag names in order to be saved to the file.
+
+.. seealso:: :py:func:`readListEntry`
 %End
 
-    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = 0 ) const;
+    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok /Out/ = 0 ) const;
 %Docstring
-Key value accessors
+Reads a string list from the specified ``scope`` and ``key``.
 
-keys would be the familiar QgsSettings-like '/' delimited entries,
-implying a hierarchy of keys and corresponding values
+:param scope: entry scope (group) name
+:param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
+
+:return: - entry value as a string list
+         - ok: set to ``True`` if key exists and has been successfully retrieved as a string list
 %End
 
-    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = 0 ) const;
-    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 ) const;
-    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
-    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
+    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok /Out/ = 0 ) const;
+%Docstring
+Reads a string from the specified ``scope`` and ``key``.
+
+:param scope: entry scope (group) name
+:param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
+
+:return: - entry value as string from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved as a string value
+%End
+
+    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok /Out/ = 0 ) const;
+%Docstring
+Reads an integer from the specified ``scope`` and ``key``.
+
+:param scope: entry scope (group) name
+:param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
+
+:return: - entry value as integer from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved as an integer
+%End
+
+    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok /Out/ = 0 ) const;
+%Docstring
+Reads a double from the specified ``scope`` and ``key``.
+
+:param scope: entry scope (group) name
+:param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
+
+:return: - entry value as double from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved as a double
+%End
+
+    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok /Out/ = 0 ) const;
+%Docstring
+Reads a boolean from the specified ``scope`` and ``key``.
+
+:param scope: entry scope (group) name
+:param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
+
+:return: - entry value as boolean from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved as a boolean
+%End
 
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring
-Remove the given key
+Remove the given ``key`` from the specified ``scope``.
 %End
-
 
     QStringList entryList( const QString &scope, const QString &key ) const;
 %Docstring
-Returns keys with values -- do not return keys that contain other keys
+Returns a list of child keys with values which exist within the the specified ``scope`` and ``key``.
+
+This method does not return keys that contain other keys. See :py:func:`~QgsProject.subkeyList` to retrieve keys
+which contain other keys.
 
 .. note::
 
-   equivalent to QgsSettings entryList()
+   equivalent to QgsSettings :py:func:`~QgsProject.entryList`
 %End
 
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 %Docstring
-Returns keys with keys -- do not return keys that contain only values
+Returns a list of child keys which contain other keys that exist within the the specified ``scope`` and ``key``.
+
+This method only returns keys with keys, it will not return keys that contain only values. See
+:py:func:`~QgsProject.entryList` to retrieve keys with values.
 
 .. note::
 
-   equivalent to QgsSettings subkeyList()
+   equivalent to QgsSettings :py:func:`~QgsProject.subkeyList`
 %End
 
 
     void dumpProperties() const;
+%Docstring
+Dump out current project properties to stderr
+%End
 
     QgsPathResolver pathResolver() const;
 %Docstring
@@ -505,7 +597,7 @@ Paths written to the project file should be prepared with this method.
 
     QString readPath( const QString &filename ) const;
 %Docstring
-Turn filename read from the project file to an absolute path
+Transforms a ``filename`` read from the project file to an absolute path.
 %End
 
     QString error() const;
@@ -521,11 +613,13 @@ Deletes old handler and takes ownership of the new one.
 
     QString layerIsEmbedded( const QString &id ) const;
 %Docstring
-Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
+Returns the source project file path if the layer with matching ``id`` is embedded from other project file.
+
+Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = 0 );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -589,10 +683,10 @@ Sets the default area measurement units for the project.
     QString homePath() const;
 %Docstring
 Returns the project's home path. This will either be a manually set home path
-(see presetHomePath()) or the path containing the project file itself.
+(see :py:func:`~QgsProject.presetHomePath`) or the path containing the project file itself.
 
 This method always returns the absolute path to the project's home. See
-presetHomePath() to retrieve any manual project home path override (e.g.
+:py:func:`~QgsProject.presetHomePath` to retrieve any manual project home path override (e.g.
 relative home paths).
 
 .. seealso:: :py:func:`setPresetHomePath`
@@ -606,7 +700,7 @@ relative home paths).
 %Docstring
 Returns any manual project home path setting, or an empty string if not set.
 
-This path may be a relative path. See homePath() to retrieve a path which is always
+This path may be a relative path. See :py:func:`~QgsProject.homePath` to retrieve a path which is always
 an absolute path.
 
 .. seealso:: :py:func:`homePath`
@@ -812,7 +906,7 @@ Returns the current avoid intersections mode.
 %Docstring
 A map of custom project variables.
 To get all available variables including generated ones
-use QgsExpressionContextUtils.projectScope() instead.
+use :py:func:`QgsExpressionContextUtils.projectScope()` instead.
 %End
 
     void setCustomVariables( const QVariantMap &customVariables );
@@ -920,8 +1014,8 @@ Returns ``True`` if the project comes from a zip archive, ``False`` otherwise.
 %Docstring
 Add a list of layers to the map of loaded layers.
 
-The layersAdded() and layerWasAdded() signals will always be emitted.
-The legendLayersAdded() signal is emitted only if addToLegend is ``True``.
+The :py:func:`~QgsProject.layersAdded` and :py:func:`~QgsProject.layerWasAdded` signals will always be emitted.
+The :py:func:`~QgsProject.legendLayersAdded` signal is emitted only if addToLegend is ``True``.
 
 :param mapLayers: A list of layer which should be added to the registry
 :param addToLegend: If ``True`` (by default), the layers will be added to the
@@ -953,10 +1047,10 @@ The legendLayersAdded() signal is emitted only if addToLegend is ``True``.
 %Docstring
 Add a layer to the map of loaded layers.
 
-The layersAdded() and layerWasAdded() signals will always be emitted.
-The legendLayersAdded() signal is emitted only if addToLegend is ``True``.
+The :py:func:`~QgsProject.layersAdded` and :py:func:`~QgsProject.layerWasAdded` signals will always be emitted.
+The :py:func:`~QgsProject.legendLayersAdded` signal is emitted only if addToLegend is ``True``.
 If you are adding multiple layers at once, you should use
-addMapLayers() instead.
+:py:func:`~QgsProject.addMapLayers` instead.
 
 :param mapLayer: A layer to add to the registry
 :param addToLegend: If ``True`` (by default), the layer will be added to the
@@ -1071,6 +1165,19 @@ the layer and is responsible for deleting it.
 .. versionadded:: 3.0
 %End
 
+    QgsAnnotationLayer *mainAnnotationLayer();
+%Docstring
+Returns the main annotation layer associated with the project.
+
+This layer is always present in projects, and will always be rendered
+above any other map layers during map render jobs.
+
+It forms the default location to place new annotation items which
+should appear above all map layers.
+
+.. versionadded:: 3.16
+%End
+
     void removeAllMapLayers();
 %Docstring
 Removes all registered layers. If the registry has ownership
@@ -1082,7 +1189,7 @@ of any layers these layers will also be deleted.
 
 .. note::
 
-   Calling this method will cause the removeAll() signal to
+   Calling this method will cause the :py:func:`~QgsProject.removeAll` signal to
    be emitted.
 
 .. seealso:: :py:func:`removeMapLayer`
@@ -1166,7 +1273,7 @@ Sets the project's ``metadata`` store.
 Returns a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
 and it is mainly a hint for the user interface to protect users from removing layers that important
-in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
 .. deprecated:: QGIS 3.4
    use QgsMapLayer.flags() instead
@@ -1179,7 +1286,7 @@ in the project. The removeMapLayer(), removeMapLayers() calls do not block remov
 Configures a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
 and it is mainly a hint for the user interface to protect users from removing layers that important
-in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+in the project. The :py:func:`~QgsProject.removeMapLayer`, :py:func:`~QgsProject.removeMapLayers` calls do not block removal of layers listed here.
 
 .. deprecated:: QGIS 3.4
    use QgsMapLayer.setFlags() instead
@@ -1264,7 +1371,7 @@ The scales list consists of a list of scale denominator values, e.g.
 
  void setUseProjectScales( bool enabled ) /Deprecated/;
 %Docstring
-Sets whether project mapScales() are ``enabled``.
+Sets whether project :py:func:`~QgsProject.mapScales` are ``enabled``.
 
 .. seealso:: :py:func:`useProjectScales`
 
@@ -1276,7 +1383,7 @@ Sets whether project mapScales() are ``enabled``.
 
  bool useProjectScales() const /Deprecated/;
 %Docstring
-Returns ``True`` if project mapScales() are enabled.
+Returns ``True`` if project :py:func:`~QgsProject.mapScales` are enabled.
 
 .. seealso:: :py:func:`setUseProjectScales`
 
@@ -1288,7 +1395,7 @@ Returns ``True`` if project mapScales() are enabled.
 
     void generateTsFile( const QString &locale );
 %Docstring
-Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
+Triggers the collection strings of .qgs to be included in ts file and calls :py:func:`~QgsProject.writeTsFile`
 
 .. versionadded:: 3.4
 %End
@@ -1469,7 +1576,7 @@ Emitted when the project ``ellipsoid`` is changed.
 
     void transformContextChanged();
 %Docstring
-Emitted when the project transformContext() is changed.
+Emitted when the project :py:func:`~QgsProject.transformContext` is changed.
 
 .. seealso:: :py:func:`transformContext`
 
@@ -1509,7 +1616,7 @@ Emitted whenever avoidIntersectionsLayers has changed.
 %Docstring
 Emitted when the map theme collection changes.
 This only happens when the map theme collection is reset.
-Any pointer previously received from mapThemeCollection()
+Any pointer previously received from :py:func:`~QgsProject.mapThemeCollection`
 must no longer be used after this signal is emitted.
 You must still connect to signals from the map theme collection
 if you want to be notified about new map themes being added and
@@ -1594,7 +1701,7 @@ Emitted when a layer is about to be removed from the registry.
 
 .. note::
 
-   Consider using layersWillBeRemoved() instead
+   Consider using :py:func:`~QgsProject.layersWillBeRemoved` instead
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 
@@ -1609,7 +1716,7 @@ Emitted when a layer is about to be removed from the registry.
 
 .. note::
 
-   Consider using layersWillBeRemoved() instead
+   Consider using :py:func:`~QgsProject.layersWillBeRemoved` instead
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 
@@ -1633,7 +1740,7 @@ Emitted after a layer was removed from the registry.
 
 .. note::
 
-   Consider using layersRemoved() instead
+   Consider using :py:func:`~QgsProject.layersRemoved` instead
 
 .. seealso:: :py:func:`layerWillBeRemoved`
 %End
@@ -1641,9 +1748,9 @@ Emitted after a layer was removed from the registry.
 
     void removeAll();
 %Docstring
-Emitted when all layers are removed, before layersWillBeRemoved() and
-layerWillBeRemoved() signals are emitted. The layersWillBeRemoved() and
-layerWillBeRemoved() signals will still be emitted following this signal.
+Emitted when all layers are removed, before :py:func:`~QgsProject.layersWillBeRemoved` and
+:py:func:`~QgsProject.layerWillBeRemoved` signals are emitted. The :py:func:`~QgsProject.layersWillBeRemoved` and
+:py:func:`~QgsProject.layerWillBeRemoved` signals will still be emitted following this signal.
 You can use this signal to do easy (and fast) cleanup.
 %End
 
@@ -1666,7 +1773,7 @@ Emitted when a layer was added to the registry.
 
 .. note::
 
-   Consider using layersAdded() instead
+   Consider using :py:func:`~QgsProject.layersAdded` instead
 
 .. seealso:: :py:func:`layersAdded`
 %End
@@ -1675,7 +1782,7 @@ Emitted when a layer was added to the registry.
 %Docstring
 Emitted, when a layer was added to the registry and the legend.
 Layers can also be private layers, which are signalled by
-layersAdded() and layerWasAdded() but will not be
+:py:func:`~QgsProject.layersAdded` and :py:func:`~QgsProject.layerWasAdded` but will not be
 advertised by this signal.
 
 :param layers: List of QgsMapLayer which were added to the legend.

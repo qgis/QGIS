@@ -373,6 +373,11 @@ QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSet
   }
 }
 
+void QgsSnappingConfig::clearIndividualLayerSettings()
+{
+  mIndividualLayerSettings.clear();
+}
+
 void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings )
 {
   if ( !vl || !vl->isSpatial() || mIndividualLayerSettings.value( vl ) == individualLayerSettings )

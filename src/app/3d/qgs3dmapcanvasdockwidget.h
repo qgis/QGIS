@@ -59,6 +59,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void cameraControl();
     void identify();
     void measureLine();
+    void exportScene();
     void toggleNavigationWidget( bool visibility );
 
     void onMainCanvasLayersChanged();
@@ -77,8 +78,12 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     QMenu *mMapThemeMenu = nullptr;
+    QMenu *mOptionsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
     QToolButton *mBtnMapThemes = nullptr;
+    QAction *mActionEnableShadows = nullptr;
+    QAction *mActionEnableEyeDome = nullptr;
+    QToolButton *mBtnOptions = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

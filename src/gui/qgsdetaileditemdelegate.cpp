@@ -18,6 +18,7 @@
 #include "qgsdetaileditemdelegate.h"
 #include "qgsdetaileditemwidget.h"
 #include "qgsdetaileditemdata.h"
+#include "qgsrendercontext.h"
 #include <QPainter>
 #include <QFont>
 #include <QFontMetrics>
@@ -48,7 +49,7 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
                                      const QModelIndex &index ) const
 {
   // After painting we need to restore the painter to its original state
-  thepPainter->save();
+  QgsScopedQPainterState painterState( thepPainter );
   if ( index.data( Qt::UserRole ).canConvert<QgsDetailedItemData>() )
   {
     QgsDetailedItemData myData =
@@ -62,7 +63,6 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
       paintManually( thepPainter, option, myData );
     }
   } //can convert item data
-  thepPainter->restore();
 }
 
 

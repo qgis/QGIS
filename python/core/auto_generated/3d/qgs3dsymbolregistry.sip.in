@@ -1,0 +1,126 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/qgs3dsymbolregistry.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class Qgs3DSymbolAbstractMetadata
+{
+%Docstring
+Stores metadata about one 3D symbol class.
+
+.. note::
+
+   It's necessary to implement :py:func:`~createSymbol` function.
+   In C++ you can use Qgs3DSymbolMetadata convenience class.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgs3dsymbolregistry.h"
+%End
+  public:
+
+    Qgs3DSymbolAbstractMetadata( const QString &type, const QString &visibleName );
+%Docstring
+Constructor for Qgs3DSymbolAbstractMetadata, with the specified ``type`` and ``visibleName``.
+%End
+
+    virtual ~Qgs3DSymbolAbstractMetadata();
+
+    QString type() const;
+%Docstring
+Returns the unique symbol type string.
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns the symbol's visible (translated) name.
+%End
+
+    virtual QgsAbstract3DSymbol *create() = 0 /Factory/;
+%Docstring
+Creates a new instance of this symbol type.
+
+Caller takes ownership of the returned symbol.
+%End
+
+
+};
+
+
+
+
+
+
+class Qgs3DSymbolRegistry
+{
+%Docstring
+Registry of available 3D symbol classes.
+
+Qgs3DSymbolRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.symbol3DRegistry()`.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgs3dsymbolregistry.h"
+%End
+  public:
+
+    Qgs3DSymbolRegistry();
+    ~Qgs3DSymbolRegistry();
+
+
+    Qgs3DSymbolAbstractMetadata *symbolMetadata( const QString &type ) const;
+%Docstring
+Returns metadata for specified symbol ``type``. Returns ``None`` if not found
+%End
+
+    QStringList symbolTypes() const;
+%Docstring
+Returns a list of all available symbol types.
+%End
+
+    bool addSymbolType( Qgs3DSymbolAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Registers a new symbol type. Takes ownership of the ``metadata`` instance.
+%End
+
+    QgsAbstract3DSymbol *createSymbol( const QString &type ) const /Factory/;
+%Docstring
+Creates a new instance of a symbol of the specified ``type``.
+
+The caller takes ownership of the returned symbol.
+
+Returns ``None`` if the specified type is not found in the registry.
+%End
+
+    QgsAbstract3DSymbol *defaultSymbolForGeometryType( QgsWkbTypes::GeometryType type ) /Factory/;
+%Docstring
+Creates a new instance of the default 3D symbol for the specified geometry ``type``.
+
+The caller takes ownership of the returned symbol.
+%End
+
+
+  private:
+    Qgs3DSymbolRegistry( const Qgs3DSymbolRegistry &rh );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/qgs3dsymbolregistry.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

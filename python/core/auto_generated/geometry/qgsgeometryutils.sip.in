@@ -77,17 +77,17 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 .. versionadded:: 3.0
 %End
 
-    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 Returns the squared 2D distance between two points.
 %End
 
-    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX /Out/, double &minDistY /Out/, double epsilon );
+    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX /Out/, double &minDistY /Out/, double epsilon ) /HoldGIL/;
 %Docstring
 Returns the squared distance between a point and a line.
 %End
 
-    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection /Out/ );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection /Out/ ) /HoldGIL/;
 %Docstring
 Computes the intersection between two lines. Z dimension is
 supported and is retrieved from the first 3D point amongst ``p1`` and
@@ -102,7 +102,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
          - intersection: Output parameter, the intersection point
 %End
 
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false ) /HoldGIL/;
 %Docstring
 Compute the intersection between two segments
 
@@ -110,12 +110,12 @@ Compute the intersection between two segments
 :param p2: First segment end point
 :param q1: Second segment start point
 :param q2: Second segment end point
-:param isIntersection: Output parameter, return ``True`` if an intersection is found
 :param tolerance: The tolerance to use
-:param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
+:param acceptImproperIntersection: By default, this method returns ``True`` only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
 :return: - Whether the segments intersect
          - intersectionPoint: Output parameter, the intersection point
+         - isIntersection: Output parameter, return ``True`` if an intersection is found
 
 Example
 -------
@@ -145,7 +145,7 @@ Example
 
     static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
-                                        QgsPointXY &intersection /In,Out/ );
+                                        QgsPointXY &intersection /In,Out/ ) /HoldGIL/;
 %Docstring
 Compute the intersection of a line and a circle.
 If the intersection has two solutions (points),
@@ -162,7 +162,7 @@ the closest point to the initial ``intersection`` point is returned.
 
     static int circleCircleIntersections( QgsPointXY center1, double radius1,
                                           QgsPointXY center2, double radius2,
-                                          QgsPointXY &intersection1 /Out/, QgsPointXY &intersection2 /Out/ );
+                                          QgsPointXY &intersection1 /Out/, QgsPointXY &intersection2 /Out/ ) /HoldGIL/;
 %Docstring
 Calculates the intersections points between the circle with center ``center1`` and
 radius ``radius1`` and the circle with center ``center2`` and radius ``radius2``.
@@ -175,7 +175,7 @@ If found, the intersection points will be stored in ``intersection1`` and ``inte
 %End
 
     static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
-                                       const QgsPointXY &p, QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ );
+                                       const QgsPointXY &p, QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ ) /HoldGIL/;
 %Docstring
 Calculates the tangent points between the circle with the specified ``center`` and ``radius``
 and the point ``p``.
@@ -188,7 +188,7 @@ If found, the tangent points will be stored in ``pt1`` and ``pt2``.
     static int circleCircleOuterTangents(
       const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
       QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
-      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ );
+      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) /HoldGIL/;
 %Docstring
 Calculates the outer tangent points for two circles, centered at ``center1`` and
 ``center2`` and with radii of ``radius1`` and ``radius2`` respectively.
@@ -210,7 +210,7 @@ Returns the number of tangents (either 0 or 2).
     static int circleCircleInnerTangents(
       const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
       QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
-      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ );
+      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) /HoldGIL/;
 %Docstring
 Calculates the inner tangent points for two circles, centered at \a
 center1 and ``center2`` and with radii of ``radius1`` and ``radius2``
@@ -230,7 +230,7 @@ Returns the number of tangents (either 0 or 2).
 .. versionadded:: 3.6
 %End
 
-    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
+    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) /HoldGIL/;
 %Docstring
 Project the point on a segment
 
@@ -243,7 +243,7 @@ Project the point on a segment
 
 
 
-    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) /HoldGIL/;
 %Docstring
 Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> (``x2``, ``y2``).
 A positive return value indicates the point is to the right of the line.
@@ -252,7 +252,7 @@ If the return value is 0, then the test was unsuccessful (e.g. due to testing a 
 on the line, or exactly in line with the segment) and the result is undefined.
 %End
 
-    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 );
+    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
 Returns a value < 0 if the point ``point`` is left of the line from ``p1`` -> ``p2``.
 A positive return value indicates the point is to the right of the line.
@@ -263,13 +263,13 @@ on the line, or exactly in line with the segment) and the result is undefined.
 .. versionadded:: 3.6
 %End
 
-    static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
+    static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance ) /HoldGIL/;
 %Docstring
 Returns a point a specified ``distance`` toward a second point.
 %End
 
 
-    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance );
+    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) /HoldGIL/;
 %Docstring
 Interpolates a point on an arc defined by three points, ``pt1``, ``pt2`` and ``pt3``. The arc will be
 interpolated by the specified ``distance`` from ``pt1``.
@@ -279,18 +279,18 @@ Any z or m values present in the points will also be linearly interpolated in th
 .. versionadded:: 3.4
 %End
 
-    static double ccwAngle( double dy, double dx );
+    static double ccwAngle( double dy, double dx ) /HoldGIL/;
 %Docstring
 Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
 %End
 
     static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius /Out/,
-                                    double &centerX /Out/, double &centerY /Out/ );
+                                    double &centerX /Out/, double &centerY /Out/ ) /HoldGIL/;
 %Docstring
 Returns radius and center of the circle through pt1, pt2, pt3
 %End
 
-    static bool circleClockwise( double angle1, double angle2, double angle3 );
+    static bool circleClockwise( double angle1, double angle2, double angle3 ) /HoldGIL/;
 %Docstring
 Returns ``True`` if the circle defined by three angles is ordered clockwise.
 
@@ -298,28 +298,28 @@ The angles are defined counter-clockwise from the origin, i.e. using
 Euclidean angles as opposed to geographic "North up" angles.
 %End
 
-    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );
+    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise ) /HoldGIL/;
 %Docstring
 Returns ``True`` if, in a circle, angle is between angle1 and angle2
 %End
 
-    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 );
+    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) /HoldGIL/;
 %Docstring
 Returns ``True`` if an angle is between angle1 and angle3 on a circle described by
 angle1, angle2 and angle3.
 %End
 
-    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 );
+    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
 %Docstring
 Length of a circular string segment defined by pt1, pt2, pt3
 %End
 
-    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
+    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
 %Docstring
 Calculates angle of a circular string part defined by pt1, pt2, pt3
 %End
 
-    static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos );
+    static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos ) /HoldGIL/;
 %Docstring
 Calculates midpoint on circle passing through ``p1`` and ``p2``, closest to
 the given coordinate ``mousePos``. Z dimension is supported and is retrieved from the
@@ -328,7 +328,7 @@ first 3D point amongst ``p1`` and ``p2``.
 .. seealso:: :py:func:`segmentMidPointFromCenter`
 %End
 
-    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true ) /HoldGIL/;
 %Docstring
 Calculates the midpoint on the circle passing through ``p1`` and ``p2``,
 with the specified ``center`` coordinate.
@@ -342,7 +342,7 @@ to ``p2`` will be used (i.e. winding the other way around the circle).
 .. versionadded:: 3.2
 %End
 
-    static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
+    static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 ) /HoldGIL/;
 %Docstring
 Calculates the direction angle of a circle tangent (clockwise from north in radians)
 %End
@@ -358,9 +358,9 @@ Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p
 %End
 
     static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
-                                   double pointSpacingAngleTolerance );
+                                   double pointSpacingAngleTolerance ) /HoldGIL/;
 %Docstring
-Returns true if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
+Returns ``True`` if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
 that arc portion already described by ``a1``, ``a2`` and ``a3``.
 
 The ``distanceTolerance`` specifies the maximum deviation allowed between the original location
@@ -377,7 +377,7 @@ angular deviation (in radians) allowed when testing for regular point spacing.
 .. versionadded:: 3.14
 %End
 
-    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );
+    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
 Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
@@ -385,7 +385,7 @@ Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 li
 .. versionadded:: 3.0
 %End
 
-    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 );
+    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) /HoldGIL/;
 %Docstring
 Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
 
@@ -399,7 +399,7 @@ Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) 
 
 
 
-    static double normalizedAngle( double angle );
+    static double normalizedAngle( double angle ) /HoldGIL/;
 %Docstring
 Ensures that an angle is in the range 0 <= angle < 2 pi.
 
@@ -408,7 +408,7 @@ Ensures that an angle is in the range 0 <= angle < 2 pi.
 :return: equivalent angle within the range [0, 2 pi)
 %End
 
-    static double lineAngle( double x1, double y1, double x2, double y2 );
+    static double lineAngle( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
 Calculates the direction of line joining two points in radians, clockwise from the north direction.
 
@@ -421,7 +421,7 @@ Calculates the direction of line joining two points in radians, clockwise from t
 %End
 
     static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
-                                           double x3, double y3 );
+                                           double x3, double y3 ) /HoldGIL/;
 %Docstring
 Calculates the angle between the lines AB and BC, where AB and BC described
 by points a, b and b, c.
@@ -436,7 +436,7 @@ by points a, b and b, c.
 :return: angle between lines in radians. Returned value is undefined if two or more points are equal.
 %End
 
-    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
+    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
 Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
 clockwise from the north direction.
@@ -449,13 +449,13 @@ clockwise from the north direction.
 :return: angle in radians. Returned value is undefined if start and end point are the same.
 %End
 
-    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
+    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
 %Docstring
 Calculates the average angle (in radians) between the two linear segments from
 (``x1``, ``y1``) to (``x2``, ``y2``) and (``x2``, ``y2``) to (``x3``, ``y3``).
 %End
 
-    static double averageAngle( double a1, double a2 );
+    static double averageAngle( double a1, double a2 ) /HoldGIL/;
 %Docstring
 Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
 
@@ -467,7 +467,7 @@ Averages two angles, correctly handling negative angles and ensuring the result 
 
 
 
-    static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 Returns a middle point between points pt1 and pt2.
 Z value is computed if one of this point have Z.
@@ -496,7 +496,7 @@ Example
 .. versionadded:: 3.0
 %End
 
-    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction );
+    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction ) /HoldGIL/;
 %Docstring
 Interpolates the position of a point a ``fraction`` of the way along
 the line from (``x1``, ``y1``) to (``x2``, ``y2``).
@@ -512,7 +512,7 @@ is extrapolated from the supplied line.
 .. versionadded:: 3.0.2
 %End
 
-    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
+    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction ) /HoldGIL/;
 %Docstring
 Interpolates the position of a point a ``fraction`` of the way along
 the line from ``p1`` to ``p2``.
@@ -531,7 +531,7 @@ and present in the returned point.
 .. versionadded:: 3.0.2
 %End
 
-    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
+    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value ) /HoldGIL/;
 %Docstring
 Interpolates the position of a point along the line from (``x1``, ``y1``)
 to (``x2``, ``y2``).
@@ -546,7 +546,7 @@ the target ``value``.
 .. versionadded:: 3.0.2
 %End
 
-    static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 Returns the gradient of a line defined by points ``pt1`` and ``pt2``.
 
@@ -559,19 +559,21 @@ Returns the gradient of a line defined by points ``pt1`` and ``pt2``.
 %End
 
     static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
-                              double &a /Out/, double &b /Out/, double &c /Out/ );
+                              double &a /Out/, double &b /Out/, double &c /Out/ ) /HoldGIL/;
 %Docstring
 Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points ``pt1`` and ``pt2``.
 
 :param pt1: first point.
 :param pt2: second point.
-:param b: Output parameter, b coefficient of the equation.
-:param c: Output parameter, c coefficient of the equation.
+
+:return: - a: Output parameter, a coefficient of the equation.
+         - b: Output parameter, b coefficient of the equation.
+         - c: Output parameter, c coefficient of the equation.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
+    static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) /HoldGIL/;
 %Docstring
 Create a perpendicular line segment from p to segment [s1, s2]
 
@@ -584,7 +586,7 @@ Create a perpendicular line segment from p to segment [s1, s2]
 
 
     static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
-                                     const QgsVector3D &P2, const QgsVector3D &P22 );
+                                     const QgsVector3D &P2, const QgsVector3D &P22 ) /HoldGIL/;
 %Docstring
 An algorithm to calculate the shortest distance between two skew lines.
 
@@ -599,7 +601,7 @@ An algorithm to calculate the shortest distance between two skew lines.
     static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
                                      const QgsVector3D &P2, const QgsVector3D &P22,
                                      QgsVector3D &X1  /Out/,
-                                     double epsilon = 0.0001 );
+                                     double epsilon = 0.0001 ) /HoldGIL/;
 %Docstring
 A method to project one skew line onto another.
 
@@ -615,7 +617,7 @@ A method to project one skew line onto another.
 
     static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
                                      const QgsVector3D &Lb1, const QgsVector3D &Lb2,
-                                     QgsVector3D &intersection  /Out/ );
+                                     QgsVector3D &intersection  /Out/ ) /HoldGIL/;
 %Docstring
 An algorithm to calculate an (approximate) intersection of two lines in 3D.
 
@@ -656,7 +658,7 @@ Example
        # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
 %End
 
-    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) /HoldGIL/;
 %Docstring
 Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
 (``cX``, ``cY``).
@@ -665,7 +667,7 @@ Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``
 %End
 
     static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
-                                         double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ );
+                                         double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
 %Docstring
 Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
 (``cX``, ``cY``).
@@ -678,7 +680,9 @@ Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY
 :param cY: y-coordinate of third vertex in triangle
 :param weightB: weighting factor along axis A-B (between 0 and 1)
 :param weightC: weighting factor along axis A-C (between 0 and 1)
-:param pointY: y-coordinate of generated point
+
+:return: - pointX: x-coordinate of generated point
+         - pointY: y-coordinate of generated point
 
 .. versionadded:: 3.10
 %End

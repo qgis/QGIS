@@ -37,7 +37,7 @@ Constructor for QgsLegendPatchShape.
 
 The ``type`` argument specifies the symbol type associated with this patch.
 
-The ``geometry`` argument gives the shape of the patch to render. See setGeometry()
+The ``geometry`` argument gives the shape of the patch to render. See :py:func:`~QgsLegendPatchShape.setGeometry`
 for further details on the geometry requirements.
 
 If ``preserveAspectRatio`` is ``True``, then the patch shape should preserve its aspect ratio when
@@ -86,7 +86,7 @@ the bottom of the display".
 
 .. warning::
 
-   The geometry type should match the patch shape's symbolType(),
+   The geometry type should match the patch shape's :py:func:`~QgsLegendPatchShape.symbolType`,
    e.g. a fill symbol type should only have Polygon or MultiPolygon geometries
    set, while a line symbol type must have LineString or MultiLineString geometries.
 
@@ -106,7 +106,7 @@ it is resized to fit a desired legend patch size.
 Sets whether the patch shape should ``preserve`` its aspect ratio when
 it is resized to fit a desired legend patch size.
 
-The default behavior is to respect the geometry()'s aspect ratio.
+The default behavior is to respect the :py:func:`~QgsLegendPatchShape.geometry`'s aspect ratio.
 
 .. seealso:: :py:func:`setPreserveAspectRatio`
 %End

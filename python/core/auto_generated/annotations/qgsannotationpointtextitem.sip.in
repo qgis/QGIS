@@ -1,0 +1,135 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpointtextitem.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAnnotationPointTextItem : QgsAnnotationItem
+{
+%Docstring
+An annotation item which renders a text string at a point location.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsannotationpointtextitem.h"
+%End
+  public:
+
+    QgsAnnotationPointTextItem( const QString &text, QgsPointXY point );
+%Docstring
+Constructor for QgsAnnotationPointTextItem, containing the specified ``text`` at the specified ``point``.
+%End
+    ~QgsAnnotationPointTextItem();
+
+    virtual QString type() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+
+    static QgsAnnotationPointTextItem *create() /Factory/;
+%Docstring
+Creates a new text at point annotation item.
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsAnnotationPointTextItem *clone() /Factory/;
+
+    virtual QgsRectangle boundingBox() const;
+
+
+    QgsPointXY point() const;
+%Docstring
+Returns the point location of the text.
+
+The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`setPoint`
+%End
+
+    void setPoint( QgsPointXY point );
+%Docstring
+Sets the ``point`` location of the text.
+
+The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`point`
+%End
+
+    QString text() const;
+%Docstring
+Returns the text rendered by the item.
+
+.. seealso:: :py:func:`setText`
+%End
+
+    void setText( const QString &text );
+%Docstring
+Sets the ``text`` rendered by the item.
+
+.. seealso:: :py:func:`text`
+%End
+
+    QgsTextFormat format() const;
+%Docstring
+Returns the text format used to render the text.
+
+.. seealso:: :py:func:`setFormat`
+%End
+
+    void setFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used to render the text.
+
+.. seealso:: :py:func:`format`
+%End
+
+    double angle() const;
+%Docstring
+Returns the text's rotation angle, in degrees clockwise.
+
+.. seealso:: :py:func:`setAngle`
+%End
+
+    void setAngle( double angle );
+%Docstring
+Sets the text's rotation ``angle``, in degrees clockwise.
+
+.. seealso:: :py:func:`angle`
+%End
+
+    Qt::Alignment alignment() const;
+%Docstring
+Returns the text's alignment relative to the reference :py:func:`~QgsAnnotationPointTextItem.point`.
+
+.. seealso:: :py:func:`setAlignment`
+%End
+
+    void setAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the text's ``alignment`` relative to the reference :py:func:`~QgsAnnotationPointTextItem.point`.
+
+.. seealso:: :py:func:`alignment`
+%End
+
+  private:
+    QgsAnnotationPointTextItem( const QgsAnnotationPointTextItem &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationpointtextitem.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

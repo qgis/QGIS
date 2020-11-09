@@ -232,6 +232,13 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static double calculatePrettySize( double minimumSize, double maximumSize );
 
+    /**
+     * Returns TRUE if an \a item is a clipping item for another layout item.
+     *
+     * \since QGIS 3.16
+     */
+    static bool itemIsAClippingSource( const QgsLayoutItem *item );
+
   private:
 
     //! Scale factor for upscaling fontsize and downscaling painter

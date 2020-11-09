@@ -18,6 +18,7 @@
 #include "qgsogrexpressioncompiler.h"
 #include "qgssqliteexpressioncompiler.h"
 
+#include "qgscplhttpfetchoverrider.h"
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
@@ -41,12 +42,26 @@
 ///@cond PRIVATE
 
 
-QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request, QgsTransaction *transaction )
   : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
   , mSharedDS( source->mSharedDS )
   , mFirstFieldIsFid( source->mFirstFieldIsFid )
   , mFieldsWithoutFid( source->mFieldsWithoutFid )
+  , mAuthCfg( source->mAuthCfg )
 {
+
+  /* When inside a transaction for GPKG/SQLite and fetching fid(s) we might be nested inside an outer fetching loop,
+   * (see GH #39178) so we need to skip all calls that might reset the reading (rewind) to avoid an endless loop in the
+   * outer fetching iterator that uses the same connection.
+   */
+  mAllowResetReading = ! transaction ||
+                       ( source->mDriverName != QLatin1String( "GPKG" ) && source->mDriverName != QLatin1String( "SQLite" ) ) ||
+                       ( mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFid
+                         && mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFids );
+
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) );
+
   for ( const auto &id :  mRequest.filterFids() )
   {
     mFilterFids.insert( id );
@@ -85,7 +100,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       return;
     }
 
-    if ( !mSource->mSubsetString.isEmpty() )
+    if ( mAllowResetReading && !mSource->mSubsetString.isEmpty() )
     {
       mOgrLayerOri = mOgrLayer;
       mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
@@ -130,8 +145,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   {
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    attributeIndexes += qgis::listToSet( attrs );
+    attrs = qgis::setToList( attributeIndexes );
     mRequest.setSubsetOfAttributes( attrs );
   }
   // also need attributes required by order by
@@ -143,8 +158,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     {
       attributeIndexes << attrIdx;
     }
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    attributeIndexes += qgis::listToSet( attrs );
+    attrs = qgis::setToList( attributeIndexes );
     mRequest.setSubsetOfAttributes( attrs );
   }
 
@@ -165,17 +180,20 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   }
 
   // spatial query to select features
-  if ( !mFilterRect.isNull() )
+  if ( mAllowResetReading )
   {
-    OGR_L_SetSpatialFilterRect( mOgrLayer, mFilterRect.xMinimum(), mFilterRect.yMinimum(), mFilterRect.xMaximum(), mFilterRect.yMaximum() );
-    if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
-      OGR_L_SetSpatialFilterRect( mOgrLayerOri, mFilterRect.xMinimum(), mFilterRect.yMinimum(), mFilterRect.xMaximum(), mFilterRect.yMaximum() );
-  }
-  else
-  {
-    OGR_L_SetSpatialFilter( mOgrLayer, nullptr );
-    if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
-      OGR_L_SetSpatialFilter( mOgrLayerOri, nullptr );
+    if ( !mFilterRect.isNull() )
+    {
+      OGR_L_SetSpatialFilterRect( mOgrLayer, mFilterRect.xMinimum(), mFilterRect.yMinimum(), mFilterRect.xMaximum(), mFilterRect.yMaximum() );
+      if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
+        OGR_L_SetSpatialFilterRect( mOgrLayerOri, mFilterRect.xMinimum(), mFilterRect.yMinimum(), mFilterRect.xMaximum(), mFilterRect.yMaximum() );
+    }
+    else
+    {
+      OGR_L_SetSpatialFilter( mOgrLayer, nullptr );
+      if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
+        OGR_L_SetSpatialFilter( mOgrLayerOri, nullptr );
+    }
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterExpression
@@ -201,33 +219,38 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
                       QStringLiteral( ") AND (" ) + whereClause +
                       QStringLiteral( ")" );
       }
-      if ( OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( whereClause ).constData() ) == OGRERR_NONE )
+
+      if ( mAllowResetReading )
       {
-        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
-        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+        if ( OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( whereClause ).constData() ) == OGRERR_NONE )
+        {
+          //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+          mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+          mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+        }
+        else if ( !mSource->mSubsetString.isEmpty() )
+        {
+          // OGR rejected the compiled expression. Make sure we restore the original subset string if set (and do the filtering on QGIS' side)
+          OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
+        }
       }
-      else if ( !mSource->mSubsetString.isEmpty() )
-      {
-        // OGR rejected the compiled expression. Make sure we restore the original subset string if set (and do the filtering on QGIS' side)
-        OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
-      }
+
     }
-    else if ( mSource->mSubsetString.isEmpty() )
+    else if ( mSource->mSubsetString.isEmpty() && mAllowResetReading )
     {
       OGR_L_SetAttributeFilter( mOgrLayer, nullptr );
     }
 
     delete compiler;
   }
-  else if ( mSource->mSubsetString.isEmpty() )
+  else if ( mSource->mSubsetString.isEmpty() && mAllowResetReading )
   {
     OGR_L_SetAttributeFilter( mOgrLayer, nullptr );
   }
 
-
   //start with first feature
   rewind();
+
 }
 
 QgsOgrFeatureIterator::~QgsOgrFeatureIterator()
@@ -249,7 +272,7 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
   gdal::ogr_feature_unique_ptr fet;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-  if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
+  if ( mAllowResetReading && !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
   {
     OGRLayerH nextFeatureBelongingLayer;
     bool found = false;
@@ -316,9 +339,17 @@ bool QgsOgrFeatureIterator::checkFeature( gdal::ogr_feature_unique_ptr &fet, Qgs
   return true;
 }
 
+void QgsOgrFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
+{
+  mInterruptionChecker = interruptionChecker;
+}
+
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
+
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg, mInterruptionChecker );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) );
 
   feature.setValid( false );
 
@@ -381,6 +412,10 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
 void QgsOgrFeatureIterator::resetReading()
 {
+  if ( ! mAllowResetReading )
+  {
+    return;
+  }
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
   if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
   {
@@ -546,6 +581,7 @@ bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFe
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   : mDataSource( p->dataSourceUri( true ) )
+  , mAuthCfg( p->authCfg() )
   , mShareSameDatasetAmongLayers( p->mShareSameDatasetAmongLayers )
   , mLayerName( p->layerName() )
   , mLayerIndex( p->layerIndex() )
@@ -561,6 +597,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
 {
   if ( p->mTransaction )
   {
+    mTransaction = p->mTransaction;
     mSharedDS = p->mTransaction->sharedDS();
   }
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
@@ -575,7 +612,7 @@ QgsOgrFeatureSource::~QgsOgrFeatureSource()
 
 QgsFeatureIterator QgsOgrFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
-  return QgsFeatureIterator( new QgsOgrFeatureIterator( this, false, request ) );
+  return QgsFeatureIterator( new QgsOgrFeatureIterator( this, false, request, mTransaction ) );
 }
 
 ///@endcond

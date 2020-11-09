@@ -136,6 +136,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   protected:
 
+    void hideEvent( QHideEvent *e ) override;
+
     void mousePressEvent( QMouseEvent *e ) override;
 
     void mouseMoveEvent( QMouseEvent *e ) override;

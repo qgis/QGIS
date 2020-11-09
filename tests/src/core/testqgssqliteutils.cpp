@@ -82,7 +82,7 @@ void TestQgsSqliteUtils::cleanupTestCase()
 void TestQgsSqliteUtils::testPrintfAscii()
 {
   QString tag( "Meteor" );
-  QString query( QgsSqlite3Mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", tag.toUtf8().toLower().constData() ) );
+  QString query( qgs_sqlite3_mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", tag.toUtf8().toLower().constData() ) );
   QCOMPARE( query, QString( "SELECT id FROM tag WHERE LOWER(name)='%1'" ).arg( tag.toLower() ) );
 }
 
@@ -92,7 +92,7 @@ void TestQgsSqliteUtils::testPrintfUtf8()
   QString tag( "МЕТЕОР" );
   QCOMPARE( tag.toLower(), QString( "метеор" ) );
   QString lowerTag( tag.toLower() );
-  QString query( QgsSqlite3Mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", lowerTag.toUtf8().constData() ) );
+  QString query( qgs_sqlite3_mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", lowerTag.toUtf8().constData() ) );
   QCOMPARE( query, QString( "SELECT id FROM tag WHERE LOWER(name)='%1'" ).arg( lowerTag ) );
 }
 

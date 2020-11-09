@@ -647,18 +647,20 @@ void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTas
 QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &string )
 {
   QString s = string;
-  s.replace( '\n', QStringLiteral( "<br>" ) );
+  s.replace( '\n', QLatin1String( "<br>" ) );
   return s;
 }
 
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml )
 {
+  // note -- we have to wrap the message in a span block, or QTextEdit::append sometimes gets confused
+  // and varies between treating it as a HTML string or a plain text string! (see https://github.com/qgis/QGIS/issues/37934)
   if ( isError )
     txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
   else if ( escapeHtml )
-    txtLog->append( formatStringForLog( message.toHtmlEscaped() ) );
+    txtLog->append( QStringLiteral( "<span>%1</span" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   else
-    txtLog->append( formatStringForLog( message ) );
+    txtLog->append( QStringLiteral( "<span>%1</span>" ).arg( formatStringForLog( message ) ) );
   scrollToBottomOfLog();
   processEvents();
 }

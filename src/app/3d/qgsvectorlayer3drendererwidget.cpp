@@ -23,6 +23,8 @@
 #include "qgsvectorlayer3dpropertieswidget.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgsabstractmaterialsettings.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -32,10 +34,11 @@
 
 
 
-QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QWidget *parent )
+QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
+  , mLayer( layer )
 {
-  widgetSymbol = new QgsSymbol3DWidget( this );
+  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -48,19 +51,19 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QWidget *paren
 void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == QStringLiteral( "vector" ) )
+  if ( r && r->type() == QLatin1String( "vector" ) )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
     widgetSymbol->setSymbol( vectorRenderer->symbol(), layer );
   }
   else
   {
-    std::unique_ptr<QgsAbstract3DSymbol> sym( Qgs3DUtils::symbolForGeometryType( layer->geometryType() ) );
+    std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
     widgetSymbol->setSymbol( sym.get(), layer );
   }
 }
 
-QgsAbstract3DSymbol *QgsSingleSymbol3DRendererWidget::symbol()
+std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
 {
   return widgetSymbol->symbol();  // cloned or null
 }
@@ -88,7 +91,7 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   layout->addWidget( widgetBaseProperties );
 
   widgetNoRenderer = new QLabel;
-  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( this );
+  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( qobject_cast< QgsVectorLayer *>( layer ), this );
   widgetRuleBasedRenderer = new QgsRuleBased3DRendererWidget( this );
 
   widgetRendererStack->addWidget( widgetNoRenderer );
@@ -156,7 +159,8 @@ void QgsVectorLayer3DRendererWidget::apply()
       break;
     case 1:
     {
-      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( widgetSingleSymbolRenderer->symbol() );
+      std::unique_ptr< QgsAbstract3DSymbol > symbol = widgetSingleSymbolRenderer->symbol();
+      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( symbol ? symbol.release() : nullptr );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       widgetBaseProperties->apply( r );
       mLayer->setRenderer3D( r );

@@ -53,7 +53,8 @@ from qgis.core import (QgsGeometry,
                        QgsProject,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
-                       QgsMarkerLineSymbolLayer
+                       QgsMarkerLineSymbolLayer,
+                       QgsSymbol
                        )
 
 from qgis.testing import unittest, start_app
@@ -210,7 +211,7 @@ class TestQgsSymbol(unittest.TestCase):
 
             geom = get_geom()
             rendered_image = self.renderGeometry(geom)
-            assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image), test['name'])
 
             # Note - each test is repeated with the same geometry and reference image, but with added
             # z and m dimensions. This tests that presence of the dimensions does not affect rendering
@@ -553,10 +554,102 @@ class TestQgsSymbol(unittest.TestCase):
 
         assert self.imageCheck('Reprojection errors linestring', 'reprojection_errors_linestring', image)
 
-    def imageCheck(self, name, reference_image, image):
+    def renderCollection(self, geom, symbol):
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        if extent.width() > 0:
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+        else:
+            extent = extent.buffered(10)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        return image
+
+    def testGeometryCollectionRender(self):
+        tests = [{'name': 'Marker',
+                  'wkt': 'GeometryCollection (Point(1 2))',
+                  'symbol': self.marker_symbol,
+                  'reference_image': 'point'},
+                 {'name': 'MultiPoint',
+                  'wkt': 'GeometryCollection (Point(10 30),Point(40 20),Point(30 10),Point(20 10))',
+                  'symbol': self.marker_symbol,
+                  'reference_image': 'multipoint'},
+                 {'name': 'LineString',
+                  'wkt': 'GeometryCollection( LineString (0 0,3 4,4 3) )',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'linestring'},
+                 {'name': 'MultiLineString',
+                  'wkt': 'GeometryCollection (LineString(0 0, 1 0, 1 1, 2 1, 2 0), LineString(3 1, 5 1, 5 0, 6 0))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'multilinestring'},
+                 {'name': 'Polygon',
+                  'wkt': 'GeometryCollection(Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'polygon'},
+                 {'name': 'MultiPolygon',
+                  'wkt': 'GeometryCollection( Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),Polygon((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'multipolygon'},
+                 {'name': 'CircularString',
+                  'wkt': 'GeometryCollection(CIRCULARSTRING(268 415,227 505,227 406))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'circular_string'},
+                 {'name': 'CompoundCurve',
+                  'wkt': 'GeometryCollection(COMPOUNDCURVE((5 3, 5 13), CIRCULARSTRING(5 13, 7 15, 9 13), (9 13, 9 3), CIRCULARSTRING(9 3, 7 1, 5 3)))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'compound_curve'},
+                 {'name': 'CurvePolygon',
+                  'wkt': 'GeometryCollection(CURVEPOLYGON(CIRCULARSTRING(1 3, 3 5, 4 7, 7 3, 1 3)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'curve_polygon'},
+                 {'name': 'CurvePolygon_no_arc',  # refs #14028
+                  'wkt': 'GeometryCollection(CURVEPOLYGON(LINESTRING(1 3, 3 5, 4 7, 7 3, 1 3)))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'curve_polygon_no_arc'},
+                 {'name': 'Mixed line symbol',
+                  'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
+                  'symbol': self.line_symbol,
+                  'reference_image': 'collection_line_symbol'},
+                 {'name': 'Mixed fill symbol',
+                  'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
+                  'symbol': self.fill_symbol,
+                  'reference_image': 'collection_fill_symbol'},
+                 {'name': 'Mixed marker symbol',
+                  'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
+                  'symbol': self.marker_symbol,
+                  'reference_image': 'collection_marker_symbol'},
+                 ]
+
+        for test in tests:
+            geom = QgsGeometry.fromWkt(test['wkt'])
+            rendered_image = self.renderCollection(geom, test['symbol'])
+            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image, '_collection'), test['name'])
+
+    def imageCheck(self, name, reference_image, image, extra=''):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
+        file_name = temp_dir + 'symbol_' + name + extra + ".png"
         image.save(file_name, "PNG")
         checker = QgsRenderChecker()
         checker.setControlPathPrefix("symbol")

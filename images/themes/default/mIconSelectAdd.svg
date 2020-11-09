@@ -1,11 +1,1 @@
-<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(0 -8)">
-<path d="m2.5384614 10.538462h12.923078v12.923077h-12.923078z" fill="#fce94f" overflow="visible" stroke="#c4a000" stroke-linecap="round" stroke-width="1.07692313"/>
-<g enable-background="new" transform="translate(0 8)">
-<rect fill="#5a8c5a" height="10.000001" rx="2.0114901" width="10" x="14" y="14"/>
-<path d="m16 19l6 0" style="fill:#fcffff;fill-rule:evenodd;stroke:#e6e6e6;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
-<path d="m19 22l0-6" style="fill:#fcffff;fill-rule:evenodd;stroke:#e6e6e6;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
-<path d="m15 19h8c0 0 0 0 0-2 0-2-.5-2-4-2-3.5 0-4 0-4 2 0 2 0 2 0 2z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
-</g>
-</g>
-</svg>
+<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m2.5384614 10.538462h12.923078v12.923077h-12.923078z" fill="#fce94f" stroke="#c4a000" stroke-linecap="round" stroke-width="1.076923"/><g enable-background="new" transform="translate(0 8)"><rect fill="#5a8c5a" height="10.000001" rx="2.01149" width="10" x="14" y="14"/><g fill="#fcffff" fill-rule="evenodd"><path d="m16 19h6" stroke="#e6e6e6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path d="m19 22v-6" stroke="#e6e6e6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><path d="m15 19h8s0 0 0-2-.5-2-4-2-4 0-4 2z" opacity=".3"/></g></g></g></svg>

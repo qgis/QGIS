@@ -22,7 +22,9 @@
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemregistry.h"
 #include "qgsoffscreen3dengine.h"
-
+#include "qgspostprocessingentity.h"
+#include "qgsshadowrenderingframegraph.h"
+#include "qgswindow3dengine.h"
 
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -149,6 +151,7 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
 
     mEngine->setRootEntity( mScene );
+
   }
 
   if ( mEngine->size() != sizePixelsInt )

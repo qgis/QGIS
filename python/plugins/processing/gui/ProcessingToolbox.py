@@ -233,7 +233,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             dlg.exec_()
 
     def executeAlgorithm(self):
-        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
+        config = {}
+        if self.in_place_mode:
+            config['IN_PLACE'] = True
+        alg = self.algorithmTree.selectedAlgorithm().create(config) if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             ok, message = alg.canExecute()
             if not ok:
@@ -250,7 +253,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 feedback = MessageBarProgress(algname=alg.displayName())
                 ok, results = execute_in_place(alg, parameters, feedback=feedback)
                 if ok:
-                    iface.messageBar().pushSuccess('', self.tr('{} complete').format(alg.displayName()))
+                    iface.messageBar().pushSuccess('', self.tr('{algname} completed. %n feature(s) processed.', n=results['__count']).format(algname=alg.displayName()))
                 feedback.close()
                 # MessageBarProgress handles errors
                 return

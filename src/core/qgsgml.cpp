@@ -506,7 +506,27 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mGeometryString.append( " ", 1 );
     for ( const XML_Char **attrIter = attr; attrIter && *attrIter; attrIter += 2 )
     {
-      mGeometryString.append( attrIter[0] );
+      const size_t nAttrLen = strlen( attrIter[0] );
+      const size_t GML32_NAMESPACE_LEN = strlen( GML32_NAMESPACE );
+      const size_t GML_NAMESPACE_LEN = strlen( GML_NAMESPACE );
+      if ( nAttrLen > GML32_NAMESPACE_LEN &&
+           attrIter[0][GML32_NAMESPACE_LEN] == '?' &&
+           memcmp( attrIter[0], GML32_NAMESPACE, GML32_NAMESPACE_LEN ) == 0 )
+      {
+        mGeometryString.append( "gml:" );
+        mGeometryString.append( attrIter[0] + GML32_NAMESPACE_LEN + 1 );
+      }
+      else if ( nAttrLen > GML_NAMESPACE_LEN &&
+                attrIter[0][GML_NAMESPACE_LEN] == '?' &&
+                memcmp( attrIter[0], GML_NAMESPACE, GML_NAMESPACE_LEN ) == 0 )
+      {
+        mGeometryString.append( "gml:" );
+        mGeometryString.append( attrIter[0] + GML_NAMESPACE_LEN + 1 );
+      }
+      else
+      {
+        mGeometryString.append( attrIter[0] );
+      }
       mGeometryString.append( "=\"", 2 );
       mGeometryString.append( attrIter[1] );
       mGeometryString.append( "\" ", 2 );
@@ -887,6 +907,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     if ( mFoundUnhandledGeometryElement )
     {
       gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
+      //QgsDebugMsg( QStringLiteral("for OGR: %1 -> %2").arg(mGeometryString.c_str()).arg(hGeom != nullptr));
       if ( hGeom )
       {
         const int wkbSize = OGR_G_WkbSize( hGeom.get() );
@@ -1297,7 +1318,11 @@ bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, con
 int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points, const QString &coordString ) const
 {
   //tuples are separated by space, x/y by ','
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList tuples = coordString.split( mTupleSeparator, QString::SkipEmptyParts );
+#else
+  QStringList tuples = coordString.split( mTupleSeparator, Qt::SkipEmptyParts );
+#endif
   QStringList tuples_coordinates;
   double x, y;
   bool conversionSuccess;
@@ -1305,7 +1330,11 @@ int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points
   QStringList::const_iterator tupleIterator;
   for ( tupleIterator = tuples.constBegin(); tupleIterator != tuples.constEnd(); ++tupleIterator )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     tuples_coordinates = tupleIterator->split( mCoordinateSeparator, QString::SkipEmptyParts );
+#else
+    tuples_coordinates = tupleIterator->split( mCoordinateSeparator, Qt::SkipEmptyParts );
+#endif
     if ( tuples_coordinates.size() < 2 )
     {
       continue;
@@ -1328,7 +1357,11 @@ int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points
 int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPointXY> &points, const QString &coordString, int dimension ) const
 {
   // coordinates separated by spaces
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList coordinates = coordString.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList coordinates = coordString.split( ' ', Qt::SkipEmptyParts );
+#endif
 
   if ( coordinates.size() % dimension != 0 )
   {

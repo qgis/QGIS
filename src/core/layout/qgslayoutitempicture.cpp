@@ -87,7 +87,7 @@ QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
 void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
@@ -204,7 +204,6 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
     }
 
   }
-  painter->restore();
 }
 
 QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )

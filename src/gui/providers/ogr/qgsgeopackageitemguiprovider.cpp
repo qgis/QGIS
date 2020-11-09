@@ -91,26 +91,6 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
       menu->addAction( actionAddConnection );
     }
 
-    // Add table to existing DB
-    QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
-    QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
-    const QString itemPath = collectionItem->path().remove( QStringLiteral( "gpkg:/" ) );
-    connect( actionAddTable, &QAction::triggered, actionAddTable, [ collectionItemPtr, itemPath ]
-    {
-      QgsNewGeoPackageLayerDialog dialog( nullptr );
-      dialog.setDatabasePath( itemPath );
-      dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-      dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
-      dialog.lockDatabasePath();
-      if ( dialog.exec() == QDialog::Accepted )
-      {
-        if ( collectionItemPtr )
-          collectionItemPtr->refreshConnections();
-      }
-    } );
-
-    menu->addAction( actionAddTable );
-
     QAction *sep = new QAction( collectionItem->parent() );
     sep->setSeparator( true );
     menu->addAction( sep );
@@ -282,6 +262,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer()
   QVariantMap data = s->data().toMap();
   const QString uri = data[QStringLiteral( "uri" )].toString();
   const QString key = data[QStringLiteral( "key" )].toString();
+  // Collect existing table names
   const QStringList tableNames = data[QStringLiteral( "tableNames" )].toStringList();
   QPointer< QgsDataItem > item = data[QStringLiteral( "item" )].value<QPointer< QgsDataItem >>();
   QgsDataItemGuiContext context = data[QStringLiteral( "context" )].value< QgsDataItemGuiContext >();
@@ -290,8 +271,10 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer()
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( key, uri ) );
   QString layerName = pieces[QStringLiteral( "layerName" )].toString();
 
-  // Collect existing table names
-  const QRegExp checkRe( QStringLiteral( R"re([A-Za-z_][A-Za-z0-9_\s]+)re" ) );
+  // Allow any character, except |, which could create confusion, due to it being
+  // the URI componenent separator. And ideally we should remove that restriction
+  // by using proper escaping of |
+  const QRegExp checkRe( QStringLiteral( R"re([^|]+)re" ) );
   QgsNewNameDialog dlg( uri, layerName, QStringList(), tableNames, checkRe );
   dlg.setOverwriteEnabled( false );
 
@@ -454,13 +437,13 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
       QString error;
       // Common checks for raster and vector
       // aspatial is treated like vector
-      if ( dropUri.layerType == QStringLiteral( "vector" ) )
+      if ( dropUri.layerType == QLatin1String( "vector" ) )
       {
         // open the source layer
         srcLayer = dropUri.vectorLayer( owner, error );
         isVector = true;
       }
-      else if ( dropUri.layerType == QStringLiteral( "mesh" ) )
+      else if ( dropUri.layerType == QLatin1String( "mesh" ) )
       {
         // unsupported
         hasError = true;
@@ -577,7 +560,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to GeoPackage database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
   if ( ! importTasks.isEmpty() )

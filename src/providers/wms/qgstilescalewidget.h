@@ -39,7 +39,7 @@ class QgsTileScaleWidget : public QWidget, private Ui::QgsTileScaleWidget
     void locationChanged( Qt::DockWidgetArea area );
 
   private:
-    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsTileScaleWidget() override = default;
 
     QgsMapCanvas *mMapCanvas = nullptr;

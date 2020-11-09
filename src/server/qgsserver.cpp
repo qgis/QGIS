@@ -76,13 +76,6 @@ QgsServer::QgsServer()
   mConfigCache = QgsConfigCache::instance();
 }
 
-QString &QgsServer::serverName()
-{
-  static QString *name = new QString( QStringLiteral( "qgis_server" ) );
-  return *name;
-}
-
-
 QFileInfo QgsServer::defaultAdminSLD()
 {
   return QFileInfo( QStringLiteral( "admin.sld" ) );
@@ -313,6 +306,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     time.start();
   }
 
+  response.clear();
+
   // Pass the filters to the requestHandler, this is needed for the following reasons:
   // Allow server request to call sendResponse plugin hook if enabled
   QgsFilterResponseDecorator responseDecorator( sServerInterface->filters(), response );
@@ -377,6 +372,9 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // load the project if needed and not empty
         project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
       }
+
+      // Set the current project instance
+      QgsProject::setInstance( const_cast<QgsProject *>( project ) );
 
       if ( project )
       {

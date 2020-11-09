@@ -14,6 +14,7 @@ SET(QGIS_GUI_SRCS
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
+  raster/qgsresamplingutils.cpp
 
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp
@@ -24,7 +25,6 @@ SET(QGIS_GUI_SRCS
   vector/qgsjoindialog.cpp
   vector/qgssourcefieldsproperties.cpp
   vector/qgsvectorlayerlegendwidget.cpp
-  vector/qgsvectorlayerloadstyledialog.cpp
   vector/qgsvectorlayerproperties.cpp
   vector/qgsvectorlayersavestyledialog.cpp
   vector/qgswmsdimensiondialog.cpp
@@ -73,7 +73,6 @@ SET(QGIS_GUI_SRCS
   callouts/qgscalloutwidget.cpp
 
   attributeformconfig/qgsattributeformcontaineredit.cpp
-  attributeformconfig/qgsattributerelationedit.cpp
   attributeformconfig/qgsattributetypedialog.cpp
   attributeformconfig/qgsattributewidgetedit.cpp
 
@@ -112,6 +111,16 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthsslerrorsdialog.cpp
   auth/qgsauthsslimportdialog.cpp
   auth/qgsauthtrustedcasdialog.cpp
+
+  codeeditors/qgscodeeditor.cpp
+  codeeditors/qgscodeeditorcolorscheme.cpp
+  codeeditors/qgscodeeditorcolorschemeregistry.cpp
+  codeeditors/qgscodeeditorcss.cpp
+  codeeditors/qgscodeeditorhtml.cpp
+  codeeditors/qgscodeeditorjs.cpp
+  codeeditors/qgscodeeditorpython.cpp
+  codeeditors/qgscodeeditorsql.cpp
+  codeeditors/qgscodeeditorexpression.cpp
 
   devtools/qgsdevtoolwidget.cpp
   devtools/qgsdevtoolwidgetfactory.cpp
@@ -188,6 +197,7 @@ SET(QGIS_GUI_SRCS
   labeling/qgslabelengineconfigdialog.cpp
   labeling/qgslabelinggui.cpp
   labeling/qgslabelingwidget.cpp
+  labeling/qgslabellineanchorwidget.cpp
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
   labeling/qgsrulebasedlabelingwidget.cpp
@@ -257,6 +267,18 @@ SET(QGIS_GUI_SRCS
 
   locator/qgslocatorwidget.cpp
 
+  mesh/qgsmeshlayerproperties.cpp
+  mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshdatasetgrouptreewidget.cpp
+  mesh/qgsmeshrenderer3daveragingwidget.cpp
+  mesh/qgsmeshrenderermeshsettingswidget.cpp
+  mesh/qgsmeshrendererscalarsettingswidget.cpp
+  mesh/qgsmeshrenderervectorsettingswidget.cpp
+  mesh/qgsmeshrendereractivedatasetwidget.cpp
+  mesh/qgsmeshdatasetgrouptreeview.cpp
+  mesh/qgsmeshstaticdatasetwidget.cpp
+  mesh/qgsmeshvariablestrokewidthwidget.cpp
+
   numericformats/qgsnumericformatselectorwidget.cpp
   numericformats/qgsnumericformatwidget.cpp
   numericformats/qgsnumericformatguiregistry.cpp
@@ -270,6 +292,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
@@ -277,12 +300,14 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixmodelerwidget.cpp
   processing/qgsprocessingmatrixparameterdialog.cpp
+  processing/qgsprocessingmeshdatasetwidget.cpp
   processing/qgsprocessingmodelerparameterwidget.cpp
   processing/qgsprocessingmultipleselectiondialog.cpp
   processing/qgsprocessingoutputdestinationwidget.cpp
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
+  processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
@@ -310,6 +335,9 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodelviewtooltemporarymousepan.cpp
   processing/models/qgsmodelviewtoolzoom.cpp
 
+  providers/qgspointcloudproviderguimetadata.cpp
+  providers/qgspointcloudsourceselect.cpp
+
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
 
@@ -326,6 +354,7 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
   vectortile/qgsvectortileconnectiondialog.cpp
@@ -334,6 +363,8 @@ SET(QGIS_GUI_SRCS
   vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
+  qgs3dsymbolwidget.cpp
+  qgsabstractmaptoolhandler.cpp
   qgsactionmenu.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -342,6 +373,7 @@ SET(QGIS_GUI_SRCS
   qgsadvanceddigitizingfloater.cpp
   qgsaggregatetoolbutton.cpp
   qgsalignmentcombobox.cpp
+  qgsapplicationexitblockerinterface.cpp
   qgsattributedialog.cpp
   qgsattributeeditorcontext.cpp
   qgsattributeform.cpp
@@ -358,12 +390,6 @@ SET(QGIS_GUI_SRCS
   qgsbusyindicatordialog.cpp
   qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
-  qgscodeeditor.cpp
-  qgscodeeditorcss.cpp
-  qgscodeeditorhtml.cpp
-  qgscodeeditorpython.cpp
-  qgscodeeditorsql.cpp
-  qgscodeeditorexpression.cpp
   qgscollapsiblegroupbox.cpp
   qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
@@ -391,6 +417,7 @@ SET(QGIS_GUI_SRCS
   qgsdetaileditemwidget.cpp
   qgsdial.cpp
   qgsdialog.cpp
+  qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
   qgserrordialog.cpp
@@ -423,6 +450,7 @@ SET(QGIS_GUI_SRCS
   qgsfocuswatcher.cpp
   qgsfontbutton.cpp
   qgsformannotation.cpp
+  qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
@@ -456,6 +484,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
+  qgsmaplayerloadstyledialog.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
@@ -475,6 +504,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolpan.cpp
   qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
+  qgsmaterialsettingswidget.cpp
   qgsmenuheader.cpp
   qgsmessagebar.cpp
   qgsmessagebaritem.cpp
@@ -490,6 +520,7 @@ SET(QGIS_GUI_SRCS
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsnewgeopackagelayerdialog.cpp
+  qgsnewvectortabledialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
   qgsoptionsdialoghighlightwidget.cpp
@@ -501,6 +532,7 @@ SET(QGIS_GUI_SRCS
   qgspasswordlineedit.cpp
   qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
+  qgspointcloudattributecombobox.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
   qgsprojectionselectiondialog.cpp
@@ -563,7 +595,9 @@ SET(QGIS_GUI_SRCS
 SET(QGIS_GUI_HDRS
   qgisinterface.h
 
+  qgs3dsymbolwidget.h
   qgsabstractdatasourcewidget.h
+  qgsabstractmaptoolhandler.h
   qgsactionmenu.h
   qgsaddattrdialog.h
   qgsaddtaborgroup.h
@@ -571,6 +605,7 @@ SET(QGIS_GUI_HDRS
   qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
   qgsalignmentcombobox.h
+  qgsapplicationexitblockerinterface.h
   qgsattributedialog.h
   qgsattributeeditorcontext.h
   qgsattributeform.h
@@ -587,12 +622,6 @@ SET(QGIS_GUI_HDRS
   qgsbusyindicatordialog.h
   qgscharacterselectordialog.h
   qgscheckablecombobox.h
-  qgscodeeditor.h
-  qgscodeeditorcss.h
-  qgscodeeditorexpression.h
-  qgscodeeditorhtml.h
-  qgscodeeditorpython.h
-  qgscodeeditorsql.h
   qgscollapsiblegroupbox.h
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
@@ -623,6 +652,7 @@ SET(QGIS_GUI_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdockwidget.h
+  qgsdoublevalidator.h
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
@@ -654,6 +684,7 @@ SET(QGIS_GUI_HDRS
   qgsfocuswatcher.h
   qgsfontbutton.h
   qgsformannotation.h
+  qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
@@ -689,6 +720,7 @@ SET(QGIS_GUI_HDRS
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayerloadstyledialog.h
   qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h
@@ -707,6 +739,7 @@ SET(QGIS_GUI_HDRS
   qgsmaptoolpan.h
   qgsmaptoolzoom.h
   qgsmaskingwidget.h
+  qgsmaterialsettingswidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
@@ -717,10 +750,12 @@ SET(QGIS_GUI_HDRS
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
+  qgsnewvectortabledialog.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
+  qgsnewvectortabledialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
   qgsoptionsdialoghighlightwidget.h
@@ -733,6 +768,7 @@ SET(QGIS_GUI_HDRS
   qgspasswordlineedit.h
   qgspixmaplabel.h
   qgspluginmanagerinterface.h
+  qgspointcloudattributecombobox.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
   qgsprojectionselectiondialog.h
@@ -791,7 +827,6 @@ SET(QGIS_GUI_HDRS
   qgswindowmanagerinterface.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
-  attributeformconfig/qgsattributerelationedit.h
   attributeformconfig/qgsattributetypedialog.h
   attributeformconfig/qgsattributewidgetedit.h
 
@@ -834,6 +869,16 @@ SET(QGIS_GUI_HDRS
   auth/qgsauthtrustedcasdialog.h
 
   callouts/qgscalloutwidget.h
+
+  codeeditors/qgscodeeditor.h
+  codeeditors/qgscodeeditorcolorscheme.h
+  codeeditors/qgscodeeditorcolorschemeregistry.h
+  codeeditors/qgscodeeditorcss.h
+  codeeditors/qgscodeeditorexpression.h
+  codeeditors/qgscodeeditorhtml.h
+  codeeditors/qgscodeeditorjs.h
+  codeeditors/qgscodeeditorpython.h
+  codeeditors/qgscodeeditorsql.h
 
   devtools/qgsdevtoolwidget.h
   devtools/qgsdevtoolwidgetfactory.h
@@ -914,6 +959,7 @@ SET(QGIS_GUI_HDRS
   labeling/qgslabelengineconfigdialog.h
   labeling/qgslabelinggui.h
   labeling/qgslabelingwidget.h
+  labeling/qgslabellineanchorwidget.h
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
   labeling/qgsrulebasedlabelingwidget.h
@@ -983,6 +1029,18 @@ SET(QGIS_GUI_HDRS
 
   locator/qgslocatorwidget.h
 
+  mesh/qgsmeshlayerproperties.h
+  mesh/qgsrenderermeshpropertieswidget.h
+  mesh/qgsmeshdatasetgrouptreeview.h
+  mesh/qgsmeshdatasetgrouptreewidget.h
+  mesh/qgsmeshrenderer3daveragingwidget.h
+  mesh/qgsmeshrenderermeshsettingswidget.h
+  mesh/qgsmeshrendererscalarsettingswidget.h
+  mesh/qgsmeshrenderervectorsettingswidget.h
+  mesh/qgsmeshrendereractivedatasetwidget.h
+  mesh/qgsmeshstaticdatasetwidget.h
+  mesh/qgsmeshvariablestrokewidthwidget.h
+
   numericformats/qgsnumericformatselectorwidget.h
   numericformats/qgsnumericformatwidget.h
   numericformats/qgsnumericformatguiregistry.h
@@ -996,6 +1054,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfeaturesourceoptionswidget.h
   processing/qgsprocessingfieldmapwidgetwrapper.h
@@ -1004,12 +1063,14 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingmaplayercombobox.h
   processing/qgsprocessingmatrixmodelerwidget.h
   processing/qgsprocessingmatrixparameterdialog.h
+  processing/qgsprocessingmeshdatasetwidget.h
   processing/qgsprocessingmodelerparameterwidget.h
   processing/qgsprocessingmultipleselectiondialog.h
   processing/qgsprocessingoutputdestinationwidget.h
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
+  processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
@@ -1037,6 +1098,9 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodelviewtooltemporarymousepan.h
   processing/models/qgsmodelviewtoolzoom.h
 
+  providers/qgspointcloudsourceselect.h
+  providers/qgspointcloudproviderguimetadata.h
+
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
   providers/ogr/qgsgeopackageitemguiprovider.h
@@ -1063,6 +1127,7 @@ SET(QGIS_GUI_HDRS
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrasterlayerproperties.h
   raster/qgsrasterlayertemporalpropertieswidget.h
+  raster/qgsresamplingutils.h
 
   vector/qgsattributeactiondialog.h
   vector/qgsattributeactionpropertiesdialog.h
@@ -1073,7 +1138,6 @@ SET(QGIS_GUI_HDRS
   vector/qgsjoindialog.h
   vector/qgssourcefieldsproperties.h
   vector/qgsvectorlayerlegendwidget.h
-  vector/qgsvectorlayerloadstyledialog.h
   vector/qgsvectorlayerproperties.h
   vector/qgsvectorlayersavestyledialog.h
   vector/qgswmsdimensiondialog.h
@@ -1118,6 +1182,7 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
   vectortile/qgsvectortilebasicrendererwidget.h
   vectortile/qgsvectortileconnectiondialog.h
@@ -1134,8 +1199,7 @@ SET(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-FIND_PACKAGE(Qt5Qml REQUIRED)
-FIND_PACKAGE(Qt5QuickWidgets REQUIRED)
+FIND_PACKAGE(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
 
 IF(Qt5Qml_FOUND)
 ADD_DEFINITIONS(-DWITH_QML)
@@ -1191,6 +1255,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectortabledialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
@@ -1210,6 +1275,11 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerpropertiesbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayertreeembeddedconfigwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshstaticdatasetwidgetbase.h
+
 )
 
 IF(ENABLE_MODELTEST)
@@ -1225,6 +1295,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
@@ -1232,21 +1303,27 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
+  ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
+  ${CMAKE_SOURCE_DIR}/src/gui/providers
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/callouts
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
+  ${CMAKE_SOURCE_DIR}/src/core/geocoding
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -1257,6 +1334,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
@@ -1292,6 +1370,22 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
 )
+
+IF (WITH_EPT)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
+  )
+
+  SET(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
+    providers/ept/qgseptdataitemguiprovider.cpp
+    providers/ept/qgseptproviderguimetadata.cpp
+  )
+  SET(QGIS_GUI_HDRS ${QGIS_GUI_HDRS}
+    providers/ept/qgseptdataitemguiprovider.h
+    providers/ept/qgseptproviderguimetadata.h
+  )
+ENDIF (WITH_EPT)
+
 
 # disable deprecation warnings for classes re-exporting deprecated methods
 IF(MSVC)

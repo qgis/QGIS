@@ -116,11 +116,6 @@ QStringList QgsExpressionContextScope::variableNames() const
   return names;
 }
 
-bool QgsExpressionContextScope::variableNameSort( const QString &a, const QString &b )
-{
-  return QString::localeAwareCompare( a, b ) < 0;
-}
-
 /// @cond PRIVATE
 class QgsExpressionContextVariableCompare
 {
@@ -413,7 +408,7 @@ QStringList QgsExpressionContext::variableNames() const
   {
     names << scope->variableNames();
   }
-  return names.toSet().toList();
+  return qgis::setToList( qgis::listToSet( names ) );
 }
 
 QStringList QgsExpressionContext::filteredVariableNames() const
@@ -469,7 +464,7 @@ QStringList QgsExpressionContext::functionNames() const
   {
     result << scope->functionNames();
   }
-  result = result.toSet().toList();
+  result = qgis::setToList( qgis::listToSet( result ) );
   result.sort();
   return result;
 }

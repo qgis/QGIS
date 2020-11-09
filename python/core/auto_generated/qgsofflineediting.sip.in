@@ -36,7 +36,7 @@ class QgsOfflineEditing : QObject
 
     QgsOfflineEditing();
 
-    bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite );
+    bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" ) );
 %Docstring
 Convert current project for offline editing
 
@@ -45,6 +45,7 @@ Convert current project for offline editing
 :param layerIds: List of layer names to convert
 :param onlySelected: Only copy selected features from layers where a selection is present
 :param containerType: defines the SQLite file container type like SpatiaLite or GPKG
+:param layerNameSuffix: Suffix string added to the offline layer name
 %End
 
     bool isOfflineProject() const;

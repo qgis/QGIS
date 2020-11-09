@@ -158,6 +158,17 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setChainFilters( bool chainFilters );
 
     /**
+     * Returns the currently set filter expression.
+     */
+    QString filterExpression() const { return mFilterExpression; };
+
+    /**
+     * If not empty, will be used as filter expression.
+     * Only if this evaluates to TRUE, the value will be shown.
+     */
+    void setFilterExpression( const QString &filterExpression );
+
+    /**
      * Returns the related feature (from the referenced layer)
      * if no feature is related, it returns an invalid feature
      */
@@ -313,6 +324,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsVectorLayer *mReferencingLayer = nullptr;
     QgsFeatureListComboBox *mComboBox = nullptr;
     QList<QComboBox *> mFilterComboBoxes;
+    QString mFilterExpression;
     QWidget *mWindowWidget = nullptr;
     bool mShown = false;
     QgsRelation mRelation;

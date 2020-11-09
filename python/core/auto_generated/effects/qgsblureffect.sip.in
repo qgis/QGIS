@@ -55,7 +55,7 @@ Constructor for QgsBlurEffect.
 %Docstring
 Sets blur level (radius)
 
-:param level: blur level. Depending on the current blurMethod(), this parameter
+:param level: blur level. Depending on the current :py:func:`~QgsBlurEffect.blurMethod`, this parameter
               has different effects
 
 .. seealso:: :py:func:`blurLevel`
@@ -71,7 +71,7 @@ Sets blur level (radius)
 %Docstring
 Returns the blur level (radius)
 
-:return: blur level. Depending on the current blurMethod(), this parameter
+:return: blur level. Depending on the current :py:func:`~QgsBlurEffect.blurMethod`, this parameter
          has different effects
 
 .. seealso:: :py:func:`setBlurLevel`

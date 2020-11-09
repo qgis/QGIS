@@ -28,6 +28,13 @@ QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimit
   , mRamp( ramp )
 {
   setupUi( this );
+  spinCount->setClearValue( 10 );
+  spinHue1->setClearValue( 0 );
+  spinHue2->setClearValue( 359 );
+  spinSat1->setClearValue( 100 );
+  spinSat2->setClearValue( 240 );
+  spinVal1->setClearValue( 200 );
+  spinVal2->setClearValue( 240 );
 
   updateUi();
 
@@ -121,6 +128,9 @@ QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimit
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsLimitedRandomColorRampWidget( ramp );
+
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   vLayout->addWidget( mWidget );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );

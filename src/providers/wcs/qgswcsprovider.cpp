@@ -61,8 +61,8 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 // TODO: colortable - use common baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
 
-QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &options )
-  : QgsRasterDataProvider( uri, options )
+QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsRasterDataProvider( uri, options, flags )
   , mCachedViewExtent( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
@@ -801,8 +801,6 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
 
   //mGetFeatureInfoUrlBase = mIgnoreGetFeatureInfoUrl ? mBaseUrl : getFeatureInfoUrl();
 
-  emit statusChanged( tr( "Getting map via WCS." ) );
-
   QgsWcsDownloadHandler handler( url, mAuth, mCacheLoadControl, mCachedData, mCapabilities.version(), mCachedError, feedback );
   handler.blockingDownload();
 
@@ -1376,7 +1374,7 @@ QString QgsWcsProvider::htmlMetadata()
     metadata += tr( "And %1 more coverages" ).arg( mCapabilities.coverages().size() - count );
   }
 
-  metadata += QStringLiteral( "</table></div></td></tr>\n" );  // End nested table 1
+  metadata += QLatin1String( "</table></div></td></tr>\n" );  // End nested table 1
   return metadata;
 }
 
@@ -1650,9 +1648,9 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
   return mimes;
 }
 
-QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsWcsProvider( uri, options );
+  return new QgsWcsProvider( uri, options, flags );
 }
 
 // ----------

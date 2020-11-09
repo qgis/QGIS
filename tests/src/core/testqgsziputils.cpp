@@ -113,7 +113,7 @@ void TestQgsZipUtils::testZip()
   QVERIFY( QgsZipUtils::zip( zipDirPath + "/special_zip æì.zip", QStringList() << txtFile ) );
   QVERIFY( QgsZipUtils::unzip( zipDirPath + "/special_zip æì.zip", zipDirPath, files ) );
   QCOMPARE( files.count(), 1 );
-  QCOMPARE( files.at( 0 ), zipDirPath + "/aæýì.txt" );
+  QCOMPARE( files.at( 0 ), QString( zipDirPath + "/aæýì.txt" ) );
   QVERIFY( QFile::exists( zipDirPath + "/aæýì.txt" ) );
 }
 

@@ -374,12 +374,12 @@ bool QgsLayoutPageCollection::writeXml( QDomElement &parentElement, QDomDocument
 bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = e;
-  if ( element.nodeName() != QStringLiteral( "PageCollection" ) )
+  if ( element.nodeName() != QLatin1String( "PageCollection" ) )
   {
     element = element.firstChildElement( QStringLiteral( "PageCollection" ) );
   }
 
-  if ( element.nodeName() != QStringLiteral( "PageCollection" ) )
+  if ( element.nodeName() != QLatin1String( "PageCollection" ) )
   {
     return false;
   }

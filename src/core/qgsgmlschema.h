@@ -56,14 +56,18 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList &geometryAttributes() { return mGeometryAttributes; }
 
   private:
-    /* Feature class name:
-     *  - element name without NS or known prefix/suffix (_feature)
-     *  - typeName attribute name */
+
+    /**
+     * Feature class name:
+     *
+     * - element name without NS or known prefix/suffix (_feature)
+     * - typeName attribute name
+    */
     QString mName;
 
     //QString mElementName;
 
-    /* Dot separated path to element including the name */
+    //! Dot separated path to element including the name
     QString mPath;
 
     /* Fields */
@@ -145,7 +149,8 @@ class CORE_EXPORT QgsGmlSchema : public QObject
 
     /**
      * Reads attribute as string
-      \returns attribute value or an empty string if no such attribute*/
+     * \returns attribute value or an empty string if no such attribute
+    */
     QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
 
     //! Returns pointer to main window or 0 if it does not exist

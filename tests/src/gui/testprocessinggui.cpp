@@ -80,6 +80,7 @@
 #include "qgsprocessingfeaturesourceoptionswidget.h"
 #include "qgsextentwidget.h"
 #include "qgsrasterbandcombobox.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelcomponentgraphicitem.h"
@@ -87,6 +88,12 @@
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingtininputlayerswidget.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingdxflayerswidgetwrapper.h"
+#include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -189,6 +196,7 @@ class TestProcessingGui : public QObject
     void testWrapperGeneral();
     void testWrapperDynamic();
     void testModelerWrapper();
+    void testHiddenWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
     void testFileWrapper();
@@ -216,6 +224,7 @@ class TestProcessingGui : public QObject
     void testLayoutItemWrapper();
     void testPointPanel();
     void testPointWrapper();
+    void testGeometryWrapper();
     void testExtentWrapper();
     void testColorWrapper();
     void testCoordinateOperationWrapper();
@@ -246,6 +255,10 @@ class TestProcessingGui : public QObject
     void testRasterOutWrapper();
     void testFileOutWrapper();
     void testFolderOutWrapper();
+    void testTinInputLayerWrapper();
+    void testDxfLayersWrapper();
+    void testMeshDatasetWrapperLayerInProject();
+    void testMeshDatasetWrapperLayerOutsideProject();
     void testModelGraphicsView();
 
   private:
@@ -784,6 +797,33 @@ void TestProcessingGui::testModelerWrapper()
 
 }
 
+void TestProcessingGui::testHiddenWrapper()
+{
+  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+
+  QgsProcessingHiddenWidgetWrapper wrapper( &param );
+  QSignalSpy spy( &wrapper, &QgsProcessingHiddenWidgetWrapper::widgetValueHasChanged );
+
+  QgsProcessingContext context;
+  wrapper.setWidgetValue( 1, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toInt(), 1 );
+  wrapper.setWidgetValue( 1, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toInt(), 1 );
+  wrapper.setWidgetValue( 2, context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().toInt(), 2 );
+
+  QVERIFY( !wrapper.createWrappedWidget( context ) );
+  QVERIFY( !wrapper.createWrappedLabel() );
+
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( !wrapper.linkedVectorLayer() );
+  wrapper.setLinkedVectorLayer( vl.get() );
+  QCOMPARE( wrapper.linkedVectorLayer(), vl.get() );
+}
+
 void TestProcessingGui::testBooleanWrapper()
 {
   TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
@@ -1112,10 +1152,10 @@ void TestProcessingGui::testFileWrapper()
     QWidget *w = wrapper.createWrappedWidget( context );
 
     QSignalSpy spy( &wrapper, &QgsProcessingFileWidgetWrapper::widgetValueHasChanged );
-    wrapper.setWidgetValue( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), context );
+    wrapper.setWidgetValue( QString( TEST_DATA_DIR + QStringLiteral( "/points.shp" ) ), context );
     QCOMPARE( spy.count(), 1 );
-    QCOMPARE( wrapper.widgetValue().toString(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
-    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QCOMPARE( wrapper.widgetValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/points.shp" ) ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath(), QString( TEST_DATA_DIR + QStringLiteral( "/points.shp" ) ) );
     QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filter(), QStringLiteral( "All files (*.*)" ) );
     QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
     wrapper.setWidgetValue( QString(), context );
@@ -3112,6 +3152,28 @@ void TestProcessingGui::testMultipleSelectionDialog()
   QCOMPARE( dlg->mModel->item( 1 )->text(), QStringLiteral( "6_" ) );
   QCOMPARE( dlg->mModel->item( 2 )->text(), QStringLiteral( "6.2_" ) );
 
+  // mix of fixed + model choices
+  availableOptions = QVariantList() << QVariant( "a" ) << 6 << 6.2
+                     << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) )
+                     << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, QVariantList() << 6
+        << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) )
+        << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) ) );
+
+  // when any selected option is a model child parameter source, then we require that all options are upgraded in place to model child parameter sources
+  QVariantList res = dlg->selectedOptions();
+  QCOMPARE( res.size(), 3 );
+  QCOMPARE( res.at( 0 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( 6 ) );
+  QCOMPARE( res.at( 1 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) );
+  QCOMPARE( res.at( 2 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) );
+  dlg->selectAll( true );
+  res = dlg->selectedOptions();
+  QCOMPARE( res.size(), 5 );
+  QCOMPARE( res.at( 0 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( 6 ) );
+  QCOMPARE( res.at( 1 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) );
+  QCOMPARE( res.at( 2 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "input" ) ) );
+  QCOMPARE( res.at( 3 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( QStringLiteral( "a" ) ) );
+  QCOMPARE( res.at( 4 ).value< QgsProcessingModelChildParameterSource >(), QgsProcessingModelChildParameterSource::fromStaticValue( 6.2 ) );
 }
 
 void TestProcessingGui::testMultipleFileSelectionDialog()
@@ -3159,27 +3221,27 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
   // existing value using full layer path not matching a project layer should work
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source() << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", QList<QgsProcessingModelChildParameterSource >() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
-  QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
 
   // should remember layer order
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList()  << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" << raster->source(), QList<QgsProcessingModelChildParameterSource >() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList()  << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) << raster->source(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), raster->source() );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
-  QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), raster->source() );
 
   // mesh
@@ -4139,7 +4201,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
     else
     {
-      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "l2" ) );
+      QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
     }
     wrapper.setWidgetValue( "l1", context );
     QCOMPARE( spy.count(), 2 );
@@ -4151,7 +4213,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
     else
     {
-      QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "l1" ) );
+      QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
     }
 
     QLabel *l = wrapper.createWrappedLabel();
@@ -4174,7 +4236,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
     else
     {
-      static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "aaaa" ) );
+      static_cast< QComboBox * >( wrapper.wrappedWidget() )->setCurrentText( QStringLiteral( "aaaa" ) );
     }
     QCOMPARE( spy.count(), 3 );
 
@@ -4199,7 +4261,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
     else
     {
-      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "l2" ) );
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
     }
     wrapper2.setWidgetValue( "l1", context );
     QCOMPARE( spy2.count(), 2 );
@@ -4211,7 +4273,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
     else
     {
-      QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(), QStringLiteral( "l1" ) );
+      QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
     }
     wrapper2.setWidgetValue( QVariant(), context );
     QCOMPARE( spy2.count(), 3 );
@@ -4223,14 +4285,14 @@ void TestProcessingGui::testLayoutWrapper()
     }
     else
     {
-      QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+      QVERIFY( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText().isEmpty() );
     }
 
     // check signal
     if ( type != QgsProcessingGui::Modeler )
       static_cast< QComboBox * >( wrapper2.wrappedWidget() )->setCurrentIndex( 2 );
     else
-      static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "aaa" ) );
+      static_cast< QComboBox * >( wrapper2.wrappedWidget() )->setCurrentText( QStringLiteral( "aaa" ) );
     QCOMPARE( spy2.count(), 4 );
 
     delete w;
@@ -4457,6 +4519,7 @@ void TestProcessingGui::testPointPanel()
   panel.reset();
 }
 
+
 void TestProcessingGui::testPointWrapper()
 {
   auto testWrapper = []( QgsProcessingGui::WidgetType type )
@@ -4634,6 +4697,125 @@ void TestProcessingGui::testPointWrapper()
   QCOMPARE( static_cast< QgsProcessingParameterPoint * >( def.get() )->defaultValue().toString(), QStringLiteral( "4.000000,7.000000" ) );
 
 }
+
+
+void TestProcessingGui::testGeometryWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterGeometry param( QStringLiteral( "geometry" ), QStringLiteral( "geometry" ), false );
+
+    QgsProcessingGeometryWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "POINT (1 2)" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString().toLower(), QStringLiteral( "point (1 2)" ) );
+    QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text().toLower(), QStringLiteral( "point (1 2)" ).toLower() );
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text().isEmpty() );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "geometry" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "b" ) );
+    QCOMPARE( spy.count(), 3 );
+    static_cast< QLineEdit * >( wrapper.wrappedWidget() )->clear();
+    QCOMPARE( spy.count(), 4 );
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterGeometry param2( QStringLiteral( "geometry" ), QStringLiteral( "geometry" ), QVariant(), true );
+
+    QgsProcessingGeometryWidgetWrapper wrapper2( &param2, type );
+
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "POINT (1 2)", context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString().toLower(), QStringLiteral( "point (1 2)" ) );
+    QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().toLower(), QStringLiteral( "point (1 2)" ) );
+
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 2 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+
+    wrapper2.setWidgetValue( "POINT (1 3)", context );
+    QCOMPARE( spy2.count(), 3 );
+    wrapper2.setWidgetValue( "", context );
+    QCOMPARE( spy2.count(), 4 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+
+  // config widget
+  QgsProcessingContext context;
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "geometry" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterGeometry geometryParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "POINT (1 2)" ) );
+
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "geometry" ), context, widgetContext, &geometryParam );
+
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterGeometry * >( def.get() )->defaultValue().toString().toLower(), QStringLiteral( "point (1 2)" ) );
+  geometryParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  geometryParam.setDefaultValue( QStringLiteral( "POINT (4 7)" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "geometry" ), context, widgetContext, &geometryParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterGeometry * >( def.get() )->defaultValue().toString().toLower(), QStringLiteral( "point (4 7)" ) );
+
+}
+
+
+
 
 void TestProcessingGui::testExtentWrapper()
 {
@@ -5100,7 +5282,7 @@ void TestProcessingGui::mapLayerComboBox()
   sourceDef.flags |= QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature;
   combo->setValue( sourceDef, context );
   QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature );
-  sourceDef.flags = nullptr;
+  sourceDef.flags = QgsProcessingFeatureSourceDefinition::Flags();
   combo->setValue( sourceDef, context );
   QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature ) );
 
@@ -5116,7 +5298,7 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setValue( sourceDef, context );
   QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
   QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
-  sourceDef.flags = nullptr;
+  sourceDef.flags = QgsProcessingFeatureSourceDefinition::Flags();
   combo->setValue( sourceDef, context );
   QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck ) );
 
@@ -6492,13 +6674,13 @@ void TestProcessingGui::testDateTimeWrapper()
     wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
     QCOMPARE( spy.count(), 1 );
     QVERIFY( wrapper.widgetValue().isValid() );
-    QCOMPARE( wrapper.widgetValue().toDateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
-    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    QCOMPARE( wrapper.widgetValue().toDateTime(), QDateTime( QDate( 2019, 8, 7 ), QTime( 0, 0, 0 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 8, 7 ), QTime( 0, 0, 0 ) ) );
     wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
     QCOMPARE( spy.count(), 1 );
 
     // check signal
-    static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->setDateTime( QDateTime( QDate( 2019, 8, 9 ) ) );
+    static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->setDateTime( QDateTime( QDate( 2019, 8, 9 ), QTime( 0, 0, 0 ) ) );
     QCOMPARE( spy.count(), 2 );
 
     delete w;
@@ -6515,8 +6697,8 @@ void TestProcessingGui::testDateTimeWrapper()
     QVERIFY( !static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime().isValid() );
     wrapper3.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
     QCOMPARE( spy3.count(), 1 );
-    QCOMPARE( wrapper3.widgetValue().toDateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
-    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    QCOMPARE( wrapper3.widgetValue().toDateTime(), QDateTime( QDate( 2019, 3, 20 ), QTime( 0, 0, 0 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 3, 20 ), QTime( 0, 0, 0 ) ) );
     wrapper3.setWidgetValue( QVariant(), context );
     QCOMPARE( spy3.count(), 2 );
     QVERIFY( !wrapper3.widgetValue().isValid() );
@@ -7692,7 +7874,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   v = panel.value();
   QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "utf8" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), TEST_DATA_DIR + QStringLiteral( "/test.shp" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.shp" ) ) );
 
   // optional, test skipping
   sink.setFlags( sink.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -7867,7 +8049,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   v = panel.value();
   QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), TEST_DATA_DIR + QStringLiteral( "/test.shp" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.shp" ) ) );
 
   // optional, test skipping
   vector.setFlags( vector.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -7980,7 +8162,7 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
   v = panel.value();
   QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), TEST_DATA_DIR + QStringLiteral( "/test.tif" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.tif" ) ) );
 
   // optional, test skipping
   raster.setFlags( raster.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -8086,7 +8268,7 @@ void TestProcessingGui::testOutputDefinitionWidgetFolder()
   settings.setValue( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), TEST_DATA_DIR );
   panel.setValue( QStringLiteral( "mystuff" ) );
   v = panel.value();
-  QCOMPARE( v.toString(), TEST_DATA_DIR + QStringLiteral( "/mystuff" ) );
+  QCOMPARE( v.toString(), QString( TEST_DATA_DIR + QStringLiteral( "/mystuff" ) ) );
 
   // optional, test skipping
   folder.setFlags( folder.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -8187,7 +8369,7 @@ void TestProcessingGui::testOutputDefinitionWidgetFileOut()
   settings.setValue( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), TEST_DATA_DIR );
   panel.setValue( QStringLiteral( "test.tif" ) );
   v = panel.value();
-  QCOMPARE( v.toString(), TEST_DATA_DIR + QStringLiteral( "/test.tif" ) );
+  QCOMPARE( v.toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.tif" ) ) );
 
   // optional, test skipping
   file.setFlags( file.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -8657,6 +8839,383 @@ void TestProcessingGui::testFolderOutWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testTinInputLayerWrapper()
+{
+  QgsProcessingParameterTinInputLayers definition( QStringLiteral( "TIN input layers" ) ) ;
+  QgsProcessingTinInputLayersWidgetWrapper wrapper;
+
+  std::unique_ptr<QWidget> w( wrapper.createWidget() );
+  QVERIFY( w );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingTinInputLayersWidgetWrapper::widgetValueHasChanged );
+
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "PointLayerForTin" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+
+  QVariantList layerList;
+  QVariantMap layerMap;
+  layerMap["source"] = "PointLayerForTin";
+  layerMap["type"] = 0;
+  layerMap["attributeIndex"] = -1;
+  layerList.append( layerMap );
+
+  QVERIFY( definition.checkValueIsAcceptable( layerList, &context ) );
+  wrapper.setWidgetValue( layerList, context );
+  QCOMPARE( spy.count(), 1 );
+
+  QVariant value = wrapper.widgetValue();
+
+  QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
+  QString valueAsPythonString = definition.valueAsPythonString( value, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'source': 'PointLayerForTin','type': 0,'attributeIndex': -1}]" ) );
+}
+
+void TestProcessingGui::testDxfLayersWrapper()
+{
+  QgsProcessingParameterDxfLayers definition( QStringLiteral( "DXF layers" ) ) ;
+  QgsProcessingDxfLayersWidgetWrapper wrapper;
+
+  std::unique_ptr<QWidget> w( wrapper.createWidget() );
+  QVERIFY( w );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingTinInputLayersWidgetWrapper::widgetValueHasChanged );
+
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "PointLayer" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+
+  QVariantList layerList;
+  QVariantMap layerMap;
+  layerMap["layer"] = "PointLayer";
+  layerMap["attributeIndex"] = -1;
+  layerList.append( layerMap );
+
+  QVERIFY( definition.checkValueIsAcceptable( layerList, &context ) );
+  wrapper.setWidgetValue( layerList, context );
+  QCOMPARE( spy.count(), 1 );
+
+  QVariant value = wrapper.widgetValue();
+
+  QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
+  QString valueAsPythonString = definition.valueAsPythonString( value, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
+}
+
+void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
+{
+  QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
+  QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
+
+  QSet<int> supportedDataType( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
+  QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
+      QStringLiteral( "groups" ),
+      QStringLiteral( "layer" ),
+      supportedDataType );
+  QgsProcessingMeshDatasetGroupsWidgetWrapper groupsWrapper( &groupsDefinition );
+
+  QgsProcessingParameterMeshDatasetTime timeDefinition( QStringLiteral( "time" ), QStringLiteral( "time" ), QStringLiteral( "layer" ), QStringLiteral( "groups" ) );
+  QgsProcessingMeshDatasetTimeWidgetWrapper timeWrapper( &timeDefinition );
+
+  QList<QgsAbstractProcessingParameterWidgetWrapper *> wrappers;
+  wrappers << &layerWrapper << &groupsWrapper << &timeWrapper;
+
+  QgsProject project;
+  QgsProcessingContext context;
+  context.setProject( &project );
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr<QgsMapCanvas> mapCanvas = qgis::make_unique<QgsMapCanvas>();
+  widgetContext.setMapCanvas( mapCanvas.get() );
+
+  widgetContext.setProject( &project );
+  layerWrapper.setWidgetContext( widgetContext );
+  groupsWrapper.setWidgetContext( widgetContext );
+  timeWrapper.setWidgetContext( widgetContext );
+
+  TestProcessingContextGenerator generator( context );
+  layerWrapper.registerProcessingContextGenerator( &generator );
+  groupsWrapper.registerProcessingContextGenerator( &generator );
+  timeWrapper.registerProcessingContextGenerator( &generator );
+
+  QSignalSpy layerSpy( &layerWrapper, &QgsProcessingMeshLayerWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy groupsSpy( &groupsWrapper, &QgsProcessingMeshDatasetGroupsWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy timeSpy( &timeWrapper, &QgsProcessingMeshDatasetTimeWidgetWrapper::widgetValueHasChanged );
+
+  std::unique_ptr<QWidget> layerWidget( layerWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> groupWidget( groupsWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> timeWidget( timeWrapper.createWrappedWidget( context ) );
+  QgsProcessingMeshDatasetGroupsWidget *datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
+  QgsProcessingMeshDatasetTimeWidget *datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
+
+  QVERIFY( layerWidget );
+  QVERIFY( groupWidget );
+  QVERIFY( datasetGroupWidget );
+  QVERIFY( timeWidget );
+
+  groupsWrapper.postInitialize( wrappers );
+  timeWrapper.postInitialize( wrappers );
+
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  dataDir += "/mesh";
+  QString uri( dataDir + "/quad_and_triangle.2dm" );
+  QString meshLayerName = QStringLiteral( "mesh layer" );
+  QgsMeshLayer *layer = new QgsMeshLayer( uri, meshLayerName, QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+  layer->addDatasets( dataDir + "/quad_and_triangle_vertex_scalar.dat" );
+  layer->addDatasets( dataDir + "/quad_and_triangle_vertex_vector.dat" );
+  layer->addDatasets( dataDir + "/quad_and_triangle_els_face_scalar.dat" );
+  layer->addDatasets( dataDir + "/quad_and_triangle_els_face_vector.dat" );
+  QgsMeshRendererSettings settings = layer->rendererSettings();
+  // 1 dataset on vertices and 1 dataset on faces
+  settings.setActiveScalarDatasetGroup( 1 );
+  settings.setActiveVectorDatasetGroup( 4 );
+  layer->setRendererSettings( settings );
+  QCOMPARE( layer->datasetGroupCount(), 5 );
+
+  layerSpy.clear();
+  groupsSpy.clear();
+  timeSpy.clear();
+
+  // without layer in the project
+  QString meshOutOfProject( dataDir + "/trap_steady_05_3D.nc" );
+  layerWrapper.setWidgetValue( meshOutOfProject, context );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 1 );
+  QCOMPARE( timeSpy.count(), 1 );
+
+  QVERIFY( datasetTimeWidget->radioButtonDatasetGroupTimeStep->isChecked() );
+
+  QVariantList groups;
+  groups << 0;
+  groupsWrapper.setWidgetValue( groups, context );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 0 );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 2 );
+  QCOMPARE( timeSpy.count(), 3 );
+
+  // with layer in the project
+  layerSpy.clear();
+  groupsSpy.clear();
+  timeSpy.clear();
+
+  project.addMapLayer( layer );
+  static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->setReferenceTime(
+    QDateTime( QDate( 2020, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ), layer->dataProvider()->temporalCapabilities() );
+  layerWrapper.setWidgetValue( meshLayerName, context );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 1 );
+  QCOMPARE( timeSpy.count(), 2 );
+
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 2 );
+  QCOMPARE( timeSpy.count(), 3 );
+
+  QVariant groupsValue = groupsWrapper.widgetValue();
+  QVERIFY( groupsValue.type() == QVariant::List );
+  QVariantList groupsList = groupsValue.toList();
+  QCOMPARE( groupsList.count(), 1 );
+  QCOMPARE( groupsList.at( 0 ).toInt(), 1 );
+  QString pythonString = groupsDefinition.valueAsPythonString( groupsValue, context );
+  QCOMPARE( pythonString, QStringLiteral( "[1]" ) );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsValue ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsValue ), QList<int>( {1} ) );
+
+  // 2 datasets on vertices
+  settings = layer->rendererSettings();
+  settings.setActiveVectorDatasetGroup( 2 );
+  layer->setRendererSettings( settings );
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 4 );
+
+  pythonString = groupsDefinition.valueAsPythonString( groupsWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "[1,2]" ) );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 1 << 2 );
+
+  datasetTimeWidget->radioButtonDatasetGroupTimeStep->setChecked( true );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 4 ); //radioButtonDatasetGroupTimeStep already checked
+
+  QVariant timeValue = timeWrapper.widgetValue();
+  QVERIFY( timeValue.type() == QVariant::Map );
+  QVariantMap timeValueMap = timeValue.toMap();
+  QCOMPARE( timeValueMap[QStringLiteral( "type" )].toString(), QStringLiteral( "dataset-time-step" ) );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'dataset-time-step','value': QgsMeshDatasetIndex(1,0)}" ) );
+  QVERIFY( timeDefinition.checkValueIsAcceptable( timeValue ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeValue ), QStringLiteral( "dataset-time-step" ) );
+  QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( timeValue ) == QgsMeshDatasetIndex( 1, 0 ) );
+
+  datasetTimeWidget->radioButtonDefinedDateTime->setChecked( true );
+  QDateTime dateTime = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 1, 0 ), Qt::UTC );
+  datasetTimeWidget->dateTimeEdit->setDateTime( dateTime );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 6 );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 1, 1), QTime(0, 1, 0))}" ) );
+  QVERIFY( timeDefinition.checkValueIsAcceptable( timeWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "defined-date-time" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( timeWrapper.widgetValue() ), dateTime );
+
+  QVERIFY( !datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+  mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0 ), Qt::UTC ) ) );
+  QVERIFY( datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+
+  datasetTimeWidget->radioButtonCurrentCanvasTime->setChecked( true );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 8 );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'current-context-time'}" ) );
+  QVERIFY( timeDefinition.checkValueIsAcceptable( timeWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "current-context-time" ) );
+
+  // 0 dataset on vertices
+  settings = layer->rendererSettings();
+  settings.setActiveScalarDatasetGroup( -1 );
+  settings.setActiveVectorDatasetGroup( -1 );
+  layer->setRendererSettings( settings );
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+  QVERIFY( !datasetTimeWidget->isEnabled() );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
+  QVERIFY( timeDefinition.checkValueIsAcceptable( timeWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+
+  // 1 static dataset on vertices
+  settings = layer->rendererSettings();
+  settings.setActiveScalarDatasetGroup( 0 );
+  settings.setActiveVectorDatasetGroup( -1 );
+  layer->setRendererSettings( settings );
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+  QVERIFY( !datasetTimeWidget->isEnabled() );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
+  QVERIFY( timeDefinition.checkValueIsAcceptable( timeWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+}
+
+void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
+{
+  QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
+  QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
+
+  QSet<int> supportedDataType( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
+  QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
+      QStringLiteral( "groups" ),
+      QStringLiteral( "layer" ),
+      supportedDataType );
+  QgsProcessingMeshDatasetGroupsWidgetWrapper groupsWrapper( &groupsDefinition );
+
+  QgsProcessingParameterMeshDatasetTime timeDefinition( QStringLiteral( "time" ), QStringLiteral( "time" ), QStringLiteral( "layer" ), QStringLiteral( "groups" ) );
+  QgsProcessingMeshDatasetTimeWidgetWrapper timeWrapper( &timeDefinition );
+
+  QList<QgsAbstractProcessingParameterWidgetWrapper *> wrappers;
+  wrappers << &layerWrapper << &groupsWrapper << &timeWrapper;
+
+  QgsProject project;
+  QgsProcessingContext context;
+  context.setProject( &project );
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr<QgsMapCanvas> mapCanvas = qgis::make_unique<QgsMapCanvas>();
+  widgetContext.setMapCanvas( mapCanvas.get() );
+
+  widgetContext.setProject( &project );
+  layerWrapper.setWidgetContext( widgetContext );
+  groupsWrapper.setWidgetContext( widgetContext );
+  timeWrapper.setWidgetContext( widgetContext );
+
+  TestProcessingContextGenerator generator( context );
+  layerWrapper.registerProcessingContextGenerator( &generator );
+  groupsWrapper.registerProcessingContextGenerator( &generator );
+  timeWrapper.registerProcessingContextGenerator( &generator );
+
+  QSignalSpy layerSpy( &layerWrapper, &QgsProcessingMeshLayerWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy groupsSpy( &groupsWrapper, &QgsProcessingMeshDatasetGroupsWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy timeSpy( &timeWrapper, &QgsProcessingMeshDatasetTimeWidgetWrapper::widgetValueHasChanged );
+
+  std::unique_ptr<QWidget> layerWidget( layerWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> groupWidget( groupsWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> timeWidget( timeWrapper.createWrappedWidget( context ) );
+  QgsProcessingMeshDatasetGroupsWidget *datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
+  QgsProcessingMeshDatasetTimeWidget *datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
+
+  QVERIFY( layerWidget );
+  QVERIFY( groupWidget );
+  QVERIFY( datasetGroupWidget );
+  QVERIFY( timeWidget );
+
+  groupsWrapper.postInitialize( wrappers );
+  timeWrapper.postInitialize( wrappers );
+
+  layerSpy.clear();
+  groupsSpy.clear();
+  timeSpy.clear();
+
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString meshOutOfProject( dataDir + "/mesh/trap_steady_05_3D.nc" );
+  layerWrapper.setWidgetValue( meshOutOfProject, context );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 1 );
+  QCOMPARE( timeSpy.count(), 1 );
+
+  QVariantList groups;
+  groups << 0;
+  groupsWrapper.setWidgetValue( groups, context );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 2 );
+  QCOMPARE( timeSpy.count(), 3 );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 0 );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+  QVERIFY( !datasetTimeWidget->isEnabled() );
+
+  groups << 11;
+  groupsWrapper.setWidgetValue( groups, context );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 5 );
+  QVERIFY( datasetTimeWidget->isEnabled() );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 0 << 11 );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "dataset-time-step" ) );
+  QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( timeWrapper.widgetValue() ) == QgsMeshDatasetIndex( 11, 0 ) );
+
+  QVERIFY( datasetTimeWidget->radioButtonDefinedDateTime->isEnabled() );
+  QVERIFY( !datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+
+  datasetTimeWidget->radioButtonDefinedDateTime->setChecked( true );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "defined-date-time" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( timeWrapper.widgetValue() ),
+            QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+
+
+  mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0 ), Qt::UTC ) ) );
+  QVERIFY( datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+
 }
 
 void TestProcessingGui::testModelGraphicsView()

@@ -57,6 +57,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsnumericformatguiregistry.h"
+#include "qgscodeeditorcolorschemeregistry.h"
 
 
 QgsGui *QgsGui::instance()
@@ -110,6 +111,11 @@ QgsNumericFormatGuiRegistry *QgsGui::numericFormatGuiRegistry()
   return instance()->mNumericFormatGuiRegistry;
 }
 
+QgsCodeEditorColorSchemeRegistry *QgsGui::codeEditorColorSchemeRegistry()
+{
+  return instance()->mCodeEditorColorSchemeRegistry;
+}
+
 QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
 {
   return instance()->mProcessingRecentAlgorithmLog;
@@ -158,7 +164,7 @@ QgsGui::HigFlags QgsGui::higFlags()
   }
   else
   {
-    return nullptr;
+    return QgsGui::HigFlags();
   }
 }
 
@@ -178,6 +184,7 @@ QgsGui::~QgsGui()
   delete mWidgetStateHelper;
   delete mProjectStorageGuiRegistry;
   delete mProviderGuiRegistry;
+  delete mCodeEditorColorSchemeRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -222,6 +229,8 @@ QgsGui::QgsGui()
 #else
   mNative = new QgsNative();
 #endif
+
+  mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
   // provider gui registry initialize QgsProviderRegistry too
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );
@@ -316,3 +325,10 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
   }
   return false;
 }
+
+///@cond PRIVATE
+void QgsGui::emitOptionsChanged()
+{
+  emit optionsChanged();
+}
+///@endcond

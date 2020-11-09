@@ -40,7 +40,6 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   btnEditKeyframe->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   btnPlayPause->setIcon( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ) );
   btnDuplicateKeyframe->setIcon( QIcon( QgsApplication::iconPath( "mActionEditCopy.svg" ) ) );
-  btnRepeat->setIcon( QIcon( QgsApplication::iconPath( "mActionRefresh.svg" ) ) );
   btnExportAnimation->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   cboKeyframe->addItem( tr( "<none>" ) );
 
@@ -57,8 +56,6 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
 
   btnPlayPause->setCheckable( true );
   connect( btnPlayPause, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onPlayPause );
-
-  btnRepeat->setCheckable( true );
 
   connect( sliderTime, &QSlider::valueChanged, this, &Qgs3DAnimationWidget::onSliderValueChanged );
 
@@ -173,7 +170,7 @@ void Qgs3DAnimationWidget::onAnimationTimer()
 {
   if ( sliderTime->value() >= sliderTime->maximum() )
   {
-    if ( btnRepeat->isChecked() )
+    if ( mLoopingCheckBox->isChecked() )
       sliderTime->setValue( 0 );
     else
     {

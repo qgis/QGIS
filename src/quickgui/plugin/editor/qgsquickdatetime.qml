@@ -38,11 +38,23 @@ Item {
       rightMargin: 10 * QgsQuick.Utils.dp
     }
 
+    property var timeToString: function timeToString(attrValue) {
+      if (attrValue === undefined)
+      {
+          return qsTr('(no date)')
+      }
+      else
+      {
+        return Qt.formatDateTime(attrValue, config['display_format'])
+      }
+    }
 
     ColumnLayout {
         id: main
-        property var isDateTimeType: field.type === Qt.DateTime || field.type === Qt.Date || field.type === Qt.Time
-        property var currentValue: isDateTimeType? value : Qt.formatDateTime(value, config['field_format'])
+        property var currentValue: value
+        property bool fieldIsDate: QgsQuick.Utils.fieldType( field ) === 'QDate'
+        property var typeFromFieldFormat: QgsQuick.Utils.dateTimeFieldFormat( config['field_format'] )
+        property var rowHeight: customStyle.fields.height * 0.75
 
         anchors { right: parent.right; left: parent.left }
 
@@ -56,87 +68,65 @@ Item {
                 anchors.fill: parent
                 verticalAlignment: Text.AlignVCenter
                 font.pixelSize: customStyle.fields.fontPixelSize
+                color: customStyle.fields.fontColor
                 padding: 0
+                topPadding: 10 * QgsQuick.Utils.dp
+                bottomPadding: 10 * QgsQuick.Utils.dp
                 background: Rectangle {
                     radius: customStyle.fields.cornerRadius
 
-                    border.color: label.activeFocus ? customStyle.fields.activeColor : customStyle.fields.normalColor
-                    border.width: label.activeFocus ? 2 : 1
+                    border.color: popup.opened ? customStyle.fields.activeColor : customStyle.fields.normalColor
+                    border.width: popup.opened ? 2 : 1
                     color: customStyle.fields.backgroundColor
                 }
 
-                inputMethodHints: Qt.ImhDigitsOnly
-
-                // this is a bit difficult to auto generate input mask out of date/time format using regex
-                // mainly because number of characters is a variable (e.g. "d": the day as number without a leading zero)
-                inputMask:      if (config['display_format'] === "yyyy-MM-dd" ) { "9999-99-99;_" }
-                                else if (config['display_format'] === "yyyy.MM.dd" ) { "9999.99.09;_" }
-                                else if (config['display_format'] === "yyyy-MM-dd HH:mm:ss" ) { "9999-99-09 99:99:99;_" }
-                                else if (config['display_format'] === "HH:mm:ss" ) { "99:99:99;_" }
-                                else if (config['display_format'] === "HH:mm" ) { "99:99;_" }
-                                else { "" }
-
-                text: {
-                    if ( main.currentValue === undefined )
-                      {
-                          qsTr('(no date)')
-                      }
-                      else
-                      {
-                          if ( main.isDateTimeType )
-                          {
-                              Qt.formatDateTime(main.currentValue, config['display_format'])
-                          }
-                          else
-                          {
-                              var date = Date.fromLocaleString(Qt.locale(), main.currentValue, config['field_format'])
-                              Qt.formatDateTime(date, config['display_format'])
-                          }
-                      }
-            }
-
-                color: main.currentValue === undefined ? 'transparent' : customStyle.fields.fontColor
-
-                MouseArea {
-                    enabled: config['calendar_popup']
-                    anchors.fill: parent
-                    onClicked: {
-                        popup.open()
-                    }
-                }
-
-                onTextEdited: {
-                    var date = Date.fromLocaleString(Qt.locale(), label.text, config['display_format'])
-                    if ( date.toLocaleString() !== "" )
-                    {
-                        if ( main.isDateTimeType )
+                text: if ( value === undefined )
                         {
-                            main.currentValue = date
+                          qsTr('(no date)')
                         }
                         else
                         {
-                            main.currentValue = Qt.formatDateTime(date, config['field_format'])
+                          if ( field.isDateOrTime )
+                          {
+                            // if the field is a QDate, the automatic conversion to JS date [1]
+                            // leads to the creation of date time object with the time zone.
+                            // For instance shapefiles has support for dates but not date/time or time.
+                            // So a date coming from a shapefile as 2001-01-01 will become 2000-12-31 19:00:00 -05 in QML/JS in UTC -05 zone.
+                            // And when formatting this with the display format, this is shown as 2000-12-31.
+                            // So we detect if the field is a date only and revert the time zone offset.
+                            // [1] http://doc.qt.io/qt-5/qtqml-cppintegration-data.html#basic-qt-data-types
+                            if (main.fieldIsDate) {
+                              Qt.formatDateTime( new Date(value.getTime() + value.getTimezoneOffset() * 60000), config['display_format'])
+                            } else {
+                              Qt.formatDateTime(value, config['display_format'])
+                            }
+                          }
+                          else
+                          {
+                            var date = Date.fromLocaleString(Qt.locale(), value, config['field_format'])
+                            Qt.formatDateTime(date, config['display_format'])
+                          }
                         }
-                        valueChanged(main.currentValue, main.currentValue === undefined)
-                    }
-                    else
-                    {
-                        valueChanged(undefined, true)
-                    }
-                }
 
-                onActiveFocusChanged: {
-                    if (activeFocus) {
-                        var mytext = label.text
-                        var cur = label.cursorPosition
-                        while ( cur > 0 )
-                        {
-                            if (!mytext.charAt(cur-1).match("[0-9]") )
-                                break
-                            cur--
-                        }
-                        label.cursorPosition = cur
+                inputMethodHints: Qt.ImhDate
+
+                MouseArea {
+                  anchors.fill: parent
+                  onClicked: {
+                    var usedDate = new Date();
+                    if (value !== undefined && value !== '') {
+                      usedDate = field.isDateOrTime ? value : Date.fromLocaleString(Qt.locale(), value, config['field_format'])
                     }
+
+                    calendar.selectedDate = usedDate
+                    if (main.typeFromFieldFormat === "Time" || main.typeFromFieldFormat === "Date Time") {
+                      hoursSpinBox.value = usedDate.getHours()
+                      minutesSpinBox.value = usedDate.getMinutes()
+                      secondsSpinBox.value = usedDate.getSeconds()
+                    }
+
+                    popup.open()
+                  }
                 }
             }
 
@@ -154,7 +144,11 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: main.currentValue = new Date()
+                    onClicked: {
+                      var newDate = new Date()
+                      var newValue = field.isDateOrTime ? newDate : Qt.formatDateTime(newDate, config['field_format'])
+                      valueChanged(newValue, false)
+                    }
                 }
             }
 
@@ -167,57 +161,167 @@ Item {
         }
 
         Popup {
-            id: popup
-            modal: true
-            focus: true
-            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-            parent: ApplicationWindow.overlay
-            x: (window.width - width) / 2
-            y: (window.height - height) / 2
+          id: popup
+          modal: true
+          focus: true
+          closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+          parent: ApplicationWindow.overlay
+          anchors.centerIn: parent
 
-            ColumnLayout {
+            ScrollView {
+              clip: true
+              width: parent.width
+              height: parent.height
 
-                Controls1.Calendar {
-                    id: calendar
-                    selectedDate: main.currentValue || new Date()
-                    weekNumbersVisible: true
-                    focus: false
+              ColumnLayout {
+                Rectangle {
+                  id: calendarOverlay
+                  color: "transparent"
+                  implicitWidth: Math.min(popup.parent.width, popup.parent.height) * 0.8
+                  implicitHeight: implicitWidth
+                  visible: main.typeFromFieldFormat === "Date" || main.typeFromFieldFormat === "Date Time"
 
-                    onSelectedDateChanged: {
-                        if ( main.isDateTimeType )
-                        {
-                            main.currentValue = selectedDate
-                        }
-                        else
-                        {
-                            main.currentValue = Qt.formatDateTime(selectedDate, config['field_format'])
-                        }
-                    }
+                  MouseArea {
+                      anchors.fill: parent
+                      onClicked: mouse.accepted = true
+                      onWheel: wheel.accepted = true
+                  }
+
+                  GridLayout {
+                      id: calendarGrid
+                      anchors.left: parent.left
+                      anchors.right: parent.right
+                      columns: 1
+                      implicitWidth: calendarOverlay.width
+                      implicitHeight: calendarOverlay.height
+
+                        Controls1.Calendar {
+                          id: calendar
+                          selectedDate: {
+                            var date = field.isDateOrTime ? main.currentValue : Date.fromLocaleString(Qt.locale(), value, config['field_format'])
+                            date || new Date()
+                          }
+                          weekNumbersVisible: true
+                          focus: false
+                          implicitWidth: calendarOverlay.width
+                          implicitHeight: calendarOverlay.height
+                      }
+                  }
+              }
+
+              RowLayout {
+                visible: main.typeFromFieldFormat === "Time" || main.typeFromFieldFormat === "Date Time"
+                Layout.alignment: Qt.AlignHCenter
+
+                  GridLayout {
+                      id: timeGrid
+                      Layout.alignment: Qt.AlignHCenter
+                      Layout.leftMargin: 20
+                      rows: 3
+                      columns: 2
+
+                      Label {
+                          verticalAlignment: Text.AlignVCenter
+                          Layout.preferredHeight: main.rowHeight
+                          Layout.fillWidth: true
+                          Layout.row: 0
+                          Layout.column: 0
+                          text: qsTr( "Hours" )
+
+                      }
+                      SpinBox {
+                          id: hoursSpinBox
+                          Layout.preferredHeight: main.rowHeight
+                          Layout.minimumWidth: main.rowHeight * 3
+                          Layout.fillWidth: true
+                          Layout.row: 0
+                          Layout.column: 1
+                          editable: true
+                          from: 0
+                          to: 23
+                          value: 12
+                          inputMethodHints: Qt.ImhTime
+                          down.indicator.width: main.rowHeight
+                          up.indicator.width: main.rowHeight
+                      }
+                      Label {
+                          verticalAlignment: Text.AlignVCenter
+                          Layout.preferredHeight: main.rowHeight
+                          Layout.fillWidth: true
+                          Layout.row: 1
+                          Layout.column: 0
+                          text: qsTr( "Minutes" )
+                      }
+                      SpinBox {
+                          id: minutesSpinBox
+                          Layout.preferredHeight: main.rowHeight
+                          Layout.minimumWidth: main.rowHeight * 3
+                          Layout.fillWidth: true
+                          Layout.row: 1
+                          Layout.column: 1
+                          editable: true
+                          from: 0
+                          to: 59
+                          value: 30
+                          inputMethodHints: Qt.ImhTime
+                          down.indicator.width: main.rowHeight
+                          up.indicator.width: main.rowHeight
+                      }
+                      Label {
+                          verticalAlignment: Text.AlignVCenter
+                          Layout.preferredHeight: main.rowHeight
+                          Layout.fillWidth: true
+                          Layout.row: 2
+                          Layout.column: 0
+                          text: qsTr( "Seconds" )
+                      }
+                      SpinBox {
+                          id: secondsSpinBox
+                          Layout.preferredHeight: main.rowHeight
+                          Layout.minimumWidth: main.rowHeight * 3
+                          Layout.fillWidth: true
+                          Layout.row: 2
+                          Layout.column: 1
+                          editable: true
+                          from: 0
+                          to: 59
+                          value: 30
+                          inputMethodHints: Qt.ImhTime
+                          down.indicator.width: main.rowHeight
+                          up.indicator.width: main.rowHeight
+                      }
+                  }
+              }
+
+              RowLayout {
+                  Button {
+                      text: qsTr( "OK" )
+                      Layout.fillWidth: true
+                      Layout.preferredHeight: main.rowHeight
+
+                      onClicked: {
+                          var newDate = calendar.selectedDate
+
+                          if (main.typeFromFieldFormat === "Time" || main.typeFromFieldFormat === "Date Time") {
+                            newDate.setHours(hoursSpinBox.value);
+                            newDate.setMinutes(minutesSpinBox.value);
+                            newDate.setSeconds(secondsSpinBox.value);
+                          }
+
+                          var newValue = field.isDateOrTime ? newDate : Qt.formatDateTime(newDate, config['field_format'])
+                          valueChanged(newValue, newValue === undefined)
+                          popup.close()
+                      }
+                  }
                 }
-
-                RowLayout {
-                    Button {
-                        text: qsTr( "Ok" )
-                        Layout.fillWidth: true
-
-                        onClicked: popup.close()
-                    }
-                }
-            }
+             }
+          }
         }
 
         onCurrentValueChanged: {
-            valueChanged(main.currentValue, main.currentValue === undefined)
-            if (main.currentValue === undefined)
-            {
-                label.text = qsTr('(no date)')
-                label.color = customStyle.fields.fontColor
-            }
-            else
-            {
-                label.color = customStyle.fields.fontColor
-                label.text = new Date(value).toLocaleString(Qt.locale(), config['display_format'] )
-            }
+            label.text = field.isDateOrTime ? timeToString(main.currentValue) : main.currentValue
         }
     }
+
 }
+

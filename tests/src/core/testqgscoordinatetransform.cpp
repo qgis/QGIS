@@ -43,6 +43,7 @@ class TestQgsCoordinateTransform: public QObject
     void transform();
     void transformLKS();
     void transformContextNormalize();
+    void transform2DPoint();
     void transformErrorMultiplePoints();
     void transformErrorOnePoint();
     void testDeprecated4240to4326();
@@ -486,6 +487,22 @@ void TestQgsCoordinateTransform::transformContextNormalize()
 #endif
 }
 
+void TestQgsCoordinateTransform::transform2DPoint()
+{
+  // Check that we properly handle 2D point transform
+  QgsCoordinateTransformContext context;
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 3857 ), context );
+  QVERIFY( ct.isValid() );
+  QgsPoint pt( 0.0, 0.0 );
+  double x = pt.x();
+  double y = pt.y();
+  double z = pt.z();
+  ct.transformInPlace( x, y, z );
+
+  QGSCOMPARENEAR( x, 0.0, 0.01 );
+  QGSCOMPARENEAR( y, 0.0, 0.01 );
+  QVERIFY( std::isnan( z ) );
+}
 
 void TestQgsCoordinateTransform::transformErrorMultiplePoints()
 {
@@ -601,17 +618,20 @@ void TestQgsCoordinateTransform::testCustomProjTransform()
 #if PROJ_VERSION_MAJOR >= 6
   // test custom proj string
   // refs https://github.com/qgis/QGIS/issues/32928
-  QgsCoordinateReferenceSystem ss( QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) ) );
-  QgsCoordinateReferenceSystem dd( QStringLiteral( "EPSG:23700" ) );
+  QgsCoordinateReferenceSystem ss( QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=longlat +ellps=GRS80 +towgs84=1,2,3,4,5,6,7 +no_defs" ) ) );
+  QgsCoordinateReferenceSystem dd( QStringLiteral( "EPSG:4326" ) );
   QgsCoordinateTransform ct( ss, dd, QgsCoordinateTransformContext() );
   QVERIFY( ct.isValid() );
   QgsDebugMsg( ct.instantiatedCoordinateOperationDetails().proj );
-  QCOMPARE( ct.instantiatedCoordinateOperationDetails().proj, QStringLiteral( "+proj=pipeline +step +inv +proj=sterea +lat_0=47.4860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +step +proj=push +v_3 +step +proj=cart +ellps=bessel +step +proj=helmert +x=595.75 +y=121.09 +z=515.5 +rx=8.227 +ry=-1.5193 +rz=5.5971 +s=-2.6729 +convention=position_vector +step +inv +proj=helmert +x=52.684 +y=-71.194 +z=-13.975 +rx=0.312 +ry=0.1063 +rz=0.3729 +s=1.0191 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS67 +step +proj=pop +v_3 +step +proj=somerc +lat_0=47.1443937222222 +lon_0=19.0485717777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67" ) );
-
-  QgsPointXY pp( 529127, 479348 );
-  pp = ct.transform( pp );
-  QGSCOMPARENEAR( pp.x(),  679125.816475, 0.00001 );
-  QGSCOMPARENEAR( pp.y(), 217454.893093, 0.00001 );
+  QCOMPARE( ct.instantiatedCoordinateOperationDetails().proj,
+            QStringLiteral( "+proj=pipeline "
+                            "+step +proj=unitconvert +xy_in=deg +xy_out=rad "
+                            "+step +proj=push +v_3 "
+                            "+step +proj=cart +ellps=GRS80 "
+                            "+step +proj=helmert +x=1 +y=2 +z=3 +rx=4 +ry=5 +rz=6 +s=7 +convention=position_vector "
+                            "+step +inv +proj=cart +ellps=WGS84 "
+                            "+step +proj=pop +v_3 "
+                            "+step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
 #endif
 }
 

@@ -176,7 +176,7 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
       result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
-        const QgsPoint *p = static_cast< const QgsPoint * >( mp->geometryN( i ) );
+        const QgsPoint *p = mp->pointN( i );
         result->addGeometry( QgsGeometry::createWedgeBuffer( *p, azimuth, width, outerRadius, innerRadius ).constGet()->clone() );
       }
       f.setGeometry( QgsGeometry( std::move( result ) ) );

@@ -155,7 +155,7 @@ Returns whether the effect will colorize a picture.
     void setColorizeColor( const QColor &colorizeColor );
 %Docstring
 Sets the color used for colorizing a picture. This is only used if
-setColorizeOn() is set to ``True``.
+:py:func:`~QgsColorEffect.setColorizeOn` is set to ``True``.
 
 :param colorizeColor: colorization color
 
@@ -169,7 +169,7 @@ setColorizeOn() is set to ``True``.
     QColor colorizeColor() const;
 %Docstring
 Returns the color used for colorizing a picture. This is only used if
-colorizeOn() is set to ``True``.
+:py:func:`~QgsColorEffect.colorizeOn` is set to ``True``.
 
 :return: colorization color
 
@@ -183,7 +183,7 @@ colorizeOn() is set to ``True``.
     void setColorizeStrength( int colorizeStrength );
 %Docstring
 Sets the strength for colorizing a picture. This is only used if
-setColorizeOn() is set to ``True``.
+:py:func:`~QgsColorEffect.setColorizeOn` is set to ``True``.
 
 :param colorizeStrength: colorization strength, between 0 and 100
 
@@ -197,7 +197,7 @@ setColorizeOn() is set to ``True``.
     int colorizeStrength() const;
 %Docstring
 Returns the strength used for colorizing a picture. This is only used if
-setColorizeOn() is set to ``True``.
+:py:func:`~QgsColorEffect.setColorizeOn` is set to ``True``.
 
 :return: colorization strength, between 0 and 100
 

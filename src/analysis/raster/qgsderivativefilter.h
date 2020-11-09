@@ -23,13 +23,13 @@
 
 /**
  * \ingroup analysis
- * Adds the ability to calculate derivatives in x- and y-directions. Needs to be subclassed (e.g. for slope and aspect)*/
+ * Adds the ability to calculate derivatives in x- and y-directions. Needs to be subclassed (e.g. for slope and aspect).
+*/
 class ANALYSIS_EXPORT QgsDerivativeFilter : public QgsNineCellFilter
 {
   public:
     QgsDerivativeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
-    //to be implemented by subclasses
     float processNineCellWindow( float *x11, float *x21, float *x31,
                                  float *x12, float *x22, float *x32,
                                  float *x13, float *x23, float *x33 ) override = 0;

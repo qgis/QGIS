@@ -1,0 +1,120 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/mesh/qgsmeshtriangulation.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMeshTriangulation : QObject
+{
+%Docstring
+
+Class that handles mesh creation with Delaunay constrained triangulation
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmeshtriangulation.h"
+%End
+  public:
+
+    QgsMeshTriangulation();
+%Docstring
+Constructor
+%End
+
+    ~QgsMeshTriangulation();
+
+    bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = 0, long featureCount = 1 );
+%Docstring
+Adds vertices to the triangulation from a feature iterator, return ``True`` if successful.
+
+:param vertexFeatureIterator: the feature iterator of vertices to insert
+:param valueAttribute: the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
+:param transform: the coordinates transform used to transform coordinates
+:param feedback: feedback argument may be specified to allow cancellation and progress reports
+:param featureCount: the count of feature to allow progress report of the feedback
+%End
+
+    bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = 0, long featureCount = 1 );
+%Docstring
+Adds break lines from a vector layer, return ``True`` if successful.
+
+:param lineFeatureIterator: the feature iterator of break lines to insert
+:param valueAttribute: the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
+:param transformContext: the coordinates transform context used to transform coordinates
+:param feedback: feedback argument may be specified to allow cancellation and progress reports
+:param featureCount: the count of feature to allow progress report of the feedback
+
+.. warning::
+
+   if the feature iterator contains only point geometries, the vertices will be added only without treating them as breaklines
+%End
+
+    QgsMesh triangulatedMesh( QgsFeedback *feedback = 0 ) const;
+%Docstring
+Returns the triangulated mesh
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the coordinate reference system used for the triangulation
+%End
+
+  private:
+    QgsMeshTriangulation( const QgsMeshTriangulation &rhs );
+};
+
+
+class QgsMeshZValueDatasetGroup: QgsMeshDatasetGroup
+{
+%Docstring
+
+Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmeshtriangulation.h"
+%End
+  public:
+
+    QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh );
+%Docstring
+Constructor
+
+:param datasetGroupName: the name of the dataset group
+:param mesh: the mesh used to create the Z value dataset
+%End
+
+    virtual void initialize();
+
+    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const;
+
+    virtual int datasetCount() const;
+
+    virtual QgsMeshDataset *dataset( int index ) const;
+
+    virtual QgsMeshDatasetGroup::Type type() const;
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+  private:
+    QgsMeshZValueDatasetGroup( const QgsMeshZValueDatasetGroup &rhs );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/mesh/qgsmeshtriangulation.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

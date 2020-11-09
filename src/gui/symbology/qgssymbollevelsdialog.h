@@ -69,7 +69,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     int mMaxLayers;
 
     QgsFeatureRenderer *mRenderer = nullptr;
-    QgsLegendSymbolList mList;
+    QgsLegendSymbolList mLegendSymbols;
 
     //! whether symbol layers always should be used (default FALSE)
     bool mForceOrderingEnabled;

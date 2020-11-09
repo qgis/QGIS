@@ -1,6 +1,7 @@
 {
   "name": "attributes",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns a map containing all attributes from a feature, with field names as map keys.",
   "variants": [
     { "variant": "Variant 1",

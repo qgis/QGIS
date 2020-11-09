@@ -37,7 +37,8 @@ from qgis.core import (
     QgsRectangle,
     QgsGeometryGeneratorSymbolLayer,
     QgsSymbol,
-    QgsMultiRenderChecker
+    QgsMultiRenderChecker,
+    QgsMapSettings
 )
 
 from qgis.testing import start_app, unittest
@@ -160,6 +161,31 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         renderchecker.setMapSettings(self.mapsettings)
         renderchecker.setControlName('expected_geometrygenerator_buffer_points')
         res = renderchecker.runTest('geometrygenerator_buffer_points')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def test_multi_poly_opacity(self):
+        # test that multi-type features are only rendered once
+
+        multipoly = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'multipatch.shp'), 'Polygons', 'ogr')
+
+        sym = QgsFillSymbol.createSimple({'color': '#77fdbf6f', 'outline_color': 'black'})
+
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, -0.01)', 'outline_color': 'black'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setSubSymbol(sym)
+        geom_symbol = QgsFillSymbol()
+        geom_symbol.changeSymbolLayer(0, buffer_layer)
+        multipoly.renderer().setSymbol(geom_symbol)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setExtent(multipoly.extent())
+        mapsettings.setLayers([multipoly])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlName('expected_geometrygenerator_opacity')
+        res = renderchecker.runTest('geometrygenerator_opacity')
         self.report += renderchecker.report()
         self.assertTrue(res)
 

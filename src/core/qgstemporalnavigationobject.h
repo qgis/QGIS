@@ -217,6 +217,17 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      */
     void navigationModeChanged( NavigationMode mode );
 
+    /**
+     * Emitted whenever the temporalExtent \a extent changes.
+     */
+    void temporalExtentsChanged( const QgsDateTimeRange &extent );
+
+    /**
+     * Emitted whenever the frameDuration \a interval of the controller changes.
+     */
+    void temporalFrameDurationChanged( const QgsInterval &interval );
+
+
   public slots:
 
     /**
@@ -302,6 +313,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     bool mLoopAnimation = false;
 
     bool mCumulativeTemporalRange = false;
+
+    int mBlockUpdateTemporalRangeSignal = 0;
 
     QgsTemporalNavigationObject( const QgsTemporalNavigationObject & ) = delete;
     QgsTemporalNavigationObject &operator= ( const QgsTemporalNavigationObject & ) = delete;

@@ -114,6 +114,8 @@ void QgsLayoutItemsListView::setCurrentLayout( QgsLayout *layout )
 
 void QgsLayoutItemsListView::showContextMenu( QPoint point )
 {
+  if ( !mModel )
+    return;
   QModelIndex index = indexAt( point );
   QgsLayoutItem *item = mModel->itemFromIndex( index );
   if ( !item )

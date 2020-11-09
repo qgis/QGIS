@@ -85,12 +85,12 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Returns the squared 2D distance between two points.
      */
-    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Returns the squared distance between a point and a line.
      */
-    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon );
+    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL;
 
     /**
      * Computes the intersection between two lines. Z dimension is
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersection Output parameter, the intersection point
      * \returns Whether the lines intersect
      */
-    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection SIP_OUT );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * \brief Compute the intersection between two segments
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersectionPoint Output parameter, the intersection point
      * \param isIntersection Output parameter, return TRUE if an intersection is found
      * \param tolerance The tolerance to use
-     * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
+     * \param acceptImproperIntersection By default, this method returns TRUE only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
      *
      * ### Example
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsGeometryUtils
      *   # (True, 'Point (0 0)', True)
      * \endcode
      */
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, double tolerance = 1e-8, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, double tolerance = 1e-8, bool acceptImproperIntersection = false ) SIP_HOLDGIL;
 
     /**
      * \brief Compute the intersection of a line and a circle.
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
-                                        QgsPointXY &intersection SIP_INOUT );
+                                        QgsPointXY &intersection SIP_INOUT ) SIP_HOLDGIL;
 
     /**
      * Calculates the intersections points between the circle with center \a center1 and
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static int circleCircleIntersections( QgsPointXY center1, double radius1,
                                           QgsPointXY center2, double radius2,
-                                          QgsPointXY &intersection1 SIP_OUT, QgsPointXY &intersection2 SIP_OUT );
+                                          QgsPointXY &intersection1 SIP_OUT, QgsPointXY &intersection2 SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * Calculates the tangent points between the circle with the specified \a center and \a radius
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.2
      */
     static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
-                                       const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT );
+                                       const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * Calculates the outer tangent points for two circles, centered at \a center1 and
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsGeometryUtils
     static int circleCircleOuterTangents(
       const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
       QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
-      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT );
+      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * Calculates the inner tangent points for two circles, centered at \a
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsGeometryUtils
     static int circleCircleInnerTangents(
       const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
       QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
-      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT );
+      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * \brief Project the point on a segment
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param s2 The segment end point
      * \returns The projection of the point on the segment
      */
-    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
+    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) SIP_HOLDGIL
     {
       double nx = s2.y() - s1.y();
       double ny = -( s2.x() - s1.x() );
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsGeometryUtils
      * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
      * on the line, or exactly in line with the segment) and the result is undefined.
      */
-    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) SIP_HOLDGIL;
 
     /**
      * Returns a value < 0 if the point \a point is left of the line from \a p1 -> \a p2.
@@ -281,12 +281,12 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.6
      */
-    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 );
+    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 ) SIP_HOLDGIL;
 
     /**
      * Returns a point a specified \a distance toward a second point.
      */
-    static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
+    static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance ) SIP_HOLDGIL;
 
     /**
      * Calculates the point a specified \a distance from (\a x1, \a y1) toward a second point (\a x2, \a y2).
@@ -309,14 +309,14 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.4
      */
-    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance );
+    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) SIP_HOLDGIL;
 
     //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
-    static double ccwAngle( double dy, double dx );
+    static double ccwAngle( double dy, double dx ) SIP_HOLDGIL;
 
     //! Returns radius and center of the circle through pt1, pt2, pt3
     static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius SIP_OUT,
-                                    double &centerX SIP_OUT, double &centerY SIP_OUT );
+                                    double &centerX SIP_OUT, double &centerY SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the circle defined by three angles is ordered clockwise.
@@ -324,22 +324,22 @@ class CORE_EXPORT QgsGeometryUtils
      * The angles are defined counter-clockwise from the origin, i.e. using
      * Euclidean angles as opposed to geographic "North up" angles.
      */
-    static bool circleClockwise( double angle1, double angle2, double angle3 );
+    static bool circleClockwise( double angle1, double angle2, double angle3 ) SIP_HOLDGIL;
 
     //! Returns TRUE if, in a circle, angle is between angle1 and angle2
-    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );
+    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise ) SIP_HOLDGIL;
 
     /**
      * Returns TRUE if an angle is between angle1 and angle3 on a circle described by
      * angle1, angle2 and angle3.
      */
-    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 );
+    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) SIP_HOLDGIL;
 
     //! Length of a circular string segment defined by pt1, pt2, pt3
-    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 );
+    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
 
     //! Calculates angle of a circular string part defined by pt1, pt2, pt3
-    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
+    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
 
     /**
      * Calculates midpoint on circle passing through \a p1 and \a p2, closest to
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsGeometryUtils
      * first 3D point amongst \a p1 and \a p2.
      * \see segmentMidPointFromCenter()
      */
-    static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result SIP_OUT, double radius, const QgsPoint &mousePos );
+    static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result SIP_OUT, double radius, const QgsPoint &mousePos ) SIP_HOLDGIL;
 
     /**
      * Calculates the midpoint on the circle passing through \a p1 and \a p2,
@@ -360,10 +360,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \see segmentMidPoint()
      * \since QGIS 3.2
      */
-    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true ) SIP_HOLDGIL;
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
-    static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
+    static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 ) SIP_HOLDGIL;
 
     /**
      * Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsGeometryUtils
                                bool hasZ = false, bool hasM = false );
 
     /**
-     * Returns true if point \a b is on the arc formed by points \a a1, \a a2, and \a a3, but not within
+     * Returns TRUE if point \a b is on the arc formed by points \a a1, \a a2, and \a a3, but not within
      * that arc portion already described by \a a1, \a a2 and \a a3.
      *
      * The \a distanceTolerance specifies the maximum deviation allowed between the original location
@@ -390,20 +390,20 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.14
      */
     static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
-                                   double pointSpacingAngleTolerance );
+                                   double pointSpacingAngleTolerance ) SIP_HOLDGIL;
 
     /**
      * For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
      * Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
      * \since 3.0
      */
-    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );
+    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
      * \since 3.0
      */
-    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 );
+    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_HOLDGIL;
 
     /**
      * Returns a list of points contained in a WKT string.
@@ -452,7 +452,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param angle angle in radians
      * \returns equivalent angle within the range [0, 2 pi)
      */
-    static double normalizedAngle( double angle );
+    static double normalizedAngle( double angle ) SIP_HOLDGIL;
 
     /**
      * Calculates the direction of line joining two points in radians, clockwise from the north direction.
@@ -462,7 +462,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param y2 y-coordinate of line end
      * \returns angle in radians. Returned value is undefined if start and end point are the same.
      */
-    static double lineAngle( double x1, double y1, double x2, double y2 );
+    static double lineAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL;
 
     /**
      * Calculates the angle between the lines AB and BC, where AB and BC described
@@ -476,7 +476,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns angle between lines in radians. Returned value is undefined if two or more points are equal.
      */
     static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
-                                           double x3, double y3 );
+                                           double x3, double y3 ) SIP_HOLDGIL;
 
     /**
      * Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
@@ -487,13 +487,13 @@ class CORE_EXPORT QgsGeometryUtils
      * \param y2 y-coordinate of line end
      * \returns angle in radians. Returned value is undefined if start and end point are the same.
      */
-    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
+    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL;
 
     /**
      * Calculates the average angle (in radians) between the two linear segments from
      * (\a x1, \a y1) to (\a x2, \a y2) and (\a x2, \a y2) to (\a x3, \a y3).
      */
-    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
+    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
 
     /**
      * Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
@@ -501,7 +501,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param a2 second angle (in radians)
      * \returns average angle (in radians)
      */
-    static double averageAngle( double a1, double a2 );
+    static double averageAngle( double a1, double a2 ) SIP_HOLDGIL;
 
     /**
      * Parses a WKT block of the format "TYPE( contents )" and returns a pair of geometry type to contents ("Pair(wkbType, "contents")")
@@ -541,7 +541,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \endcode
      * \since QGIS 3.0
      */
-    static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Interpolates the position of a point a \a fraction of the way along
@@ -556,7 +556,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \see interpolatePointOnLineByValue()
      * \since QGIS 3.0.2
      */
-    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction );
+    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction ) SIP_HOLDGIL;
 
     /**
      * Interpolates the position of a point a \a fraction of the way along
@@ -574,7 +574,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \see interpolatePointOnLineByValue()
      * \since QGIS 3.0.2
      */
-    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
+    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction ) SIP_HOLDGIL;
 
     /**
      * Interpolates the position of a point along the line from (\a x1, \a y1)
@@ -588,7 +588,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \see interpolatePointOnLine()
      * \since QGIS 3.0.2
      */
-    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
+    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value ) SIP_HOLDGIL;
 
     /**
      * Returns the gradient of a line defined by points \a pt1 and \a pt2.
@@ -597,7 +597,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns The gradient of this linear entity, or infinity if vertical
      * \since QGIS 3.0
      */
-    static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
@@ -609,7 +609,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.0
      */
     static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
-                              double &a SIP_OUT, double &b SIP_OUT, double &c SIP_OUT );
+                              double &a SIP_OUT, double &b SIP_OUT, double &c SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * \brief Create a perpendicular line segment from p to segment [s1, s2]
@@ -618,7 +618,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param s2 The segment end point
      * \returns A line (segment) from p to perpendicular point on segment [s1, s2]
      */
-    static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
+    static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) SIP_HOLDGIL;
 
 
     /**
@@ -630,7 +630,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \return the shortest distance
      */
     static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
-                                     const QgsVector3D &P2, const QgsVector3D &P22 );
+                                     const QgsVector3D &P2, const QgsVector3D &P22 ) SIP_HOLDGIL;
 
     /**
      * A method to project one skew line onto another.
@@ -645,7 +645,7 @@ class CORE_EXPORT QgsGeometryUtils
     static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
                                      const QgsVector3D &P2, const QgsVector3D &P22,
                                      QgsVector3D &X1  SIP_OUT,
-                                     double epsilon = 0.0001 );
+                                     double epsilon = 0.0001 ) SIP_HOLDGIL;
 
     /**
      * An algorithm to calculate an (approximate) intersection of two lines in 3D.
@@ -685,7 +685,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
                                      const QgsVector3D &Lb1, const QgsVector3D &Lb2,
-                                     QgsVector3D &intersection  SIP_OUT );
+                                     QgsVector3D &intersection  SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * Returns the area of the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
@@ -693,7 +693,7 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.10
      */
-    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) SIP_HOLDGIL;
 
     /**
      * Returns a weighted point inside the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
@@ -713,7 +713,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.10
      */
     static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
-                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT );
+                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * A Z dimension is added to \a point if one of the point in the list

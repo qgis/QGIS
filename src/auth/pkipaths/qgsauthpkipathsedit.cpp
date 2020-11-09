@@ -108,8 +108,8 @@ void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap &configmap )
   lePkiPathsCert->setText( configmap.value( QStringLiteral( "certpath" ) ) );
   lePkiPathsKey->setText( configmap.value( QStringLiteral( "keypath" ) ) );
   lePkiPathsKeyPass->setText( configmap.value( QStringLiteral( "keypass" ) ) );
-  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
-  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
+  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
+  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
 
   validateConfig();
 }

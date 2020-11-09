@@ -25,6 +25,8 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
+#include "qgsmssqlprovider.h"
+
 class QgsMssqlProvider;
 
 class QgsMssqlFeatureSource final: public QgsAbstractFeatureSource
@@ -36,7 +38,9 @@ class QgsMssqlFeatureSource final: public QgsAbstractFeatureSource
 
   private:
     QgsFields mFields;
-    QString mFidColName;
+    QgsMssqlPrimaryKeyType mPrimaryKeyType;
+    QList<int> mPrimaryKeyAttrs;
+    std::shared_ptr<QgsMssqlSharedData> mShared;
     long mSRId;
 
     /* sql geo type */
@@ -83,13 +87,12 @@ class QgsMssqlFeatureIterator final: public QgsAbstractFeatureIteratorFromSource
     bool close() override;
 
   protected:
-
     bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
     void BuildStatement( const QgsFeatureRequest &request );
-
+    QString whereClauseFid( QgsFeatureId featureId );
 
   private:
 
@@ -109,9 +112,6 @@ class QgsMssqlFeatureIterator final: public QgsAbstractFeatureIteratorFromSource
     QString mOrderByClause;
 
     QString mFallbackStatement;
-
-    // Field index of FID column
-    int mFidCol = -1;
 
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;

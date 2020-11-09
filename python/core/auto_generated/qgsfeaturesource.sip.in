@@ -145,10 +145,10 @@ If a subset of attributes has been set for the request, then only
 those selected fields will be present in the output layer.
 
 The CRS for the output layer will match the input layer, unless
-QgsFeatureRequest.setDestinationCrs() has been called with a valid :py:class:`QgsCoordinateReferenceSystem`.
-In this case the output layer will match the QgsFeatureRequest.destinationCrs() CRS.
+:py:func:`QgsFeatureRequest.setDestinationCrs()` has been called with a valid :py:class:`QgsCoordinateReferenceSystem`.
+In this case the output layer will match the :py:func:`QgsFeatureRequest.destinationCrs()` CRS.
 
-The returned layer WKB type will match wkbType(), unless the QgsFeatureRequest.NoGeometry flag is set
+The returned layer WKB type will match :py:func:`~QgsFeatureSource.wkbType`, unless the QgsFeatureRequest.NoGeometry flag is set
 on the ``request``. In that case the returned layer will not be a spatial layer.
 
 An optional ``feedback`` argument can be used to cancel the materialization

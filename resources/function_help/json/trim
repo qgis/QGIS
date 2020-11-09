@@ -1,6 +1,7 @@
 {
   "name": "trim",
   "type": "function",
+  "groups": ["String"],
   "description": "Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.",
   "arguments": [ {"arg":"string","description":"string to trim"}],
   "examples": [ { "expression":"trim('   hello world    ')", "returns":"'hello world'"}

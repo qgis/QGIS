@@ -289,17 +289,24 @@ void QgsBrowserProxyModel::setShownDataItemProviderKeyFilter( const QStringList 
 {
   mShownDataItemsKeys = filter;
   invalidateFilter();
-
 }
 
 
 bool QgsBrowserProxyModel::hasChildren( const QModelIndex &parent ) const
 {
   bool isFertile { QSortFilterProxyModel::hasChildren( parent ) };
-  if ( isFertile && ! mShowLayers && parent.isValid() )
+  if ( isFertile && parent.isValid() )
   {
     QgsDataItem *item = dataItem( parent );
-    return ! item->layerCollection();
+    if ( ! mShowLayers )
+    {
+      return ! item->layerCollection();
+    }
+    // Hide everything below layers if filter is set
+    else if ( mFilterByLayerType && qobject_cast< QgsLayerItem * >( item ) )
+    {
+      return false;
+    }
   }
   return isFertile;
 }

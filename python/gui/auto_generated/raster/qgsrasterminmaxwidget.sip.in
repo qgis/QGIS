@@ -32,7 +32,7 @@ Sets the extent to use for minimum and maximum value calculation.
 
 .. note::
 
-   if a map canvas is set using setMapCanvas(), its extent will take
+   if a map canvas is set using :py:func:`~QgsRasterMinMaxWidget.setMapCanvas`, its extent will take
    precedence over any extent set using this method.
 %End
 
@@ -40,7 +40,7 @@ Sets the extent to use for minimum and maximum value calculation.
 %Docstring
 Sets the map canvas associated with the widget. This allows the widget to retrieve the current
 map extent from the canvas. If a canvas is set it will take precedence over any extent
-set from calling setExtent().
+set from calling :py:func:`~QgsRasterMinMaxWidget.setExtent`.
 
 :param canvas: map canvas
 

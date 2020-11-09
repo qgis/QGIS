@@ -251,6 +251,14 @@ void TestQgsSymbol::testParseColor()
   colorTests.insert( QStringLiteral( "rgb(256,60,0)" ), qMakePair( QColor(), false ) );
   colorTests.insert( QStringLiteral( " rgb(  127, 60 ,  0 ) " ), qMakePair( QColor( 127, 60, 0 ), false ) );
   colorTests.insert( QStringLiteral( "rgb(127,60,0);" ), qMakePair( QColor( 127, 60, 0 ), false ) );
+  colorTests.insert( QStringLiteral( "hsl(30,19%,90%)" ), qMakePair( QColor::fromHsl( 30, 48, 229 ), false ) );
+  colorTests.insert( QStringLiteral( "hsl( 30 , 19 % , 90 % )" ), qMakePair( QColor::fromHsl( 30, 48, 229 ), false ) );
+  colorTests.insert( QStringLiteral( " hsl(  30, 19%,  90% ) " ), qMakePair( QColor::fromHsl( 30, 48, 229 ), false ) );
+  colorTests.insert( QStringLiteral( "hsl(30,19%,90%);" ), qMakePair( QColor::fromHsl( 30, 48, 229 ), false ) );
+  colorTests.insert( QStringLiteral( "hsla(30,19%,90%,0.4)" ), qMakePair( QColor::fromHsl( 30, 48, 229, 102 ), true ) );
+  colorTests.insert( QStringLiteral( "hsla( 30 , 19 % , 90 % , 0.4 )" ), qMakePair( QColor::fromHsl( 30, 48, 229, 102 ), true ) );
+  colorTests.insert( QStringLiteral( " hsla(  30, 19%,  90%, 0.4 ) " ), qMakePair( QColor::fromHsl( 30, 48, 229, 102 ), true ) );
+  colorTests.insert( QStringLiteral( "hsla(30,19%,90%,0.4);" ), qMakePair( QColor::fromHsl( 30, 48, 229, 102 ), true ) );
   colorTests.insert( QStringLiteral( "(127,60,0);" ), qMakePair( QColor( 127, 60, 0 ), false ) );
   colorTests.insert( QStringLiteral( "(127,60,0)" ), qMakePair( QColor( 127, 60, 0 ), false ) );
   colorTests.insert( QStringLiteral( "127,060,000" ), qMakePair( QColor( 127, 60, 0 ), false ) );

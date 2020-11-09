@@ -159,10 +159,10 @@ namespace QgsWfs
       }
 
       const QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
-      if ( !keywords.isEmpty() && !keywords.join( QStringLiteral( ", " ) ).isEmpty() )
+      if ( !keywords.isEmpty() && !keywords.join( QLatin1String( ", " ) ).isEmpty() )
       {
         QDomElement keywordsElem = doc.createElement( QStringLiteral( "Keywords" ) );
-        QDomText keywordsText = doc.createTextNode( keywords.join( QStringLiteral( ", " ) ) );
+        QDomText keywordsText = doc.createTextNode( keywords.join( QLatin1String( ", " ) ) );
         keywordsElem.appendChild( keywordsText );
         serviceElem.appendChild( keywordsElem );
       }

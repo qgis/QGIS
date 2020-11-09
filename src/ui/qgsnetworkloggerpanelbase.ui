@@ -39,10 +39,8 @@
      </property>
      <addaction name="mActionRecord"/>
      <addaction name="mActionClear"/>
-     <addaction name="mActionShowSuccessful"/>
-     <addaction name="mActionShowTimeouts"/>
-     <addaction name="separator"/>
      <addaction name="mActionSaveLog"/>
+     <addaction name="separator"/>
     </widget>
    </item>
    <item>
@@ -83,7 +81,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPlay.svg</normaloff>:/images/themes/default/mActionPlay.svg</iconset>
+     <normaloff>:/images/themes/default/mActionRecord.svg</normaloff>:/images/themes/default/mActionRecord.svg</iconset>
    </property>
    <property name="text">
     <string>Record Log</string>

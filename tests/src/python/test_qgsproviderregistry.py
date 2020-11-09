@@ -61,6 +61,36 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertIsNone(QgsProviderRegistry.instance().createProvider('asdasdasdasdasd', ''))
 
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testShouldDeferUriForOtherProvidersEpt(self):
+        self.assertTrue(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/ept.json', 'ogr'))
+        self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/ept.json', 'ept'))
+        self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/my.json', 'ogr'))
+
+    def testUriIsBlocklisted(self):
+        self.assertFalse(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif'))
+        self.assertFalse(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.shp'))
+
+        # internal details only -- we should be hiding these uris!
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.shp.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.aux.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.AUX.XML'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.aux.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.AUX.XML'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.png.aux.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.xml'))
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testFilePointCloudFilters(self):
+        parts = QgsProviderRegistry.instance().filePointCloudFilters().split(';;')
+        self.assertTrue(parts[0].startswith('All Supported Files ('))
+        all_filter = parts[0][21:-1]
+        self.assertIn('ept.json', all_filter.split(' '))
+        self.assertIn('EPT.JSON', all_filter.split(' '))
+
+        self.assertEqual(parts[1], 'All Files (*.*)')
+        self.assertIn('Entwine Point Clouds (ept.json EPT.JSON)', parts)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -389,7 +389,7 @@ QPixmap QgsGradientStopEditor::transparentBackground()
 
 void QgsGradientStopEditor::drawStopMarker( QPainter &painter, QPoint topMiddle, const QColor &color, bool selected )
 {
-  painter.save();
+  QgsScopedQPainterState painterState( &painter );
   painter.setRenderHint( QPainter::Antialiasing );
   painter.setBrush( selected ?  QColor( 150, 150, 150 ) : Qt::white );
   painter.setPen( selected ? Qt::black : QColor( 150, 150, 150 ) );
@@ -405,7 +405,6 @@ void QgsGradientStopEditor::drawStopMarker( QPainter &painter, QPoint topMiddle,
   // draw color on top
   painter.setBrush( color );
   painter.drawPolygon( sInnerTriangle );
-  painter.restore();
 }
 
 double QgsGradientStopEditor::pointToRelativePosition( int x ) const

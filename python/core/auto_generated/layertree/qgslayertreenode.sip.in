@@ -115,13 +115,13 @@ Set name of the node. Emits nameChanged signal.
     static QgsLayerTreeNode *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read layer tree from XML. Returns new instance.
-Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeNode.resolveReferences` afterwards to do it.
 %End
 
     static QgsLayerTreeNode *readXml( QDomElement &element, const QgsProject *project ) /Factory/;
 %Docstring
 Read layer tree from XML. Returns new instance.
-Also resolves textual references to layers from the project (calls resolveReferences() internally).
+Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeNode.resolveReferences` internally).
 
 .. versionadded:: 3.0
 %End
@@ -144,7 +144,7 @@ Create a copy of the node. Returns new instance
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) = 0;
 %Docstring
 Turn textual references to layers into map layer object from project.
-This method should be called after readXml()
+This method should be called after :py:func:`~QgsLayerTreeNode.readXml`
 If ``looseMatching`` is ``True`` then a looser match will be used, where a layer
 will match if the name, public source, and data provider match. This can be
 used to match legend customization from different projects where layers

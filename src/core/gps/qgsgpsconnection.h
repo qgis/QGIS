@@ -230,6 +230,13 @@ class CORE_EXPORT QgsGpsInformation
      * \since QGIS 3.10
      */
     FixStatus fixStatus() const;
+
+    /**
+     * Returns a descriptive string for the signal quality.
+     *
+     * \since QGIS 3.16
+     */
+    QString qualityDescription() const;
 };
 
 /**
@@ -268,8 +275,8 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
     /**
      * Constructor
-        \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
-      */
+     * \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
+     */
     QgsGpsConnection( QIODevice *dev SIP_TRANSFER );
     ~QgsGpsConnection() override;
     //! Opens connection to device

@@ -38,7 +38,7 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   Q_ASSERT( manager );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->setMargin( 0 );
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
   mTreeView = new QTreeView();
   mModel = new QgsTaskManagerModel( manager, this );
   mTreeView->setModel( mModel );

@@ -56,6 +56,20 @@ The test uses a "select count(*) from ..." query to test the SQL
 statement.
 %End
 
+    void saveQuery();
+%Docstring
+Save query to the XML file
+
+.. versionadded:: 3.16
+%End
+
+    void loadQuery();
+%Docstring
+Load query from the XML file
+
+.. versionadded:: 3.16
+%End
+
     void setDatasourceDescription( const QString &uri );
 
 };

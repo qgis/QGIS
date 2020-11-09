@@ -38,7 +38,8 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
       PreviewGrayscale,
       PreviewMono,
       PreviewProtanope,
-      PreviewDeuteranope
+      PreviewDeuteranope,
+      PreviewTritanope
     };
 
     QgsPreviewEffect( QObject *parent SIP_TRANSFERTHIS );
@@ -67,8 +68,10 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
     PreviewMode mMode;
 
     QRgb simulateColorBlindness( QRgb &originalColor, PreviewMode type );
-    void simulateProtanopeLMS( double &L, double &M, double &S );
-    void simulateDeuteranopeLMS( double &L, double &M, double &S );
+    void simulateGrayscale( int &r, int &g, int &b, int &red, int &green, int &blue );
+    void simulateProtanope( int &r, int &g, int &b, int &red, int &green, int &blue );
+    void simulateDeuteranope( int &r, int &g, int &b, int &red, int &green, int &blue );
+    void simulateTritanope( int &r, int &g, int &b, int &red, int &green, int &blue );
 };
 
 #endif // QGSPREVIEWEFFECT_H

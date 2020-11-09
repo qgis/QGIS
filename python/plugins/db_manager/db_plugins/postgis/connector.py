@@ -29,7 +29,6 @@ from functools import cmp_to_key
 from qgis.PyQt.QtCore import (
     QRegExp,
     QFile,
-    QCoreApplication,
     QVariant,
     QDateTime,
     QTime,
@@ -39,17 +38,18 @@ from qgis.PyQt.QtCore import (
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
-    QgsCredentials,
     QgsVectorLayer,
     QgsDataSourceUri,
     QgsProviderRegistry,
     QgsProviderConnectionException,
+    QgsFeedback,
 )
 
 from ..connector import DBConnector
-from ..plugin import ConnectionError, DbError, Table
+from ..plugin import DbError, Table
 
 import os
+import re
 import psycopg2
 import psycopg2.extensions
 
@@ -68,12 +68,13 @@ class CursorAdapter():
         pass
         # print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
 
-    def __init__(self, connection, sql=None):
+    def __init__(self, connection, sql=None, feedback=None):
         self._debug("Created with sql: " + str(sql))
         self.connection = connection
         self.sql = sql
         self.result = None
         self.cursor = 0
+        self.feedback = feedback
         self.closed = False
         if (self.sql is not None):
             self._execute()
@@ -103,7 +104,7 @@ class CursorAdapter():
             return
         self._debug("execute called with sql " + self.sql)
         try:
-            self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
+            self.result = self._toStrResultSet(self.connection.executeSql(self.sql, feedback=self.feedback))
         except QgsProviderConnectionException as e:
             raise DbError(e, self.sql)
         self._debug("execute returned " + str(len(self.result)) + " rows")
@@ -116,28 +117,49 @@ class CursorAdapter():
 
         if self._description is None:
 
-            uri = QgsDataSourceUri(self.connection.uri())
-
-            # TODO: make this part provider-agnostic
-            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ') as foo)')
-            uri.setKeyColumn('__rid__')
-            # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
-            # TODO: re-use the VectorLayer for fetching rows in batch mode
-            vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
-
-            fields = vl.fields()
             self._description = []
-            for i in range(1, len(fields)):  # skip first field (__rid__)
-                f = fields[i]
-                self._description.append([
-                    f.name(),  # name
-                    f.type(),  # type_code
-                    f.length(),  # display_size
-                    f.length(),  # internal_size
-                    f.precision(),  # precision
-                    None,  # scale
-                    True  # null_ok
-                ])
+
+            if re.match('^SHOW', self.sql.strip().upper()):
+                try:
+                    count = len(self.connection.executeSql(self.sql)[0])
+                except QgsProviderConnectionException:
+                    count = 1
+                for i in range(count):
+                    self._description.append([
+                        '',  # name
+                        '',  # type_code
+                        -1,  # display_size
+                        -1,  # internal_size
+                        -1,  # precision
+                        None,  # scale
+                        True  # null_ok
+                    ])
+            else:
+                uri = QgsDataSourceUri(self.connection.uri())
+
+                # TODO: make this part provider-agnostic
+                sql = self.sql if self.sql.upper().find(' LIMIT ') >= 0 else self.sql + ' LIMIT 1 '
+                uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + sql + ') as foo)')
+                uri.setKeyColumn('__rid__')
+                uri.setParam('checkPrimaryKeyUnicity', '0')
+                # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
+                # TODO: re-use the VectorLayer for fetching rows in batch mode
+                vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
+
+                fields = vl.fields()
+
+                for i in range(1, len(fields)):  # skip first field (__rid__)
+                    f = fields[i]
+                    self._description.append([
+                        f.name(),  # name
+                        f.type(),  # type_code
+                        f.length(),  # display_size
+                        f.length(),  # internal_size
+                        f.precision(),  # precision
+                        None,  # scale
+                        True  # null_ok
+                    ])
+
             self._debug("get_description returned " + str(len(self._description)) + " cols")
 
         return self._description
@@ -228,6 +250,8 @@ class PostGisDBConnector(DBConnector):
         self._checkGeometryColumnsTable()
         self._checkRasterColumnsTable()
 
+        self.feedback = None
+
     def _connectionInfo(self):
         return str(self.uri().connectionInfo(True))
 
@@ -306,6 +330,8 @@ class PostGisDBConnector(DBConnector):
     def cancel(self):
         if self.connection:
             self.connection.cancel()
+        if self.core_connection:
+            self.feedback.cancel()
 
     def getInfo(self):
         c = self._execute(None, u"SELECT version()")
@@ -894,6 +920,13 @@ class PostGisDBConnector(DBConnector):
                 self.quoteString(new_table), self.quoteString(tablename), schema_where)
             self._executeSql(sql)
 
+    def renameSchema(self, schema, new_schema):
+        try:
+            self.core_connection.renameSchema(schema, new_schema)
+            return True
+        except QgsProviderConnectionException:
+            return False
+
     def commentTable(self, schema, tablename, comment=None):
         if comment is None:
             self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
@@ -1166,7 +1199,8 @@ class PostGisDBConnector(DBConnector):
         if cursor is not None:
             cursor._execute(sql)
             return cursor
-        return CursorAdapter(self.core_connection, sql)
+        self.feedback = QgsFeedback()
+        return CursorAdapter(self.core_connection, sql, feedback=self.feedback)
 
     def _executeSql(self, sql):
         return self.core_connection.executeSql(sql)

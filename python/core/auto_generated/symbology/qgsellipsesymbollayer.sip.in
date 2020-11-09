@@ -12,7 +12,7 @@
 class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 {
 %Docstring
-A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*
+A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
 %End
 
 %TypeHeaderCode

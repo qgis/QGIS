@@ -3,6 +3,8 @@
 
 Providers must implement a test based on TestPyQgsProviderConnectionBase
 
+Provider test cases can define a "slowQuery" member with the SQL code for executeSql cancellation test
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -16,9 +18,9 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import shutil
+import time
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.testing import start_app, unittest
+from qgis.testing import start_app
 from qgis.core import (
     QgsSettings,
     QgsProviderRegistry,
@@ -31,6 +33,9 @@ from qgis.core import (
     QgsProviderConnectionException,
     QgsFeature,
     QgsGeometry,
+    QgsFeedback,
+    QgsApplication,
+    QgsTask,
 )
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtTest import QSignalSpy
@@ -223,8 +228,7 @@ class TestPyQgsProviderConnectionBase():
                 sql = "SELECT string_t, long_t, double_t, integer_t, date_t, datetime_t FROM %s" % table
                 res = conn.executeSql(sql)
                 # GPKG and spatialite have no type for time
-                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8),
-                                        QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 sql = "SELECT time_t FROM %s" % table
                 res = conn.executeSql(sql)
 
@@ -324,6 +328,24 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(4326))
             self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
 
+            # Check fields
+            fields = conn.fields('myNewSchema', 'myNewTable')
+            for f in ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t', 'time_t']:
+                self.assertTrue(f in fields.names())
+
+            if capabilities & QgsAbstractDatabaseProviderConnection.AddField:
+                field = QgsField('short_lived_field', QVariant.Int, 'integer')
+                conn.addField(field, 'myNewSchema', 'myNewTable')
+                fields = conn.fields('myNewSchema', 'myNewTable')
+                self.assertTrue('short_lived_field' in fields.names())
+
+                if capabilities & QgsAbstractDatabaseProviderConnection.DeleteField:
+                    conn.deleteField('short_lived_field', 'myNewSchema', 'myNewTable')
+                    # This fails on Travis for spatialite, for no particular reason
+                    if self.providerKey == 'spatialite' and not os.environ.get('TRAVIS', False):
+                        fields = conn.fields('myNewSchema', 'myNewTable')
+                        self.assertFalse('short_lived_field' in fields.names())
+
             # Drop table
             conn.dropVectorTable(schema, 'myNewTable')
             conn.dropVectorTable(schema, 'myNewAspatialTable')
@@ -383,3 +405,40 @@ class TestPyQgsProviderConnectionBase():
         self.assertEqual(len(changed_spy), 1)
 
         self._test_operations(md, conn)
+
+    def test_native_types(self):
+        """Test native types retrieval"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        native_types = conn.nativeTypes()
+        names = [nt.mTypeName.lower() for nt in native_types]
+        self.assertTrue('integer' in names or 'decimal' in names, names)
+        self.assertTrue('string' in names or 'text' in names, names)
+
+    def testExecuteSqlCancel(self):
+        """Test that feedback can cancel an executeSql query"""
+
+        if hasattr(self, 'slowQuery'):
+
+            md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+            conn = md.createConnection(self.uri, {})
+            feedback = QgsFeedback()
+
+            def _run(task):
+                conn.executeSql(self.slowQuery, feedback=feedback)
+
+            def _cancel():
+                feedback.cancel()
+
+            start = time.time()
+            QtCore.QTimer.singleShot(500, _cancel)
+            task = QgsTask.fromFunction('test long running query', _run)
+            QgsApplication.taskManager().addTask(task)
+            while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+                QgsApplication.processEvents()
+            end = time.time()
+            self.assertTrue(end - start < 1)
+
+    def treat_date_as_string(self):
+        return False

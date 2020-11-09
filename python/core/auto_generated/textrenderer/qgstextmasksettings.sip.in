@@ -46,6 +46,9 @@ Copy constructor.
 
     ~QgsTextMaskSettings();
 
+    bool operator==( const QgsTextMaskSettings &other ) const;
+    bool operator!=( const QgsTextMaskSettings &other ) const;
+
     bool enabled() const;
 %Docstring
 Returns whether the mask is enabled.
@@ -83,7 +86,7 @@ Returns the size of the buffer.
 
     void setSize( double size );
 %Docstring
-Sets the size of the buffer. The size units are specified using setSizeUnit().
+Sets the size of the buffer. The size units are specified using :py:func:`~QgsTextMaskSettings.setSizeUnit`.
 
 :param size: buffer size
 

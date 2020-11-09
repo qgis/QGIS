@@ -46,12 +46,12 @@ QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
     typedef QFlags<QgsSpatialIndex::Flag> Flags;
 
 
-    QgsSpatialIndex( QgsSpatialIndex::Flags flags = 0 );
+    QgsSpatialIndex( QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 %Docstring
 Constructor for QgsSpatialIndex. Creates an empty R-tree index.
 %End
 
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0, QgsSpatialIndex::Flags flags = 0 );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 %Docstring
 Constructor - creates R-tree and bulk loads it with features from the iterator.
 This is much faster approach than creating an empty index and then inserting features one by one.
@@ -64,7 +64,7 @@ that of the spatial index construction.
 %End
 
 
-    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0, QgsSpatialIndex::Flags flags = 0 );
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 %Docstring
 Constructor - creates R-tree and bulk loads it with features from the source.
 This is much faster approach than creating an empty index and then inserting features one by one.
@@ -93,7 +93,7 @@ Adds a ``feature`` to the index.
    Use addFeature() instead
 %End
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 %Docstring
 Adds a ``feature`` to the index.
@@ -103,7 +103,7 @@ The ``flags`` argument is ignored.
 .. versionadded:: 3.4
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 %Docstring
 Adds a list of ``features`` to the index.

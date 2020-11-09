@@ -31,7 +31,7 @@ The azimuth is the north angle to the semi-major axis, in degrees. By default, t
   public:
     QgsCircle();
 
-    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 );
+    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 ) /HoldGIL/;
 %Docstring
 Constructs a circle by defining all the members.
 
@@ -40,7 +40,7 @@ Constructs a circle by defining all the members.
 :param azimuth: Angle in degrees started from the North to the first quadrant.
 %End
 
-    static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 Constructs a circle by 2 points on the circle.
 The center point can have m value which is the result from the midpoint
@@ -53,7 +53,7 @@ The azimuth is the angle between ``pt1`` and ``pt2``.
 :param pt2: Second point.
 %End
 
-    static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+    static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 ) /HoldGIL/;
 %Docstring
 Constructs a circle by 3 points on the circle.
 M value is dropped for the center point.
@@ -68,7 +68,7 @@ If the points are colinear an empty circle is returned.
 :param epsilon: Value used to compare point.
 %End
 
-    static QgsCircle fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth = 0 );
+    static QgsCircle fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth = 0 ) /HoldGIL/;
 %Docstring
 Constructs a circle by a center point and a diameter.
 The center point keeps z and m values from ``center``.
@@ -79,7 +79,7 @@ The center point keeps z and m values from ``center``.
 %End
 
 
-    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 );
+    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 ) /HoldGIL/;
 %Docstring
 Constructs a circle by a center point and another point.
 The center point keeps z and m values from ``center``.
@@ -93,7 +93,7 @@ The azimuth is the angle between ``center`` and ``pt1``.
 
     static QgsCircle from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1,
                                     const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
-                                    const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon = 1E-8 );
+                                    const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon = 1E-8 ) /HoldGIL/;
 %Docstring
 Constructs a circle by 3 tangents on the circle (aka inscribed circle of a triangle).
 Z and m values are dropped for the center point.
@@ -108,7 +108,7 @@ The azimuth always takes the default value.
 :param epsilon: Value used to compare point.
 %End
 
-    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 Constructs a circle by an extent (aka bounding box / :py:class:`QgsRectangle`).
 The center point can have m value which is the result from the midpoint
@@ -121,7 +121,7 @@ The azimuth always takes the default value.
 :param pt2: Second corner.
 %End
 
-    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 ) /HoldGIL/;
 %Docstring
 Constructs the smallest circle from 3 points.
 Z and m values are dropped for the center point.
@@ -215,24 +215,14 @@ Note that this method is 2D only and does not consider the z-value of the circle
 .. versionadded:: 3.6
 %End
 
-    virtual double area() const;
+    virtual double area() const /HoldGIL/;
 
-    virtual double perimeter() const;
-
-
+    virtual double perimeter() const /HoldGIL/;
 
 
-    virtual void setSemiMajorAxis( double semiMajorAxis );
 
-%Docstring
-Inherited method. Use setRadius instead.
 
-.. seealso:: :py:func:`radius`
-
-.. seealso:: :py:func:`setRadius`
-%End
-
-    virtual void setSemiMinorAxis( double semiMinorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis ) /HoldGIL/;
 
 %Docstring
 Inherited method. Use setRadius instead.
@@ -242,11 +232,21 @@ Inherited method. Use setRadius instead.
 .. seealso:: :py:func:`setRadius`
 %End
 
-    double radius() const;
+    virtual void setSemiMinorAxis( double semiMinorAxis ) /HoldGIL/;
+
+%Docstring
+Inherited method. Use setRadius instead.
+
+.. seealso:: :py:func:`radius`
+
+.. seealso:: :py:func:`setRadius`
+%End
+
+    double radius() const /HoldGIL/;
 %Docstring
 Returns the radius of the circle
 %End
-    void setRadius( double radius );
+    void setRadius( double radius ) /HoldGIL/;
 %Docstring
 Sets the radius of the circle
 %End

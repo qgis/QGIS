@@ -58,7 +58,6 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   mTextOnSymbolGroupBox->setCollapsed( false );
 
   QVBoxLayout *layout = new QVBoxLayout;
-  layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mTextOnSymbolGroupBox );
   setLayout( layout );

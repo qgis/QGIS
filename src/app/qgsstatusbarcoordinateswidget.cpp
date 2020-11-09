@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgscoordinateutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
 
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
@@ -127,6 +128,10 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   {
     hackfests();
   }
+  else if ( mLineEdit->text() == QLatin1String( "user groups" ) )
+  {
+    userGroups();
+  }
   else if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
   {
     // sometimes you may feel a bit dizzy...
@@ -148,7 +153,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     refreshMapCanvas();
     return;
   }
-  else if ( mLineEdit->text() == QStringLiteral( "bored" ) )
+  else if ( mLineEdit->text() == QLatin1String( "bored" ) )
   {
     // it's friday afternoon and too late to start another piece of work...
     emit weAreBored();
@@ -251,6 +256,42 @@ void QgsStatusBarCoordinatesWidget::hackfests()
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
   layer->setAutoRefreshEnabled( true );
+}
+
+void QgsStatusBarCoordinatesWidget::userGroups()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+      tr( "User Groups" ), QStringLiteral( "ogr" ), options );
+
+  QString fileNameData = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/user_groups_data.json" );
+  QFileInfo fileInfoData = QFileInfo( fileNameData );
+  QgsVectorLayer *layerData = new QgsVectorLayer( fileInfoData.absoluteFilePath(),
+      tr( "user_groups_data" ), QStringLiteral( "ogr" ), options );
+
+  // Register layers with the layers registry
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer << layerData );
+
+  // Create join
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "iso_a2" ) );
+  joinInfo.setJoinLayer( layerData );
+  joinInfo.setJoinFieldName( QStringLiteral( "country" ) );
+  joinInfo.setUsingMemoryCache( true );
+  joinInfo.setPrefix( QStringLiteral( "ug_" ) );
+  joinInfo.setJoinFieldNamesSubset( nullptr );  // Use all join fields
+  layer->addJoin( joinInfo );
+
+  // Load QML for polygon symbology and maptips
+  QString fileNameStyle = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/user_groups.qml" );
+  bool styleFlag = false;
+  layer->loadNamedStyle( fileNameStyle, styleFlag, true );
 }
 
 void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )

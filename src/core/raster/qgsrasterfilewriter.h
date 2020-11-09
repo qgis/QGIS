@@ -97,27 +97,27 @@ class CORE_EXPORT QgsRasterFileWriter
 
     /**
      * Write raster file
-        \param pipe raster pipe
-        \param nCols number of output columns
-        \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
-        \param outputExtent extent to output
-        \param crs crs to reproject to
-        \param feedback optional feedback object for progress reports
-        \deprecated since QGIS 3.8, use version with transformContext instead
+     * \param pipe raster pipe
+     * \param nCols number of output columns
+     * \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
+     * \param outputExtent extent to output
+     * \param crs crs to reproject to
+     * \param feedback optional feedback object for progress reports
+     * \deprecated since QGIS 3.8, use version with transformContext instead
     */
     Q_DECL_DEPRECATED WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
         const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr ) SIP_DEPRECATED;
 
     /**
      * Write raster file
-        \param pipe raster pipe
-        \param nCols number of output columns
-        \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
-        \param outputExtent extent to output
-        \param crs crs to reproject to
-        \param transformContext coordinate transform context
-        \param feedback optional feedback object for progress reports
-        \since QGIS 3.8
+     * \param pipe raster pipe
+     * \param nCols number of output columns
+     * \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
+     * \param outputExtent extent to output
+     * \param crs crs to reproject to
+     * \param transformContext coordinate transform context
+     * \param feedback optional feedback object for progress reports
+     * \since QGIS 3.8
     */
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs,

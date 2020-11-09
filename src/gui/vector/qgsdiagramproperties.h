@@ -40,6 +40,13 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   public:
     QgsDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas );
 
+    /**
+     * Updates the widget to reflect the layer's current diagram settings.
+     *
+     * \since QGIS 3.16
+     */
+    void syncToLayer();
+
     ~QgsDiagramProperties() override;
 
     //! Adds an attribute from the list of available attributes to the assigned attributes with a random color.

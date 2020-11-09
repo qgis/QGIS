@@ -366,11 +366,22 @@
    </property>
   </action>
   <action name="mActionAutoFeatureForm">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Auto open form for single feature results</string>
    </property>
+  </action>
+  <action name="mActionHideDerivedAttributes">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide Derived Attributes from Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide derived attributes from results</string>
    </property>
   </action>
  </widget>

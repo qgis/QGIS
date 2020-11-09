@@ -71,7 +71,7 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
     /**
      * Returns flags associated to the temporal property.
      */
-    virtual QgsTemporalProperty::Flags flags() const { return nullptr; }
+    virtual QgsTemporalProperty::Flags flags() const { return QgsTemporalProperty::Flags(); }
 
   signals:
 

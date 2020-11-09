@@ -223,7 +223,6 @@ void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
   {
     // prepare projection selector
     QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-    mySelector->setMessage( QString() );
     mySelector->setOgcWmsCrsFilter( myCRSs );
     mySelector->setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mCrsId ) );
 

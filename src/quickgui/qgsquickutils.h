@@ -264,6 +264,21 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
      */
     Q_INVOKABLE static void selectFeaturesInLayer( QgsVectorLayer *layer, const QList<int> &fids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
+
+    /**
+    * Returns the QVariant typeName of a \a field.
+    * This is a stable identifier (compared to the provider field name).
+    * \param field QgsField
+    */
+    Q_INVOKABLE static QString fieldType( const QgsField &field );
+
+
+    /**
+    * Returns field format's name for given string representing field format defined in QgsDateTimeFieldFormatter.
+    * \param fieldFormat string representing formats from QgsDateTimeFieldFormatter.
+    */
+    Q_INVOKABLE static QString dateTimeFieldFormat( const QString &fieldFormat );
+
   private:
     static void formatToMetricDistance( double srcDistance,
                                         QgsUnitTypes::DistanceUnit srcUnits,

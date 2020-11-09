@@ -1,9 +1,9 @@
 {
   "name": "NULL",
   "type": "value",
-  "description": "Equates to a null value.",
+  "description": "Equates to a NULL value.",
   "examples": [
-       { "expression":"NULL", "returns":"a null value" }
+       { "expression":"NULL", "returns":"a NULL value" }
   ],
   "notes": "To test for NULL use an <pre>IS NULL</pre> or <pre>IS NOT NULL</pre> expression."
 }

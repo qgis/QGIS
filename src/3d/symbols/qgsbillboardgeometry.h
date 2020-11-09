@@ -45,7 +45,6 @@ class QgsBillboardGeometry : public Qt3DRender::QGeometry
 
     //! Returns the number of points.
     int count() const;
-
   signals:
     //! Signal when the number of points changed.
     void countChanged( int count );

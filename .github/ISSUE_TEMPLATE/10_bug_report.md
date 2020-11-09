@@ -22,7 +22,7 @@ Checklist before submitting
 
 **How to Reproduce**
 
-<!-- Steps, sample datasets and qgis project file to reproduce the behavior. Screencasts or screenshots welcome
+<!-- Steps, sample datasets and qgis project file to reproduce the behavior. Screencasts or screenshots welcome -->
 
 1. Go to '...'
 2. Click on '....'

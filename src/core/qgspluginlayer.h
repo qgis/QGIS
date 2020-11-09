@@ -74,7 +74,9 @@ class QgsPluginLayerDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-    QgsPluginLayerDataProvider( const QString &layerType, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsPluginLayerDataProvider( const QString &layerType,
+                                const QgsDataProvider::ProviderOptions &providerOptions,
+                                QgsDataProvider::ReadFlags flags );
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;

@@ -829,6 +829,7 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
       if ( qAlpha( imgScanline[x] ) )
       {
         xmin = x;
+        break;
       }
     }
   }
@@ -842,6 +843,7 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
       if ( qAlpha( imgScanline[x] ) )
       {
         xmax = x;
+        break;
       }
     }
   }

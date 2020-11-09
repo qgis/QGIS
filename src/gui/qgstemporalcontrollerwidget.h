@@ -74,6 +74,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     QgsTemporalNavigationObject *mNavigationObject = nullptr;
 
     int mBlockSettingUpdates = 0;
+    int mBlockFrameDurationUpdates = 0;
 
     bool mHasTemporalLayersLoaded = false;
 

@@ -115,6 +115,8 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
+  pointcloud/qgspointcloudlayerproperties.cpp
+
   vectortile/qgsvectortilelayerproperties.cpp
 
   vertextool/qgslockedfeature.cpp
@@ -125,7 +127,6 @@ SET(QGIS_APP_SRCS
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
-  qgsoptions.cpp
   qgspointmarkeritem.cpp
   qgspointrotationitem.cpp
   qgspluginmetadata.cpp
@@ -198,6 +199,11 @@ SET(QGIS_APP_SRCS
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
+  options/qgsadvancedoptions.cpp
+  options/qgscodeeditoroptions.cpp
+  options/qgsoptions.cpp
+  options/qgsoptionsutils.cpp
+
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
@@ -217,18 +223,7 @@ SET(QGIS_APP_SRCS
   qgsvariantdelegate.cpp
   qgscrashhandler.cpp
 
-  mesh/qgsmeshlayerproperties.cpp
-  mesh/qgsrenderermeshpropertieswidget.cpp
-  mesh/qgsmeshdatasetgrouptreewidget.cpp
-  mesh/qgsmeshrenderer3daveragingwidget.cpp
-  mesh/qgsmeshrenderermeshsettingswidget.cpp
-  mesh/qgsmeshrendererscalarsettingswidget.cpp
-  mesh/qgsmeshrenderervectorsettingswidget.cpp
-  mesh/qgsmeshrendereractivedatasetwidget.cpp
-  mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
-  mesh/qgsmeshstaticdatasetwidget.cpp
-  mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
 
 IF (WITH_GEOREFERENCER)
@@ -261,6 +256,8 @@ IF (WITH_3D)
     ${QGIS_APP_SRCS}
     3d/qgs3danimationwidget.cpp
     3d/qgs3danimationexportdialog.cpp
+    3d/qgs3dapputils.cpp
+    3d/qgs3dicongenerator.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
@@ -268,19 +265,27 @@ IF (WITH_3D)
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
     3d/qgs3dmeasuredialog.cpp
+    3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
+    3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
+    3d/qgsmaterialwidget.cpp
     3d/qgsmesh3dsymbolwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
+    3d/qgsphongtexturedmaterialwidget.cpp
     3d/qgsrulebased3drendererwidget.cpp
+    3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
+    3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
+    3d/qgsskyboxrenderingsettingswidget.cpp
+    3d/qgsshadowrenderingsettingswidget.cpp
   )
 ENDIF (WITH_3D)
 
@@ -380,7 +385,7 @@ IF(PEDANTIC)
     SET_SOURCE_FILES_PROPERTIES(
         qgisappinterface.cpp
         ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
-    PROPERTIES COMPILE_FLAGS "/wd4996"
+        PROPERTIES COMPILE_FLAGS "/wd4996"
     )
   ELSE(MSVC)
     SET_SOURCE_FILES_PROPERTIES(
@@ -415,6 +420,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/app/pointcloud
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
@@ -429,6 +435,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -447,12 +454,15 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
+  ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/processing
+  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
@@ -478,8 +488,9 @@ IF (WITH_3D)
     ${CMAKE_SOURCE_DIR}/src/app/3d
     ${CMAKE_SOURCE_DIR}/src/core/3d
     ${CMAKE_SOURCE_DIR}/src/3d
-    ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/materials
     ${CMAKE_SOURCE_DIR}/src/3d/mesh
+    ${CMAKE_SOURCE_DIR}/src/3d/symbols
     ${CMAKE_SOURCE_DIR}/src/3d/terrain
     ${CMAKE_SOURCE_DIR}/src/3d/chunks
     ${CMAKE_BINARY_DIR}/src/3d
@@ -552,6 +563,12 @@ INCLUDE_DIRECTORIES(SYSTEM
 IF(HAVE_OPENCL)
     INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
 ENDIF(HAVE_OPENCL)
+
+IF (HAVE_PDAL)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${PDAL_INCLUDE_DIR}
+  )
+ENDIF (HAVE_PDAL)
 
 IF(ENABLE_MODELTEST)
   INCLUDE_DIRECTORIES(../../tests/qt_modeltest)
@@ -683,6 +700,12 @@ ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 IF (POSTGRES_FOUND)
   TARGET_LINK_LIBRARIES (qgis_app ${POSTGRES_LIBRARY})
 ENDIF (POSTGRES_FOUND)
+
+IF (HAVE_PDAL)
+  TARGET_LINK_LIBRARIES(qgis_app
+    ${PDAL_LIBRARIES}
+  )
+ENDIF (HAVE_PDAL)
 
 IF(MSVC)
   INSTALL(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)

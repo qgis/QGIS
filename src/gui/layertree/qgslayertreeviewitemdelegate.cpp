@@ -40,7 +40,7 @@ QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, co
   {
     if ( const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>( option ) )
     {
-      if ( QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( vopt->index ) )
+      if ( QgsLayerTreeNode *node = mLayerTreeView->index2node( vopt->index ) )
       {
         int count = mLayerTreeView->indicators( node ).count();
         if ( count )
@@ -74,7 +74,7 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
 {
   QStyledItemDelegate::paint( painter, option, index );
 
-  QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+  QgsLayerTreeNode *node = mLayerTreeView->index2node( index );
   if ( !node )
     return;
 
@@ -162,7 +162,7 @@ bool QgsLayerTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemVi
 {
   if ( event && event->type() == QEvent::ToolTip )
   {
-    QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+    QgsLayerTreeNode *node = mLayerTreeView->index2node( index );
     if ( node )
     {
       const QList<QgsLayerTreeViewIndicator *> indicators = mLayerTreeView->indicators( node );
@@ -196,7 +196,7 @@ bool QgsLayerTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemVi
 
 void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
 {
-  QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+  QgsLayerTreeNode *node = mLayerTreeView->index2node( index );
   if ( !node )
     return;
 

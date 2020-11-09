@@ -133,6 +133,9 @@ Sets the color to show in an optional "previous color" section
 
   protected:
 
+    virtual void hideEvent( QHideEvent *e );
+
+
     virtual void mousePressEvent( QMouseEvent *e );
 
 

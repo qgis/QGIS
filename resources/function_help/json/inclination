@@ -1,6 +1,7 @@
 {
   "name": "inclination",
   "type": "function",
+  "groups": ["Math", "GeometryGroup"],
   "description": "Returns the inclination measured from the zenith (0) to the nadir (180) on point_a to point_b.",
   "arguments": [
     {"arg":"point_a","description":"point geometry"},

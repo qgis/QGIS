@@ -76,6 +76,9 @@ def createContext(feedback=None):
 
     context.setExpressionContext(createExpressionContext())
 
+    if iface and iface.mapCanvas() and iface.mapCanvas().mapSettings().isTemporal():
+        context.setCurrentTimeRange(iface.mapCanvas().mapSettings().temporalRange())
+
     return context
 
 

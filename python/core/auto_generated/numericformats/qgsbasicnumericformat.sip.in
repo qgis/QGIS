@@ -95,7 +95,7 @@ Sets whether a leading plus sign will be shown for positive values.
     bool showTrailingZeros() const;
 %Docstring
 Returns ``True`` if trailing zeros will be shown (up to the specified
-numberDecimalPlaces()).
+:py:func:`~QgsBasicNumericFormat.numberDecimalPlaces`).
 
 .. seealso:: :py:func:`setShowTrailingZeros`
 
@@ -105,7 +105,7 @@ numberDecimalPlaces()).
     void setShowTrailingZeros( bool show );
 %Docstring
 Sets whether trailing zeros will be shown (up to the specified
-numberDecimalPlaces()).
+:py:func:`~QgsBasicNumericFormat.numberDecimalPlaces`).
 
 .. seealso:: :py:func:`showTrailingZeros`
 
@@ -114,14 +114,14 @@ numberDecimalPlaces()).
 
     RoundingType roundingType() const;
 %Docstring
-Returns the rounding type, which controls the behavior of the numberDecimalPlaces() setting.
+Returns the rounding type, which controls the behavior of the :py:func:`~QgsBasicNumericFormat.numberDecimalPlaces` setting.
 
 .. seealso:: :py:func:`setRoundingType`
 %End
 
     void setRoundingType( RoundingType type );
 %Docstring
-Sets the rounding ``type``, which controls the behavior of the numberDecimalPlaces() setting.
+Sets the rounding ``type``, which controls the behavior of the :py:func:`~QgsBasicNumericFormat.numberDecimalPlaces` setting.
 
 .. seealso:: :py:func:`roundingType`
 %End

@@ -20,6 +20,7 @@
 #include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgsexception.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,
@@ -48,6 +49,11 @@ QString QgsProviderMetadata::key() const
 QString QgsProviderMetadata::description() const
 {
   return mDescription;
+}
+
+QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilities() const
+{
+  return QgsProviderMetadata::ProviderMetadataCapabilities();
 }
 
 QString QgsProviderMetadata::library() const
@@ -80,11 +86,28 @@ QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
   return QList<QgsMeshDriverMetadata>();
 }
 
-QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+int QgsProviderMetadata::priorityForUri( const QString & ) const
+{
+  return 0;
+}
+
+QList<QgsMapLayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
+{
+  return QList<QgsMapLayerType>();
+}
+
+bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const
+{
+  return false;
+}
+
+QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
+    const QgsDataProvider::ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
 {
   if ( mCreateFunction )
   {
-    return mCreateFunction( uri, options );
+    return mCreateFunction( uri, options, flags );
   }
   return nullptr;
 }
@@ -123,12 +146,12 @@ bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &
   return defaultValue;
 }
 
-QVariantMap QgsProviderMetadata::decodeUri( const QString & )
+QVariantMap QgsProviderMetadata::decodeUri( const QString & ) const
 {
   return QVariantMap();
 }
 
-QString QgsProviderMetadata::encodeUri( const QVariantMap & )
+QString QgsProviderMetadata::encodeUri( const QVariantMap & ) const
 {
   return QString();
 }
@@ -151,6 +174,15 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   const QStringList & )
 {
   return nullptr;
+}
+
+bool QgsProviderMetadata::createMeshData(
+  const QgsMesh &,
+  const QString,
+  const QString &,
+  const QgsCoordinateReferenceSystem & ) const
+{
+  return false;
 }
 
 QList<QPair<QString, QString> > QgsProviderMetadata::pyramidResamplingMethods()
@@ -291,8 +323,8 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 
 QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities )
-  : mName( name ), mDescription( description ), mCapabilities( capabilities )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix )
+  : mName( name ), mDescription( description ), mCapabilities( capabilities ), mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
 {
 }
 
@@ -309,4 +341,9 @@ QString QgsMeshDriverMetadata::name() const
 QString QgsMeshDriverMetadata::description() const
 {
   return mDescription;
+}
+
+QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
+{
+  return mWriteDatasetOnFileSuffix;
 }

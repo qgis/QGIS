@@ -257,7 +257,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QDomNode srsNode = layerElement.namedItem( QStringLiteral( "srs" ) );
   mCRS.readXml( srsNode );
   mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
-  if ( isSpatial() )
+  if ( isSpatial() && type() != QgsMapLayerType::AnnotationLayer )
     mCRS.validate();
   savedCRS = mCRS;
 
@@ -334,7 +334,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     {
       kwdList << n.toElement().text();
     }
-    mKeywordList = kwdList.join( QStringLiteral( ", " ) );
+    mKeywordList = kwdList.join( QLatin1String( ", " ) );
   }
 
   //metadataUrl
@@ -580,9 +580,11 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.appendChild( layerFlagsElem );
   }
 
-  if ( categories.testFlag( Temporal ) && const_cast< QgsMapLayer * >( this )->temporalProperties() )
+  if ( categories.testFlag( Temporal ) )
   {
-    const_cast< QgsMapLayer * >( this )->temporalProperties()->writeXml( layerElement, document, context );
+    QgsMapLayerTemporalProperties *lTemporalProperties = const_cast< QgsMapLayer * >( this )->temporalProperties();
+    if ( lTemporalProperties )
+      lTemporalProperties->writeXml( layerElement, document, context );
   }
 
   // custom properties
@@ -770,7 +772,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 {
   mCRS = srs;
 
-  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() )
+  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() && type() != QgsMapLayerType::AnnotationLayer )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
@@ -782,7 +784,8 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 
 QgsCoordinateTransformContext QgsMapLayer::transformContext() const
 {
-  return dataProvider() ? dataProvider()->transformContext() : QgsCoordinateTransformContext();
+  const QgsDataProvider *lDataProvider = dataProvider();
+  return lDataProvider ? lDataProvider->transformContext() : QgsCoordinateTransformContext();
 }
 
 QString QgsMapLayer::formatLayerName( const QString &name )
@@ -1679,9 +1682,11 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     setFlags( flags );
   }
 
-  if ( categories.testFlag( Temporal ) && temporalProperties() )
+  if ( categories.testFlag( Temporal ) )
   {
-    temporalProperties()->readXml( layerElement.toElement(), context );
+    QgsMapLayerTemporalProperties *lTemporalProperties = temporalProperties();
+    if ( lTemporalProperties )
+      lTemporalProperties->readXml( layerElement.toElement(), context );
   }
 }
 
@@ -1769,7 +1774,11 @@ bool QgsMapLayer::isTemporary() const
 
 void QgsMapLayer::setValid( bool valid )
 {
+  if ( mValid == valid )
+    return;
+
   mValid = valid;
+  emit isValidChanged();
 }
 
 void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
@@ -1914,18 +1923,19 @@ bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 
 void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
 {
-  if ( !dataProvider() )
+  QgsDataProvider *lDataProvider = dataProvider();
+  if ( !lDataProvider )
     return;
 
   if ( enabled && !isRefreshOnNotifyEnabled() )
   {
-    dataProvider()->setListening( enabled );
-    connect( dataProvider(), &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    lDataProvider->setListening( enabled );
+    connect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
   }
   else if ( !enabled && isRefreshOnNotifyEnabled() )
   {
     // we don't want to disable provider listening because someone else could need it (e.g. actions)
-    disconnect( dataProvider(), &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    disconnect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
   }
   mIsRefreshOnNofifyEnabled = enabled;
 }

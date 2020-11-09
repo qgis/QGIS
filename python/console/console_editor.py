@@ -18,12 +18,13 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize, QDir
-from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
+from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize, QDir, QByteArray, QJsonDocument, QUrl
+from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
+from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
-from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
-from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsMessageBar
+from qgis.PyQt.Qsci import QsciScintilla, QsciStyle
+from qgis.core import Qgis, QgsApplication, QgsSettings, QgsBlockingNetworkRequest
+from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 from qgis.utils import OverrideCursor
 import sys
 import os
@@ -35,6 +36,7 @@ import traceback
 import codecs
 import re
 import importlib
+from functools import partial
 
 
 class KeyFilter(QObject):
@@ -76,98 +78,19 @@ class KeyFilter(QObject):
         return QObject.eventFilter(self, obj, event)
 
 
-class Editor(QsciScintilla):
-
-    MARKER_NUM = 6
-    DEFAULT_COLOR = "#4d4d4c"
-    KEYWORD_COLOR = "#8959a8"
-    CLASS_COLOR = "#4271ae"
-    METHOD_COLOR = "#4271ae"
-    DECORATION_COLOR = "#3e999f"
-    NUMBER_COLOR = "#c82829"
-    COMMENT_COLOR = "#8e908c"
-    COMMENT_BLOCK_COLOR = "#8e908c"
-    BACKGROUND_COLOR = "#ffffff"
-    CURSOR_COLOR = "#636363"
-    CARET_LINE_COLOR = "#efefef"
-    SINGLE_QUOTE_COLOR = "#718c00"
-    DOUBLE_QUOTE_COLOR = "#718c00"
-    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
-    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
-    MARGIN_BACKGROUND_COLOR = "#efefef"
-    MARGIN_FOREGROUND_COLOR = "#636363"
-    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
-    SELECTION_FOREGROUND_COLOR = "#303030"
-    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
-    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
-    EDGE_COLOR = "#efefef"
-    FOLD_COLOR = "#efefef"
+class Editor(QgsCodeEditorPython):
 
     def __init__(self, parent=None):
-        super(Editor, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
         #  recent modification time
         self.lastModified = 0
         self.opening = ['(', '{', '[', "'", '"']
         self.closing = [')', '}', ']', "'", '"']
-
-        # List of marker line to be deleted from check syntax
-        self.bufferMarkerLine = []
-
         self.settings = QgsSettings()
 
-        # Enable non-ascii chars for editor
-        self.setUtf8(True)
-
-        # Set the default font
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.setFont(font)
-        self.setMarginsFont(font)
-        # Margin 0 is used for line numbers
-        fontmetrics = QFontMetrics(font)
-        self.setMarginWidth(0, fontmetrics.width("0000") + 5)
-        self.setMarginLineNumbers(0, True)
-        self.setCaretLineVisible(True)
-        self.setCaretWidth(2)
-
-        self.markerDefine(QgsApplication.getThemePixmap("console/iconSyntaxErrorConsole.svg"),
-                          self.MARKER_NUM)
-
         self.setMinimumHeight(120)
-        # self.setMinimumWidth(300)
-
-        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-
-        # Folding
-        self.setFolding(QsciScintilla.PlainFoldStyle)
-        # self.setWrapMode(QsciScintilla.WrapWord)
-
-        # Edge Mode
-        self.setEdgeMode(QsciScintilla.EdgeLine)
-        self.setEdgeColumn(80)
-
-        self.SendScintilla(self.SCI_SETADDITIONALSELECTIONTYPING, 1)
-        self.SendScintilla(self.SCI_SETMULTIPASTE, 1)
-        self.SendScintilla(self.SCI_SETVIRTUALSPACEOPTIONS, self.SCVS_RECTANGULARSELECTION)
-
-        # self.setWrapMode(QsciScintilla.WrapCharacter)
-        self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
-        # self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-
-        self.settingsEditor()
-
-        # Annotations
-        self.setAnnotationDisplay(QsciScintilla.ANNOTATION_BOXED)
-
-        # Indentation
-        self.setAutoIndent(True)
-        self.setIndentationsUseTabs(False)
-        self.setIndentationWidth(4)
-        self.setTabIndents(True)
-        self.setBackspaceUnindents(True)
-        self.setTabWidth(4)
-        self.setIndentationGuides(True)
 
         # Disable command key
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
@@ -182,7 +105,7 @@ class Editor(QsciScintilla):
         self.redoScut = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Z), self)
         self.redoScut.setContext(Qt.WidgetShortcut)
         self.redoScut.activated.connect(self.redo)
-        self.newShortcutCS.activated.connect(self.autoCompleteKeyBinding)
+        self.newShortcutCS.activated.connect(self.autoComplete)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runScut.setContext(Qt.WidgetShortcut)
         self.runScut.activated.connect(self.runSelectedCode)  # spellok
@@ -203,106 +126,8 @@ class Editor(QsciScintilla):
         self.modificationAttempted.connect(self.fileReadOnly)
 
     def settingsEditor(self):
-        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColorEditor", QColor(self.SELECTION_FOREGROUND_COLOR))))
-        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColorEditor", QColor(self.SELECTION_BACKGROUND_COLOR))))
-        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColorEditor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
-        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColorEditor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
-        self.setMarginsForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColorEditor", QColor(self.MARGIN_FOREGROUND_COLOR))))
-        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColorEditor", QColor(self.MARGIN_BACKGROUND_COLOR))))
-        self.setIndentationGuidesForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColorEditor", QColor(self.MARGIN_FOREGROUND_COLOR))))
-        self.setIndentationGuidesBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColorEditor", QColor(self.MARGIN_BACKGROUND_COLOR))))
-        self.setEdgeColor(QColor(self.settings.value("pythonConsole/edgeColorEditor", QColor(self.EDGE_COLOR))))
-        foldColor = QColor(self.settings.value("pythonConsole/foldColorEditor", QColor(self.FOLD_COLOR)))
-        self.setFoldMarginColors(foldColor, foldColor)
-
         # Set Python lexer
-        self.setLexers()
-        threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int)
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool)
-        self.setAutoCompletionThreshold(threshold)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.setAutoCompletionSource(self.AcsDocument)
-            elif radioButtonSource == 'fromAPI':
-                self.setAutoCompletionSource(self.AcsAPIs)
-            elif radioButtonSource == 'fromDocAPI':
-                self.setAutoCompletionSource(self.AcsAll)
-        else:
-            self.setAutoCompletionSource(self.AcsNone)
-
-        caretLineColorEditor = self.settings.value("pythonConsole/caretLineColorEditor", QColor(self.CARET_LINE_COLOR))
-        cursorColorEditor = self.settings.value("pythonConsole/cursorColorEditor", QColor(self.CURSOR_COLOR))
-        self.setCaretLineBackgroundColor(caretLineColorEditor)
-        self.setCaretForegroundColor(cursorColorEditor)
-
-    def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.autoCompleteFromDocument()
-            elif radioButtonSource == 'fromAPI':
-                self.autoCompleteFromAPIs()
-            elif radioButtonSource == 'fromDocAPI':
-                self.autoCompleteFromAll()
-
-    def setLexers(self):
-        from qgis.core import QgsApplication
-
-        self.lexer = QsciLexerPython()
-        self.lexer.setIndentationWarning(QsciLexerPython.Inconsistent)
-        self.lexer.setFoldComments(True)
-        self.lexer.setFoldQuotes(True)
-
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-
-        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor")
-        if loadFont:
-            font.setFamily(loadFont)
-        fontSize = self.settings.value("pythonConsole/fontsizeEditor", type=int)
-        if fontSize:
-            font.setPointSize(fontSize)
-
-        self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColorEditor", QColor(self.COMMENT_COLOR))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColorEditor", QColor(self.NUMBER_COLOR))), 2)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColorEditor", QColor(self.KEYWORD_COLOR))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColorEditor", QColor(self.CLASS_COLOR))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColorEditor", QColor(self.METHOD_COLOR))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColorEditor", QColor(self.DECORATION_COLOR))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColorEditor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))), 13)
-        self.lexer.setFont(font, 1)
-        self.lexer.setFont(font, 3)
-        self.lexer.setFont(font, 4)
-        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
-
-        for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColorEditor", QColor(self.BACKGROUND_COLOR)))
-            self.lexer.setPaper(paperColor, style)
-
-        self.api = QsciAPIs(self.lexer)
-        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-        if checkBoxAPI:
-            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
-            self.api.loadPrepared(pap)
-        elif checkBoxPreparedAPI:
-            self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
-        else:
-            apiPath = self.settings.value("pythonConsole/userAPI", [])
-            for i in range(0, len(apiPath)):
-                self.api.load(apiPath[i])
-            self.api.prepare()
-            self.lexer.setAPIs(self.api)
-
-        self.setLexer(self.lexer)
+        self.initializeLexer()
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -318,77 +143,72 @@ class Editor(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
-        iconRunScript = QgsApplication.getThemeIcon("mActionStart.svg")
-        iconUndo = QgsApplication.getThemeIcon("mActionUndo.svg")
-        iconRedo = QgsApplication.getThemeIcon("mActionRedo.svg")
-        iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.svg")
-        iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
-        iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg")
-        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
-        iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg")
-        iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg")
-        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg")
-        iconCut = QgsApplication.getThemeIcon("mActionEditCut.svg")
-        iconCopy = QgsApplication.getThemeIcon("mActionEditCopy.svg")
-        iconPaste = QgsApplication.getThemeIcon("mActionEditPaste.svg")
         menu.addAction(
             QCoreApplication.translate("PythonConsole", "Hide Editor"),
             self.hideEditor)
         menu.addSeparator()  # ------------------------------
-        syntaxCheck = menu.addAction(iconSyntaxCk,
-                                     QCoreApplication.translate("PythonConsole", "Check Syntax"),
-                                     self.syntaxCheck, 'Ctrl+4')
-        runSelected = menu.addAction(iconRun,  # spellok
+        syntaxCheckAction = menu.addAction(QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg"),
+                                           QCoreApplication.translate("PythonConsole", "Check Syntax"),
+                                           self.syntaxCheck, 'Ctrl+4')
+        runSelected = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),  # spellok
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
                                      self.runSelectedCode, 'Ctrl+E')  # spellok
-        menu.addAction(iconRunScript,
+        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchSelectedTextInPyQGISDocs)
+        menu.addAction(QgsApplication.getThemeIcon("mActionStart.svg"),
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction(iconUndo,
+        undoAction = menu.addAction(QgsApplication.getThemeIcon("mActionUndo.svg"),
                                     QCoreApplication.translate("PythonConsole", "Undo"),
                                     self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction(iconRedo,
+        redoAction = menu.addAction(QgsApplication.getThemeIcon("mActionRedo.svg"),
                                     QCoreApplication.translate("PythonConsole", "Redo"),
                                     self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
-        menu.addAction(iconFind,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Find Text"),
                        self.openFindWidget)
-        cutAction = menu.addAction(iconCut,
+        cutAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditCut.svg"),
                                    QCoreApplication.translate("PythonConsole", "Cut"),
                                    self.cut, QKeySequence.Cut)
-        copyAction = menu.addAction(iconCopy,
+        copyAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditCopy.svg"),
                                     QCoreApplication.translate("PythonConsole", "Copy"),
                                     self.copy, QKeySequence.Copy)
-        pasteAction = menu.addAction(iconPaste,
+        pasteAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditPaste.svg"),
                                      QCoreApplication.translate("PythonConsole", "Paste"),
                                      self.paste, QKeySequence.Paste)
         selectAllAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
-        menu.addAction(iconCommentEditor,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Comment"),
                        self.parent.pc.commentCode, 'Ctrl+3')
-        menu.addAction(iconUncommentEditor,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Uncomment"),
                        self.parent.pc.uncommentCode, 'Shift+Ctrl+3')
         menu.addSeparator()
-        codePadAction = menu.addAction(iconCodePad,
-                                       QCoreApplication.translate("PythonConsole", "Share on Codepad"),
-                                       self.codepad)
-        showCodeInspection = menu.addAction(iconObjInsp,
+        gist_menu = QMenu(self)
+        gist_menu.setTitle(QCoreApplication.translate("PythonConsole", "Share on GitHub"))
+        gist_menu.setIcon(QgsApplication.getThemeIcon("console/iconCodepadConsole.svg"))
+        gist_menu.addAction(QCoreApplication.translate("PythonConsole", "Secret Gist"),
+                            partial(self.shareOnGist, False))
+        gist_menu.addAction(QCoreApplication.translate("PythonConsole", "Public Gist"),
+                            partial(self.shareOnGist, True))
+        menu.addMenu(gist_menu)
+        showCodeInspection = menu.addAction(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg"),
                                             QCoreApplication.translate("PythonConsole", "Hide/Show Object Inspector"),
                                             self.objectListEditor)
         menu.addSeparator()
-        menu.addAction(iconSettings,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.pc.openSettings)
-        syntaxCheck.setEnabled(False)
+        syntaxCheckAction.setEnabled(False)
         pasteAction.setEnabled(False)
-        codePadAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
+        gist_menu.setEnabled(False)
         cutAction.setEnabled(False)
         runSelected.setEnabled(False)  # spellok
         copyAction.setEnabled(False)
@@ -400,10 +220,11 @@ class Editor(QsciScintilla):
             runSelected.setEnabled(True)  # spellok
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
-            codePadAction.setEnabled(True)
+            gist_menu.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
-            syntaxCheck.setEnabled(True)
+            syntaxCheckAction.setEnabled(True)
         if self.isUndoAvailable():
             undoAction.setEnabled(True)
         if self.isRedoAvailable():
@@ -462,36 +283,42 @@ class Editor(QsciScintilla):
             listObj.show()
             self.parent.pc.objectListButton.setChecked(True)
 
-    def codepad(self):
-        import urllib.request
-        import urllib.parse
-        import urllib.error
-        listText = self.selectedText().split('\n')
-        getCmd = []
-        for strLine in listText:
-            getCmd.append(strLine)
-        pasteText = "\n".join(getCmd)
-        url = 'http://codepad.org'
-        values = {'lang': 'Python',
-                  'code': pasteText,
-                  'submit': 'Submit'}
-        try:
-            response = urllib.request.urlopen(url, urllib.parse.urlencode(values))
-            url = response.read()
-            for href in url.split("</a>"):
-                if "Link:" in href:
-                    ind = href.index('Link:')
-                    found = href[ind + 5:]
-                    for i in found.split('">'):
-                        if '<a href=' in i:
-                            link = i.replace('<a href="', "").strip()
-            if link:
-                QApplication.clipboard().setText(link)
-                msgText = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
-                self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
-        except urllib.error.URLError as e:
-            msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.pc.callWidgetMessageBarEditor(msgText + repr(e.args), 0, True)
+    def shareOnGist(self, is_public):
+        ACCESS_TOKEN = self.settings.value("pythonConsole/accessTokenGithub", '', type=QByteArray)
+        if not ACCESS_TOKEN:
+            msg_text = QCoreApplication.translate(
+                'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
+            self.parent.pc.callWidgetMessageBarEditor(msg_text, 1, True)
+            return
+
+        URL = "https://api.github.com/gists"
+
+        path = self.parent.tw.currentWidget().path
+        filename = os.path.basename(path) if path else None
+        filename = filename if filename else "pyqgis_snippet.py"
+
+        selected_text = self.selectedText()
+        data = {"description": "Gist created by PyQGIS Console",
+                "public": is_public,
+                "files": {filename: {"content": selected_text}}}
+
+        request = QgsBlockingNetworkRequest()
+        net_req = QNetworkRequest()
+        url = QUrl(URL)
+        net_req.setUrl(url)
+        net_req.setRawHeader(b"Authorization", b"token %s" % ACCESS_TOKEN)
+        err = request.post(net_req, QJsonDocument(data).toJson())
+        if not err:
+            response = request.reply().content()
+            json_doc = QJsonDocument()
+            _json = json_doc.fromJson(response)
+            link = _json.object()['html_url'].toString()
+            QApplication.clipboard().setText(link)
+            msg = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
+            self.parent.pc.callWidgetMessageBarEditor(msg, 0, True)
+        else:
+            msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
+            self.parent.pc.callWidgetMessageBarEditor(msg + request.erroMessage(), 0, True)
 
     def hideEditor(self):
         self.parent.pc.splitterObj.hide()
@@ -621,7 +448,7 @@ class Editor(QsciScintilla):
                 self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
                 return
 
-        if self.syntaxCheck(fromContextMenu=False):
+        if self.syntaxCheck():
             if filename and self.isModified() and autoSave:
                 self.parent.save(filename)
             elif not filename or self.isModified():
@@ -655,15 +482,14 @@ class Editor(QsciScintilla):
         self.ensureLineVisible(linenr)
         self.setFocus()
 
-    def syntaxCheck(self, filename=None, fromContextMenu=True):
-        eline = None
-        ecolumn = 0
-        edescr = ''
+    def syntaxCheck(self):
         source = self.text()
+        self.clearWarnings()
         try:
+            filename = self.parent.tw.currentWidget().path
             if not filename:
-                filename = self.parent.tw.currentWidget().path
-            # source = open(filename, 'r').read() + '\n'
+                tmpFile = self.createTempFile()
+                filename = tmpFile
             if isinstance(source, type("")):
                 source = source.encode('utf-8')
             if isinstance(filename, type("")):
@@ -672,41 +498,23 @@ class Editor(QsciScintilla):
                 compile(source, filename, 'exec')
         except SyntaxError as detail:
             eline = detail.lineno and detail.lineno or 1
+            eline -= 1
             ecolumn = detail.offset and detail.offset or 1
             edescr = detail.msg
-        if eline is not None:
-            eline -= 1
-            for markerLine in self.bufferMarkerLine:
-                self.markerDelete(markerLine)
-                self.clearAnnotations(markerLine)
-                self.bufferMarkerLine.remove(markerLine)
-            if (eline) not in self.bufferMarkerLine:
-                self.bufferMarkerLine.append(eline)
-            self.markerAdd(eline, self.MARKER_NUM)
-            loadFont = self.settings.value("pythonConsole/fontfamilytextEditor",
-                                           "Monospace")
-            styleAnn = QsciStyle(-1, "Annotation",
-                                 QColor(255, 0, 0),
-                                 QColor(255, 200, 0),
-                                 QFont(loadFont, 8, -1, True),
-                                 True)
-            self.annotate(eline, edescr, styleAnn)
+
+            self.addWarning(eline, edescr)
             self.setCursorPosition(eline, ecolumn - 1)
-            # self.setSelection(eline, ecolumn, eline, self.lineLength(eline)-1)
             self.ensureLineVisible(eline)
-            # self.ensureCursorVisible()
             return False
-        else:
-            self.markerDeleteAll()
-            self.clearAnnotations()
-            return True
+
+        return True
 
     def keyPressEvent(self, e):
         t = e.text()
         startLine, _, endLine, endPos = self.getSelection()
         line, pos = self.getCursorPosition()
-        self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool)
-        self.autoImport = self.settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool)
+        self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
+        self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
         txt = self.text(line)[:pos]
         # Close bracket automatically
         if t in self.opening and self.autoCloseBracket:
@@ -1091,8 +899,8 @@ class EditorTabWidget(QTabWidget):
 
     def tabModified(self, tab, modified):
         index = self.indexOf(tab)
-        color = Qt.darkGray if modified else Qt.black
-        self.tabBar().setTabTextColor(index, color)
+        s = self.tabText(index)
+        self.setTabTitle(index, '*{}'.format(s) if modified else re.sub(r'^(\*)', '', s))
         self.parent.saveFileButton.setEnabled(modified)
 
     def closeTab(self, tab):
@@ -1282,10 +1090,6 @@ class EditorTabWidget(QTabWidget):
                     # pass
 
     def refreshSettingsEditor(self):
-        countTab = self.count()
-        for i in range(countTab):
-            self.widget(i).newEditor.settingsEditor()
-
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
                                                   False, type=bool)
         listObj = self.parent.objectListButton

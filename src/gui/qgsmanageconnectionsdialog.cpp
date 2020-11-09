@@ -771,6 +771,12 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + "/url" ).toString() );
     el.setAttribute( QStringLiteral( "zmin" ), settings.value( path + "/zmin", -1 ).toInt() );
     el.setAttribute( QStringLiteral( "zmax" ), settings.value( path + "/zmax", -1 ).toInt() );
+    el.setAttribute( QStringLiteral( "serviceType" ), settings.value( path + "/serviceType", -1 ).toInt() );
+    el.setAttribute( QStringLiteral( "authcfg" ), settings.value( path + "/authcfg" ).toString() );
+    el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
+    el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
+    el.setAttribute( QStringLiteral( "referer" ), settings.value( path + "/referer" ).toString() );
+    el.setAttribute( QStringLiteral( "styleUrl" ), settings.value( path + "/styleUrl" ).toString() );
 
     root.appendChild( el );
   }
@@ -1616,6 +1622,13 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
     settings.setValue( QStringLiteral( "url" ), child.attribute( QStringLiteral( "url" ) ) );
     settings.setValue( QStringLiteral( "zmin" ), child.attribute( QStringLiteral( "zmin" ) ) );
     settings.setValue( QStringLiteral( "zmax" ), child.attribute( QStringLiteral( "zmax" ) ) );
+    settings.setValue( QStringLiteral( "serviceType" ), child.attribute( QStringLiteral( "serviceType" ) ) );
+    settings.setValue( QStringLiteral( "authcfg" ), child.attribute( QStringLiteral( "authcfg" ) ) );
+    settings.setValue( QStringLiteral( "username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "password" ), child.attribute( QStringLiteral( "password" ) ) );
+    settings.setValue( QStringLiteral( "referer" ), child.attribute( QStringLiteral( "referer" ) ) );
+    settings.setValue( QStringLiteral( "styleUrl" ), child.attribute( QStringLiteral( "styleUrl" ) ) );
+
     settings.endGroup();
 
     child = child.nextSiblingElement();

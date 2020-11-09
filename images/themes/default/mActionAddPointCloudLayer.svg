@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)"
+   sodipodi:docname="mActionAddPointCloudLayer.svg"
+   id="svg64"
+   version="1.1"
+   width="24"
+   height="24">
+  <metadata
+     id="metadata70">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs68" />
+  <sodipodi:namedview
+     inkscape:current-layer="svg64"
+     inkscape:window-maximized="0"
+     inkscape:window-y="23"
+     inkscape:window-x="5"
+     inkscape:cy="4.4065197"
+     inkscape:cx="11.58581"
+     inkscape:zoom="43.458333"
+     showgrid="false"
+     id="namedview66"
+     inkscape:window-height="1319"
+     inkscape:window-width="2560"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     inkscape:document-rotation="0"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <linearGradient
+     y2="15.458"
+     y1="15.458"
+     xlink:href="#b"
+     x2="7"
+     x1="1.729"
+     gradientUnits="userSpaceOnUse"
+     gradientTransform="matrix(0.65196,0,0,0.6516,1.174,-6.025)"
+     id="a" />
+  <linearGradient
+     id="b">
+    <stop
+       id="stop11"
+       stop-color="#6e97c4"
+       offset="0" />
+    <stop
+       id="stop13"
+       stop-color="#aec7e2"
+       offset="1" />
+  </linearGradient>
+  <linearGradient
+     y2="15"
+     y1="10"
+     xlink:href="#b"
+     x2="7.449"
+     x1="7.373"
+     gradientUnits="userSpaceOnUse"
+     gradientTransform="matrix(.65196 0 0 .6516 1.174 1.975)"
+     id="c" />
+  <linearGradient
+     y2="25.132999"
+     y1="22.364"
+     x2="4.458"
+     x1="4.53"
+     gradientUnits="userSpaceOnUse"
+     gradientTransform="matrix(3.8476185,0,0,3.28136,-4.436498,-70.386576)"
+     id="d">
+    <stop
+       id="stop17"
+       stop-color="#eee"
+       offset="0" />
+    <stop
+       id="stop19"
+       stop-color="#aec7e2"
+       offset="1" />
+  </linearGradient>
+  <path
+     id="path22"
+     fill="url(#c)"
+     d="m2.478 8.49c-.87 9.558-.435 4.779 0 0z" />
+  <g
+     id="g62"
+     transform="matrix(.69230769 0 0 .69230769 1.846154 1.846154)">
+    <rect
+       id="rect52"
+       y="19"
+       x="19"
+       width="13"
+       rx="2.614937"
+       height="13"
+       fill="#5a8c5a" />
+    <g
+       id="g60"
+       fill-rule="evenodd">
+      <path
+         id="path54"
+         stroke-width="2.6"
+         stroke-linejoin="round"
+         stroke-linecap="round"
+         stroke="#fff"
+         fill="#fff"
+         d="m21.6 25.499999h7.8" />
+      <path
+         id="path56"
+         stroke-width="2.6"
+         stroke-linejoin="round"
+         stroke-linecap="round"
+         stroke="#fff"
+         fill="#fff"
+         d="m25.5 29.399999v-7.799999" />
+      <path
+         id="path58"
+         opacity=".3"
+         fill="#fcffff"
+         d="m20.3 25.499999h10.4s0 0 0-2.6c0-2.599999-.65-2.599999-5.2-2.599999s-5.2 0-5.2 2.599999z" />
+    </g>
+  </g>
+  <path
+     d="m 11.29625,10.264633 a 1.3486331,3.868824 0 0 1 -0.01109,0.495099"
+     sodipodi:arc-type="arc"
+     sodipodi:open="true"
+     sodipodi:end="0.12832324"
+     sodipodi:start="0"
+     sodipodi:ry="3.868824"
+     sodipodi:rx="1.3486331"
+     sodipodi:cy="10.264633"
+     sodipodi:cx="9.9476166"
+     sodipodi:type="arc"
+     id="path74"
+     style="opacity:1;fill:#e16c2e;fill-opacity:1;fill-rule:nonzero;stroke:#00c5e2;stroke-width:11.7555;stroke-linecap:round;stroke-linejoin:bevel" />
+</svg>

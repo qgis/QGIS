@@ -240,7 +240,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   // but we need to avoid overlapping texts, so adjust the vertical positions
   double middleIndex = 0; // classes.count() / 2;  // will get the ideal position
   QList<double> textCenterY;
-  double lastY = symbolTopY[middleIndex];
+  double lastY = middleIndex < symbolTopY.size() ? symbolTopY[middleIndex] : 0;
   textCenterY << lastY;
   for ( int i = middleIndex + 1; i < classes.count(); ++i )
   {
@@ -271,8 +271,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   //
 
   QPainter *p = context.painter();
-
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->translate( 0, -textTopY );
 
   // draw symbols first so that they do not cover
@@ -283,7 +282,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
     double tx = ( outputLargestSize - outputSymbolSize ) / 2;
 
-    p->save();
+    QgsScopedQPainterState symbolPainterState( p );
     switch ( mVAlign )
     {
       case AlignCenter:
@@ -294,7 +293,6 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
         break;
     }
     s->drawPreviewIcon( nullptr, QSize( outputSymbolSize, outputSymbolSize ), &context );
-    p->restore();
   }
 
   QgsTextFormat format = QgsTextFormat::fromQFont( mFont );
@@ -320,16 +318,13 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     QRect rect( outputLargestSize + hLengthLine + hSpaceLineText, textCenterY[i] - textHeight / 2,
                 maxTextWidth, textHeight );
 
-    QgsTextRenderer::drawText( rect, 0, mTextAlignment == Qt::AlignRight ? QgsTextRenderer::AlignRight :
-                               mTextAlignment == Qt::AlignHCenter ? QgsTextRenderer::AlignCenter : QgsTextRenderer::AlignLeft,
+    QgsTextRenderer::drawText( rect, 0, QgsTextRenderer::convertQtHAlignment( mTextAlignment ),
                                QStringList() << c.label, context, format );
     i++;
   }
 
   if ( mLineSymbol )
     mLineSymbol->stopRender( context );
-
-  p->restore();
 }
 
 

@@ -25,6 +25,15 @@ import QgsQuick 0.1 as QgsQuick
  */
 Item {
   signal valueChanged(var value, bool isNull)
+  property var fieldName: field.name
+
+  function itemSelected( index ) {
+    combobox.itemClicked( index )
+  }
+
+  function openCombobox() {
+    combobox.popup.open()
+  }
 
   id: fieldItem
   enabled: !readOnly
@@ -36,31 +45,44 @@ Item {
   }
 
   QgsQuick.EditorWidgetComboBox {
-
+    id: combobox
     property var currentEditorValue: value
 
     comboStyle: customStyle.fields
-    textRole: 'display'
+    textRole: 'FeatureTitle'
     height: parent.height
 
-    model: QgsQuick.ValueRelationListModel {
-        id: vrModel
+    model: QgsQuick.FeaturesListModel {
+      id: vrModel
+
+      // recalculate index when model changes
+      onModelReset: {
+        combobox.currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
+      }
     }
 
     Component.onCompleted: {
-        vrModel.populate(config)
-        currentIndex = vrModel.rowForKey(value);
+        vrModel.setupValueRelation( config )
+        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
+    }
+
+    onPressedChanged: {
+      if( pressed )
+      {
+        customWidget.valueRelationOpened( fieldItem, vrModel )
+        pressed = false // we close combobox and let custom handler react, it can open combobox via openCombobox()
+      }
     }
 
     // Called when user makes selection in the combo box
-    onCurrentIndexChanged: {
-      valueChanged(vrModel.keyForRow(currentIndex), false)
+    onItemClicked: {
+        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index )
+        valueChanged( vrModel.keyFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index ), false )
     }
 
     // Called when the same form is used for a different feature
     onCurrentEditorValueChanged: {
-        currentIndex = vrModel.rowForKey(value);
+        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value );
     }
-
   }
 }

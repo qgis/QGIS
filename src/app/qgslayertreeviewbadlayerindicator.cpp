@@ -51,7 +51,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError( const QString 
 
 void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {
-  QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+  QgsLayerTreeNode *node = mLayerTreeView->index2node( index );
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
@@ -88,7 +88,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
         QString message = QStringLiteral( "<ul>" );
         for ( const QString &e : thisLayerErrors )
           message += QStringLiteral( "<li>%1</li>" ).arg( e );
-        message += QStringLiteral( "</ul>" );
+        message += QLatin1String( "</ul>" );
         m->setMessageAsHtml( message );
       }
       m->exec();

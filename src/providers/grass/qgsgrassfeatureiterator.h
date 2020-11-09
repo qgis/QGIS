@@ -44,7 +44,8 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
                 * Distinction between Selected and Used is used if attribute table exists, in which case
                 * attributes are read from the table and line geometry is attached to attributes and selection
                 * for that line is set to Used. In the end the selection is scanned for Selected (attributes missing)
-                * and the geometry is returned without attributes. */
+                * and the geometry is returned without attributes.
+                */
     };
 #endif
 
@@ -103,7 +104,8 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
 
     /**
      * Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
-     * This function can be called directly from other threads (setting bool is atomic) */
+     * This function can be called directly from other threads (setting bool is atomic)
+    */
     void cancel();
 
     void doClose();

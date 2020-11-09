@@ -57,7 +57,7 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   connect( bridge->rootGroup(), &QgsLayerTreeNode::visibilityChanged, this, &QgsCustomLayerOrderWidget::nodeVisibilityChanged );
 
   QVBoxLayout *l = new QVBoxLayout;
-  l->setMargin( 0 );
+  l->setContentsMargins( 0, 0, 0, 0 );
   l->addWidget( mView );
   l->addWidget( mChkOverride );
   setLayout( l );
@@ -173,7 +173,7 @@ QMimeData *CustomLayerOrderModel::mimeData( const QModelIndexList &indexes ) con
     lst << data( index, Qt::UserRole + 1 ).toString();
 
   QMimeData *mimeData = new QMimeData();
-  mimeData->setData( QStringLiteral( "application/qgis.layerorderdata" ), lst.join( QStringLiteral( "\n" ) ).toUtf8() );
+  mimeData->setData( QStringLiteral( "application/qgis.layerorderdata" ), lst.join( QLatin1Char( '\n' ) ).toUtf8() );
   return mimeData;
 }
 

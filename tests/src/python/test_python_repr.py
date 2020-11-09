@@ -19,7 +19,7 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
     QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
-    QgsVertexId
+    QgsVertexId, QgsReferencedGeometry, QgsProviderRegistry
 
 start_app()
 
@@ -138,6 +138,10 @@ class TestPython__repr__(unittest.TestCase):
         r = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(r.__repr__(), '<QgsReferencedRectangle: 1 2, 3 4 (EPSG:4326)>')
 
+    def testQgsReferencedGeometryRepr(self):
+        g = QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(g.__repr__(), '<QgsReferencedGeometry: Point (1 2) (EPSG:4326)>')
+
     def testQgsCoordinateReferenceSystem(self):
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
@@ -249,6 +253,9 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3>')
         v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 CurveVertex>')
+
+    def testProviderMetadata(self):
+        self.assertEqual(QgsProviderRegistry.instance().providerMetadata('ogr').__repr__(), '<QgsProviderMetadata: ogr>')
 
 
 if __name__ == "__main__":

@@ -34,20 +34,21 @@ class QgsAttributes;
 
 /**
  * \ingroup core
- * Base class for all diagram types*/
+ * Base class for all diagram types.
+*/
 class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->diagramName() == QStringLiteral( "Pie" ) )
+    if ( sipCpp->diagramName() == QLatin1String( "Pie" ) )
       sipType = sipType_QgsPieDiagram;
-    else if ( sipCpp->diagramName() == QStringLiteral( "Histogram" ) )
+    else if ( sipCpp->diagramName() == QLatin1String( "Histogram" ) )
       sipType = sipType_QgsHistogramDiagram;
-    else if ( sipCpp->diagramName() == QStringLiteral( "Text" ) )
+    else if ( sipCpp->diagramName() == QLatin1String( "Text" ) )
       sipType = sipType_QgsTextDiagram;
-    else if ( sipCpp->diagramName() == QStringLiteral( "Stacked" ) )
+    else if ( sipCpp->diagramName() == QLatin1String( "Stacked" ) )
       sipType = sipType_QgsStackedBarDiagram;
     else
       sipType = NULL;
@@ -58,7 +59,8 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 
     /**
      * Returns an instance that is equivalent to this one
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     virtual QgsDiagram *clone() const = 0 SIP_FACTORY;
 
     void clearCache();

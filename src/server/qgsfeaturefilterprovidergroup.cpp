@@ -25,9 +25,9 @@ void QgsFeatureFilterProviderGroup::filterFeatures( const QgsVectorLayer *layer,
   {
     QgsFeatureRequest temp;
     provider->filterFeatures( layer, temp );
-    if ( temp.filterExpression() )
+    if ( auto *lFilterExpression = temp.filterExpression() )
     {
-      filterFeatures.combineFilterExpression( temp.filterExpression()->dump() );
+      filterFeatures.combineFilterExpression( lFilterExpression->dump() );
     }
   }
 }

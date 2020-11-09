@@ -27,7 +27,6 @@ QgsStatusBar::QgsStatusBar( QWidget *parent )
   : QWidget( parent )
 {
   mLayout = new QHBoxLayout();
-  mLayout->setMargin( 0 );
   mLayout->setContentsMargins( 2, 0, 2, 0 );
   mLayout->setSpacing( 6 );
 

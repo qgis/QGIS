@@ -213,6 +213,7 @@ bool LabelPosition::intersects( const GEOSPreparedGeometry *geometry )
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
@@ -238,6 +239,7 @@ bool LabelPosition::within( const GEOSPreparedGeometry *geometry )
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
@@ -293,6 +295,7 @@ bool LabelPosition::isInConflictSinglePart( const LabelPosition *lp ) const
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
@@ -486,6 +489,7 @@ bool LabelPosition::crossesLine( PointSet *line ) const
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
@@ -516,6 +520,7 @@ bool LabelPosition::crossesBoundary( PointSet *polygon ) const
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
@@ -549,6 +554,7 @@ bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
   }
 
@@ -606,6 +612,7 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
   }
 

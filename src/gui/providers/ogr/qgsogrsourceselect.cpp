@@ -34,6 +34,7 @@
 #include "qgsgui.h"
 
 #include <gdal.h>
+#include <cpl_minixml.h>
 
 QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -72,7 +73,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   //add database drivers
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
-  QgsDebugMsg( "Database drivers :" + QgsProviderRegistry::instance()->databaseDrivers() );
+  QgsDebugMsgLevel( "Database drivers :" + QgsProviderRegistry::instance()->databaseDrivers(), 2 );
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
 
   for ( int i = 0; i < dbDrivers.count(); i++ )
@@ -106,7 +107,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   cmbDatabaseTypes->blockSignals( false );
   cmbConnections->blockSignals( false );
 
-  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QStringLiteral( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
+  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
 
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
   mFileWidget->setFilter( mVectorFileFilter );
@@ -118,6 +119,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     mVectorPath = path;
     if ( radioSrcFile->isChecked() || radioSrcDirectory->isChecked() )
       emit enableButtons( ! mVectorPath.isEmpty() );
+    fillOpenOptions();
   } );
 
   connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
@@ -135,8 +137,13 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     if ( radioSrcProtocol->isChecked() )
       emit enableButtons( !text.isEmpty() && !mBucket->text().isEmpty() );
   } );
+
+  connect( cmbConnections, &QComboBox::currentTextChanged, this, &QgsOgrSourceSelect::fillOpenOptions );
+
   // Set filter for ogr compatible auth methods
   mAuthSettingsProtocol->setDataprovider( QStringLiteral( "ogr" ) );
+
+  mOpenOptionsGroupBox->setVisible( false );
 }
 
 QStringList QgsOgrSourceSelect::dataSources()
@@ -156,11 +163,11 @@ QString QgsOgrSourceSelect::dataSourceType()
 
 bool QgsOgrSourceSelect::isProtocolCloudType()
 {
-  return ( cmbProtocolTypes->currentText() == QStringLiteral( "AWS S3" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Google Cloud Storage" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Microsoft Azure Blob" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Alibaba Cloud OSS" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "OpenStack Swift Object Storage" ) );
+  return ( cmbProtocolTypes->currentText() == QLatin1String( "AWS S3" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Google Cloud Storage" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Microsoft Azure Blob" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Alibaba Cloud OSS" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "OpenStack Swift Object Storage" ) );
 }
 
 void QgsOgrSourceSelect::addNewConnection()
@@ -274,14 +281,14 @@ void QgsOgrSourceSelect::setSelectedConnectionType()
   QgsSettings settings;
   QString baseKey = QStringLiteral( "/ogr/connections/" );
   settings.setValue( baseKey + "selectedtype", cmbDatabaseTypes->currentText() );
-  QgsDebugMsg( "Setting selected type to" + cmbDatabaseTypes->currentText() );
+  QgsDebugMsgLevel( "Setting selected type to" + cmbDatabaseTypes->currentText(), 3 );
 }
 
 void QgsOgrSourceSelect::setSelectedConnection()
 {
   QgsSettings settings;
   settings.setValue( '/' + cmbDatabaseTypes->currentText() + "/connections/selected", cmbConnections->currentText() );
-  QgsDebugMsg( "Setting selected connection to " + cmbConnections->currentText() );
+  QgsDebugMsgLevel( "Setting selected connection to " + cmbConnections->currentText(), 3 );
 }
 
 void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
@@ -310,10 +317,28 @@ void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
   }
 }
 
-void QgsOgrSourceSelect::addButtonClicked()
+void QgsOgrSourceSelect::computeDataSources( bool interactive )
 {
   QgsSettings settings;
   mDataSources.clear();
+
+  QStringList openOptions;
+  for ( QWidget *control : mOpenOptionsWidgets )
+  {
+    QString value;
+    if ( QComboBox *cb = qobject_cast<QComboBox *>( control ) )
+    {
+      value = cb->itemData( cb->currentIndex() ).toString();
+    }
+    else if ( QLineEdit *le = qobject_cast<QLineEdit *>( control ) )
+    {
+      value = le->text();
+    }
+    if ( !value.isEmpty() )
+    {
+      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName() ).arg( value );
+    }
+  }
 
   if ( radioSrcDatabase->isChecked() )
   {
@@ -321,9 +346,12 @@ void QgsOgrSourceSelect::addButtonClicked()
                              + "/connections/" + cmbConnections->currentText()
                              + "/host" ) )
     {
-      QMessageBox::information( this,
-                                tr( "Add vector layer" ),
-                                tr( "No database selected." ) );
+      if ( interactive )
+      {
+        QMessageBox::information( this,
+                                  tr( "Add vector layer" ),
+                                  tr( "No database selected." ) );
+      }
       return;
     }
 
@@ -341,25 +369,32 @@ void QgsOgrSourceSelect::addButtonClicked()
     {
       if ( cmbDatabaseTypes->currentText() == QLatin1String( "MSSQL" ) )
         makeConnection = true;
-      else
+      else if ( interactive )
         pass = QInputDialog::getText( this,
                                       tr( "Password for " ) + user,
                                       tr( "Please enter your password:" ),
                                       QLineEdit::Password, QString(),
                                       &makeConnection );
+      else
+        makeConnection = true;
     }
 
     if ( makeConnection || !( pass.isEmpty() && configid.isEmpty( ) ) )
     {
-      mDataSources << createDatabaseURI(
-                     cmbDatabaseTypes->currentText(),
-                     host,
-                     database,
-                     port,
-                     configid,
-                     user,
-                     pass
-                   );
+      QVariantMap parts;
+      if ( !openOptions.isEmpty() )
+        parts.insert( QStringLiteral( "openOptions" ), openOptions );
+      parts.insert( QStringLiteral( "path" ),
+                    createDatabaseURI(
+                      cmbDatabaseTypes->currentText(),
+                      host,
+                      database,
+                      port,
+                      configid,
+                      user,
+                      pass
+                    ) );
+      mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
     }
   }
   else if ( radioSrcProtocol->isChecked() )
@@ -367,16 +402,22 @@ void QgsOgrSourceSelect::addButtonClicked()
     bool cloudType = isProtocolCloudType();
     if ( !cloudType && protocolURI->text().isEmpty() )
     {
-      QMessageBox::information( this,
-                                tr( "Add vector layer" ),
-                                tr( "No protocol URI entered." ) );
+      if ( interactive )
+      {
+        QMessageBox::information( this,
+                                  tr( "Add vector layer" ),
+                                  tr( "No protocol URI entered." ) );
+      }
       return;
     }
     else if ( cloudType && ( mBucket->text().isEmpty() || mKey->text().isEmpty() ) )
     {
-      QMessageBox::information( this,
-                                tr( "Add vector layer" ),
-                                tr( "No protocol bucket and/or key entered." ) );
+      if ( interactive )
+      {
+        QMessageBox::information( this,
+                                  tr( "Add vector layer" ),
+                                  tr( "No protocol bucket and/or key entered." ) );
+      }
       return;
     }
 
@@ -390,31 +431,49 @@ void QgsOgrSourceSelect::addButtonClicked()
       uri = protocolURI->text();
     }
 
-    mDataSources << createProtocolURI( cmbProtocolTypes->currentText(),
-                                       uri,
-                                       mAuthSettingsProtocol->configId(),
-                                       mAuthSettingsProtocol->username(),
-                                       mAuthSettingsProtocol->password() );
+    QVariantMap parts;
+    if ( !openOptions.isEmpty() )
+      parts.insert( QStringLiteral( "openOptions" ), openOptions );
+    parts.insert( QStringLiteral( "path" ),
+                  createProtocolURI( cmbProtocolTypes->currentText(),
+                                     uri,
+                                     mAuthSettingsProtocol->configId(),
+                                     mAuthSettingsProtocol->username(),
+                                     mAuthSettingsProtocol->password() ) );
+    mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
   }
   else if ( radioSrcFile->isChecked() )
   {
     if ( mVectorPath.isEmpty() )
     {
-      QMessageBox::information( this,
-                                tr( "Add vector layer" ),
-                                tr( "No layers selected." ) );
+      if ( interactive )
+      {
+        QMessageBox::information( this,
+                                  tr( "Add vector layer" ),
+                                  tr( "No layers selected." ) );
+      }
       return;
     }
 
-    mDataSources << QgsFileWidget::splitFilePaths( mVectorPath );
+    for ( const auto &filePath : QgsFileWidget::splitFilePaths( mVectorPath ) )
+    {
+      QVariantMap parts;
+      if ( !openOptions.isEmpty() )
+        parts.insert( QStringLiteral( "openOptions" ), openOptions );
+      parts.insert( QStringLiteral( "path" ), filePath );
+      mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
+    }
   }
   else if ( radioSrcDirectory->isChecked() )
   {
     if ( mVectorPath.isEmpty() )
     {
-      QMessageBox::information( this,
-                                tr( "Add vector layer" ),
-                                tr( "No directory selected." ) );
+      if ( interactive )
+      {
+        QMessageBox::information( this,
+                                  tr( "Add vector layer" ),
+                                  tr( "No directory selected." ) );
+      }
       return;
     }
 
@@ -428,9 +487,17 @@ void QgsOgrSourceSelect::addButtonClicked()
       mVectorPath = mVectorPath + "/head";
     }
 
-    mDataSources << mVectorPath;
+    QVariantMap parts;
+    if ( !openOptions.isEmpty() )
+      parts.insert( QStringLiteral( "openOptions" ), openOptions );
+    parts.insert( QStringLiteral( "path" ), mVectorPath );
+    mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
   }
+}
 
+void QgsOgrSourceSelect::addButtonClicked()
+{
+  computeDataSources( true );
   if ( ! mDataSources.isEmpty() )
   {
     emit addVectorLayers( mDataSources, encoding(), dataSourceType() );
@@ -448,6 +515,7 @@ void QgsOgrSourceSelect::radioSrcFile_toggled( bool checked )
     fileGroupBox->show();
     dbGroupBox->hide();
     protocolGroupBox->hide();
+    clearOpenOptions();
 
     mFileWidget->setDialogTitle( tr( "Open an OGR Supported Vector Layer" ) );
     mFileWidget->setFilter( mVectorFileFilter );
@@ -469,6 +537,7 @@ void QgsOgrSourceSelect::radioSrcDirectory_toggled( bool checked )
     fileGroupBox->show();
     dbGroupBox->hide();
     protocolGroupBox->hide();
+    clearOpenOptions();
 
     mFileWidget->setDialogTitle( tr( "Open Directory" ) );
     mFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
@@ -489,6 +558,8 @@ void QgsOgrSourceSelect::radioSrcDatabase_toggled( bool checked )
     protocolGroupBox->hide();
     dbGroupBox->show();
     layout()->blockSignals( false );
+    clearOpenOptions();
+
     setConnectionTypeListPosition();
     populateConnectionList();
     setConnectionListPosition();
@@ -505,6 +576,8 @@ void QgsOgrSourceSelect::radioSrcProtocol_toggled( bool checked )
     fileGroupBox->hide();
     dbGroupBox->hide();
     protocolGroupBox->show();
+    clearOpenOptions();
+
     mDataSourceType = QStringLiteral( "protocol" );
 
     setProtocolWidgetsVisibility();
@@ -556,4 +629,156 @@ void QgsOgrSourceSelect::showHelp()
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
 }
 
+void QgsOgrSourceSelect::clearOpenOptions()
+{
+  mOpenOptionsWidgets.clear();
+  mOpenOptionsGroupBox->setVisible( false );
+  mOpenOptionsLabel->clear();
+  while ( mOpenOptionsLayout->count() )
+  {
+    QLayoutItem *item = mOpenOptionsLayout->takeAt( 0 );
+    delete item->widget();
+    delete item;
+  }
+}
+
+void QgsOgrSourceSelect::fillOpenOptions()
+{
+  clearOpenOptions();
+  computeDataSources( false );
+  if ( mDataSources.isEmpty() )
+    return;
+
+  GDALDriverH hDriver;
+  if ( STARTS_WITH_CI( mDataSources[0].toUtf8().toStdString().c_str(), "PG:" ) )
+    hDriver = GDALGetDriverByName( "PostgreSQL" ); // otherwise the PostgisRaster driver gets identified
+  else
+    hDriver = GDALIdentifyDriver( mDataSources[0].toUtf8().toStdString().c_str(), nullptr );
+  if ( hDriver == nullptr )
+    return;
+
+  const char *pszOpenOptionList = GDALGetMetadataItem( hDriver, GDAL_DMD_OPENOPTIONLIST, nullptr );
+  if ( pszOpenOptionList == nullptr )
+    return;
+
+  CPLXMLNode *psDoc = CPLParseXMLString( pszOpenOptionList );
+  if ( psDoc == nullptr )
+    return;
+  CPLXMLNode *psOpenOptionList = CPLGetXMLNode( psDoc, "=OpenOptionList" );
+  if ( psOpenOptionList == nullptr )
+  {
+    CPLDestroyXMLNode( psDoc );
+    return;
+  }
+
+  const bool bIsGPKG = EQUAL( GDALGetDriverShortName( hDriver ), "GPKG" );
+
+  for ( auto psItem = psOpenOptionList->psChild; psItem != nullptr; psItem = psItem->psNext )
+  {
+    if ( psItem->eType != CXT_Element || !EQUAL( psItem->pszValue, "Option" ) )
+      continue;
+
+    const char *pszOptionName = CPLGetXMLValue( psItem, "name", nullptr );
+    if ( pszOptionName == nullptr )
+      continue;
+
+    // Exclude options that are not of vector scope
+    const char *pszScope = CPLGetXMLValue( psItem, "scope", nullptr );
+    if ( pszScope != nullptr && strstr( pszScope, "vector" ) == nullptr )
+      continue;
+
+    // The GPKG driver list a lot of options that are only for rasters
+    if ( bIsGPKG && strstr( pszOpenOptionList, "scope=" ) == nullptr &&
+         !EQUAL( pszOptionName, "LIST_ALL_TABLES" ) &&
+         !EQUAL( pszOptionName, "PRELUDE_STATEMENTS" ) )
+      continue;
+
+    // Do not list database options already asked in the database dialog
+    if ( radioSrcDatabase->isChecked() &&
+         ( EQUAL( pszOptionName, "USER" ) ||
+           EQUAL( pszOptionName, "PASSWORD" ) ||
+           EQUAL( pszOptionName, "HOST" ) ||
+           EQUAL( pszOptionName, "DBNAME" ) ||
+           EQUAL( pszOptionName, "DATABASE" ) ||
+           EQUAL( pszOptionName, "PORT" ) ||
+           EQUAL( pszOptionName, "SERVICE" ) ) )
+    {
+      continue;
+    }
+
+    const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
+    QStringList options;
+    if ( pszType && EQUAL( pszType, "string-select" ) )
+    {
+      for ( auto psOption = psItem->psChild; psOption != nullptr; psOption = psOption->psNext )
+      {
+        if ( psOption->eType != CXT_Element ||
+             !EQUAL( psOption->pszValue, "Value" ) ||
+             psOption->psChild == nullptr )
+        {
+          continue;
+        }
+        options << psOption->psChild->pszValue;
+      }
+    }
+
+    QLabel *label = new QLabel( pszOptionName );
+    QWidget *control = nullptr;
+    if ( pszType && EQUAL( pszType, "boolean" ) )
+    {
+      QComboBox *cb = new QComboBox();
+      cb->addItem( tr( "Yes" ), "YES" );
+      cb->addItem( tr( "No" ), "NO" );
+      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
+      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->setCurrentIndex( idx );
+      control = cb;
+    }
+    else if ( !options.isEmpty() )
+    {
+      QComboBox *cb = new QComboBox();
+      for ( const QString &val : qgis::as_const( options ) )
+      {
+        cb->addItem( val, val );
+      }
+      cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
+      int idx = cb->findData( QVariant( QVariant::String ) );
+      cb->setCurrentIndex( idx );
+      control = cb;
+    }
+    else
+    {
+      QLineEdit *le = new QLineEdit( );
+      control = le;
+    }
+    control->setObjectName( pszOptionName );
+    mOpenOptionsWidgets.push_back( control );
+
+    const char *pszDescription = CPLGetXMLValue( psItem, "description", nullptr );
+    if ( pszDescription )
+    {
+      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
+      control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( pszDescription ) );
+    }
+    mOpenOptionsLayout->addRow( label, control );
+  }
+
+  CPLDestroyXMLNode( psDoc );
+
+  // Set label to point to driver help page
+  const char *pszHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );
+  if ( pszHelpTopic )
+  {
+    mOpenOptionsLabel->setText( tr( "Consult <a href=\"https://gdal.org/%1\">%2 driver help page</a> for detailed explanations on options" ).arg( pszHelpTopic ).arg( GDALGetDriverShortName( hDriver ) ) );
+    mOpenOptionsLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    mOpenOptionsLabel->setOpenExternalLinks( true );
+    mOpenOptionsLabel->setVisible( true );
+  }
+  else
+  {
+    mOpenOptionsLabel->setVisible( false );
+  }
+
+  mOpenOptionsGroupBox->setVisible( !mOpenOptionsWidgets.empty() );
+}
 ///@endcond

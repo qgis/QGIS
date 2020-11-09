@@ -363,7 +363,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>18</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -556,12 +556,12 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mGeometryGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mCrsGroupBox">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>
                  </property>
                  <property name="title">
-                  <string>Geometry and Coordinate Reference System</string>
+                  <string>Assigned Coordinate Reference System (CRS)</string>
                  </property>
                  <property name="checkable">
                   <bool>false</bool>
@@ -574,13 +574,6 @@ border-radius: 2px;</string>
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QLabel" name="label_5">
-                    <property name="text">
-                     <string>Set source coordinate reference system</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
@@ -588,7 +581,48 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <widget class="QLabel" name="label_7">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Changing this option does not modify the original data source or perform any reprojection of features. Rather, it can be used to override the layer's CRS within this project if it could not be detected or has been incorrectly detected.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The Processing “&lt;span style=&quot; font-style:italic;&quot;&gt;Reproject Layer&lt;/span&gt;” tool should be used to reproject features and permanently change a data source's CRS.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="textFormat">
+                     <enum>Qt::RichText</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="Line" name="line_2">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mGeomGroupBox">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                 <property name="title">
+                  <string>Geometry </string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">vectorgeneral</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_31">
+                  <property name="spacing">
+                   <number>6</number>
+                  </property>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_11">
                     <item>
                      <widget class="QPushButton" name="pbnIndex">
                       <property name="text">
@@ -604,7 +638,7 @@ border-radius: 2px;</string>
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_6">
+                     <spacer name="horizontalSpacer_10">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -619,7 +653,7 @@ border-radius: 2px;</string>
                    </layout>
                   </item>
                   <item>
-                   <widget class="Line" name="line_2">
+                   <widget class="Line" name="line_3">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -664,21 +698,9 @@ border-radius: 2px;</string>
                    </spacer>
                   </item>
                   <item row="0" column="0" colspan="2">
-                   <widget class="QTextEdit" name="txtSubsetSQL">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="acceptDrops">
-                     <bool>false</bool>
-                    </property>
-                    <property name="acceptRichText">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
+                   <widget class="QgsCodeEditorSQL" name="txtSubsetSQL" native="true"/>
                   </item>
                  </layout>
-                 <zorder>txtSubsetSQL</zorder>
-                 <zorder>pbnQueryBuilder</zorder>
                 </widget>
                </item>
                <item>
@@ -1604,7 +1626,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QDoubleSpinBox" name="mSimplifyDrawingSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mSimplifyDrawingSpinBox">
                     <property name="toolTip">
                      <string>Higher values result in more simplification</string>
                     </property>
@@ -1711,7 +1733,7 @@ border-radius: 2px;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
+                  <widget class="QgsDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
                    <property name="toolTip">
                     <string>Lower values result in more data refreshing. Canvas updates are deferred in order to avoid refreshing multiple times if more than one layer has an auto update interval set.</string>
                    </property>
@@ -2538,6 +2560,17 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -2608,7 +2641,6 @@ border-radius: 2px;</string>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
   <tabstop>txtDisplayName</tabstop>
   <tabstop>cboProviderEncoding</tabstop>
-  <tabstop>mGeometryGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>pbnIndex</tabstop>
   <tabstop>pbnUpdateExtents</tabstop>

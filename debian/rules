@@ -38,9 +38,9 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
+QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic eoan focal"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bullseye bionic focal groovy"))
 	DISTRIBUTION := sid
 endif
 
@@ -73,7 +73,7 @@ else
 TESTMAKE=ninja $(NINJA_OPTS)
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"focal sid"))
+ifeq (,$(findstring $(DISTRIBUTION),"focal groovy sid"))
 PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
 else
 PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
@@ -98,7 +98,10 @@ CMAKE_OPTS := \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
 	-DPYTHON_LIBRARY=$(PYTHON_LIBRARY) \
 	-DDOXYGEN_ON_DEMAND=TRUE \
-	-DWITH_QSPATIALITE=TRUE
+	-DWITH_QSPATIALITE=TRUE \
+	-DWITH_3D=TRUE \
+	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
+	-DWITH_PDAL=TRUE
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -115,22 +118,13 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic eoan focal"))
-	CMAKE_OPTS += \
-		-DWITH_3D=TRUE \
-		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
-
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster eoan focal"))
-$(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h)
+$(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h -a -f /usr/lib/$(DEB_BUILD_MULTIARCH)/cmake/Qt53DExtras/Qt53DExtrasConfig.cmake)
 ifneq (0,$(.SHELLSTATUS))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
-		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \
+	        -DQt53DExtras_DIR=$(realpath external/qt3dextra-headers/cmake/Qt53DExtras) \
 		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
 		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
-endif
-endif
-
 endif
 
 ifneq (,$(WITH_ORACLE))

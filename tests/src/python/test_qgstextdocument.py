@@ -18,7 +18,8 @@ from qgis.core import (
     QgsTextDocument,
     QgsTextBlock,
     QgsTextFragment,
-    QgsTextCharacterFormat
+    QgsTextCharacterFormat,
+    QgsStringUtils
 )
 from qgis.testing import start_app, unittest
 
@@ -159,6 +160,11 @@ class TestQgsTextDocument(unittest.TestCase):
         self.assertEqual(doc[1][1].text(), ' not ')
         self.assertEqual(len(doc[2]), 1)
         self.assertEqual(doc[2][0].text(), 'red')
+
+    def testCapitalize(self):
+        doc = QgsTextDocument.fromPlainText(['abc def ghi', 'more text', 'another block'])
+        doc.applyCapitalization(QgsStringUtils.TitleCase)
+        self.assertEqual(doc.toPlainText(), ['Abc Def Ghi', 'More Text', 'Another Block'])
 
 
 if __name__ == '__main__':

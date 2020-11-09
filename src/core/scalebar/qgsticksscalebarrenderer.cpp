@@ -111,8 +111,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   const double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
   painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+  context.setPainterFlagsUsingContext( painter );
 
   std::unique_ptr< QgsLineSymbol > symbol( settings.lineSymbol()->clone() );
   symbol->startRender( context );

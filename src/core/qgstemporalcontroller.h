@@ -23,6 +23,13 @@
 #include "qgsrange.h"
 #include <QObject>
 
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgstemporalnavigationobject.h>
+% End
+#endif
+
 /**
  * \class QgsTemporalController
  * \ingroup core
@@ -31,10 +38,22 @@
  *
  * \since QGIS 3.14
  */
-
 class CORE_EXPORT QgsTemporalController : public QObject
 {
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsTemporalNavigationObject *>( sipCpp ) )
+    {
+      sipType = sipType_QgsTemporalNavigationObject;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
 
   public:
 

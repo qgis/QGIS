@@ -604,7 +604,7 @@ namespace QgsWms
       }
       else //maybe an external wms parameter?
       {
-        int separator = key.indexOf( QStringLiteral( ":" ) );
+        int separator = key.indexOf( QLatin1Char( ':' ) );
         if ( separator >= 1 )
         {
           QString id = key.left( separator );
@@ -1435,7 +1435,7 @@ namespace QgsWms
     for ( int i = 0; i < rawFilters.size(); i++ )
     {
       const QString f = rawFilters[i];
-      if ( f.startsWith( QLatin1String( "<" ) ) \
+      if ( f.startsWith( QLatin1Char( '<' ) ) \
            && f.endsWith( QLatin1String( "Filter>" ) ) \
            &&  i < layers.size() )
       {
@@ -1536,36 +1536,42 @@ namespace QgsWms
     {
       QString layer = layers[i];
 
-      if ( isExternalLayer( layer ) )
-        continue;
-
       QgsWmsParametersLayer param;
       param.mNickname = layer;
 
-      if ( i < styles.count() )
-        param.mStyle = styles[i];
-
-      if ( i < opacities.count() )
-        param.mOpacity = opacities[i];
-
-      if ( filters.contains( layer ) )
+      if ( isExternalLayer( layer ) )
       {
-        auto it = filters.find( layer );
-        while ( it != filters.end() && it.key() == layer )
-        {
-          param.mFilter.append( it.value() );
-          ++it;
-        }
+        const QgsWmsParametersExternalLayer extParam = externalLayerParameter( layer );
+        param.mNickname = extParam.mName;
+        param.mExternalUri = extParam.mUri;
       }
-
-      if ( layerSelections.contains( layer ) )
+      else
       {
-        QMultiMap<QString, QString>::const_iterator it;
-        it = layerSelections.constFind( layer );
-        while ( it != layerSelections.constEnd() && it.key() == layer )
+        if ( i < styles.count() )
+          param.mStyle = styles[i];
+
+        if ( i < opacities.count() )
+          param.mOpacity = opacities[i];
+
+        if ( filters.contains( layer ) )
         {
-          param.mSelection << it.value().split( ',' );
-          ++it;
+          auto it = filters.find( layer );
+          while ( it != filters.end() && it.key() == layer )
+          {
+            param.mFilter.append( it.value() );
+            ++it;
+          }
+        }
+
+        if ( layerSelections.contains( layer ) )
+        {
+          QMultiMap<QString, QString>::const_iterator it;
+          it = layerSelections.constFind( layer );
+          while ( it != layerSelections.constEnd() && it.key() == layer )
+          {
+            param.mSelection << it.value().split( ',' );
+            ++it;
+          }
         }
       }
 
@@ -1740,14 +1746,14 @@ namespace QgsWms
     {
       if ( isExternalLayer( layer ) )
       {
-        eParams << externalLayerParameter( layer );
+        const QgsWmsParametersExternalLayer extParam = externalLayerParameter( layer );
+        layers << extParam.mName;
       }
       else
       {
         layers << layer;
       }
     }
-    param.mExternalLayers = eParams;
 
     QStringList styles;
     wmsParam = idParameter( QgsWmsParameter::STYLES, mapId );
@@ -1884,7 +1890,17 @@ namespace QgsWms
     QMap<QString, QString>::const_iterator paramIt = paramMap.constBegin();
     for ( ; paramIt != paramMap.constEnd(); ++paramIt )
     {
-      wmsUri.setParam( paramIt.key().toLower(), paramIt.value() );
+      QString paramName = paramIt.key().toLower();
+      if ( paramName == QLatin1String( "layers" ) || paramName == QLatin1String( "styles" ) )
+      {
+        const QStringList values = paramIt.value().split( ',' );
+        for ( const QString &value : values )
+          wmsUri.setParam( paramName, value );
+      }
+      else
+      {
+        wmsUri.setParam( paramName, paramIt.value() );
+      }
     }
     return wmsUri.encodedUri();
   }
@@ -2050,7 +2066,7 @@ namespace QgsWms
     const QStringList unmanagedNames = mUnmanagedParameters.keys();
     for ( const QString &key : unmanagedNames )
     {
-      if ( key.startsWith( QStringLiteral( "DIM_" ) ) )
+      if ( key.startsWith( QLatin1String( "DIM_" ) ) )
       {
         dimValues[key.mid( 4 )] = mUnmanagedParameters[key];
       }

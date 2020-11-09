@@ -9,6 +9,7 @@
 
 
 
+
 %ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsgeometryrubberband.h>
@@ -18,7 +19,7 @@
 class QgsGeometryRubberBand: QgsMapCanvasItem
 {
 %Docstring
-A rubberband class for QgsAbstractGeometry (considering curved geometries)*
+A rubberband class for QgsAbstractGeometry (considering curved geometries).
 %End
 
 %TypeHeaderCode
@@ -50,7 +51,7 @@ A rubberband class for QgsAbstractGeometry (considering curved geometries)*
     QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
     ~QgsGeometryRubberBand();
 
-    void setGeometry( QgsAbstractGeometry *geom /Transfer/ );
+    virtual void setGeometry( QgsAbstractGeometry *geom /Transfer/ );
 %Docstring
 Sets geometry (takes ownership). Geometry is expected to be in map coordinates
 %End
@@ -86,12 +87,27 @@ Sets brush style
 %Docstring
 Sets vertex marker icon type
 %End
+    void setVertexDrawingEnabled( bool isVerticesDrawn );
+%Docstring
+Sets whether the vertices are drawn
+%End
 
   protected:
     virtual void paint( QPainter *painter );
 
 
+    QgsWkbTypes::GeometryType geometryType() const;
+%Docstring
+Returns which geometry is handled by the rubber band, polygon or line
+%End
+
+    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
+%Docstring
+Sets which geometry is handled by the rubber band, polygon or line
+%End
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -106,12 +106,12 @@ bool QgsLayoutGridSettings::writeXml( QDomElement &parentElement, QDomDocument &
 bool QgsLayoutGridSettings::readXml( const QDomElement &e, const QDomDocument &, const QgsReadWriteContext & )
 {
   QDomElement element = e;
-  if ( element.nodeName() != QStringLiteral( "Grid" ) )
+  if ( element.nodeName() != QLatin1String( "Grid" ) )
   {
     element = element.firstChildElement( QStringLiteral( "Grid" ) );
   }
 
-  if ( element.nodeName() != QStringLiteral( "Grid" ) )
+  if ( element.nodeName() != QLatin1String( "Grid" ) )
   {
     return false;
   }

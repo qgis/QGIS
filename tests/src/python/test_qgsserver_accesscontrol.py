@@ -200,11 +200,16 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG'):
 
-        extFile = 'png'
-        if outputJpg:
+        if outputFormat == 'PNG':
+            extFile = 'png'
+        elif outputFormat == 'JPG':
             extFile = 'jpg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
+        else:
+            raise RuntimeError('Yeah, new format implemented')
 
         temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 

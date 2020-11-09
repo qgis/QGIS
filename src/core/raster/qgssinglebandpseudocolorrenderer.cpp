@@ -53,9 +53,9 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
 {
   mClassificationMin = min;
-  if ( shader() )
+  if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMinimumValue( min );
@@ -66,9 +66,9 @@ void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
 void QgsSingleBandPseudoColorRenderer::setClassificationMax( double max )
 {
   mClassificationMax = max;
-  if ( shader() )
+  if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMaximumValue( max );

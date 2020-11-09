@@ -385,8 +385,8 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
   mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   mouseClick( 6, 7, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 7 1, 7 5 1)" ) );
-  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 6 7 333, 7 7 10)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 6 7 7.5, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 6 7 7.5, 7 7 10)" ) );
 
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   mLayerLineZ->undoStack()->undo();

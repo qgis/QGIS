@@ -85,6 +85,12 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR}
 )
 
+IF (${SIP_VERSION_STR} VERSION_LESS 5)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${SIP_INCLUDE_DIR}
+  )
+ENDIF (${SIP_VERSION_STR} VERSION_LESS 5)
+
 IF (WITH_GUI)
   INCLUDE_DIRECTORIES(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
@@ -107,6 +113,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/geocms
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/geocoding
   ${CMAKE_SOURCE_DIR}/src/core/gps
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -118,6 +125,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/providers
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
@@ -143,6 +151,7 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/raster
     ${CMAKE_SOURCE_DIR}/src/gui/attributetable
     ${CMAKE_SOURCE_DIR}/src/gui/auth
+    ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
     ${CMAKE_SOURCE_DIR}/src/gui/devtools
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
@@ -150,9 +159,11 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/labeling
     ${CMAKE_SOURCE_DIR}/src/gui/layertree
     ${CMAKE_SOURCE_DIR}/src/gui/layout
+    ${CMAKE_SOURCE_DIR}/src/gui/mesh
     ${CMAKE_SOURCE_DIR}/src/gui/locator
     ${CMAKE_SOURCE_DIR}/src/gui/numericformats
     ${CMAKE_SOURCE_DIR}/src/gui/processing
+    ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
     ${CMAKE_SOURCE_DIR}/src/gui/processing/models
     ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
     ${CMAKE_SOURCE_DIR}/src/gui/vector
@@ -252,10 +263,12 @@ IF (WITH_3D)
   INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/3d
     ${CMAKE_SOURCE_DIR}/src/3d/chunks
+    ${CMAKE_SOURCE_DIR}/src/3d/materials
     ${CMAKE_SOURCE_DIR}/src/3d/processing
     ${CMAKE_SOURCE_DIR}/src/3d/symbols
     ${CMAKE_SOURCE_DIR}/src/3d/terrain
     ${CMAKE_BINARY_DIR}/src/3d
+    ${QT5_3DEXTRA_INCLUDE_DIR}
   )
   SET(PY_MODULES ${PY_MODULES} 3d)
 
@@ -307,7 +320,6 @@ IF(WITH_ANALYSIS)
     ${CMAKE_SOURCE_DIR}/src/analysis/raster
     ${CMAKE_SOURCE_DIR}/src/analysis/network
     ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-    ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
 
     ${CMAKE_BINARY_DIR}/src/analysis/processing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
@@ -315,7 +327,6 @@ IF(WITH_ANALYSIS)
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
-    ${CMAKE_BINARY_DIR}/src/analysis/openstreetmap
   )
 
   # analysis module

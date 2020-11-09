@@ -19,8 +19,30 @@
 #include "ui_qgsprofilerpanelbase.h"
 #include <QTreeView>
 #include <QStyledItemDelegate>
+#include <QSortFilterProxyModel>
 
 class QgsRuntimeProfiler;
+
+class QgsProfilerProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProfilerProxyModel( QgsRuntimeProfiler *profiler, QObject *parent );
+
+    void setGroup( const QString &group );
+
+  protected:
+    bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
+
+  private:
+
+    QString mGroup;
+
+
+
+};
 
 /**
  * \ingroup app
@@ -43,6 +65,7 @@ class QgsProfilerPanelWidget : public QgsDevToolWidget, private Ui::QgsProfilerP
   private:
 
     QgsRuntimeProfiler *mProfiler = nullptr;
+    QgsProfilerProxyModel *mProxyModel = nullptr;
 
 };
 

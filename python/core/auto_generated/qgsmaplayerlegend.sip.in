@@ -34,14 +34,14 @@ Constructor for QgsMapLayerLegend
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
-Reads configuration from a DOM element previously written by writeXml()
+Reads configuration from a DOM element previously written by :py:func:`~QgsMapLayerLegend.writeXml`
 
 .. versionadded:: 3.2
 %End
 
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Writes configuration to a DOM element, to be used later with readXml()
+Writes configuration to a DOM element, to be used later with :py:func:`~QgsMapLayerLegend.readXml`
 
 .. versionadded:: 3.2
 %End
@@ -209,7 +209,7 @@ Default legend implementation for vector layers
 %Docstring
 Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
 may have extra text rendered on top. The content of labels and their style is controlled
-by textOnSymbolContent() and textOnSymbolTextFormat().
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End
@@ -218,7 +218,7 @@ by textOnSymbolContent() and textOnSymbolTextFormat().
 %Docstring
 Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
 may have extra text rendered on top. The content of labels and their style is controlled
-by textOnSymbolContent() and textOnSymbolTextFormat().
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End

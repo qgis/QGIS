@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitemregistry.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAnnotationItemAbstractMetadata
+{
+%Docstring
+Stores metadata about one annotation item class.
+
+A companion class, QgsAnnotationItemAbstractGuiMetadata, handles the
+GUI behavior of QgsAnnotationItems.
+
+.. note::
+
+   In C++ you can use QgsAnnotationItemMetadata convenience class.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemregistry.h"
+%End
+  public:
+
+    QgsAnnotationItemAbstractMetadata( const QString &type, const QString &visibleName, const QString &visiblePluralName = QString() );
+%Docstring
+Constructor for QgsAnnotationItemAbstractMetadata with the specified class ``type``
+and ``visibleName``.
+
+The optional ``visiblePluralName`` argument can be used to specify a plural variant of the item type.
+%End
+
+    virtual ~QgsAnnotationItemAbstractMetadata();
+
+    QString type() const;
+%Docstring
+Returns the unique item type string for the annotation item class.
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns a translated, user visible name for the annotation item class.
+
+.. seealso:: :py:func:`visiblePluralName`
+%End
+
+    QString visiblePluralName() const;
+%Docstring
+Returns a translated, user visible name for plurals of the annotation item class (e.g. "Labels" for a "Label" item).
+%End
+
+    virtual QgsAnnotationItem *createItem() = 0 /Factory/;
+%Docstring
+Creates a new, default, annotation item of this class.
+%End
+
+};
+
+
+
+
+class QgsAnnotationItemRegistry : QObject
+{
+%Docstring
+Registry of available annotation item types.
+
+QgsAnnotationItemRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.annotationItemRegistry()`.
+
+A companion class, :py:class:`QgsAnnotationItemGuiRegistry`, handles the GUI behavior
+of annotation items.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemregistry.h"
+%End
+  public:
+
+    QgsAnnotationItemRegistry( QObject *parent = 0 );
+%Docstring
+Creates a new empty item registry.
+
+QgsAnnotationItemRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.annotationItemRegistry()`.
+
+.. seealso:: :py:func:`populate`
+%End
+
+    ~QgsAnnotationItemRegistry();
+
+    bool populate();
+%Docstring
+Populates the registry with standard item types. If called on a non-empty registry
+then this will have no effect and will return ``False``.
+%End
+
+
+    QgsAnnotationItemAbstractMetadata *itemMetadata( const QString &type ) const;
+%Docstring
+Returns the metadata for the specified item ``type``. Returns ``None`` if
+a corresponding type was not found in the registry.
+%End
+
+    bool addItemType( QgsAnnotationItemAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Registers a new annotation item type. Takes ownership of the metadata instance.
+%End
+
+    QgsAnnotationItem *createItem( const QString &type ) const /Factory/;
+%Docstring
+Creates a new instance of a annotation item given the item ``type``.
+%End
+
+    QMap< QString, QString> itemTypes() const;
+%Docstring
+Returns a map of available item types to translated name.
+%End
+
+  signals:
+
+    void typeAdded( const QString &type, const QString &name );
+%Docstring
+Emitted whenever a new item type is added to the registry, with the specified
+``type`` and visible ``name``.
+%End
+
+  private:
+    QgsAnnotationItemRegistry( const QgsAnnotationItemRegistry &rh );
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitemregistry.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

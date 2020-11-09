@@ -228,7 +228,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
       edgePoints[1] = geom->vertexAt( afterVertex );
       pt = QgsPointXY( ( edgePoints[0].x() + edgePoints[1].x() ) / 2.0, ( edgePoints[0].y() + edgePoints[1].y() ) / 2.0 );
 
-      QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, afterVertex - 1 );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -466,8 +466,10 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   for ( auto part = straightGeom.const_parts_begin(); part != straightGeom.const_parts_end(); ++part )
   {
     // Checking for invalid linestrings
-    // A linestring should/(must?) have at least two points
-    if ( qgsgeometry_cast<QgsLineString *>( *part )->numPoints() < 2 )
+    // A linestring should/(must?) have at least two points.
+    QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( *part );
+    Q_ASSERT( !curve->hasCurvedSegments() );
+    if ( curve->numPoints() < 2 )
       continue;
 
     QgsAbstractGeometry::vertex_iterator it = ( *part )->vertices_begin();
@@ -659,7 +661,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
           QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
           if ( mSrcRect.contains( pt ) )
           {
-            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, -1 );
+            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, geom->vertexNrFromVertexId( it.vertexId() ) );
 
             // in range queries the filter may reject some matches
             if ( mFilter && !mFilter->acceptMatch( m ) )
@@ -830,6 +832,10 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
        || hasIndex()
        || mIsIndexing ) // already indexing, return!
     return true;
+
+  if ( !mLayer->dataProvider()
+       || !mLayer->dataProvider()->isValid() )
+    return false;
 
   mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
   mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );

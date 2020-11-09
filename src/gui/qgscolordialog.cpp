@@ -92,7 +92,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   }
   else
   {
-    QgsColorDialog *dialog = new QgsColorDialog( parent, nullptr, initialColor );
+    QgsColorDialog *dialog = new QgsColorDialog( parent, Qt::WindowFlags(), initialColor );
     dialog->setWindowTitle( dialogTitle );
     dialog->setAllowOpacity( allowOpacity );
 

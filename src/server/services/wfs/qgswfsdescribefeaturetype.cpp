@@ -262,13 +262,12 @@ namespace QgsWfs
     //Attributes
     QgsFields fields = layer->fields();
     //hidden attributes for this layer
-    const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
       const QgsField field = fields.at( idx );
       QString attributeName = field.name();
       //skip attribute if excluded from WFS publication
-      if ( layerExcludedAttributes.contains( attributeName ) )
+      if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
       {
         continue;
       }
@@ -327,9 +326,9 @@ namespace QgsWfs
         QgsDateTimeFieldFormatter fieldFormatter;
         const QVariantMap config = setup.config();
         const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( field.type() ) ).toString();
-        if ( fieldFormat == QStringLiteral( "yyyy-MM-dd" ) )
+        if ( fieldFormat == QLatin1String( "yyyy-MM-dd" ) )
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
-        else if ( fieldFormat == QStringLiteral( "HH:mm:ss" ) )
+        else if ( fieldFormat == QLatin1String( "HH:mm:ss" ) )
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
         else
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );

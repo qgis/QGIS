@@ -116,6 +116,16 @@ class CORE_EXPORT QgsGdalUtils
       double dfMaxError,
       const GDALWarpOptions *psOptionsIn );
 
+    /**
+     * This is a wrapper around GDALCreateGenImgProjTransformer2() that takes into account RPC
+     * georeferencing (it sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF).
+     * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
+     * the image would not be shown in the correct location.
+     *
+     * \since QGIS 3.16
+     */
+    static void *rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS = nullptr, char **papszOptions = nullptr );
+
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables
     static void setupProxy();

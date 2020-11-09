@@ -11,6 +11,7 @@
 #include "frmts/mdal_binary_dat.hpp"
 #include "frmts/mdal_selafin.hpp"
 #include "frmts/mdal_esri_tin.hpp"
+#include "frmts/mdal_ply.hpp"
 #include "mdal_utils.hpp"
 
 #ifdef HAVE_HDF5
@@ -204,6 +205,7 @@ MDAL::DriverManager::DriverManager()
   mDrivers.push_back( std::make_shared<MDAL::DriverXmsTin>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSelafin>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverEsriTin>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverPly>() );
 
 #ifdef HAVE_HDF5
   mDrivers.push_back( std::make_shared<MDAL::DriverFlo2D>() );

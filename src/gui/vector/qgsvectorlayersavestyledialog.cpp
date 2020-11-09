@@ -79,7 +79,7 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   } );
 
   // fill style categories
-  mModel = new QgsMapLayerStyleCategoriesModel( this );
+  mModel = new QgsMapLayerStyleCategoriesModel( mLayer->type(), this );
   QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );

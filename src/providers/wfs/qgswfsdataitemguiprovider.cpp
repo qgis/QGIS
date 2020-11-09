@@ -15,11 +15,13 @@
 
 #include "qgswfsdataitemguiprovider.h"
 
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsnewhttpconnection.h"
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
 
+#include <QFileDialog>
 #include <QMessageBox>
 
 
@@ -30,6 +32,14 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
+
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
+    menu->addAction( actionSaveServers );
+
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
+    menu->addAction( actionLoadServers );
   }
 
   if ( QgsWfsConnectionItem *connItem = qobject_cast< QgsWfsConnectionItem * >( item ) )
@@ -90,4 +100,24 @@ void QgsWfsDataItemGuiProvider::refreshConnection( QgsDataItem *item )
   // the parent should be updated
   if ( item->parent() )
     item->parent()->refreshConnections();
+}
+
+void QgsWfsDataItemGuiProvider::saveConnections()
+{
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WFS );
+  dlg.exec();
+}
+
+void QgsWfsDataItemGuiProvider::loadConnections( QgsDataItem *item )
+{
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WFS, fileName );
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

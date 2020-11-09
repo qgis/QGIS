@@ -29,7 +29,7 @@ message to be shown. If no messages are available to show then the message bar
 automatically hides.
 
 The class also supports pushing custom widgets to the notification stack via
-the pushWidget() method.
+the :py:func:`~pushWidget` method.
 %End
 
 %TypeHeaderCode
@@ -79,7 +79,7 @@ The caller takes ownership of the returned item.
 
 .. note::
 
-   This is a low-level API call. Users are recommended to use the high-level pushMessage() API call
+   This is a low-level API call. Users are recommended to use the high-level :py:func:`~QgsMessageBar.pushMessage` API call
    instead.
 %End
 
@@ -91,7 +91,7 @@ The caller takes ownership of the returned item.
 
 .. note::
 
-   This is a low-level API call. Users are recommended to use the high-level pushMessage() API call
+   This is a low-level API call. Users are recommended to use the high-level :py:func:`~QgsMessageBar.pushMessage` API call
    instead.
 %End
 
@@ -103,7 +103,7 @@ The caller takes ownership of the returned item.
 
 .. note::
 
-   This is a low-level API call. Users are recommended to use the high-level pushWidget() API call
+   This is a low-level API call. Users are recommended to use the high-level :py:func:`~QgsMessageBar.pushWidget` API call
    instead.
 %End
 

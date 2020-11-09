@@ -101,6 +101,27 @@ class TestQgsWmsProvider: public QObject
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
+    void noCrsSpecified()
+    {
+      QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+      QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:2056" ) );
+      QgsWmsProvider provider2( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+      QCOMPARE( provider2.crs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities2.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll();
+      QVERIFY( content.size() > 0 );
+      const QgsWmsParserSettings config;
+
+      QgsWmsCapabilities capabilities;
+      QVERIFY( capabilities.parseResponse( content, config ) );
+      QgsWmsProvider provider3( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326" ), QgsDataProvider::ProviderOptions(), &capabilities );
+      QCOMPARE( provider3.crs().authid(), QStringLiteral( "EPSG:4326" ) );
+      QgsWmsProvider provider4( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), &capabilities );
+      QCOMPARE( provider4.crs().authid(), QStringLiteral( "EPSG:3857" ) );
+    }
+
     void testMBTiles()
     {
       QString dataDir( TEST_DATA_DIR );

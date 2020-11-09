@@ -77,6 +77,13 @@ Takes a linestring and clips it to clipExtent
 :return: clipped line coordinates
 %End
 
+    static QPolygonF clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent );
+%Docstring
+Takes a ``curve`` and clips it to clipExtent.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 

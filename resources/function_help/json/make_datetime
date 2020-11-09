@@ -1,6 +1,7 @@
 {
   "name": "make_datetime",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Creates a datetime value from year, month, day, hour, minute and second numbers.",
   "arguments": [
     {"arg":"year","description":"Year number. Years 1 to 99 are interpreted as is. Year 0 is invalid."},

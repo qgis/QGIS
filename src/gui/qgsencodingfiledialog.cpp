@@ -114,7 +114,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   setWindowTitle( tr( "Select Encoding" ) );
 
   QVBoxLayout *layout = new QVBoxLayout();
-  layout->setMargin( 6 );
+  layout->setContentsMargins( 6, 6, 6, 6 );
 
   mEncodingComboBox = new QComboBox( this );
   QLabel *l = new QLabel( c, this );

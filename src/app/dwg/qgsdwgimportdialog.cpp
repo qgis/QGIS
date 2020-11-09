@@ -296,7 +296,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
     {
       exprlist.append( QStringLiteral( "'%1'" ).arg( layer.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) ) );
     }
-    layerFilter = QStringLiteral( "layer IN (%1) AND " ).arg( exprlist.join( QStringLiteral( "," ) ) );
+    layerFilter = QStringLiteral( "layer IN (%1) AND " ).arg( exprlist.join( QLatin1Char( ',' ) ) );
   }
 
   QgsVectorLayer *l = nullptr;

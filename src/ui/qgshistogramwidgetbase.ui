@@ -50,7 +50,7 @@
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QSpinBox" name="mBinsSpinBox">
+    <widget class="QgsSpinBox" name="mBinsSpinBox">
      <property name="minimum">
       <number>1</number>
      </property>
@@ -79,6 +79,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QwtPlot</class>
    <extends>QFrame</extends>

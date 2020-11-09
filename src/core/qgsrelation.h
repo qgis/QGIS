@@ -58,8 +58,8 @@ class CORE_EXPORT QgsRelation
     {
       Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
       Composition  //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
-
     };
+    Q_ENUM( RelationStrength )
 
 #ifndef SIP_RUN
 

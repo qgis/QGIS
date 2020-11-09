@@ -33,6 +33,7 @@ from qgis.core import (QgsMapLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterEnum,
+                       QgsProject,
                        QgsProcessingParameterMatrix)
 from qgis.PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
 
@@ -108,8 +109,19 @@ class BatchOutputSelectionPanel(QWidget):
                             if isinstance(v, QgsMapLayer):
                                 s = v.name()
                             else:
-                                s = os.path.basename(v)
-                                s = os.path.splitext(s)[0]
+                                if v in QgsProject.instance().mapLayers():
+                                    layer = QgsProject.instance().mapLayer(v)
+                                    # value is a layer ID, but we'd prefer to show a layer name if it's unique in the project
+                                    if len([l for _, l in QgsProject.instance().mapLayers().items() if l.name().lower() == layer.name().lower()]) == 1:
+                                        s = layer.name()
+                                    else:
+                                        # otherwise fall back to layer id
+                                        s = v
+                                else:
+                                    # else try to use file base name
+                                    # TODO: this is bad for database sources!!
+                                    s = os.path.basename(v)
+                                    s = os.path.splitext(s)[0]
                         elif isinstance(param, QgsProcessingParameterBoolean):
                             s = 'true' if v else 'false'
                         elif isinstance(param, QgsProcessingParameterEnum):

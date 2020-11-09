@@ -69,7 +69,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     /**
      * Returns whether values from the joined layer should be cached in memory to speed up lookups.
-     * Will return false if upsertOnEdit is enabled.
+     * Will return FALSE if upsertOnEdit is enabled.
      */
     bool isUsingMemoryCache() const;
 

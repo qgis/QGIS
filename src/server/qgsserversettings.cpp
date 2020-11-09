@@ -163,6 +163,28 @@ void QgsServerSettings::initSettings()
                                    };
   mSettings[ sIgnoreBadLayers.envVar ] = sIgnoreBadLayers;
 
+  // trust layer metadata
+  const Setting sTrustLayerMetadata = { QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA,
+                                        QgsServerSettingsEnv::DEFAULT_VALUE,
+                                        QStringLiteral( "Trust layer metadata" ),
+                                        QString(),
+                                        QVariant::Bool,
+                                        QVariant( false ),
+                                        QVariant()
+                                      };
+  mSettings[ sTrustLayerMetadata.envVar ] = sTrustLayerMetadata;
+
+  // don't load layouts
+  const Setting sDontLoadLayouts = { QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT,
+                                     QgsServerSettingsEnv::DEFAULT_VALUE,
+                                     QStringLiteral( "Don't load layouts" ),
+                                     QString(),
+                                     QVariant::Bool,
+                                     QVariant( false ),
+                                     QVariant()
+                                   };
+  mSettings[ sDontLoadLayouts.envVar ] = sDontLoadLayouts;
+
   // show group separator
   const Setting sShowGroupSeparator = { QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR,
                                         QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -219,6 +241,30 @@ void QgsServerSettings::initSettings()
                                    };
 
   mSettings[ sApiWfs3MaxLimit.envVar ] = sApiWfs3MaxLimit;
+
+  // projects directory for landing page service
+  const Setting sProjectsDirectories = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
+                                         QgsServerSettingsEnv::DEFAULT_VALUE,
+                                         QStringLiteral( "Directories used by the landing page service to find .qgs and .qgz projects" ),
+                                         QStringLiteral( "/qgis/server_projects_directories" ),
+                                         QVariant::String,
+                                         QVariant( "" ),
+                                         QVariant()
+                                       };
+
+  mSettings[ sProjectsDirectories.envVar ] = sProjectsDirectories;
+
+  // postgresql connection string for landing page service
+  const Setting sProjectsPgConnections = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS,
+                                           QgsServerSettingsEnv::DEFAULT_VALUE,
+                                           QStringLiteral( "PostgreSQL connection strings used by the landing page service to find projects" ),
+                                           QStringLiteral( "/qgis/server_projects_pg_connections" ),
+                                           QVariant::String,
+                                           QVariant( "" ),
+                                           QVariant()
+                                         };
+
+  mSettings[ sProjectsPgConnections.envVar ] = sProjectsPgConnections;
 }
 
 void QgsServerSettings::load()
@@ -266,8 +312,16 @@ QMap<QgsServerSettingsEnv::EnvVar, QString> QgsServerSettings::getEnv() const
   return env;
 }
 
-QVariant QgsServerSettings::value( QgsServerSettingsEnv::EnvVar envVar ) const
+QVariant QgsServerSettings::value( QgsServerSettingsEnv::EnvVar envVar, bool actual ) const
 {
+  if ( actual )
+  {
+    const QString envValue( getenv( name( envVar ).toStdString().c_str() ) );
+
+    if ( ! envValue.isEmpty() )
+      return envValue;
+  }
+
   if ( mSettings[ envVar ].src == QgsServerSettingsEnv::DEFAULT_VALUE )
   {
     return mSettings[ envVar ].defaultVal;
@@ -327,16 +381,21 @@ void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QSt
   }
 }
 
+QString QgsServerSettings::name( QgsServerSettingsEnv::EnvVar env )
+{
+  const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
+  return metaEnumEnv.valueToKey( env );
+}
+
 void QgsServerSettings::logSummary() const
 {
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
-  const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
 
   QgsMessageLog::logMessage( "QGIS Server Settings: ", "Server", Qgis::Info );
   for ( Setting s : mSettings )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
-    const QString var = metaEnumEnv.valueToKey( s.envVar );
+    const QString var = name( s.envVar );
 
     const QString msg = "  - " + var + " / '" + s.iniKey + "' (" + s.descr + "): '" + value( s.envVar ).toString() + "' (read from " + src + ")";
     QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
@@ -420,6 +479,16 @@ int QgsServerSettings::wmsMaxWidth() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH ).toInt();
 }
 
+QString QgsServerSettings::landingPageProjectsDirectories() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES, true ).toString();
+}
+
+QString QgsServerSettings::landingPageProjectsPgConnections() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, true ).toString();
+}
+
 QString QgsServerSettings::apiResourcesDirectory() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_API_RESOURCES_DIRECTORY ).toString();
@@ -433,4 +502,14 @@ qlonglong QgsServerSettings::apiWfs3MaxLimit() const
 bool QgsServerSettings::ignoreBadLayers() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS ).toBool();
+}
+
+bool QgsServerSettings::trustLayerMetadata() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA ).toBool();
+}
+
+bool QgsServerSettings::getPrintDisabled() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
 }

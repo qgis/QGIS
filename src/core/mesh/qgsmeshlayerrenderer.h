@@ -34,6 +34,7 @@ class QgsMeshLayer;
 #include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshtracerenderer.h"
+#include "qgsmapclippingregion.h"
 
 class QgsRenderContext;
 
@@ -145,6 +146,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // copy of rendering settings
     QgsMeshRendererSettings mRendererSettings;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
 
     // output screen size
     QSize mOutputSize;

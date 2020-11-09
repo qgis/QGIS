@@ -39,7 +39,7 @@ class CORE_EXPORT QgsAbstractCacheIndex
     virtual ~QgsAbstractCacheIndex() = default;
 
     /**
-     * Is called, whenever a feature is removed from the cache. You should update your indexes, so
+     * Is called whenever a feature is removed from the cache. You should update your indexes so
      * they become invalid in case this feature was required to successfully answer a request.
      */
     virtual void flushFeature( QgsFeatureId fid ) = 0;
@@ -62,7 +62,8 @@ class CORE_EXPORT QgsAbstractCacheIndex
     virtual void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 
     /**
-     * Is called, when a feature request is issued on a cached layer.
+     * Is called when a feature request is issued on a cached layer.
+     *
      * If this cache index is able to completely answer the feature request, it will return TRUE
      * and set the iterator to a valid iterator over the cached features. If it is not able
      * it will return FALSE.

@@ -44,7 +44,7 @@ class QgsProject;
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
+class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 {
   public:
 

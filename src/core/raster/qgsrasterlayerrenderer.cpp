@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsmapclippingutils.h"
 
 ///@cond PRIVATE
 
@@ -227,7 +228,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mPipe = new QgsRasterPipe( *layer->pipe() );
   QObject::connect( mPipe->provider(), &QgsRasterDataProvider::statusChanged, layer, &QgsRasterLayer::statusChanged );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
-  if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
+  if ( rasterRenderer
+       && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob )
+       && !( rendererContext.flags() & QgsRenderContext::Render3DMap ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
@@ -253,6 +256,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
     mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
   }
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -280,12 +285,31 @@ bool QgsRasterLayerRenderer::render()
   // procedure to use :
   //
 
+  QgsScopedQPainterState painterSate( renderContext()->painter() );
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::RasterLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
+
   QgsRasterProjector *projector = mPipe->projector();
+  bool restoreOldResamplingStage = false;
+  QgsRasterPipe::ResamplingStage oldResamplingState = mPipe->resamplingStage();
 
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector
   if ( projector )
   {
+    // Force provider resampling if reprojection is needed
+    if ( ( mPipe->provider()->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+         mRasterViewPort->mSrcCRS != mRasterViewPort->mDestCRS &&
+         oldResamplingState != QgsRasterPipe::ResamplingStage::Provider )
+    {
+      restoreOldResamplingStage = true;
+      mPipe->setResamplingStage( QgsRasterPipe::ResamplingStage::Provider );
+    }
     projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mTransformContext );
   }
 
@@ -293,6 +317,11 @@ bool QgsRasterLayerRenderer::render()
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( renderContext()->painter(), mRasterViewPort, &renderContext()->mapToPixel(), mFeedback );
+
+  if ( restoreOldResamplingStage )
+  {
+    mPipe->setResamplingStage( oldResamplingState );
+  }
 
   const QStringList errors = mFeedback->errors();
   for ( const QString &error : errors )

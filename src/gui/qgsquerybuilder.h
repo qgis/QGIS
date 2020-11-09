@@ -72,6 +72,18 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      */
     void test();
 
+    /**
+     * Save query to the XML file
+     * \since QGIS 3.16
+     */
+    void saveQuery();
+
+    /**
+     * Load query from the XML file
+     * \since QGIS 3.16
+     */
+    void loadQuery();
+
     void setDatasourceDescription( const QString &uri );
 
   private slots:

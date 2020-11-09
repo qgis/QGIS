@@ -1,6 +1,7 @@
 {
   "name": "ln",
   "type": "function",
+  "groups": ["Math"],
   "description": "Returns the natural logarithm of a value.",
   "arguments": [ {"arg":"value","description":"numeric value"}],
   "examples": [

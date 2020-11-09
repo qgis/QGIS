@@ -59,8 +59,9 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
 
     /**
      * Stores the available CRS for a server connections.
-     The first string is the typename, the corresponding list
-    stores the CRS for the typename in the form 'EPSG:XXXX'*/
+     * The first string is the typename, the corresponding list
+     * stores the CRS for the typename in the form 'EPSG:XXXX'
+    */
     QMap<QString, QStringList > mAvailableCRS;
     QString mUri;            // data source URI
     QgsGeonodeItemDelegate *mItemDelegate = nullptr;

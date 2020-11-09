@@ -90,7 +90,7 @@ void QgsAuthMethodPlugins::populateTable()
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     tblAuthPlugins->setItem( i, 1, twi );
 
-    twi = new QTableWidgetItem( authmethod->supportedDataProviders().join( QStringLiteral( ", " ) ) );
+    twi = new QTableWidgetItem( authmethod->supportedDataProviders().join( QLatin1String( ", " ) ) );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     tblAuthPlugins->setItem( i, 2, twi );
   }

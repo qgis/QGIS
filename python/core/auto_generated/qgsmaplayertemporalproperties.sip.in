@@ -53,19 +53,19 @@ how an individual QgsMapLayer behaves in a temporal context, e.g. while animatin
 %Docstring
 Constructor for QgsMapLayerTemporalProperties, with the specified ``parent`` object.
 
-The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
+The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see :py:func:`~QgsMapLayerTemporalProperties.isActive`).
 %End
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Writes the properties to a DOM ``element``, to be used later with readXml().
+Writes the properties to a DOM ``element``, to be used later with :py:func:`~QgsMapLayerTemporalProperties.readXml`.
 
 .. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Reads temporal properties from a DOM ``element`` previously written by writeXml().
+Reads temporal properties from a DOM ``element`` previously written by :py:func:`~QgsMapLayerTemporalProperties.writeXml`.
 
 .. seealso:: :py:func:`writeXml`
 %End

@@ -23,7 +23,8 @@ from qgis.core import (
     QgsTransactionGroup,
     QgsFeature,
     QgsGeometry,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsDataProvider
 )
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
@@ -769,6 +770,54 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             'test', 'oracle')
 
         self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0, 2])
+
+    def getGeneratedColumnsData(self):
+        """
+        return a tuple with the generated column test layer and the expected generated value
+        """
+        return (QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."GENERATED_COLUMNS"', 'test', 'oracle'),
+                """'test:'||TO_CHAR("pk")""")
+
+    def testEvaluateDefaultValues(self):
+        """
+        Test default values evaluation on with or without option EvaluateDefaultValues
+        see https://github.com/qgis/QGIS/issues/39504
+        """
+
+        self.execSQLCommand('DROP TABLE "QGIS"."TEST_EVAL_EXPR"', ignore_errors=True)
+        self.execSQLCommand("""CREATE TABLE "QGIS"."TEST_EVAL_EXPR" (pk INTEGER, "name" VARCHAR2(100) DEFAULT 'qgis')""")
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="QGIS"."TEST_EVAL_EXPR" sql=',
+            'test', 'oracle')
+
+        self.assertTrue(vl.isValid())
+
+        # feature with default evaluation clause (not yet evaluated)
+        feat1 = QgsFeature(vl.fields())
+        feat1.setAttributes([1, "'qgis'"])
+
+        feat2 = QgsFeature(vl.fields())
+        feat2.setAttributes([2, 'test'])
+
+        self.assertTrue(vl.dataProvider().addFeatures([feat1, feat2]))
+
+        attributes = [feat.attributes() for feat in vl.getFeatures()]
+        self.assertEqual(attributes, [[1, 'qgis'], [2, 'test']])
+
+        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+
+        # feature with already evaluated default value
+        feat1 = QgsFeature(vl.fields())
+        feat1.setAttributes([3, 'qgis'])
+
+        feat2 = QgsFeature(vl.fields())
+        feat2.setAttributes([4, 'test'])
+
+        self.assertTrue(vl.dataProvider().addFeatures([feat1, feat2]))
+
+        attributes = [feat.attributes() for feat in vl.getFeatures()]
+        self.assertEqual(attributes, [[1, 'qgis'], [2, 'test'], [3, 'qgis'], [4, 'test']])
 
 
 if __name__ == '__main__':

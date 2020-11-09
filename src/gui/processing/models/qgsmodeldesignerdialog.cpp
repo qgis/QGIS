@@ -807,7 +807,7 @@ void QgsModelDesignerDialog::validate()
       {
         longMessage += QStringLiteral( "<li>%1</li>" ).arg( issue );
       }
-      longMessage += QStringLiteral( "</ul>" );
+      longMessage += QLatin1String( "</ul>" );
 
       dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
       dialog->showMessage();
@@ -875,7 +875,6 @@ QgsModelChildDependenciesWidget::QgsModelChildDependenciesWidget( QWidget *paren
   , mChildId( childId )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();

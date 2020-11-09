@@ -48,6 +48,7 @@ class QgsVectorTileSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
     //! Opens the create connection dialog to build a new connection
     void btnNew_clicked();
+    void newArcgisVectorTileServerConnection();
     //! Opens a dialog to edit an existing connection
     void btnEdit_clicked();
     //! Deletes the selected connection

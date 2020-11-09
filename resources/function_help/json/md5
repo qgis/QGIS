@@ -1,6 +1,7 @@
 
 {
   "name": "md5",
+  "groups": ["Conversions"],
   "type": "function",
   "description": "Creates a md5 hash from a string.",
   "variableLenArguments": false,

@@ -196,12 +196,14 @@ class ProjectorData
 
     /**
      * \brief check error along columns
-      * returns TRUE if within threshold */
+     * returns TRUE if within threshold
+    */
     bool checkCols( const QgsCoordinateTransform &ct );
 
     /**
      * \brief check error along rows
-      * returns TRUE if within threshold */
+     * returns TRUE if within threshold
+    */
     bool checkRows( const QgsCoordinateTransform &ct );
 
     //! Calculate array of src helper points
@@ -215,7 +217,8 @@ class ProjectorData
 
     /**
      * Use approximation (requested precision is Approximate and it is possible to calculate
-     *  an approximation matrix with a sufficient precision) */
+     * an approximation matrix with a sufficient precision).
+    */
     bool mApproximate;
 
     //! Transformation from destination CRS to source CRS

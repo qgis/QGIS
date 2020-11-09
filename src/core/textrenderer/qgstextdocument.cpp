@@ -187,6 +187,14 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
   }
 }
 
+void QgsTextDocument::applyCapitalization( QgsStringUtils::Capitalization capitalization )
+{
+  for ( QgsTextBlock &block : mBlocks )
+  {
+    block.applyCapitalization( capitalization );
+  }
+}
+
 ///@cond PRIVATE
 QVector< QgsTextBlock >::const_iterator QgsTextDocument::begin() const
 {

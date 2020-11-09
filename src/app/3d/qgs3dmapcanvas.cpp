@@ -34,7 +34,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
   QgsSettings setting;
-  mEngine = new QgsWindow3DEngine;
+  mEngine = new QgsWindow3DEngine( this );
 
   connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
   {
@@ -46,7 +46,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   mNavigationWidget = new Qgs3DNavigationWidget( this );
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
-  hLayout->setMargin( 0 );
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mContainer, 1 );
   hLayout->addWidget( mNavigationWidget );
   this->setOnScreenNavigationVisibility(

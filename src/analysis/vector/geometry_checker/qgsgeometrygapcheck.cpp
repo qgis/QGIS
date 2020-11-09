@@ -339,7 +339,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
       const QgsAbstractGeometry *testGeom = featureGeom.constGet();
       for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
       {
-        double val;
+        double val = 0;
         switch ( condition )
         {
           case LongestSharedEdge:
@@ -367,20 +367,33 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
-  QgsSpatialIndex neighbourIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
-  neighbourIndex.addFeatures( neighbours );
+  // Create an index of all neighbouring vertices
+  QgsSpatialIndex neighbourVerticesIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
+  int id = 0;
+  for ( const QgsFeature &neighbour : neighbours )
+  {
+    QgsVertexIterator vit = neighbour.geometry().vertices();
+    while ( vit.hasNext() )
+    {
+      QgsPoint pt = vit.next();
+      QgsFeature f;
+      f.setId( id ); // required for SpatialIndex to return the correct result
+      f.setGeometry( QgsGeometry( pt.clone() ) );
+      neighbourVerticesIndex.addFeature( f );
+      id++;
+    }
+  }
 
+  // Snap to the closest vertex
   QgsPolyline snappedRing;
   QgsVertexIterator iterator = errGeometry->vertices();
   while ( iterator.hasNext() )
   {
     QgsPoint pt = iterator.next();
-    QgsVertexId id;
-    QgsGeometry closestGeom = neighbourIndex.geometry( neighbourIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
+    QgsGeometry closestGeom = neighbourVerticesIndex.geometry( neighbourVerticesIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
     if ( !closestGeom.isEmpty() )
     {
-      QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *closestGeom.constGet(), pt, id );
-      snappedRing.append( closestPoint );
+      snappedRing.append( QgsPoint( closestGeom.vertexAt( 0 ) ) );
     }
   }
 

@@ -342,7 +342,7 @@ class LayoutContextSettingsRestorer
   private:
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
-    QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
+    QgsLayoutRenderContext::Flags mPreviousFlags = QgsLayoutRenderContext::Flags();
     QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
@@ -528,7 +528,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   }
 
   std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
     geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
@@ -542,21 +542,21 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 
   ExportResult result = Success;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
   {
     mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
 
     // here we need to export layers to individual PDFs
     PdfExportSettings subSettings = settings;
     subSettings.writeGeoPdf = false;
-    subSettings.exportLayersAsSeperateFiles = false;
+    subSettings.exportLayersAsSeperateFiles = false;  //#spellok
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
 
     QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > pdfComponents;
 
-    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();
-    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();
+    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();  //#spellok
+    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();  //#spellok
 
     auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter, &settings, &baseDir, &baseFileName]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
     {
@@ -1655,7 +1655,7 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
           currentLayerItemTypes.append( QObject::tr( "Other" ) );
       }
     }
-    return currentLayerItemTypes.join( QStringLiteral( ", " ) );
+    return currentLayerItemTypes.join( QLatin1String( ", " ) );
   }
   return QObject::tr( "Layer %1" ).arg( layerId );
 }

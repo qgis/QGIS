@@ -40,6 +40,8 @@
 #include "qgssymbollayer.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsstyle.h"
+#include "qgsauxiliarystorage.h"
+
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -573,7 +575,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 4. provider side default literal
       // note - deliberately not using else if!
-      if ( ( v.isNull() || ( checkUnique && hasUniqueConstraint
+      if ( ( v.isNull() || ( checkUnique
+                             && hasUniqueConstraint
                              && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
@@ -620,7 +623,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
   return result;
 }
 
-QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext )
+QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext, const int maxDepth, int depth, QList<QgsVectorLayer *> referencedLayersBranch )
 {
   if ( !layer )
     return QgsFeature();
@@ -633,15 +636,20 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   context.setFeature( feature );
 
   QgsFeature newFeature = createFeature( layer, feature.geometry(), feature.attributes().toMap(), &context );
+  layer->addFeature( newFeature );
 
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
+
+  const int effectiveMaxDepth = maxDepth > 0 ? maxDepth : 100;
 
   for ( const QgsRelation &relation : relations )
   {
     //check if composition (and not association)
-    if ( relation.strength() == QgsRelation::Composition && depth < 1 )
+    if ( relation.strength() == QgsRelation::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
     {
       depth++;
+      referencedLayersBranch << layer;
+
       //get features connected over this relation
       QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( feature );
       QgsFeatureIds childFeatureIds;
@@ -657,7 +665,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
         //call the function for the child
-        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, depth, duplicateFeatureContext ).id() );
+        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, duplicateFeatureContext, maxDepth, depth, referencedLayersBranch ).id() );
       }
 
       //store for feedback
@@ -665,7 +673,6 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
     }
   }
 
-  layer->addFeature( newFeature );
 
   return newFeature;
 }
@@ -733,13 +740,25 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
   feature.setFields( fields );
 }
 
-QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QgsWkbTypes::Type inputWkbType( layer->wkbType( ) );
   QgsFeatureList resultFeatures;
   QgsFeature newF( feature );
   // Fix attributes
   QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields( ) );
+
+  if ( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey )
+  {
+    // drop incoming primary key values, let them be regenerated
+    const QgsAttributeList pkIndexes = layer->dataProvider()->pkAttributeIndexes();
+    for ( int index : pkIndexes )
+    {
+      if ( index >= 0 )
+        newF.setAttribute( index, QVariant() );
+    }
+  }
+
   // Does geometry need transformations?
   QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
   bool newFHasGeom = newFGeomType !=
@@ -783,12 +802,12 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
   return resultFeatures;
 }
 
-QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QgsFeatureList resultFeatures;
   for ( const QgsFeature &f : features )
   {
-    const QgsFeatureList features( makeFeatureCompatible( f, layer ) );
+    const QgsFeatureList features( makeFeatureCompatible( f, layer, sinkFlags ) );
     for ( const auto &_f : features )
     {
       resultFeatures.append( _f );
@@ -813,7 +832,10 @@ QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeature
 
 void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids )
 {
-  mDuplicatedFeatures.insert( layer, ids );
+  if ( mDuplicatedFeatures.contains( layer ) )
+    mDuplicatedFeatures[layer] += ids;
+  else
+    mDuplicatedFeatures.insert( layer, ids );
 }
 /*
 QMap<QgsVectorLayer *, QgsFeatureIds>  QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicateFeatureContext() const
@@ -970,7 +992,7 @@ QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *laye
   return displayString;
 }
 
-bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context )
+bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context, CascadedFeatureFlags flags )
 {
   if ( !layer )
     return false;
@@ -1014,9 +1036,12 @@ bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, c
 
   if ( layer->joinBuffer()->containsJoins() )
   {
-    const auto constVectorJoins = layer->joinBuffer()->vectorJoins();
-    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+    const QgsVectorJoinList joins = layer->joinBuffer()->vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : joins )
     {
+      if ( qobject_cast< QgsAuxiliaryLayer * >( info.joinLayer() ) && flags & IgnoreAuxiliaryLayers )
+        continue;
+
       if ( info.isEditable() && info.hasCascadedDelete() )
       {
         QgsFeatureIds joinFeatureIds;

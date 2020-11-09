@@ -67,7 +67,7 @@ If the returned size is null, the legend will be drawn with the minimum possible
 
  void drawLegend( QPainter *painter ) /Deprecated/;
 %Docstring
-Draws the legend with given ``painter``. The legend will occupy the area reported in legendSize().
+Draws the legend with given ``painter``. The legend will occupy the area reported in :py:func:`~QgsLegendRenderer.legendSize`.
 The ``painter`` should be scaled beforehand so that units correspond to millimeters.
 
 .. deprecated::
@@ -76,7 +76,7 @@ The ``painter`` should be scaled beforehand so that units correspond to millimet
 
     void drawLegend( QgsRenderContext &context );
 %Docstring
-Draws the legend using a given render ``context``. The legend will occupy the area reported in legendSize().
+Draws the legend using a given render ``context``. The legend will occupy the area reported in :py:func:`~QgsLegendRenderer.legendSize`.
 
 .. versionadded:: 3.6
 %End

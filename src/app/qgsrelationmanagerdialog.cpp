@@ -138,7 +138,9 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
       ++suffix;
     }
     relation.setId( relationId );
-    relation.addFieldPair( addDlg.references().at( 0 ).first, addDlg.references().at( 0 ).second );
+    const auto references = addDlg.references();
+    for ( const auto &reference : references )
+      relation.addFieldPair( reference.first, reference.second );
     relation.setName( addDlg.relationName() );
     relation.setStrength( addDlg.relationStrength() );
 

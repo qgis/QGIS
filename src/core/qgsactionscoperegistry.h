@@ -30,9 +30,13 @@
  *
  * To get access use the QgsApplication:
  *
- * ```
+ * \code{.cpp}
  * QgsApplication::actionScopeRegistry()
- * ```
+ * \endcode
+ *
+ * \code{.py}
+ * QgsApplication.actionScopeRegistry()
+ * \endcode
  *
  * \since QGIS 3.0
  */

@@ -51,9 +51,10 @@ namespace QgsOverlayUtils
   /**
    * Copies features from the source to the sink and resolves overlaps: for each pair of overlapping features A and B
    * it will produce:
-   * 1. a feature with geometry A - B with A's attributes
-   * 2. a feature with geometry B - A with B's attributes
-   * 3. two features with geometry intersection(A, B) - one with A's attributes, one with B's attributes.
+   *
+   * # a feature with geometry A - B with A's attributes
+   * # a feature with geometry B - A with B's attributes
+   * # two features with geometry intersection(A, B) - one with A's attributes, one with B's attributes.
    *
    * As a result, for all pairs of features in the output, a pair either has no common interior or their interior is the same.
    */

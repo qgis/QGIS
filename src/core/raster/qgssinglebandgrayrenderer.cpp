@@ -264,16 +264,16 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   channelElem.appendChild( sourceChannelNameElem );
 
   // set ContrastEnhancement
-  if ( contrastEnhancement() )
+  if ( auto *lContrastEnhancement = contrastEnhancement() )
   {
     QDomElement contrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
-    contrastEnhancement()->toSld( doc, contrastEnhancementElem );
+    lContrastEnhancement->toSld( doc, contrastEnhancementElem );
 
     // do changes to minValue/maxValues depending on stretching algorithm. This is necessary because
     // geoserver does a first stretch on min/max, then applies color map rules.
     // In some combination it is necessary to use real min/max values and in
     // others the actual edited min/max values
-    switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
+    switch ( lContrastEnhancement->contrastEnhancementAlgorithm() )
     {
       case QgsContrastEnhancement::StretchAndClipToMinimumMaximum:
       case QgsContrastEnhancement::ClipToMinimumMaximum:
@@ -282,14 +282,14 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
         QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), QgsRasterBandStats::Min | QgsRasterBandStats::Max );
 
         // if minimum range differ from the real minimum => set is in exported SLD vendor option
-        if ( !qgsDoubleNear( contrastEnhancement()->minimumValue(), myRasterBandStats.minimumValue ) )
+        if ( !qgsDoubleNear( lContrastEnhancement->minimumValue(), myRasterBandStats.minimumValue ) )
         {
           // look for VendorOption tag to look for that with minValue attribute
           const QDomNodeList vendorOptions = contrastEnhancementElem.elementsByTagName( QStringLiteral( "sld:VendorOption" ) );
           for ( int i = 0; i < vendorOptions.size(); ++i )
           {
             QDomElement vendorOption = vendorOptions.at( i ).toElement();
-            if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "minValue" ) )
+            if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QLatin1String( "minValue" ) )
               continue;
 
             // remove old value and add the new one

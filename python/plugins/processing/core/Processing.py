@@ -156,7 +156,7 @@ class Processing(object):
             feedback.pushInfo(
                 Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'))
 
-        ret, results = execute(alg, parameters, context, feedback)
+        ret, results = execute(alg, parameters, context, feedback, catch_exceptions=False)
         if ret:
             feedback.pushInfo(
                 Processing.tr('Results: {}').format(results))

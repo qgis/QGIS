@@ -429,14 +429,15 @@ void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *grou
 void QgsLayerTreeUtils::setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled )
 {
   layer.setCustomProperty( QStringLiteral( "legend/expressionFilter" ), expr );
-  layer.setCustomProperty( QStringLiteral( "legend/expressionFilterEnabled" ), enabled );
+  layer.setCustomProperty( QStringLiteral( "legend/expressionFilterEnabled" ), enabled && !expr.isEmpty() );
 }
 
 QString QgsLayerTreeUtils::legendFilterByExpression( const QgsLayerTreeLayer &layer, bool *enabled )
 {
+  const QString expression = layer.customProperty( QStringLiteral( "legend/expressionFilter" ), QString() ).toString();
   if ( enabled )
-    *enabled = layer.customProperty( QStringLiteral( "legend/expressionFilterEnabled" ), "" ).toBool();
-  return layer.customProperty( QStringLiteral( "legend/expressionFilter" ), "" ).toString();
+    *enabled = !expression.isEmpty() && layer.customProperty( QStringLiteral( "legend/expressionFilterEnabled" ), QString() ).toBool();
+  return expression;
 }
 
 bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup &group )

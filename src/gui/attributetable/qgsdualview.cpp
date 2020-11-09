@@ -583,7 +583,7 @@ void QgsDualView::panZoomGroupButtonToggled( QAbstractButton *button, bool check
     QgsSettings().setEnumValue( QStringLiteral( "/qgis/attributeTable/featureListBrowsingAction" ), NoAction );
   }
 
-  if ( checked )
+  if ( checked && mLayer->isSpatial() )
     panOrZoomToFeature( mFeatureListView->currentEditSelection() );
 }
 
@@ -618,7 +618,8 @@ void QgsDualView::featureListCurrentEditSelectionChanged( const QgsFeature &feat
     featureset << feat.id();
     setCurrentEditSelection( featureset );
 
-    panOrZoomToFeature( featureset );
+    if ( mLayer->isSpatial() )
+      panOrZoomToFeature( featureset );
 
   }
   else

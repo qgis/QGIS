@@ -242,6 +242,8 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
     mLoadedIndexBounds[ cacheKey ] = mLoadedIndexBounds[ cacheKey ].combine( requestPolygon );
   }
 
+  QgsRectangle overallExtent;
+
   for ( int i = 0; i < result.PQntuples(); ++i )
   {
     // rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
@@ -259,14 +261,23 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
       const double skewy { result.PQgetvalue( i, 8 ).toDouble( ) };
       const int srid {result.PQgetvalue( i, 9 ).toInt() };
       const int numbands {result.PQgetvalue( i, 10 ).toInt() };
-      const QgsRectangle extent( upperleftx, upperlefty - tileHeight * std::abs( scaley ), upperleftx + tileWidth * scalex, upperlefty );
+      double minY { upperlefty + tileHeight * scaley };
+      double maxY { upperlefty };
+      // Southing Y?
+      if ( scaley > 0 )
+      {
+        std::swap( minY, maxY );
+      }
+      const QgsRectangle extent( upperleftx, minY,  upperleftx + tileWidth * scalex, maxY );
+
+      overallExtent.combineExtentWith( extent );
 
       std::unique_ptr<QgsPostgresRasterSharedData::Tile> tile = qgis::make_unique<QgsPostgresRasterSharedData::Tile>(
             tileId,
             srid,
             extent,
             upperleftx,
-            upperlefty,
+            maxY,
             tileWidth,
             tileHeight,
             scalex,
@@ -289,6 +300,10 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
                         .arg( tileId ), 3 );
     }
   }
+
+  // Include actual bounds
+  mLoadedIndexBounds[ cacheKey ] = requestPolygon.combine( QgsGeometry::fromWkt( overallExtent.asWktPolygon() ) );
+
   return true;
 }
 
@@ -316,8 +331,6 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
 
   const QString cacheKey { keyFromRequest( request ) };
 
-  mLoadedIndexBounds[ cacheKey ] = requestPolygon;
-
   for ( int row = 0; row < dataResult.PQntuples(); ++row )
   {
     // rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands | data
@@ -336,7 +349,14 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       const int srid {dataResult.PQgetvalue( row, 9 ).toInt() };
       const int numbands {dataResult.PQgetvalue( row, 10 ).toInt() };
 
-      const QgsRectangle extent( upperleftx, upperlefty - tileHeight * std::abs( scaley ), upperleftx + tileWidth * scalex, upperlefty );
+      double minY { upperlefty + tileHeight * scaley };
+      double maxY { upperlefty };
+      // Southing Y?
+      if ( scaley > 0 )
+      {
+        std::swap( minY, maxY );
+      }
+      const QgsRectangle extent( upperleftx, minY,  upperleftx + tileWidth * scalex, maxY );
 
       std::unique_ptr<QgsPostgresRasterSharedData::Tile> tile = qgis::make_unique<QgsPostgresRasterSharedData::Tile>(
             tileId,
@@ -394,6 +414,10 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
                         .arg( tileId ), 2 );
     }
   }
+
+  // Include actual bounds
+  mLoadedIndexBounds[ cacheKey ] = requestPolygon.combine( QgsGeometry::fromWkt( response.extent.asWktPolygon() ) );
+
   return response;
 }
 

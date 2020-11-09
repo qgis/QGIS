@@ -30,6 +30,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmessagelog.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -229,6 +230,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
   QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
 
+  // make sure the selection geometry is valid, or intersection tests won't work correctly...
+  if ( !selectGeomTrans.isGeosValid( ) )
+  {
+    // a zero width buffer is safer than calling make valid here!
+    selectGeomTrans = selectGeomTrans.buffer( 0, 1 );
+  }
+
+  std::unique_ptr< QgsGeometryEngine > selectionGeometryEngine( QgsGeometry::createGeometryEngine( selectGeomTrans.constGet() ) );
+  selectionGeometryEngine->setLogErrors( false );
+  selectionGeometryEngine->prepareGeometry();
+
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
   std::unique_ptr< QgsFeatureRenderer > r;
@@ -260,14 +272,41 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       continue;
 
     QgsGeometry g = f.geometry();
+    QString errorMessage;
     if ( doContains )
     {
-      if ( !selectGeomTrans.contains( g ) )
+      // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
+      // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
+      // allow the feature to be selected
+      const bool notContained = !selectionGeometryEngine->contains( g.constGet(), &errorMessage ) &&
+                                ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
+                                  !selectionGeometryEngine->contains( g.makeValid().constGet(), &errorMessage ) ); /* second chance for invalid geometries, repair and re-test */
+
+      if ( !errorMessage.isEmpty() )
+      {
+        // contains relation test still failed, even after trying to make valid!
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+      }
+
+      if ( notContained )
         continue;
     }
     else
     {
-      if ( !selectGeomTrans.intersects( g ) )
+      // if we get an error from the intersects check then it indicates that the geometry is invalid and GEOS choked on it.
+      // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
+      // allow the feature to be selected
+      const bool notIntersects = !selectionGeometryEngine->intersects( g.constGet(), &errorMessage ) &&
+                                 ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
+                                   !selectionGeometryEngine->intersects( g.makeValid().constGet(), &errorMessage ) ); /* second chance for invalid geometries, repair and re-test */
+
+      if ( !errorMessage.isEmpty() )
+      {
+        // intersects relation test still failed, even after trying to make valid!
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+      }
+
+      if ( notIntersects )
         continue;
     }
     if ( singleSelect )

@@ -92,8 +92,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     void setName( const QString &n ) override;
 
     /**
-     * Uses the layer's name if \a use is true, or the name manually set if
-     * false.
+     * Uses the layer's name if \a use is TRUE, or the name manually set if
+     * FALSE.
      * \since QGIS 3.8
      */
     void setUseLayerName( bool use = true );

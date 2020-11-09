@@ -77,7 +77,7 @@ QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::Pytho
         code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
       if ( mFlags & FlagOptional )
-        code += QStringLiteral( ", optional=True" );
+        code += QLatin1String( ", optional=True" );
       code += ')';
       return code;
     }

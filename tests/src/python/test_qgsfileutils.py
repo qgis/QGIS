@@ -31,6 +31,48 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.extensionsFromFilter('PNG Files (*.PNG)'), ['PNG'])
         self.assertEqual(QgsFileUtils.extensionsFromFilter('Geotiff Files (*.tiff *.tif)'), ['tiff', 'tif'])
 
+    def testWildcardsFromFilter(self):
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter(''), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('bad'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('*'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('*.'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Tiff files'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('(*.*)'), '*.*')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('PNG Files (*.png)'), '*.png')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Tif  Files (*.tif)'), '*.tif')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('PNG Files (*.PNG)'), '*.PNG')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Geotiff Files (*.tiff *.tif)'), '*.tiff *.tif')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Geotiff Files (*.tiff *.tif *.TIFF)'), '*.tiff *.tif *.TIFF')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('EPT files (ept.json)'), 'ept.json')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('EPT files (ept.json EPT.JSON)'), 'ept.json EPT.JSON')
+
+    def testFileMatchesFilter(self):
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', ''))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'bad'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '*'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '*.'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tiff files'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '(*.*)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'PNG Files (*.png)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tif  Files (*.tif)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'PNG Files (*.PNG)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tif  Files (*.TIF)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Geotiff Files (*.tiff *.tif)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tiff', 'Geotiff Files (*.tiff *.tif)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.TIFF', 'Geotiff Files (*.tiff *.tif *.TIFF)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'PNG Files (*.png);;BMP Files (*.bmp)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.bmp', 'PNG Files (*.png);;BMP Files (*.bmp)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.png', 'PNG Files (*.png);;BMP Files (*.bmp)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.png', 'EPT files (ept.json)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/ept.json', 'EPT files (ept.json)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/ept.json', 'EPT files (ept.json EPT.JSON)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/EPT.JSON', 'EPT files (ept.json EPT.JSON)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/ept.json', 'EPT files (ept.json);;Entwine files (entwine.json)'))
+        self.assertTrue(
+            QgsFileUtils.fileMatchesFilter('/home/me/entwine.json', 'EPT files (ept.json);;Entwine files (entwine.json)'))
+        self.assertFalse(
+            QgsFileUtils.fileMatchesFilter('/home/me/ep.json', 'EPT files (ept.json);;Entwine files (entwine.json)'))
+
     def testEnsureFileNameHasExtension(self):
         self.assertEqual(QgsFileUtils.ensureFileNameHasExtension('', ['']), '')
         self.assertEqual(QgsFileUtils.ensureFileNameHasExtension('', []), '')
@@ -118,25 +160,25 @@ class TestQgsFileUtils(unittest.TestCase):
         files = QgsFileUtils.findFile(filename, nest, 1, 13)
         self.assertEqual(len(files), 0)
         # side nest
-        open(os.path.join(side_nest, filename), 'w+')
-        files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
-        self.assertEqual(files[0], os.path.join(side_nest, filename).replace(os.sep, '/'))
+        with open(os.path.join(side_nest, filename), 'w+'):
+            files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
+            self.assertEqual(files[0], os.path.join(side_nest, filename).replace(os.sep, '/'))
         # side + side nest  =  2
-        open(os.path.join(side_fold, filename), 'w+')
-        files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
-        self.assertEqual(len(files), 2)
+        with open(os.path.join(side_fold, filename), 'w+'):
+            files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
+            self.assertEqual(len(files), 2)
         # up
-        open(os.path.join(temp_folder, filename), 'w+')
-        files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
-        self.assertEqual(files[0], os.path.join(temp_folder, filename).replace(os.sep, '/'))
+        with open(os.path.join(temp_folder, filename), 'w+'):
+            files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
+            self.assertEqual(files[0], os.path.join(temp_folder, filename).replace(os.sep, '/'))
         # nest
-        open(os.path.join(nest, filename), 'w+')
-        files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
-        self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
+        with open(os.path.join(nest, filename), 'w+'):
+            files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
+            self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
         # base level
-        open(os.path.join(base_folder, filename), 'w+')
-        files = QgsFileUtils.findFile(filename, base_folder, 2, 4)
-        self.assertEqual(files[0], os.path.join(base_folder, filename).replace(os.sep, '/'))
+        with open(os.path.join(base_folder, filename), 'w+'):
+            files = QgsFileUtils.findFile(filename, base_folder, 2, 4)
+            self.assertEqual(files[0], os.path.join(base_folder, filename).replace(os.sep, '/'))
         # invalid path, too deep
         files = QgsFileUtils.findFile(filename, os.path.join(nest, 'nest2'), 2, 4)
         self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))

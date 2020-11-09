@@ -143,7 +143,7 @@ void TestQgsDualView::testFilterSelected()
   // select some features
   QList< QgsFeatureId > selected;
   selected << ids.at( 1 ) << ids.at( 3 );
-  mPointsLayer->selectByIds( selected.toSet() );
+  mPointsLayer->selectByIds( qgis::listToSet( selected ) );
 
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
   QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );

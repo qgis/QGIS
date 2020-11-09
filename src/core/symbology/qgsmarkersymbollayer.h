@@ -624,14 +624,16 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double mFixedAspectRatio = 0.0;
     //param(fill), param(stroke), param(stroke-width) are going
     //to be replaced in memory
+    bool mHasFillParam = false;
     QColor mStrokeColor;
     double mStrokeWidth;
+
     QgsUnitTypes::RenderUnit mStrokeWidthUnit;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
   private:
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, QPointF &offset, double &angle ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const;
 
 };
 

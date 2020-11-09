@@ -91,6 +91,7 @@
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshstoreutils.sip
 %Include auto_generated/qgshtmlutils.sip
+%Include auto_generated/qgsidentifycontext.sip
 %Include auto_generated/qgsimagecache.sip
 %Include auto_generated/qgsinterval.sip
 %Include auto_generated/qgsjsonutils.sip
@@ -101,6 +102,8 @@
 %Include auto_generated/qgslocaldefaultsettings.sip
 %Include auto_generated/qgslocalizeddatapathregistry.sip
 %Include auto_generated/qgslogger.sip
+%Include auto_generated/qgsmapclippingregion.sip
+%Include auto_generated/qgsmapclippingutils.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip
 %Include auto_generated/qgsmaplayer.sip
@@ -195,6 +198,7 @@
 %Include auto_generated/qgsspatialindex.sip
 %Include auto_generated/qgsspatialindexkdbush.sip
 %Include auto_generated/qgsspatialindexkdbushdata.sip
+%Include auto_generated/qgssourcecache.sip
 %Include auto_generated/qgssqliteutils.sip
 %Include auto_generated/qgssqlstatement.sip
 %Include auto_generated/qgsstatisticalsummary.sip
@@ -248,9 +252,18 @@
 %Include auto_generated/qgsxmlutils.sip
 %Include auto_generated/qgsziputils.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
+%Include auto_generated/./3d/qgs3dsymbolregistry.sip
+%Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/annotations/qgsannotation.sip
+%Include auto_generated/annotations/qgsannotationitem.sip
+%Include auto_generated/annotations/qgsannotationitemregistry.sip
+%Include auto_generated/annotations/qgsannotationlayer.sip
+%Include auto_generated/annotations/qgsannotationlineitem.sip
+%Include auto_generated/annotations/qgsannotationmarkeritem.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
+%Include auto_generated/annotations/qgsannotationpointtextitem.sip
+%Include auto_generated/annotations/qgsannotationpolygonitem.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
 %Include auto_generated/annotations/qgssvgannotation.sip
 %Include auto_generated/annotations/qgstextannotation.sip
@@ -300,6 +313,11 @@
 %Include auto_generated/fieldformatter/qgsvaluerelationfieldformatter.sip
 %Include auto_generated/geocms/geonode/qgsgeonodeconnection.sip
 %Include auto_generated/geocms/geonode/qgsgeonoderequest.sip
+%Include auto_generated/geocoding/qgsabstractgeocoderlocatorfilter.sip
+%Include auto_generated/geocoding/qgsgeocoder.sip
+%Include auto_generated/geocoding/qgsgeocodercontext.sip
+%Include auto_generated/geocoding/qgsgeocoderresult.sip
+%Include auto_generated/geocoding/qgsgooglemapsgeocoder.sip
 %Include auto_generated/geometry/qgsabstractgeometry.sip
 %Include auto_generated/geometry/qgsbox3d.sip
 %Include auto_generated/geometry/qgscircle.sip
@@ -335,6 +353,7 @@
 %Include auto_generated/gps/qgsnmeaconnection.sip
 %Include auto_generated/labeling/qgslabeling.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
+%Include auto_generated/labeling/qgslabellinesettings.sip
 %Include auto_generated/labeling/qgslabelobstaclesettings.sip
 %Include auto_generated/labeling/qgslabelsearchtree.sip
 %Include auto_generated/labeling/qgslabelthinningsettings.sip
@@ -423,6 +442,12 @@
 %Include auto_generated/mesh/qgsmeshspatialindex.sip
 %Include auto_generated/mesh/qgsmeshtimesettings.sip
 %Include auto_generated/mesh/qgsmeshtracerenderer.sip
+%Include auto_generated/mesh/qgsmeshcalculator.sip
+%Include auto_generated/pointcloud/qgspointcloudattribute.sip
+%Include auto_generated/pointcloud/qgspointcloudattributemodel.sip
+%Include auto_generated/pointcloud/qgspointcloudlayer.sip
+%Include auto_generated/pointcloud/qgspointcloudrenderer.sip
+%Include auto_generated/pointcloud/qgspointclouddataprovider.sip
 %Include auto_generated/metadata/qgsabstractmetadatabase.sip
 %Include auto_generated/metadata/qgslayermetadata.sip
 %Include auto_generated/metadata/qgslayermetadataformatter.sip
@@ -453,8 +478,11 @@
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
 %Include auto_generated/processing/qgsprocessingparameteraggregate.sip
+%Include auto_generated/processing/qgsprocessingparameterdxflayers.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
+%Include auto_generated/processing/qgsprocessingparametermeshdataset.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
+%Include auto_generated/processing/qgsprocessingparametertininputlayers.sip
 %Include auto_generated/processing/qgsprocessingparametertype.sip
 %Include auto_generated/processing/qgsprocessingparametervectortilewriterlayers.sip
 %Include auto_generated/processing/qgsprocessingprovider.sip
@@ -497,6 +525,7 @@
 %Include auto_generated/raster/qgsrasterpyramid.sip
 %Include auto_generated/raster/qgsrasterrange.sip
 %Include auto_generated/raster/qgsrasterrenderer.sip
+%Include auto_generated/raster/qgsrasterrendererutils.sip
 %Include auto_generated/raster/qgsrasterresamplefilter.sip
 %Include auto_generated/raster/qgsrasterresampler.sip
 %Include auto_generated/raster/qgsrastershader.sip
@@ -563,6 +592,7 @@
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip
+%Include auto_generated/vectortile/qgsmapboxglstyleconverter.sip
 %Include auto_generated/vectortile/qgsvectortilebasiclabeling.sip
 %Include auto_generated/vectortile/qgsvectortilebasicrenderer.sip
 %Include auto_generated/vectortile/qgsvectortilelabeling.sip

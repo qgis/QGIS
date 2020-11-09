@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
 
 #include <QAction>
 #include <QClipboard>
@@ -69,7 +70,7 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   mLayer = layer;
 
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == QStringLiteral( "rulebased" ) )
+  if ( r && r->type() == QLatin1String( "rulebased" ) )
   {
     QgsRuleBased3DRenderer *ruleRenderer = static_cast<QgsRuleBased3DRenderer *>( r );
     mRootRule = ruleRenderer->rootRule()->clone();
@@ -106,7 +107,7 @@ void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
-  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( Qgs3DUtils::symbolForGeometryType( mLayer->geometryType() ).release() );
+  QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
 
   QgsRuleBased3DRenderer::Rule *current = currentRule();
   if ( current )
@@ -568,10 +569,10 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol = Qgs3DUtils::symbolForGeometryType( layer->geometryType() );
+    mSymbol.reset( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
   }
 
-  mSymbolWidget = new QgsSymbol3DWidget( this );
+  mSymbolWidget = new QgsSymbol3DWidget( layer, this );
   mSymbolWidget->setSymbol( mSymbol.get(), layer );
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mSymbolWidget );
@@ -647,5 +648,8 @@ void Qgs3DRendererRulePropsWidget::apply()
   QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
-  mRule->setSymbol( groupSymbol->isChecked() ? mSymbolWidget->symbol() : nullptr );
+  std::unique_ptr< QgsAbstract3DSymbol > newSymbol;
+  if ( groupSymbol->isChecked() )
+    newSymbol = mSymbolWidget->symbol();
+  mRule->setSymbol( newSymbol.release() );
 }

@@ -30,6 +30,7 @@ from qgis.core import (QgsRasterLayer,
                        QgsExpression,
                        QgsProject,
                        QgsRectangle,
+                       QgsWkbTypes,
                        QgsVectorFileWriter,
                        QgsProcessing,
                        QgsProcessingUtils,
@@ -42,6 +43,7 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterPoint,
+                       QgsProcessingParameterGeometry,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterExpression,
@@ -74,6 +76,7 @@ PARAMETER_TABLE_FIELD = 'field'
 PARAMETER_EXTENT = 'extent'
 PARAMETER_FILE = 'file'
 PARAMETER_POINT = 'point'
+PARAMETER_GEOMETRY = 'geometry'
 PARAMETER_CRS = 'crs'
 PARAMETER_MULTIPLE = 'multilayer'
 PARAMETER_BAND = 'band'
@@ -129,6 +132,14 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterPoint:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterGeometry:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    try:
+                        params[4] = [int(p) for p in params[4].split(';')]
+                    except:
+                        params[4] = [getattr(QgsWkbTypes, p.split(".")[1]) for p in params[4].split(';')]
             elif clazz == QgsProcessingParameterCrs:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
@@ -194,6 +205,8 @@ def getParameterFromString(s, context=''):
                     params[5] = True if params[5].lower() == 'true' else False
                 if len(params) > 6:
                     params[6] = True if params[6].lower() == 'true' else False
+                if len(params) > 7:
+                    params[7] = True if params[7].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFile:
                 if len(params) > 2:
                     try:

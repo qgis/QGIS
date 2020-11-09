@@ -1022,7 +1022,7 @@ p, li { white-space: pre-wrap; }
                   <item>
                    <widget class="QGroupBox" name="groupBox">
                     <property name="title">
-                     <string>Plugin repositories</string>
+                     <string>Plugin Repositories</string>
                     </property>
                     <property name="flat">
                      <bool>true</bool>

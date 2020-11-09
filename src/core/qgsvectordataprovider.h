@@ -86,9 +86,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       SimplifyGeometriesWithTopologicalValidation = 1 << 15, //!< Supports topological simplification of geometries on provider side according to a distance tolerance
       TransactionSupport = 1 << 16, //!< Supports transactions
       CircularGeometries = 1 << 17, //!< Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
-      ChangeFeatures = 1 << 18, /**  Supports joint updates for attributes and geometry
-                                                               *  Providers supporting this should still define
-                                                               *  ChangeGeometries | ChangeAttributeValues */
+      ChangeFeatures = 1 << 18, //!< Supports joint updates for attributes and geometry. Providers supporting this should still define ChangeGeometries | ChangeAttributeValues.
       RenameAttributes = 1 << 19, //!< Supports renaming attributes (fields). Since QGIS 2.16
       FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
       ReadLayerMetadata = 1 << 21, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
@@ -121,9 +119,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * The \a uri argument specifies the uniform resource locator (URI) for the associated dataset.
      *
-     * Additional creation options are specified within the \a options value.
+     * Additional creation options are specified within the \a options value and since QGIS 3.16 creation flags are specified within the \a flags value.
      */
-    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    QgsVectorDataProvider( const QString &uri = QString(),
+                           const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /**
      * Returns feature source object that can be used for querying provider's data. The returned feature source
@@ -259,7 +259,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ) enumList.clear(); }
 
-    bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    QString lastError() const override;
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
@@ -395,9 +396,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Returns flags containing the supported capabilities
-        \note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
+     * \note, some capabilities may change depending on whether
+     * a spatial filter is active on this provider, so it may
+     * be prudent to check this value per intended operation.
      */
     virtual QgsVectorDataProvider::Capabilities capabilities() const;
 

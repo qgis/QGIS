@@ -93,9 +93,9 @@ void QgsMaskMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // since we need to swap the regular painter with the mask painter during rendering,
   // effects won't work. So we cheat by handling effects ourselves in renderPoint
-  if ( paintEffect() )
+  if ( auto *lPaintEffect = paintEffect() )
   {
-    mEffect.reset( paintEffect()->clone() );
+    mEffect.reset( lPaintEffect->clone() );
     setPaintEffect( nullptr );
   }
   mSymbol->startRender( context.renderContext() );

@@ -112,42 +112,52 @@ void QgsTemporalNavigationObject::setNavigationMode( const NavigationMode mode )
   mNavigationMode = mode;
   emit navigationModeChanged( mode );
 
-  switch ( mNavigationMode )
+  if ( !mBlockUpdateTemporalRangeSignal )
   {
-    case Animated:
-      emit updateTemporalRange( dateTimeRangeForFrameNumber( mCurrentFrameNumber ) );
-      break;
-    case FixedRange:
-      emit updateTemporalRange( mTemporalExtents );
-      break;
-    case NavigationOff:
-      emit updateTemporalRange( QgsDateTimeRange() );
-      break;
+    switch ( mNavigationMode )
+    {
+      case Animated:
+        emit updateTemporalRange( dateTimeRangeForFrameNumber( mCurrentFrameNumber ) );
+        break;
+      case FixedRange:
+        emit updateTemporalRange( mTemporalExtents );
+        break;
+      case NavigationOff:
+        emit updateTemporalRange( QgsDateTimeRange() );
+        break;
+    }
   }
 }
 
 void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
 {
+  if ( mTemporalExtents == temporalExtents )
+  {
+    return;
+  }
   mTemporalExtents = temporalExtents;
+  emit temporalExtentsChanged( mTemporalExtents );
 
   switch ( mNavigationMode )
   {
     case Animated:
     {
-      int currentFrameNmber = mCurrentFrameNumber;
+      int currentFrameNumber = mCurrentFrameNumber;
       setCurrentFrameNumber( 0 );
 
       //Force to emit signal if the current frame number doesn't change
-      if ( currentFrameNmber == mCurrentFrameNumber )
+      if ( currentFrameNumber == mCurrentFrameNumber && !mBlockUpdateTemporalRangeSignal )
         emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
       break;
     }
     case FixedRange:
-      emit updateTemporalRange( mTemporalExtents );
+      if ( !mBlockUpdateTemporalRangeSignal )
+        emit updateTemporalRange( mTemporalExtents );
       break;
     case NavigationOff:
       break;
   }
+
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
@@ -161,7 +171,9 @@ void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
   {
     mCurrentFrameNumber = std::max( 0LL, std::min( frameNumber, totalFrameCount() - 1 ) );
     QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
-    emit updateTemporalRange( range );
+
+    if ( !mBlockUpdateTemporalRangeSignal )
+      emit updateTemporalRange( range );
   }
 }
 
@@ -172,8 +184,23 @@ long long QgsTemporalNavigationObject::currentFrameNumber() const
 
 void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
 {
+  if ( mFrameDuration == frameDuration )
+  {
+    return;
+  }
   mFrameDuration = frameDuration;
+  emit temporalFrameDurationChanged( mFrameDuration );
+
+  // temporarily disable the updateTemporalRange signal, as we'll emit it ourselves at the end of this function...
+  mBlockUpdateTemporalRangeSignal++;
   setCurrentFrameNumber( 0 );
+  mBlockUpdateTemporalRangeSignal--;
+
+  // forcing an update of our views
+  QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
+
+  if ( !mBlockUpdateTemporalRangeSignal && mNavigationMode != NavigationOff )
+    emit updateTemporalRange( range );
 }
 
 QgsInterval QgsTemporalNavigationObject::frameDuration() const

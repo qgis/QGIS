@@ -21,7 +21,7 @@
 #include "qgsdataitemprovider.h"
 
 
-class QgsAfsRootItem : public QgsDataCollectionItem
+class QgsAfsRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

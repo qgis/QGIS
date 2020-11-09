@@ -1,6 +1,7 @@
 {
   "name": "array_insert",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array with the given value added at the given position.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"pos","description":"the position where to add (0 based)"},

@@ -207,7 +207,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   // 4 byte integer
   f0.setName( "fld_integer" );
   f0.setType( QVariant::Int );
-  f0.setTypeName( "int" );
+  f0.setTypeName( "int4" );
 
   fields.append( f0 );
   pkAttrs.append( 0 );
@@ -252,7 +252,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"=3.141592741" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"='3.141592741'" ) );
 
   // text
   f3.setName( "fld_text" );
@@ -292,9 +292,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  // TODO: FIXME: in tables with composite PKs, integer fields are cast to text, but their values are not.
-  // It hurts the database performance badly.
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800 AND \"fld_text\"::text='QGIS ''Rocks''!' AND \"fld_integer\"::text=42" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800 AND \"fld_text\"::text='QGIS ''Rocks''!' AND \"fld_integer\"=42" ) );
 }
 
 QGSTEST_MAIN( TestQgsPostgresProvider )

@@ -258,6 +258,8 @@ If the range is empty and ``other`` is not, the range is changed and set to ``ot
 
     bool operator==( const QgsTemporalRange<T> &other ) const;
 
+    bool operator!=( const QgsTemporalRange<T> &other ) const;
+
 };
 
 

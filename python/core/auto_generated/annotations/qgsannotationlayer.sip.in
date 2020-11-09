@@ -1,0 +1,131 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationlayer.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsAnnotationLayer : QgsMapLayer
+{
+%Docstring
+
+Represents a map layer containing a set of georeferenced annotations, e.g. markers, lines, polygons or
+text items.
+
+Annotation layers store a set of QgsAnnotationItem items, which are rendered according to the item's
+z-order.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsannotationlayer.h"
+%End
+  public:
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Constructor for LayerOptions.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+    };
+
+
+    QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
+%Docstring
+Constructor for a new QgsAnnotationLayer with the specified layer ``name``.
+
+The ``options`` argument specifies load-time layer options.
+%End
+    ~QgsAnnotationLayer();
+
+    void reset();
+%Docstring
+Resets the annotation layer to a default state, and clears all items from it.
+%End
+
+    QString addItem( QgsAnnotationItem *item /Transfer/ );
+%Docstring
+Adds an ``item`` to the layer.
+
+Ownership of ``item`` is transferred to the layer.
+
+Returns the unique ID assigned to the item.
+%End
+
+    bool removeItem( const QString &id );
+%Docstring
+Removes (and deletes) the item with matching ``id``.
+%End
+
+    void clear();
+%Docstring
+Removes all items from the layer.
+%End
+
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the annotation layer is empty and contains no annotations.
+%End
+
+    QMap<QString, QgsAnnotationItem *> items() const;
+%Docstring
+Returns a map of items contained in the layer, by unique item ID.
+
+This map contains references to items owned by the layer, and ownership of these remains
+with the layer.
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` for the annotation layer, where ``opacity`` is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    double opacity() const;
+%Docstring
+Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    virtual QgsAnnotationLayer *clone() const /Factory/;
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+    virtual QgsRectangle extent() const;
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
+
+    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
+
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const;
+
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationlayer.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

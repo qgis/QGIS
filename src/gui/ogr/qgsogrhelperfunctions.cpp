@@ -294,7 +294,7 @@ QString createProtocolURI( const QString &type, const QString &url, const QStrin
   }
   else if ( !( username.isEmpty() || password.isEmpty( ) ) )
   {
-    uri.replace( QStringLiteral( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+    uri.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
   }
   return uri;
 }

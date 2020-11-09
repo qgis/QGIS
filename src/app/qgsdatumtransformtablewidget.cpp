@@ -18,7 +18,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgisapp.h"
-
+#include "qgssettings.h"
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -36,7 +36,7 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
 {
   QgsCoordinateReferenceSystem sourceCrs;
   QgsCoordinateReferenceSystem destinationCrs;
-  for ( QModelIndexList::const_iterator it = indexes.constBegin(); it != indexes.constEnd(); it ++ )
+  for ( QModelIndexList::const_iterator it = indexes.constBegin(); it != indexes.constEnd(); ++it )
   {
     if ( it->column() == SourceCrsColumn )
     {
@@ -231,11 +231,15 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   mTableView->setModel( mModel );
   mTableView->resizeColumnToContents( 0 );
-  mTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
+  mTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Interactive );
   mTableView->horizontalHeader()->show();
   mTableView->setSelectionMode( QAbstractItemView::SingleSelection );
   mTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTableView->setAlternatingRowColors( true );
+
+  QgsSettings settings;
+  mTableView->horizontalHeader()->restoreState( settings.value( QStringLiteral( "Windows/DatumTransformTable/headerState" ) ).toByteArray() );
+
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
   connect( mEditButton, &QToolButton::clicked, this, [ = ]
@@ -256,9 +260,15 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   mEditButton->setEnabled( false );
 }
 
+QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DatumTransformTable/headerState" ), mTableView->horizontalHeader()->saveState() );
+}
+
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair< int, int >(), nullptr, nullptr, QString(), QgisApp::instance()->mapCanvas() );
+  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair< int, int >(), nullptr, Qt::WindowFlags(), QString(), QgisApp::instance()->mapCanvas() );
   if ( dlg.exec() )
   {
     const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();
@@ -307,7 +317,7 @@ void QgsDatumTransformTableWidget::editDatumTransform( const QModelIndex &index 
        ( sourceTransform != -1 || destinationTransform != -1 ) )
 #endif
   {
-    QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, nullptr, proj, QgisApp::instance()->mapCanvas(), allowFallback );
+    QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, true, false, false, qMakePair( sourceTransform, destinationTransform ), nullptr, Qt::WindowFlags(), proj, QgisApp::instance()->mapCanvas(), allowFallback );
     if ( dlg.exec() )
     {
       const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();

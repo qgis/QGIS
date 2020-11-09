@@ -53,7 +53,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   // create material
 
   const Qgs3DMapSettings &map = terrain()->map3D();
-  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
+  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial(), !map.terrainLayers().empty() );
 
   // create transform
 

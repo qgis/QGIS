@@ -79,7 +79,7 @@ class QgsLockedFeature: public QObject
     /**
      * Tells if vertex is selected
      * \param vertexNr number of vertex for which we are getting info
-     * \returns true if vertex is selected, false otherwise
+     * \returns TRUE if vertex is selected, FALSE otherwise
      */
     bool isSelected( int vertexNr );
 

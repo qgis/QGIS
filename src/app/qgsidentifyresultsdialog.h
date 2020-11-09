@@ -129,7 +129,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
      * takes its own copy of the QgsAttributeAction so
      * that it is independent of whoever created it.
      */
-    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     ~QgsIdentifyResultsDialog() override;
 
@@ -235,8 +235,10 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void expandAll();
     void collapseAll();
 
-    /* Called when an item is expanded so that we can ensure that the
-       column width if expanded to show it */
+    /**
+     * Called when an item is expanded so that we can ensure that the
+     * column width if expanded to show it.
+     */
     void itemExpanded( QTreeWidgetItem * );
 
     //! sends signal if current feature id has changed
@@ -254,6 +256,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void mActionAutoFeatureForm_toggled( bool checked );
 
+    void mActionHideDerivedAttributes_toggled( bool checked );
+
     void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
     void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
 
@@ -270,7 +274,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     enum ItemDataRole
     {
-      GetFeatureInfoUrlRole = Qt::UserRole + 10
+      GetFeatureInfoUrlRole = Qt::UserRole + 10,
+      FeatureRole,
     };
 
     QMenu *mActionPopup = nullptr;
@@ -317,6 +322,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void setSelectionMode();
 
     void initSelectionModes();
+    QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem );
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

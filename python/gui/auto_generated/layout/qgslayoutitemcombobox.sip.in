@@ -28,7 +28,7 @@ a matching type from a layout.
 QgsLayoutItemComboBox creates a combo box to display a list of items in a
 ``layout``. The items can optionally be filtered by type.
 If ``layout`` is not set, no items will be shown
-until setCurrentLayout() is called
+until :py:func:`~QgsLayoutItemComboBox.setCurrentLayout` is called
 %End
 
     void setCurrentLayout( QgsLayout *layout );
@@ -92,6 +92,28 @@ Returns ``True`` if the model includes the empty item choice.
 .. seealso:: :py:func:`setAllowEmptyItem`
 
 .. versionadded:: 3.8
+%End
+
+    void setItemFlags( QgsLayoutItem::Flags flags );
+%Docstring
+Sets layout item flags to use for filtering the available items.
+
+Set ``flags`` to ``None`` to clear the flag based filtering.
+
+.. seealso:: :py:func:`itemFlags`
+
+.. versionadded:: 3.16
+%End
+
+    QgsLayoutItem::Flags itemFlags() const;
+%Docstring
+Returns the layout item flags used for filtering the available items.
+
+Returns ``None`` if no flag based filtering is occurring.
+
+.. seealso:: :py:func:`setItemFlags`
+
+.. versionadded:: 3.16
 %End
 
     QgsLayoutItem *item( int index ) const;

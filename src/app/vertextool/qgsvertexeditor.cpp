@@ -121,7 +121,7 @@ QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
     if ( calcR( index.row(), r, minRadius ) )
     {
       font.setItalic( true );
-      fontChanged = true;;
+      fontChanged = true;
     }
     if ( fontChanged )
     {

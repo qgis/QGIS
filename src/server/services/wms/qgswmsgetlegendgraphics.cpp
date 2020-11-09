@@ -141,6 +141,10 @@ namespace QgsWms
       if ( !parameters.rule().isEmpty() )
       {
         QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
+        if ( ! node )
+        {
+          throw QgsException( QStringLiteral( "Could not get a legend node for the requested RULE" ) );
+        }
         result.reset( renderer.getLegendGraphics( *node ) );
       }
       else

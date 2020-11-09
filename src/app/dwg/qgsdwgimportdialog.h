@@ -28,7 +28,7 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
 {
     Q_OBJECT
   public:
-    QgsDwgImportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsDwgImportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsDwgImportDialog() override;
 
   private slots:

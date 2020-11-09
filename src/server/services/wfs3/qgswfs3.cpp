@@ -18,6 +18,7 @@
 #include "qgsmodule.h"
 #include "qgsserverogcapi.h"
 #include "qgswfs3handlers.h"
+#include "qgsserverstatichandler.h"
 
 /**
  * \ingroup server
@@ -41,7 +42,7 @@ class QgsWfs3Module: public QgsServiceModule
       wfs3Api->registerHandler<QgsWfs3CollectionsHandler>();
       wfs3Api->registerHandler<QgsWfs3DescribeCollectionHandler>();
       wfs3Api->registerHandler<QgsWfs3ConformanceHandler>();
-      wfs3Api->registerHandler<QgsWfs3StaticHandler>();
+      wfs3Api->registerHandler<QgsServerStaticHandler>();
       // API handler must access to the whole API
       wfs3Api->registerHandler<QgsWfs3APIHandler>( wfs3Api );
       wfs3Api->registerHandler<QgsWfs3LandingPageHandler>();

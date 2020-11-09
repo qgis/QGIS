@@ -51,7 +51,7 @@ Constructor of the base class
 class Qgs3DRendererRegistry
 {
 %Docstring
-Keeps track of available 3D renderers. Should be accessed through QgsApplication.renderer3DRegistry() singleton.
+Keeps track of available 3D renderers. Should be accessed through :py:func:`QgsApplication.renderer3DRegistry()` singleton.
 
 .. versionadded:: 3.0
 %End

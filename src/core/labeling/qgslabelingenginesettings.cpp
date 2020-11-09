@@ -35,7 +35,7 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
   mMaxLineCandidatesPerCm = prj->readDoubleEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesLinePerCM" ), 5, &saved );
   mMaxPolygonCandidatesPerCmSquared = prj->readDoubleEntry( QStringLiteral( "PAL" ), QStringLiteral( "/CandidatesPolygonPerCM" ), 2.5, &saved );
 
-  mFlags = nullptr;
+  mFlags = Flags();
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingCandidates" ), false, &saved ) ) mFlags |= DrawCandidates;
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawRectOnly" ), false, &saved ) ) mFlags |= DrawLabelRectOnly;
   if ( prj->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/ShowingAllLabels" ), false, &saved ) ) mFlags |= UseAllLabels;

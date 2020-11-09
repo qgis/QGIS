@@ -83,7 +83,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 if style is None:
                     if layer.type() == QgsMapLayerType.RasterLayer:
                         style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
-                    else:
+                    elif layer.type() == QgsMapLayerType.VectorLayer:
                         if layer.geometryType() == QgsWkbTypes.PointGeometry:
                             style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
                         elif layer.geometryType() == QgsWkbTypes.LineGeometry:
@@ -93,7 +93,18 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 if style:
                     layer.loadNamedStyle(style)
 
-                details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+                # Load layer to layer tree root or to a specific group
+                mapLayer = context.temporaryLayerStore().takeMapLayer(layer)
+                group_name = ProcessingConfig.getSetting(ProcessingConfig.RESULTS_GROUP_NAME)
+                if group_name:
+                    group = details.project.layerTreeRoot().findGroup(group_name)
+                    if not group:
+                        group = details.project.layerTreeRoot().insertGroup(0, group_name)
+
+                    details.project.addMapLayer(mapLayer, False)
+                    group.addLayer(mapLayer)
+                else:
+                    details.project.addMapLayer(mapLayer)
 
                 if details.postProcessor():
                     details.postProcessor().postProcessLayer(layer, context, feedback)

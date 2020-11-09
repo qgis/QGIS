@@ -58,6 +58,13 @@ bool QgsCurve::isRing() const
   return ( isClosed() && numPoints() >= 4 );
 }
 
+QPainterPath QgsCurve::asQPainterPath() const
+{
+  QPainterPath p;
+  addToPainterPath( p );
+  return p;
+}
+
 QgsCoordinateSequence QgsCurve::coordinateSequence() const
 {
   QgsCoordinateSequence sequence;
@@ -222,14 +229,8 @@ bool QgsCurve::isValid( QString &error, int flags ) const
 
 QPolygonF QgsCurve::asQPolygonF() const
 {
-  const int nb = numPoints();
-  QPolygonF points;
-  points.reserve( nb );
-  for ( int i = 0; i < nb; ++i )
-  {
-    points << QPointF( xAt( i ), yAt( i ) );
-  }
-  return points;
+  std::unique_ptr< QgsLineString > segmentized( curveToLine() );
+  return segmentized->asQPolygonF();
 }
 
 double QgsCurve::straightDistance2d() const

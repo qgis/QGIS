@@ -1,6 +1,7 @@
 {
   "name": "maximum",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the aggregate maximum value from a field or expression.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

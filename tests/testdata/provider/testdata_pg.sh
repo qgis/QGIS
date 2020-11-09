@@ -4,6 +4,7 @@ DB=${DB:-qgis_test}
 
 SCRIPTS="
   tests/testdata/provider/testdata_pg.sql
+  tests/testdata/provider/testdata_pg_relations.sql
   tests/testdata/provider/testdata_pg_reltests.sql
   tests/testdata/provider/testdata_pg_role.sql
   tests/testdata/provider/testdata_pg_vectorjoin.sql

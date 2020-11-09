@@ -87,7 +87,7 @@ given ``project``.
 No reference to ``project`` is stored or utilized outside of the constructor,
 and it is used to retrieve the project's transform context only.
 
-Python scripts should utilize the QgsProject.instance() project
+Python scripts should utilize the :py:func:`QgsProject.instance()` project
 instance when creating QgsCoordinateTransform. This will ensure
 that any datum transforms defined in the project will be
 correctly respected during coordinate transforms. E.g.
@@ -298,12 +298,12 @@ coordinates.
    The string returned by this method gives the desired coordinate operation string, based on
    the state of the QgsCoordinateTransformContext object given in the QgsCoordinateTransform's constructor.
    It may be an empty string if no explicit coordinate operation is required. In order to determine the
-   ACTUAL coordinate operation which is being used by the transform, use the instantiatedCoordinateOperationDetails() call instead.
+   ACTUAL coordinate operation which is being used by the transform, use the :py:func:`~QgsCoordinateTransform.instantiatedCoordinateOperationDetails` call instead.
 
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
-   an empty string, and the deprecated sourceDatumTransformId() or destinationDatumTransformId() methods should be used instead.
+   an empty string, and the deprecated :py:func:`~QgsCoordinateTransform.sourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.destinationDatumTransformId` methods should be used instead.
 
 
 .. seealso:: :py:func:`instantiatedCoordinateOperationDetails`
@@ -318,13 +318,13 @@ coordinates.
 Returns the transform details representing the coordinate operation which is being used to transform
 coordinates.
 
-This may differ from the result returned by coordinateOperation() if the desired coordinate
+This may differ from the result returned by :py:func:`~QgsCoordinateTransform.coordinateOperation` if the desired coordinate
 operation was not successfully instantiated.
 
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
-   an empty result, and the deprecated sourceDatumTransformId() or destinationDatumTransformId() methods should be used instead.
+   an empty result, and the deprecated :py:func:`~QgsCoordinateTransform.sourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.destinationDatumTransformId` methods should be used instead.
 
 .. seealso:: :py:func:`coordinateOperation`
 
@@ -344,7 +344,7 @@ coordinates.
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
-   and the deprecated setSourceDatumTransformId() or setDestinationDatumTransformId() methods should be used instead.
+   and the deprecated :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId` methods should be used instead.
 
 
 .. seealso:: :py:func:`coordinateOperation`
@@ -356,7 +356,7 @@ coordinates.
 %Docstring
 Sets whether "ballpark" fallback transformations can be used in the case that the specified
 coordinate operation fails (such as when coordinates from outside a required grid shift file
-are transformed). See fallbackOperationOccurred() for further details.
+are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for further details.
 
 .. note::
 
@@ -364,7 +364,7 @@ are transformed). See fallbackOperationOccurred() for further details.
 
 .. warning::
 
-   If setBallparkTransformsAreAppropriate() is set to ``True``, this setting will be ignored
+   If :py:func:`~QgsCoordinateTransform.setBallparkTransformsAreAppropriate` is set to ``True``, this setting will be ignored
    and fallback transformations will always be permitted.
 
 
@@ -379,7 +379,7 @@ are transformed). See fallbackOperationOccurred() for further details.
 %Docstring
 Returns whether "ballpark" fallback transformations will be used in the case that the specified
 coordinate operation fails (such as when coordinates from outside a required grid shift file
-are transformed). See fallbackOperationOccurred() for further details.
+are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` for further details.
 
 .. note::
 
@@ -414,7 +414,7 @@ If ``appropriate`` is ``False`` (the default behavior), then transforms MAY STIL
 when the preferred or user-specified operation fails, however whenever this occurs
 a user-visible warning will be generated.
 
-If ``appropriate`` is ``True``, then this setting overrides allowFallbackTransforms()
+If ``appropriate`` is ``True``, then this setting overrides :py:func:`~QgsCoordinateTransform.allowFallbackTransforms`
 and fallback transforms will always be allowed when required.
 
 .. warning::
@@ -435,7 +435,7 @@ and fallback transforms will always be allowed when required.
 Sets whether the default fallback operation handler is disabled for this transform instance.
 
 If the default handler is ``disabled`` then it is possible to determine whether a fallback
-operation occurred by testing fallbackOperationOccurred() immediately after a transformation.
+operation occurred by testing :py:func:`~QgsCoordinateTransform.fallbackOperationOccurred` immediately after a transformation.
 
 .. warning::
 
@@ -471,7 +471,7 @@ Returns the ID of the datum transform to use when projecting from the source
 CRS.
 
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
-but can be manually overwritten by a call to setSourceDatumTransformId().
+but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
@@ -507,7 +507,7 @@ Returns the ID of the datum transform to use when projecting to the destination
 CRS.
 
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
-but can be manually overwritten by a call to setDestinationDatumTransformId().
+but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 

@@ -89,7 +89,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
 
     /**
      * Called when a selection has been made using the plot picker (for qwt5 only).
-      \note not available in Python bindings
+     * \note not available in Python bindings
       */
     void histoPickerSelectedQwt5( QwtDoublePoint ) SIP_SKIP;
     //! Various actions that are stored in btnHistoActions.

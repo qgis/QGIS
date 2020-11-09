@@ -72,7 +72,7 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
 
 QgsModelComponentGraphicItem::Flags QgsModelComponentGraphicItem::flags() const
 {
-  return nullptr;
+  return QgsModelComponentGraphicItem::Flags();
 }
 
 QgsModelComponentGraphicItem::~QgsModelComponentGraphicItem() = default;

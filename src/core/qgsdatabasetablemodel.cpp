@@ -131,9 +131,10 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
             return QgsLayerItem::iconLine();
           }
           default:
-            return QgsLayerItem::iconTable();
+            break;
         }
-        return QVariant();
+
+        return QgsLayerItem::iconTable();
       }
       else if ( role == RoleWkbType )
         return table.geometryColumnTypes().at( 0 ).wkbType;

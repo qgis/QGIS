@@ -175,7 +175,7 @@ void TestQgsLayoutContext::dpi()
 void TestQgsLayoutContext::renderContextFlags()
 {
   QgsLayoutRenderContext context( nullptr );
-  context.setFlags( nullptr );
+  context.setFlags( QgsLayoutRenderContext::Flags() );
   QgsRenderContext::Flags flags = context.renderContextFlags();
   QVERIFY( !( flags & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( flags & QgsRenderContext::UseAdvancedEffects ) );

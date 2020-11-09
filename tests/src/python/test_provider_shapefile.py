@@ -1054,6 +1054,28 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
             osgeo.ogr.GetDriverByName('ESRI Shapefile').DeleteDataSource(tmpfile)
 
+    def testEncoding(self):
+        """ Test that CP852 shapefile is read/written correctly """
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        for file in glob.glob(os.path.join(TEST_DATA_DIR, 'test_852.*')):
+            shutil.copy(os.path.join(TEST_DATA_DIR, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'test_852.shp')
+
+        vl = QgsVectorLayer(datasource, 'test')
+        self.assertTrue(vl.isValid())
+        self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ']])
+
+        f = QgsFeature()
+        f.setAttributes(['abcŐabcŐabcŐ'])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # read it back in
+        vl = QgsVectorLayer(datasource, 'test')
+        self.assertTrue(vl.isValid())
+        self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ'], ['abcŐabcŐabcŐ']])
+
 
 if __name__ == '__main__':
     unittest.main()

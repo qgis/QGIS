@@ -32,7 +32,7 @@ from qgis.core import (
     QgsFieldConstraints,
     NULL
 )
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
@@ -894,7 +894,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         """Checks that changing attributes violating a DB-level CHECK constraint returns false
         the provider test case must provide an editable layer with a text field
         "i_will_fail_on_no_name" having a CHECK constraint that will fail when value is "no name".
-        The layer must contain at least 2 features, that will be used to test the attibute change.
+        The layer must contain at least 2 features, that will be used to test the attribute change.
         """
 
         if not getattr(self, 'getEditableLayerWithCheckConstraint', None):
@@ -1150,3 +1150,59 @@ class ProviderTestCase(FeatureSourceTestCase):
 
             finally:
                 self.source.setSubsetString(None)
+
+    def testGeneratedColumns(self):
+
+        if not getattr(self, 'getGeneratedColumnsData', None):
+            return
+
+        vl, generated_value = self.getGeneratedColumnsData()
+        if vl is None:
+            return
+
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().count(), 2)
+
+        field = vl.fields().at(1)
+        self.assertEqual(field.name(), "generated_field")
+        self.assertEqual(field.type(), QVariant.String)
+        self.assertEqual(vl.dataProvider().defaultValueClause(1), generated_value)
+
+        vl.startEditing()
+
+        feature = next(vl.getFeatures())
+        # to be fixed
+        # self.assertEqual(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature), editable)
+
+        # same test on a new inserted feature
+        feature = QgsFeature(vl.fields())
+        feature.setAttribute(0, 2)
+        vl.addFeature(feature)
+        self.assertTrue(feature.id() < 0)
+        # to be fixed
+        # self.assertEqual(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature), editable)
+        vl.commitChanges()
+
+        feature = vl.getFeature(2)
+        self.assertTrue(feature.isValid())
+        self.assertEqual(feature.attribute(1), "test:2")
+
+        # to be fixed
+        # self.assertEqual(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature), editable)
+
+        # test update id and commit
+        vl.startEditing()
+        self.assertTrue(vl.changeAttributeValue(2, 0, 10))
+        self.assertTrue(vl.commitChanges())
+        feature = vl.getFeature(10)
+        self.assertTrue(feature.isValid())
+        self.assertEqual(feature.attribute(0), 10)
+        self.assertEqual(feature.attribute(1), "test:10")
+
+        # test update the_field and commit (the value is not changed because the field is generated)
+        vl.startEditing()
+        self.assertTrue(vl.changeAttributeValue(10, 1, "new value"))
+        self.assertTrue(vl.commitChanges())
+        feature = vl.getFeature(10)
+        self.assertTrue(feature.isValid())
+        self.assertEqual(feature.attribute(1), "test:10")

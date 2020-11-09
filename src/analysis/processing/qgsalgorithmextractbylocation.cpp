@@ -369,7 +369,7 @@ QString QgsSelectByLocationAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsSelectByLocationAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading | QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool;
 }
 
 QString QgsSelectByLocationAlgorithm::displayName() const
@@ -436,7 +436,8 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
 
 void QgsExtractByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Extract features from" ),
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
+                QObject::tr( "Extract features from" ),
                 QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
   addPredicateParameter();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),

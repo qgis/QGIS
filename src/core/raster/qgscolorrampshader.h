@@ -211,7 +211,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values
      * between two class breaks (TRUE) or if the item values are (linearly)
-     * interpolated for values between the item values (FALSE)*/
+     * interpolated for values between the item values (FALSE)
+    */
     QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     Type mColorRampType;
@@ -219,7 +220,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /**
      * Look up table to speed up finding the right color.
-      * It is initialized on the first call to shade(). */
+     * It is initialized on the first call to shade().
+    */
     mutable QVector<int> mLUT;
     mutable double mLUTOffset = 0.0;
     mutable double mLUTFactor = 1.0;

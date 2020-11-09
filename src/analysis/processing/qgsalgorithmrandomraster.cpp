@@ -272,9 +272,6 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
   mRandomUpperBound = parameterAsDouble( parameters, QStringLiteral( "UPPER_BOUND" ), context );
   mRandomLowerBound = parameterAsDouble( parameters, QStringLiteral( "LOWER_BOUND" ), context );
 
-  mRandomUniformIntDistribution = std::uniform_int_distribution<long>( mRandomLowerBound, mRandomUpperBound );
-  mRandomUniformDoubleDistribution = std::uniform_real_distribution<double>( mRandomLowerBound, mRandomUpperBound );
-
   if ( mRandomLowerBound > mRandomUpperBound )
     throw QgsProcessingException( QObject::tr( "The chosen lower bound for random number range is greater than the upper bound. The lower bound value must be smaller than the upper bound value." ) );
 
@@ -285,7 +282,7 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
   {
     case Qgis::Byte:
       if ( mRandomLowerBound < std::numeric_limits<quint8>::min() || mRandomUpperBound > std::numeric_limits<quint8>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<quint8>::min() ).arg( std::numeric_limits<quint8>::max() ).arg( QStringLiteral( "Byte" ) ) );
+        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<quint8>::min() ).arg( std::numeric_limits<quint8>::max() ).arg( QLatin1String( "Byte" ) ) );
       if ( ( qgsDoubleNear( mRandomLowerBound, 0.0 ) && qgsDoubleNear( mRandomUpperBound, 0.0 ) ) || qgsDoubleNear( mRandomUpperBound, mRandomLowerBound ) )
       {
         //if parameters unset (=both are 0 or equal) --> use the whole value range
@@ -295,7 +292,7 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
       break;
     case Qgis::Int16:
       if ( mRandomLowerBound < std::numeric_limits<qint16>::min() || mRandomUpperBound > std::numeric_limits<qint16>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<qint16>::min() ).arg( std::numeric_limits<qint16>::max() ).arg( QStringLiteral( "Integer16" ) ) );
+        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<qint16>::min() ).arg( std::numeric_limits<qint16>::max() ).arg( QLatin1String( "Integer16" ) ) );
       if ( ( qgsDoubleNear( mRandomLowerBound, 0.0 ) && qgsDoubleNear( mRandomUpperBound, 0.0 ) ) || qgsDoubleNear( mRandomUpperBound, mRandomLowerBound ) )
       {
         mRandomUpperBound = std::numeric_limits<qint16>::max();
@@ -304,7 +301,7 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
       break;
     case Qgis::UInt16:
       if ( mRandomLowerBound < std::numeric_limits<quint16>::min() || mRandomUpperBound > std::numeric_limits<quint16>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<quint16>::min() ).arg( std::numeric_limits<quint16>::max() ).arg( QStringLiteral( "Unsigned Integer16" ) ) );
+        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<quint16>::min() ).arg( std::numeric_limits<quint16>::max() ).arg( QLatin1String( "Unsigned Integer16" ) ) );
       if ( ( qgsDoubleNear( mRandomLowerBound, 0.0 ) && qgsDoubleNear( mRandomUpperBound, 0.0 ) ) || qgsDoubleNear( mRandomUpperBound, mRandomLowerBound ) )
       {
         mRandomUpperBound = std::numeric_limits<quint16>::max();
@@ -313,7 +310,7 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
       break;
     case Qgis::Int32:
       if ( mRandomLowerBound < std::numeric_limits<qint32>::min() || mRandomUpperBound > std::numeric_limits<qint32>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<qint32>::min() ).arg( std::numeric_limits<qint32>::max() ).arg( QStringLiteral( "Integer32" ) ) );
+        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<qint32>::min() ).arg( std::numeric_limits<qint32>::max() ).arg( QLatin1String( "Integer32" ) ) );
       if ( ( qgsDoubleNear( mRandomLowerBound, 0.0 ) && qgsDoubleNear( mRandomUpperBound, 0.0 ) ) || qgsDoubleNear( mRandomUpperBound, mRandomLowerBound ) )
       {
         mRandomUpperBound = std::numeric_limits<qint32>::max();
@@ -322,7 +319,7 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
       break;
     case Qgis::UInt32:
       if ( mRandomLowerBound < std::numeric_limits<quint32>::min() || mRandomUpperBound > std::numeric_limits<quint32>::max() )
-        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<quint32>::min() ).arg( std::numeric_limits<quint32>::max() ).arg( QStringLiteral( "Unsigned Integer32" ) ) );
+        throw QgsProcessingException( QObject::tr( "Raster datasets of type %3 only accept positive values between %1 and %2. Please choose other bounds for random values." ).arg( std::numeric_limits<quint32>::min() ).arg( std::numeric_limits<quint32>::max() ).arg( QLatin1String( "Unsigned Integer32" ) ) );
       if ( ( qgsDoubleNear( mRandomLowerBound, 0.0 ) && qgsDoubleNear( mRandomUpperBound, 0.0 ) ) || qgsDoubleNear( mRandomUpperBound, mRandomLowerBound ) )
       {
         mRandomUpperBound = std::numeric_limits<quint32>::max();
@@ -346,6 +343,10 @@ bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap
     default:
       break;
   }
+
+  mRandomUniformIntDistribution = std::uniform_int_distribution<long>( mRandomLowerBound, mRandomUpperBound );
+  mRandomUniformDoubleDistribution = std::uniform_real_distribution<double>( mRandomLowerBound, mRandomUpperBound );
+
   return true;
 }
 
@@ -356,7 +357,7 @@ long QgsRandomUniformRasterAlgorithm::generateRandomLongValue( std::mt19937 &mer
 
 double QgsRandomUniformRasterAlgorithm::generateRandomDoubleValue( std::mt19937 &mersenneTwister )
 {
-  return mRandomUniformIntDistribution( mersenneTwister );
+  return mRandomUniformDoubleDistribution( mersenneTwister );
 }
 
 //

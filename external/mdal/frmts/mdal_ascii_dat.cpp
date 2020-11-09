@@ -485,7 +485,9 @@ bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
   if ( !MDAL::contains( uri, "_els" ) && group->dataLocation() != MDAL_DataLocation::DataOnVertices )
   {
     // Should contain _els in name for edges/faces dataset but it does not
-    uri.insert( uri.size() - 4, "_els" );
+    int pos = uri.size() - 4;
+    uri.insert( std::max( 0, pos ), "_els" );
+    group->replaceUri( uri );
   }
 
   if ( ( mesh->facesCount() > 0 ) && ( mesh->edgesCount() > 0 ) )
@@ -560,4 +562,9 @@ bool MDAL::DriverAsciiDat::persist( MDAL::DatasetGroup *group )
   out << "ENDDS";
 
   return false;
+}
+
+std::string MDAL::DriverAsciiDat::writeDatasetOnFileSuffix() const
+{
+  return "dat";
 }

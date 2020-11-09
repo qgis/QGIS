@@ -101,7 +101,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     QgsSublayersDialog( ProviderType providerType,
                         const QString &name,
                         QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                        Qt::WindowFlags fl = nullptr,
+                        Qt::WindowFlags fl = Qt::WindowFlags(),
                         const QString &dataSourceUri = QString() );
 
     ~QgsSublayersDialog() override;

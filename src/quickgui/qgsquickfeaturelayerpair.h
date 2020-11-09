@@ -86,7 +86,15 @@ class QUICK_EXPORT QgsQuickFeatureLayerPair
     //! \copydoc QgsQuickFeatureLayerPair::feature
     QgsFeature &featureRef();
 
-    //! \copydoc QgsQuickFeatureLayerPair::valid
+    /**
+     * Whether
+     *
+     * - layer is not NULLPTR
+     * - feature is valid
+     * - feature has geometry and the geometry is the same as geometry expected by layer
+     *
+     * This is a readonly property.
+     */
     bool isValid() const;
 
     bool operator==( const QgsQuickFeatureLayerPair &other ) const;

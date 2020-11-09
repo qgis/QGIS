@@ -302,7 +302,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
     switch ( static_cast< QMetaType::Type >( i.value().type() ) )
     {
       case QMetaType::Int:
-        list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toInt() ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QString::number( i.value().toInt() ) );
         break;
       case QMetaType::Double:
         list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
@@ -317,7 +317,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
     }
     ++i;
   }
-  return space + "{\n" +  list.join( QStringLiteral( ",\n" ) ) + '\n' + space + '}';
+  return space + "{\n" +  list.join( QLatin1String( ",\n" ) ) + '\n' + space + '}';
 }
 
 void QgsBench::saveLog( const QString &fileName )

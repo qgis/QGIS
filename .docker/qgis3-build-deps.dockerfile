@@ -101,6 +101,7 @@ RUN  apt-get update \
     qtbase5-private-dev \
     saga \
     spawn-fcgi \
+    supervisor \
     unzip \
     xauth \
     xfonts-100dpi \
@@ -111,7 +112,6 @@ RUN  apt-get update \
     opencl-headers \
     ocl-icd-libopencl1 \
     ocl-icd-opencl-dev \
-    supervisor \
     expect \
   && pip3 install \
     psycopg2 \
@@ -158,7 +158,7 @@ RUN locale-gen
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
 # OTB: download and install otb packages for QGIS tests
-RUN curl -k https://www.orfeo-toolbox.org/packages/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
+RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
 
 # Clazy

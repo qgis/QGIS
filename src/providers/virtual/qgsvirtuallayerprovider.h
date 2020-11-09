@@ -40,7 +40,7 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
      * \param uri uniform resource locator (URI) for a dataset
      * \param options generic data provider options
      */
-    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &coordinateTransformContext );
+    explicit QgsVirtualLayerProvider( QString const &uri, const ProviderOptions &coordinateTransformContext, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;
@@ -133,7 +133,7 @@ class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsVirtualLayerProviderMetadata();
-    QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 
 #ifdef HAVE_GUI

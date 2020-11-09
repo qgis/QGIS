@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsgdalutils.h"
 #include "qgsvectortiledataitems.h"
+#include "qgsproviderregistry.h"
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
@@ -144,6 +145,19 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
   if ( path.isEmpty() )
     return nullptr;
 
+  // if another provider has preference for this path, let it win. This allows us to hide known files
+  // more strongly associated with another provider from showing duplicate entries for the ogr provider.
+  // e.g. in particular this hides "ept.json" files from showing as a non-functional ogr data item, and
+  // instead ONLY shows them as the functional EPT point cloud provider items
+  if ( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( path, QStringLiteral( "gdal" ) ) )
+  {
+    return nullptr;
+  }
+
+  // hide blocklisted URIs, such as .aux.xml files
+  if ( QgsProviderRegistry::instance()->uriIsBlocklisted( path ) )
+    return nullptr;
+
   QgsDebugMsgLevel( "thePath = " + path, 2 );
 
   // zip settings + info
@@ -210,19 +224,6 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
   } );
 
-  // skip *.aux.xml files (GDAL auxiliary metadata files),
-  // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
-  // unless that extension is in the list (*.xml might be though)
-  if ( path.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
-       !sExtensions.contains( QStringLiteral( "aux.xml" ) ) )
-    return nullptr;
-  if ( path.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) &&
-       !sExtensions.contains( QStringLiteral( "shp.xml" ) ) )
-    return nullptr;
-  if ( path.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
-       !sExtensions.contains( QStringLiteral( "tif.xml" ) ) )
-    return nullptr;
-
   // skip QGIS style xml files
   if ( path.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) &&
        QgsStyle::isXmlStyleFile( path ) )
@@ -263,12 +264,12 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 #endif
   }
 
-  if ( suffix == QStringLiteral( "mbtiles" ) )
+  if ( suffix == QLatin1String( "mbtiles" ) )
   {
     QgsMbTiles reader( path );
     if ( reader.open() )
     {
-      if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
+      if ( reader.metadataValue( "format" ) == QLatin1String( "pbf" ) )
       {
         // these are vector tiles
         QUrlQuery uq;

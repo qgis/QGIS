@@ -243,10 +243,11 @@ namespace pal
        * \param distance distance to offset label along curve by
        * \param reversed if TRUE label is reversed from lefttoright to righttoleft
        * \param flip if TRUE label is placed on the other side of the line
+       * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
        * \returns calculated label position
        */
       std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
-          int &orientation, double distance, bool &reversed, bool &flip );
+          int &orientation, double distance, bool &reversed, bool &flip, bool applyAngleConstraints );
 
       /**
        * Generate curved candidates for line features.
@@ -334,7 +335,8 @@ namespace pal
 
       /**
        * Merge other (connected) part with this one and save the result in this part (other is unchanged).
-       * Returns TRUE on success, FALSE if the feature wasn't modified */
+       * Returns TRUE on success, FALSE if the feature wasn't modified.
+      */
       bool mergeWithFeaturePart( FeaturePart *other );
 
       /**

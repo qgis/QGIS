@@ -20,7 +20,7 @@ type can be restricted by setting a layer type filter with
 setLayerTypeFilter(layerType) or by activating the filter
 directly from the constructor.
 
-To retrieve the selected data source, uri() can be called and it
+To retrieve the selected data source, :py:func:`~uri` can be called and it
 will return a (possibly invalid) QgsMimeDataUtils.Uri.
 
 .. versionadded:: 3.14
@@ -125,7 +125,7 @@ type can be restricted by setting a layer type filter with
 setLayerTypeFilter(layerType) or by activating the filter
 directly from the constructor.
 
-To retrieve the selected data source, uri() can be called and it
+To retrieve the selected data source, :py:func:`~QgsDataSourceSelectWidget.uri` can be called and it
 will return a (possibly invalid) QgsMimeDataUtils.Uri.
 
 .. versionadded:: 3.6

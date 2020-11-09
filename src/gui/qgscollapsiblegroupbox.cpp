@@ -239,9 +239,9 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
   {
     QgsDebugMsg( QStringLiteral( "Alt or Shift key down, syncing group" ) );
     // get pointer to parent or grandparent widget
-    if ( parentWidget() )
+    if ( auto *lParentWidget = parentWidget() )
     {
-      mSyncParent = parentWidget();
+      mSyncParent = lParentWidget;
       if ( mSyncParent->parentWidget() )
       {
         // don't use whole app for grandparent (common for dialogs that use main window for parent)

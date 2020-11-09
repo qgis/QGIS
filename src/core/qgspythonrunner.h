@@ -47,8 +47,9 @@ class CORE_EXPORT QgsPythonRunner
 
     /**
      * Assign an instance of Python runner so that run() can be used.
-      This method should be called during app initialization.
-      Takes ownership of the object, deletes previous instance. */
+     * This method should be called during app initialization.
+     * Takes ownership of the object, deletes previous instance.
+    */
     static void setInstance( QgsPythonRunner *runner SIP_TRANSFER );
 
   protected:

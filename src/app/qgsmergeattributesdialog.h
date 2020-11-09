@@ -43,7 +43,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     };
 
 
-    QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsMergeAttributesDialog() override;
 
     QgsAttributes mergedAttributes() const;
@@ -76,7 +76,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     /**
      * Returns the table widget column index of a combo box
-    \returns the column index or -1 in case of error*/
+     * \returns the column index or -1 in case of error
+    */
     int findComboColumn( QComboBox *c ) const;
     //! Calculates the merged value of a column (depending on the selected merge behavior) and inserts the value in the corresponding cell
     void refreshMergedValue( int col );

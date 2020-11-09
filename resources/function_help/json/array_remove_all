@@ -1,6 +1,7 @@
 {
   "name": "array_remove_all",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array with all the entries of the given value removed.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"value","description":"the values to remove"}],

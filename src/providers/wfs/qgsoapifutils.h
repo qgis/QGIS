@@ -23,7 +23,8 @@ using namespace nlohmann;
 #include <QStringList>
 
 /**
- * Utility class */
+ * Utility class
+*/
 class QgsOAPIFJson
 {
   public:

@@ -290,6 +290,15 @@ void TestQgsDataSourceUri::checkAuthParams()
   QVERIFY( uri.param( QStringLiteral( "authcfg" ) ).isEmpty() );
   QVERIFY( uri.authConfigId().isEmpty() );
 
+  // issue GH #39243
+  QgsDataSourceUri uri4;
+  uri4.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/ows/?MAP%3D/home/bug.qgs&username=username&password=pa%25%25word" ) );
+
+  QCOMPARE( uri4.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+  QCOMPARE( uri4.username(), QStringLiteral( "username" ) );
+  QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "pa%%word" ) );
+  QCOMPARE( uri4.password(), QStringLiteral( "pa%%word" ) );
+
 }
 
 

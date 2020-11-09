@@ -77,7 +77,7 @@ QVariantMap QgsAttributeIndexAlgorithm::processAlgorithm( const QVariantMap &par
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
 
   if ( !layer )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
 
   QString field = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
 

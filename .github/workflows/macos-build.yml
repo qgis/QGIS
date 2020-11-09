@@ -1,8 +1,27 @@
 name: Mac OS build
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'mac/**'
+    - 'CMakeLists.txt'
+  pull_request:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'mac/**'
+    - 'CMakeLists.txt'
+
 env:
-  QT_VERSION: 5.14.1
-  QGIS_DEPS_VERSION: 0.2.2
+  QT_VERSION: 5.14.2
+  QGIS_DEPS_VERSION: 0.5.4
 
 jobs:
   mac_os_build:

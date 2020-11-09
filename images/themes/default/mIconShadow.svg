@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <radialGradient id="radialGradient869" cx="6.1089" cy="6.2365" r="6" gradientTransform="matrix(1.1139 1.0868 -1.0854 1.1124 6.3466 1.1526)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#ffebeb" offset="0"/>
+   <stop stop-color="#be0f0f" offset=".516"/>
+   <stop stop-color="#280000" offset="1"/>
+  </radialGradient>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g>
+  <ellipse transform="matrix(.10977 .99396 -.88858 .45873 0 0)" cx="19.588" cy="-12.501" rx="7.9704" ry="10.549"/>
+  <circle cx="8" cy="16" r="7" fill="url(#radialGradient869)" style="paint-order:stroke fill markers"/>
+ </g>
+</svg>

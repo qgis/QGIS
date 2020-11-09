@@ -35,7 +35,7 @@ Constructor for QgsRasterRenderer.
     virtual QgsRasterRenderer *clone() const = 0 /Factory/;
 
 %Docstring
-QgsRasterRenderer cannot be copied. Use clone() instead.
+QgsRasterRenderer cannot be copied. Use :py:func:`~QgsRasterRenderer.clone` instead.
 %End
 
     virtual int bandCount() const;
@@ -113,7 +113,7 @@ Gets symbology items if provided by renderer
     virtual void readXml( const QDomElement &rendererElem );
 
 %Docstring
-Sets base class members from xml. Usually called from create() methods of subclasses
+Sets base class members from xml. Usually called from :py:func:`~QgsRasterRenderer.create` methods of subclasses
 %End
 
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
@@ -172,7 +172,7 @@ Write upper class info into rasterrenderer element (called by writeXml method of
 %Docstring
 Returns the color for the renderer to use to represent nodata pixels.
 
-Subclasses should use this rather then nodataColor() to determine the color to use for nodata pixels
+Subclasses should use this rather then :py:func:`~QgsRasterRenderer.nodataColor` to determine the color to use for nodata pixels
 during an actual rendering operation.
 
 .. versionadded:: 3.10

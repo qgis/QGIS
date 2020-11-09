@@ -60,7 +60,7 @@ class RandomSelection(QgisAlgorithm):
         return 'vectorselection'
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
 
     def __init__(self):
         super().__init__()

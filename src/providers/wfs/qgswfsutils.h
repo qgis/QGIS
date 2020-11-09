@@ -19,7 +19,8 @@
 #include <QVariant>
 
 /**
- * Utility class */
+ * Utility class
+*/
 class QgsWFSUtils
 {
   public:

@@ -121,7 +121,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     idsCount[ id ] += 1;
   }
 
-  QgsFeatureIds ids = QSet< QgsFeatureId >::fromList( idsCount.keys() );
+  QgsFeatureIds ids = qgis::listToSet( idsCount.keys() );
   QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( ids ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
   QgsFeature f;

@@ -60,7 +60,7 @@ class Climb(QgisAlgorithm):
         return 'climbalongline'
 
     def displayName(self):
-        return self.tr('Climb Along Line')
+        return self.tr('Climb along line')
 
     def group(self):
         return self.tr('Vector analysis')

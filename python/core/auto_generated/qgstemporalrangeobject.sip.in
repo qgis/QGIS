@@ -27,7 +27,7 @@ Base class for objects with an associated (optional) temporal range.
 %Docstring
 Constructor QgsTemporalRangeObject.
 
-The ``enabled`` argument specifies whether the temporal range is initially enabled or not (see isTemporal()).
+The ``enabled`` argument specifies whether the temporal range is initially enabled or not (see :py:func:`~QgsTemporalRangeObject.isTemporal`).
 %End
 
     virtual ~QgsTemporalRangeObject();
@@ -53,8 +53,8 @@ For map settings, if ``False`` is returned, then any other temporal settings rel
 %Docstring
 Sets the temporal ``range`` for the object.
 
-Calling setTemporalRange() automatically enables temporal properties on the
-object (see isTemporal()), regardless of its existing state.
+Calling :py:func:`~QgsTemporalRangeObject.setTemporalRange` automatically enables temporal properties on the
+object (see :py:func:`~QgsTemporalRangeObject.isTemporal`), regardless of its existing state.
 
 When a temporal ``range`` is set it can be used to filter and request time base objects.
 
@@ -65,7 +65,7 @@ When a temporal ``range`` is set it can be used to filter and request time base 
 %Docstring
 Returns the datetime range for the object.
 
-This should only be considered when isTemporal() returns ``True``.
+This should only be considered when :py:func:`~QgsTemporalRangeObject.isTemporal` returns ``True``.
 
 .. seealso:: :py:func:`setTemporalRange`
 %End

@@ -161,7 +161,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
   mv->setWindowTitle( tr( "Commit Errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
-                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) )
+                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QLatin1String( "\n  " ) ) )
                            );
 
   QToolButton *showMore = new QToolButton();

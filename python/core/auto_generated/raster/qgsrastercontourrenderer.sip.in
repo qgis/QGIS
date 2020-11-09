@@ -32,7 +32,7 @@ Creates a contour renderer
     virtual QgsRasterContourRenderer *clone() const /Factory/;
 
 %Docstring
-QgsRasterContourRenderer cannot be copied. Use clone() instead.
+QgsRasterContourRenderer cannot be copied. Use :py:func:`~QgsRasterContourRenderer.clone` instead.
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;

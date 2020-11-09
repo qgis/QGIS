@@ -30,6 +30,8 @@ QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, Q
   , mParentTool( parentTool )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
+  mToolName = tr( "Add rectangle" );
+
   clean();
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRectangle::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRectangle::stopCapturing );

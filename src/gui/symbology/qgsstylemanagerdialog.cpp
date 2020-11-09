@@ -34,6 +34,9 @@
 #include "qgstextformatwidget.h"
 #include "qgslabelinggui.h"
 #include "qgslegendpatchshapewidget.h"
+#include "qgsabstract3dsymbol.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolwidget.h"
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
@@ -322,15 +325,11 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   if ( !mReadOnly )
   {
-    // Menu for the "Add item" toolbutton when in colorramp mode
-    QStringList rampTypes;
-    rampTypes << tr( "Gradient…" ) << tr( "Color presets…" ) << tr( "Random…" ) << tr( "Catalog: cpt-city…" );
-    rampTypes << tr( "Catalog: ColorBrewer…" );
-
     mMenuBtnAddItemAll = new QMenu( this );
     mMenuBtnAddItemColorRamp = new QMenu( this );
     mMenuBtnAddItemLabelSettings = new QMenu( this );
     mMenuBtnAddItemLegendPatchShape = new QMenu( this );
+    mMenuBtnAddItemSymbol3D = new QMenu( this );
 
     QAction *item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "Marker…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
@@ -342,12 +341,14 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
-    for ( const QString &rampType : qgis::as_const( rampTypes ) )
+
+    const QList< QPair< QString, QString > > rampTypes = QgsColorRamp::rampTypes();
+    for ( const QPair< QString, QString > &rampType : rampTypes )
     {
-      item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/color.svg" ) ), rampType, this );
-      connect( item, &QAction::triggered, this, [ = ]( bool ) { addColorRamp( item ); } );
+      item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/color.svg" ) ), tr( "%1…" ).arg( rampType.second ), this );
+      connect( item, &QAction::triggered, this, [ = ]( bool ) { addColorRamp( rampType.first ); } );
       mMenuBtnAddItemAll->addAction( item );
-      mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
+      mMenuBtnAddItemColorRamp->addAction( item );
     }
     mMenuBtnAddItemAll->addSeparator();
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconFieldText.svg" ) ), tr( "Text Format…" ), this );
@@ -381,8 +382,19 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLegendPatchShape->addAction( item );
 
-    connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
-             this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
+    mMenuBtnAddItemAll->addSeparator();
+    item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Point Symbol…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol3D( QStringLiteral( "point" ) ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemSymbol3D->addAction( item );
+    item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Line Symbol…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addSymbol3D( QStringLiteral( "line" ) ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemSymbol3D->addAction( item );
+    item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Polygon Symbol…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addSymbol3D( QStringLiteral( "polygon" ) ); } );
+    mMenuBtnAddItemAll->addAction( item );
+    mMenuBtnAddItemSymbol3D->addAction( item );
   }
 
   // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
@@ -500,22 +512,29 @@ void QgsStyleManagerDialog::populateTypes()
 void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
-  const bool isSymbol = currentItemType() != 3 && currentItemType() != 4 && currentItemType() != 5 && currentItemType() != 6;
+  const bool isSymbol = currentItemType() != 3 && currentItemType() != 4 && currentItemType() != 5 && currentItemType() != 6 && currentItemType() != 7;
   const bool isColorRamp = currentItemType() == 3;
   const bool isTextFormat = currentItemType() == 4;
   const bool isLabelSettings = currentItemType() == 5;
+  const bool isLegendPatchShape = currentItemType() == 6;
+  const bool isSymbol3D = currentItemType() == 7;
   searchBox->setPlaceholderText( isSymbol ? tr( "Filter symbols…" ) :
                                  isColorRamp ? tr( "Filter color ramps…" ) :
                                  isTextFormat ? tr( "Filter text symbols…" ) :
-                                 isLabelSettings ? tr( "Filter label settings…" ) : tr( "Filter legend patch shapes…" ) );
+                                 isLabelSettings ? tr( "Filter label settings…" ) :
+                                 isLegendPatchShape ? tr( "Filter legend patch shapes…" ) : tr( "Filter 3D symbols…" ) );
 
   if ( !mReadOnly && isColorRamp ) // color ramp tab
   {
     btnAddItem->setMenu( mMenuBtnAddItemColorRamp );
   }
-  if ( !mReadOnly && !isSymbol && !isColorRamp && !isTextFormat && !isLabelSettings ) // legend patch shape tab
+  else if ( !mReadOnly && isLegendPatchShape ) // legend patch shape tab
   {
     btnAddItem->setMenu( mMenuBtnAddItemLegendPatchShape );
+  }
+  else if ( !mReadOnly && isSymbol3D ) // legend patch shape tab
+  {
+    btnAddItem->setMenu( mMenuBtnAddItemSymbol3D );
   }
   else if ( !mReadOnly && isLabelSettings ) // label settings tab
   {
@@ -537,7 +556,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   actnExportAsPNG->setVisible( isSymbol );
   actnExportAsSVG->setVisible( isSymbol );
 
-  mModel->setEntityFilter( isSymbol ? QgsStyle::SymbolEntity : ( isColorRamp ? QgsStyle::ColorrampEntity : isTextFormat ? QgsStyle::TextFormatEntity : isLabelSettings ? QgsStyle::LabelSettingsEntity : QgsStyle::LegendPatchShapeEntity ) );
+  mModel->setEntityFilter( isSymbol ? QgsStyle::SymbolEntity : ( isColorRamp ? QgsStyle::ColorrampEntity : isTextFormat ? QgsStyle::TextFormatEntity : isLabelSettings ? QgsStyle::LabelSettingsEntity : isLegendPatchShape ? QgsStyle::LegendPatchShapeEntity : QgsStyle::Symbol3DEntity ) );
   mModel->setEntityFilterEnabled( !allTypesSelected() );
   mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
   if ( isSymbol && !allTypesSelected() )
@@ -614,6 +633,7 @@ void QgsStyleManagerDialog::copyItem()
 
     case QgsStyle::ColorrampEntity:
     case QgsStyle::LegendPatchShapeEntity:
+    case QgsStyle::Symbol3DEntity:
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       return;
@@ -647,9 +667,10 @@ void QgsStyleManagerDialog::pasteItem()
     }
 
     QStringList symbolTags = saveDlg.tags().split( ',' );
-    mStyle->addSymbol( saveDlg.name(), tempSymbol->clone() );
+    QgsSymbol *newSymbol = tempSymbol.get();
+    mStyle->addSymbol( saveDlg.name(), tempSymbol.release() );
     // make sure the symbol is stored
-    mStyle->saveSymbol( saveDlg.name(), tempSymbol->clone(), saveDlg.isFavorite(), symbolTags );
+    mStyle->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
     return;
   }
 
@@ -699,6 +720,8 @@ int QgsStyleManagerDialog::selectedItemType()
     return 5;
   else if ( entity == QgsStyle::LegendPatchShapeEntity )
     return 6;
+  else if ( entity == QgsStyle::Symbol3DEntity )
+    return 7;
 
   return  mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt();
 }
@@ -740,6 +763,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
   const QStringList favoriteTextFormats = src->symbolsOfFavorite( QgsStyle::TextFormatEntity );
   const QStringList favoriteLabelSettings = src->symbolsOfFavorite( QgsStyle::LabelSettingsEntity );
   const QStringList favoriteLegendPatchShapes = src->symbolsOfFavorite( QgsStyle::LegendPatchShapeEntity );
+  const QStringList favorite3dSymbols = src->symbolsOfFavorite( QgsStyle::Symbol3DEntity );
 
   for ( auto &details : items )
   {
@@ -1014,6 +1038,59 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
         break;
       }
 
+      case QgsStyle::Symbol3DEntity:
+      {
+        std::unique_ptr< QgsAbstract3DSymbol > symbol( src->symbol3D( details.name ) );
+        if ( !symbol )
+          continue;
+
+        const bool hasDuplicateName = dst->symbol3DNames().contains( details.name );
+        bool overwriteThis = false;
+        if ( isImport )
+          addItemToFavorites = favorite3dSymbols.contains( details.name );
+
+        if ( hasDuplicateName && prompt )
+        {
+          cursorOverride.reset();
+          int res = QMessageBox::warning( parentWidget, isImport ? tr( "Import 3D Symbol" ) : tr( "Export 3D Symbol" ),
+                                          tr( "A 3D symbol with the name “%1” already exists.\nOverwrite?" )
+                                          .arg( details.name ),
+                                          QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          switch ( res )
+          {
+            case QMessageBox::Cancel:
+              return count;
+
+            case QMessageBox::No:
+              continue;
+
+            case QMessageBox::Yes:
+              overwriteThis = true;
+              break;
+
+            case QMessageBox::YesToAll:
+              prompt = false;
+              overwriteAll = true;
+              break;
+
+            case QMessageBox::NoToAll:
+              prompt = false;
+              overwriteAll = false;
+              break;
+          }
+        }
+
+        if ( !hasDuplicateName || overwriteAll || overwriteThis )
+        {
+          QgsAbstract3DSymbol *newSymbol = symbol.get();
+          dst->addSymbol3D( details.name, symbol.release() );
+          dst->saveSymbol3D( details.name, newSymbol, addItemToFavorites, symbolTags );
+          count++;
+        }
+        break;
+      }
+
       case QgsStyle::TagEntity:
       case QgsStyle::SmartgroupEntity:
         break;
@@ -1117,6 +1194,8 @@ int QgsStyleManagerDialog::currentItemType()
       return 5;
     case 7:
       return 6;
+    case 8:
+      return 7;
     default:
       return 0;
   }
@@ -1155,6 +1234,11 @@ void QgsStyleManagerDialog::addItem()
   {
     // actually never hit, because we present a submenu when adding legend patches
     // changed = addLegendPatchShape();
+  }
+  else if ( currentItemType() == 7 )
+  {
+    // actually never hit, because we present a submenu when adding 3d symbols
+    // changed = addSymbol3D();
   }
   else
   {
@@ -1264,25 +1348,31 @@ bool QgsStyleManagerDialog::addSymbol( int symbolType )
 }
 
 
-QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *style, QString rampType )
+QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *style, const QString &type )
 {
-  // let the user choose the color ramp type if rampType is not given
-  bool ok = true;
+  QString rampType = type;
+
   if ( rampType.isEmpty() )
   {
-    QStringList rampTypes;
-    rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
-    rampTypes << tr( "Catalog: ColorBrewer" );
-    rampType = QInputDialog::getItem( parent, tr( "Color Ramp Type" ),
-                                      tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
+    // let the user choose the color ramp type if rampType is not given
+    bool ok = true;
+    const QList< QPair< QString, QString > > rampTypes = QgsColorRamp::rampTypes();
+    QStringList rampTypeNames;
+    rampTypeNames.reserve( rampTypes.size() );
+    for ( const QPair< QString, QString > &type : rampTypes )
+      rampTypeNames << type.second;
+    const QString selectedRampTypeName = QInputDialog::getItem( parent, tr( "Color Ramp Type" ),
+                                         tr( "Please select color ramp type:" ), rampTypeNames, 0, false, &ok );
+    if ( !ok || selectedRampTypeName.isEmpty() )
+      return QString();
+
+    rampType = rampTypes.value( rampTypeNames.indexOf( selectedRampTypeName ) ).first;
   }
-  if ( !ok || rampType.isEmpty() )
-    return QString();
 
   QString name = tr( "new ramp" );
 
   std::unique_ptr< QgsColorRamp  > ramp;
-  if ( rampType == tr( "Gradient" ) )
+  if ( rampType == QgsGradientColorRamp::typeString() )
   {
     QgsGradientColorRampDialog dlg( QgsGradientColorRamp(), parent );
     if ( !dlg.exec() )
@@ -1292,7 +1382,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     ramp.reset( dlg.ramp().clone() );
     name = tr( "new gradient ramp" );
   }
-  else if ( rampType == tr( "Random" ) )
+  else if ( rampType == QgsLimitedRandomColorRamp::typeString() )
   {
     QgsLimitedRandomColorRampDialog dlg( QgsLimitedRandomColorRamp(), parent );
     if ( !dlg.exec() )
@@ -1302,7 +1392,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     ramp.reset( dlg.ramp().clone() );
     name = tr( "new random ramp" );
   }
-  else if ( rampType == tr( "Catalog: ColorBrewer" ) )
+  else if ( rampType == QgsColorBrewerColorRamp::typeString() )
   {
     QgsColorBrewerColorRampDialog dlg( QgsColorBrewerColorRamp(), parent );
     if ( !dlg.exec() )
@@ -1312,7 +1402,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     ramp.reset( dlg.ramp().clone() );
     name = dlg.ramp().schemeName() + QString::number( dlg.ramp().colors() );
   }
-  else if ( rampType == tr( "Color presets" ) )
+  else if ( rampType == QgsPresetSchemeColorRamp::typeString() )
   {
     QgsPresetColorRampDialog dlg( QgsPresetSchemeColorRamp(), parent );
     if ( !dlg.exec() )
@@ -1322,7 +1412,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     ramp.reset( dlg.ramp().clone() );
     name = tr( "new preset ramp" );
   }
-  else if ( rampType == tr( "Catalog: cpt-city" ) )
+  else if ( rampType == QgsCptCityColorRamp::typeString() )
   {
     QgsCptCityColorRampDialog dlg( QgsCptCityColorRamp( QString(), QString() ), parent );
     if ( !dlg.exec() )
@@ -1429,16 +1519,10 @@ void QgsStyleManagerDialog::activate()
   activateWindow();
 }
 
-bool QgsStyleManagerDialog::addColorRamp()
-{
-  return addColorRamp( nullptr );
-}
-
-bool QgsStyleManagerDialog::addColorRamp( QAction *action )
+bool QgsStyleManagerDialog::addColorRamp( const QString &type )
 {
   // pass the action text, which is the color ramp type
-  QString rampName = addColorRampStatic( this, mStyle,
-                                         action ? action->text() : QString() );
+  QString rampName = addColorRampStatic( this, mStyle, type );
   if ( !rampName.isEmpty() )
   {
     mModified = true;
@@ -1470,6 +1554,10 @@ void QgsStyleManagerDialog::editItem()
   else if ( selectedItemType() == 6 )
   {
     editLegendPatchShape();
+  }
+  else if ( selectedItemType() == 7 )
+  {
+    editSymbol3D();
   }
   else
   {
@@ -1507,7 +1595,7 @@ bool QgsStyleManagerDialog::editColorRamp()
 
   std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
 
-  if ( ramp->type() == QLatin1String( "gradient" ) )
+  if ( ramp->type() == QgsGradientColorRamp::typeString() )
   {
     QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( ramp.get() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
@@ -1520,7 +1608,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == QLatin1String( "random" ) )
+  else if ( ramp->type() == QgsLimitedRandomColorRamp::typeString() )
   {
     QgsLimitedRandomColorRamp *randRamp = static_cast<QgsLimitedRandomColorRamp *>( ramp.get() );
     QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
@@ -1533,7 +1621,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == QLatin1String( "colorbrewer" ) )
+  else if ( ramp->type() == QgsColorBrewerColorRamp::typeString() )
   {
     QgsColorBrewerColorRamp *brewerRamp = static_cast<QgsColorBrewerColorRamp *>( ramp.get() );
     QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
@@ -1546,7 +1634,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == QLatin1String( "preset" ) )
+  else if ( ramp->type() == QgsPresetSchemeColorRamp::typeString() )
   {
     QgsPresetSchemeColorRamp *presetRamp = static_cast<QgsPresetSchemeColorRamp *>( ramp.get() );
     QgsPresetColorRampDialog dlg( *presetRamp, this );
@@ -1559,7 +1647,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == QLatin1String( "cpt-city" ) )
+  else if ( ramp->type() == QgsCptCityColorRamp::typeString() )
   {
     QgsCptCityColorRamp *cptCityRamp = static_cast<QgsCptCityColorRamp *>( ramp.get() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
@@ -1792,6 +1880,104 @@ bool QgsStyleManagerDialog::editLegendPatchShape()
   return true;
 }
 
+bool QgsStyleManagerDialog::addSymbol3D( const QString &type )
+{
+  std::unique_ptr< QgsAbstract3DSymbol > symbol( QgsApplication::symbol3DRegistry()->createSymbol( type ) );
+  if ( !symbol )
+    return false;
+
+  Qgs3DSymbolDialog dialog( symbol.get(), this );
+  if ( mReadOnly )
+    dialog.buttonBox()->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  if ( !dialog.exec() )
+    return false;
+
+  symbol.reset( dialog.symbol() );
+  if ( !symbol )
+    return false;
+
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::Symbol3DEntity );
+  if ( !saveDlg.exec() )
+    return false;
+  QString name = saveDlg.name();
+
+  // request valid/unique name
+  bool nameInvalid = true;
+  while ( nameInvalid )
+  {
+    // validate name
+    if ( name.isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "Save 3D Symbol" ),
+                            tr( "Cannot save 3D symbols without a name. Enter a name." ) );
+    }
+    else if ( mStyle->symbol3DNames().contains( name ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Save 3D Symbol" ),
+                                      tr( "A 3D symbol with the name '%1' already exists. Overwrite?" )
+                                      .arg( name ),
+                                      QMessageBox::Yes | QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+      {
+        mStyle->removeEntityByName( QgsStyle::Symbol3DEntity, name );
+        nameInvalid = false;
+      }
+    }
+    else
+    {
+      // valid name
+      nameInvalid = false;
+    }
+    if ( nameInvalid )
+    {
+      bool ok;
+      name = QInputDialog::getText( this, tr( "3D Symbol Name" ),
+                                    tr( "Please enter a name for the new 3D symbol:" ),
+                                    QLineEdit::Normal, name, &ok );
+      if ( !ok )
+      {
+        return false;
+      }
+    }
+  }
+
+  QStringList symbolTags = saveDlg.tags().split( ',' );
+
+  // add new shape to style and re-populate the list
+  QgsAbstract3DSymbol *newSymbol = symbol.get();
+  mStyle->addSymbol3D( name, symbol.release() );
+  mStyle->saveSymbol3D( name, newSymbol, saveDlg.isFavorite(), symbolTags );
+
+  mModified = true;
+  return true;
+}
+
+bool QgsStyleManagerDialog::editSymbol3D()
+{
+  const QString symbolName = currentItemName();
+  if ( symbolName.isEmpty() )
+    return false;
+
+  std::unique_ptr< QgsAbstract3DSymbol > symbol( mStyle->symbol3D( symbolName ) );
+  if ( !symbol )
+    return false;
+
+  // let the user edit the symbol and update list when done
+  Qgs3DSymbolDialog dlg( symbol.get(), this );
+  if ( !dlg.exec() )
+    return false;
+
+  symbol.reset( dlg.symbol() );
+  if ( !symbol )
+    return false;
+
+  // by adding symbol to style with the same name the old effectively gets overwritten
+  mStyle->addSymbol3D( symbolName, symbol.release(), true );
+  mModified = true;
+  return true;
+}
+
 void QgsStyleManagerDialog::removeItem()
 {
   const QList< ItemDetails > items = selectedItems();
@@ -1842,6 +2028,14 @@ void QgsStyleManagerDialog::removeItem()
     {
       if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Legend Patch Shapes" ),
            QString( tr( "Do you really want to remove %n legend patch shapes?", nullptr, items.count() ) ),
+           QMessageBox::Yes,
+           QMessageBox::No ) )
+        return;
+    }
+    else if ( currentItemType() == 7 )
+    {
+      if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove 3D Symbols" ),
+           QString( tr( "Do you really want to remove %n 3D symbols?", nullptr, items.count() ) ),
            QMessageBox::Yes,
            QMessageBox::No ) )
         return;

@@ -267,7 +267,7 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( !rc.painter() );
 
   // check render context flags are correctly set
-  l.renderContext().setFlags( nullptr );
+  l.renderContext().setFlags( QgsLayoutRenderContext::Flags() );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
@@ -347,7 +347,7 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( rc.painter() );
 
   // check render context flags are correctly set
-  l.renderContext().setFlags( nullptr );
+  l.renderContext().setFlags( QgsLayoutRenderContext::Flags() );
   rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );

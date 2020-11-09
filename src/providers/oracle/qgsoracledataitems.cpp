@@ -536,7 +536,7 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
 
 // ---------------------------------------------------------------------------
 QgsOracleRootItem::QgsOracleRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ORACLE" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "ORACLE" ) )
 {
   mIconName = QStringLiteral( "mIconOracle.svg" );
   populate();

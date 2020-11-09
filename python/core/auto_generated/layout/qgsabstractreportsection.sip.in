@@ -91,7 +91,7 @@ Returns an icon representing the section.
 Clones the report section. Ownership of the returned section is
 transferred to the caller.
 
-Subclasses should call copyCommonProperties() in their clone()
+Subclasses should call :py:func:`~QgsAbstractReportSection.copyCommonProperties` in their :py:func:`~QgsAbstractReportSection.clone`
 implementations.
 %End
 
@@ -174,7 +174,7 @@ Sets whether the header for the section is ``enabled``.
     QgsLayout *header();
 %Docstring
 Returns the header for the section. Note that the header is only
-included if headerEnabled() is ``True``.
+included if :py:func:`~QgsAbstractReportSection.headerEnabled` is ``True``.
 
 .. seealso:: :py:func:`setHeaderEnabled`
 
@@ -186,7 +186,7 @@ included if headerEnabled() is ``True``.
     void setHeader( QgsLayout *header /Transfer/ );
 %Docstring
 Sets the ``header`` for the section. Note that the header is only
-included if headerEnabled() is ``True``. Ownership of ``header``
+included if :py:func:`~QgsAbstractReportSection.headerEnabled` is ``True``. Ownership of ``header``
 is transferred to the report section.
 
 .. seealso:: :py:func:`setHeaderEnabled`
@@ -221,7 +221,7 @@ Sets whether the footer for the section is ``enabled``.
     QgsLayout *footer();
 %Docstring
 Returns the footer for the section. Note that the footer is only
-included if footerEnabled() is ``True``.
+included if :py:func:`~QgsAbstractReportSection.footerEnabled` is ``True``.
 
 .. seealso:: :py:func:`setFooterEnabled`
 
@@ -233,7 +233,7 @@ included if footerEnabled() is ``True``.
     void setFooter( QgsLayout *footer /Transfer/ );
 %Docstring
 Sets the ``footer`` for the section. Note that the footer is only
-included if footerEnabled() is ``True``. Ownership of ``footer``
+included if :py:func:`~QgsAbstractReportSection.footerEnabled` is ``True``. Ownership of ``footer``
 is transferred to the report section.
 
 .. seealso:: :py:func:`setFooterEnabled`
@@ -369,7 +369,7 @@ should be canceled.
     void copyCommonProperties( QgsAbstractReportSection *destination ) const;
 %Docstring
 Copies the common properties of a report section to a ``destination`` section.
-This method should be called from clone() implementations.
+This method should be called from :py:func:`~QgsAbstractReportSection.clone` implementations.
 %End
 
     virtual void setParentSection( QgsAbstractReportSection *parent );

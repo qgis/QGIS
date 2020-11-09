@@ -1,6 +1,7 @@
 {
   "name": "attribute",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns an attribute from a feature.",
   "variants": [
     { "variant": "Variant 1",

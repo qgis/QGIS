@@ -25,6 +25,7 @@
  */
 class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryDegeneratePolygonCheck )
   public:
     enum ResolutionMethod { DeleteRing, NoChange };
 

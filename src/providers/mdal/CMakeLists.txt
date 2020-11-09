@@ -11,6 +11,10 @@ IF (WITH_GUI)
 ENDIF ()
 
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/external/mdal/cmake ${CMAKE_MODULE_PATH})
+IF(MSVC)
+  # HDF5 with enabled thread safety (HDF5_ENABLE_THREADSAFE=ON) on Windows needs Threads::Threads
+  FIND_PACKAGE(Threads)
+ENDIF(MSVC)
 FIND_PACKAGE(HDF5)
 FIND_PACKAGE(NetCDF)
 FIND_PACKAGE(LibXml2)
@@ -42,7 +46,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.cpp
-    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.cpp
   )
 
   SET(MDAL_LIB_HDRS
@@ -58,6 +62,8 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.hpp
   )
 
   IF(HDF5_FOUND)

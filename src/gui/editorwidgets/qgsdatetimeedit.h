@@ -202,7 +202,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     */
     void setMinimumEditDateTime()
     {
-      setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), maximumDateTime() );
+      setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), maximumDateTime() );
     }
 
     friend class TestQgsDateTimeEdit;

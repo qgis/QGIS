@@ -64,7 +64,7 @@ node corresponding to a 'LayoutMapGrid' tag.
 Called after all pending items have been restored from XML. Map items can use
 this method to run steps which must take place after all items have been restored to the layout,
 such as connecting to signals emitted by other items, which may not have existed in the layout
-at the time readXml() was called. E.g. an overview can use this to connect to its linked
+at the time :py:func:`~QgsLayoutItemMapItem.readXml` was called. E.g. an overview can use this to connect to its linked
 map item after restoration from XML.
 
 .. seealso:: :py:func:`readXml`
@@ -151,7 +151,7 @@ stack the item should be rendered.
 Returns the item's stacking layer, which specifies where the in the map's
 stack the item should be rendered.
 
-This setting is only used when stackingPosition() is StackBelowMapLayer or
+This setting is only used when :py:func:`~QgsLayoutItemMapItem.stackingPosition` is StackBelowMapLayer or
 StackAboveMapLayer.
 
 .. seealso:: :py:func:`setStackingLayer`
@@ -166,7 +166,7 @@ StackAboveMapLayer.
 Sets the item's stacking ``layer``, which specifies where the in the map's
 stack the item should be rendered.
 
-This setting is only used when stackingPosition() is StackBelowMapLayer or
+This setting is only used when :py:func:`~QgsLayoutItemMapItem.stackingPosition` is StackBelowMapLayer or
 StackAboveMapLayer.
 
 .. seealso:: :py:func:`stackingLayer`
@@ -258,7 +258,7 @@ Returns ``True`` if read was successful.
 Called after all pending items have been restored from XML. Map item stacks can use
 this method to run steps which must take place after all items have been restored to the layout,
 such as connecting to signals emitted by other items, which may not have existed in the layout
-at the time readXml() was called. E.g. an overview can use this to connect to its linked
+at the time :py:func:`~QgsLayoutItemMapItemStack.readXml` was called. E.g. an overview can use this to connect to its linked
 map item after restoration from XML.
 
 .. seealso:: :py:func:`readXml`
@@ -301,7 +301,7 @@ above any existing map items already present in the stack.
 
 .. note::
 
-   After adding an item to the stack update()
+   After adding an item to the stack :py:func:`~QgsLayoutItemMapItemStack.update`
    should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeItem`
@@ -313,7 +313,7 @@ Removes an item which matching ``itemId`` from the stack and deletes the corresp
 
 .. note::
 
-   After removing an item from the stack, update()
+   After removing an item from the stack, :py:func:`~QgsLayoutItemMapItemStack.update`
    should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addItem`
@@ -325,7 +325,7 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
 
 .. note::
 
-   After moving an item within the stack, update() should be
+   After moving an item within the stack, :py:func:`~QgsLayoutItemMapItemStack.update` should be
    called for the QgsLayoutItemMap to redraw the map with the new item stack order.
 
 .. seealso:: :py:func:`moveItemDown`
@@ -337,7 +337,7 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
 
 .. note::
 
-   After moving an item within the stack, update() should be
+   After moving an item within the stack, :py:func:`~QgsLayoutItemMapItemStack.update` should be
    called for the QgsLayoutItemMap to redraw the map with the new item stack order.
 
 .. seealso:: :py:func:`moveItemUp`

@@ -299,7 +299,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     virtual bool compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const = 0;
 
     //! Returns a null identifier
-    virtual QVariant nullIentifier() const = 0;
+    virtual QVariant nullIdentifier() const = 0;
 
     /**
      * Returns TRUE if the entry is null
@@ -339,9 +339,12 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
 
     QTimer mReloadTimer;
     bool mShouldReloadCurrentFeature = false;
+    bool mKeepCurrentEntry = false; // need to keep the current value after a reload or if the value does not exist
     bool mExtraValueDoesNotExist = false;
     bool mAllowNull = false;
     bool mIsSettingExtraIdentifierValue = false;
+
+    friend class TestQgsFeatureListComboBox;
 };
 
 #endif // QGSFEATUREFILTERMODELBASE_H

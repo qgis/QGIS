@@ -141,7 +141,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
 
 
 QgsOWSRootItem::QgsOWSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "OWS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "OWS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconOws.svg" );

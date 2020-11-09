@@ -98,6 +98,8 @@ class TestQgsGeometryChecks: public QObject
     void testSelfContactCheck();
     void testSelfIntersectionCheck();
     void testSliverPolygonCheck();
+    void testGapCheckPointInPoly();
+    void testOverlapCheckToleranceBug();
 };
 
 void TestQgsGeometryChecks::initTestCase()
@@ -1152,6 +1154,116 @@ void TestQgsGeometryChecks::testSliverPolygonCheck()
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 11, QgsPointXY(), QgsVertexId( 0 ) ).size() == 1 );
 
   // The fix methods are exactely the same as in QgsGeometryAreaCheck, no point repeating...
+
+  cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testGapCheckPointInPoly()
+{
+  // The case where the gap was containing a point that was lying inside (or on the edge)
+  // of a neighbouring polygon used to fail, as we were using that neighbour's points to
+  // snap to (since it was also at distance 0). This was leading to flaky wrong results.
+
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "gap_layer_point_in_poly.shp", "" );
+  auto testContext = createTestContext( dir, layers );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QVariantMap configuration;
+
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+
+  QgsGeometryGapCheck check( testContext.first, configuration );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  QCOMPARE( checkErrors.size(), 1 );
+
+  QgsGeometryCheckError *error = checkErrors.first();
+  QCOMPARE( error->contextBoundingBox().snappedToGrid( 100.0 ), QgsRectangle( 2.5372e+06, 1.1522e+06, 2.5375e+06, 1.1524e+06 ) );
+  QCOMPARE( error->affectedAreaBBox().snappedToGrid( 100.0 ), QgsRectangle( 2.5373e+06, 1.1523e+06, 2.5375e+06, 1.1523e+06 ) );
+
+  // Test fixes
+  QgsFeature f;
+  testContext.second[layers["gap_layer_point_in_poly.shp"]]->getFeature( 1, f );
+  double areaOld = f.geometry().area();
+  QCOMPARE( areaOld, 19913.135772452362 );
+
+  QgsGeometryCheck::Changes changes;
+  QMap<QString, int> mergeAttrs;
+  error->check()->fixError( testContext.second, error, QgsGeometryGapCheck::MergeLongestEdge, mergeAttrs, changes );
+
+  // Ensure it worked
+  QCOMPARE( error->status(), QgsGeometryCheckError::StatusFixed );
+
+  // Ensure it worked on geom
+  testContext.second[layers["gap_layer_point_in_poly.shp"]]->getFeature( 1, f );
+  QVERIFY( f.geometry().area() > areaOld );
+
+  cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
+{
+  // The overlap (intersection) was computed with a different tolerance when collecting errors
+  // than when fixing them, leading to failures to fix the issue esp. with big coordinates.
+  //
+  // Also, it used to offset unaffected points (far from the actual overlap) on the affected
+  // feature, leading to both unwanted shifts and remaining slivers.
+
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "overlap_layer_tolerance_bug.shp", "" );
+  auto testContext = createTestContext( dir, layers );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QVariantMap configuration;
+  configuration.insert( "gapThreshold", 1000.0 );
+
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+
+  QgsGeometryOverlapCheck check( testContext.first, configuration );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  QCOMPARE( checkErrors.size(), 1 );
+
+  QgsGeometryCheckError *error = checkErrors.first();
+
+  // Test fixes
+  QgsFeature f;
+  testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
+  double areaOld = f.geometry().area();
+  QgsPoint pointOld_1 = f.geometry().vertexAt( 1 );
+  QgsPoint pointOld_2 = f.geometry().vertexAt( 2 );
+
+  // Just making sure we've got the right feature/point
+  QCOMPARE( areaOld, 10442.710061549426 );
+  QGSCOMPARENEARPOINT( pointOld_1, QgsPoint( 2537221.53079314017668366, 1152360.02460834058001637 ), 0.00001 );
+  QGSCOMPARENEARPOINT( pointOld_2, QgsPoint( 2537366.84566075634211302, 1152360.28978145681321621 ), 0.00001 );
+
+  QgsGeometryCheck::Changes changes;
+  QMap<QString, int> mergeAttrs;
+  error->check()->fixError( testContext.second, error, QgsGeometryOverlapCheck::Subtract, mergeAttrs, changes );
+
+  // Ensure it worked
+  QCOMPARE( error->status(), QgsGeometryCheckError::StatusFixed );
+
+  // Ensure it actually worked
+  testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
+  QVERIFY( f.geometry().area() < areaOld );
+  // And that we don't have unexpected changes on unaffected points
+  QCOMPARE( f.geometry().vertexAt( 1 ), pointOld_1 );
+  QCOMPARE( f.geometry().vertexAt( 2 ), pointOld_2 );
 
   cleanupTestContext( testContext );
 }

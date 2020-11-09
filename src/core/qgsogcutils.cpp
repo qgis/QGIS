@@ -887,7 +887,11 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &
     tupelSeparator = elem.attribute( QStringLiteral( "ts" ) );
   }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList tupels = elem.text().split( tupelSeparator, QString::SkipEmptyParts );
+#else
+  QStringList tupels = elem.text().split( tupelSeparator, Qt::SkipEmptyParts );
+#endif
   QStringList tuple_coords;
   double x, y;
   bool conversionSuccess;
@@ -895,7 +899,11 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &
   QStringList::const_iterator it;
   for ( it = tupels.constBegin(); it != tupels.constEnd(); ++it )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     tuple_coords = ( *it ).split( coordSeparator, QString::SkipEmptyParts );
+#else
+    tuple_coords = ( *it ).split( coordSeparator, Qt::SkipEmptyParts );
+#endif
     if ( tuple_coords.size() < 2 )
     {
       continue;
@@ -955,7 +963,11 @@ bool QgsOgcUtils::readGMLPositions( QgsPolylineXY &coords, const QDomElement &el
 {
   coords.clear();
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList pos = elem.text().split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList pos = elem.text().split( ' ', Qt::SkipEmptyParts );
+#endif
   double x, y;
   bool conversionSuccess;
   int posSize = pos.size();
@@ -1161,7 +1173,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
   return geometryToGML( geometry, doc, ( format == QLatin1String( "GML2" ) ) ? GML_2_1_2 : GML_3_2_1, QString(), false, QString(), precision );
 }
 
-QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
+                                        QDomDocument &doc,
                                         GMLVersion gmlVersion,
                                         const QString &srsName,
                                         bool invertAxisOrientation,

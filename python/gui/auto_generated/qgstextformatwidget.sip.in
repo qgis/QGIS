@@ -155,6 +155,15 @@ Controls whether data defined alignment buttons are enabled.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    QgsWkbTypes::GeometryType labelGeometryType() const;
+%Docstring
+Returns the geometry type which will be used by the labeling engine
+when registering labels for the labeling settings currently defined by the widget.
+
+.. versionadded:: 3.16
+%End
+
+
 
 
 
@@ -277,6 +286,13 @@ Constructor for QgsTextFormatPanelWidget.
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
+%End
+
+    void setFormat( const QgsTextFormat &format );
+%Docstring
+Sets the ``format`` to show in the widget.
+
+.. versionadded:: 3.16
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );

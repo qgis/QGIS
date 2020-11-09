@@ -370,14 +370,27 @@ class CORE_EXPORT QgsSymbol
     QImage asImage( QSize size, QgsRenderContext *customContext = nullptr );
 
     /**
+     * Flags for controlling how symbol preview images are generated.
+     *
+     * \since QGIS 3.16
+     */
+    enum PreviewFlag
+    {
+      FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
+    };
+    Q_DECLARE_FLAGS( PreviewFlags, PreviewFlag )
+
+    /**
      * Returns a large (roughly 100x100 pixel) preview image for the symbol.
+     *
      * \param expressionContext optional expression context, for evaluation of
      * data defined symbol properties
+     * \param flags optional flags to control how preview image is generated
      *
      * \see asImage()
      * \see drawPreviewIcon()
      */
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, QgsSymbol::PreviewFlags flags = QgsSymbol::FlagIncludeCrosshairsForMarkerSymbols );
 
     /**
      * Returns a string dump of the symbol's properties.
@@ -468,7 +481,7 @@ class CORE_EXPORT QgsSymbol
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
-     * \param clipFeaturesToExtent set to true to enable clipping (defaults to TRUE)
+     * \param clipFeaturesToExtent set to TRUE to enable clipping (defaults to TRUE)
      * \see clipFeaturesToExtent
      * \since QGIS 2.9
      */
@@ -620,7 +633,7 @@ class CORE_EXPORT QgsSymbol
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;
 
-    RenderHints mRenderHints = nullptr;
+    RenderHints mRenderHints;
     bool mClipFeaturesToExtent = true;
     bool mForceRHR = false;
 
@@ -695,7 +708,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param fields
      * \param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = nullptr, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = QgsSymbol::RenderHints(), const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     ~QgsSymbolRenderContext();
 
@@ -1081,7 +1094,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
      * rendered.
      *
-     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * If \a selected is TRUE then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
     void renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
@@ -1140,6 +1153,14 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     void setWidth( double width );
 
     /**
+     * Sets the width units for the whole symbol (including all symbol layers).
+     * \param unit size units
+     * \since QGIS 3.16
+     */
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+
+    /**
      * Returns the estimated width for the whole symbol, which is the maximum width of
      * all marker symbol layers in the symbol.
      *
@@ -1189,7 +1210,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
      * rendered.
      *
-     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * If \a selected is TRUE then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
@@ -1239,7 +1260,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
      * rendered.
      *
-     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * If \a selected is TRUE then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
@@ -1254,6 +1275,8 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
     //! Translates the rings in a polygon by a set distance
     QVector<QPolygonF> *translateRings( const QVector<QPolygonF> *rings, double dx, double dy ) const;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSymbol::PreviewFlags )
 
 #endif
 

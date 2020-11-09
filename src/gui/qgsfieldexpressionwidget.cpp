@@ -230,7 +230,7 @@ void QgsFieldExpressionWidget::setExpression( const QString &expression )
 
 void QgsFieldExpressionWidget::editExpression()
 {
-  QString currentExpression = currentText();
+  QString currentExpression = asExpression();
   QgsVectorLayer *vl = layer();
 
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;

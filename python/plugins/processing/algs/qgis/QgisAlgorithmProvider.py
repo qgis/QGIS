@@ -42,7 +42,6 @@ from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
 from .FieldPyculator import FieldsPyculator
-from .FieldsCalculator import FieldsCalculator
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .Heatmap import Heatmap
@@ -71,7 +70,6 @@ from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
-from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
@@ -113,7 +111,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                FieldsCalculator(),
                 FieldsPyculator(),
                 FindProjection(),
                 GeometryConvert(),
@@ -143,7 +140,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomSelectionWithinSubsets(),
                 RasterCalculator(),
                 RasterLayerHistogram(),
-                RasterSampling(),
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),

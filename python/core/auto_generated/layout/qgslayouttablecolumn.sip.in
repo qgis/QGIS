@@ -164,7 +164,7 @@ is part of a QgsLayoutItemAttributeTable and when sortByRank is > 0.
     void setSortOrder( Qt::SortOrder order );
 %Docstring
 Sets the sort ``order`` for the column. This property is only used when the column
-is part of a QgsLayoutItemAttributeTable and when sortByRank() is > 0.
+is part of a QgsLayoutItemAttributeTable and when :py:func:`~QgsLayoutTableColumn.sortByRank` is > 0.
 
 .. note::
 

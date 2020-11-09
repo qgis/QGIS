@@ -22,6 +22,7 @@
 #include <qgspointxy.h>
 
 class QgsRectangle;
+struct QgsChunkNodeId;
 
 #define SIP_NO_FILE
 
@@ -48,6 +49,9 @@ class _3D_EXPORT QgsTilingScheme
 
     //! Returns map coordinates of the extent of a tile
     QgsRectangle tileToExtent( int x, int y, int z ) const;
+
+    //! Returns map coordinates of the extent of a tile
+    QgsRectangle tileToExtent( const QgsChunkNodeId &nodeId ) const;
 
     //! Returns coordinates of a tile that most tightly fits the whole extent
     void extentToTile( const QgsRectangle &extent, int &x, int &y, int &z ) const;

@@ -30,6 +30,7 @@
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : mMap( map )
   , mLastJobId( 0 )
+  , mTextureSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) )
 {
 }
 
@@ -73,34 +74,39 @@ void QgsTerrainTextureGenerator::cancelJob( int jobId )
   Q_ASSERT( false && "requested job ID does not exist!" );
 }
 
-QImage QgsTerrainTextureGenerator::renderSynchronously( const QgsRectangle &extent, const QString &debugText )
+void QgsTerrainTextureGenerator::waitForFinished()
 {
-  QgsMapSettings mapSettings( baseMapSettings() );
-  mapSettings.setExtent( extent );
-
-  QImage img = QImage( mapSettings.outputSize(), mapSettings.outputImageFormat() );
-  img.setDotsPerMeterX( 1000 * mapSettings.outputDpi() / 25.4 );
-  img.setDotsPerMeterY( 1000 * mapSettings.outputDpi() / 25.4 );
-  img.fill( Qt::transparent );
-
-  QPainter p( &img );
-
-  QgsMapRendererCustomPainterJob job( mapSettings, &p );
-  job.renderSynchronously();
-
-  if ( mMap.showTerrainTilesInfo() )
+  for ( QgsMapRendererSequentialJob *job : mJobs.keys() )
+    disconnect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
+  QVector<QgsMapRendererSequentialJob *> toBeDeleted;
+  for ( QgsMapRendererSequentialJob *mapJob : mJobs.keys() )
   {
-    // extra tile information for debugging
-    p.setPen( Qt::white );
-    p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
-    p.drawText( img.rect(), debugText, QTextOption( Qt::AlignCenter ) );
+    mapJob->waitForFinished();
+    JobData jobData = mJobs.value( mapJob );
+    toBeDeleted.push_back( mapJob );
+
+    QImage img = mapJob->renderedImage();
+
+    if ( mMap.showTerrainTilesInfo() )
+    {
+      // extra tile information for debugging
+      QPainter p( &img );
+      p.setPen( Qt::white );
+      p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
+      p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
+      p.end();
+    }
+
+    // pass QImage further
+    emit tileReady( jobData.jobId, img );
   }
 
-  p.end();
-
-  return img;
+  for ( QgsMapRendererSequentialJob *mapJob : toBeDeleted )
+  {
+    mJobs.remove( mapJob );
+    mapJob->deleteLater();
+  }
 }
-
 
 void QgsTerrainTextureGenerator::onRenderingFinished()
 {
@@ -136,10 +142,11 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
 {
   QgsMapSettings mapSettings;
 
-  mapSettings.setOutputSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) );
+  mapSettings.setOutputSize( mTextureSize );
   mapSettings.setDestinationCrs( mMap.crs() );
   mapSettings.setBackgroundColor( mMap.backgroundColor() );
   mapSettings.setFlag( QgsMapSettings::DrawLabeling, mMap.showLabels() );
+  mapSettings.setFlag( QgsMapSettings::Render3DMap );
   mapSettings.setTransformContext( mMap.transformContext() );
   mapSettings.setPathResolver( mMap.pathResolver() );
 
@@ -147,7 +154,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   QString mapThemeName = mMap.terrainMapTheme();
   if ( mapThemeName.isEmpty() || !mapThemes || !mapThemes->hasMapTheme( mapThemeName ) )
   {
-    mapSettings.setLayers( mMap.layers() );
+    mapSettings.setLayers( mMap.terrainLayers() );
   }
   else
   {

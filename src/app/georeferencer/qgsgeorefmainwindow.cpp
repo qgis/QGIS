@@ -401,16 +401,26 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
 void QgsGeoreferencerMainWindow::setAddPointTool()
 {
   mCanvas->setMapTool( mToolAddPoint );
+  QgsMapTool *activeQgisMapTool = QgisApp::instance()->mapCanvas()->mapTool();
+  if ( activeQgisMapTool == mToolMovePointQgis )
+    QgisApp::instance()->mapCanvas()->setMapTool( mPrevQgisMapTool );
 }
 
 void QgsGeoreferencerMainWindow::setDeletePointTool()
 {
   mCanvas->setMapTool( mToolDeletePoint );
+  QgsMapTool *activeQgisMapTool = QgisApp::instance()->mapCanvas()->mapTool();
+  if ( activeQgisMapTool == mToolMovePointQgis )
+    QgisApp::instance()->mapCanvas()->setMapTool( mPrevQgisMapTool );
 }
 
 void QgsGeoreferencerMainWindow::setMovePointTool()
 {
   mCanvas->setMapTool( mToolMovePoint );
+  QgsMapTool *activeQgisMapTool = QgisApp::instance()->mapCanvas()->mapTool();
+  if ( activeQgisMapTool == mToolMovePointQgis )
+    return;
+  mPrevQgisMapTool = activeQgisMapTool;
   QgisApp::instance()->mapCanvas()->setMapTool( mToolMovePointQgis );
 }
 
@@ -681,12 +691,6 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
   mCanvas->refresh();
 }
 
-// Info slots
-void QgsGeoreferencerMainWindow::showHelp()
-{
-  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
-}
-
 // Comfort slots
 void QgsGeoreferencerMainWindow::jumpToGCP( uint theGCPIndex )
 {
@@ -765,6 +769,13 @@ void QgsGeoreferencerMainWindow::extentsChangedQGisCanvas()
     mCanvas->refresh();
     mExtentsChangedRecursionGuard = false;
   }
+}
+
+void QgsGeoreferencerMainWindow::updateCanvasRotation()
+{
+  double degrees = mRotationEdit->value();
+  mCanvas->setRotation( degrees );
+  mCanvas->refresh();
 }
 
 // Canvas info slots (copy/pasted from QGIS :) )
@@ -904,10 +915,6 @@ void QgsGeoreferencerMainWindow::createActions()
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFullHistogramStretch.svg" ) ) );
   connect( mActionFullHistogramStretch, &QAction::triggered, this, &QgsGeoreferencerMainWindow::fullHistogramStretch );
   mActionFullHistogramStretch->setEnabled( false );
-
-  // Help actions
-  mActionHelp = new QAction( tr( "Help" ), this );
-  connect( mActionHelp, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showHelp );
 
   mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( Qt::CTRL + Qt::Key_Q )
                              << QKeySequence( Qt::Key_Escape ) );
@@ -1069,6 +1076,26 @@ QLabel *QgsGeoreferencerMainWindow::createBaseLabelStatus()
 
 void QgsGeoreferencerMainWindow::createStatusBar()
 {
+  // add a widget to show/set current rotation
+  mRotationLabel = createBaseLabelStatus();
+  mRotationLabel->setObjectName( QStringLiteral( "mRotationLabel" ) );
+  mRotationLabel->setText( tr( "Rotation" ) );
+  mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationLabel, 0 );
+
+  mRotationEdit = new QgsDoubleSpinBox( statusBar() );
+  mRotationEdit->setObjectName( QStringLiteral( "mRotationEdit" ) );
+  mRotationEdit->setClearValue( 0.0 );
+  mRotationEdit->setKeyboardTracking( false );
+  mRotationEdit->setMaximumWidth( 120 );
+  mRotationEdit->setDecimals( 1 );
+  mRotationEdit->setRange( -360.0, 360.0 );
+  mRotationEdit->setWrapping( true );
+  mRotationEdit->setSingleStep( 5.0 );
+  mRotationEdit->setSuffix( tr( " °" ) );
+  mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationEdit, 0 );
+
   mTransformParamLabel = createBaseLabelStatus();
   mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
   mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
@@ -1098,6 +1125,9 @@ void QgsGeoreferencerMainWindow::setupConnections()
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsGeoreferencerMainWindow::extentsChanged );
+
+  // Connect mapCanvas rotation widget
+  connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsGeoreferencerMainWindow::updateCanvasRotation );
 }
 
 void QgsGeoreferencerMainWindow::removeOldLayer()
@@ -1111,6 +1141,7 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
   }
   mCanvas->setLayers( QList<QgsMapLayer *>() );
   mCanvas->clearCache();
+  mRotationEdit->clear();
   mCanvas->refresh();
 }
 
@@ -1564,8 +1595,10 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QFont tableHeaderFont;
   tableHeaderFont.setPointSize( 9 );
   tableHeaderFont.setBold( true );
+  QgsTextFormat tableHeaderFormat = QgsTextFormat::fromQFont( tableHeaderFont );
   QFont tableContentFont;
   tableContentFont.setPointSize( 9 );
+  QgsTextFormat tableContentFormat = QgsTextFormat::fromQFont( tableContentFont );
 
   QgsSettings s;
   double leftMargin = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/LeftMarginPDF" ), "2.0" ).toDouble();
@@ -1646,8 +1679,8 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
     calculateMeanError( meanError );
 
     parameterTable = new QgsLayoutItemTextTable( &layout );
-    parameterTable->setHeaderFont( tableHeaderFont );
-    parameterTable->setContentFont( tableContentFont );
+    parameterTable->setHeaderTextFormat( tableHeaderFormat );
+    parameterTable->setContentTextFormat( tableContentFormat );
 
     QgsLayoutTableColumns columns;
     columns << QgsLayoutTableColumn( tr( "Translation x" ) )
@@ -1689,8 +1722,8 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
 
   QgsLayoutItemTextTable *gcpTable = new QgsLayoutItemTextTable( &layout );
-  gcpTable->setHeaderFont( tableHeaderFont );
-  gcpTable->setContentFont( tableContentFont );
+  gcpTable->setHeaderTextFormat( tableHeaderFormat );
+  gcpTable->setContentTextFormat( tableContentFormat );
   gcpTable->setHeaderMode( QgsLayoutTable::AllFrames );
   QgsLayoutTableColumns columns;
   columns << QgsLayoutTableColumn( tr( "ID" ) )
@@ -1786,7 +1819,7 @@ void QgsGeoreferencerMainWindow::updateTransformParamLabel()
 // Gdal script
 void QgsGeoreferencerMainWindow::showGDALScript( const QStringList &commands )
 {
-  QString script = commands.join( QStringLiteral( "\n" ) ) + '\n';
+  QString script = commands.join( QLatin1Char( '\n' ) ) + '\n';
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
@@ -1836,7 +1869,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
   mTranslatedRasterFileName = QDir::tempPath() + '/' + rasterFileInfo.fileName();
   gdalCommand << QStringLiteral( "\"%1\"" ).arg( mRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName );
 
-  return gdalCommand.join( QStringLiteral( " " ) );
+  return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QString &compress,
@@ -1873,7 +1906,7 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
 
   gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedRasterFileName );
 
-  return gdalCommand.join( QStringLiteral( " " ) );
+  return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
 // Log

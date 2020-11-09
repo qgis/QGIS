@@ -22,6 +22,7 @@
 #include "qgsrange.h"
 #include "qgsmeshdataset.h"
 
+#define  INVALID_MESHLAYER_TIME -99999
 
 /**
  * \class QgsMeshDataProviderTemporalCapabilities
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     QgsMeshDataProviderTemporalCapabilities();
 
     /**
-     * Returns the last dataset whith time less than or equal to \a timeSinceGlobalReference
+     * Returns the last dataset with time less than or equal to \a timeSinceGlobalReference
      *
      * Returns invalid dataset index if \a timeSinceGlobalReference is outside the time extent of the dataset group
      *

@@ -89,7 +89,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   mAutoFindButton->setToolTip( tr( "Attempts to automatically find the layers based on the file name (can be slow)." ) );
   buttonBox->addButton( mAutoFindButton, QDialogButtonBox::ActionRole );
   mApplyButton = new QPushButton( tr( "Apply Changes" ) );
-  mApplyButton->setToolTip( tr( "Apply fixes to unavailable layers (remaining unavailable layers will be removed from the project)." ) );
+  mApplyButton->setToolTip( tr( "Apply fixes to unavailable layers and load them in the project if the new path is correct." ) );
   buttonBox->addButton( mApplyButton, QDialogButtonBox::ActionRole );
 
   connect( mLayerList, &QTableWidget::itemSelectionChanged, this, &QgsHandleBadLayers::selectionChanged );
@@ -127,7 +127,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
-    bool providerFileBased = ( provider == QStringLiteral( "gdal" ) || provider == QStringLiteral( "ogr" ) || provider == QStringLiteral( "mdal" ) );
+    bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) );
     const QString basepath = QFileInfo( datasource ).absolutePath();
     mOriginalFileBase[name].append( basepath );
 
@@ -242,7 +242,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
     {
       QStringList theURIParts = datasource.split( '|' );
       theURIParts[0] = filename;
-      datasource = theURIParts.join( QStringLiteral( "|" ) );
+      datasource = theURIParts.join( QLatin1Char( '|' ) );
     }
     else if ( provider == QLatin1String( "delimitedtext" ) )
     {
@@ -425,8 +425,21 @@ void QgsHandleBadLayers::apply()
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
       if ( mapLayer )
       {
+        QString subsetString;
+        QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer *>( mapLayer );
+        if ( vlayer )
+        {
+          // store the previous layer subset string, so we can restore after fixing the data source
+          subsetString = vlayer->subsetString();
+        }
+
         mapLayer->setDataSource( datasource, name, provider, options );
         dataSourceChanged = mapLayer->isValid();
+
+        if ( dataSourceChanged && vlayer && !subsetString.isEmpty() )
+        {
+          vlayer->setSubsetString( subsetString );
+        }
       }
     }
 
@@ -565,11 +578,11 @@ void QgsHandleBadLayers::autoFind()
                                  QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
     progressDialog.open();
 
-    if ( provider.toLower() == QStringLiteral( "none" ) )
+    if ( provider.toLower() == QLatin1String( "none" ) )
     {
-      if ( fileType == QStringLiteral( "raster" ) )
+      if ( fileType == QLatin1String( "raster" ) )
         provider = QStringLiteral( "gdal" );
-      else if ( fileType == QStringLiteral( "vector" ) )
+      else if ( fileType == QLatin1String( "vector" ) )
         provider = QStringLiteral( "ogr" );
       else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
         provider = QStringLiteral( "mdal" );
@@ -589,7 +602,7 @@ void QgsHandleBadLayers::autoFind()
 
     // Try first to change the datasource of the existing layers, this will
     // maintain the current status (checked/unchecked) and group
-    if ( QgsProject::instance()->mapLayer( layerId ) )
+    if ( !datasource.isEmpty() && QgsProject::instance()->mapLayer( layerId ) )
     {
       QgsDataProvider::ProviderOptions options;
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );

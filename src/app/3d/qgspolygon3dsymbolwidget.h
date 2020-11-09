@@ -16,26 +16,24 @@
 #ifndef QGSPOLYGON3DSYMBOLWIDGET_H
 #define QGSPOLYGON3DSYMBOLWIDGET_H
 
-#include <QWidget>
-
+#include "qgs3dsymbolwidget.h"
 #include "ui_polygon3dsymbolwidget.h"
 
 class QgsPolygon3DSymbol;
 
 //! A widget for configuration of 3D symbol for polygons
-class QgsPolygon3DSymbolWidget : public QWidget, private Ui::Polygon3DSymbolWidget
+class QgsPolygon3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Polygon3DSymbolWidget
 {
     Q_OBJECT
   public:
     explicit QgsPolygon3DSymbolWidget( QWidget *parent = nullptr );
 
-    void setSymbol( const QgsPolygon3DSymbol &symbol, QgsVectorLayer *layer );
-    QgsPolygon3DSymbol symbol() const;
+    static Qgs3DSymbolWidget *create( QgsVectorLayer *layer );
 
-  signals:
-    void changed();
+    void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
+    QgsAbstract3DSymbol *symbol() override;
+    QString symbolType() const override;
 
-  public slots:
 };
 
 #endif // QGSPOLYGON3DSYMBOLWIDGET_H

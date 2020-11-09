@@ -55,7 +55,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
                               " image: url(:/images/themes/default/%1) }"
                               "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
   mCountProgress->setObjectName( QStringLiteral( "mCountdown" ) );
   const int barWidth = std::max( 25.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.25 );
   const int barHeight = std::max( 14.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.7 );
@@ -114,12 +114,12 @@ void QgsMessageBar::mousePressEvent( QMouseEvent *e )
     if ( mCountdownTimer->isActive() )
     {
       mCountdownTimer->stop();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerContinue.svg" ) ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerContinue.svg" ) ) );
     }
     else
     {
       mCountdownTimer->start();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
     }
   }
 }
@@ -403,15 +403,16 @@ void QgsMessageBar::resetCountdown()
   if ( mCountdownTimer->isActive() )
     mCountdownTimer->stop();
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
   mCountProgress->setVisible( false );
 }
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( !mItems.isEmpty() ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
+  const bool moreMessages = mItems.count() > 1;
+  mItemCount->setText( moreMessages ? tr( "%n more", "unread messages", mItems.count() - 1 ) : QString() );
 
   // do not show the down arrow for opening menu with "close all" if there is just one message
-  mCloseBtn->setMenu( !mItems.isEmpty() ? mCloseMenu : nullptr );
-  mCloseBtn->setPopupMode( !mItems.isEmpty() ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
+  mCloseBtn->setMenu( moreMessages ? mCloseMenu : nullptr );
+  mCloseBtn->setPopupMode( moreMessages ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }

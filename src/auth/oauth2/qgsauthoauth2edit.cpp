@@ -100,7 +100,7 @@ QWidget *QgsAuthOAuth2Edit::parentWidget() const
   const QMetaObject *metaObject = window()->metaObject();
   QString parentclass = metaObject->className();
   //QgsDebugMsg( QStringLiteral( "parent class: %1" ).arg( parentclass ) );
-  if ( parentclass != QStringLiteral( "QgsAuthConfigEdit" ) )
+  if ( parentclass != QLatin1String( "QgsAuthConfigEdit" ) )
   {
     QgsDebugMsg( QStringLiteral( "Parent widget not QgsAuthConfigEdit instance" ) );
     return nullptr;
@@ -1166,7 +1166,7 @@ void QgsAuthOAuth2Edit::updatePredefinedLocationsTooltip()
     locationListHtml += QStringLiteral( "<li><a href=\"%1\">%2</a></li>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir );
   }
   if ( !locationListHtml.isEmpty() )
-    locationListHtml += QStringLiteral( "</ul>" );
+    locationListHtml += QLatin1String( "</ul>" );
 
   QString tip = QStringLiteral( "<p>" ) + tr( "Defined configurations are JSON-formatted files, with a single configuration per file. "
                 "This allows configurations to be swapped out via filesystem tools without affecting user "

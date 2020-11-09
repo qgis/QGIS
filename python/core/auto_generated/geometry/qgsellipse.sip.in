@@ -27,14 +27,14 @@ The semi-minor axis is always smaller than the semi-major axis. If it is set lar
 %End
   public:
 
-    QgsEllipse();
+    QgsEllipse() /HoldGIL/;
 %Docstring
 Constructor for QgsEllipse.
 %End
 
     virtual ~QgsEllipse();
 
-    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 ) /HoldGIL/;
 %Docstring
 Constructs an ellipse by defining all the members.
 
@@ -44,7 +44,7 @@ Constructs an ellipse by defining all the members.
 :param azimuth: Angle in degrees started from the North to the first quadrant.
 %End
 
-    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 );
+    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 ) /HoldGIL/;
 %Docstring
 Constructs an ellipse by foci (``pt1`` and ``pt2``) and a point ``pt3``.
 The center point can have m value which is the result from the midpoint
@@ -58,7 +58,7 @@ The azimuth is the angle between ``pt1`` and ``pt2``.
 :param pt3: A point to calculate the axes.
 %End
 
-    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 Constructs an ellipse by an extent (aka bounding box / :py:class:`QgsRectangle`).
 The center point can have m value which is the result from the midpoint
@@ -71,7 +71,7 @@ The azimuth always takes the default value.
 :param pt2: Second corner.
 %End
 
-    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 );
+    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 ) /HoldGIL/;
 %Docstring
 Constructs an ellipse by a center point and a another point.
 The center point keeps m value from ``ptc``. Z dimension is also
@@ -84,7 +84,7 @@ The azimuth always takes the default value.
 :param pt1: First point.
 %End
 
-    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
 Constructs an ellipse by a central point and two other points.
 The center point keeps m value from ``ptc``. Z dimension is also
@@ -101,12 +101,12 @@ The azimuth is the angle between ``ptc`` and ``pt1``.
     virtual bool operator ==( const QgsEllipse &elp ) const;
     virtual bool operator !=( const QgsEllipse &elp ) const;
 
-    virtual bool isEmpty() const;
+    virtual bool isEmpty() const /HoldGIL/;
 %Docstring
 An ellipse is empty if axes are equal to 0
 %End
 
-    QgsPoint center() const;
+    QgsPoint center() const /HoldGIL/;
 %Docstring
 Returns the center point.
 
@@ -115,21 +115,21 @@ Returns the center point.
 .. seealso:: :py:func:`rcenter`
 %End
 
-    double semiMajorAxis() const;
+    double semiMajorAxis() const /HoldGIL/;
 %Docstring
 Returns the semi-major axis.
 
 .. seealso:: :py:func:`setSemiMajorAxis`
 %End
 
-    double semiMinorAxis() const;
+    double semiMinorAxis() const /HoldGIL/;
 %Docstring
 Returns the semi-minor axis.
 
 .. seealso:: :py:func:`setSemiMinorAxis`
 %End
 
-    double azimuth() const;
+    double azimuth() const /HoldGIL/;
 %Docstring
 Returns the azimuth.
 
@@ -137,7 +137,7 @@ Returns the azimuth.
 %End
 
 
-    void setCenter( const QgsPoint &center );
+    void setCenter( const QgsPoint &center ) /HoldGIL/;
 %Docstring
 Sets the center point.
 
@@ -146,28 +146,28 @@ Sets the center point.
 .. seealso:: :py:func:`rcenter`
 %End
 
-    virtual void setSemiMajorAxis( double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis ) /HoldGIL/;
 %Docstring
 Sets the semi-major axis.
 
 .. seealso:: :py:func:`semiMajorAxis`
 %End
 
-    virtual void setSemiMinorAxis( double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis ) /HoldGIL/;
 %Docstring
 Sets the semi-minor axis.
 
 .. seealso:: :py:func:`semiMinorAxis`
 %End
 
-    void setAzimuth( double azimuth );
+    void setAzimuth( double azimuth ) /HoldGIL/;
 %Docstring
 Sets the azimuth (orientation).
 
 .. seealso:: :py:func:`azimuth`
 %End
 
-    virtual double focusDistance() const;
+    virtual double focusDistance() const /HoldGIL/;
 %Docstring
 The distance between the center and each foci.
 
@@ -189,16 +189,16 @@ Two foci of the ellipse. The axes are oriented by the azimuth and are on the sem
 :return: the two foci.
 %End
 
-    virtual double eccentricity() const;
+    virtual double eccentricity() const /HoldGIL/;
 %Docstring
 The eccentricity of the ellipse.
 nan is returned if the ellipse is empty.
 %End
-    virtual double area() const;
+    virtual double area() const /HoldGIL/;
 %Docstring
 The area of the ellipse.
 %End
-    virtual double perimeter() const;
+    virtual double perimeter() const /HoldGIL/;
 %Docstring
 The circumference of the ellipse using first approximation of Ramanujan.
 %End
