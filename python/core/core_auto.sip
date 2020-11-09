@@ -91,6 +91,7 @@
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshstoreutils.sip
 %Include auto_generated/qgshtmlutils.sip
+%Include auto_generated/qgsidentifycontext.sip
 %Include auto_generated/qgsimagecache.sip
 %Include auto_generated/qgsinterval.sip
 %Include auto_generated/qgsjsonutils.sip

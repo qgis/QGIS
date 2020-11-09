@@ -205,7 +205,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
+                <width>707</width>
                 <height>604</height>
                </rect>
               </property>
@@ -410,8 +410,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>77</width>
-                <height>43</height>
+                <width>707</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -494,8 +494,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>133</width>
-                <height>43</height>
+                <width>707</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -584,8 +584,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>153</width>
-                <height>126</height>
+                <width>707</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -683,9 +683,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>685</width>
-                <height>632</height>
+                <y>-66</y>
+                <width>693</width>
+                <height>670</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -823,7 +823,7 @@
                   <item row="2" column="0">
                    <widget class="QGroupBox" name="mDebugShadowMapGroupBox">
                     <property name="title">
-                     <string>Debug shadow map</string>
+                     <string>Debug Shadow Map</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -850,7 +850,7 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QDoubleSpinBox" name="mDebugShadowMapSizeSpinBox">
+                      <widget class="QgsDoubleSpinBox" name="mDebugShadowMapSizeSpinBox">
                        <property name="maximum">
                         <double>1.000000000000000</double>
                        </property>
@@ -868,7 +868,7 @@
                   <item row="3" column="0">
                    <widget class="QGroupBox" name="mDebugDepthMapGroupBox">
                     <property name="title">
-                     <string>Debug depth map</string>
+                     <string>Debug Depth Map</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -895,7 +895,7 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QDoubleSpinBox" name="mDebugDepthMapSizeSpinBox">
+                      <widget class="QgsDoubleSpinBox" name="mDebugDepthMapSizeSpinBox">
                        <property name="maximum">
                         <double>1.000000000000000</double>
                        </property>
@@ -913,7 +913,7 @@
                   <item row="1" column="0">
                    <widget class="QGroupBox" name="edlGroupBox">
                     <property name="title">
-                     <string>Eye Dome Lighting</string>
+                     <string>Show Eye Dome Lighting</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -923,9 +923,12 @@
                     </property>
                     <layout class="QGridLayout" name="gridLayout_2">
                      <item row="0" column="1">
-                      <widget class="QDoubleSpinBox" name="edlStrengthSpinBox">
+                      <widget class="QgsDoubleSpinBox" name="edlStrengthSpinBox">
                        <property name="maximum">
                         <double>10000.000000000000000</double>
+                       </property>
+                       <property name="singleStep">
+                        <double>100.000000000000000</double>
                        </property>
                        <property name="value">
                         <double>1000.000000000000000</double>
@@ -935,19 +938,19 @@
                      <item row="0" column="0">
                       <widget class="QLabel" name="label">
                        <property name="text">
-                        <string>Eye dome lighting strength</string>
+                        <string>Lighting strength</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
                       <widget class="QLabel" name="label_2">
                        <property name="text">
-                        <string>Eye dome lighting distance</string>
+                        <string>Lighting distance</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QSpinBox" name="edlDistanceSpinBox">
+                      <widget class="QgsSpinBox" name="edlDistanceSpinBox">
                        <property name="minimum">
                         <number>1</number>
                        </property>
@@ -996,6 +999,11 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -1011,11 +1019,6 @@
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLightsWidget</class>

@@ -391,6 +391,9 @@ IF(WITH_CORE)
   IF (WITH_EPT)  # EPT provider
     FIND_PACKAGE(ZSTD) # for decompression of point clouds
     FIND_PACKAGE(LazPerf) # for decompression of point clouds
+    IF (NOT LazPerf_FOUND)
+      MESSAGE(STATUS "Using embedded laz-perf")
+    ENDIF (NOT LazPerf_FOUND)
     SET(HAVE_EPT TRUE)  # used in qgsconfig.h
   ENDIF (WITH_EPT)
 

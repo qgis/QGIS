@@ -85,7 +85,7 @@ constructor
     virtual void deactivate();
 
 
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Performs the identification.
 
@@ -93,11 +93,12 @@ Performs the identification.
 :param y: y coordinates of mouseEvent
 :param layerList: Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
 :param mode: Identification mode. Can use QGIS default settings or a defined mode. Default mode is DefaultQgsSetting.
+:param identifyContext: Identify context object.
 
 :return: a list of IdentifyResult
 %End
 
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Performs the identification.
 To avoid being forced to specify IdentifyMode with a list of layers
@@ -107,15 +108,16 @@ this has been made private and two publics methods are offered
 :param y: y coordinates of mouseEvent
 :param mode: Identification mode. Can use QGIS default settings or a defined mode.
 :param layerType: Only performs identification in a certain type of layers (raster, vector, mesh). Default value is AllLayers.
+:param identifyContext: Identify context object.
 
 :return: a list of IdentifyResult
 %End
 
-    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Performs identification based on a geometry (in map coordinates)
 %End
-    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Performs identification based on a geometry (in map coordinates)
 %End
@@ -137,7 +139,7 @@ this menu can also be customized
 
   protected:
 
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Performs the identification.
 To avoid being forced to specify IdentifyMode with a list of layers
@@ -148,20 +150,40 @@ this has been made private and two publics methods are offered
 :param mode: Identification mode. Can use QGIS default settings or a defined mode.
 :param layerList: Performs the identification within the given list of layers.
 :param layerType: Only performs identification in a certain type of layers (raster, vector, mesh).
+:param identifyContext: Identify context object.
 
 :return: a list of IdentifyResult
 %End
 
 
-    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Call the right method depending on layer type
 %End
 
-    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+%Docstring
+Performs the identification against a given raster layer.
 
-    bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point );
+:param results: list of identify results
+:param layer: raster layer to identify from
+:param point: point coordinate to identify
+:param viewExtent: view extent
+:param mapUnitsPerPixel: map units per pixel value
+:param identifyContext: identify context object
+%End
+
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+%Docstring
+Performs the identification against a given vector layer.
+
+:param results: list of identify results
+:param layer: raster layer to identify from
+:param point: point coordinate to identify
+:param identifyContext: identify context object
+%End
+
+    bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Identifies data from active scalar and vector dataset from the mesh layer
 

@@ -317,6 +317,7 @@ SET(QGIS_CORE_SRCS
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
+  qgsidentifycontext.cpp
   qgsimagecache.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
@@ -892,6 +893,7 @@ SET(QGIS_CORE_HDRS
   qgshistogram.h
   qgshstoreutils.h
   qgshtmlutils.h
+  qgsidentifycontext.h
   qgsimagecache.h
   qgsindexedfeature.h
   qgsinterval.h
@@ -1656,8 +1658,19 @@ IF (WITH_EPT)
 
   INCLUDE_DIRECTORIES(SYSTEM
     ${ZSTD_INCLUDE_DIR}
-    ${LazPerf_INCLUDE_DIR}
   )
+
+  IF (LazPerf_FOUND)
+    # Use system laz-perf
+    INCLUDE_DIRECTORIES(SYSTEM
+      ${LazPerf_INCLUDE_DIR}
+    )
+  ELSE (LazPerf_FOUND)
+    # Use embedded laz-perf from external/laz-perf
+    INCLUDE_DIRECTORIES(SYSTEM
+      ${CMAKE_SOURCE_DIR}/external
+    )
+  ENDIF (LazPerf_FOUND)
 
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptdataitems.cpp
