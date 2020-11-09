@@ -308,6 +308,7 @@ SET(QGIS_CORE_SRCS
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
+  qgsidentifycontext.cpp
   qgsimagecache.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
@@ -875,6 +876,7 @@ SET(QGIS_CORE_HDRS
   qgshistogram.h
   qgshstoreutils.h
   qgshtmlutils.h
+  qgsidentifycontext.h
   qgsimagecache.h
   qgsindexedfeature.h
   qgsinterval.h
