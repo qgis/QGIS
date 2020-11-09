@@ -2544,11 +2544,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
-  if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
+  if ( !syncToDisc() )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   return returnValue;
 }
 
@@ -2655,11 +2654,10 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
-  if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
+  if ( !syncToDisc() )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   return returnvalue;
 }
 
@@ -4572,6 +4570,8 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 
 bool QgsOgrProvider::syncToDisc()
 {
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
+
   //for shapefiles, remove spatial index files and create a new index
   QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   bool shapeIndex = false;
