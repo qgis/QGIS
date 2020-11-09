@@ -569,7 +569,7 @@ struct QgsWmtsTileMatrix
   QString identifier;
   QString title, abstract;
   QStringList keywords;
-  double scaleDenom;
+  double scaleDenom = 0;
   QgsPointXY topLeft;  //!< Top-left corner of the tile matrix in map units
   int tileWidth;     //!< Width of a tile in pixels
   int tileHeight;    //!< Height of a tile in pixels
@@ -643,7 +643,7 @@ struct QgsWmtsStyle
   QString identifier;
   QString title, abstract;
   QStringList keywords;
-  bool isDefault;
+  bool isDefault = false;
   QList<QgsWmtsLegendURL> legendURLs;
 };
 

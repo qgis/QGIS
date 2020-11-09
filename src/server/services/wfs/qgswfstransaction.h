@@ -35,7 +35,7 @@ namespace QgsWfs
 
     QStringList insertFeatureIds;
 
-    bool error;
+    bool error = false;
 
     QString errorMsg;
   };
@@ -56,7 +56,7 @@ namespace QgsWfs
 
     int totalUpdated = 0;
 
-    bool error;
+    bool error = false;
 
     QString errorMsg;
   };
@@ -73,7 +73,7 @@ namespace QgsWfs
 
     int totalDeleted = 0;
 
-    bool error;
+    bool error = false;
 
     QString errorMsg;
   };
