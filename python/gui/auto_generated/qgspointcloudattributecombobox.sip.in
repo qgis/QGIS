@@ -97,9 +97,6 @@ or a non-point cloud layer is set then the combobox will be empty.
 Sets the currently selected attribute by ``name``
 %End
 
-  protected slots:
-    void indexChanged( int i );
-
 };
 
 /************************************************************************
