@@ -14,10 +14,13 @@ import qgis  # NOQA
 
 from qgis.core import (QgsPointCloudAttribute,
                        QgsPointCloudAttributeCollection,
-                       QgsPointCloudAttributeModel)
+                       QgsPointCloudAttributeModel,
+                       QgsProviderRegistry,
+                       QgsPointCloudLayer)
 from qgis.PyQt.QtCore import QVariant, Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -194,6 +197,14 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(1, 0), Qt.ToolTipRole), "<b>x</b><br><font style='font-family:monospace; white-space: nowrap;'>Float</font>")
         self.assertEqual(m.data(m.index(2, 0), Qt.ToolTipRole), "<b>y</b><br><font style='font-family:monospace; white-space: nowrap;'>Float</font>")
         self.assertEqual(m.data(m.index(5, 0), Qt.ToolTipRole), "<b>red</b><br><font style='font-family:monospace; white-space: nowrap;'>Integer</font>")
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testSetLayer(self):
+        m = QgsPointCloudAttributeModel()
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/entwine/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+        m.setLayer(layer)
+        self.assertEqual([a.name() for a in m.attributes().attributes()], ['X', 'Y', 'Z', 'Intensity', 'ReturnNumber', 'NumberOfReturns', 'ScanDirectionFlag', 'EdgeOfFlightLine', 'Classification', 'ScanAngleRank', 'UserData', 'PointSourceId', 'GpsTime', 'Red', 'Green', 'Blue'])
 
 
 if __name__ == '__main__':
