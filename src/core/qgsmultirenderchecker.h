@@ -191,7 +191,6 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
     QgsLayoutChecker() = delete;
 
     QString mTestName;
-    QgsLayout *mLayout = nullptr;
     QSize mSize;
     int mDotsPerMeter;
 };
