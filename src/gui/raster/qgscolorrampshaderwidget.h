@@ -102,6 +102,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void loadMinimumMaximumFromTree();
 
   protected:
+
     //! Populates color ramp tree from ramp items
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 
@@ -149,6 +150,8 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void setLineEditValue( QLineEdit *lineEdit, double value );
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
+
+    QString label( QTreeWidgetItem *item, bool row, const QString unit );
 
 #ifdef QGISDEBUG
     //! Dump all the classes for debugging purposes

@@ -123,6 +123,18 @@ class CORE_EXPORT QgsRasterShaderFunction
      */
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ) }
 
+    /**
+     * Returns label precision
+     * \since QGIS 3.16
+     */
+    int labelPrecision() const;
+
+    /**
+     * Sets label precision to \a labelPrecision
+     * \since QGIS 3.16
+     */
+    void setLabelPrecision( int labelPrecision );
+
   protected:
     //! \brief User defineable maximum value for the shading function
     double mMaximumValue;
@@ -132,5 +144,9 @@ class CORE_EXPORT QgsRasterShaderFunction
 
     //! \brief Minimum maximum range for the shading function
     double mMinimumMaximumRange;
+
+    //! \brief Label precision
+    int mLabelPrecision = 6;
+
 };
 #endif

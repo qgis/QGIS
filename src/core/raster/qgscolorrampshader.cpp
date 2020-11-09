@@ -507,6 +507,7 @@ QDomElement QgsColorRampShader::writeXml( QDomDocument &doc ) const
   colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), clip() );
   colorRampShaderElem.setAttribute( QStringLiteral( "minimumValue" ), mMinimumValue );
   colorRampShaderElem.setAttribute( QStringLiteral( "maximumValue" ), mMaximumValue );
+  colorRampShaderElem.setAttribute( QStringLiteral( "labelPrecision" ), mLabelPrecision );
 
   // save source color ramp
   if ( sourceColorRamp() )
@@ -544,6 +545,7 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem )
   setClip( colorRampShaderElem.attribute( QStringLiteral( "clip" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
   setMinimumValue( colorRampShaderElem.attribute( QStringLiteral( "minimumValue" ) ).toDouble() );
   setMaximumValue( colorRampShaderElem.attribute( QStringLiteral( "maximumValue" ) ).toDouble() );
+  setLabelPrecision( colorRampShaderElem.attribute( QStringLiteral( "labelPrecision" ), QStringLiteral( "6" ) ).toDouble() );
 
   QList<QgsColorRampShader::ColorRampItem> itemList;
   QDomElement itemElem;
