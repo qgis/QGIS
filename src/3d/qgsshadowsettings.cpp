@@ -20,6 +20,16 @@
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
+QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
+  : mRenderShadows( other.mRenderShadows )
+  , mSelectedDirectionalLight( other.mSelectedDirectionalLight )
+  , mMaximumShadowRenderingDistance( other.mMaximumShadowRenderingDistance )
+  , mShadowBias( other.mShadowBias )
+  , mShadowMapResolution( other.mShadowMapResolution )
+{
+
+}
+
 void QgsShadowSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );

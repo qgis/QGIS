@@ -34,6 +34,10 @@ class QDomElement;
 class _3D_EXPORT QgsShadowSettings
 {
   public:
+    //! Default constructor
+    QgsShadowSettings() = default;
+    //! Copy constructor
+    QgsShadowSettings( const QgsShadowSettings &other );
 
     //! Reads settings from a DOM \a element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );

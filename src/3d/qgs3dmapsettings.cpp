@@ -42,6 +42,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMapTileResolution( other.mMapTileResolution )
   , mMaxTerrainScreenError( other.mMaxTerrainScreenError )
   , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
+  , mTerrainElevationOffset( other.mTerrainElevationOffset )
   , mTerrainShadingEnabled( other.mTerrainShadingEnabled )
   , mTerrainShadingMaterial( other.mTerrainShadingMaterial )
   , mTerrainMapTheme( other.mTerrainMapTheme )
@@ -60,8 +61,17 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mPathResolver( other.mPathResolver )
   , mMapThemes( other.mMapThemes )
   , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
-  , mSkyboxSettings()
-  , mShadowSettings()
+  , mSkyboxSettings( other.mSkyboxSettings )
+  , mShadowSettings( other.mShadowSettings )
+  , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
+  , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
+  , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
+  , mDebugShadowMapCorner( other.mDebugShadowMapCorner )
+  , mDebugShadowMapSize( other.mDebugShadowMapSize )
+  , mDebugDepthMapEnabled( other.mDebugDepthMapEnabled )
+  , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
+  , mDebugDepthMapSize( other.mDebugDepthMapSize )
 {
   Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
   {
@@ -415,12 +425,12 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 
 QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
 {
-  return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin ) + QgsVector3D( 0.0f, mTerrainElevationOffset, 0.0f );
+  return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin );
 }
 
 QgsVector3D Qgs3DMapSettings::worldToMapCoordinates( const QgsVector3D &worldCoords ) const
 {
-  return Qgs3DUtils::worldToMapCoordinates( worldCoords - QgsVector3D( 0.0f, mTerrainElevationOffset, 0.0f ), mOrigin );
+  return Qgs3DUtils::worldToMapCoordinates( worldCoords, mOrigin );
 }
 
 void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )

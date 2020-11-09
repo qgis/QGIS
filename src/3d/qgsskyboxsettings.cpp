@@ -20,6 +20,14 @@
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
+QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
+  : mSkyboxType( other.mSkyboxType )
+  , mPanoramicTexturePath( other.mPanoramicTexturePath )
+  , mCubeMapFacesPaths( other.mCubeMapFacesPaths )
+{
+
+}
+
 void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QgsPathResolver &pathResolver = context.pathResolver();
