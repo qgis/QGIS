@@ -60,6 +60,20 @@ class CORE_EXPORT QgsPointCloudAttribute
     //! Returns the data type
     DataType type() const { return mType; }
 
+    /**
+     * Returns the type to use when displaying this field.
+     *
+     * This will be used when the full datatype with details has to displayed to the user.
+     *
+     * \see type()
+     */
+    QString displayType() const;
+
+    /**
+     * Returns TRUE if the specified data \a type is numeric.
+     */
+    static bool isNumeric( DataType type );
+
   private:
     void updateSize();
 
@@ -87,6 +101,16 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
 
     //! Returns all attributes
     QVector<QgsPointCloudAttribute> attributes() const;
+
+    /**
+     * Returns the number of attributes present in the collection.
+     */
+    int count() const { return mAttributes.size(); }
+
+    /**
+     * Returns the attribute at the specified \a index.
+     */
+    const QgsPointCloudAttribute &at( int index ) const { return mAttributes.at( index ); }
 
     /**
      * Finds the attribute with the name

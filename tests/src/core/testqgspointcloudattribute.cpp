@@ -39,6 +39,8 @@ class TestQgsPointCloudAttribute: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void testAttribute();
+    void testAttributeDisplayType();
+    void testIsNumeric();
     void testCollection();
 
   private:
@@ -80,17 +82,38 @@ void TestQgsPointCloudAttribute::testAttribute()
   QCOMPARE( attribute.size(), static_cast< std::size_t >( 4 ) );
 }
 
+void TestQgsPointCloudAttribute::testAttributeDisplayType()
+{
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Char ).displayType(), QStringLiteral( "Character" ) );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Short ).displayType(), QStringLiteral( "Short" ) );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Int32 ).displayType(), QStringLiteral( "Integer" ) );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Float ).displayType(), QStringLiteral( "Float" ) );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Double ).displayType(), QStringLiteral( "Double" ) );
+}
+
+void TestQgsPointCloudAttribute::testIsNumeric()
+{
+  QVERIFY( !QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Char ) );
+  QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Short ) );
+  QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Int32 ) );
+  QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Float ) );
+  QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Double ) );
+}
+
 void TestQgsPointCloudAttribute::testCollection()
 {
   // test collections
   QgsPointCloudAttributeCollection collection;
   QVERIFY( collection.attributes().empty() );
+  QCOMPARE( collection.count(), 0 );
   QCOMPARE( collection.pointRecordSize(), static_cast< std::size_t >( 0 ) );
   int offset = 0;
   QVERIFY( !collection.find( QStringLiteral( "test" ), offset ) );
 
   collection.push_back( QgsPointCloudAttribute( QStringLiteral( "at1" ), QgsPointCloudAttribute::DataType::Float ) );
   QCOMPARE( collection.attributes().size(), 1 );
+  QCOMPARE( collection.count(), 1 );
+  QCOMPARE( collection.at( 0 ).name(), QStringLiteral( "at1" ) );
   QCOMPARE( collection.attributes().at( 0 ).name(), QStringLiteral( "at1" ) );
   QCOMPARE( collection.pointRecordSize(), static_cast< std::size_t >( 4 ) );
   QVERIFY( !collection.find( QStringLiteral( "test" ), offset ) );
@@ -99,6 +122,9 @@ void TestQgsPointCloudAttribute::testCollection()
 
   collection.push_back( QgsPointCloudAttribute( QStringLiteral( "at2" ), QgsPointCloudAttribute::DataType::Short ) );
   QCOMPARE( collection.attributes().size(), 2 );
+  QCOMPARE( collection.count(), 2 );
+  QCOMPARE( collection.at( 0 ).name(), QStringLiteral( "at1" ) );
+  QCOMPARE( collection.at( 1 ).name(), QStringLiteral( "at2" ) );
   QCOMPARE( collection.attributes().at( 0 ).name(), QStringLiteral( "at1" ) );
   QCOMPARE( collection.attributes().at( 1 ).name(), QStringLiteral( "at2" ) );
   QCOMPARE( collection.pointRecordSize(), static_cast< std::size_t >( 6 ) );
@@ -110,6 +136,7 @@ void TestQgsPointCloudAttribute::testCollection()
 
   collection.push_back( QgsPointCloudAttribute( QStringLiteral( "at3" ), QgsPointCloudAttribute::DataType::Double ) );
   QCOMPARE( collection.attributes().size(), 3 );
+  QCOMPARE( collection.count(), 3 );
   QCOMPARE( collection.attributes().at( 0 ).name(), QStringLiteral( "at1" ) );
   QCOMPARE( collection.attributes().at( 1 ).name(), QStringLiteral( "at2" ) );
   QCOMPARE( collection.attributes().at( 2 ).name(), QStringLiteral( "at3" ) );
@@ -128,6 +155,7 @@ void TestQgsPointCloudAttribute::testCollection()
       << QgsPointCloudAttribute( QStringLiteral( "at2" ), QgsPointCloudAttribute::DataType::Short )
       << QgsPointCloudAttribute( QStringLiteral( "at3" ), QgsPointCloudAttribute::DataType::Double ) );
   QCOMPARE( collection2.attributes().size(), 3 );
+  QCOMPARE( collection2.count(), 3 );
   QCOMPARE( collection2.attributes().at( 0 ).name(), QStringLiteral( "at1" ) );
   QCOMPARE( collection2.attributes().at( 1 ).name(), QStringLiteral( "at2" ) );
   QCOMPARE( collection2.attributes().at( 2 ).name(), QStringLiteral( "at3" ) );
