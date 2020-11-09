@@ -308,8 +308,7 @@ static QString pickLegend( const QgsWmsStyleProperty &s )
 
 static const QgsWmsStyleProperty *searchStyle( const QVector<QgsWmsStyleProperty> &styles, const QString &name )
 {
-  const auto constStyles = styles;
-  for ( const QgsWmsStyleProperty &s : constStyles )
+  for ( const QgsWmsStyleProperty &s : styles )
     if ( s.name == name )
       return &s;
   return nullptr;
