@@ -101,7 +101,7 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
     //! Sets the currently selected attribute by \a name
     void setAttribute( const QString &name );
 
-  protected slots:
+  private slots:
     void indexChanged( int i );
 
   private:

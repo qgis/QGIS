@@ -25,6 +25,7 @@
 #include "qgscolorramp.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
+#include "qgslogger.h"
 
 ///@cond PRIVATE
 QgsPointCloudRendererConfig::QgsPointCloudRendererConfig() = default;
