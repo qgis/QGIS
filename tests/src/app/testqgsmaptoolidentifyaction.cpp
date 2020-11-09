@@ -531,7 +531,11 @@ QList<QgsMapToolIdentify::IdentifyResult> TestQgsMapToolIdentifyAction::testIden
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
+  //check that closest point attributes are present
+  QgsIdentifyContext identifyContext;
+  if ( canvas->mapSettings().isTemporal() )
+    identifyContext.setTemporalRange( canvas->temporalRange() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
   return result;
 }
 
@@ -541,7 +545,10 @@ TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double 
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
+  QgsIdentifyContext identifyContext;
+  if ( canvas->mapSettings().isTemporal() )
+    identifyContext.setTemporalRange( canvas->temporalRange() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
   return result;
 }
 
@@ -551,7 +558,10 @@ TestQgsMapToolIdentifyAction::testIdentifyVectorTile( QgsVectorTileLayer *layer,
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
+  QgsIdentifyContext identifyContext;
+  if ( canvas->mapSettings().isTemporal() )
+    identifyContext.setTemporalRange( canvas->temporalRange() );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
   return result;
 }
 
