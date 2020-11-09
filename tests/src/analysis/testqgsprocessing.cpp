@@ -9470,7 +9470,12 @@ void TestQgsProcessing::modelerAlgorithm()
   alg5.setDesignerParameterValues( lastParams );
 
   QDomDocument doc = QDomDocument( "model" );
-  QDomElement elem = QgsXmlUtils::writeVariant( alg5.toVariant(), doc );
+  alg5.initAlgorithm();
+  const QVariant v = alg5.toVariant();
+  // make sure private parameters weren't included in the definition
+  QVERIFY( !v.toMap().value( QStringLiteral( "parameterDefinitions" ) ).toMap().contains( QStringLiteral( "VERBOSE_LOG" ) ) );
+
+  QDomElement elem = QgsXmlUtils::writeVariant( v, doc );
   doc.appendChild( elem );
 
   QgsProcessingModelAlgorithm alg6;
