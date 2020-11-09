@@ -780,7 +780,7 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
                 global _RemoveDllDirectory
 
                 for p in set(new_path.split(';')) - set(old_path.split(';')):
-                    if p is not None and p not in _import_path:
+                    if p is not None and p not in _import_path and os.path.isdir(p):
                         _import_paths[p] = _AddDllDirectory(p)
 
                 for p in set(old_path.split(';')) - set(new_path.split(';')):
