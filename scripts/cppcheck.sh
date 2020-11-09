@@ -29,7 +29,11 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_INOUT= \
          -DSIP_OUT= \
          -DSIP_FACTORY= \
+         -DSIP_THROW= \
          -DCMAKE_SOURCE_DIR="/foo/bar" \
+         -DQ_NOWARN_DEPRECATED_PUSH= \
+         -DQ_NOWARN_DEPRECATED_POP= \
+         -DQ_DECLARE_OPAQUE_POINTER= \
          -j $(nproc) \
          ${SCRIPT_DIR}/../src \
          >>${LOG_FILE} 2>&1 &
