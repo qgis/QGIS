@@ -285,22 +285,30 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy 
   if ( to >= mChildren.count() )
     return;
 
+  // Remove in reverse order
   while ( --count >= 0 )
   {
-    QgsLayerTreeNode *node = mChildren.at( from );
+    const int last { from + count };
+    Q_ASSERT( last >= 0 && last < mChildren.count( ) );
+    QgsLayerTreeNode *node = mChildren.at( last );
 
     // Remove children first
     if ( ! node->children().isEmpty() )
     {
-      node->removeChildrenPrivate( 0, node->children().count(), destroy );
+      node->removeChildrenPrivate( 0, node->children().count( ), destroy );
     }
 
-    emit willRemoveChildren( this, from, from );
-    node = mChildren.takeAt( from );
+    emit willRemoveChildren( this, last, last );
+    node = mChildren.takeAt( last );
     if ( destroy )
+    {
       delete node;
-    node->makeOrphan();
-    emit removedChildren( this, from, from );
+    }
+    else
+    {
+      node->makeOrphan();
+    }
+    emit removedChildren( this, last, last );
   }
 }
 
