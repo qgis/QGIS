@@ -119,3 +119,15 @@ const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QStr
   // not found
   return nullptr;
 }
+
+int QgsPointCloudAttributeCollection::indexOf( const QString &name ) const
+{
+  auto it = mCachedAttributes.constFind( name );
+  if ( it != mCachedAttributes.constEnd() )
+  {
+    return it->index;
+  }
+
+  // not found
+  return -1;
+}

@@ -630,6 +630,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshvirtualdatasetgroup.cpp
 
   pointcloud/qgspointcloudattribute.cpp
+  pointcloud/qgspointcloudattributemodel.cpp
   pointcloud/qgspointcloudrequest.cpp
   pointcloud/qgspointcloudblock.cpp
   pointcloud/qgspointcloudlayer.cpp
@@ -1313,6 +1314,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshvirtualdatasetgroup.h
 
   pointcloud/qgspointcloudattribute.h
+  pointcloud/qgspointcloudattributemodel.h
   pointcloud/qgspointcloudrequest.h
   pointcloud/qgspointcloudblock.h
   pointcloud/qgspointcloudlayer.h
