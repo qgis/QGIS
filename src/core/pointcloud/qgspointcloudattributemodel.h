@@ -21,6 +21,7 @@
 #include "qgspointcloudattribute.h"
 
 #include <QAbstractItemModel>
+#include <QPointer>
 
 class QgsPointCloudLayer;
 
@@ -58,6 +59,13 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
      * \see setAttributes()
      */
     void setLayer( QgsPointCloudLayer *layer );
+
+    /**
+     * Returns the layer associated with the model.
+     *
+     * \see setLayer()
+     */
+    QgsPointCloudLayer *layer();
 
     /**
      * Sets the \a attributes to include in the model.
@@ -113,6 +121,7 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
 
     QgsPointCloudAttributeCollection mAttributes;
     bool mAllowEmpty = false;
+    QPointer< QgsPointCloudLayer > mLayer;
 };
 
 

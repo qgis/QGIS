@@ -29,9 +29,17 @@ QgsPointCloudAttributeModel::QgsPointCloudAttributeModel( QObject *parent )
 void QgsPointCloudAttributeModel::setLayer( QgsPointCloudLayer *layer )
 {
   if ( layer && layer->dataProvider() && layer->dataProvider()->index() )
+  {
+    mLayer = layer;
     setAttributes( layer->dataProvider()->index()->attributes() );
+  }
   else
     setAttributes( QgsPointCloudAttributeCollection() );
+}
+
+QgsPointCloudLayer *QgsPointCloudAttributeModel::layer()
+{
+  return mLayer;
 }
 
 void QgsPointCloudAttributeModel::setAttributes( const QgsPointCloudAttributeCollection &attributes )
