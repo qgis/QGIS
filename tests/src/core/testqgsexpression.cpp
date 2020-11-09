@@ -3326,7 +3326,9 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( QgsExpression( "array_get(\"ints\", 1)" ).evaluate( &context ), QVariant( -2 ) );
       QCOMPARE( QgsExpression( "array_get(\"ints\", 2)" ).evaluate( &context ), QVariant() );
-      QCOMPARE( QgsExpression( "array_get(\"ints\", -1)" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "array_get(\"ints\", -1)" ).evaluate( &context ), QVariant( -2 ) );
+      QCOMPARE( QgsExpression( "array_get(\"ints\", -2)" ).evaluate( &context ), QVariant( 1 ) );
+      QCOMPARE( QgsExpression( "array_get(\"ints\", -3)" ).evaluate( &context ), QVariant() );
 
       QVariantList appendExpected = array;
       appendExpected << 3;
