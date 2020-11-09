@@ -53,7 +53,7 @@ class CORE_EXPORT QgsPointCloudAttribute
     QString name() const { return mName; }
 
     //! Returns size of the attribute in bytes
-    size_t size() const { return mSize; }
+    int size() const { return mSize; }
 
     //! Returns the data type
     DataType type() const { return mType; }
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsPointCloudAttribute
     void updateSize();
 
     QString mName;
-    size_t mSize = 0;
+    int mSize = 0;
     DataType mType;
 };
 
@@ -133,17 +133,17 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     int indexOf( const QString &name ) const;
 
     //! Returns total size of record
-    size_t pointRecordSize() const { return mSize; }
+    int pointRecordSize() const { return mSize; }
 
   private:
-    std::size_t mSize = 0;
+    int mSize = 0;
     QVector<QgsPointCloudAttribute> mAttributes;
 
     struct CachedAttributeData
     {
       int index;
-      std::size_t offset;
-      CachedAttributeData( int index, std::size_t offset )
+      int offset;
+      CachedAttributeData( int index, int offset )
         : index( index )
         , offset( offset )
       {}

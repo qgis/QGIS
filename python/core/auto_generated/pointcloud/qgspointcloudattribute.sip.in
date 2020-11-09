@@ -46,7 +46,7 @@ Ctor
 Returns name of the attribute
 %End
 
-    size_t size() const;
+    int size() const;
 %Docstring
 Returns size of the attribute in bytes
 %End
@@ -133,7 +133,7 @@ Returns the index of the attribute with the specified ``name``.
 Returns -1 if a matching attribute was not found.
 %End
 
-    size_t pointRecordSize() const;
+    int pointRecordSize() const;
 %Docstring
 Returns total size of record
 %End
