@@ -4047,10 +4047,32 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
     return results; //not a provider field
   }
 
+  // uniqueStringsMatching() is supposed to be case insensitive, so use the
+  // ILIKE operator when it is available.
+  // Prior to GDAL 3.1, with OGR SQL, LIKE behaved like ILIKE
+  bool supportsILIKE = false;
+  {
+    QByteArray sql = "SELECT 1 FROM ";
+    sql += quotedIdentifier( mOgrLayer->name() );
+    sql += " WHERE 'a' ILIKE 'A' LIMIT 1";
+    QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
+    if ( l )
+    {
+      gdal::ogr_feature_unique_ptr f;
+      f.reset( l->GetNextFeature() );
+      supportsILIKE = f != nullptr;
+    }
+  }
+
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
   sql += " FROM " + quotedIdentifier( mOgrLayer->name() );
 
-  sql += " WHERE " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " LIKE '%" +  textEncoding()->fromUnicode( substring ) + "%'";
+  sql += " WHERE " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
+  if ( supportsILIKE )
+    sql += " ILIKE '%";
+  else
+    sql += " LIKE '%";
+  sql += textEncoding()->fromUnicode( substring ) + "%'";
 
   if ( !mSubsetString.isEmpty() )
   {
