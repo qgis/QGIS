@@ -45,7 +45,8 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterEnum)
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterBand)
 
 from processing.core.parameters import getParameterFromString
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
@@ -213,8 +214,12 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             param = self.parameterDefinition(k)
             if param.isDestination():
                 continue
-            if isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(param, QgsProcessingParameterEnum) and param.name() == "outputpixeltype":
                 value = self.parameterAsEnum(parameters, param.name(), context)
+            elif isinstance(param, QgsProcessingParameterEnum):
+                value = " ".join([param.options()[i]
+                                  for i in self.parameterAsEnums(parameters, param.name(), context)
+                                  if i >= 0 and i < len(param.options())])
             elif isinstance(param, QgsProcessingParameterBoolean):
                 value = self.parameterAsBoolean(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterCrs):
@@ -243,6 +248,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 value = '"{}"'.format(self.getLayerSource(param.name(), self.parameterAsLayer(parameters, param.name(), context)))
             elif isinstance(param, QgsProcessingParameterString):
                 value = '"{}"'.format(self.parameterAsString(parameters, param.name(), context))
+            elif isinstance(param, QgsProcessingParameterBand):
+                value = '"Channel{}"'.format(self.parameterAsInt(parameters, param.name(), context))
             else:
                 # Use whatever is given
                 value = '"{}"'.format(parameters[param.name()])
