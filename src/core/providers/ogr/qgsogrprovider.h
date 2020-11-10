@@ -174,10 +174,10 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     void loadFields();
 
     //! Find out the number of features of the whole layer
-    void recalculateFeatureCount();
+    void recalculateFeatureCount() const;
 
     //! Tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore)
-    void setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes );
+    void setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes ) const;
 
     //! Convert a QgsField to work with OGR
     static bool convertField( QgsField &field, const QTextCodec &encoding );
@@ -294,7 +294,11 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool mValid = false;
 
     OGRwkbGeometryType mOGRGeomType = wkbUnknown;
-    long mFeaturesCounted = QgsVectorDataProvider::Uncounted;
+
+    //! Whether the next call to featureCount() should refresh the feature count
+    mutable bool mRefreshFeatureCount = true;
+
+    mutable long mFeaturesCounted = QgsVectorDataProvider::Uncounted;
 
     mutable QStringList mSubLayerList;
 

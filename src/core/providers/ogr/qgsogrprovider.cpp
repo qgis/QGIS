@@ -241,10 +241,14 @@ void QgsOgrProvider::repack()
 
   }
 
-  long oldcount = mFeaturesCounted;
-  recalculateFeatureCount();
-  if ( oldcount != mFeaturesCounted )
-    emit dataChanged();
+  if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
+       mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+  {
+    long oldcount = mFeaturesCounted;
+    recalculateFeatureCount();
+    if ( oldcount != mFeaturesCounted )
+      emit dataChanged();
+  }
 }
 
 
@@ -1303,7 +1307,7 @@ QString QgsOgrProvider::storageType() const
 }
 
 
-void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes )
+void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes ) const
 {
   QMutex *mutex = nullptr;
   OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
@@ -1600,6 +1604,11 @@ QgsWkbTypes::Type QgsOgrProvider::wkbType() const
  */
 long QgsOgrProvider::featureCount() const
 {
+  if ( mRefreshFeatureCount )
+  {
+    mRefreshFeatureCount = false;
+    recalculateFeatureCount();
+  }
   return mFeaturesCounted;
 }
 
@@ -2317,12 +2326,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
   mOgrLayer->ResetReading();
 
-  // getting the total number of features in the layer
-  // TODO: This can be expensive, do we really need it!
-  if ( updateFeatureCount )
-  {
-    recalculateFeatureCount();
-  }
+  mRefreshFeatureCount = updateFeatureCount;
 
   // check the validity of the layer
   QgsDebugMsgLevel( QStringLiteral( "checking validity" ), 4 );
@@ -4643,7 +4647,7 @@ bool QgsOgrProvider::syncToDisc()
   return true;
 }
 
-void QgsOgrProvider::recalculateFeatureCount()
+void QgsOgrProvider::recalculateFeatureCount() const
 {
   if ( !mOgrLayer )
   {
@@ -4671,7 +4675,6 @@ void QgsOgrProvider::recalculateFeatureCount()
   else
   {
     mFeaturesCounted = 0;
-    mOgrLayer->ResetReading();
     setRelevantFields( true, QgsAttributeList() );
     mOgrLayer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
@@ -4688,7 +4691,7 @@ void QgsOgrProvider::recalculateFeatureCount()
       }
     }
     mOgrLayer->ResetReading();
-
+    setRelevantFields( true, attributeIndexes() );
   }
 
   if ( filter )
@@ -4906,7 +4909,7 @@ void QgsOgrProvider::open( OpenMode mode )
 
     // WARNING if this is the initial open - we don't already have a connection ref, and will be creating one later. So we *mustn't* grab an extra connection ref
     // while setting the subset string, or we'll be left with an extra reference which is never cleared.
-    mValid = _setSubsetString( origSubsetString, true, false, mode != OpenModeInitial );
+    mValid = _setSubsetString( origSubsetString, false, false, mode != OpenModeInitial );
 
     blockSignals( false );
     if ( mValid )
@@ -4968,15 +4971,12 @@ void QgsOgrProvider::open( OpenMode mode )
 
       if ( !mSubsetString.isEmpty() )
       {
-        int featuresCountedBackup = mFeaturesCounted;
-        mFeaturesCounted = -1;
         // Do not update capabilities here
         // but ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to
         // mSubsetString, which is the case when reloading the dataset)
         QString origSubsetString = mSubsetString;
         mSubsetString.clear();
         mValid = _setSubsetString( origSubsetString, false, false );
-        mFeaturesCounted = featuresCountedBackup;
       }
     }
   }
@@ -4988,6 +4988,8 @@ void QgsOgrProvider::open( OpenMode mode )
     setProperty( "_debug_open_mode", "read-write" );
   else
     setProperty( "_debug_open_mode", "read-only" );
+
+  mRefreshFeatureCount = true;
 }
 
 void QgsOgrProvider::close()
