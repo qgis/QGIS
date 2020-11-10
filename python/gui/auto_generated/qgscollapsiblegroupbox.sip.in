@@ -97,6 +97,13 @@ Signal emitted when groupbox collapsed/expanded state is changed, and when first
     void checkClicked( bool ckd );
     void toggleCollapsed();
 
+    void setStyleSheet( const QString &style );
+%Docstring
+Overridden to prepare base call and avoid crash due to specific QT versions
+
+.. versionadded:: 3.16
+%End
+
   protected:
     void init();
 
