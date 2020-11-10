@@ -44,7 +44,8 @@ from qgis.PyQt.QtGui import (QKeySequence,
                              QClipboard,
                              QIcon,
                              QStandardItemModel,
-                             QStandardItem
+                             QStandardItem,
+                             QTextOption
                              )
 from qgis.PyQt.Qsci import QsciAPIs
 
@@ -392,6 +393,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 model = self.modelAsync.model
                 quotedCols = []
 
+                self.showError(None)
                 self.viewResult.setModel(model)
                 self.lblResult.setText(self.tr("{0} rows, {1:.3f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
@@ -403,7 +405,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 self.writeQueryHistory(self.modelAsync.task.sql, model.affectedRows(), model.secs())
                 self.update()
             elif not self.modelAsync.canceled:
-                DlgDbError.showError(self.modelAsync.error, self)
+                self.showError(self.modelAsync.error)
+
                 self.uniqueModel.clear()
                 self.geomCombo.clear()
 
@@ -426,10 +429,21 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.updateUiWhileSqlExecution(True)
             QgsApplication.taskManager().addTask(self.modelAsync.task)
         except Exception as e:
-            DlgDbError.showError(e, self)
+            self.showError(e)
             self.uniqueModel.clear()
             self.geomCombo.clear()
             return
+
+    def showError(self, error):
+        '''Shows the error or hides it if error is None'''
+        if error:
+            self.viewResult.setVisible(False)
+            self.errorText.setVisible(True)
+            self.errorText.setWordWrapMode(QTextOption.WrapAnywhere)
+            self.errorText.setHtml('<code>' + error.msg + '</code>')
+        else:
+            self.viewResult.setVisible(True)
+            self.errorText.setVisible(False)
 
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
