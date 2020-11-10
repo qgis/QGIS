@@ -112,9 +112,18 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QList<QgsLayerTreeNode *> children() { return mChildren; }
     //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
-    //! Remove the childrens and sets their parent to null
+
+    /**
+     * Removes the childrens, disconnect all their signals and sets their parent to NULLPTR
+     * \return the removed children
+     * \since QGIS 3.16
+     */
     QList<QgsLayerTreeNode *> abandonChildren() SIP_SKIP;
-    //! Set parent to null
+
+    /**
+     * Sets parent to NULLPTR and disconnects all signals
+     * \since QGIS 3.16
+     */
     void makeOrphan() SIP_SKIP;
 
     /**

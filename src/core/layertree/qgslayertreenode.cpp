@@ -61,6 +61,7 @@ QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
 
 void QgsLayerTreeNode::makeOrphan()
 {
+  disconnect();
   mParent = nullptr;
 }
 
