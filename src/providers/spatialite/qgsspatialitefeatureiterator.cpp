@@ -613,7 +613,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
     else if ( type == QVariant::DateTime )
     {
       // first use the GDAL date format
-      QDateTime dt = QDateTime::fromString( txt, QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) );
+      QDateTime dt = QDateTime::fromString( txt, Qt::ISODate );
       if ( !dt.isValid() )
       {
         // if that fails, try SQLite's default date format
