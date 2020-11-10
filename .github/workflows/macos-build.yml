@@ -21,7 +21,7 @@ on:
 
 env:
   QT_VERSION: 5.14.2
-  QGIS_DEPS_VERSION: 0.5.4
+  QGIS_DEPS_VERSION: 0.6.0
 
 jobs:
   mac_os_build:
@@ -52,6 +52,8 @@ jobs:
                -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
                -DWITH_BINDINGS=TRUE \
                -DWITH_3D=TRUE \
+               -DWITH_PDAL=TRUE \
+               -DWITH_EPT=TRUE \
                $QGIS_DIR
 
       - name: build QGIS
