@@ -92,7 +92,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
     void onLayersChanged();
-    void onTerrainElevationOffsetChanged();
+    void onTerrainElevationOffsetChanged( float newOffset );
 
   private:
 

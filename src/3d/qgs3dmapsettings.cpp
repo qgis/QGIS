@@ -588,7 +588,7 @@ void Qgs3DMapSettings::setTerrainElevationOffset( float offset )
   if ( mTerrainElevationOffset == offset )
     return;
   mTerrainElevationOffset = offset;
-  emit terrainElevationOffsetChanged();
+  emit terrainElevationOffsetChanged( mTerrainElevationOffset );
 }
 
 float Qgs3DMapSettings::maxTerrainGroundError() const

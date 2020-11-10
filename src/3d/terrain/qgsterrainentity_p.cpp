@@ -187,9 +187,9 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
   }
 }
 
-void QgsTerrainEntity::onTerrainElevationOffsetChanged()
+void QgsTerrainEntity::onTerrainElevationOffsetChanged( float newOffset )
 {
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, mMap.terrainElevationOffset(), 0.0f ) );
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
 float QgsTerrainEntity::terrainElevationOffset() const

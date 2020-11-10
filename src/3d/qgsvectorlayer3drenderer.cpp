@@ -73,7 +73,7 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   double zMin, zMax;
   Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
 
-  return new QgsVectorLayerChunkedEntity( vl, zMin, zMax, tilingSettings(), mSymbol.get(), map );
+  return new QgsVectorLayerChunkedEntity( vl, zMin + map.terrainElevationOffset(), zMax +  + map.terrainElevationOffset(), tilingSettings(), mSymbol.get(), map );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

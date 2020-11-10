@@ -389,7 +389,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   double zMin, zMax;
   Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
 
-  return new QgsRuleBasedChunkedEntity( vl, zMin, zMax, tilingSettings(), mRootRule, map );
+  return new QgsRuleBasedChunkedEntity( vl, zMin + map.terrainElevationOffset(), zMax + map.terrainElevationOffset(), tilingSettings(), mRootRule, map );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

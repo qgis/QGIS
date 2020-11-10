@@ -557,7 +557,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Emitted when the terrain elevation offset is changed
      * \since QGIS 3.16
      */
-    void terrainElevationOffsetChanged();
+    void terrainElevationOffsetChanged( float newElevation );
 
     /**
      * Emitted when terrain shading enabled flag or terrain shading material has changed
