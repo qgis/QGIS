@@ -78,7 +78,7 @@ class TestQgsPointCloudAttributeComboBox(unittest.TestCase):
     def testSetLayer(self):
         cb = QgsPointCloudAttributeComboBox()
         self.assertIsNone(cb.layer())
-        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/entwine/ept.json', 'test', 'ept')
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
         cb.setLayer(layer)
         self.assertEqual(cb.layer(), layer)

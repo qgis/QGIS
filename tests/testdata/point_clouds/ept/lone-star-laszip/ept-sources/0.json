@@ -1,0 +1,338 @@
+{
+  "split-1.laz": {
+    "bounds": [
+      515393.0,
+      4918340.364,
+      2323.09975,
+      515400.00175,
+      4918364.99975,
+      2338.482
+    ],
+    "metadata": {
+      "comp_spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "compressed": true,
+      "count": 122893,
+      "creation_doy": 139,
+      "creation_year": 2014,
+      "dataformat_id": 1,
+      "dataoffset": 586,
+      "filesource_id": 0,
+      "header_size": 227,
+      "major_version": 1,
+      "maxx": 515400.0017,
+      "maxy": 4918365,
+      "maxz": 2338.482,
+      "minor_version": 1,
+      "minx": 515393,
+      "miny": 4918340.364,
+      "minz": 2323.09975,
+      "offset_x": 515396,
+      "offset_y": 4918348,
+      "offset_z": 2324,
+      "point_length": 28,
+      "project_id": "00000000-0000-0000-0000-000000000000",
+      "scale_x": 0.00025,
+      "scale_y": 0.00025,
+      "scale_z": 0.00025,
+      "software_id": "RiSCAN_PRO",
+      "spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "srs": {
+        "compoundwkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "horizontal": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "isgeocentric": true,
+        "isgeographic": false,
+        "prettycompoundwkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "prettywkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "proj4": "+proj=geocent +datum=WGS84 +units=m +no_defs",
+        "units": {
+          "horizontal": "unknown",
+          "vertical": ""
+        },
+        "vertical": "",
+        "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+      },
+      "system_id": "EXPORT",
+      "vlr_0": {
+        "data": "AQABAAAACAAABAAAAQADAAEEAAABAAEAAgSxhwgAAAAACAAAAQDmEAQIAAABACkjBggAAAEAjiMJCLCHAQABAAsIsIcBAAAA",
+        "description": "GeoTiff GeoKeyDirectoryTag",
+        "record_id": 34735,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_1": {
+        "data": "iG10lh2kckAAAABAplRYQQ==",
+        "description": "GeoTiff GeoDoubleParamsTag",
+        "record_id": 34736,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_2": {
+        "data": "dW5uYW1lZHwA",
+        "description": "GeoTiff GeoAsciiParamsTag",
+        "record_id": 34737,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_3": {
+        "data": "AgAAAAMBAAAAAAAAUMMAAP////////////////////8CAAYAFAACAAcACAACAA==",
+        "description": "http://laszip.org",
+        "record_id": 22204,
+        "user_id": "laszip encoded"
+      }
+    },
+    "origin": 0,
+    "points": 122893,
+    "srs": {
+      "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+    }
+  },
+  "split-2.laz": {
+    "bounds": [
+      515368.60225,
+      4918341.0385,
+      2322.89625,
+      515392.99975,
+      4918364.99975,
+      2338.497
+    ],
+    "metadata": {
+      "comp_spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "compressed": true,
+      "count": 154561,
+      "creation_doy": 139,
+      "creation_year": 2014,
+      "dataformat_id": 1,
+      "dataoffset": 586,
+      "filesource_id": 0,
+      "header_size": 227,
+      "major_version": 1,
+      "maxx": 515392.9998,
+      "maxy": 4918365,
+      "maxz": 2338.497,
+      "minor_version": 1,
+      "minx": 515368.6022,
+      "miny": 4918341.038,
+      "minz": 2322.89625,
+      "offset_x": 515396,
+      "offset_y": 4918348,
+      "offset_z": 2324,
+      "point_length": 28,
+      "project_id": "00000000-0000-0000-0000-000000000000",
+      "scale_x": 0.00025,
+      "scale_y": 0.00025,
+      "scale_z": 0.00025,
+      "software_id": "RiSCAN_PRO",
+      "spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "srs": {
+        "compoundwkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "horizontal": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "isgeocentric": true,
+        "isgeographic": false,
+        "prettycompoundwkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "prettywkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "proj4": "+proj=geocent +datum=WGS84 +units=m +no_defs",
+        "units": {
+          "horizontal": "unknown",
+          "vertical": ""
+        },
+        "vertical": "",
+        "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+      },
+      "system_id": "EXPORT",
+      "vlr_0": {
+        "data": "AQABAAAACAAABAAAAQADAAEEAAABAAEAAgSxhwgAAAAACAAAAQDmEAQIAAABACkjBggAAAEAjiMJCLCHAQABAAsIsIcBAAAA",
+        "description": "GeoTiff GeoKeyDirectoryTag",
+        "record_id": 34735,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_1": {
+        "data": "iG10lh2kckAAAABAplRYQQ==",
+        "description": "GeoTiff GeoDoubleParamsTag",
+        "record_id": 34736,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_2": {
+        "data": "dW5uYW1lZHwA",
+        "description": "GeoTiff GeoAsciiParamsTag",
+        "record_id": 34737,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_3": {
+        "data": "AgAAAAMBAAAAAAAAUMMAAP////////////////////8CAAYAFAACAAcACAACAA==",
+        "description": "http://laszip.org",
+        "record_id": 22204,
+        "user_id": "laszip encoded"
+      }
+    },
+    "origin": 1,
+    "points": 154561,
+    "srs": {
+      "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+    }
+  },
+  "split-3.laz": {
+    "bounds": [
+      515393.0,
+      4918365.0,
+      2324.2865,
+      515401.043,
+      4918379.74375,
+      2338.031
+    ],
+    "metadata": {
+      "comp_spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "compressed": true,
+      "count": 132693,
+      "creation_doy": 139,
+      "creation_year": 2014,
+      "dataformat_id": 1,
+      "dataoffset": 586,
+      "filesource_id": 0,
+      "header_size": 227,
+      "major_version": 1,
+      "maxx": 515401.043,
+      "maxy": 4918379.744,
+      "maxz": 2338.031,
+      "minor_version": 1,
+      "minx": 515393,
+      "miny": 4918365,
+      "minz": 2324.2865,
+      "offset_x": 515396,
+      "offset_y": 4918348,
+      "offset_z": 2324,
+      "point_length": 28,
+      "project_id": "00000000-0000-0000-0000-000000000000",
+      "scale_x": 0.00025,
+      "scale_y": 0.00025,
+      "scale_z": 0.00025,
+      "software_id": "RiSCAN_PRO",
+      "spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "srs": {
+        "compoundwkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "horizontal": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "isgeocentric": true,
+        "isgeographic": false,
+        "prettycompoundwkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "prettywkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "proj4": "+proj=geocent +datum=WGS84 +units=m +no_defs",
+        "units": {
+          "horizontal": "unknown",
+          "vertical": ""
+        },
+        "vertical": "",
+        "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+      },
+      "system_id": "EXPORT",
+      "vlr_0": {
+        "data": "AQABAAAACAAABAAAAQADAAEEAAABAAEAAgSxhwgAAAAACAAAAQDmEAQIAAABACkjBggAAAEAjiMJCLCHAQABAAsIsIcBAAAA",
+        "description": "GeoTiff GeoKeyDirectoryTag",
+        "record_id": 34735,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_1": {
+        "data": "iG10lh2kckAAAABAplRYQQ==",
+        "description": "GeoTiff GeoDoubleParamsTag",
+        "record_id": 34736,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_2": {
+        "data": "dW5uYW1lZHwA",
+        "description": "GeoTiff GeoAsciiParamsTag",
+        "record_id": 34737,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_3": {
+        "data": "AgAAAAMBAAAAAAAAUMMAAP////////////////////8CAAYAFAACAAcACAACAA==",
+        "description": "http://laszip.org",
+        "record_id": 22204,
+        "user_id": "laszip encoded"
+      }
+    },
+    "origin": 2,
+    "points": 132693,
+    "srs": {
+      "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+    }
+  },
+  "split-4.laz": {
+    "bounds": [
+      515378.12025,
+      4918365.0,
+      2323.67525,
+      515392.99975,
+      4918381.12375,
+      2338.5755
+    ],
+    "metadata": {
+      "comp_spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "compressed": true,
+      "count": 108715,
+      "creation_doy": 139,
+      "creation_year": 2014,
+      "dataformat_id": 1,
+      "dataoffset": 586,
+      "filesource_id": 0,
+      "header_size": 227,
+      "major_version": 1,
+      "maxx": 515392.9998,
+      "maxy": 4918381.124,
+      "maxz": 2338.5755,
+      "minor_version": 1,
+      "minx": 515378.1202,
+      "miny": 4918365,
+      "minz": 2323.67525,
+      "offset_x": 515396,
+      "offset_y": 4918348,
+      "offset_z": 2324,
+      "point_length": 28,
+      "project_id": "00000000-0000-0000-0000-000000000000",
+      "scale_x": 0.00025,
+      "scale_y": 0.00025,
+      "scale_z": 0.00025,
+      "software_id": "RiSCAN_PRO",
+      "spatialreference": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+      "srs": {
+        "compoundwkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "horizontal": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]",
+        "isgeocentric": true,
+        "isgeographic": false,
+        "prettycompoundwkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "prettywkt": "GEOCCS[\"unnamed\",\n    DATUM[\"WGS_1984\",\n        SPHEROID[\"WGS 84\",6378137,298.257223563,\n            AUTHORITY[\"EPSG\",\"7030\"]],\n        AUTHORITY[\"EPSG\",\"6326\"]],\n    PRIMEM[\"Greenwich\",0],\n    UNIT[\"unknown\",1]]",
+        "proj4": "+proj=geocent +datum=WGS84 +units=m +no_defs",
+        "units": {
+          "horizontal": "unknown",
+          "vertical": ""
+        },
+        "vertical": "",
+        "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+      },
+      "system_id": "EXPORT",
+      "vlr_0": {
+        "data": "AQABAAAACAAABAAAAQADAAEEAAABAAEAAgSxhwgAAAAACAAAAQDmEAQIAAABACkjBggAAAEAjiMJCLCHAQABAAsIsIcBAAAA",
+        "description": "GeoTiff GeoKeyDirectoryTag",
+        "record_id": 34735,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_1": {
+        "data": "iG10lh2kckAAAABAplRYQQ==",
+        "description": "GeoTiff GeoDoubleParamsTag",
+        "record_id": 34736,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_2": {
+        "data": "dW5uYW1lZHwA",
+        "description": "GeoTiff GeoAsciiParamsTag",
+        "record_id": 34737,
+        "user_id": "LASF_Projection"
+      },
+      "vlr_3": {
+        "data": "AgAAAAMBAAAAAAAAUMMAAP////////////////////8CAAYAFAACAAcACAACAA==",
+        "description": "http://laszip.org",
+        "record_id": 22204,
+        "user_id": "laszip encoded"
+      }
+    },
+    "origin": 3,
+    "points": 108715,
+    "srs": {
+      "wkt": "GEOCCS[\"unnamed\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0],UNIT[\"unknown\",1]]"
+    }
+  }
+}

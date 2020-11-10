@@ -1,0 +1,66 @@
+[
+  {
+    "bounds": [
+      515393.0,
+      4918340.364,
+      2323.09975,
+      515400.00175,
+      4918364.99975,
+      2338.482
+    ],
+    "id": "split-1.laz",
+    "inserts": 122893,
+    "path": "source/lone-star-split/split-1.laz",
+    "points": 122893,
+    "status": "inserted",
+    "url": "0.json"
+  },
+  {
+    "bounds": [
+      515368.60225,
+      4918341.0385,
+      2322.89625,
+      515392.99975,
+      4918364.99975,
+      2338.497
+    ],
+    "id": "split-2.laz",
+    "inserts": 154561,
+    "path": "source/lone-star-split/split-2.laz",
+    "points": 154561,
+    "status": "inserted",
+    "url": "0.json"
+  },
+  {
+    "bounds": [
+      515393.0,
+      4918365.0,
+      2324.2865,
+      515401.043,
+      4918379.74375,
+      2338.031
+    ],
+    "id": "split-3.laz",
+    "inserts": 132693,
+    "path": "source/lone-star-split/split-3.laz",
+    "points": 132693,
+    "status": "inserted",
+    "url": "0.json"
+  },
+  {
+    "bounds": [
+      515378.12025,
+      4918365.0,
+      2323.67525,
+      515392.99975,
+      4918381.12375,
+      2338.5755
+    ],
+    "id": "split-4.laz",
+    "inserts": 108715,
+    "path": "source/lone-star-split/split-4.laz",
+    "points": 108715,
+    "status": "inserted",
+    "url": "0.json"
+  }
+]
