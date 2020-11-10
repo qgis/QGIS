@@ -114,7 +114,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     QgsO2 *authO2( const QString &authcfg );
 
-    QMutex mNetworkRequestMutex;
+    QMutex mNetworkRequestMutex { QMutex::Recursive };
 };
 
 #endif // QGSAUTHOAUTH2METHOD_H
