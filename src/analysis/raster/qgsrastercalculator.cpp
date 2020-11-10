@@ -477,16 +477,27 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     {
       // Get the index of the current element
       const int i = get_global_id(0);
+      // Check for nodata in input
+      if ( ##INPUT_NODATA_CHECK## )
+        resultLine[i] = -FLT_MAX;
       // Expression
-      resultLine[i] = ##EXPRESSION##;
+      else
+        resultLine[i] = ##EXPRESSION##;
     }
     )CL" );
 
     QStringList inputDesc;
+    QStringList inputNoDataCheck;
     for ( const auto &ref : inputRefs )
     {
       inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
+      if ( ref.layer->dataProvider()->sourceHasNoDataValue( ref.band ) )
+      {
+        inputNoDataCheck.append( QStringLiteral( "(float) %1[i] == (float) %2" ).arg( ref.varName ).arg( ref.layer->dataProvider()->sourceNoDataValue( ref.band ) ) );
+      }
     }
+
+    programTemplate = programTemplate.replace( QLatin1String( "##INPUT_NODATA_CHECK##" ), inputNoDataCheck.isEmpty() ? QStringLiteral( "false" ) : inputNoDataCheck.join( QStringLiteral( " || " ) ) );
     programTemplate = programTemplate.replace( QLatin1String( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
     programTemplate = programTemplate.replace( QLatin1String( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION##" ), cExpression );
@@ -536,7 +547,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     if ( !outputRasterBand )
       return BandError;
 
-    float outputNodataValue = -FLT_MAX;
+    const float outputNodataValue = -FLT_MAX;
     GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
 
     // Input block (buffer)
