@@ -3975,7 +3975,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
             const QString txt = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) );
             if ( mAttributeFields.at( index ).type() == QVariant::DateTime )
             {
-              QDateTime dt = QDateTime::fromString( txt, QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) );
+              QDateTime dt = QDateTime::fromString( txt, Qt::ISODate );
               if ( !dt.isValid() )
               {
                 // if that fails, try SQLite's default date format
@@ -4288,7 +4288,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           else if ( type == QVariant::DateTime )
           {
             QDateTime dt = v.toDateTime();
-            QByteArray ba = dt.toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) ).toUtf8();
+            QByteArray ba = dt.toString( Qt::ISODate ).toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
           else if ( type == QVariant::Date )
@@ -4680,7 +4680,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         }
         else if ( type == QVariant::DateTime )
         {
-          sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) ) ) );
+          sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( Qt::ISODate ) ) );
         }
         else if ( type == QVariant::Date )
         {
