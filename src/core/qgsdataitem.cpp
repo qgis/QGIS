@@ -51,6 +51,26 @@
 #include "cpl_string.h"
 
 // shared icons
+
+QIcon QgsLayerItem::iconForWkbType( QgsWkbTypes::Type type )
+{
+  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
+  switch ( geomType )
+  {
+    case QgsWkbTypes::NullGeometry:
+      return iconTable();
+    case QgsWkbTypes::PointGeometry:
+      return iconPoint();
+    case QgsWkbTypes::LineGeometry:
+      return iconLine();
+    case QgsWkbTypes::PolygonGeometry:
+      return iconPolygon();
+    default:
+      break;
+  }
+  return iconDefault();
+}
+
 QIcon QgsLayerItem::iconPoint()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );

@@ -251,7 +251,14 @@ GeometryCollections are reported as QgsWkbTypes.UnknownGeometry.
 
     static QString displayString( Type type ) /HoldGIL/;
 %Docstring
-Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
+Returns a non-translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
+%End
+
+    static QString translatedDisplayString( Type type ) /HoldGIL/;
+%Docstring
+Returns a translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
+
+.. versionadded:: 3.18
 %End
 
     static QString geometryDisplayString( GeometryType type ) /HoldGIL/;

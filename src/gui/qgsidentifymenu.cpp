@@ -18,6 +18,7 @@
 #include "qgsidentifymenu.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
+#include "qgsdataitem.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsactionmenu.h"
@@ -327,21 +328,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   // case 1 or 2
   if ( layerAction )
   {
-    // icons
-    switch ( layer->geometryType() )
-    {
-      case QgsWkbTypes::PointGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ) );
-        break;
-      case QgsWkbTypes::LineGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ) );
-        break;
-      case QgsWkbTypes::PolygonGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ) );
-        break;
-      default:
-        break;
-    }
+    layerAction->setIcon( QgsLayerItem::iconForWkbType( layer->wkbType() ) );
 
     // add layer action to the top menu
     layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );

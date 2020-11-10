@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewvectortabledialog.h"
+#include "qgsdataitem.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsgui.h"
@@ -137,23 +138,29 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
 
   // geometry types
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
+
+  const auto addGeomItem = [this]( QgsWkbTypes::Type type )
+  {
+    mGeomTypeCbo->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+  };
+
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::Type::NoGeometry );
   if ( hasSinglePart )
-    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Type::Point );
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::Type::MultiPoint );
+    addGeomItem( QgsWkbTypes::Type::Point );
+  addGeomItem( QgsWkbTypes::Type::MultiPoint );
   if ( hasSinglePart )
-    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::Type::LineString );
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "MultiLine" ), QgsWkbTypes::Type::MultiLineString );
+    addGeomItem( QgsWkbTypes::Type::LineString );
+  addGeomItem( QgsWkbTypes::Type::MultiLineString );
   if ( hasSinglePart )
-    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Type::Polygon );
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "MultiPolygon" ), QgsWkbTypes::Type::MultiPolygon );
+    addGeomItem( QgsWkbTypes::Type::Polygon );
+  addGeomItem( QgsWkbTypes::Type::MultiPolygon );
 
   if ( conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::Curves ) )
   {
-    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "CompoundCurve" ), QgsWkbTypes::Type::CompoundCurve );
-    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "CurvePolygon" ), QgsWkbTypes::Type::CurvePolygon );
-    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "MultiCurve" ), QgsWkbTypes::Type::MultiCurve );
-    mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "MultiSurface" ), QgsWkbTypes::Type::MultiSurface );
+    addGeomItem( QgsWkbTypes::Type::CompoundCurve );
+    addGeomItem( QgsWkbTypes::Type::CurvePolygon );
+    addGeomItem( QgsWkbTypes::Type::MultiCurve );
+    addGeomItem( QgsWkbTypes::Type::MultiSurface );
   }
 
   mGeomTypeCbo->setCurrentIndex( 0 );
