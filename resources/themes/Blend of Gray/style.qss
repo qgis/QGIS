@@ -1054,3 +1054,21 @@ QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
 QFrame#mUserInputContainer { 
     background-color: @background;
 }
+
+QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {
+  subcontrol-origin: margin;
+  subcontrol-position: top left;
+  margin-left: 1em;
+  margin-right: 1em;
+  left: 0.05em;
+  top: 0.05em;
+}
+
+QgsCollapsibleGroupBoxBasic > QToolButton#collapseButton, QgsCollapsibleGroupBox > QToolButton#collapseButton {
+  background-color: rgba(255, 255, 255, 0); 
+  border: none;
+}
+
+QgsCollapsibleGroupBoxBasic > QToolButton#collapseButton:focus, QgsCollapsibleGroupBox > QToolButton#collapseButton:focus {
+  border: 1px solid palette(highlight);
+}

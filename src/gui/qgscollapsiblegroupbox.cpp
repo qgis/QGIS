@@ -306,6 +306,9 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
   QgsSettings settings;
 
+  const QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
+  const bool isDefaultTheme = themeName == QLatin1String( "default" ) || !QgsApplication::uiThemes().contains( themeName );
+
   QStyleOptionGroupBox box;
   initStyleOption( &box );
   QRect rectFrame = style()->subControlRect( QStyle::CC_GroupBox, &box,
@@ -383,14 +386,17 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
     ss += QLatin1String( "  background-color: rgba(0,0,0,0)" );
   }
   ss += '}';
-  setStyleSheet( styleSheet() + ss );
+  if ( isDefaultTheme )
+    setStyleSheet( styleSheet() + ss );
 
   // clear toolbutton default background and border and apply offset
   QString ssd;
   ssd = QStringLiteral( "QgsCollapsibleGroupBoxBasic > QToolButton#%1, QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
   ssd += QLatin1String( "  background-color: rgba(255, 255, 255, 0); border: none;" );
   ssd += QStringLiteral( "} QgsCollapsibleGroupBoxBasic > QToolButton#%1:focus, QgsCollapsibleGroupBox > QToolButton#%1:focus {  border: 1px solid palette(highlight); }" ).arg( mCollapseButton->objectName() );
-  mCollapseButton->setStyleSheet( ssd );
+  if ( isDefaultTheme )
+    mCollapseButton->setStyleSheet( ssd );
+
   if ( offsetLeft != 0 || offsetTopTri != 0 )
     mCollapseButton->move( offsetLeft, offsetTopTri );
   setUpdatesEnabled( true );
