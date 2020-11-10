@@ -202,7 +202,7 @@ class TestQgsFieldModel(unittest.TestCase):
     def testSetLayer(self):
         m = QgsPointCloudAttributeModel()
         self.assertIsNone(m.layer())
-        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/entwine/ept.json', 'test', 'ept')
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
         m.setLayer(layer)
         self.assertEqual(m.layer(), layer)
