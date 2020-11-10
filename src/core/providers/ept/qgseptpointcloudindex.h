@@ -48,6 +48,8 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
 
     QgsCoordinateReferenceSystem crs() const;
   private:
+    bool loadHierarchy();
+
     QString mDataType;
     QString mDirectory;
     QString mWkt;

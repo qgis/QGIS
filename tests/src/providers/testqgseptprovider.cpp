@@ -29,6 +29,7 @@
 #include "qgsproviderregistry.h"
 #include "qgseptprovider.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudindex.h"
 
 /**
  * \ingroup UnitTests
@@ -52,6 +53,7 @@ class TestQgsEptProvider : public QObject
     void uriIsBlocklisted();
     void brokenPath();
     void validLayer();
+    void validLayerWithEptHierarchy();
 
   private:
     QString mTestDataDir;
@@ -166,6 +168,27 @@ void TestQgsEptProvider::validLayer()
   QGSCOMPARENEAR( layer->extent().yMinimum(), 7050992.0, 0.1 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), 498068.0, 0.1 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 7050998.0, 0.1 );
+
+  QVERIFY( layer->dataProvider()->index() );
+  // all hierarchy is stored in a single node
+  QVERIFY( layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "0-0-0-0" ) ) );
+  QVERIFY( !layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "1-0-0-0" ) ) );
+}
+
+void TestQgsEptProvider::validLayerWithEptHierarchy()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( layer->isValid() );
+
+  QGSCOMPARENEAR( layer->extent().xMinimum(), 515368.000000, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMinimum(), 4918340.000000, 0.1 );
+  QGSCOMPARENEAR( layer->extent().xMaximum(), 515402.000000, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMaximum(), 4918382.000000, 0.1 );
+
+  QVERIFY( layer->dataProvider()->index() );
+  // all hierarchy is stored in multiple nodes
+  QVERIFY( layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "1-1-1-1" ) ) );
+  QVERIFY( layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "2-3-3-1" ) ) );
 }
 
 

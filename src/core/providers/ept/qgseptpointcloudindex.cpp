@@ -24,6 +24,7 @@
 #include <QJsonObject>
 #include <QTime>
 #include <QtDebug>
+#include <QQueue>
 
 #include "qgseptdecoder.h"
 #include "qgscoordinatereferencesystem.h"
@@ -175,27 +176,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
 
   // load hierarchy
-
-  QFile fH( QStringLiteral( "%1/ept-hierarchy/0-0-0-0.json" ).arg( mDirectory ) );
-  if ( !fH.open( QIODevice::ReadOnly ) )
-    return false;
-
-  QByteArray dataJsonH = fH.readAll();
-  QJsonParseError errH;
-  QJsonDocument docH = QJsonDocument::fromJson( dataJsonH, &errH );
-  if ( errH.error != QJsonParseError::NoError )
-    return false;
-
-  QJsonObject rootHObj = docH.object();
-  for ( auto it = rootHObj.constBegin(); it != rootHObj.constEnd(); ++it )
-  {
-    QString nodeIdStr = it.key();
-    int nodePointCount = it.value().toInt();
-    IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
-    mHierarchy[nodeId] = nodePointCount;
-  }
-
-  return true;
+  return loadHierarchy();
 }
 
 QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -227,6 +208,48 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 {
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );
+}
+
+bool QgsEptPointCloudIndex::loadHierarchy()
+{
+  QQueue<QString> queue;
+  queue.enqueue( QStringLiteral( "0-0-0-0" ) );
+  while ( !queue.isEmpty() )
+  {
+    const QString filename = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mDirectory ).arg( queue.dequeue() );
+    QFile fH( filename );
+    if ( !fH.open( QIODevice::ReadOnly ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "unable to read hierarchy from file %1" ).arg( filename ), 2 );
+      return false;
+    }
+
+    QByteArray dataJsonH = fH.readAll();
+    QJsonParseError errH;
+    QJsonDocument docH = QJsonDocument::fromJson( dataJsonH, &errH );
+    if ( errH.error != QJsonParseError::NoError )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename ), 2 );
+      return false;
+    }
+
+    QJsonObject rootHObj = docH.object();
+    for ( auto it = rootHObj.constBegin(); it != rootHObj.constEnd(); ++it )
+    {
+      QString nodeIdStr = it.key();
+      int nodePointCount = it.value().toInt();
+      if ( nodePointCount < 0 )
+      {
+        queue.enqueue( nodeIdStr );
+      }
+      else
+      {
+        IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
+        mHierarchy[nodeId] = nodePointCount;
+      }
+    }
+  }
+  return true;
 }
 
 ///@endcond
