@@ -104,7 +104,11 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
 #endif
 
 #ifdef HAVE_PDAL
+#if PDAL_VERSION_MAJOR_INT >= 2
   pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) ) );
+#else
+  pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::GetFullVersionString() ) ) );
+#endif
 #endif
 
   if ( provider && !provider->versionInfo().isEmpty() )

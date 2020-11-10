@@ -5321,7 +5321,11 @@ void QgisApp::about()
 
 #ifdef HAVE_PDAL
     versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against PDAL" ), PDAL_VERSION );
+#if PDAL_VERSION_MAJOR_INT >= 2
     versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PDAL" ) ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) );
+#else
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PDAL" ) ).arg( QString::fromStdString( pdal::GetFullVersionString() ) );
+#endif
     versionString += QLatin1String( "</tr><tr>" );
 #endif
 
