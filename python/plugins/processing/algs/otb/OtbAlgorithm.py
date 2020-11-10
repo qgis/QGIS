@@ -202,7 +202,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         outputPixelType = None
         for k, v in parameters.items():
             # if value is None for a parameter we don't have any businees with this key
-            if not v or v is None:
+            if v is None:
                 continue
             # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
             if k == 'outputpixeltype':
