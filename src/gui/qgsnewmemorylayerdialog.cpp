@@ -18,6 +18,7 @@
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsapplication.h"
 #include "qgis.h"
+#include "qgsdataitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
@@ -57,17 +58,23 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::NoGeometry );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString" ), QgsWkbTypes::LineString );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "CompoundCurve" ), QgsWkbTypes::CompoundCurve );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Polygon );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "CurvePolygon" ), QgsWkbTypes::CurvePolygon );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiLineString" ), QgsWkbTypes::MultiLineString );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiCurve" ), QgsWkbTypes::MultiCurve );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiPolygon" ), QgsWkbTypes::MultiPolygon );
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiSurface" ), QgsWkbTypes::MultiSurface );
+  const QgsWkbTypes::Type geomTypes[] =
+  {
+    QgsWkbTypes::NoGeometry,
+    QgsWkbTypes::Point,
+    QgsWkbTypes::LineString,
+    QgsWkbTypes::CompoundCurve,
+    QgsWkbTypes::Polygon,
+    QgsWkbTypes::CurvePolygon,
+    QgsWkbTypes::MultiPoint,
+    QgsWkbTypes::MultiLineString,
+    QgsWkbTypes::MultiCurve,
+    QgsWkbTypes::MultiPolygon,
+    QgsWkbTypes::MultiSurface,
+  };
+
+  for ( const auto type : geomTypes )
+    mGeometryTypeBox->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );

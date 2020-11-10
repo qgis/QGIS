@@ -742,48 +742,6 @@ QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
   }
 }
 
-QString QgsOracleConn::displayStringForWkbType( QgsWkbTypes::Type type )
-{
-  switch ( type )
-  {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-      return tr( "Point" );
-
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
-      return tr( "Multipoint" );
-
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-      return tr( "Line" );
-
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
-      return tr( "Multiline" );
-
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-      return tr( "Polygon" );
-
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
-      return tr( "Multipolygon" );
-
-    case QgsWkbTypes::NoGeometry:
-      return tr( "No Geometry" );
-
-    case QgsWkbTypes::Unknown:
-      return tr( "Unknown Geometry" );
-
-    default:
-      break;
-  }
-
-  Q_ASSERT( !"unexpected wkbType" );
-  return QString();
-}
-
 QgsWkbTypes::Type QgsOracleConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType )
 {
   switch ( geomType )

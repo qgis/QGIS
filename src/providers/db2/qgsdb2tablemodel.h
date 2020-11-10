@@ -84,8 +84,6 @@ class QgsDb2TableModel : public QStandardItemModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
-
     static QgsWkbTypes::Type wkbTypeFromDb2( QString dbType, int dim = 2 );
 
   private:

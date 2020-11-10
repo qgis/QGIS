@@ -59,8 +59,6 @@ class QgsOracleTableModel : public QStandardItemModel
 
     QString layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo );
 
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
-
   private:
     //! Number of tables in the model
     int mTableCount = 0;

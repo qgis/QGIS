@@ -25,6 +25,7 @@ email                : jef at norbit dot de
 #include "qgsoracletablecache.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
+#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgsoraclecolumntypethread.h"
@@ -66,7 +67,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
                 << QgsWkbTypes::MultiPolygon
                 << QgsWkbTypes::NoGeometry )
     {
-      cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
+      cb->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
     }
     return cb;
   }
@@ -141,8 +142,8 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
     {
       QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
-      model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select…" ) );
+      model->setData( index, QgsLayerItem::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::translatedDisplayString( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::DbtmPkCol )

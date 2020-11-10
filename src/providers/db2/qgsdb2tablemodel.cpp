@@ -77,10 +77,10 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
+  QStandardItem *typeItem = new QStandardItem( QgsLayerItem::iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting…" )
-      : QgsWkbTypes::displayString( wkbType ) );
+      : QgsWkbTypes::translatedDisplayString( wkbType ) );
   typeItem->setData( needToDetect, Qt::UserRole + 1 );
   typeItem->setData( wkbType, Qt::UserRole + 2 );
 
@@ -265,8 +265,8 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
         // update existing row
         QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( typeList.at( 0 ) );
 
-        row[ DbtmType ]->setIcon( iconForWkbType( wkbType ) );
-        row[ DbtmType ]->setText( QgsWkbTypes::displayString( wkbType ) );
+        row[ DbtmType ]->setIcon( QgsLayerItem::iconForWkbType( wkbType ) );
+        row[ DbtmType ]->setText( QgsWkbTypes::translatedDisplayString( wkbType ) );
         row[ DbtmType ]->setData( false, Qt::UserRole + 1 );
         row[ DbtmType ]->setData( wkbType, Qt::UserRole + 2 );
 
@@ -290,25 +290,6 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
       }
     }
   }
-}
-
-QIcon QgsDb2TableModel::iconForWkbType( QgsWkbTypes::Type type )
-{
-  switch ( QgsWkbTypes::geometryType( type ) )
-
-  {
-    case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
-    case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
-    case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
-    case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
-    case QgsWkbTypes::UnknownGeometry:
-      break;
-  }
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
 }
 
 bool QgsDb2TableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

@@ -1014,9 +1014,16 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /**
-     * Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
+     * Returns a non-translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      */
     static QString displayString( Type type ) SIP_HOLDGIL;
+
+    /**
+     * Returns a translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
+     *
+     * \since QGIS 3.18
+     */
+    static QString translatedDisplayString( Type type ) SIP_HOLDGIL;
 
     /**
      * Returns a display string for a geometry type.

@@ -16,6 +16,7 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 
+#include "qgsdataitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -331,13 +332,13 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mMenuBtnAddItemLegendPatchShape = new QMenu( this );
     mMenuBtnAddItemSymbol3D = new QMenu( this );
 
-    QAction *item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconPointLayer.svg" ) ), tr( "Marker…" ), this );
+    QAction *item = new QAction( QgsLayerItem::iconPoint(), tr( "Marker…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconLineLayer.svg" ) ), tr( "Line…" ), this );
+    item = new QAction( QgsLayerItem::iconLine(), tr( "Line…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Line ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconPolygonLayer.svg" ) ), tr( "Fill…" ), this );
+    item = new QAction( QgsLayerItem::iconPolygon(), tr( "Fill…" ), this );
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
