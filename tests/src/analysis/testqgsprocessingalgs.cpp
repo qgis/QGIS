@@ -143,10 +143,13 @@ class TestQgsProcessingAlgs: public QObject
 
     void saveLog();
     void setProjectVariable();
+
+#ifndef QT_NO_PRINTER
     void exportLayoutPdf();
     void exportLayoutPng();
     void exportAtlasLayoutPdf();
     void exportAtlasLayoutPng();
+#endif
 
     void tinMeshCreation();
     void exportMeshVertices();
@@ -4597,6 +4600,7 @@ void TestQgsProcessingAlgs::setProjectVariable()
   QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 13 );
 }
 
+#ifndef QT_NO_PRINTER
 void TestQgsProcessingAlgs::exportLayoutPdf()
 {
   QgsProject p;
@@ -4793,6 +4797,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
   QVERIFY( imageCheck( "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png" ) );
 }
+#endif
 
 void TestQgsProcessingAlgs::tinMeshCreation()
 {

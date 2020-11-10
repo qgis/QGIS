@@ -91,10 +91,12 @@
 #include "qgsalgorithminterpolatepoint.h"
 #include "qgsalgorithmintersection.h"
 #include "qgsalgorithmkmeansclustering.h"
+#ifndef QT_NO_PRINTER
 #include "qgsalgorithmlayoutatlastoimage.h"
 #include "qgsalgorithmlayoutatlastopdf.h"
 #include "qgsalgorithmlayouttoimage.h"
 #include "qgsalgorithmlayouttopdf.h"
+#endif
 #include "qgsalgorithmlinedensity.h"
 #include "qgsalgorithmlineintersection.h"
 #include "qgsalgorithmlinesubstring.h"
@@ -330,10 +332,12 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsKMeansClusteringAlgorithm() );
   addAlgorithm( new QgsLayerToBookmarksAlgorithm() );
   addAlgorithm( new QgsLayoutMapExtentToLayerAlgorithm() );
+#ifndef QT_NO_PRINTER
   addAlgorithm( new QgsLayoutAtlasToImageAlgorithm() );
   addAlgorithm( new QgsLayoutAtlasToPdfAlgorithm() );
   addAlgorithm( new QgsLayoutToImageAlgorithm() );
   addAlgorithm( new QgsLayoutToPdfAlgorithm() );
+#endif
   addAlgorithm( new QgsLineDensityAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
   addAlgorithm( new QgsLineSubstringAlgorithm() );
