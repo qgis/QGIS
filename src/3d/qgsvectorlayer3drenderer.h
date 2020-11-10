@@ -31,11 +31,6 @@
 
 class QgsVectorLayer;
 
-namespace Qt3DCore
-{
-  class QTransform;
-}
-
 /**
  * \ingroup core
  * Metadata for vector layer 3D renderer to allow creation of its instances from XML
@@ -81,7 +76,6 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRende
 
   private:
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
-    Qt3DCore::QTransform *mTransform = nullptr;
 
   private:
 #ifdef SIP_RUN

@@ -647,7 +647,7 @@ Emitted when the maximum terrain screen error has changed
 Emitted when the maximum terrain ground error has changed
 %End
 
-    void terrainElevationOffsetChanged();
+    void terrainElevationOffsetChanged( float newElevation );
 %Docstring
 Emitted when the terrain elevation offset is changed
 
