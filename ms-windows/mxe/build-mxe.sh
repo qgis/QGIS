@@ -79,6 +79,7 @@ if [[ "$COMMAND" != *"package"* ]]; then
         -DENABLE_TESTS=OFF \
         -DWITH_QSPATIALITE=ON \
         -DWITH_APIDOC=OFF \
+        -DWITH_EPT=OFF \
         -DWITH_QWTPOLAR=ON \
         -DWITH_ASTYLE=OFF \
         -DWITH_SERVER=OFF \
