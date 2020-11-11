@@ -195,7 +195,7 @@ void QgsQuickFeaturesListModel::setupValueRelation( const QVariantMap &config )
     setFeatureTitleField( fields.field( config.value( QStringLiteral( "Value" ) ).toString() ).name() );
 
     // store value relation filter expression
-    setFilterExpression( config.value( QStringLiteral("FilterExpression") ).toString() );
+    setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
 
     loadFeaturesFromLayer( layer );
   }
@@ -326,7 +326,7 @@ QVariant QgsQuickFeaturesListModel::convertMultivalueFormat( const QVariant &mul
   {
     QVariant var = attributeFromValue( KeyColumn, i, role );
     if ( !var.isNull() )
-      retList.append(var);
+      retList.append( var );
   }
 
   return retList;
