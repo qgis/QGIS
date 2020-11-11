@@ -242,7 +242,7 @@ if(WITH_CORE)
     set(HAVE_PDAL TRUE)
   endif()
 
-  set (WITH_EPT FALSE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
+  set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
   if(WITH_EPT)
     set(HAVE_EPT TRUE)
   endif()
@@ -390,6 +390,9 @@ if(WITH_CORE)
 
   if (WITH_EPT)  # EPT provider
     find_package(ZSTD) # for decompression of point clouds
+    if (NOT ZSTD_FOUND)
+      message(FATAL_ERROR "ZSTD not found - EPT provider cannot be built")
+    endif()
     find_package(LazPerf) # for decompression of point clouds
     if (NOT LazPerf_FOUND)
       message(STATUS "Using embedded laz-perf")
