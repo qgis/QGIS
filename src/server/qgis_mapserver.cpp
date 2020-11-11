@@ -11,7 +11,7 @@ while QGIS server internal logging is printed to stderr.
 
                               -------------------
   begin                : Jan 17 2020
-  copyright            : (C) 2020by Alessandro Pasotti
+  copyright            : (C) 2020 by Alessandro Pasotti
   email                : elpaso at itopen dot it
  ***************************************************************************/
 
@@ -340,7 +340,10 @@ class TcpServerWorker: public QObject
       mTcpServer.close();
     }
 
-    bool isListening() const;
+    bool isListening() const
+    {
+      return mIsListening;
+    }
 
   public slots:
 
@@ -651,7 +654,4 @@ int main( int argc, char *argv[] )
 
 /// @endcond
 
-bool TcpServerWorker::isListening() const
-{
-  return mIsListening;
-}
+
