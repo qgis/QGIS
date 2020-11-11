@@ -253,7 +253,9 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
   if ( ! file.good() )
     return nullptr;
 
+#ifdef QGISDEBUG
   auto start = common::tick();
+#endif
 
   laszip::io::reader::file f( file );
 
@@ -293,8 +295,12 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
       outputOffset += requestedAttribute.size();
     }
   }
+
+#ifdef QGISDEBUG
   float t = common::since( start );
   QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
+#endif
+
   return new QgsPointCloudBlock(
            count,
            requestedAttributes,
