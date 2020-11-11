@@ -719,7 +719,7 @@ void QgsColorRampShaderWidget::resetClassifyButton()
   }
 }
 
-QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, bool row, const QString unit )
+QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int row, const QString unit )
 {
   auto applyPrecision = [ = ]( const QString & value )
   {
