@@ -42,6 +42,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMapTileResolution( other.mMapTileResolution )
   , mMaxTerrainScreenError( other.mMaxTerrainScreenError )
   , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
+  , mTerrainElevationOffset( other.mTerrainElevationOffset )
   , mTerrainShadingEnabled( other.mTerrainShadingEnabled )
   , mTerrainShadingMaterial( other.mTerrainShadingMaterial )
   , mTerrainMapTheme( other.mTerrainMapTheme )
@@ -60,8 +61,17 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mPathResolver( other.mPathResolver )
   , mMapThemes( other.mMapThemes )
   , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
-  , mSkyboxSettings()
-  , mShadowSettings()
+  , mSkyboxSettings( other.mSkyboxSettings )
+  , mShadowSettings( other.mShadowSettings )
+  , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
+  , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
+  , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
+  , mDebugShadowMapEnabled( other.mDebugShadowMapEnabled )
+  , mDebugShadowMapCorner( other.mDebugShadowMapCorner )
+  , mDebugShadowMapSize( other.mDebugShadowMapSize )
+  , mDebugDepthMapEnabled( other.mDebugDepthMapEnabled )
+  , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
+  , mDebugDepthMapSize( other.mDebugDepthMapSize )
 {
   Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
   {
@@ -104,6 +114,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mMaxTerrainScreenError = elemTerrain.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toFloat();
   mMaxTerrainGroundError = elemTerrain.attribute( QStringLiteral( "max-ground-error" ), QStringLiteral( "1" ) ).toFloat();
   mTerrainShadingEnabled = elemTerrain.attribute( QStringLiteral( "shading-enabled" ), QStringLiteral( "0" ) ).toInt();
+  mTerrainElevationOffset = elemTerrain.attribute( QStringLiteral( "elevation-offset" ), QStringLiteral( "0.0" ) ).toFloat();
+
   QDomElement elemTerrainShadingMaterial = elemTerrain.firstChildElement( QStringLiteral( "shading-material" ) );
   if ( !elemTerrainShadingMaterial.isNull() )
     mTerrainShadingMaterial.readXml( elemTerrainShadingMaterial, context );
@@ -292,6 +304,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( QStringLiteral( "max-terrain-error" ), QString::number( mMaxTerrainScreenError ) );
   elemTerrain.setAttribute( QStringLiteral( "max-ground-error" ), QString::number( mMaxTerrainGroundError ) );
   elemTerrain.setAttribute( QStringLiteral( "shading-enabled" ), mTerrainShadingEnabled ? 1 : 0 );
+  elemTerrain.setAttribute( QStringLiteral( "elevation-offset" ), mTerrainElevationOffset );
+
   QDomElement elemTerrainShadingMaterial = doc.createElement( QStringLiteral( "shading-material" ) );
   mTerrainShadingMaterial.writeXml( elemTerrainShadingMaterial, context );
   elemTerrain.appendChild( elemTerrainShadingMaterial );
@@ -567,6 +581,14 @@ void Qgs3DMapSettings::setMaxTerrainGroundError( float error )
 
   mMaxTerrainGroundError = error;
   emit maxTerrainGroundErrorChanged();
+}
+
+void Qgs3DMapSettings::setTerrainElevationOffset( float offset )
+{
+  if ( mTerrainElevationOffset == offset )
+    return;
+  mTerrainElevationOffset = offset;
+  emit terrainElevationOffsetChanged( mTerrainElevationOffset );
 }
 
 float Qgs3DMapSettings::maxTerrainGroundError() const

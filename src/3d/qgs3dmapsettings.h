@@ -264,6 +264,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     float maxTerrainGroundError() const;
 
     /**
+     * Sets the terrain elevation offset (used to move the terrain up or down)
+     * \see terrainElevationOffset()
+     * \since QGIS 3.18
+     */
+    void setTerrainElevationOffset( float offset );
+
+    /**
+     * Returns the elevation offset of the terrain (used to move the terrain up or down)
+     */
+    float terrainElevationOffset() const { return mTerrainElevationOffset; }
+
+    /**
      * Sets terrain generator. It takes care of producing terrain tiles from the input data.
      * Takes ownership of the generator
      */
@@ -542,6 +554,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void maxTerrainGroundErrorChanged();
 
     /**
+     * Emitted when the terrain elevation offset is changed
+     * \since QGIS 3.16
+     */
+    void terrainElevationOffsetChanged( float newElevation );
+
+    /**
      * Emitted when terrain shading enabled flag or terrain shading material has changed
      * \since QGIS 3.6
      */
@@ -655,6 +673,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int mMapTileResolution = 512;   //!< Size of map textures of tiles in pixels (width/height)
     float mMaxTerrainScreenError = 3.f;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
     float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
+    float mTerrainElevationOffset = 0.0f; //!< Terrain elevation offset (used to adjust the position of the terrain and move it up and down)
     bool mTerrainShadingEnabled = false;   //!< Whether terrain should be shaded taking lights into account
     QgsPhongMaterialSettings mTerrainShadingMaterial;  //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
     QString mTerrainMapTheme;  //!< Name of map theme used for terrain's texture (empty means use the current map theme)

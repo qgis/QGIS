@@ -40,6 +40,10 @@ class QgsVectorLayerFeatureSource;
 class QgsAbstract3DSymbol;
 class QgsFeature3DHandler;
 
+namespace Qt3DCore
+{
+  class QTransform;
+}
 
 /**
  * \ingroup 3d
@@ -113,6 +117,10 @@ class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
     explicit QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule, const Qgs3DMapSettings &map );
 
     ~QgsRuleBasedChunkedEntity();
+  private slots:
+    void onTerrainElevationOffsetChanged( float newOffset );
+  private:
+    Qt3DCore::QTransform *mTransform = nullptr;
 };
 
 /// @endcond

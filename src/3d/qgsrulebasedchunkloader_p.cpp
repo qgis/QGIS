@@ -171,6 +171,11 @@ QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, double
   : QgsChunkedEntity( -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
                       new QgsRuleBasedChunkLoaderFactory( map, vl, rootRule, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
 {
+  mTransform = new Qt3DCore::QTransform;
+  mTransform->setTranslation( QVector3D( 0.0f, map.terrainElevationOffset(), 0.0f ) );
+  this->addComponent( mTransform );
+  connect( &map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged );
+
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
 
@@ -178,6 +183,11 @@ QgsRuleBasedChunkedEntity::~QgsRuleBasedChunkedEntity()
 {
   // cancel / wait for jobs
   cancelActiveJobs();
+}
+
+void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
+{
+  mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
 /// @endcond

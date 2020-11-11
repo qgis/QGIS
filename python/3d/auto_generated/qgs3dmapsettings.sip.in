@@ -294,6 +294,20 @@ This value tells that when the given ground error is reached (e.g. 10 meters), i
 to further split terrain tiles into finer ones because they will not add extra details anymore.
 %End
 
+    void setTerrainElevationOffset( float offset );
+%Docstring
+Sets the terrain elevation offset (used to move the terrain up or down)
+
+.. seealso:: :py:func:`terrainElevationOffset`
+
+.. versionadded:: 3.18
+%End
+
+    float terrainElevationOffset() const;
+%Docstring
+Returns the elevation offset of the terrain (used to move the terrain up or down)
+%End
+
 
     void setTerrainShadingEnabled( bool enabled );
 %Docstring
@@ -631,6 +645,13 @@ Emitted when the maximum terrain screen error has changed
     void maxTerrainGroundErrorChanged();
 %Docstring
 Emitted when the maximum terrain ground error has changed
+%End
+
+    void terrainElevationOffsetChanged( float newElevation );
+%Docstring
+Emitted when the terrain elevation offset is changed
+
+.. versionadded:: 3.16
 %End
 
     void terrainShadingChanged();

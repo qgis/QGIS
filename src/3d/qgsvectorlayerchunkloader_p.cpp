@@ -32,6 +32,7 @@
 #include "qgs3dsymbolregistry.h"
 
 #include <QtConcurrent>
+#include <Qt3DCore/QTransform>
 
 ///@cond PRIVATE
 
@@ -157,6 +158,12 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, do
   : QgsChunkedEntity( -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
                       new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
 {
+  mTransform = new Qt3DCore::QTransform;
+  mTransform->setTranslation( QVector3D( 0.0f, map.terrainElevationOffset(), 0.0f ) );
+  this->addComponent( mTransform );
+
+  connect( &map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
+
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
 
@@ -164,6 +171,12 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
 {
   // cancel / wait for jobs
   cancelActiveJobs();
+}
+
+void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
+{
+  qDebug() << "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged";
+  mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
 /// @endcond

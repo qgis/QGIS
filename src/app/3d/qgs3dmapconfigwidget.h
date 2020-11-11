@@ -56,12 +56,6 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     QgsMesh3dSymbolWidget *mMeshSymbolWidget = nullptr;
     QgsSkyboxRenderingSettingsWidget *mSkyboxSettingsWidget = nullptr;
     QgsShadowRenderingSettingsWidget *mShadowSetiingsWidget = nullptr;
-    bool mDebugShadowMapEnabled = false;
-    QString mDebugShadowMapCorner = "Top Left";
-    double mDebugShadowMapSize = 0.2;
-    bool mDebugDepthMapEnabled = false;
-    QString mDebugDepthMapCorner = "Top Right";
-    double mDebugDepthMapSize = 0.2;
 };
 
 #endif // QGS3DMAPCONFIGWIDGET_H

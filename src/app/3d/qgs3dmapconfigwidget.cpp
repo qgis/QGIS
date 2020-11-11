@@ -75,6 +75,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   spinMapResolution->setClearValue( 512 );
   spinScreenError->setClearValue( 3 );
   spinGroundError->setClearValue( 1 );
+  terrainElevationOffsetSpinBox->setClearValue( 0.0 );
   edlStrengthSpinBox->setClearValue( 1000 );
   edlDistanceSpinBox->setClearValue( 1 );
   mDebugShadowMapSizeSpinBox->setClearValue( 0.1 );
@@ -128,6 +129,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   spinMapResolution->setValue( mMap->mapTileResolution() );
   spinScreenError->setValue( mMap->maxTerrainScreenError() );
   spinGroundError->setValue( mMap->maxTerrainGroundError() );
+  terrainElevationOffsetSpinBox->setValue( mMap->terrainElevationOffset() );
   chkShowLabels->setChecked( mMap->showLabels() );
   chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
@@ -295,6 +297,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setMapTileResolution( spinMapResolution->value() );
   mMap->setMaxTerrainScreenError( spinScreenError->value() );
   mMap->setMaxTerrainGroundError( spinGroundError->value() );
+  mMap->setTerrainElevationOffset( terrainElevationOffsetSpinBox->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
   mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
   mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
