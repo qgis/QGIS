@@ -18,14 +18,13 @@
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
 # searching for the same item do nothing.
 
-FIND_PATH(PDAL_INCLUDE_DIR pdal.hpp
+FIND_PATH(PDAL_INCLUDE_DIR pdal/pdal.hpp
   "$ENV{LIB_DIR}/include"
-  "$ENV{LIB_DIR}/include/pdal"
-  "/usr/include/pdal"
+  "/usr/include"
   c:/msys/local/include
   NO_DEFAULT_PATH
   )
-FIND_PATH(PDAL_INCLUDE_DIR pdal.hpp)
+FIND_PATH(PDAL_INCLUDE_DIR pdal/pdal.hpp)
 
 FIND_LIBRARY(PDAL_CPP_LIBRARY NAMES pdalccpp libpdalcpp PATHS
   "$ENV{LIB_DIR}/lib"

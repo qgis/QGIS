@@ -964,6 +964,9 @@ QStringList QgsOgrProvider::subLayersWithoutFeatureCount() const
 
 QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !mValid )
   {
     return QStringList();
@@ -1009,6 +1012,9 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 
 void QgsOgrProvider::setEncoding( const QString &e )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   QgsSettings settings;
 
   // if the layer has the OLCStringsAsUTF8 capability, we CANNOT override the
@@ -2544,11 +2550,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
-  if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
+  if ( !syncToDisc() )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   return returnValue;
 }
 
@@ -2655,11 +2660,10 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
-  if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
+  if ( !syncToDisc() )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   return returnvalue;
 }
 
@@ -4040,6 +4044,8 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
     return uniqueValues; //not a provider field
   }
 
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
 
@@ -4098,6 +4104,9 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
     return results; //not a provider field
   }
 
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
   sql += " FROM " + quotedIdentifier( mOgrLayer->name() );
 
@@ -4133,6 +4142,9 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
 
 QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( mOgrLayer && mOgrLayer->TestCapability( OLCFastSpatialFilter ) )
     return QgsFeatureSource::SpatialIndexPresent;
   else if ( mOgrLayer )
@@ -4147,6 +4159,10 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   {
     return QVariant();
   }
+
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   const QgsField originalField = mAttributeFields.at( index );
   QgsField fld = originalField;
 
@@ -4203,6 +4219,10 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   {
     return QVariant();
   }
+
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   const QgsField originalField = mAttributeFields.at( index );
   QgsField fld = originalField;
 
@@ -4572,6 +4592,8 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 
 bool QgsOgrProvider::syncToDisc()
 {
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
+
   //for shapefiles, remove spatial index files and create a new index
   QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   bool shapeIndex = false;

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmtinmeshcreation.h
+                         qgsalgorithmexportmesh.h
                          ---------------------------
     begin                : October 2020
     copyright            : (C) 2020 by Vincent Cloarec
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMEXPORTMESHVERTICES_H
-#define QGSALGORITHMEXPORTMESHVERTICES_H
+#ifndef QGSALGORITHMEXPORTMESH_H
+#define QGSALGORITHMEXPORTMESH_H
 
 #define SIP_NO_FILE
 
@@ -27,6 +27,14 @@
 #include "qgsmeshrenderersettings.h"
 
 ///@cond PRIVATE
+
+struct DataGroup
+{
+  QgsMeshDatasetGroupMetadata metadata;
+  QgsMeshDataBlock datasetValues;
+  QgsMeshDataBlock activeFaces;
+  QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
+};
 
 class QgsExportMeshOnElement : public QgsProcessingAlgorithm
 {
@@ -48,12 +56,6 @@ class QgsExportMeshOnElement : public QgsProcessingAlgorithm
     virtual QgsWkbTypes::Type sinkGeometryType() const = 0;
     virtual QgsGeometry meshElement( int index ) const = 0;
     virtual QgsMesh::ElementType meshElementType() const = 0;
-
-    struct DataGroup
-    {
-      QgsMeshDatasetGroupMetadata metadata;
-      QgsMeshDataBlock datasetValues;
-    };
 
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateTransform mTransform;
@@ -125,7 +127,7 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
 };
 
 
-class QgsExportMeshOnGrid : public QgsProcessingAlgorithm
+class QgsExportMeshOnGridAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
@@ -146,13 +148,6 @@ class QgsExportMeshOnGrid : public QgsProcessingAlgorithm
     QSet<int> supportedDataType();
 
     QgsTriangularMesh mTriangularMesh;
-    struct DataGroup
-    {
-      QgsMeshDatasetGroupMetadata metadata;
-      QgsMeshDataBlock datasetValues;
-      QgsMeshDataBlock activeFaces;
-      QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
-    };
 
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateTransform mTransform;
@@ -160,6 +155,148 @@ class QgsExportMeshOnGrid : public QgsProcessingAlgorithm
     QgsMeshRendererSettings mLayerRendererSettings;
 };
 
+class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType();
+
+    QgsTriangularMesh mTriangularMesh;
+
+    QList<DataGroup> mDataPerGroup;
+    QgsCoordinateTransform mTransform;
+    QgsMeshRendererSettings mLayerRendererSettings;
+};
+
+class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType()
+    {
+      return QSet<int>(
+      {
+        QgsMeshDatasetGroupMetadata::DataOnVertices,
+        QgsMeshDatasetGroupMetadata::DataOnFaces,
+        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+    }
+
+    QgsTriangularMesh mTriangularMesh;
+    QgsMesh mNativeMesh;
+    QVector<double> mLevels;
+
+    QList<DataGroup> mDataPerGroup;
+    QgsCoordinateTransform mTransform;
+    QgsMeshRendererSettings mLayerRendererSettings;
+    QString mDateTimeString;
+
+};
+
+class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType()
+    {
+      return QSet<int>(
+      {
+        QgsMeshDatasetGroupMetadata::DataOnVertices,
+        QgsMeshDatasetGroupMetadata::DataOnFaces,
+        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+    }
+
+    QgsTriangularMesh mTriangularMesh;
+
+    QList<DataGroup> mDataPerGroup;
+    QgsCoordinateReferenceSystem mMeshLayerCrs;
+    QgsMeshRendererSettings mLayerRendererSettings;
+
+};
+
+class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType()
+    {
+      return QSet<int>(
+      {
+        QgsMeshDatasetGroupMetadata::DataOnVertices,
+        QgsMeshDatasetGroupMetadata::DataOnFaces,
+        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+    }
+
+    QgsTriangularMesh mTriangularMesh;
+
+    QgsCoordinateReferenceSystem mMeshLayerCrs;
+    QgsMeshRendererSettings mLayerRendererSettings;
+
+    QList<int> mGroupIndexes;
+    QList<DataGroup> mDatasets;
+    QList<qint64> mRelativeTimeSteps;
+    QStringList mTimeStepString;
+    QMap<qint64, QMap<int, int>> mRelativeTimeToData;
+    QMap<int, QgsMeshDatasetGroupMetadata> mGroupsMetadata;
+
+};
+
+
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMEXPORTMESHVERTICES_H
+#endif // QGSALGORITHMEXPORTMESH_H

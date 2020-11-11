@@ -23,8 +23,6 @@
 #include <QString>
 #include <QVector>
 
-#define SIP_NO_FILE
-
 /**
  * \ingroup core
  *
@@ -55,16 +53,38 @@ class CORE_EXPORT QgsPointCloudAttribute
     QString name() const { return mName; }
 
     //! Returns size of the attribute in bytes
-    size_t size() const { return mSize; }
+    int size() const { return mSize; }
 
     //! Returns the data type
     DataType type() const { return mType; }
+
+    /**
+     * Returns the type to use when displaying this field.
+     *
+     * This will be used when the full datatype with details has to displayed to the user.
+     *
+     * \see type()
+     */
+    QString displayType() const;
+
+    /**
+     * Returns TRUE if the specified data \a type is numeric.
+     */
+    static bool isNumeric( DataType type );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsPointCloudAttribute: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->displayType() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     void updateSize();
 
     QString mName;
-    size_t mSize = 0;
+    int mSize = 0;
     DataType mType;
 };
 
@@ -89,24 +109,41 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     QVector<QgsPointCloudAttribute> attributes() const;
 
     /**
+     * Returns the number of attributes present in the collection.
+     */
+    int count() const { return mAttributes.size(); }
+
+    /**
+     * Returns the attribute at the specified \a index.
+     */
+    const QgsPointCloudAttribute &at( int index ) const { return mAttributes.at( index ); }
+
+    /**
      * Finds the attribute with the name
      *
-     * Returns nullptr if not found
+     * Returns NULLPTR if not found.
      */
     const QgsPointCloudAttribute *find( const QString &attributeName, int &offset ) const;
 
+    /**
+     * Returns the index of the attribute with the specified \a name.
+     *
+     * Returns -1 if a matching attribute was not found.
+     */
+    int indexOf( const QString &name ) const;
+
     //! Returns total size of record
-    std::size_t pointRecordSize() const { return mSize; }
+    int pointRecordSize() const { return mSize; }
 
   private:
-    std::size_t mSize = 0;
+    int mSize = 0;
     QVector<QgsPointCloudAttribute> mAttributes;
 
     struct CachedAttributeData
     {
       int index;
-      std::size_t offset;
-      CachedAttributeData( int index, std::size_t offset )
+      int offset;
+      CachedAttributeData( int index, int offset )
         : index( index )
         , offset( offset )
       {}

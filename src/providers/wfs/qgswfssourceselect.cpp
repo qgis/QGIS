@@ -97,10 +97,10 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
-  mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( QStringLiteral( "Title" ) ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( QStringLiteral( "Name" ) ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_ABSTRACT, new QStandardItem( QStringLiteral( "Abstract" ) ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_SQL, new QStandardItem( QStringLiteral( "Sql" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( tr( "Title" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( tr( "Name" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_ABSTRACT, new QStandardItem( tr( "Abstract" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_SQL, new QStandardItem( tr( "Sql" ) ) );
 
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModel );

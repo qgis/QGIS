@@ -123,7 +123,6 @@ Depends:
  libjs-jquery,
  libjs-leaflet,
  qml-module-qtcharts,
- qt5-image-formats-plugins,
  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -440,6 +439,7 @@ Depends:
  qgis-providers-common (= ${source:Version}),
  libqca-qt5-2-plugins,
  libqt5sql5-sqlite,
+ qt5-image-formats-plugins,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)

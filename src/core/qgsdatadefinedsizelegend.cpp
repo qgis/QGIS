@@ -240,7 +240,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   // but we need to avoid overlapping texts, so adjust the vertical positions
   double middleIndex = 0; // classes.count() / 2;  // will get the ideal position
   QList<double> textCenterY;
-  double lastY = symbolTopY[middleIndex];
+  double lastY = middleIndex < symbolTopY.size() ? symbolTopY[middleIndex] : 0;
   textCenterY << lastY;
   for ( int i = middleIndex + 1; i < classes.count(); ++i )
   {

@@ -49,6 +49,8 @@ from data provider and calculates triangular mesh
 
 .. versionadded:: 3.6
 %End
+
+
 };
 
 /************************************************************************

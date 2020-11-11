@@ -143,16 +143,23 @@ class TestQgsProcessingAlgs: public QObject
 
     void saveLog();
     void setProjectVariable();
+
+#ifndef QT_NO_PRINTER
     void exportLayoutPdf();
     void exportLayoutPng();
     void exportAtlasLayoutPdf();
     void exportAtlasLayoutPng();
+#endif
 
     void tinMeshCreation();
     void exportMeshVertices();
     void exportMeshFaces();
     void exportMeshEdges();
     void exportMeshOnGrid();
+    void rasterizeMesh();
+    void exportMeshContours();
+    void exportMeshCrossSection();
+    void exportMeshTimeSeries();
 
   private:
 
@@ -4593,6 +4600,7 @@ void TestQgsProcessingAlgs::setProjectVariable()
   QCOMPARE( scope->variable( QStringLiteral( "my_var" ) ).toInt(), 13 );
 }
 
+#ifndef QT_NO_PRINTER
 void TestQgsProcessingAlgs::exportLayoutPdf()
 {
   QgsProject p;
@@ -4789,6 +4797,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
   QVERIFY( imageCheck( "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png" ) );
 }
+#endif
 
 void TestQgsProcessingAlgs::tinMeshCreation()
 {
@@ -5117,6 +5126,455 @@ void TestQgsProcessingAlgs::exportMeshOnGrid()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 0.02776, 2 ) );
 
 }
+
+void TestQgsProcessingAlgs::rasterizeMesh()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshrasterize" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2 << 3;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), 200.0 );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  QVERIFY( outputRaster );
+  QVERIFY( outputRaster->isValid() );
+  QgsRasterDataProvider *outputProvider = outputRaster->dataProvider();
+
+  QCOMPARE( outputProvider->bandCount(), 3 );
+  QCOMPARE( outputProvider->xSize(), 10 );
+  QCOMPARE( outputProvider->ySize(), 5 );
+
+  std::unique_ptr<QgsRasterBlock> outputBlock_1( outputProvider->block( 1, outputRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> outputBlock_2( outputProvider->block( 2, outputRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> outputBlock_3( outputProvider->block( 3, outputRaster->extent(), 10, 5 ) );
+
+  // load expected result
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  std::unique_ptr<QgsRasterLayer> expectedRaster = qgis::make_unique< QgsRasterLayer >( dataDir + "/mesh/rasterized_mesh.tif", "expected", "gdal" );
+  QVERIFY( expectedRaster );
+  QVERIFY( expectedRaster->isValid() );
+  QgsRasterDataProvider *expectedProvider = outputRaster->dataProvider();
+  std::unique_ptr<QgsRasterBlock> expectedBlock_1( expectedProvider->block( 1, expectedRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> expectedBlock_2( expectedProvider->block( 2, expectedRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> expectedBlock_3( expectedProvider->block( 3, expectedRaster->extent(), 10, 5 ) );
+
+  for ( int ix = 0; ix < 10; ++ix )
+  {
+    for ( int iy = 0; iy < 5; ++iy )
+    {
+      if ( !( std::isnan( outputBlock_1->value( iy, ix ) ) && std::isnan( expectedBlock_1->value( iy, ix ) ) ) )
+        QCOMPARE( outputBlock_1->value( iy, ix ), expectedBlock_1->value( iy, ix ) );
+      if ( !( std::isnan( outputBlock_2->value( iy, ix ) ) && std::isnan( expectedBlock_2->value( iy, ix ) ) ) )
+        QCOMPARE( outputBlock_2->value( iy, ix ), expectedBlock_2->value( iy, ix ) );
+      if ( !( std::isnan( outputBlock_2->value( iy, ix ) ) && std::isnan( expectedBlock_2->value( iy, ix ) ) ) )
+        QCOMPARE( outputBlock_3->value( iy, ix ), expectedBlock_3->value( iy, ix ) );
+    }
+  }
+}
+
+void TestQgsProcessingAlgs::exportMeshContours()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshcontours" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2 << 3;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "OUTPUT_LINES" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "OUTPUT_POLYGONS" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  // min>max
+  parameters.insert( QStringLiteral( "INCREMENT" ), 0.5 );
+  parameters.insert( QStringLiteral( "MINIMUM" ), 5.0 );
+  parameters.insert( QStringLiteral( "MAXIMUM" ), 2.0 );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  // min-max<increrment
+  parameters.insert( QStringLiteral( "INCREMENT" ), 10 );
+  parameters.insert( QStringLiteral( "MINIMUM" ), 5.0 );
+  parameters.insert( QStringLiteral( "MAXIMUM" ), 2.0 );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  // min-max<increrment
+  parameters.insert( QStringLiteral( "INCREMENT" ), 2 );
+  parameters.insert( QStringLiteral( "MINIMUM" ), 0.25 );
+  parameters.insert( QStringLiteral( "MAXIMUM" ), 6.25 );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLinesLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_LINES" ) ).toString() ) );
+  QVERIFY( resultLinesLayer );
+  QVERIFY( resultLinesLayer->isValid() );
+  QgsAttributeList attributeList = resultLinesLayer->attributeList();
+  QCOMPARE( resultLinesLayer->fields().count(), 3 );
+  QCOMPARE( resultLinesLayer->fields().at( 0 ).name(), QStringLiteral( "group" ) );
+  QCOMPARE( resultLinesLayer->fields().at( 1 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( resultLinesLayer->fields().at( 2 ).name(), QStringLiteral( "value" ) );
+
+  QCOMPARE( resultLinesLayer->featureCount(), 4l );
+  QgsFeatureIterator featIt = resultLinesLayer->getFeatures();
+  QgsFeature feat;
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "LineStringZ (1250 3000 20, 1250 2250 27.5, 1250 2000 22.5)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "LineStringZ (1006.94319345290614365 3000 10.27772773811624596, 1000 2976.48044676110157525 10.23519553238898538)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "LineStringZ (2009.71706923721990279 2990.28293076277986984 49.90282930762779756, 2462.15304528350043256 2000 34.62153045283500319)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.25 );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "LineStringZ (1500 3000 30, 1500 2500 35, 1500 2000 25)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
+
+  QgsVectorLayer *resultpolygonLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_POLYGONS" ) ).toString() ) );
+  QVERIFY( resultpolygonLayer );
+  QVERIFY( resultpolygonLayer->isValid() );
+  attributeList = resultpolygonLayer->attributeList();
+  QCOMPARE( resultpolygonLayer->fields().count(), 4 );
+  QCOMPARE( resultpolygonLayer->fields().at( 0 ).name(), QStringLiteral( "group" ) );
+  QCOMPARE( resultpolygonLayer->fields().at( 1 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( resultpolygonLayer->fields().at( 2 ).name(), QStringLiteral( "min_value" ) );
+  QCOMPARE( resultpolygonLayer->fields().at( 3 ).name(), QStringLiteral( "max_value" ) );
+
+  QCOMPARE( resultpolygonLayer->featureCount(), 6l );
+  featIt = resultpolygonLayer->getFeatures();
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PolygonZ ((1250 2250 27.5, 1250 2000 22.5, 1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5))" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
+  QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PolygonZ ((2000 2000 30, 1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30))" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
+  QCOMPARE( feat.attributes().at( 3 ).toDouble(), 4.25 );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PolygonZ ((1006.94319345290614365 3000 10.27772773811624596, 1000 3000 10, 1000 2976.48044676110157525 10.23519553238898538, 1006.94319345290614365 3000 10.27772773811624596))" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
+  QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
+  featIt.nextFeature( feat );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PolygonZ ((1500 2500 35, 1500 2000 25, 1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35))" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
+  QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PolygonZ ((2000 2000 30, 1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30))" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
+  QCOMPARE( feat.attributes().at( 3 ).toDouble(), 4.25 );
+
+  parameters.insert( QStringLiteral( "CONTOUR_LEVEL_LIST" ), QStringLiteral( "4,2,3" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  parameters.insert( QStringLiteral( "CONTOUR_LEVEL_LIST" ), QStringLiteral( "2,2,3" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  parameters.insert( QStringLiteral( "CONTOUR_LEVEL_LIST" ), QStringLiteral( "1,2,3" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+}
+
+void TestQgsProcessingAlgs::exportMeshCrossSection()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshexportcrosssection" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2 << 3;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
+
+  QString outputPath = QDir::tempPath() + "/test_mesh_xs.csv";
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+
+  QgsVectorLayer *layerLine = new QgsVectorLayer( QStringLiteral( "LineString" ),
+      QStringLiteral( "lines_for_xs" ),
+      QStringLiteral( "memory" ) );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QStringList wktLines;
+  wktLines << QStringLiteral( "LineString (1500 2200, 2500 2200)" );
+  wktLines << QStringLiteral( "LineString (1500 1500, 1500 3200)" );
+
+  QgsFeatureList flist;
+  for ( const QString &wkt : wktLines )
+  {
+    QgsFeature feat;
+    feat.setGeometry( QgsGeometry::fromWkt( wkt ) );
+    flist << feat;
+  }
+  layerLine->dataProvider()->addFeatures( flist );
+  QgsProject::instance()->addMapLayer( layerLine );  QgsProject::instance()->addMapLayer( layerLine );
+  parameters.insert( QStringLiteral( "INPUT_LINES" ), layerLine->name() );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QFile outputFile( outputPath );
+  QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
+  QTextStream textStream( &outputFile );
+  QString header = textStream.readLine();
+  QCOMPARE( header, QStringLiteral( "fid,x,y,offset,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+
+  QStringList expectedLines;
+  expectedLines << QStringLiteral( "1,1500.00,2200.00,0.00,2.50,3.33,2.00" )
+                << QStringLiteral( "1,1600.00,2200.00,100.00,2.60,3.41,2.00" )
+                << QStringLiteral( "1,1700.00,2200.00,200.00,2.70,3.48,2.00" )
+                << QStringLiteral( "1,1800.00,2200.00,300.00,2.80,3.56,2.00" )
+                << QStringLiteral( "1,1900.00,2200.00,400.00,2.90,3.64,2.00" )
+                << QStringLiteral( "1,2000.00,2200.00,500.00,3.00,3.72,2.00" )
+                << QStringLiteral( "1,2100.00,2200.00,600.00,3.10,3.86,3.00" )
+                << QStringLiteral( "1,2200.00,2200.00,700.00,3.20,4.00,3.00" )
+                << QStringLiteral( "1,2300.00,2200.00,800.00,3.30,4.14,3.00" )
+                << QStringLiteral( "1,2400.00,2200.00,900.00,3.40,4.28,3.00" )
+                << QStringLiteral( "1,2500.00,2200.00,1000.00,3.50,4.42,3.00" )
+                << QStringLiteral( "2,1500.00,1500.00,0.00, , , " )
+                << QStringLiteral( "2,1500.00,1600.00,100.00, , , " )
+                << QStringLiteral( "2,1500.00,1700.00,200.00, , , " )
+                << QStringLiteral( "2,1500.00,1800.00,300.00, , , " )
+                << QStringLiteral( "2,1500.00,1900.00,400.00, , , " )
+                << QStringLiteral( "2,1500.00,2000.00,500.00,2.50,3.20,2.00" )
+                << QStringLiteral( "2,1500.00,2100.00,600.00,2.50,3.26,2.00" )
+                << QStringLiteral( "2,1500.00,2200.00,700.00,2.50,3.33,2.00" )
+                << QStringLiteral( "2,1500.00,2300.00,800.00,2.50,3.40,2.00" )
+                << QStringLiteral( "2,1500.00,2400.00,900.00,2.50,3.47,2.00" )
+                << QStringLiteral( "2,1500.00,2500.00,1000.00,2.50,3.54,2.00" )
+                << QStringLiteral( "2,1500.00,2600.00,1100.00,2.50,3.33,2.00" )
+                << QStringLiteral( "2,1500.00,2700.00,1200.00,2.50,3.14,2.00" )
+                << QStringLiteral( "2,1500.00,2800.00,1300.00,2.50,2.97,2.00" )
+                << QStringLiteral( "2,1500.00,2900.00,1400.00,2.50,2.82,2.00" )
+                << QStringLiteral( "2,1500.00,3000.00,1500.00,2.50,2.69,2.00" )
+                << QStringLiteral( "2,1500.00,3100.00,1600.00, , , " )
+                << QStringLiteral( "2,1500.00,3200.00,1700.00, , , " );
+  QString line = textStream.readLine();
+  int i = 0;
+  QVERIFY( !line.isEmpty() );
+  while ( !line.isEmpty() )
+  {
+    QCOMPARE( line, expectedLines.at( i ) );
+    ++i;
+    line = textStream.readLine();
+  }
+
+  QVERIFY( i == expectedLines.count() );
+}
+
+void TestQgsProcessingAlgs::exportMeshTimeSeries()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshexporttimeseries" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2 << 3;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetStartTime;
+  datasetStartTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndexStart;
+  datasetIndexStart << 1 << 0;
+  datasetStartTime[QStringLiteral( "value" )] = datasetIndexStart;
+  parameters.insert( QStringLiteral( "STARTING_TIME" ), datasetStartTime );
+
+  QVariantMap datasetEndTime;
+  datasetEndTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndexEnd;
+  datasetIndexEnd << 1 << 1;
+  datasetEndTime[QStringLiteral( "value" )] = datasetIndexEnd;
+  parameters.insert( QStringLiteral( "FINISHING_TIME" ), datasetEndTime );
+
+  QString outputPath = QDir::tempPath() + "/test_mesh_ts.csv";
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "points_for_ts" ),
+      QStringLiteral( "memory" ) );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QStringList wktPoints;
+  wktPoints << QStringLiteral( "Point (1500 2200)" );
+  wktPoints << QStringLiteral( "Point (1500 1500)" );
+  wktPoints << QStringLiteral( "Point (2500 2100)" );
+
+  QgsFeatureList flist;
+  for ( const QString &wkt : wktPoints )
+  {
+    QgsFeature feat;
+    feat.setGeometry( QgsGeometry::fromWkt( wkt ) );
+    flist << feat;
+  }
+  layerPoints->dataProvider()->addFeatures( flist );
+  QgsProject::instance()->addMapLayer( layerPoints );  QgsProject::instance()->addMapLayer( layerPoints );
+  parameters.insert( QStringLiteral( "INPUT_POINTS" ), layerPoints->name() );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QFile outputFile( outputPath );
+  QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
+  QTextStream textStream( &outputFile );
+  QString header = textStream.readLine();
+  QCOMPARE( header, QStringLiteral( "fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+
+  QStringList expectedLines;
+  expectedLines << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00" );
+
+  QString line = textStream.readLine();
+  int i = 0;
+  QVERIFY( !line.isEmpty() );
+  while ( !line.isEmpty() )
+  {
+    QCOMPARE( line, expectedLines.at( i ) );
+    ++i;
+    line = textStream.readLine();
+  }
+  QVERIFY( i == expectedLines.count() );
+  outputFile.close();
+
+  parameters.insert( QStringLiteral( "TIME_STEP" ), 0.1 );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
+  header = textStream.readLine();
+  QCOMPARE( header, QStringLiteral( "fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+
+  expectedLines.clear();
+  expectedLines << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:06:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:12:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:18:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:24:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:30:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:36:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:42:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:48:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:54:00,1.50,1.92,1.00" )
+                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:06:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:12:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:18:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:24:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:30:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:36:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:42:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:48:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:54:00,2.50,2.97,2.00" )
+                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00" );
+
+  line = textStream.readLine();
+  i = 0;
+  QVERIFY( !line.isEmpty() );
+  while ( !line.isEmpty() )
+  {
+    QCOMPARE( line, expectedLines.at( i ) );
+    ++i;
+    line = textStream.readLine();
+  }
+  QVERIFY( i == expectedLines.count() );
+  outputFile.close();
+}
+
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )
 {
