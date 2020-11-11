@@ -101,7 +101,6 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
 #ifdef ENABLE_MODELTEST
-  new ModelTest( treeModel, this );
   new ModelTest( mProxyModel, this );
 #endif
 

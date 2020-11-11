@@ -99,7 +99,6 @@ Gets list of children of the node. Children are owned by the parent
 %End
 
 
-
     virtual QString name() const = 0;
 %Docstring
 Returns name of the node
@@ -317,6 +316,7 @@ Low-level removal of children from the node.
 %End
 
   protected:
+
 
 };
 

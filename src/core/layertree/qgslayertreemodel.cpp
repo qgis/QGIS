@@ -773,7 +773,7 @@ void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode *node )
 {
   Q_ASSERT( node );
 
-  QModelIndex index = node2index( node );
+  const QModelIndex index = node2index( node );
   emit dataChanged( index, index );
 }
 
@@ -782,7 +782,7 @@ void QgsLayerTreeModel::nodeNameChanged( QgsLayerTreeNode *node, const QString &
   Q_UNUSED( name )
   Q_ASSERT( node );
 
-  QModelIndex index = node2index( node );
+  const QModelIndex index = node2index( node );
   emit dataChanged( index, index );
 }
 
