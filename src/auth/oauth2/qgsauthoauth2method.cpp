@@ -28,6 +28,8 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
+#include <algorithm>
+
 #include <QDateTime>
 #include <QInputDialog>
 #include <QDesktopServices>
@@ -139,7 +141,10 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     if ( o2->expires() > 0 )  // QStringLiteral("").toInt() result for tokens with no expiration
     {
       int cursecs = static_cast<int>( QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000 );
-      expired = ( ( o2->expires() - cursecs ) < 120 ); // try refresh with expired or two minutes to go
+      const int lExpirationDelay = o2->expirationDelay();
+      // try refresh with expired or two minutes to go (or a fraction of the initial expiration delay if it is short)
+      const int refreshThreshold = lExpirationDelay > 0 ? std::min( 120, std::max( 2, lExpirationDelay / 10 ) ) : 120;
+      expired = ( ( o2->expires() - cursecs ) < refreshThreshold );
     }
 
     if ( expired )
@@ -160,6 +165,8 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         o2->refreshSynchronous();
 
         // refresh result should set o2 to (un)linked
+        if ( o2->linked() )
+          o2->computeExpirationDelay();
       }
     }
   }
@@ -226,6 +233,8 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
       QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
       return false;
     }
+
+    o2->computeExpirationDelay();
   }
 
   if ( o2->token().isEmpty() )
