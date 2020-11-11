@@ -24,7 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 from qgis.processing import alg as algfactory
 import os
 import inspect
-import importlib
+import importlib.util
 
 from qgis.PyQt.QtCore import QCoreApplication
 
