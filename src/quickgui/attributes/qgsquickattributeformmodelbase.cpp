@@ -316,6 +316,9 @@ void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *conta
 
 void QgsQuickAttributeFormModelBase::updateVisibility( int fieldIndex )
 {
+  if ( !mLayer || !mLayer->isValid() )
+    return;
+
   QgsFields fields = mAttributeModel->featureLayerPair().feature().fields();
   mExpressionContext.setFields( fields );
   mExpressionContext.setFeature( mAttributeModel->featureLayerPair().feature() );
