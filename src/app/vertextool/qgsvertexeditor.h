@@ -133,7 +133,7 @@ class APP_EXPORT CoordinateItemDelegate : public QStyledItemDelegate
 
   public:
 
-    explicit CoordinateItemDelegate( QObject *parent = nullptr );
+    explicit CoordinateItemDelegate( const QgsCoordinateReferenceSystem &crs, QObject *parent = nullptr );
 
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
@@ -141,6 +141,11 @@ class APP_EXPORT CoordinateItemDelegate : public QStyledItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+
+  private:
+    //! Returns number of decimal places to display after the dot
+    int displayDecimalPlaces() const;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 
