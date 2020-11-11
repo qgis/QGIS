@@ -46,7 +46,7 @@ for module in "${modules[@]}"; do
   headers=$(
     for source in "${sources[@]}"; do
       echo "QGIS_${module^^}_${source}"
-      ${GP}sed -r -n -e "/^\s*SET\s*\(QGIS_${module^^}_${source}/,/\)\$/{ /^\s*SET\s*\(QGIS_${module^^}_${source}/d; /\)\$/d; p; }" src/${module}/CMakeLists.txt | \
+      ${GP}sed -r -n -e "/^\s*set\s*\(QGIS_${module^^}_${source}/,/\)\$/{ /^\s*set\s*\(QGIS_${module^^}_${source}/d; /\)\$/d; p; }" src/${module}/CMakeLists.txt | \
       ${GP}sed -r -e '/\.cc?$/d'     `# remove c and cc extensions` \
                   -e 's/\.cpp$/.h/'  `# rename cpp file as headers` \
                   -e '/^\s*\$\{CMAKE_(CURRENT_)?BINARY_DIR\}/d' \
