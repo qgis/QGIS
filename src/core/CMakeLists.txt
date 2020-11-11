@@ -1,7 +1,7 @@
 ############################################################
 # sources
 
-SET(QGIS_CORE_SRCS
+set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
@@ -731,39 +731,39 @@ SET(QGIS_CORE_SRCS
   qgsuserprofilemanager.cpp
 )
 
-FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
-IF(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
-  STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
-ENDIF(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
-STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
-STRING(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
+if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
+  string(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
+endif()
+string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
+string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
   COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
   DEPENDS ${JSON_HELP_FILES}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-IF(ENABLE_MODELTEST)
-  SET(MODELTEST_SRCS
+if(ENABLE_MODELTEST)
+  set(MODELTEST_SRCS
     ../../tests/qt_modeltest/modeltest.cpp
     ../../tests/qt_modeltest/dynamictreemodel.cpp
   )
-  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     ${MODELTEST_SRCS}
   )
-ENDIF(ENABLE_MODELTEST)
+endif()
 
-IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
-  SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
-ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
+endif()
 
-IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
-  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+if (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp
   )
-ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+endif()
 
 ADD_FLEX_FILES_PREFIX(QGIS_CORE_SRCS exp_ qgsexpressionlexer.ll)
 ADD_FLEX_FILES_PREFIX(QGIS_CORE_SRCS sqlstatement_ qgssqlstatementlexer.ll)
@@ -772,23 +772,23 @@ ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS exp_ qgsexpressionparser.yy)
 ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS sqlstatement_ qgssqlstatementparser.yy)
 ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS mesh mesh/qgsmeshcalcparser.yy)
 
-IF(NOT MSVC)
-  SET_SOURCE_FILES_PROPERTIES(
+if(NOT MSVC)
+  set_source_files_properties(
     qgsexpressionparser.cpp
     qgssqlstatementparser.cpp
     qgsmeshcalcparser.cpp
     PROPERTIES COMPILE_FLAGS -w)
-ELSE(NOT MSVC)
+else()
   # -wd4702 unreachable code
-  SET_SOURCE_FILES_PROPERTIES(
+  set_source_files_properties(
     geometry/qgsgeos.cpp
     pal/feature.cpp
     pal/pointset.cpp
     ${CMAKE_BINARY_DIR}/src/core/qgsmeshcalcparser.cpp
     PROPERTIES COMPILE_FLAGS -wd4702)
-ENDIF(NOT MSVC)
+endif()
 
-SET(QGIS_CORE_HDRS
+set(QGIS_CORE_HDRS
   ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
@@ -1512,7 +1512,7 @@ SET(QGIS_CORE_HDRS
   vectortile/qgsvectortilewriter.h
 )
 
-SET(QGIS_CORE_PRIVATE_HDRS
+set(QGIS_CORE_PRIVATE_HDRS
   qgscoordinatereferencesystem_p.h
   qgscoordinatetransformcontext_p.h
   qgscoordinatetransform_p.h
@@ -1527,55 +1527,55 @@ SET(QGIS_CORE_PRIVATE_HDRS
   textrenderer/qgstextrenderer_p.h
 )
 
-IF (NOT WITH_QTWEBKIT)
-  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+if (NOT WITH_QTWEBKIT)
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     qgswebframe.h
   )
-ENDIF(NOT WITH_QTWEBKIT)
+endif()
 
-IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
-  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+if (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
   )
-ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+endif()
 
 
-IF (HAVE_OPENCL)
-    SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+if (HAVE_OPENCL)
+    set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
         qgsopenclutils.h
     )
-ENDIF (HAVE_OPENCL)
+endif()
 
-IF(NOT MSVC)
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
-    SET_SOURCE_FILES_PROPERTIES(qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
-  ENDIF ()
-ENDIF(NOT MSVC)
+if(NOT MSVC)
+  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+    set_source_files_properties(qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
+  endif()
+endif()
 
 # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
 protobuf_generate_cpp(VECTOR_TILE_PROTO_SRCS VECTOR_TILE_PROTO_HDRS vectortile/vector_tile.proto)
-SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${VECTOR_TILE_PROTO_SRCS})
-SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${VECTOR_TILE_PROTO_HDRS})
-IF (MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} vectortile/qgsvectortilemvtdecoder.cpp vectortile/qgsvectortilemvtencoder.cpp PROPERTIES COMPILE_DEFINITIONS PROTOBUF_USE_DLLS)
-ELSE (MSVC)
+set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${VECTOR_TILE_PROTO_SRCS})
+set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${VECTOR_TILE_PROTO_HDRS})
+if (MSVC)
+  set_source_files_properties(${VECTOR_TILE_PROTO_SRCS} vectortile/qgsvectortilemvtdecoder.cpp vectortile/qgsvectortilemvtencoder.cpp PROPERTIES COMPILE_DEFINITIONS PROTOBUF_USE_DLLS)
+else()
   # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
-  SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
-ENDIF (MSVC)
+  set_source_files_properties(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
+endif()
 
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into
 # the OS X framework target
 
-IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
-  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+if (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
     gps/qgsgpsconnectionregistry.h
   )
-ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
+endif()
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   3d
@@ -1623,7 +1623,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
 )
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
@@ -1639,78 +1639,78 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${ZLIB_INCLUDE_DIRS}
 )
 
-IF (HAVE_PDAL)
-  INCLUDE_DIRECTORIES(SYSTEM
+if (HAVE_PDAL)
+  include_directories(SYSTEM
     ${PDAL_INCLUDE_DIR}
   )
-ENDIF (HAVE_PDAL)
+endif()
 
-IF (HAVE_OPENCL)
-    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+if (HAVE_OPENCL)
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
         qgsopenclutils.cpp
     )
-    SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
         qgsopenclutils.h
     )
-    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
-ENDIF (HAVE_OPENCL)
+    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+endif()
 
-IF (WITH_EPT)
-  INCLUDE_DIRECTORIES(providers/ept)
+if (WITH_EPT)
+  include_directories(providers/ept)
 
-  INCLUDE_DIRECTORIES(SYSTEM
+  include_directories(SYSTEM
     ${ZSTD_INCLUDE_DIR}
   )
 
-  IF (LazPerf_FOUND)
+  if (LazPerf_FOUND)
     # Use system laz-perf
-    INCLUDE_DIRECTORIES(SYSTEM
+    include_directories(SYSTEM
       ${LazPerf_INCLUDE_DIR}
     )
-  ELSE (LazPerf_FOUND)
+  else()
     # Use embedded laz-perf from external/laz-perf
-    INCLUDE_DIRECTORIES(SYSTEM
+    include_directories(SYSTEM
       ${CMAKE_SOURCE_DIR}/external
     )
-  ENDIF (LazPerf_FOUND)
+  endif()
 
-  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptdataitems.cpp
       providers/ept/qgseptprovider.cpp
       providers/ept/qgseptdecoder.cpp
       providers/ept/qgseptpointcloudindex.cpp
   )
-  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
       providers/ept/qgseptdecoder.h
       providers/ept/qgseptpointcloudindex.h
   )
-ENDIF (WITH_EPT)
+endif()
 
-IF (APPLE)
+if (APPLE)
   # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
-  INCLUDE_DIRECTORIES(SYSTEM
+  include_directories(SYSTEM
     ${LIBTASN1_INCLUDE_DIR}
   )
-ENDIF (APPLE)
+endif()
 
 
 #for PAL classes
-IF (WIN32)
-    ADD_DEFINITIONS(-D_HAVE_WINDOWS_H_)
-ELSE (WIN32)
-    ADD_DEFINITIONS(-D_HAVE_PTHREAD_)
-ENDIF (WIN32)
+if (WIN32)
+    add_definitions(-D_HAVE_WINDOWS_H_)
+else()
+    add_definitions(-D_HAVE_PTHREAD_)
+endif()
 
 # Test data dir for QgsRenderChecker
-ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
+add_definitions(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
-SET(IMAGE_RCCS ../../images/images.qrc)
+set(IMAGE_RCCS ../../images/images.qrc)
 
 #############################################################
 # qgis_core library
-ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
+add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
 
 GENERATE_EXPORT_HEADER(
   qgis_core
@@ -1718,23 +1718,23 @@ GENERATE_EXPORT_HEADER(
   EXPORT_FILE_NAME qgis_core.h
 )
 
-SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
+set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
-IF(ENABLE_MODELTEST)
-  TARGET_LINK_LIBRARIES(qgis_core ${Qt5Test_LIBRARIES})
-ENDIF(ENABLE_MODELTEST)
-
-
-IF(HAVE_OPENCL)
-  TARGET_LINK_LIBRARIES(qgis_core ${OpenCL_LIBRARY})
-ENDIF(HAVE_OPENCL)
+if(ENABLE_MODELTEST)
+  target_link_libraries(qgis_core ${Qt5Test_LIBRARIES})
+endif()
 
 
-IF(NOT APPLE)
-  INSTALL(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-ELSE(NOT APPLE)
+if(HAVE_OPENCL)
+  target_link_libraries(qgis_core ${OpenCL_LIBRARY})
+endif()
 
-  SET_TARGET_PROPERTIES(qgis_core PROPERTIES
+
+if(NOT APPLE)
+  install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+else()
+
+  set_target_properties(qgis_core PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
     FRAMEWORK 1
     FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
@@ -1746,50 +1746,50 @@ ELSE(NOT APPLE)
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
   # generated export header does not get copied with PUBLIC_HEADER files
-  ADD_CUSTOM_COMMAND(TARGET qgis_core
+  add_custom_command(TARGET qgis_core
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy qgis_core.h
             "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_core.framework/Headers"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS qgis_core.h
   )
-ENDIF(NOT APPLE)
+endif()
 
 #generate unversioned libs for android
-IF (NOT ANDROID)
-  SET_TARGET_PROPERTIES(qgis_core PROPERTIES
+if (NOT ANDROID)
+  set_target_properties(qgis_core PROPERTIES
     VERSION ${COMPLETE_VERSION}
     SOVERSION ${COMPLETE_VERSION}
     )
-ENDIF (NOT ANDROID)
+endif()
 
 # make sure to create qgsversion.h before compiling
-ADD_DEPENDENCIES(qgis_core version)
+add_dependencies(qgis_core version)
 
 # because of htonl
-IF (WIN32)
-  FIND_LIBRARY(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
-  FIND_LIBRARY(VERSION_LIBRARY NAMES version PATHS $ENV{LIB})
-  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY} dbghelp ${VERSION_LIBRARY})
-ENDIF (WIN32)
+if (WIN32)
+  find_library(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
+  find_library(VERSION_LIBRARY NAMES version PATHS $ENV{LIB})
+  target_link_libraries(qgis_core wsock32 ${SETUPAPI_LIBRARY} dbghelp ${VERSION_LIBRARY})
+endif()
 
-IF (APPLE)
-  TARGET_LINK_LIBRARIES(qgis_core ${LIBTASN1_LIBRARY})
-ENDIF (APPLE)
+if (APPLE)
+  target_link_libraries(qgis_core ${LIBTASN1_LIBRARY})
+endif()
 
-IF (APPLE AND NOT IOS)
-  TARGET_LINK_LIBRARIES(qgis_core qgis_native)
-ENDIF (APPLE AND NOT IOS)
+if (APPLE AND NOT IOS)
+  target_link_libraries(qgis_core qgis_native)
+endif()
 
-IF (QT_MOBILITY_LOCATION_FOUND)
-  TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
-ENDIF (QT_MOBILITY_LOCATION_FOUND)
+if (QT_MOBILITY_LOCATION_FOUND)
+  target_link_libraries(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
+endif()
 
-IF (ADD_CLAZY_CHECKS)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS},non-pod-global-static")
-ENDIF (ADD_CLAZY_CHECKS)
+if (ADD_CLAZY_CHECKS)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS},non-pod-global-static")
+endif()
 
-TARGET_LINK_LIBRARIES(qgis_core
+target_link_libraries(qgis_core
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
   ${Qt5Gui_LIBRARIES}
@@ -1814,60 +1814,60 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${ZLIB_LIBRARIES}
 )
 
-IF (WITH_EPT)
-  TARGET_LINK_LIBRARIES(qgis_core
+if (WITH_EPT)
+  target_link_libraries(qgis_core
     ${ZSTD_LIBRARY}
   )
-ENDIF (WITH_EPT)
+endif()
 
-IF (HAVE_PDAL)
-  TARGET_LINK_LIBRARIES(qgis_core
+if (HAVE_PDAL)
+  target_link_libraries(qgis_core
     ${PDAL_LIBRARIES}
   )
-ENDIF (HAVE_PDAL)
+endif()
 
-IF (FORCE_STATIC_PROVIDERS)
-  INCLUDE_DIRECTORIES(
+if (FORCE_STATIC_PROVIDERS)
+  include_directories(
     ${CMAKE_SOURCE_DIR}/src/providers/wms
     ${CMAKE_SOURCE_DIR}/src/providers/postgres
   )
 
-  TARGET_LINK_LIBRARIES(qgis_core
+  target_link_libraries(qgis_core
     wmsprovider_a
     postgresprovider_a
   )
-ENDIF (FORCE_STATIC_PROVIDERS)
+endif()
 
-IF (MSVC)
+if (MSVC)
   #needed for linking to gdal which needs odbc
-  SET(TARGET_LINK_LIBRARIES qgis_core odbc32 odbccp32)
-ENDIF (MSVC)
+  set(TARGET_LINK_LIBRARIES qgis_core odbc32 odbccp32)
+endif()
 
-IF (Qt5SerialPort_FOUND)
-  TARGET_LINK_LIBRARIES(qgis_core
+if (Qt5SerialPort_FOUND)
+  target_link_libraries(qgis_core
     Qt5::SerialPort
   )
-ENDIF (Qt5SerialPort_FOUND)
+endif()
 
-IF (Qt5Positioning_FOUND)
-  TARGET_LINK_LIBRARIES(qgis_core
+if (Qt5Positioning_FOUND)
+  target_link_libraries(qgis_core
     Qt5::Positioning
   )
-ENDIF (Qt5Positioning_FOUND)
+endif()
 
-TARGET_COMPILE_DEFINITIONS(qgis_core PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_core PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
+if(CLANG_TIDY_EXE)
+  set_target_properties(
     qgis_core PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
 # install
 
-INSTALL(TARGETS qgis_core
+install(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
@@ -1876,7 +1876,7 @@ INSTALL(TARGETS qgis_core
 
 # Mac dev frameworks
 
-IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
-ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+  install(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
+endif()

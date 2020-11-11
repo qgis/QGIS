@@ -1,24 +1,24 @@
-ADD_SUBDIRECTORY(modules)
-ADD_SUBDIRECTORY(scripts)
+add_subdirectory(modules)
+add_subdirectory(scripts)
 
-#ADD_DEFINITIONS(-DGRASS_BASE="${GRASS_PREFIX}")
+#add_definitions(-DGRASS_BASE="${GRASS_PREFIX}")
 if (HAVE_OPENPTY)
-  ADD_DEFINITIONS(-DHAVE_OPENPTY)
-ENDIF (HAVE_OPENPTY)
+  add_definitions(-DHAVE_OPENPTY)
+endif()
 
-IF (WIN32)
-  ADD_DEFINITIONS(-DHAVE_GETPT)
-ELSE (WIN32)
-  ADD_DEFINITIONS(-DHAVE_POSIX_OPENPT -DHAVE_SYS_TIME_H)
-ENDIF (WIN32)
+if (WIN32)
+  add_definitions(-DHAVE_GETPT)
+else()
+  add_definitions(-DHAVE_POSIX_OPENPT -DHAVE_SYS_TIME_H)
+endif()
 
 # GRASS Direct disabled in 2.0
-#ADD_DEFINITIONS(-DGRASS_DIRECT)
+#add_definitions(-DGRASS_DIRECT)
 
 ########################################################
 # Files
 
-SET (GRASS_PLUGIN_SRCS
+set (GRASS_PLUGIN_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassaddfeature.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.cpp
@@ -35,7 +35,7 @@ SET (GRASS_PLUGIN_SRCS
 )
 
 
-SET (GRASS_PLUGIN_UIS
+set (GRASS_PLUGIN_UIS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstoolsbase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselectbase.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalcbase.ui
@@ -45,7 +45,7 @@ SET (GRASS_PLUGIN_UIS
    ${CMAKE_CURRENT_SOURCE_DIR}/../../ui/qgsprojectionselectorbase.ui
 )
 
-SET (GRASS_PLUGIN_MOC_HDRS
+set (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassaddfeature.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.h
@@ -61,8 +61,8 @@ SET (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassutils.h
 )
 
-IF(NOT WIN32)
-  SET (GRASS_PLUGIN_SRCS ${GRASS_PLUGIN_SRCS}
+if(NOT WIN32)
+  set (GRASS_PLUGIN_SRCS ${GRASS_PLUGIN_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassshell.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/BlockArray.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/ColorScheme.cpp
@@ -90,11 +90,11 @@ IF(NOT WIN32)
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/tools.cpp
   )
 
-  SET (GRASS_PLUGIN_UIS ${GRASS_PLUGIN_UIS}
+  set (GRASS_PLUGIN_UIS ${GRASS_PLUGIN_UIS}
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/SearchBar.ui
   )
 
-  SET (GRASS_PLUGIN_MOC_HDRS ${GRASS_PLUGIN_MOC_HDRS}
+  set (GRASS_PLUGIN_MOC_HDRS ${GRASS_PLUGIN_MOC_HDRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassshell.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Emulation.h
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Filter.h
@@ -112,8 +112,8 @@ IF(NOT WIN32)
     ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/qtermwidget.h
   )
 
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET_SOURCE_FILES_PROPERTIES(
+  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    set_source_files_properties(
       ${CMAKE_CURRENT_BINARY_DIR}/qtermwidget/moc_Pty.cxx
       ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Pty.cpp
       ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Session.cpp
@@ -121,33 +121,33 @@ IF(NOT WIN32)
       ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3process.cpp
       PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual -Wno-mismatched-tags"
     )
-  ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  endif()
 
-  IF (APPLE)
-    ADD_DEFINITIONS(-DHAVE_UTMPX -D_UTMPX_COMPAT)
-  ENDIF(APPLE)
+  if (APPLE)
+    add_definitions(-DHAVE_UTMPX -D_UTMPX_COMPAT)
+  endif()
   CHECK_FUNCTION_EXISTS(updwtmpx HAVE_UPDWTMPX)
-  IF(HAVE_UPDWTMPX)
-    ADD_DEFINITIONS(-DHAVE_UPDWTMPX)
-  ENDIF(HAVE_UPDWTMPX)
+  if(HAVE_UPDWTMPX)
+    add_definitions(-DHAVE_UPDWTMPX)
+  endif()
 
 
-  SET(KB_LAYOUT_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/kb-layouts")
-  ADD_DEFINITIONS(-DKB_LAYOUT_DIR="${CMAKE_INSTALL_PREFIX}/${KB_LAYOUT_DIR}")
+  set(KB_LAYOUT_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/kb-layouts")
+  add_definitions(-DKB_LAYOUT_DIR="${CMAKE_INSTALL_PREFIX}/${KB_LAYOUT_DIR}")
 
-  SET(COLORSCHEMES_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/color-schemes")
-  ADD_DEFINITIONS(-DCOLORSCHEMES_DIR="${CMAKE_INSTALL_PREFIX}/${COLORSCHEMES_DIR}")
+  set(COLORSCHEMES_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/color-schemes")
+  add_definitions(-DCOLORSCHEMES_DIR="${CMAKE_INSTALL_PREFIX}/${COLORSCHEMES_DIR}")
 
-ENDIF(NOT WIN32)
+endif()
 
-SET (GRASS_PLUGIN_RCCS ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrass_plugin.qrc)
-SET (GRASS_BROWSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/qgis.g.browser.cpp)
+set (GRASS_PLUGIN_RCCS ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrass_plugin.qrc)
+set (GRASS_BROWSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/qgis.g.browser.cpp)
 
 ########################################################
 # Build
 
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/core
@@ -175,7 +175,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/app
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -184,56 +184,56 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 
-MACRO(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
-    SET(GRASS_PREFIX ${GRASS_PREFIX${GRASS_BUILD_VERSION}})
-    SET(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
-    SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
+macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
+    set(GRASS_PREFIX ${GRASS_PREFIX${GRASS_BUILD_VERSION}})
+    set(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
+    set(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
 
     QT5_WRAP_UI (GRASS_PLUGIN_UIS_H ${GRASS_PLUGIN_UIS})
     QT5_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS ${GRASS_PLUGIN_MOC_HDRS})
 
-    INCLUDE_DIRECTORIES(
+    include_directories(
       ${CMAKE_BINARY_DIR}/src/providers/grass/${GRASS_BUILD_VERSION}
     )
 
-    ADD_LIBRARY (grassplugin${GRASS_BUILD_VERSION} MODULE
+    add_library (grassplugin${GRASS_BUILD_VERSION} MODULE
       ${GRASS_PLUGIN_SRCS}
       ${GRASS_PLUGIN_MOC_SRCS}
       ${GRASS_PLUGIN_UIS_H}
       ${GRASS_PLUGIN_RCCS}
     )
 
-    SET_TARGET_PROPERTIES(grassplugin${GRASS_BUILD_VERSION} PROPERTIES
+    set_target_properties(grassplugin${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_EXTRA_INCLUDE_DIRS${GRASS_BUILD_VERSION}}"
     )
 
-    IF(MSVC)
-      SET_SOURCE_FILES_PROPERTIES(${GRASS_PLUGIN_SRCS} PROPERTIES COMPILE_FLAGS "-wd4611")
-    ENDIF(MSVC)
+    if(MSVC)
+      set_source_files_properties(${GRASS_PLUGIN_SRCS} PROPERTIES COMPILE_FLAGS "-wd4611")
+    endif()
 
-    TARGET_LINK_LIBRARIES(grassplugin${GRASS_BUILD_VERSION}
+    target_link_libraries(grassplugin${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
       qgis_app
       qgis_gui
       ${OPENPTY_LIBRARY}
     )
 
-    IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
-      TARGET_LINK_LIBRARIES(grassplugin${GRASS_BUILD_VERSION} ulog)
-    ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+    if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+      target_link_libraries(grassplugin${GRASS_BUILD_VERSION} ulog)
+    endif()
 
     # override default path where built files are put to allow running qgis without installing
     # the binary goes under libexec subdir
-    SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/bin)
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/bin)
 
 
-    ADD_EXECUTABLE(qgis.g.browser${GRASS_BUILD_VERSION} ${GRASS_BROWSER_SRCS})
+    add_executable(qgis.g.browser${GRASS_BUILD_VERSION} ${GRASS_BROWSER_SRCS})
 
-    SET_TARGET_PROPERTIES(qgis.g.browser${GRASS_BUILD_VERSION} PROPERTIES
+    set_target_properties(qgis.g.browser${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_EXTRA_INCLUDE_DIRS${GRASS_BUILD_VERSION}}"
     )
 
-    TARGET_LINK_LIBRARIES (qgis.g.browser${GRASS_BUILD_VERSION}
+    target_link_libraries (qgis.g.browser${GRASS_BUILD_VERSION}
       ${Qt5Gui_LIBRARIES}
       ${Qt5Widgets_LIBRARIES}
       ${Qt5Core_LIBRARIES}
@@ -242,31 +242,31 @@ MACRO(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     ########################################################
     # Install
 
-    INSTALL(TARGETS grassplugin${GRASS_BUILD_VERSION}
+    install(TARGETS grassplugin${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-    INSTALL(TARGETS qgis.g.browser${GRASS_BUILD_VERSION}
+    install(TARGETS qgis.g.browser${GRASS_BUILD_VERSION}
         RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/bin
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     )
-ENDMACRO(ADD_GRASSPLUGIN)
+endmacro(ADD_GRASSPLUGIN)
 
-FILE (GLOB GMLS *.gml)
-INSTALL (FILES ${GMLS}
+file (GLOB GMLS *.gml)
+install (FILES ${GMLS}
          DESTINATION ${QGIS_DATA_DIR}/grass)
 
-INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
+install (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
          DESTINATION ${QGIS_DATA_DIR}/grass/modules)
 
-IF(NOT WIN32)
-  INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" FILES_MATCHING PATTERN "*.keytab" )
-  INSTALL(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" )
-  INSTALL(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
-ENDIF(NOT WIN32)
+if(NOT WIN32)
+  install(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" FILES_MATCHING PATTERN "*.keytab" )
+  install(DIRECTORY qtermwidget/kb-layouts/ DESTINATION "${KB_LAYOUT_DIR}" )
+  install(DIRECTORY qtermwidget/color-schemes/ DESTINATION "${COLORSCHEMES_DIR}" FILES_MATCHING PATTERN "*.*schem*")
+endif()
 
-FOREACH(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
-  IF(GRASS_FOUND${GRASS_BUILD_VERSION})
-    ADD_SUBDIRECTORY(${GRASS_BUILD_VERSION})
-  ENDIF(GRASS_FOUND${GRASS_BUILD_VERSION})
-ENDFOREACH(GRASS_BUILD_VERSION)
+foreach(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
+  if(GRASS_FOUND${GRASS_BUILD_VERSION})
+    add_subdirectory(${GRASS_BUILD_VERSION})
+  endif()
+endforeach(GRASS_BUILD_VERSION)

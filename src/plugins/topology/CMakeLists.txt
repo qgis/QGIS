@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (topol_SRCS
+set (topol_SRCS
   topol.cpp
   rulesDialog.cpp
   checkDock.cpp
@@ -11,25 +11,25 @@ SET (topol_SRCS
   dockModel.cpp
 )
 
-SET (topol_UIS
+set (topol_UIS
   rulesDialog.ui
   checkDock.ui
 )
 
-SET (topol_RCCS  topol.qrc)
+set (topol_RCCS  topol.qrc)
 
 ########################################################
 # Build
 
 QT5_WRAP_UI (topol_UIS_H  ${topol_UIS})
 
-ADD_LIBRARY (topolplugin MODULE ${topol_SRCS} ${topol_RCCS} ${topol_UIS_H})
+add_library (topolplugin MODULE ${topol_SRCS} ${topol_RCCS} ${topol_UIS_H})
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GEOS_INCLUDE_DIR}
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -49,7 +49,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-TARGET_LINK_LIBRARIES(topolplugin
+target_link_libraries(topolplugin
   qgis_core
   qgis_gui
 )
@@ -58,7 +58,7 @@ TARGET_LINK_LIBRARIES(topolplugin
 ########################################################
 # Install
 
-INSTALL(TARGETS topolplugin
+install(TARGETS topolplugin
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

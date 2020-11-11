@@ -1,8 +1,8 @@
-IF(NOT MSVC)
-ADD_SUBDIRECTORY(wms)
-ENDIF(NOT MSVC)
+if(NOT MSVC)
+add_subdirectory(wms)
+endif()
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
@@ -24,27 +24,27 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST TESTSRC)
-  SET (TESTNAME  ${TESTSRC})
-  STRING(REPLACE "test" "" TESTNAME ${TESTNAME})
-  STRING(REPLACE "qgs" "" TESTNAME ${TESTNAME})
-  STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
-  SET (TESTNAME  "qgis_${TESTNAME}test")
-  ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
-  TARGET_LINK_LIBRARIES(${TESTNAME}
+macro (ADD_QGIS_TEST TESTSRC)
+  set (TESTNAME  ${TESTSRC})
+  string(REPLACE "test" "" TESTNAME ${TESTNAME})
+  string(REPLACE "qgs" "" TESTNAME ${TESTNAME})
+  string(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
+  set (TESTNAME  "qgis_${TESTNAME}test")
+  add_executable(${TESTNAME} ${TESTSRC} ${util_SRCS})
+  target_link_libraries(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}
     qgis_server)
-  ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
-ENDMACRO (ADD_QGIS_TEST)
+  add_test(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
+endmacro (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
-SET(TESTS
+set(TESTS
   testqgsserverquerystringparameter.cpp
 )
 
-FOREACH(TESTSRC ${TESTS})
+foreach(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})
-ENDFOREACH(TESTSRC)
+endforeach(TESTSRC)
