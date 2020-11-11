@@ -431,3 +431,9 @@ void QgsO2::refreshSynchronous()
     emit refreshFinished( blockingRequest.reply().error() );
   }
 }
+
+void QgsO2::computeExpirationDelay()
+{
+  const int lExpires = expires();
+  mExpirationDelay = lExpires > 0 ? lExpires - static_cast<int>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0;
+}
