@@ -166,13 +166,15 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     // Get neighboring polygons
     QMap<QString, QgsFeatureIds> neighboringIds;
     const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds.keys(), gapAreaBBox, compatibleGeometryTypes(), mContext );
+    std::unique_ptr< QgsGeometryEngine > gapGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( gapGeom, mContext->tolerance );
+    gapGeomEngine->prepareGeometry();
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
       const QgsGeometry geom = layerFeature.geometry();
-      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, geom.constGet(), mContext->reducedTolerance ) > 0 )
+      if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance && QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, geom.constGet(), mContext->reducedTolerance ) > 0 )
       {
         neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
-        gapAreaBBox.combineExtentWith( layerFeature.geometry().boundingBox() );
+        gapAreaBBox.combineExtentWith( geom.boundingBox() );
       }
     }
 
