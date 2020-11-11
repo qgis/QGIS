@@ -197,8 +197,6 @@ void QgsQuickFeaturesListModel::setupValueRelation( const QVariantMap &config )
     // store value relation filter expression
     setFilterExpression( config.value( QStringLiteral("FilterExpression") ).toString() );
 
-//    config.value( QStringLiteral("AllowMulti") );
-
     loadFeaturesFromLayer( layer );
   }
 
@@ -227,6 +225,7 @@ void QgsQuickFeaturesListModel::emptyData()
   mFeatureTitleField.clear();
   mFilterExpression.clear();
   mSearchExpression.clear();
+  mCurrentFeature = QgsFeature();
 }
 
 QHash<int, QByteArray> QgsQuickFeaturesListModel::roleNames() const
@@ -304,18 +303,33 @@ int QgsQuickFeaturesListModel::rowFromAttribute( const int role, const QVariant 
   return -1;
 }
 
-QVariant QgsQuickFeaturesListModel::keyFromAttribute( const int role, const QVariant &value ) const
+QVariant QgsQuickFeaturesListModel::attributeFromValue( const int role, const QVariant &value, const int requestedRole ) const
 {
   for ( int i = 0; i < mFeatures.count(); ++i )
   {
     QVariant d = data( index( i, 0 ), role );
     if ( d == value )
     {
-      QVariant key = data( index( i, 0 ), KeyColumn );
+      QVariant key = data( index( i, 0 ), requestedRole );
       return key;
     }
   }
   return QVariant();
+}
+
+QVariant QgsQuickFeaturesListModel::convertMultivalueFormat( const QVariant &multivalue, const int role )
+{
+  QStringList list = QgsValueRelationFieldFormatter::valueToStringList( multivalue );
+  QList<QVariant> retList;
+
+  for ( const QVariant &i : list )
+  {
+    QVariant var = attributeFromValue( KeyColumn, i, role );
+    if ( !var.isNull() )
+      retList.append(var);
+  }
+
+  return retList;
 }
 
 QgsQuickFeatureLayerPair QgsQuickFeaturesListModel::featureLayerPair( const int &featureId )
