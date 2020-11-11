@@ -58,7 +58,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
       * Feature that has opened feature form.
       * This property needs to be set before opening feature form to be able to evaulate filter expressions that contain form scope.
       */
-    Q_PROPERTY( QgsFeature currentFeature WRITE setCurrentFeature NOTIFY currentFeatureChanged)
+    Q_PROPERTY( QgsFeature currentFeature WRITE setCurrentFeature NOTIFY currentFeatureChanged )
 
   public:
 
@@ -112,13 +112,23 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     Q_INVOKABLE int rowFromAttribute( const int role, const QVariant &value ) const;
 
     /**
-     * \brief keyFromAttribute finds feature with requested role and value, returns keycolumn
+     * \brief attributeFromValue finds feature with role and value, returns value for requested role
      * \param role role to find from modelRoles
      * \param value value to find
-     * \return KeyColumn role for found feature, returns -1 if no feature is found. If more features
-     * match requested role and value, KeyColumn for first is returned.
+     * \param requestedRole role thats value is being requested
+     * \return If feature is found by role and value, method returns value for requested role. Returns empty QVariant if no feature is found. If more features
+     * match requested role and value, value for first is returned.
      */
-    Q_INVOKABLE QVariant keyFromAttribute( const int role, const QVariant &value ) const;
+    Q_INVOKABLE QVariant attributeFromValue( const int role, const QVariant &value, const int requestedRole ) const;
+
+    /**
+     * @brief convertMultivalueFormat converts postgres string like string to an array of variants with requested role.
+     * Array {1,2,3} with requested role FeatureId results in list of QVariant ints [1, 2, 3]
+     * @param multivalue string to convert
+     * @param requestedRole role to convert keys from string, default value is Qt::DisplayRole
+     * @return array of QVariants with values for requested role. If model can not find value for requested role, this key is omitted.
+     */
+    Q_INVOKABLE QVariant convertMultivalueFormat( const QVariant &multivalue, const int requestedRole = Qt::DisplayRole );
 
     //! Returns maximum amount of features that can be queried from layer
     int featuresLimit() const;

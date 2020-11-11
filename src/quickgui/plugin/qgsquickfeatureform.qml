@@ -92,9 +92,9 @@ Item {
      * \param widget valuerelation widget for specific field to send valueChanged signal.
      * \param valueRelationModel model of type FeaturesListModel bears features of related layer.
      */
-    property var valueRelationOpened: function valueRelationOpened( widget, valueRelationModel ) {
-      widget.openCombobox() // by default just open combobox
-    }
+    property var valueRelationOpened: function valueRelationOpened( widget, valueRelationModel ) {}
+
+    property int valueRelationLimit: 4
   }
 
   /**
@@ -409,6 +409,8 @@ Item {
 
           height: childrenRect.height
           anchors { left: parent.left; right: parent.right }
+
+          signal dataHasChanged() // to propagate signal to valuerelation model from model
 
           property var value: AttributeValue
           property var config: EditorWidgetConfig
