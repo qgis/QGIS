@@ -1,8 +1,8 @@
-#ADD_DEFINITIONS(-DGRASS_BASE="${GRASS_PREFIX}")
+#add_definitions(-DGRASS_BASE="${GRASS_PREFIX}")
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/providers/grass
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-INCLUDE_DIRECTORIES (SYSTEM
+include_directories (SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -31,13 +31,13 @@ INCLUDE_DIRECTORIES (SYSTEM
 #
 # GRASS library
 #
-MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
-    SET(GRASS_PREFIX ${GRASS_PREFIX${GRASS_BUILD_VERSION}})
-    SET(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
-    SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
-    SET(GRASS_OFF_T_SIZE ${GRASS_OFF_T_SIZE${GRASS_BUILD_VERSION}})
+macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
+    set(GRASS_PREFIX ${GRASS_PREFIX${GRASS_BUILD_VERSION}})
+    set(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
+    set(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
+    set(GRASS_OFF_T_SIZE ${GRASS_OFF_T_SIZE${GRASS_BUILD_VERSION}})
 
-    SET (GRASS_LIBRARY_SRCS
+    set (GRASS_LIBRARY_SRCS
       ../qgsgrass.cpp
       ../qgsgrasswin.cpp
       ../qgsgrassdatafile.cpp
@@ -51,15 +51,15 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassvectormaplayer.cpp
     )
 
-    IF (WITH_GUI)
-      SET(GRASS_LIBRARY_SRCS ${GRASS_LIBRARY_SRCS}
+    if (WITH_GUI)
+      set(GRASS_LIBRARY_SRCS ${GRASS_LIBRARY_SRCS}
         ../qgsgrassoptions.cpp
       )
-    ENDIF ()
+    endif()
 
-    IF(MSVC)
+    if(MSVC)
       # 4611 setjmp
-      SET_SOURCE_FILES_PROPERTIES(
+      set_source_files_properties(
         ../qgsgrassimport.cpp
         ../qgsgrassprovider.cpp
         ../qgsgrassvector.cpp
@@ -70,28 +70,28 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
 
       # 4611 setjmp
       # 4702 unreachable code
-      SET_SOURCE_FILES_PROPERTIES(
+      set_source_files_properties(
         ../qgsgrass.cpp
         PROPERTIES COMPILE_FLAGS "-wd4611 -wd4702"
       )
-    ENDIF(MSVC)
+    endif()
 
     QT5_WRAP_UI (GRASS_LIBRARY_UIS_H
       ../qgsgrassoptionsbase.ui
     )
 
-    ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED
+    add_library(qgisgrass${GRASS_BUILD_VERSION} SHARED
       ${GRASS_LIBRARY_SRCS}
       ${GRASS_LIBRARY_UIS_H}
     )
 
-    IF(GRASS_OFF_T_SIZE)
-      SET(GRASS_OFF_T_SIZE_DEF "\"-DGRASS_OFF_T_SIZE=${GRASS_OFF_T_SIZE}\"")
-    ELSE(GRASS_OFF_T_SIZE)
-      SET(GRASS_OFF_T_SIZE_DEF "")
-    ENDIF(GRASS_OFF_T_SIZE)
+    if(GRASS_OFF_T_SIZE)
+      set(GRASS_OFF_T_SIZE_DEF "\"-DGRASS_OFF_T_SIZE=${GRASS_OFF_T_SIZE}\"")
+    else()
+      set(GRASS_OFF_T_SIZE_DEF "")
+    endif()
 
-    SET_TARGET_PROPERTIES(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+    set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
       CLEAN_DIRECT_OUTPUT 1
       FRAMEWORK 1
       FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
@@ -101,22 +101,22 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
     )
 
-    IF (APPLE)
-      SET_TARGET_PROPERTIES(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+    if (APPLE)
+      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
         LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
         )
-    ENDIF (APPLE)
+    endif()
 
     #generate unversioned libs for android
-    IF (NOT ANDROID)
-      SET_TARGET_PROPERTIES(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+    if (NOT ANDROID)
+      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
         VERSION ${COMPLETE_VERSION}
         SOVERSION ${COMPLETE_VERSION}
       )
-    ENDIF (NOT ANDROID)
+    endif()
 
-    IF (GRASS_MAJOR_VERSION LESS 7 )
-      SET(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
+    if (GRASS_MAJOR_VERSION LESS 7 )
+      set(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
           qgis_core
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_vect}
@@ -125,8 +125,8 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmiclient}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
       )
-    ELSE (GRASS_MAJOR_VERSION LESS 7 )
-      SET(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
+    else()
+      set(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
         qgis_core
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_vector}
@@ -136,19 +136,19 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmiclient}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
       )
-    ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+    endif()
 
-    TARGET_LINK_LIBRARIES(qgisgrass${GRASS_BUILD_VERSION} ${GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}})
+    target_link_libraries(qgisgrass${GRASS_BUILD_VERSION} ${GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}})
 
-    IF (WITH_GUI)
-      TARGET_LINK_LIBRARIES(qgisgrass${GRASS_BUILD_VERSION}
+    if (WITH_GUI)
+      target_link_libraries(qgisgrass${GRASS_BUILD_VERSION}
         qgis_gui
       )
-    ENDIF ()
+    endif()
 
-    IF (APPLE)
-      SET_TARGET_PROPERTIES(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-    ENDIF (APPLE)
+    if (APPLE)
+      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+    endif()
 
     GENERATE_EXPORT_HEADER(
        qgisgrass${GRASS_BUILD_VERSION}
@@ -159,101 +159,101 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     # GRASS vector provider
     #
-    SET (GRASS_VECTOR_PROVIDER_SRCS ../qgsgrassprovidermodule.cpp)
-    ADD_LIBRARY(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS})
-    SET_TARGET_PROPERTIES(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
+    set (GRASS_VECTOR_PROVIDER_SRCS ../qgsgrassprovidermodule.cpp)
+    add_library(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS})
+    set_target_properties(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
-    TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION}
+    target_link_libraries(grassprovider${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
     )
 
-    IF (WITH_GUI)
-      TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION}
+    if (WITH_GUI)
+      target_link_libraries(grassprovider${GRASS_BUILD_VERSION}
         qgis_gui
       )
-      ADD_DEPENDENCIES(grassprovider${GRASS_BUILD_VERSION} ui)
-    ENDIF ()
+      add_dependencies(grassprovider${GRASS_BUILD_VERSION} ui)
+    endif()
 
     #
     # grass raster provider
     #
-    SET (GRASS_RASTER_PROVIDER_SRCS
+    set (GRASS_RASTER_PROVIDER_SRCS
       ../qgsgrassrasterprovidermodule.cpp
     )
-    ADD_LIBRARY(grassrasterprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_RASTER_PROVIDER_SRCS})
-    SET_TARGET_PROPERTIES(grassrasterprovider${GRASS_BUILD_VERSION} PROPERTIES
+    add_library(grassrasterprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_RASTER_PROVIDER_SRCS})
+    set_target_properties(grassrasterprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
-    TARGET_LINK_LIBRARIES(grassrasterprovider${GRASS_BUILD_VERSION} 
+    target_link_libraries(grassrasterprovider${GRASS_BUILD_VERSION} 
       qgisgrass${GRASS_BUILD_VERSION} 
       qgis_core
     )
 
     # override default path where built files are put to allow running qgis without installing
     # the modules go under libexec subdir
-    SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/modules)
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/modules)
 
     #
     # grass raster display module
     #
-    ADD_EXECUTABLE(qgis.d.rast${GRASS_BUILD_VERSION} ../qgis.d.rast.c)
-    IF (GRASS_MAJOR_VERSION LESS 7 )
-      TARGET_LINK_LIBRARIES(qgis.d.rast${GRASS_BUILD_VERSION}
+    add_executable(qgis.d.rast${GRASS_BUILD_VERSION} ../qgis.d.rast.c)
+    if (GRASS_MAJOR_VERSION LESS 7 )
+      target_link_libraries(qgis.d.rast${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GDAL_LIBRARY}
       )
-    ELSE (GRASS_MAJOR_VERSION LESS 7 )
-      TARGET_LINK_LIBRARIES(qgis.d.rast${GRASS_BUILD_VERSION}
+    else()
+      target_link_libraries(qgis.d.rast${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}
         ${GDAL_LIBRARY}
       )
-    ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+    endif()
 
     #
     # grass info module
     #
-    ADD_EXECUTABLE(qgis.g.info${GRASS_BUILD_VERSION} ../qgis.g.info.c)
-    IF (GRASS_MAJOR_VERSION LESS 7 )
-      TARGET_LINK_LIBRARIES(qgis.g.info${GRASS_BUILD_VERSION}
+    add_executable(qgis.g.info${GRASS_BUILD_VERSION} ../qgis.g.info.c)
+    if (GRASS_MAJOR_VERSION LESS 7 )
+      target_link_libraries(qgis.g.info${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
         ${GDAL_LIBRARY}
       )
-    ELSE (GRASS_MAJOR_VERSION LESS 7 )
-      TARGET_LINK_LIBRARIES(qgis.g.info${GRASS_BUILD_VERSION}
+    else()
+      target_link_libraries(qgis.g.info${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gproj}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}
         ${GDAL_LIBRARY}
       )
-    ENDIF (GRASS_MAJOR_VERSION LESS 7 )
-    IF (UNIX)
-      TARGET_LINK_LIBRARIES(qgis.g.info${GRASS_BUILD_VERSION} m)
-    ENDIF (UNIX)
+    endif()
+    if (UNIX)
+      target_link_libraries(qgis.g.info${GRASS_BUILD_VERSION} m)
+    endif()
 
     #
     # grass raster import module
     #
-    ADD_EXECUTABLE(qgis.r.in${GRASS_BUILD_VERSION} ../qgis.r.in.cpp)
-    SET_TARGET_PROPERTIES(qgis.r.in${GRASS_BUILD_VERSION} PROPERTIES
+    add_executable(qgis.r.in${GRASS_BUILD_VERSION} ../qgis.r.in.cpp)
+    set_target_properties(qgis.r.in${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
-    IF (GRASS_MAJOR_VERSION LESS 7 )
-      TARGET_LINK_LIBRARIES(qgis.r.in${GRASS_BUILD_VERSION}
+    if (GRASS_MAJOR_VERSION LESS 7 )
+      target_link_libraries(qgis.r.in${GRASS_BUILD_VERSION}
         qgisgrass${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
         ${GDAL_LIBRARY}
         qgis_core
       )
-    ELSE (GRASS_MAJOR_VERSION LESS 7 )
-      TARGET_LINK_LIBRARIES(qgis.r.in${GRASS_BUILD_VERSION}
+    else()
+      target_link_libraries(qgis.r.in${GRASS_BUILD_VERSION}
         qgisgrass${GRASS_BUILD_VERSION}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
@@ -261,16 +261,16 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
         ${GDAL_LIBRARY}
         qgis_core
       )
-    ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+    endif()
 
     #
     # grass vector import module
     #
-    ADD_EXECUTABLE(qgis.v.in${GRASS_BUILD_VERSION} ../qgis.v.in.cpp)
-    SET_TARGET_PROPERTIES(qgis.v.in${GRASS_BUILD_VERSION} PROPERTIES
+    add_executable(qgis.v.in${GRASS_BUILD_VERSION} ../qgis.v.in.cpp)
+    set_target_properties(qgis.v.in${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
-    TARGET_LINK_LIBRARIES(qgis.v.in${GRASS_BUILD_VERSION}
+    target_link_libraries(qgis.v.in${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
       ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
       ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
@@ -284,20 +284,20 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     ########################################################
     # Install
 
-    INSTALL(TARGETS qgisgrass${GRASS_BUILD_VERSION}
+    install(TARGETS qgisgrass${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_BIN_DIR}
       LIBRARY DESTINATION ${QGIS_LIB_DIR}
       FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR})
 
-    INSTALL(TARGETS grassprovider${GRASS_BUILD_VERSION}
+    install(TARGETS grassprovider${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-    INSTALL(TARGETS grassrasterprovider${GRASS_BUILD_VERSION}
+    install(TARGETS grassrasterprovider${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-    INSTALL(TARGETS
+    install(TARGETS
       qgis.d.rast${GRASS_BUILD_VERSION}
       qgis.g.info${GRASS_BUILD_VERSION}
       qgis.r.in${GRASS_BUILD_VERSION}
@@ -305,28 +305,28 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules
       PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     )
-ENDMACRO(ADD_GRASSLIB)
+endmacro(ADD_GRASSLIB)
 
-FOREACH(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
-  IF(GRASS_FOUND${GRASS_BUILD_VERSION})
-    ADD_SUBDIRECTORY(${GRASS_BUILD_VERSION})
-  ENDIF(GRASS_FOUND${GRASS_BUILD_VERSION})
-ENDFOREACH(GRASS_BUILD_VERSION)
+foreach(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
+  if(GRASS_FOUND${GRASS_BUILD_VERSION})
+    add_subdirectory(${GRASS_BUILD_VERSION})
+  endif()
+endforeach(GRASS_BUILD_VERSION)
 
 #
 # Fake GRASS gis library
 #
-SET(WITH_GRASS_DIRECT FALSE) # currently disabled
+set(WITH_GRASS_DIRECT FALSE) # currently disabled
 
-IF(WITH_GRASS_DIRECT)
+if(WITH_GRASS_DIRECT)
   # only process functions if qgsgrassgislibfunctions.cpp/h not present
   # or gisdefs.h is newer
 
-  IF("${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" OR "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h")
+  if("${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" OR "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h")
 
   # Generate function mapping for functions used in original version
   # Create list of functions to be mapped
-  SET ( FUNCTIONS
+  set ( FUNCTIONS
     "G_add_color_rule"
     "G_add_c_raster_color_rule"
     "G_add_d_raster_color_rule"
@@ -551,7 +551,7 @@ IF(WITH_GRASS_DIRECT)
 
   # List of functions which are implemented in qgsgrassgislib.cpp and
   # thus we only need prototype
-  SET ( FUNCTION_PROTOTYPES
+  set ( FUNCTION_PROTOTYPES
     "G_area_of_cell_at_row"
     "G_area_of_polygon"
     "G_ask_cell_new"
@@ -669,22 +669,22 @@ IF(WITH_GRASS_DIRECT)
     "G_write_raster_units"
   )
 
-  SET ( FUNCTIONS_ALL
+  set ( FUNCTIONS_ALL
     ${FUNCTIONS}
     ${FUNCTION_PROTOTYPES}
   )
 
   # Read GRASS header file and create functions mapping
-  FILE(READ "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" HEADER_FILE)
+  file(READ "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" HEADER_FILE)
 
   # Function definitions in gisdefs.h may spread over more lines -> remove comments
   # and split by ';'
   # Remove comments and directives (some macros are lost)
-  STRING(REGEX REPLACE "(/\\*([^*]|[\r\n]|(\\*+([^*/]|[\r\n])))*\\*+/)" "" HEADER_FILE "${HEADER_FILE}")
-  STRING(REGEX REPLACE "#[^\r\n]*" "" HEADER_FILE "${HEADER_FILE}")
+  string(REGEX REPLACE "(/\\*([^*]|[\r\n]|(\\*+([^*/]|[\r\n])))*\\*+/)" "" HEADER_FILE "${HEADER_FILE}")
+  string(REGEX REPLACE "#[^\r\n]*" "" HEADER_FILE "${HEADER_FILE}")
 
   # Add functions defined in glocale.h, colors.h and spawn.h
-  SET ( HEADER_FILE
+  set ( HEADER_FILE
     ${HEADER_FILE}
     "char *G_gettext(const char *, const char *);"
     "int G_num_standard_colors(void);"
@@ -693,105 +693,105 @@ IF(WITH_GRASS_DIRECT)
     "int G_wait(int);"
   )
 
-  SET ( PROTOTYPES "// Auto generated by cmake, do not edit\n" )
-  LIST ( APPEND PROTOTYPES "#define GRASS_GISDEFS_H\n" )
-  LIST ( APPEND PROTOTYPES "extern \"C\"\n" )
-  LIST ( APPEND PROTOTYPES "{\n" )
-  LIST ( APPEND PROTOTYPES "#include <sys/types.h>\n" )
-  LIST ( APPEND PROTOTYPES "#include <grass/gis.h>\n" )
-  #LIST ( APPEND PROTOTYPES "int GRASS_LIB_EXPORT G_set_error_routine(int (*)(const char *, int))\;\n" )
+  set ( PROTOTYPES "// Auto generated by cmake, do not edit\n" )
+  list ( APPEND PROTOTYPES "#define GRASS_GISDEFS_H\n" )
+  list ( APPEND PROTOTYPES "extern \"C\"\n" )
+  list ( APPEND PROTOTYPES "{\n" )
+  list ( APPEND PROTOTYPES "#include <sys/types.h>\n" )
+  list ( APPEND PROTOTYPES "#include <grass/gis.h>\n" )
+  #list ( APPEND PROTOTYPES "int GRASS_LIB_EXPORT G_set_error_routine(int (*)(const char *, int))\;\n" )
 
-  SET ( FUNCTIONS_MAP "// Auto generated by cmake, do not edit\n" )
-  LIST ( APPEND FUNCTIONS_MAP "#include \"qgsgrassgislibfunctions.h\"\n" )
-  LIST ( APPEND FUNCTIONS_MAP "#include \"qgsgrassgislib.h\"\n" )
-  LIST ( APPEND FUNCTIONS_MAP "#include \"qgslogger.h\"\n" )
-  LIST ( APPEND FUNCTIONS_MAP "#include \"qgis.h\"\n" )
+  set ( FUNCTIONS_MAP "// Auto generated by cmake, do not edit\n" )
+  list ( APPEND FUNCTIONS_MAP "#include \"qgsgrassgislibfunctions.h\"\n" )
+  list ( APPEND FUNCTIONS_MAP "#include \"qgsgrassgislib.h\"\n" )
+  list ( APPEND FUNCTIONS_MAP "#include \"qgslogger.h\"\n" )
+  list ( APPEND FUNCTIONS_MAP "#include \"qgis.h\"\n" )
 
-  FOREACH( ROW ${HEADER_FILE} )
-    STRING(REGEX REPLACE "\n" " " ROW "${ROW}")
-    STRING(REGEX REPLACE "__attribute__.*" "" ROW "${ROW}")
-    #MESSAGE (STATUS, "ROW: ${ROW}")
+  foreach( ROW ${HEADER_FILE} )
+    string(REGEX REPLACE "\n" " " ROW "${ROW}")
+    string(REGEX REPLACE "__attribute__.*" "" ROW "${ROW}")
+    #message (STATUS, "ROW: ${ROW}")
     # Parse function declaration
-    STRING( REGEX REPLACE ".*(G_[^\\(]*)\\(.*" "\\1" FUNCTION_NAME "${ROW}" )
-    FOREACH( FN ${FUNCTIONS_ALL})
-      IF ( "${FN}" STREQUAL "${FUNCTION_NAME}" )
+    string( REGEX REPLACE ".*(G_[^\\(]*)\\(.*" "\\1" FUNCTION_NAME "${ROW}" )
+    foreach( FN ${FUNCTIONS_ALL})
+      if ( "${FN}" STREQUAL "${FUNCTION_NAME}" )
         # \\*? and \\** patterns do not work, why?
-        STRING( REGEX REPLACE "^[ \t]*(.*)G_.*" "\\1" FUNCTION_TYPE "${ROW}" )
-        STRING( REGEX REPLACE "\\*" "" FUNCTION_TYPE "${FUNCTION_TYPE}" )
-        STRING( REGEX REPLACE "[^*]*(\\*+) *G_.*" "\\1" POINTER "${ROW}" )
-        IF ( (NOT "${POINTER}" STREQUAL "*") AND (NOT "${POINTER}" STREQUAL "**") )
-          SET ( POINTER "" )
-        ENDIF ( (NOT "${POINTER}" STREQUAL "*") AND (NOT "${POINTER}" STREQUAL "**") )
-        STRING( REGEX REPLACE ".*G_[^\\(]*\\((.*)\\).*" "\\1" PARAM_TYPES "${ROW}" )
-        SET ( PARAM_NAMES "" )
-        SET ( PARAMS "" )
-        IF ( NOT "${PARAM_TYPES}" STREQUAL "void" )
-          STRING ( REGEX MATCHALL "[^,]+" PARAM_TYPE_LIST ${PARAM_TYPES} )
-          SET ( I 0 )
-          FOREACH( PARAM_TYPE ${PARAM_TYPE_LIST} )
-            LIST ( APPEND PARAM_NAMES "p${I}" )
-            LIST ( APPEND PARAMS "${PARAM_TYPE} p${I}" )
-            MATH(EXPR  I "${I} + 1")
-          ENDFOREACH ( PARAM_TYPE )
-        ENDIF ( NOT "${PARAM_TYPES}" STREQUAL "void" )
+        string( REGEX REPLACE "^[ \t]*(.*)G_.*" "\\1" FUNCTION_TYPE "${ROW}" )
+        string( REGEX REPLACE "\\*" "" FUNCTION_TYPE "${FUNCTION_TYPE}" )
+        string( REGEX REPLACE "[^*]*(\\*+) *G_.*" "\\1" POINTER "${ROW}" )
+        if ( (NOT "${POINTER}" STREQUAL "*") AND (NOT "${POINTER}" STREQUAL "**") )
+          set ( POINTER "" )
+        endif()
+        string( REGEX REPLACE ".*G_[^\\(]*\\((.*)\\).*" "\\1" PARAM_TYPES "${ROW}" )
+        set ( PARAM_NAMES "" )
+        set ( PARAMS "" )
+        if ( NOT "${PARAM_TYPES}" STREQUAL "void" )
+          string ( REGEX MATCHALL "[^,]+" PARAM_TYPE_LIST ${PARAM_TYPES} )
+          set ( I 0 )
+          foreach( PARAM_TYPE ${PARAM_TYPE_LIST} )
+            list ( APPEND PARAM_NAMES "p${I}" )
+            list ( APPEND PARAMS "${PARAM_TYPE} p${I}" )
+            math(EXPR  I "${I} + 1")
+          endforeach ( PARAM_TYPE )
+        endif()
 
-        STRING( REPLACE ";" ", " PARAM_NAMES "${PARAM_NAMES}" )
-        STRING( REPLACE ";" ", " PARAMS "${PARAMS}" )
+        string( REPLACE ";" ", " PARAM_NAMES "${PARAM_NAMES}" )
+        string( REPLACE ";" ", " PARAMS "${PARAMS}" )
 
         # Declare all
-        LIST ( APPEND PROTOTYPES "${FUNCTION_TYPE} GRASS_LIB_EXPORT ${POINTER} ${FUNCTION_NAME} ( ${PARAM_TYPES} )\;\n" )
+        list ( APPEND PROTOTYPES "${FUNCTION_TYPE} GRASS_LIB_EXPORT ${POINTER} ${FUNCTION_NAME} ( ${PARAM_TYPES} )\;\n" )
 
         # Define only those not implemented in qgsgrassgislib.cpp
-        LIST (FIND FUNCTIONS "${FUNCTION_NAME}" FUNCTION_IDX)
-        IF( ${FUNCTION_IDX} GREATER -1 )
-          LIST ( APPEND FUNCTIONS_MAP "// ${ROW}\n" )
+        list (FIND FUNCTIONS "${FUNCTION_NAME}" FUNCTION_IDX)
+        if( ${FUNCTION_IDX} GREATER -1 )
+          list ( APPEND FUNCTIONS_MAP "// ${ROW}\n" )
           # Declare function type
-          LIST ( APPEND FUNCTIONS_MAP "typedef ${FUNCTION_TYPE} ${POINTER} ${FUNCTION_NAME}_type(${PARAM_TYPES})\;\n\n" )
-          LIST ( APPEND FUNCTIONS_MAP "${FUNCTION_TYPE} GRASS_LIB_EXPORT ${POINTER} ${FUNCTION_NAME} ( ${PARAMS} ) {\n" )
-          #LIST ( APPEND FUNCTIONS_MAP "  QgsDebugMsg( \"Entered\" )\;\n" )
-          LIST ( APPEND FUNCTIONS_MAP "  ${FUNCTION_NAME}_type* fn = (${FUNCTION_NAME}_type*) cast_to_fptr (QgsGrassGisLib::instance()->resolve( \"${FUNCTION_NAME}\" ))\;\n" )
-          LIST ( APPEND FUNCTIONS_MAP "  return fn( ${PARAM_NAMES} )\;\n")
-          LIST ( APPEND FUNCTIONS_MAP "}\n\n" )
-        ENDIF ( ${FUNCTION_IDX} GREATER -1 )
-      ENDIF ( "${FN}" STREQUAL "${FUNCTION_NAME}" )
-    ENDFOREACH ( FN )
-  ENDFOREACH( ROW )
+          list ( APPEND FUNCTIONS_MAP "typedef ${FUNCTION_TYPE} ${POINTER} ${FUNCTION_NAME}_type(${PARAM_TYPES})\;\n\n" )
+          list ( APPEND FUNCTIONS_MAP "${FUNCTION_TYPE} GRASS_LIB_EXPORT ${POINTER} ${FUNCTION_NAME} ( ${PARAMS} ) {\n" )
+          #list ( APPEND FUNCTIONS_MAP "  QgsDebugMsg( \"Entered\" )\;\n" )
+          list ( APPEND FUNCTIONS_MAP "  ${FUNCTION_NAME}_type* fn = (${FUNCTION_NAME}_type*) cast_to_fptr (QgsGrassGisLib::instance()->resolve( \"${FUNCTION_NAME}\" ))\;\n" )
+          list ( APPEND FUNCTIONS_MAP "  return fn( ${PARAM_NAMES} )\;\n")
+          list ( APPEND FUNCTIONS_MAP "}\n\n" )
+        endif()
+      endif()
+    endforeach ( FN )
+  endforeach( ROW )
 
-  LIST ( APPEND PROTOTYPES "}\n" )
+  list ( APPEND PROTOTYPES "}\n" )
 
-  FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" ${FUNCTIONS_MAP})
-  FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h" ${PROTOTYPES})
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" ${FUNCTIONS_MAP})
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h" ${PROTOTYPES})
 
-  ENDIF() # process functions
+  endif() # process functions
 
   # Build fake library
-  IF(MSVC)
-    SET (FAKE_LIB_GRASS_GIS "libgrass_gis.${GRASS_VERSION}")
-  ELSE(MSVC)
-    SET (FAKE_LIB_GRASS_GIS "grass_gis.${GRASS_VERSION}")
-  ENDIF(MSVC)
-  ADD_LIBRARY(${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
+  if(MSVC)
+    set (FAKE_LIB_GRASS_GIS "libgrass_gis.${GRASS_VERSION}")
+  else()
+    set (FAKE_LIB_GRASS_GIS "grass_gis.${GRASS_VERSION}")
+  endif()
+  add_library(${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
 
   # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same
   # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed
   # in different directory
-  SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES
+  set_target_properties(${FAKE_LIB_GRASS_GIS} PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
     COMPILE_FLAGS "-DGRASS_VERSION=\\\"${GRASS_VERSION}\\\" -DGRASS_LIBRARY_GIS=\\\"${GRASS_LIBRARY_gis}\\\" \"-I${CMAKE_CURRENT_SOURCE_DIR}\" ")
 
-  IF (NOT APPLE)
-    SET_TARGET_PROPERTIES(${FAKE_LIB_GRASS_GIS} PROPERTIES
+  if (NOT APPLE)
+    set_target_properties(${FAKE_LIB_GRASS_GIS} PROPERTIES
       VERSION ${COMPLETE_VERSION}
       SOVERSION ${COMPLETE_VERSION}
       )
-  ENDIF (NOT APPLE)
+  endif()
 
-  TARGET_LINK_LIBRARIES(${FAKE_LIB_GRASS_GIS}
+  target_link_libraries(${FAKE_LIB_GRASS_GIS}
     qgis_core
   )
 
 
-  INSTALL(TARGETS ${FAKE_LIB_GRASS_GIS}
+  install(TARGETS ${FAKE_LIB_GRASS_GIS}
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
-ENDIF(WITH_GRASS_DIRECT)
+endif()

@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SET (LANDINGPAGE_SRCS
+set (LANDINGPAGE_SRCS
   ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgslandingpage.cpp
@@ -12,12 +12,12 @@ SET (LANDINGPAGE_SRCS
 ########################################################
 # Build
 
-ADD_LIBRARY (landingpage MODULE ${LANDINGPAGE_SRCS})
+add_library (landingpage MODULE ${LANDINGPAGE_SRCS})
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
@@ -39,7 +39,7 @@ INCLUDE_DIRECTORIES(
 )
 
 
-TARGET_LINK_LIBRARIES(landingpage
+target_link_libraries(landingpage
   qgis_core
   qgis_server
 )
@@ -48,7 +48,7 @@ TARGET_LINK_LIBRARIES(landingpage
 ########################################################
 # Install
 
-INSTALL(TARGETS landingpage
+install(TARGETS landingpage
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )
