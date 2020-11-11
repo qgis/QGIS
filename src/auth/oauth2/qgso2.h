@@ -58,6 +58,9 @@ class QgsO2: public O2
     //! Store oauth2 state to a random value when called
     void setState( const QString &value );
 
+    //! Refresh token in a synchronous way
+    void refreshSynchronous();
+
   public slots:
 
     //! Clear all properties
@@ -101,6 +104,7 @@ class QgsO2: public O2
     QString state_;
     QgsAuthOAuth2Config *mOAuth2Config;
     bool mIsLocalHost = false;
+
     static QString O2_OAUTH2_STATE;
 };
 
