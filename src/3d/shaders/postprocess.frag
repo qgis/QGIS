@@ -92,11 +92,11 @@ float edlFactor(vec2 coords)
   vec2 texelSize = 2.0 / textureSize(depthTexture, 0);
   vec2 neighbours[4] = vec2[4](vec2(-1.0f, 0.0f), vec2(1.0f, 0.0f), vec2(0.0f, -1.0f), vec2(0.0f, 1.0f) );
   float factor = 0.0f;
-  float centerDepth = texture2D(depthTexture, coords).r;
+  float centerDepth = linearizeDepth( texture2D(depthTexture, coords).r ) / farPlane;
   for (int i = 0; i < 4; i++)
   {
     vec2 neighbourCoords = coords + edlDistance * texelSize * neighbours[i];
-    float neighbourDepth = texture2D(depthTexture, neighbourCoords).r;
+    float neighbourDepth = linearizeDepth( texture2D(depthTexture, neighbourCoords).r ) / farPlane;
     neighbourDepth = (neighbourDepth == 1.0) ? 0.0 : neighbourDepth;
     if (neighbourDepth != 0.0f)
     {
