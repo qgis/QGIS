@@ -71,9 +71,9 @@ jobs:
       esac
 
       target=Experimental
-      major=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")\s*$/\1/p' CMakeLists.txt)
-      minor=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")\s*$/\1/p' CMakeLists.txt)
-      patch=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")\s*$/\1/p' CMakeLists.txt)
+      major=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")\s*$/\1/ip' CMakeLists.txt)
+      minor=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")\s*$/\1/ip' CMakeLists.txt)
+      patch=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")\s*$/\1/ip' CMakeLists.txt)
       binary=$(curl --location-trusted http://ftp.osuosl.org/pub/osgeo/download/osgeo4w/$OSGEO4W_ARCH/release/qgis/$OSGEO4W_PKG/LATEST.sha | sed -e "s/:.*$//")
       (( binary++ )) || true
 
