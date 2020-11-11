@@ -115,18 +115,18 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
      * \brief attributeFromValue finds feature with role and value, returns value for requested role
      * \param role role to find from modelRoles
      * \param value value to find
-     * \param requestedRole role thats value is being requested
+     * \param requestedRole a role whose value is returned
      * \return If feature is found by role and value, method returns value for requested role. Returns empty QVariant if no feature is found. If more features
      * match requested role and value, value for first is returned.
      */
     Q_INVOKABLE QVariant attributeFromValue( const int role, const QVariant &value, const int requestedRole ) const;
 
     /**
-     * @brief convertMultivalueFormat converts postgres string like string to an array of variants with requested role.
+     * \brief convertMultivalueFormat converts postgres string like string to an array of variants with requested role.
      * Array {1,2,3} with requested role FeatureId results in list of QVariant ints [1, 2, 3]
-     * @param multivalue string to convert
-     * @param requestedRole role to convert keys from string, default value is Qt::DisplayRole
-     * @return array of QVariants with values for requested role. If model can not find value for requested role, this key is omitted.
+     * \param multivalue string to convert
+     * \param requestedRole role to convert keys from string, default value is Qt::DisplayRole
+     * \return array of QVariants with values for requested role. If model can not find value for requested role, this key is omitted.
      */
     Q_INVOKABLE QVariant convertMultivalueFormat( const QVariant &multivalue, const int requestedRole = Qt::DisplayRole );
 
