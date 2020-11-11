@@ -171,7 +171,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
       const QgsGeometry geom = layerFeature.geometry();
-      if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance )
+      if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance && QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, geom.constGet(), mContext->reducedTolerance ) > 0 )
       {
         neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
         gapAreaBBox.combineExtentWith( geom.boundingBox() );
