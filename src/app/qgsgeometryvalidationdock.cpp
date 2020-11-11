@@ -41,6 +41,8 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 
   mProblemDescriptionLabel->setStyleSheet( QStringLiteral( "font: bold" ) );
   mErrorListView->setAlternatingRowColors( true );
+  mErrorListView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mErrorListView, &QWidget::customContextMenuRequested, this, &QgsGeometryValidationDock::showErrorContextMenu );
 
   connect( mNextButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
   connect( mPreviousButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
@@ -157,6 +159,35 @@ void QgsGeometryValidationDock::onRowsInserted()
     mQgisApp->addDockWidget( Qt::RightDockWidgetArea, this );
   }
   setUserVisible( true );
+}
+
+void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
+{
+  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ) == QLatin1String( "true" );
+
+  QModelIndex index = mErrorListView->indexAt( pos );
+  QgsGeometryCheckError *error = index.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
+  if ( error )
+  {
+    const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = error->check()->availableResolutionMethods();
+
+    QMenu *menu = new QMenu( this );
+    for ( const QgsGeometryCheckResolutionMethod &resolutionMethod : resolutionMethods )
+    {
+      if ( resolutionMethod.isStable() || showUnreliableResolutionMethods )
+      {
+        QAction *action = new QAction( resolutionMethod.name() );
+        action->setToolTip( resolutionMethod.description() );
+        int fixId = resolutionMethod.id();
+        connect( action, &QAction::triggered, this, [ fixId, error, this ]()
+        {
+          mGeometryValidationService->fixError( error, fixId );
+        } );
+        menu->addAction( action );
+      }
+    }
+    menu->popup( mErrorListView->viewport()->mapToGlobal( pos ) );
+  }
 }
 
 QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationService() const

@@ -444,7 +444,7 @@ QList<QgsGeometryCheckResolutionMethod> QgsGeometryGapCheck::availableResolution
   };
 
   if ( mAllowedGapsSource )
-    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), false );
+    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), true );
 
   fixes << QgsGeometryCheckResolutionMethod( NoChange, tr( "No action" ), tr( "Do not perform any action and mark this error as fixed." ), false );
 
