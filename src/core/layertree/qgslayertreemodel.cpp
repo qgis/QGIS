@@ -1213,22 +1213,38 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
     {
       for ( QgsLayerTreeModelLegendNode *node : qgis::as_const( nodes ) )
       {
-        QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
-        bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
-        if ( checked )
+        switch ( node->data( QgsSymbolLegendNode::NodeTypeRole ).value<QgsLayerTreeModelLegendNode::NodeTypes>() )
         {
-          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
-          {
-            if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
-              filtered << node;
-          }
-          else
-          {
+          case QgsLayerTreeModelLegendNode::EmbeddedWidget:
             filtered << node;
+            break;
+
+          case QgsLayerTreeModelLegendNode::SimpleLegend:
+          case QgsLayerTreeModelLegendNode::SymbolLegend:
+          case QgsLayerTreeModelLegendNode::RasterSymbolLegend:
+          case QgsLayerTreeModelLegendNode::ImageLegend:
+          case QgsLayerTreeModelLegendNode::WmsLegend:
+          case QgsLayerTreeModelLegendNode::DataDefinedSizeLegend:
+          {
+            const QString ruleKey = node->data( QgsSymbolLegendNode::RuleKeyRole ).toString();
+            bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
+            if ( checked )
+            {
+              if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
+              {
+                if ( mLegendFilterHitTest->legendKeyVisible( ruleKey, vl ) )
+                  filtered << node;
+              }
+              else
+              {
+                filtered << node;
+              }
+            }
+            else  // unknown node type or unchecked
+              filtered << node;
+            break;
           }
         }
-        else  // unknown node type or unchecked
-          filtered << node;
       }
     }
   }
