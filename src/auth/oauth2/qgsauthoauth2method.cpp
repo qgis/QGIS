@@ -157,30 +157,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
         // Try to get a refresh token first
-        // go into local event loop and wait for a fired refresh-related slot
-        QEventLoop rloop( nullptr );
-        connect( o2, &QgsO2::refreshFinished, &rloop, &QEventLoop::quit );
-
-        // add single shot timer to quit refresh after an allotted timeout
-        // this should keep the local event loop from blocking forever
-        QTimer r_timer( nullptr );
-        int r_reqtimeout = o2->oauth2config()->requestTimeout() * 1000;
-        r_timer.setInterval( r_reqtimeout );
-        r_timer.setSingleShot( true );
-        connect( &r_timer, &QTimer::timeout, &rloop, &QEventLoop::quit );
-        r_timer.start();
-
-        // Asynchronously attempt the refresh
-        // TODO: This already has a timed reply setup in O2 base class (and in QgsNetworkAccessManager!)
-        //       May need to address this or app crashes will occur!
-        o2->refresh();
-
-        // block request update until asynchronous linking loop is quit
-        rloop.exec();
-        if ( r_timer.isActive() )
-        {
-          r_timer.stop();
-        }
+        o2->refreshSynchronous();
 
         // refresh result should set o2 to (un)linked
       }
