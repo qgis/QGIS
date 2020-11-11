@@ -1598,6 +1598,12 @@ Emitted when the validity of this layer changed.
 .. versionadded:: 3.16
 %End
 
+    void customPropertyChanged( const QString &key );
+%Docstring
+Emitted when a custom property of the layer has been changed or removed.
+
+.. versionadded:: 3.18
+%End
 
   protected:
 
