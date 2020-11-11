@@ -185,7 +185,13 @@ void QgsChunkedEntity::update( const SceneState &state )
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
-//  qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
+  QgsDebugMsgLevel( QStringLiteral( "update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms" ).arg( mActiveNodes.count() )
+                    .arg( enabled )
+                    .arg( disabled )
+                    .arg( mFrustumCulled )
+                    .arg( mReplacementQueue->count() )
+                    .arg( unloaded )
+                    .arg( t.elapsed() ), 2 );
 }
 
 void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )
@@ -259,7 +265,7 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     return;
   }
 
-  //qDebug() << node->tileX() << "|" << node->tileY() << "|" << node->tileZ() << "  " << mTau << "  " << screenSpaceError(node, state);
+  //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
 
   if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
   {

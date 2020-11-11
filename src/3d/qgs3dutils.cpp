@@ -370,7 +370,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSetti
         break;
     }
     positions.append( QVector3D( pt.x() - map.origin().x(), h, -( pt.y() - map.origin().y() ) ) );
-    //qDebug() << positions.last();
+    QgsDebugMsgLevel( QStringLiteral( "%1 %2 %3" ).arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }
 

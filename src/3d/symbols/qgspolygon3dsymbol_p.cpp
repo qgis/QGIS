@@ -207,7 +207,7 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
     }
   }
   else
-    qDebug() << "not a polygon";
+    qWarning() << "not a polygon";
 }
 
 
