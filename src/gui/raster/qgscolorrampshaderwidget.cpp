@@ -197,7 +197,7 @@ void QgsColorRampShaderWidget::autoLabel()
       continue;
     }
 
-    const QString lbl = label( currentItem, i, unit );
+    const QString lbl = createLabel( currentItem, i, unit );
 
     if ( currentItem->text( LabelColumn ).isEmpty() || currentItem->text( LabelColumn ) == lbl || currentItem->foreground( LabelColumn ).color() == QColor( Qt::gray ) )
     {
@@ -210,8 +210,6 @@ void QgsColorRampShaderWidget::autoLabel()
 
 void QgsColorRampShaderWidget::setUnitFromLabels()
 {
-  QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() );
-  bool discrete = interpolation == QgsColorRampShader::Discrete;
   QStringList allSuffixes;
   QString label;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
@@ -225,25 +223,7 @@ void QgsColorRampShaderWidget::setUnitFromLabels()
       continue;
     }
 
-    if ( discrete )
-    {
-      if ( i == 0 )
-      {
-        label = "<= " + currentItem->text( ValueColumn );
-      }
-      else if ( currentItem->data( ValueColumn, Qt::ItemDataRole::DisplayRole ).toDouble() == std::numeric_limits<double>::infinity() )
-      {
-        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn );
-      }
-      else
-      {
-        label = mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + " - " + currentItem->text( ValueColumn );
-      }
-    }
-    else
-    {
-      label = currentItem->text( ValueColumn );
-    }
+    label = createLabel( currentItem, i, QString() );
 
     if ( currentItem->text( LabelColumn ).startsWith( label ) )
     {
@@ -455,7 +435,7 @@ void QgsColorRampShaderWidget::populateColormapTreeWidget( const QList<QgsColorR
   for ( i = 0; i < mColormapTreeWidget->topLevelItemCount(); i++ )
   {
     QgsTreeWidgetItemObject *currentItem { static_cast<QgsTreeWidgetItemObject *>( mColormapTreeWidget->topLevelItem( i ) ) };
-    QString lbl { label( currentItem, i, unit )};
+    QString lbl { createLabel( currentItem, i, unit )};
     if ( currentItem->text( LabelColumn ).isEmpty() || currentItem->text( LabelColumn ) == lbl || currentItem->foreground( LabelColumn ).color() == QColor( Qt::gray ) )
     {
       currentItem->setText( LabelColumn, lbl );
@@ -739,7 +719,7 @@ void QgsColorRampShaderWidget::resetClassifyButton()
   }
 }
 
-QString QgsColorRampShaderWidget::label( QTreeWidgetItem *currentItem, bool row, const QString unit )
+QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, bool row, const QString unit )
 {
   auto applyPrecision = [ = ]( const QString & value )
   {

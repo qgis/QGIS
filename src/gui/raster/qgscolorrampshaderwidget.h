@@ -151,7 +151,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
 
-    QString label( QTreeWidgetItem *item, bool row, const QString unit );
+    QString createLabel( QTreeWidgetItem *item, bool row, const QString unit );
 
 #ifdef QGISDEBUG
     //! Dump all the classes for debugging purposes
