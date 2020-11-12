@@ -1,9 +1,10 @@
-Random Terrain Generation
+Random Terrain
 grid_calculus
-QgsProcessingParameterNumber|RADIUS|Radius (cells)|QgsProcessingParameterNumber.Integer|10|False|None|None
-QgsProcessingParameterNumber|ITERATIONS|Iterations|QgsProcessingParameterNumber.Integer|10|False|None|None
-QgsProcessingParameterEnum|TARGET_TYPE|Target Dimensions|[0] User defined
-QgsProcessingParameterNumber|USER_CELL_SIZE|Grid Size|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
-QgsProcessingParameterNumber|USER_COLS|Cols|QgsProcessingParameterNumber.Integer|100|False|1.0|None
-QgsProcessingParameterNumber|USER_ROWS|Rows|QgsProcessingParameterNumber.Integer|100|False|1.0|None
-QgsProcessingParameterRasterDestination|TARGET_GRID|Grid
+QgsProcessingParameterNumber|RADIUS|Radius (cells)|QgsProcessingParameterNumber.Integer|25|False|0|None
+QgsProcessingParameterNumber|ITERATIONS|Iterations|QgsProcessingParameterNumber.Integer|100|False|1|None
+QgsProcessingParameterEnum|TARGET_DEFINITION|Target Dimensions|[0] User defined;[1] Grid or Grid System
+QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
+QgsProcessingParameterExtent|TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX|Output extent|None|True
+QgsProcessingParameterEnum|TARGET_USER_FITS|Fits|[0] nodes;[1] Cells|False|0
+QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target System|None|True
+QgsProcessingParameterRasterDestination|TARGET_OUT_GRID|Grid
