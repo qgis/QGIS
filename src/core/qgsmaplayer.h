@@ -483,7 +483,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note Prior to QGIS 3.18, this method was available for vector layers only
      * \since QGIS 3.18
      */
-    void setOpacity( double opacity );
+    virtual void setOpacity( double opacity );
 
     /**
      * Returns the opacity for the layer, where opacity is a value between 0 (totally transparent)
@@ -493,7 +493,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note Prior to QGIS 3.18, this method was available for vector layers only
      * \since QGIS 3.18
      */
-    double opacity() const;
+    virtual double opacity() const;
 
     //! Returns if this layer is read only.
     bool readOnly() const { return isReadOnly(); }

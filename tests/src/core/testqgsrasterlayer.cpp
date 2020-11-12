@@ -94,6 +94,7 @@ class TestQgsRasterLayer : public QObject
     void singleBandPseudoRendererNoData();
     void singleBandPseudoRendererNoDataColor();
     void setRenderer();
+    void setLayerOpacity();
     void regression992(); //test for issue #992 - GeoJP2 images improperly displayed as all black
     void testRefreshRendererIfNeeded();
     void sample();
@@ -895,6 +896,26 @@ void TestQgsRasterLayer::setRenderer()
   mpRasterLayer->setRenderer( renderer );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( mpRasterLayer->renderer(), renderer );
+}
+
+void TestQgsRasterLayer::setLayerOpacity()
+{
+  QSignalSpy spy( mpRasterLayer, &QgsMapLayer::opacityChanged );
+
+  mpRasterLayer->setOpacity( 0.5 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toDouble(), 0.5 );
+  QCOMPARE( mpRasterLayer->opacity(), 0.5 );
+  // QgsRasterLayer::setOpacity is a proxy to QgsRasterRenderer::setOpacity
+  QCOMPARE( mpRasterLayer->renderer()->opacity(), 0.5 );
+
+  mpRasterLayer->setOpacity( 0.5 );
+  QCOMPARE( spy.count(), 1 );
+  mpRasterLayer->setOpacity( 1.0 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toDouble(), 1.0 );
+  QCOMPARE( mpRasterLayer->opacity(), 1.0 );
+  QCOMPARE( mpRasterLayer->renderer()->opacity(), 1.0 );
 }
 
 void TestQgsRasterLayer::regression992()
