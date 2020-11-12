@@ -36,6 +36,7 @@ QgsPointCloudRendererConfig::QgsPointCloudRendererConfig( const QgsPointCloudRen
   mZMax = other.zMax();
   mPenWidth = other.penWidth();
   mColorRamp.reset( other.colorRamp()->clone() );
+  mAttribute = other.attribute();
 }
 
 QgsPointCloudRendererConfig &QgsPointCloudRendererConfig::QgsPointCloudRendererConfig::operator =( const QgsPointCloudRendererConfig &other )
@@ -44,6 +45,7 @@ QgsPointCloudRendererConfig &QgsPointCloudRendererConfig::QgsPointCloudRendererC
   mZMax = other.zMax();
   mPenWidth = other.penWidth();
   mColorRamp.reset( other.colorRamp()->clone() );
+  mAttribute = other.attribute();
   return *this;
 }
 
