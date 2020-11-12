@@ -86,15 +86,26 @@ QString QgsQuickFeaturesListModel::foundPair( const QgsQuickFeatureLayerPair &pa
     return QString();
 
   QgsFields fields = pair.feature().fields();
+  QStringList words = mSearchExpression.split( ' ', QString::SplitBehavior::SkipEmptyParts );
+  QStringList foundPairs;
 
-  for ( const QgsField &field : fields )
+  for ( const QString &word : words )
   {
-    QString attrValue = pair.feature().attribute( field.name() ).toString();
+    for ( const QgsField &field : fields )
+    {
+      QString attrValue = pair.feature().attribute( field.name() ).toString();
 
-    if ( attrValue.toLower().indexOf( mSearchExpression.toLower() ) != -1 )
-      return field.name() + ": " + attrValue;
+      if ( attrValue.toLower().indexOf( word.toLower() ) != -1 )
+      {
+        foundPairs << field.name() + ": " + attrValue;
+
+        // remove found field from list of fields to not select it more than once
+        fields.remove( fields.lookupField( field.name() ) );
+      }
+    }
   }
-  return QString();
+
+  return foundPairs.join( ", " );
 }
 
 QString QgsQuickFeaturesListModel::buildSearchExpression()
@@ -104,20 +115,29 @@ QString QgsQuickFeaturesListModel::buildSearchExpression()
 
   const QgsFields fields = mCurrentLayer->fields();
   QStringList expressionParts;
+  QStringList wordExpressions;
 
-  bool searchExpressionIsNumeric;
-  int filterInt = mSearchExpression.toInt( &searchExpressionIsNumeric );
-  Q_UNUSED( filterInt ); // we only need to know if expression is numeric, int value is not used
+  QStringList words = mSearchExpression.split( ' ', QString::SplitBehavior::SkipEmptyParts );
 
-  for ( const QgsField &field : fields )
+  for ( const QString &word : words )
   {
-    if ( field.isNumeric() && searchExpressionIsNumeric )
-      expressionParts << QStringLiteral( "%1 ~ '%2.*'" ).arg( QgsExpression::quotedColumnRef( field.name() ), mSearchExpression );
-    else if ( field.type() == QVariant::String )
-      expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ), mSearchExpression );
+    bool searchExpressionIsNumeric;
+    int filterInt = word.toInt( &searchExpressionIsNumeric );
+    Q_UNUSED( filterInt ); // we only need to know if expression is numeric, int value is not used
+
+
+    for ( const QgsField &field : fields )
+    {
+      if ( field.isNumeric() && searchExpressionIsNumeric )
+        expressionParts << QStringLiteral( "%1 ~ '%2.*'" ).arg( QgsExpression::quotedColumnRef( field.name() ), word );
+      else if ( field.type() == QVariant::String )
+        expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ), word );
+    }
+    wordExpressions << QStringLiteral( "(%1)" ).arg( expressionParts.join( QLatin1String( " ) OR ( " ) ) );
+    expressionParts.clear();
   }
 
-  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QLatin1String( " ) OR ( " ) ) );
+  QString expression = QStringLiteral( "(%1)" ).arg( wordExpressions.join( QLatin1String( " ) AND ( " ) ) );
 
   return expression;
 }
