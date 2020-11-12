@@ -73,8 +73,9 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 
   mProblemDetailWidget->setVisible( false );
 
-  // Problem resolution is unstable and therefore disabled by default
-  mResolutionWidget->setVisible( QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ) == QLatin1String( "true" ) );
+  // Some problem resolutions are unstable, show all of them only if the user opted in
+  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  mResolutionWidget->setVisible( showUnreliableResolutionMethods );
 }
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
@@ -164,7 +165,7 @@ void QgsGeometryValidationDock::onRowsInserted()
 
 void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
 {
-  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 
   QModelIndex index = mErrorListView->indexAt( pos );
   QgsGeometryCheckError *error = index.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
