@@ -75,6 +75,7 @@ RUN  apt-get update \
     python3-gdal \
     python3-mock \
     python3-nose2 \
+    python3-owslib \
     python3-pip \
     python3-psycopg2 \
     python3-pyproj \
@@ -122,7 +123,6 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-    owslib \
     oauthlib \
     pyopenssl \
     pep8 \
