@@ -126,13 +126,6 @@ Abstract base class for 2d point cloud renderers.
 %End
   public:
 
-    static QgsPointCloudRenderer *defaultRenderer() /Factory/;
-%Docstring
-Returns a new default point cloud renderer.
-
-Caller takes ownership of the returned renderer.
-%End
-
     virtual ~QgsPointCloudRenderer();
 
     virtual QString type() const = 0;

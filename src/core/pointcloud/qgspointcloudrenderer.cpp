@@ -47,11 +47,6 @@ void QgsPointCloudRenderContext::setAttributes( const QgsPointCloudAttributeColl
   attributes.find( QStringLiteral( "Y" ), mYOffset );
 }
 
-QgsPointCloudRenderer *QgsPointCloudRenderer::defaultRenderer()
-{
-  return new QgsDummyPointCloudRenderer();
-}
-
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.isNull() )
