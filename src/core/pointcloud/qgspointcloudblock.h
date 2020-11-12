@@ -25,8 +25,6 @@
 #include <QVector>
 #include <QByteArray>
 
-#define SIP_NO_FILE
-
 #include "qgspointcloudattribute.h"
 
 /**

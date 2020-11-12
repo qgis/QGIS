@@ -28,11 +28,11 @@
 #include <QString>
 #include <QPainter>
 
-
 class QgsRenderContext;
 class QgsPointCloudLayer;
 
-#ifndef SIP_RUN
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 /**
@@ -128,7 +128,5 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     void drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config );
 
 };
-#endif
-
 
 #endif // QGSPOINTCLOUDLAYERRENDERER_H

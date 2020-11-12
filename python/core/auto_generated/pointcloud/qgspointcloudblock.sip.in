@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudblock.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPointCloudBlock
+{
+%Docstring
+Base class for storing raw data from point cloud nodes
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudblock.h"
+%End
+  public:
+    QgsPointCloudBlock( int count,
+                        const QgsPointCloudAttributeCollection &attributes,
+                        const QByteArray &data );
+%Docstring
+Ctor
+%End
+    ~QgsPointCloudBlock();
+
+    const char *data() const;
+%Docstring
+Returns raw pointer to data
+%End
+
+    int pointCount() const;
+%Docstring
+Returns number of points that are stored in the block
+%End
+
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns the attributes that are stored in the data block, along with their size
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudblock.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
