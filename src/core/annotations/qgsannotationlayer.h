@@ -72,6 +72,14 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsAnnotationLayer( const QString &name, const QgsAnnotationLayer::LayerOptions &options );
     ~QgsAnnotationLayer() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsAnnotationLayer: '%1'>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Resets the annotation layer to a default state, and clears all items from it.
      */
