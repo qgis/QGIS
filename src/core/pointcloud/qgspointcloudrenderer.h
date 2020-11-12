@@ -185,4 +185,58 @@ class CORE_EXPORT QgsPointCloudRenderer
 #endif
 };
 
+#ifndef SIP_RUN
+
+class QgsColorRamp;
+
+class CORE_EXPORT QgsDummyPointCloudRenderer : public QgsPointCloudRenderer
+{
+  public:
+
+    QgsPointCloudRenderer *clone() const override;
+    void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    void startRender( QgsPointCloudRenderContext &context ) override;
+    void stopRender( QgsPointCloudRenderContext &context ) override;
+    QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+
+    //! Returns z min
+    double zMin() const;
+    //! Sets z min
+    void setZMin( double value );
+
+    //! Returns z max
+    double zMax() const;
+
+    //! Sets z max
+    void setZMax( double value );
+
+    //! Returns pen width
+    int penWidth() const;
+
+    //! Sets pen width
+    void setPenWidth( int value );
+
+    //! Returns color ramp
+    QgsColorRamp *colorRamp() const;
+
+    //! Sets color ramp (ownership is transferrred)
+    void setColorRamp( QgsColorRamp *value SIP_TRANSFER );
+
+    //! Returns maximum allowed screen error in pixels
+    float maximumScreenError() const;
+
+    QString attribute() const;
+    void setAttribute( const QString &attribute );
+
+  private:
+    double mZMin = 0, mZMax = 0;
+    QString mAttribute;
+    int mPenWidth = 1;
+    int mPainterPenWidth = 1;
+    std::unique_ptr<QgsColorRamp> mColorRamp;
+    float mMaximumScreenError = 5;
+
+};
+#endif
 #endif // QGSPOINTCLOUDRENDERER_H
