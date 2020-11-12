@@ -56,7 +56,7 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
   std::unique_ptr< QgsPointCloudRenderer > r( m->createRenderer( element, context ) );
   return r.release();
 #endif
-  return new QgsDummyPointCloudRenderer();
+  return QgsDummyPointCloudRenderer::create( element, context );
 }
 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
@@ -88,6 +88,12 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
 
 #include "qgscolorramp.h"
 #include "qgspointcloudblock.h"
+#include "qgsstyle.h"
+
+QgsDummyPointCloudRenderer::QgsDummyPointCloudRenderer()
+{
+  mColorRamp.reset( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+}
 
 QgsPointCloudRenderer *QgsDummyPointCloudRenderer::clone() const
 {
@@ -187,11 +193,41 @@ void QgsDummyPointCloudRenderer::renderBlock( const QgsPointCloudBlock *block, Q
   context.incrementPointsRendered( rendered );
 }
 
+#include "qgssymbollayerutils.h"
+
+
+QgsPointCloudRenderer *QgsDummyPointCloudRenderer::create( QDomElement &element, const QgsReadWriteContext & )
+{
+  std::unique_ptr< QgsDummyPointCloudRenderer > r = qgis::make_unique< QgsDummyPointCloudRenderer >();
+
+  r->setAttribute( element.attribute( QStringLiteral( "attribute" ) ) );
+  r->setZMin( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
+  r->setZMax( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
+  r->setPenWidth( element.attribute( QStringLiteral( "penwidth" ), QStringLiteral( "5" ) ).toInt() );
+
+  QDomElement sourceColorRampElem = element.firstChildElement( QStringLiteral( "colorramp" ) );
+  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
+  {
+    r->setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+  }
+
+  return r.release();
+}
+
 QDomElement QgsDummyPointCloudRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
-  // create empty renderer element
   QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
+
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dummy" ) );
+  rendererElem.setAttribute( QStringLiteral( "penwidth" ), mPenWidth );
+  rendererElem.setAttribute( QStringLiteral( "min" ), mZMin );
+  rendererElem.setAttribute( QStringLiteral( "max" ), mZMax );
+  rendererElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
+
+  QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mColorRamp.get(), doc );
+  rendererElem.appendChild( colorRampElem );
+
   return rendererElem;
 }
 
@@ -266,3 +302,4 @@ void QgsDummyPointCloudRenderer::setAttribute( const QString &attribute )
 {
   mAttribute = attribute;
 }
+

@@ -193,12 +193,19 @@ class CORE_EXPORT QgsDummyPointCloudRenderer : public QgsPointCloudRenderer
 {
   public:
 
+    QgsDummyPointCloudRenderer();
+
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     void startRender( QgsPointCloudRenderContext &context ) override;
     void stopRender( QgsPointCloudRenderContext &context ) override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+
+    /**
+     * Creates a dummy renderer from an XML \a element.
+     */
+    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     //! Returns z min
     double zMin() const;
@@ -230,8 +237,8 @@ class CORE_EXPORT QgsDummyPointCloudRenderer : public QgsPointCloudRenderer
     void setAttribute( const QString &attribute );
 
   private:
-    double mZMin = 0, mZMax = 0;
-    QString mAttribute;
+    double mZMin = 0, mZMax = 100;
+    QString mAttribute = "Z";
     int mPenWidth = 1;
     int mPainterPenWidth = 1;
     std::unique_ptr<QgsColorRamp> mColorRamp;

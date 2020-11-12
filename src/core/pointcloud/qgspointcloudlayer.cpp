@@ -137,21 +137,6 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
   if ( categories.testFlag( CustomProperties ) )
     readCustomProperties( node, QStringLiteral( "variable" ) );
 
-  // hack for now !!
-  if ( categories.testFlag( Symbology ) )
-  {
-    const QDomElement elemRenderer = elem.firstChildElement( QStringLiteral( "renderer" ) );
-    if ( elemRenderer.isNull() )
-    {
-      errorMessage = tr( "Missing <renderer> tag" );
-      //  return false;
-    }
-    setCustomProperty( QStringLiteral( "pcMin" ), elemRenderer.attribute( QStringLiteral( "pcMin" ), QStringLiteral( "400" ) ).toInt() );
-    setCustomProperty( QStringLiteral( "pcMax" ), elemRenderer.attribute( QStringLiteral( "pcMax" ), QStringLiteral( "600" ) ).toInt() );
-    setCustomProperty( QStringLiteral( "pcRamp" ), elemRenderer.attribute( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ) );
-    setCustomProperty( QStringLiteral( "pcAttribute" ), elemRenderer.attribute( QStringLiteral( "pcAttribute" ), QStringLiteral( "Z" ) ) );
-  }
-
   return true;
 }
 
@@ -230,17 +215,6 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   writeCommonStyle( elem, doc, context, categories );
 
   ( void )writeStyle( node, doc, errorMessage, context, categories );
-
-  // hack for now !!
-  if ( categories.testFlag( Symbology ) )
-  {
-    QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
-    elemRenderer.setAttribute( QStringLiteral( "pcMin" ), customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
-    elemRenderer.setAttribute( QStringLiteral( "pcMax" ), customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
-    elemRenderer.setAttribute( QStringLiteral( "pcRamp" ), customProperty( QStringLiteral( "pcRamp" ),  QStringLiteral( "Viridis" ) ).toString() );
-    elemRenderer.setAttribute( QStringLiteral( "pcAttribute" ), customProperty( QStringLiteral( "pcAttribute" ),  QStringLiteral( "Z" ) ).toString() );
-    elem.appendChild( elemRenderer );
-  }
 
   return true;
 }
