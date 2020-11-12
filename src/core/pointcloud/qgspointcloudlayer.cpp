@@ -26,6 +26,7 @@
 #include "qgspointcloudrenderer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgspainting.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -131,6 +132,11 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
 
   readCommonStyle( elem, context, categories );
 
+  readStyle( node, errorMessage, context, categories );
+
+  if ( categories.testFlag( CustomProperties ) )
+    readCustomProperties( node, QStringLiteral( "variable" ) );
+
   // hack for now !!
   if ( categories.testFlag( Symbology ) )
   {
@@ -149,6 +155,72 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
   return true;
 }
 
+bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
+{
+  bool result = true;
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    QDomElement rendererElement = node.firstChildElement( QStringLiteral( "renderer" ) );
+    if ( !rendererElement.isNull() )
+    {
+      std::unique_ptr< QgsPointCloudRenderer > r( QgsPointCloudRenderer::load( rendererElement, context ) );
+      if ( r )
+      {
+        setRenderer( r.release() );
+      }
+      else
+      {
+        result = false;
+      }
+    }
+    // make sure layer has a renderer - if none exists, fallback to a default renderer
+    if ( !mRenderer )
+    {
+      setRenderer( QgsPointCloudRenderer::defaultRenderer() );
+    }
+  }
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    // get and set the blend mode if it exists
+    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    if ( !blendModeNode.isNull() )
+    {
+      QDomElement e = blendModeNode.toElement();
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    }
+  }
+
+  // get and set the layer transparency and scale visibility if they exists
+  if ( categories.testFlag( Rendering ) )
+  {
+#if 0 // TODO
+    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    if ( !layerOpacityNode.isNull() )
+    {
+      QDomElement e = layerOpacityNode.toElement();
+      setOpacity( e.text().toDouble() );
+    }
+#endif
+
+    const bool hasScaleBasedVisibiliy { node.attributes().namedItem( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).nodeValue() == '1' };
+    setScaleBasedVisibility( hasScaleBasedVisibiliy );
+    bool ok;
+    const double maxScale { node.attributes().namedItem( QStringLiteral( "maxScale" ) ).nodeValue().toDouble( &ok ) };
+    if ( ok )
+    {
+      setMaximumScale( maxScale );
+    }
+    const double minScale { node.attributes().namedItem( QStringLiteral( "minScale" ) ).nodeValue().toDouble( &ok ) };
+    if ( ok )
+    {
+      setMinimumScale( minScale );
+    }
+  }
+  return result;
+}
+
 bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
@@ -156,6 +228,8 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
   QDomElement elem = node.toElement();
   writeCommonStyle( elem, doc, context, categories );
+
+  ( void )writeStyle( node, doc, errorMessage, context, categories );
 
   // hack for now !!
   if ( categories.testFlag( Symbology ) )
@@ -166,6 +240,51 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     elemRenderer.setAttribute( QStringLiteral( "pcRamp" ), customProperty( QStringLiteral( "pcRamp" ),  QStringLiteral( "Viridis" ) ).toString() );
     elemRenderer.setAttribute( QStringLiteral( "pcAttribute" ), customProperty( QStringLiteral( "pcAttribute" ),  QStringLiteral( "Z" ) ).toString() );
     elem.appendChild( elemRenderer );
+  }
+
+  return true;
+}
+
+bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+{
+  QDomElement mapLayerNode = node.toElement();
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    if ( mRenderer )
+    {
+      QDomElement rendererElement = mRenderer->save( doc, context );
+      node.appendChild( rendererElement );
+    }
+  }
+
+  //save customproperties
+  if ( categories.testFlag( CustomProperties ) )
+  {
+    writeCustomProperties( node, doc );
+  }
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    // add the blend mode field
+    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
+    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    blendModeElem.appendChild( blendModeText );
+    node.appendChild( blendModeElem );
+  }
+
+  // add the layer opacity and scale visibility
+  if ( categories.testFlag( Rendering ) )
+  {
+#if 0 // TODO
+    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    layerOpacityElem.appendChild( layerOpacityText );
+    node.appendChild( layerOpacityElem );
+#endif
+    mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
+    mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
+    mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
   }
 
   return true;
