@@ -56,6 +56,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mFeatureRubberband = new QgsRubberBand( mMapCanvas );
   mErrorRubberband = new QgsRubberBand( mMapCanvas );
   mErrorLocationRubberband = new QgsRubberBand( mMapCanvas );
+  mGeometryErrorContextMenu = new QMenu( this );
 
   double scaleFactor = mMapCanvas->fontMetrics().xHeight() * .4;
 
@@ -171,22 +172,22 @@ void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
   {
     const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = error->check()->availableResolutionMethods();
 
-    QMenu *menu = new QMenu( this );
+    mGeometryErrorContextMenu->clear();
     for ( const QgsGeometryCheckResolutionMethod &resolutionMethod : resolutionMethods )
     {
       if ( resolutionMethod.isStable() || showUnreliableResolutionMethods )
       {
-        QAction *action = new QAction( resolutionMethod.name() );
+        QAction *action = new QAction( resolutionMethod.name(), mGeometryErrorContextMenu );
         action->setToolTip( resolutionMethod.description() );
         int fixId = resolutionMethod.id();
         connect( action, &QAction::triggered, this, [ fixId, error, this ]()
         {
           mGeometryValidationService->fixError( error, fixId );
         } );
-        menu->addAction( action );
+        mGeometryErrorContextMenu->addAction( action );
       }
     }
-    menu->popup( mErrorListView->viewport()->mapToGlobal( pos ) );
+    mGeometryErrorContextMenu->popup( mErrorListView->viewport()->mapToGlobal( pos ) );
   }
 }
 
