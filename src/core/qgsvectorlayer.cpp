@@ -276,7 +276,6 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->selectByIds( selectedFeatureIds() );
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
-  layer->setOpacity( opacity() );
   layer->setReadExtentFromXml( readExtentFromXml() );
 
   const auto constActions = actions()->actions();
@@ -4341,22 +4340,6 @@ QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 {
   return mFeatureBlendMode;
 }
-
-void QgsVectorLayer::setOpacity( double opacity )
-{
-  if ( qgsDoubleNear( mLayerOpacity, opacity ) )
-    return;
-  mLayerOpacity = opacity;
-  emit opacityChanged( opacity );
-  emit styleChanged();
-}
-
-double QgsVectorLayer::opacity() const
-{
-  return mLayerOpacity;
-}
-
-
 
 void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 {

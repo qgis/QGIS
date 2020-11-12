@@ -2408,30 +2408,6 @@ Sets the blending mode used for rendering each feature
 Returns the current blending mode for features
 %End
 
-    void setOpacity( double opacity );
-%Docstring
-Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`opacity`
-
-.. seealso:: :py:func:`opacityChanged`
-
-.. versionadded:: 3.0
-%End
-
-    double opacity() const;
-%Docstring
-Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`setOpacity`
-
-.. seealso:: :py:func:`opacityChanged`
-
-.. versionadded:: 3.0
-%End
-
     virtual QString htmlMetadata() const ${SIP_FINAL};
 
 
@@ -2862,18 +2838,6 @@ Emitted when the font family defined for labeling layer is not found on system
     void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 %Docstring
 Signal emitted when :py:func:`~QgsVectorLayer.setFeatureBlendMode` is called
-%End
-
-    void opacityChanged( double opacity );
-%Docstring
-Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
-and 1 (opaque).
-
-.. seealso:: :py:func:`setOpacity`
-
-.. seealso:: :py:func:`opacity`
-
-.. versionadded:: 3.0
 %End
 
     void editCommandStarted( const QString &text );

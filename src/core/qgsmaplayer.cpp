@@ -124,6 +124,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
+  layer->setOpacity( mLayerOpacity );
 }
 
 QgsMapLayerType QgsMapLayer::type() const
@@ -214,6 +215,19 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
   return mBlendMode;
 }
 
+void QgsMapLayer::setOpacity( double opacity )
+{
+  if ( qgsDoubleNear( mLayerOpacity, opacity ) )
+    return;
+  mLayerOpacity = opacity;
+  emit opacityChanged( opacity );
+  emit styleChanged();
+}
+
+double QgsMapLayer::opacity() const
+{
+  return mLayerOpacity;
+}
 
 bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
 {
