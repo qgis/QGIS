@@ -131,6 +131,13 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void checkClicked( bool ckd );
     void toggleCollapsed();
 
+    /**
+     * Overridden to prepare base call and avoid crash due to specific QT versions
+     *
+     * \since QGIS 3.16
+     */
+    void setStyleSheet( const QString &style );
+
   protected:
     void init();
 
