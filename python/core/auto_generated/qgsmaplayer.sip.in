@@ -450,7 +450,7 @@ Returns the current blending mode for a layer.
 .. seealso:: :py:func:`setBlendMode`
 %End
 
-    void setOpacity( double opacity );
+    virtual void setOpacity( double opacity );
 %Docstring
 Sets the ``opacity`` for the layer, where ``opacity`` is a value between 0 (totally transparent)
 and 1.0 (fully opaque).
@@ -466,7 +466,7 @@ and 1.0 (fully opaque).
 .. versionadded:: 3.18
 %End
 
-    double opacity() const;
+    virtual double opacity() const;
 %Docstring
 Returns the opacity for the layer, where opacity is a value between 0 (totally transparent)
 and 1.0 (fully opaque).

@@ -338,6 +338,11 @@ In a world file, this is normally the first row (without the sign).
 .. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End
 
+    virtual void setOpacity( double opacity ) ${SIP_FINAL};
+
+    virtual double opacity() const ${SIP_FINAL};
+
+
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),

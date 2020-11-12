@@ -78,7 +78,7 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
   QHash<QgsMapLayer *, int> result;
   for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
   {
-    if ( auto && lKey = it.key() )
+    if ( auto &&lKey = it.key() )
       result.insert( lKey, it.value() );
   }
   return result;
@@ -395,7 +395,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 
     job.blendMode = ml->blendMode();
-    job.opacity = ml->opacity();
+
+    // raster layer opacity is handled directly within the raster layer renderer, so don't
+    // apply default opacity handling here!
+    job.opacity = ml->type() != QgsMapLayerType::RasterLayer ? ml->opacity() : 1.0;
 
     // if we can use the cache, let's do it and avoid rendering!
     if ( mCache && mCache->hasCacheImage( ml->id() ) )
