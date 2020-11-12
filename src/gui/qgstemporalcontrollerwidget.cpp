@@ -424,7 +424,12 @@ void QgsTemporalControllerWidget::firstTemporalLayerLoaded( QgsMapLayer *layer )
 
   QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
   if ( meshLayer )
+  {
+    mBlockFrameDurationUpdates++;
     setTimeStep( meshLayer->firstValidTimeStep() );
+    mBlockFrameDurationUpdates--;
+    updateFrameDuration();
+  }
 }
 
 void QgsTemporalControllerWidget::onProjectCleared()
