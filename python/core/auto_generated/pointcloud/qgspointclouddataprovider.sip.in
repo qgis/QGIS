@@ -37,6 +37,11 @@ Ctor
 
     ~QgsPointCloudDataProvider();
 
+    virtual QgsPointCloudAttributeCollection attributes() const = 0;
+%Docstring
+Returns the attributes available from this data provider.
+%End
+
 };
 
 /************************************************************************

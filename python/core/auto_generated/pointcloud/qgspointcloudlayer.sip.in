@@ -88,6 +88,11 @@ QgsPointCloudLayer cannot be copied.
     virtual QString htmlMetadata() const;
 
 
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns the attributes available from the layer.
+%End
+
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };

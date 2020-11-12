@@ -302,3 +302,8 @@ QString QgsPointCloudLayer::htmlMetadata() const
   myMetadata += QLatin1String( "\n</body>\n</html>\n" );
   return myMetadata;
 }
+
+QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
+{
+  return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
+}
