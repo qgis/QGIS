@@ -73,6 +73,7 @@ Abstract base class for spatial data provider implementations.
     enum ReadFlag
     {
       FlagTrustDataSource,
+      SkipFeatureCount,
     };
     typedef QFlags<QgsDataProvider::ReadFlag> ReadFlags;
 

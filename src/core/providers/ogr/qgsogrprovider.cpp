@@ -953,7 +953,8 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
 
 QStringList QgsOgrProvider::subLayers() const
 {
-  return _subLayers( true );
+  const bool withFeatureCount = ( mReadFlags & QgsDataProvider::SkipFeatureCount ) == 0;
+  return _subLayers( withFeatureCount );
 }
 
 QgsLayerMetadata QgsOgrProvider::layerMetadata() const
@@ -1604,6 +1605,10 @@ QgsWkbTypes::Type QgsOgrProvider::wkbType() const
  */
 long QgsOgrProvider::featureCount() const
 {
+  if ( ( mReadFlags & QgsDataProvider::SkipFeatureCount ) != 0 )
+  {
+    return QgsVectorDataProvider::UnknownCount;
+  }
   if ( mRefreshFeatureCount )
   {
     mRefreshFeatureCount = false;
