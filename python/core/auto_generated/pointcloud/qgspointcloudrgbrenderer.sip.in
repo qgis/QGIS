@@ -26,6 +26,7 @@ An RGB renderer for 2d visualisation of point clouds using embedded red, green a
 %Docstring
 Constructor for QgsPointCloudRgbRenderer.
 %End
+    virtual QString type() const;
 
     virtual QgsPointCloudRenderer *clone() const;
 

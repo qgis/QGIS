@@ -102,6 +102,9 @@ bool QgsPointCloudLayerRenderer::render()
   float rootErrorPixels = rootError / mapUnitsPerPixel; // in pixels
   const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
 
+  QgsPointCloudRequest request;
+  request.setAttributes( mAttributes );
+
   // drawing
   int nodesDrawn = 0;
   for ( const IndexedPointCloudNode &n : nodes )
@@ -111,12 +114,12 @@ bool QgsPointCloudLayerRenderer::render()
       qDebug() << "canceled";
       break;
     }
-    QgsPointCloudRequest request;
-    request.setAttributes( mAttributes );
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
 
     if ( !block )
       continue;
+
+    context.setAttributes( block->attributes() );
 
     mRenderer->renderBlock( block.get(), context );
     ++nodesDrawn;

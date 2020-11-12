@@ -65,6 +65,39 @@ It is a point cloud renderer's responsibility to correctly call this after
 rendering a block of points.
 %End
 
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns the attributes associated with the rendered block.
+
+.. seealso:: :py:func:`setAttributes`
+%End
+
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
+%Docstring
+Sets the ``attributes`` associated with the rendered block.
+
+.. seealso:: :py:func:`attributes`
+%End
+
+    int pointRecordSize() const;
+%Docstring
+Returns the size of a single point record.
+%End
+
+    int xOffset() const;
+%Docstring
+Returns the offset for the x value in a point record.
+
+.. seealso:: :py:func:`yOffset`
+%End
+
+    int yOffset() const;
+%Docstring
+Returns the offset for the y value in a point record.
+
+.. seealso:: :py:func:`xOffset`
+%End
+
   private:
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 };
@@ -101,6 +134,11 @@ Caller takes ownership of the returned renderer.
 %End
 
     virtual ~QgsPointCloudRenderer();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the identifier of the renderer type.
+%End
 
     virtual QgsPointCloudRenderer *clone() const = 0 /Factory/;
 %Docstring
@@ -165,6 +203,13 @@ Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by
    the renderer should instead be cloned and :py:func:`~QgsPointCloudRenderer.startRender`/:py:func:`~QgsPointCloudRenderer.stopRender` called on the clone.
 
 .. seealso:: :py:func:`startRender`
+%End
+
+  protected:
+
+    static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
+%Docstring
+Retrieves the x and y coordinate for the point at index ``i``.
 %End
 
 };

@@ -37,6 +37,16 @@ void QgsPointCloudRenderContext::incrementPointsRendered( long count )
   mPointsRendered += count;
 }
 
+void QgsPointCloudRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
+{
+  mAttributes = attributes;
+  mPointRecordSize = mAttributes.pointRecordSize();
+
+  // fetch offset for x/y attributes
+  attributes.find( QStringLiteral( "X" ), mXOffset );
+  attributes.find( QStringLiteral( "Y" ), mYOffset );
+}
+
 QgsPointCloudRenderer *QgsPointCloudRenderer::defaultRenderer()
 {
   return new QgsDummyPointCloudRenderer();
@@ -85,6 +95,8 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
 }
 
 
+
+
 #include "qgscolorramp.h"
 #include "qgspointcloudblock.h"
 #include "qgsstyle.h"
@@ -125,18 +137,8 @@ void QgsDummyPointCloudRenderer::renderBlock( const QgsPointCloudBlock *block, Q
   const QgsPointCloudAttributeCollection request = block->attributes();
   const std::size_t recordSize = request.pointRecordSize();
 
-  int xOffset = 0;
-  const QgsPointCloudAttribute *attribute = request.find( QStringLiteral( "X" ), xOffset );
-  if ( !attribute )
-    return;
-
-  int yOffset = 0;
-  attribute = request.find( QStringLiteral( "Y" ), yOffset );
-  if ( !attribute )
-    return;
-
   int attributeOffset = 0;
-  attribute = request.find( mAttribute, attributeOffset );
+  const QgsPointCloudAttribute *attribute = request.find( mAttribute, attributeOffset );
   if ( !attribute )
     return;
 
@@ -144,14 +146,12 @@ void QgsDummyPointCloudRenderer::renderBlock( const QgsPointCloudBlock *block, Q
   const bool applyZOffset = attribute->name() == QLatin1String( "Z" );
 
   int rendered = 0;
+  double x = 0;
+  double y = 0;
   for ( int i = 0; i < count; ++i )
   {
-    // TODO clean up!
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
+    pointXY( context, ptr, i, x, y );
 
-    double x = offset.x() + scale.x() * ix;
-    double y = offset.y() + scale.y() * iy;
     if ( mapExtent.contains( QgsPointXY( x, y ) ) )
     {
       double atr = 0;

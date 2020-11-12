@@ -23,6 +23,11 @@ QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
 
 }
 
+QString QgsPointCloudRgbRenderer::type() const
+{
+  return QStringLiteral( "rgb" );
+}
+
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
 {
   std::unique_ptr< QgsPointCloudRgbRenderer > res = qgis::make_unique< QgsPointCloudRgbRenderer >();
@@ -36,8 +41,6 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
 void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context )
 {
   const QgsMapToPixel mapToPixel = context.renderContext().mapToPixel();
-  const QgsVector3D scale = context.scale();
-  const QgsVector3D offset = context.offset();
 
   QgsRectangle mapExtent = context.renderContext().mapExtent();
 
@@ -49,20 +52,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const char *ptr = block->data();
   int count = block->pointCount();
   const QgsPointCloudAttributeCollection request = block->attributes();
+
   const std::size_t recordSize = request.pointRecordSize();
-
-  int xOffset = 0;
-  const QgsPointCloudAttribute *attribute = request.find( QStringLiteral( "X" ), xOffset );
-  if ( !attribute )
-    return;
-
-  int yOffset = 0;
-  attribute = request.find( QStringLiteral( "Y" ), yOffset );
-  if ( !attribute )
-    return;
-
   int redOffset = 0;
-  attribute = request.find( mRedAttribute, redOffset );
+  const QgsPointCloudAttribute *attribute = request.find( mRedAttribute, redOffset );
   if ( !attribute )
     return;
   const QgsPointCloudAttribute::DataType redType = attribute->type();
@@ -80,14 +73,12 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const QgsPointCloudAttribute::DataType blueType = attribute->type();
 
   int rendered = 0;
+  double x = 0;
+  double y = 0;
   for ( int i = 0; i < count; ++i )
   {
-    // TODO move some of this to base class!
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
+    pointXY( context, ptr, i, x, y );
 
-    double x = offset.x() + scale.x() * ix;
-    double y = offset.y() + scale.y() * iy;
     if ( mapExtent.contains( QgsPointXY( x, y ) ) )
     {
       int red = 0;
