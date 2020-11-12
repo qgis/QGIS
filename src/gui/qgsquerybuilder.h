@@ -83,7 +83,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * Returns the code editor widget for the SQL.
      * \since QGIS 3.18
      */
-    QgsCodeEditor *codeEditorWidget() const { return txtSQL; }
+    QgsCodeEditor *codeEditorWidget() const { return mTxtSql; }
 #endif
 
   public slots:
