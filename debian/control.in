@@ -74,6 +74,7 @@ Build-Depends:
  libpdal-dev, pdal,
  libprotobuf-dev,
  protobuf-compiler,
+ libzstd-dev,
  saga,
  git,
  doxygen,
