@@ -99,6 +99,23 @@ QgsPointCloudLayer cannot be copied.
 Returns the attributes available from the layer.
 %End
 
+    QgsPointCloudRenderer *renderer();
+%Docstring
+Returns the 2D renderer for the point cloud.
+
+.. seealso:: :py:func:`setRenderer`
+%End
+
+
+    void setRenderer( QgsPointCloudRenderer *renderer /Transfer/ );
+%Docstring
+Sets the 2D ``renderer`` for the point cloud.
+
+Ownership of ``renderer`` is transferred to the layer.
+
+.. seealso:: :py:func:`renderer`
+%End
+
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };

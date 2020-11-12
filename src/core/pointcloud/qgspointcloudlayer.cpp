@@ -23,6 +23,7 @@
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgslayermetadataformatter.h"
+#include "qgspointcloudrenderer.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -48,6 +49,10 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 
   QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
+
+  if ( mRenderer )
+    layer->setRenderer( mRenderer->clone() );
+
   return layer;
 }
 
@@ -207,10 +212,24 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
   setCrs( mDataProvider->crs() );
 
-  if ( loadDefaultStyleFlag )
+  if ( !mRenderer || loadDefaultStyleFlag )
   {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+
     bool defaultLoadedFlag = false;
-    loadDefaultStyle( defaultLoadedFlag );
+
+    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
+    {
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+
+    if ( !defaultLoadedFlag )
+    {
+      // all else failed, create default renderer
+      setRenderer( QgsPointCloudRenderer::defaultRenderer() );
+    }
   }
 
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
@@ -332,4 +351,24 @@ QString QgsPointCloudLayer::htmlMetadata() const
 QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
 {
   return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
+}
+
+QgsPointCloudRenderer *QgsPointCloudLayer::renderer()
+{
+  return mRenderer.get();
+}
+
+const QgsPointCloudRenderer *QgsPointCloudLayer::renderer() const
+{
+  return mRenderer.get();
+}
+
+void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
+{
+  if ( renderer == mRenderer.get() )
+    return;
+
+  mRenderer.reset( renderer );
+  emit rendererChanged();
+  emit styleChanged();
 }

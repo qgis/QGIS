@@ -30,6 +30,8 @@
 
 class QgsRenderContext;
 class QgsPointCloudLayer;
+class QgsPointCloudRenderer;
+class QgsPointCloudRenderContext;
 
 #define SIP_NO_FILE
 
@@ -114,6 +116,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     QgsPointCloudLayer *mLayer = nullptr;
 
+    std::unique_ptr< QgsPointCloudRenderer > mRenderer;
+
     QgsPointCloudRendererConfig mConfig;
 
     QgsPointCloudAttributeCollection mAttributes;
@@ -125,7 +129,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     int nodesDrawn = 0;
     int pointsDrawn = 0;
 
-    void drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config );
+    void drawData( QgsPointCloudRenderContext &context, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config );
 
 };
 

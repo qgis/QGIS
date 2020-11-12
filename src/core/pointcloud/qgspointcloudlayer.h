@@ -27,6 +27,8 @@ class QgsPointCloudLayerRenderer;
 #include <QString>
 #include <memory>
 
+class QgsPointCloudRenderer;
+
 /**
  * \ingroup core
  *
@@ -126,6 +128,30 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     QgsPointCloudAttributeCollection attributes() const;
 
+    /**
+     * Returns the 2D renderer for the point cloud.
+     *
+     * \see setRenderer()
+     */
+    QgsPointCloudRenderer *renderer();
+
+    /**
+     * Returns the 2D renderer for the point cloud.
+     * \note not available in Python bindings
+     *
+     * \see setRenderer()
+     */
+    const QgsPointCloudRenderer *renderer() const SIP_SKIP;
+
+    /**
+     * Sets the 2D \a renderer for the point cloud.
+     *
+     * Ownership of \a renderer is transferred to the layer.
+     *
+     * \see renderer()
+     */
+    void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
+
   private:
 
     bool isReadOnly() const override {return true;}
@@ -135,6 +161,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 #endif
 
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
+
+    std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
 };
 
