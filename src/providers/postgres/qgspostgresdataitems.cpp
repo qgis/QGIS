@@ -314,7 +314,7 @@ QgsPGLayerItem::QgsPGLayerItem( QgsDataItem *parent, const QString &name, const 
   : QgsLayerItem( parent, name, path, QString(), layerType, layerProperty.isRaster ? QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) )
   , mLayerProperty( layerProperty )
 {
-  mCapabilities |= Delete | Fertile;
+  mCapabilities |= Delete | Fertile | Fast;
   mUri = createUri();
   // No rasters for now
   setState( layerProperty.isRaster ? Populated : NotPopulated );
