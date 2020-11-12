@@ -9,6 +9,79 @@
 
 
 
+
+
+
+class QgsPointCloudRenderContext
+{
+%Docstring
+
+Encapsulates the render context for a 2D point cloud rendering operation.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrenderer.h"
+%End
+  public:
+
+    QgsPointCloudRenderContext( QgsRenderContext &context );
+%Docstring
+Constructor for QgsPointCloudRenderContext.
+%End
+
+
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+%End
+
+
+  private:
+    QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
+};
+
+
+class QgsPointCloudRenderer
+{
+%Docstring
+
+Abstract base class for 2d point cloud renderers.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrenderer.h"
+%End
+  public:
+
+    static QgsPointCloudRenderer *defaultRenderer() /Factory/;
+%Docstring
+Returns a new default point cloud renderer.
+
+Caller takes ownership of the returned renderer.
+%End
+
+
+    virtual ~QgsPointCloudRenderer();
+
+    virtual QgsPointCloudRenderer *clone() const = 0 /Factory/;
+%Docstring
+Create a deep copy of this renderer. Should be implemented by all subclasses
+and generate a proper subclass.
+%End
+
+    virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
+%Docstring
+Renders a ``block`` of point cloud data using the specified render ``context``.
+%End
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

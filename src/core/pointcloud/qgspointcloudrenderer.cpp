@@ -16,3 +16,14 @@
  ***************************************************************************/
 
 #include "qgspointcloudrenderer.h"
+
+QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context )
+  : mRenderContext( context )
+{
+
+}
+
+QgsPointCloudRenderer *QgsPointCloudRenderer::defaultRenderer()
+{
+
+}
