@@ -33,17 +33,6 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
 {
-
-#if 0
-  // TODO: use config from layer
-  mConfig.setPenWidth( context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters ) );
-  // good range for 26850_12580.laz
-  mConfig.setZMin( layer->customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
-  mConfig.setZMax( layer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
-  mConfig.setColorRamp( QgsStyle::defaultStyle()->colorRamp( layer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() ) );
-  mConfig.setAttribute( layer->customProperty( QStringLiteral( "pcAttribute" ), QStringLiteral( "Z" ) ).toString() );
-#endif
-
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
   if ( !mLayer || !mLayer->dataProvider() || !mLayer->dataProvider()->index() || !mLayer->renderer() )
@@ -64,6 +53,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset );
 
+  mRenderer->startRender( context );
 
   mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
   mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
