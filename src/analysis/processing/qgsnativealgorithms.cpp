@@ -123,6 +123,7 @@
 #include "qgsalgorithmpointtolayer.h"
 #include "qgsalgorithmpointsalonggeometry.h"
 #include "qgsalgorithmpointslayerfromtable.h"
+#include "qgsalgorithmpointstolines.h"
 #include "qgsalgorithmpoleofinaccessibility.h"
 #include "qgsalgorithmpolygonize.h"
 #include "qgsalgorithmprojectpointcartesian.h"
@@ -371,6 +372,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPointToLayerAlgorithm() );
   addAlgorithm( new QgsPointsAlongGeometryAlgorithm() );
   addAlgorithm( new QgsPointsLayerFromTableAlgorithm() );
+  addAlgorithm( new QgsPointsToLinesAlgorithm() );
   addAlgorithm( new QgsPoleOfInaccessibilityAlgorithm() );
   addAlgorithm( new QgsPolygonizeAlgorithm() );
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
