@@ -25,6 +25,7 @@
 #include "qgscolorramp.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudrenderer.h"
 #include "qgslogger.h"
 
 ///@cond PRIVATE
@@ -120,8 +121,10 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
-  if ( !mLayer || !mLayer->dataProvider() || !mLayer->dataProvider()->index() )
+  if ( !mLayer || !mLayer->dataProvider() || !mLayer->dataProvider()->index() || !mLayer->renderer() )
     return;
+
+  mRenderer.reset( mLayer->renderer()->clone() );
 
   mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
   mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
@@ -141,13 +144,14 @@ bool QgsPointCloudLayerRenderer::render()
   if ( !pc )
     return false;
 
-  QgsRenderContext &context = *renderContext();
+  QgsPointCloudRenderContext context( *renderContext() );
+
 
   // Set up the render configuration options
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
 
-  painter->save();
-  context.setPainterFlagsUsingContext( painter );
+  QgsScopedQPainterState painterState( painter );
+  context.renderContext().setPainterFlagsUsingContext( painter );
 
   QgsPointCloudDataBounds db;
 
@@ -157,19 +161,19 @@ bool QgsPointCloudLayerRenderer::render()
   const IndexedPointCloudNode root = pc->root();
   float maximumError = mConfig.maximumScreenError(); // in pixels
   float rootError = pc->nodeError( root ); // in map coords
-  double mapUnitsPerPixel = context.mapToPixel().mapUnitsPerPixel();
+  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
   if ( ( rootError < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
   {
     qDebug() << "invalid screen error";
     return false;
   }
   float rootErrorPixels = rootError / mapUnitsPerPixel; // in pixels
-  const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context, pc->root(), maximumError, rootErrorPixels );
+  const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
 
   // drawing
   for ( const IndexedPointCloudNode &n : nodes )
   {
-    if ( context.renderingStopped() )
+    if ( context.renderContext().renderingStopped() )
     {
       qDebug() << "canceled";
       break;
@@ -177,12 +181,10 @@ bool QgsPointCloudLayerRenderer::render()
     QgsPointCloudRequest request;
     request.setAttributes( mAttributes );
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
-    drawData( painter, block.get(), mConfig );
+    drawData( context, block.get(), mConfig );
   }
 
   qDebug() << "totals:" << nodesDrawn << "nodes | " << pointsDrawn << " points | " << t.elapsed() << "ms";
-
-  painter->restore();
 
   return true;
 }
@@ -221,13 +223,15 @@ QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Qgs
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
 
-void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config )
+void QgsPointCloudLayerRenderer::drawData( QgsPointCloudRenderContext &context, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config )
 {
   Q_ASSERT( mLayer->dataProvider() );
   Q_ASSERT( mLayer->dataProvider()->index() );
 
   if ( !data )
     return;
+
+  mRenderer->renderBlock( data, context );
 
   const QgsMapToPixel mapToPixel = renderContext()->mapToPixel();
   const QgsVector3D scale = mLayer->dataProvider()->index()->scale();
@@ -284,8 +288,8 @@ void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QgsPointClou
       mapToPixel.transformInPlace( x, y );
 
       pen.setColor( config.colorRamp()->color( ( atr - config.zMin() ) / ( config.zMax() - config.zMin() ) ) );
-      painter->setPen( pen );
-      painter->drawPoint( QPointF( x, y ) );
+      context.renderContext().painter()->setPen( pen );
+      context.renderContext().painter()->drawPoint( QPointF( x, y ) );
     }
   }
 
