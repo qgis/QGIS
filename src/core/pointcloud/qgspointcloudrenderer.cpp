@@ -143,7 +143,7 @@ void QgsDummyPointCloudRenderer::renderBlock( const QgsPointCloudBlock *block, Q
   {
     // TODO clean up!
     qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + );
+    qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
 
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
