@@ -89,6 +89,14 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     explicit QgsVectorTileLayer( const QString &path = QString(), const QString &baseName = QString() );
     ~QgsVectorTileLayer() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     // implementation of virtual functions from QgsMapLayer
 
     QgsVectorTileLayer *clone() const override SIP_FACTORY;

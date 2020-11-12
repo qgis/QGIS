@@ -25,6 +25,12 @@ In order to be readable from project files, they should set these attributes in 
     QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
     ~QgsPluginLayer();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsPluginLayer: '%1'>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual QgsPluginLayer *clone() const = 0;
 
 %Docstring
