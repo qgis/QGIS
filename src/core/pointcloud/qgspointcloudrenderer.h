@@ -109,6 +109,19 @@ class CORE_EXPORT QgsPointCloudRenderContext
  */
 class CORE_EXPORT QgsPointCloudRenderer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+
+    const QString type = sipCpp->type();
+
+    if ( type == QLatin1String( "rgb" ) )
+      sipType = sipType_QgsPointCloudRgbRenderer;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
 
     /**

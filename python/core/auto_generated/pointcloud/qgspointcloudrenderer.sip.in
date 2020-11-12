@@ -82,6 +82,15 @@ Abstract base class for 2d point cloud renderers.
 %TypeHeaderCode
 #include "qgspointcloudrenderer.h"
 %End
+%ConvertToSubClassCode
+
+    const QString type = sipCpp->type();
+
+    if ( type == QLatin1String( "rgb" ) )
+      sipType = sipType_QgsPointCloudRgbRenderer;
+    else
+      sipType = 0;
+%End
   public:
 
     static QgsPointCloudRenderer *defaultRenderer() /Factory/;
