@@ -39,3 +39,48 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::defaultRenderer()
 {
 
 }
+
+QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
+{
+  if ( element.isNull() )
+    return nullptr;
+
+  // load renderer
+  QString rendererType = element.attribute( QStringLiteral( "type" ) );
+
+#if 0
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
+  if ( !m )
+    return nullptr;
+
+  std::unique_ptr< QgsPointCloudRenderer > r( m->createRenderer( element, context ) );
+  return r.release();
+#endif
+  return new QgsDummyPointCloudRenderer();
+}
+
+QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+{
+  return QSet< QString >();
+}
+
+void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext & )
+{
+#ifdef QGISDEBUG
+  if ( !mThread )
+  {
+    mThread = QThread::currentThread();
+  }
+  else
+  {
+    Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::startRender", "startRender called in a different thread - use a cloned renderer instead" );
+  }
+#endif
+}
+
+void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
+{
+#ifdef QGISDEBUG
+  Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
+#endif
+}
