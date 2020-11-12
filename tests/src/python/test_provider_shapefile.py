@@ -22,12 +22,14 @@ import sys
 from osgeo import gdal
 from qgis.core import (
     QgsApplication,
+    QgsDataProvider,
     QgsSettings,
     QgsFeature,
     QgsField,
     QgsGeometry,
     QgsVectorLayer,
     QgsFeatureRequest,
+    QgsProviderRegistry,
     QgsVectorDataProvider,
     QgsWkbTypes,
     QgsVectorLayerExporter,
@@ -1075,6 +1077,24 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(datasource, 'test')
         self.assertTrue(vl.isValid())
         self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ'], ['abcŐabcŐabcŐ']])
+
+    def testSkipFeatureCountOnFeatureCount(self):
+        """Test QgsDataProvider.SkipFeatureCount on featureCount()"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+        provider = QgsProviderRegistry.instance().createProvider('ogr', testPath, QgsDataProvider.ProviderOptions(), QgsDataProvider.SkipFeatureCount)
+        self.assertTrue(provider.isValid())
+        self.assertEqual(provider.featureCount(), QgsVectorDataProvider.UnknownCount)
+
+    def testSkipFeatureCountOnSubLayers(self):
+        """Test QgsDataProvider.SkipFeatureCount on subLayers()"""
+
+        datasource = os.path.join(TEST_DATA_DIR, 'shapefile')
+        provider = QgsProviderRegistry.instance().createProvider('ogr', datasource, QgsDataProvider.ProviderOptions(), QgsDataProvider.SkipFeatureCount)
+        self.assertTrue(provider.isValid())
+        sublayers = provider.subLayers()
+        self.assertTrue(len(sublayers) > 1)
+        self.assertEqual(sublayers[0].split(QgsDataProvider.sublayerSeparator())[2], '-1')
 
 
 if __name__ == '__main__':
