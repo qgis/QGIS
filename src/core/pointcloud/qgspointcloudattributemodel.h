@@ -22,6 +22,7 @@
 
 #include <QAbstractItemModel>
 #include <QPointer>
+#include <QSortFilterProxyModel>
 
 class QgsPointCloudLayer;
 
@@ -125,6 +126,67 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
     QPointer< QgsPointCloudLayer > mLayer;
 };
 
+
+/**
+ * \ingroup core
+ *
+ * A proxy model for filtering available attributes from a point cloud attribute model.
+ *
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsPointCloudAttributeProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+
+    //! Attribute type filters
+    enum Filter
+    {
+      Char = 1 << 0, //!< Character attributes
+      Short = 1 << 1, //!< Short attributes
+      Int32 = 1 << 2, //!< Int32 attributes
+      Float = 1 << 3, //!< Float attributes
+      Double = 1 << 4, //!< Double attributes
+      Numeric = Short | Int32 | Float | Double, //!< All numeric attributes
+      AllTypes = Numeric | Char, //!< All attribute types
+    };
+    Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
+
+    /**
+     * Constructor for QgsPointCloudAttributeProxyModel, with the specified \a source
+     * model and \a parent object.
+     */
+    explicit QgsPointCloudAttributeProxyModel( QgsPointCloudAttributeModel *source, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the QgsPointCloudAttributeModel used in this QSortFilterProxyModel.
+     */
+    QgsPointCloudAttributeModel *sourceAttributeModel() { return mModel; }
+
+    /**
+     * Set flags that affect how fields are filtered in the model.
+     * \see filters()
+     */
+    QgsPointCloudAttributeProxyModel *setFilters( QgsPointCloudAttributeProxyModel::Filters filters );
+
+    /**
+     * Returns the filters controlling displayed attributes.
+     * \see setFilters()
+     */
+    Filters filters() const { return mFilters; }
+
+  private:
+
+    QgsPointCloudAttributeModel *mModel = nullptr;
+    Filters mFilters = AllTypes;
+
+    // QSortFilterProxyModel interface
+  public:
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+};
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsPointCloudAttributeProxyModel::Filters )
 
 
 #endif // QGSPOINTCLOUDATTRIBUTEMODEL_H
