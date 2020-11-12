@@ -138,7 +138,7 @@ else()
   add_custom_command(TARGET qgis_quick
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy qgis_quick.h
-            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_core.framework/Headers"
+            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_quick.framework/Headers"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS qgis_quick.h
   )
