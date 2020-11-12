@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsdataprovider.h"
+#include "qgspointcloudattribute.h"
 #include <memory>
 
 class QgsPointCloudIndex;
@@ -44,6 +45,11 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
+
+    /**
+     * Returns the attributes available from this data provider.
+     */
+    virtual QgsPointCloudAttributeCollection attributes() const = 0;
 
     /**
      * Returns the point cloud index associated with the provider.

@@ -53,6 +53,11 @@ QgsRectangle QgsEptProvider::extent() const
   return mIndex->extent();
 }
 
+QgsPointCloudAttributeCollection QgsEptProvider::attributes() const
+{
+  return mIndex->attributes();
+}
+
 bool QgsEptProvider::isValid() const
 {
   return mIsValid;

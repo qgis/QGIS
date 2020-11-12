@@ -121,6 +121,11 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
     QString htmlMetadata() const override;
 
+    /**
+     * Returns the attributes available from the layer.
+     */
+    QgsPointCloudAttributeCollection attributes() const;
+
   private:
 
     bool isReadOnly() const override {return true;}
