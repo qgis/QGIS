@@ -93,22 +93,6 @@ This map contains references to items owned by the layer, and ownership of these
 with the layer.
 %End
 
-    void setOpacity( double opacity );
-%Docstring
-Sets the ``opacity`` for the annotation layer, where ``opacity`` is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`opacity`
-%End
-
-    double opacity() const;
-%Docstring
-Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`setOpacity`
-%End
-
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;

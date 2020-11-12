@@ -117,20 +117,6 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     QMap<QString, QgsAnnotationItem *> items() const { return mItems; }
 
-    /**
-     * Sets the \a opacity for the annotation layer, where \a opacity is a value between 0 (totally transparent)
-     * and 1.0 (fully opaque).
-     * \see opacity()
-     */
-    void setOpacity( double opacity );
-
-    /**
-     * Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
-     * and 1.0 (fully opaque).
-     * \see setOpacity()
-     */
-    double opacity() const { return mOpacity; }
-
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;
@@ -142,7 +128,6 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 
   private:
     QMap<QString, QgsAnnotationItem *> mItems;
-    double mOpacity = 1;
     QgsCoordinateTransformContext mTransformContext;
 };
 

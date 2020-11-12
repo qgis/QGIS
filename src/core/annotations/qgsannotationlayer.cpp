@@ -38,7 +38,7 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
 
 void QgsAnnotationLayer::reset()
 {
-  mOpacity = 1.0;
+  setOpacity( 1.0 );
   setCrs( QgsCoordinateReferenceSystem() );
   setTransformContext( QgsCoordinateTransformContext() );
   clear();
@@ -79,19 +79,11 @@ bool QgsAnnotationLayer::isEmpty() const
   return mItems.empty();
 }
 
-void QgsAnnotationLayer::setOpacity( double opacity )
-{
-  mOpacity = opacity;
-  triggerRepaint();
-}
-
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
   QgsAnnotationLayer::LayerOptions options( mTransformContext );
   std::unique_ptr< QgsAnnotationLayer > layer = qgis::make_unique< QgsAnnotationLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
-
-  layer->setOpacity( opacity() );
 
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {

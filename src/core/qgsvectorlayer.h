@@ -392,7 +392,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
-    Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
 
@@ -2222,24 +2221,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the current blending mode for features
     QPainter::CompositionMode featureBlendMode() const;
 
-    /**
-     * Sets the \a opacity for the vector layer, where \a opacity is a value between 0 (totally transparent)
-     * and 1.0 (fully opaque).
-     * \see opacity()
-     * \see opacityChanged()
-     * \since QGIS 3.0
-     */
-    void setOpacity( double opacity );
-
-    /**
-     * Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
-     * and 1.0 (fully opaque).
-     * \see setOpacity()
-     * \see opacityChanged()
-     * \since QGIS 3.0
-     */
-    double opacity() const;
-
     QString htmlMetadata() const FINAL;
 
     /**
@@ -2661,15 +2642,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 
     /**
-     * Emitted when the layer's opacity is changed, where \a opacity is a value between 0 (transparent)
-     * and 1 (opaque).
-     * \see setOpacity()
-     * \see opacity()
-     * \since QGIS 3.0
-     */
-    void opacityChanged( double opacity );
-
-    /**
      * Signal emitted when a new edit command has been started
      *
      * \param text Description for this edit command
@@ -2887,9 +2859,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Blend mode for features
     QPainter::CompositionMode mFeatureBlendMode = QPainter::CompositionMode_SourceOver;
-
-    //! Layer opacity
-    double mLayerOpacity = 1.0;
 
     //! Flag if the vertex markers should be drawn only for selection (TRUE) or for all features (FALSE)
     bool mVertexMarkerOnlyForSelection = false;

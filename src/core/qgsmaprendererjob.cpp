@@ -78,7 +78,7 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
   QHash<QgsMapLayer *, int> result;
   for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
   {
-    if ( auto &&lKey = it.key() )
+    if ( auto && lKey = it.key() )
       result.insert( lKey, it.value() );
   }
   return result;
@@ -395,15 +395,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 
     job.blendMode = ml->blendMode();
-    job.opacity = 1.0;
-    if ( vl )
-    {
-      job.opacity = vl->opacity();
-    }
-    else if ( QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml ) )
-    {
-      job.opacity = al->opacity();
-    }
+    job.opacity = ml->opacity();
 
     // if we can use the cache, let's do it and avoid rendering!
     if ( mCache && mCache->hasCacheImage( ml->id() ) )
@@ -964,13 +956,10 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
-      break;
-
     case QgsMapLayerType::AnnotationLayer:
     {
-      QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml );
       if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
-           ( !qgsDoubleNear( al->opacity(), 1.0 ) ) )
+           ( !qgsDoubleNear( ml->opacity(), 1.0 ) ) )
       {
         //layer properties require rasterization
         return true;
