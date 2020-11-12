@@ -259,6 +259,9 @@ class CORE_EXPORT QgsPointCloudRenderer
 
 class QgsColorRamp;
 
+
+///@cond PRIVATE
+
 class CORE_EXPORT QgsDummyPointCloudRenderer : public QgsPointCloudRenderer
 {
   public:
@@ -317,5 +320,7 @@ class CORE_EXPORT QgsDummyPointCloudRenderer : public QgsPointCloudRenderer
     float mMaximumScreenError = 5;
 
 };
+
+///@endcond
 #endif
 #endif // QGSPOINTCLOUDRENDERER_H

@@ -96,6 +96,7 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
 
 
 
+///@cond PRIVATE
 
 #include "qgscolorramp.h"
 #include "qgspointcloudblock.h"
@@ -302,3 +303,4 @@ void QgsDummyPointCloudRenderer::setAttribute( const QString &attribute )
   mAttribute = attribute;
 }
 
+///@endcond
