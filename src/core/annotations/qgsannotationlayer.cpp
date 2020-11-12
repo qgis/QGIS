@@ -20,6 +20,7 @@
 #include "qgsannotationitemregistry.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include <QUuid>
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
@@ -195,6 +196,16 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
   }
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    // add the blend mode field
+    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
+    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    blendModeElem.appendChild( blendModeText );
+    node.appendChild( blendModeElem );
+  }
+
   return true;
 }
 
@@ -209,5 +220,17 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
       setOpacity( e.text().toDouble() );
     }
   }
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    // get and set the blend mode if it exists
+    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    if ( !blendModeNode.isNull() )
+    {
+      QDomElement e = blendModeNode.toElement();
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    }
+  }
+
   return true;
 }

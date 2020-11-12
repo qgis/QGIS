@@ -182,14 +182,12 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   // get and set the layer transparency and scale visibility if they exists
   if ( categories.testFlag( Rendering ) )
   {
-#if 0 // TODO
     QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
     if ( !layerOpacityNode.isNull() )
     {
       QDomElement e = layerOpacityNode.toElement();
       setOpacity( e.text().toDouble() );
     }
-#endif
 
     const bool hasScaleBasedVisibiliy { node.attributes().namedItem( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).nodeValue() == '1' };
     setScaleBasedVisibility( hasScaleBasedVisibiliy );
@@ -252,12 +250,11 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   // add the layer opacity and scale visibility
   if ( categories.testFlag( Rendering ) )
   {
-#if 0 // TODO
-    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomElement layerOpacityElem = doc.createElement( QStringLiteral( "layerOpacity" ) );
     QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
-#endif
+
     mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
     mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
     mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
