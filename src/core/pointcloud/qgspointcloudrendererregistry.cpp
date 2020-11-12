@@ -16,12 +16,16 @@
 #include "qgspointcloudrenderer.h"
 
 // default renderers
+#include "qgspointcloudrgbrenderer.h"
 
 #include "qgspointcloudlayer.h"
 
 QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
 {
   // add default renderers
+  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "rgb" ),
+               QObject::tr( "RGB" ),
+               QgsPointCloudRgbRenderer::create ) );
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "dummy" ),
                QObject::tr( "Dummy" ),
                QgsDummyPointCloudRenderer::create ) );
