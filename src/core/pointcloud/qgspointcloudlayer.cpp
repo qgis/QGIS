@@ -24,6 +24,8 @@
 #include "qgslogger.h"
 #include "qgslayermetadataformatter.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -220,6 +222,17 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
     bool defaultLoadedFlag = false;
 
+    if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
+    {
+      // first try to create a renderer directly from the data provider
+      std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
+      if ( defaultRenderer )
+      {
+        defaultLoadedFlag = true;
+        setRenderer( defaultRenderer.release() );
+      }
+    }
+
     if ( !defaultLoadedFlag && loadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
@@ -236,6 +249,23 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
   emit dataSourceChanged();
   triggerRepaint();
+}
+
+QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
+{
+  if ( mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
+  {
+    // first try to create a renderer directly from the data provider
+    std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
+    if ( defaultRenderer )
+    {
+      resultFlag = true;
+      setRenderer( defaultRenderer.release() );
+      return QString();
+    }
+  }
+
+  return QgsMapLayer::loadDefaultStyle( resultFlag );
 }
 
 QString QgsPointCloudLayer::htmlMetadata() const

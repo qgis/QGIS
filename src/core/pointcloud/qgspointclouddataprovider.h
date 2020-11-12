@@ -24,6 +24,7 @@
 #include <memory>
 
 class QgsPointCloudIndex;
+class QgsPointCloudRenderer;
 
 /**
  * \ingroup core
@@ -39,12 +40,31 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 {
     Q_OBJECT
   public:
+
+    /**
+     * Capabilities that providers may implement.
+     */
+    enum Capability
+    {
+      NoCapabilities = 0,       //!< Provider has no capabilities
+      ReadLayerMetadata = 1 << 0, //!< Provider can read layer metadata from data store.
+      WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
+      CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
+    };
+
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+
     //! Ctor
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
+
+    /**
+     * Returns flags containing the supported capabilities for the data provider.
+     */
+    virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
 
     /**
      * Returns the attributes available from this data provider.
@@ -59,6 +79,22 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \note Not available in Python bindings
      */
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
+
+    /**
+     * Creates a new 2D point cloud renderer, using provider backend specific information.
+     *
+     * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
+     * allow customization of the returned renderer. Support and format of \a configuration varies by provider.
+     *
+     * When called with an empty \a configuration map the provider's default renderer will be returned.
+     *
+     * This method returns a new renderer and the caller takes ownership of the returned object.
+     *
+     * Only providers which report the CreateRenderer capability will return a 2D renderer. Other
+     * providers will return NULLPTR.
+     */
+    virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+
 };
 
 #endif // QGSMESHDATAPROVIDER_H

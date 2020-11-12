@@ -28,6 +28,18 @@ Responsible for reading native point cloud data and returning the indexed data.
 #include "qgspointclouddataprovider.h"
 %End
   public:
+
+    enum Capability
+    {
+      NoCapabilities,
+      ReadLayerMetadata,
+      WriteLayerMetadata,
+      CreateRenderer,
+    };
+
+    typedef QFlags<QgsPointCloudDataProvider::Capability> Capabilities;
+
+
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
@@ -37,9 +49,30 @@ Ctor
 
     ~QgsPointCloudDataProvider();
 
+    virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
+%Docstring
+Returns flags containing the supported capabilities for the data provider.
+%End
+
     virtual QgsPointCloudAttributeCollection attributes() const = 0;
 %Docstring
 Returns the attributes available from this data provider.
+%End
+
+
+    virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
+%Docstring
+Creates a new 2D point cloud renderer, using provider backend specific information.
+
+The ``configuration`` map can be used to pass provider-specific configuration maps to the provider to
+allow customization of the returned renderer. Support and format of ``configuration`` varies by provider.
+
+When called with an empty ``configuration`` map the provider's default renderer will be returned.
+
+This method returns a new renderer and the caller takes ownership of the returned object.
+
+Only providers which report the CreateRenderer capability will return a 2D renderer. Other
+providers will return ``None``.
 %End
 
 };
