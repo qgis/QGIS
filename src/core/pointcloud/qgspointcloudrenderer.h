@@ -23,6 +23,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
+#include "qgspointcloudattribute.h"
 
 class QgsPointCloudBlock;
 
@@ -87,6 +88,39 @@ class CORE_EXPORT QgsPointCloudRenderContext
     */
     void incrementPointsRendered( long count );
 
+    /**
+     * Returns the attributes associated with the rendered block.
+     *
+     * \see setAttributes()
+     */
+    QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
+
+    /**
+     * Sets the \a attributes associated with the rendered block.
+     *
+     * \see attributes()
+     */
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
+
+    /**
+     * Returns the size of a single point record.
+     */
+    int pointRecordSize() const { return mPointRecordSize; }
+
+    /**
+     * Returns the offset for the x value in a point record.
+     *
+     * \see yOffset()
+     */
+    int xOffset() const { return mXOffset; }
+
+    /**
+     * Returns the offset for the y value in a point record.
+     *
+     * \see xOffset()
+     */
+    int yOffset() const { return mYOffset; }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -96,6 +130,10 @@ class CORE_EXPORT QgsPointCloudRenderContext
     QgsVector3D mScale;
     QgsVector3D mOffset;
     long mPointsRendered = 0;
+    QgsPointCloudAttributeCollection mAttributes;
+    int mPointRecordSize = 0;
+    int mXOffset = 0;
+    int mYOffset = 0;
 };
 
 
@@ -132,6 +170,11 @@ class CORE_EXPORT QgsPointCloudRenderer
     static QgsPointCloudRenderer *defaultRenderer() SIP_FACTORY;
 
     virtual ~QgsPointCloudRenderer() = default;
+
+    /**
+     * Returns the identifier of the renderer type.
+     */
+    virtual QString type() const = 0;
 
     /**
      * Create a deep copy of this renderer. Should be implemented by all subclasses
@@ -191,6 +234,20 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual void stopRender( QgsPointCloudRenderContext &context );
 
+  protected:
+
+    /**
+     * Retrieves the x and y coordinate for the point at index \a i.
+     */
+    static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y )
+    {
+      qint32 ix = *( qint32 * )( ptr + i * context.pointRecordSize() + context.xOffset() );
+      qint32 iy = *( qint32 * )( ptr + i * context.pointRecordSize() + context.yOffset() );
+
+      x = context.offset().x() + context.scale().x() * ix;
+      y = context.offset().y() + context.scale().y() * iy;
+    }
+
   private:
 #ifdef QGISDEBUG
     //! Pointer to thread in which startRender was first called
@@ -214,6 +271,8 @@ class CORE_EXPORT QgsDummyPointCloudRenderer : public QgsPointCloudRenderer
     void startRender( QgsPointCloudRenderContext &context ) override;
     void stopRender( QgsPointCloudRenderContext &context ) override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+
+    QString type() const override { return QStringLiteral( "dummy" ); }
 
     /**
      * Creates a dummy renderer from an XML \a element.

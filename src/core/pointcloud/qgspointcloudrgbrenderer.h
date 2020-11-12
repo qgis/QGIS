@@ -36,7 +36,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * Constructor for QgsPointCloudRgbRenderer.
      */
     QgsPointCloudRgbRenderer();
-
+    QString type() const override;
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;

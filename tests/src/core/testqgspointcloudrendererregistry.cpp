@@ -28,6 +28,7 @@ class DummyRenderer : public QgsPointCloudRenderer
 {
   public:
     DummyRenderer() = default;
+    QString type() const override { return QStringLiteral( "dummy" ); }
     QgsPointCloudRenderer *clone() const override { return new DummyRenderer(); }
     static QgsPointCloudRenderer *create( QDomElement &, const QgsReadWriteContext & ) { return new DummyRenderer(); }
     void renderBlock( const QgsPointCloudBlock *, QgsPointCloudRenderContext & ) override {}
