@@ -74,8 +74,12 @@ class CORE_EXPORT QgsPointCloudRendererConfig
     //! Returns maximum allowed screen error in pixels
     float maximumScreenError() const;
 
+    QString attribute() const;
+    void setAttribute( const QString &attribute );
+
   private:
     double mZMin = 0, mZMax = 0;
+    QString mAttribute;
     int mPenWidth = 1;
     std::unique_ptr<QgsColorRamp> mColorRamp;
     float mMaximumScreenError = 5;
@@ -112,6 +116,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     QgsPointCloudRendererConfig mConfig;
 
+    QgsPointCloudAttributeCollection mAttributes;
+
     // int imgW, imgH; // DO WE NEED AT ALL?
     // QgsPointCloudDataBounds mBounds; // DO WE NEED AT ALL?
 
@@ -120,6 +126,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     int pointsDrawn = 0;
 
     void drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config );
+
 };
 #endif
 
