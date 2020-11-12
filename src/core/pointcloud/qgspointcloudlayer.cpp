@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudrenderer.h"
+#include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudindex.h"
 #include "qgsrectangle.h"
 #include "qgspointclouddataprovider.h"
