@@ -14,10 +14,9 @@ import qgis  # NOQA
 
 from qgis.core import (
     QgsProviderRegistry,
-    QgsFields,
     QgsPointCloudLayer,
     QgsPointCloudAttributeCollection,
-    QgsField,
+    QgsPointCloudAttributeProxyModel,
     QgsPointCloudAttribute
 )
 from qgis.gui import QgsPointCloudAttributeComboBox
@@ -83,6 +82,21 @@ class TestQgsPointCloudAttributeComboBox(unittest.TestCase):
         cb.setLayer(layer)
         self.assertEqual(cb.layer(), layer)
         self.assertEqual([cb.itemText(i) for i in range(cb.count())], ['X', 'Y', 'Z', 'Intensity', 'ReturnNumber', 'NumberOfReturns', 'ScanDirectionFlag', 'EdgeOfFlightLine', 'Classification', 'ScanAngleRank', 'UserData', 'PointSourceId', 'GpsTime', 'Red', 'Green', 'Blue'])
+
+    def testFilter(self):
+        cb = QgsPointCloudAttributeComboBox()
+        cb.setAttributes(create_attributes())
+
+        self.assertEqual([cb.itemText(i) for i in range(cb.count())], ['x', 'y', 'z', 'cat', 'red'])
+        cb.setFilters(QgsPointCloudAttributeProxyModel.Numeric)
+        self.assertEqual([cb.itemText(i) for i in range(cb.count())], ['x', 'y', 'z', 'red'])
+        self.assertEqual(cb.filters(), QgsPointCloudAttributeProxyModel.Numeric)
+        cb.setFilters(QgsPointCloudAttributeProxyModel.Char)
+        self.assertEqual([cb.itemText(i) for i in range(cb.count())], ['cat'])
+        self.assertEqual(cb.filters(), QgsPointCloudAttributeProxyModel.Char)
+        cb.setFilters(QgsPointCloudAttributeProxyModel.Char | QgsPointCloudAttributeProxyModel.Int32)
+        self.assertEqual([cb.itemText(i) for i in range(cb.count())], ['cat', 'red'])
+        self.assertEqual(cb.filters(), QgsPointCloudAttributeProxyModel.Char | QgsPointCloudAttributeProxyModel.Int32)
 
 
 if __name__ == '__main__':

@@ -31,6 +31,20 @@ QgsPointCloudAttributeComboBox creates a combo box to display the fields of a la
 The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox.layerChanged to the slot setLayer.
 %End
 
+    void setFilters( QgsPointCloudAttributeProxyModel::Filters filters );
+%Docstring
+Sets ``filters`` to allow filtering available attributes according to the attribute properties.
+
+.. seealso:: :py:func:`filters`
+%End
+
+    QgsPointCloudAttributeProxyModel::Filters filters() const;
+%Docstring
+Returns the current filters used for filtering available attributes.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
     void setAllowEmptyAttributeName( bool allowEmpty );
 %Docstring
 Sets whether an optional empty attribute ("not set") option is shown in the combo box.

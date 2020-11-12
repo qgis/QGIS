@@ -22,9 +22,15 @@ QgsPointCloudAttributeComboBox::QgsPointCloudAttributeComboBox( QWidget *parent 
   : QComboBox( parent )
 {
   mAttributeModel = new QgsPointCloudAttributeModel( this );
-  setModel( mAttributeModel );
+  mProxyModel = new QgsPointCloudAttributeProxyModel( mAttributeModel, this );
+  setModel( mProxyModel );
 
   connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsPointCloudAttributeComboBox::indexChanged );
+}
+
+void QgsPointCloudAttributeComboBox::setFilters( QgsPointCloudAttributeProxyModel::Filters filters )
+{
+  mProxyModel->setFilters( filters );
 }
 
 void QgsPointCloudAttributeComboBox::setAllowEmptyAttributeName( bool allowEmpty )
@@ -64,7 +70,15 @@ void QgsPointCloudAttributeComboBox::setAttribute( const QString &name )
   QModelIndex idx = mAttributeModel->indexFromName( name );
   if ( idx.isValid() )
   {
-    setCurrentIndex( idx.row() );
+    QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+    if ( proxyIdx.isValid() )
+    {
+      setCurrentIndex( proxyIdx.row() );
+    }
+    else
+    {
+      setCurrentIndex( -1 );
+    }
   }
   else
   {
@@ -79,13 +93,13 @@ QString QgsPointCloudAttributeComboBox::currentAttribute() const
 {
   int i = currentIndex();
 
-  const QModelIndex modelIndex = mAttributeModel->index( i, 0 );
-  if ( !modelIndex.isValid() )
+  const QModelIndex proxyIndex = mProxyModel->index( i, 0 );
+  if ( !proxyIndex.isValid() )
   {
     return QString();
   }
 
-  return mAttributeModel->data( modelIndex, QgsPointCloudAttributeModel::AttributeNameRole ).toString();
+  return mProxyModel->data( proxyIndex, QgsPointCloudAttributeModel::AttributeNameRole ).toString();
 }
 
 void QgsPointCloudAttributeComboBox::indexChanged( int i )
