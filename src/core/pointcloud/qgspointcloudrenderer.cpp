@@ -92,6 +92,16 @@ float QgsPointCloudRendererConfig::maximumScreenError() const
   return mMaximumScreenError;
 }
 
+QString QgsPointCloudRendererConfig::attribute() const
+{
+  return mAttribute;
+}
+
+void QgsPointCloudRendererConfig::setAttribute( const QString &attribute )
+{
+  mAttribute = attribute;
+}
+
 ///@endcond
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
@@ -104,11 +114,22 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mConfig.setZMin( layer->customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
   mConfig.setZMax( layer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
   mConfig.setColorRamp( QgsStyle::defaultStyle()->colorRamp( layer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() ) );
+  mConfig.setAttribute( layer->customProperty( QStringLiteral( "pcAttribute" ), QStringLiteral( "Z" ) ).toString() );
 
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
   if ( !mLayer || !mLayer->dataProvider() || !mLayer->dataProvider()->index() )
     return;
+
+  mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+  mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+
+  int offset;
+  const QgsPointCloudAttribute *renderAttribute = mLayer->attributes().find( mConfig.attribute(), offset );
+  if ( !renderAttribute )
+    return;
+
+  mAttributes.push_back( *renderAttribute );
 }
 
 bool QgsPointCloudLayerRenderer::render()
@@ -151,13 +172,8 @@ bool QgsPointCloudLayerRenderer::render()
       qDebug() << "canceled";
       break;
     }
-    QgsPointCloudAttributeCollection attributes;
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::Char ) );
     QgsPointCloudRequest request;
-    request.setAttributes( attributes );
+    request.setAttributes( mAttributes );
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
     drawData( painter, block.get(), mConfig );
   }
@@ -229,21 +245,43 @@ void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QgsPointClou
 
   for ( int i = 0; i < count; ++i )
   {
-    // TODO generic based on reques
+    // TODO clean up!
     qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
     qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
-    qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
-    char cls = *( char * )( ptr + i * recordSize + 12 );
-    Q_UNUSED( cls );
 
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     if ( mapExtent.contains( QgsPointXY( x, y ) ) )
     {
-      double z = offset.z() + scale.z() * iz;
+      double atr = 0;
+      switch ( mAttributes.at( 2 ).type() )
+      {
+        case QgsPointCloudAttribute::Char:
+          continue;
+
+        case QgsPointCloudAttribute::Int32:
+          atr = *( qint32 * )( ptr + i * recordSize + 8 );
+          break;
+
+        case QgsPointCloudAttribute::Short:
+          atr = *( short * )( ptr + i * recordSize + 8 );
+          break;
+
+        case QgsPointCloudAttribute::Float:
+          atr = *( float * )( ptr + i * recordSize + 8 );
+          break;
+
+        case QgsPointCloudAttribute::Double:
+          atr = *( double * )( ptr + i * recordSize + 8 );
+          break;
+      }
+
+      if ( mAttributes.at( 2 ).name() == QLatin1String( "Z" ) )
+        atr = offset.z() + scale.z() * atr;
+
       mapToPixel.transformInPlace( x, y );
 
-      pen.setColor( config.colorRamp()->color( ( z - config.zMin() ) / ( config.zMax() - config.zMin() ) ) );
+      pen.setColor( config.colorRamp()->color( ( atr - config.zMin() ) / ( config.zMax() - config.zMin() ) ) );
       painter->setPen( pen );
       painter->drawPoint( QPointF( x, y ) );
     }

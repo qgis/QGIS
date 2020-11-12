@@ -136,6 +136,7 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
     setCustomProperty( QStringLiteral( "pcMin" ), elemRenderer.attribute( QStringLiteral( "pcMin" ), QStringLiteral( "400" ) ).toInt() );
     setCustomProperty( QStringLiteral( "pcMax" ), elemRenderer.attribute( QStringLiteral( "pcMax" ), QStringLiteral( "600" ) ).toInt() );
     setCustomProperty( QStringLiteral( "pcRamp" ), elemRenderer.attribute( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ) );
+    setCustomProperty( QStringLiteral( "pcAttribute" ), elemRenderer.attribute( QStringLiteral( "pcAttribute" ), QStringLiteral( "Z" ) ) );
   }
 
   return true;
@@ -156,6 +157,7 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     elemRenderer.setAttribute( QStringLiteral( "pcMin" ), customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
     elemRenderer.setAttribute( QStringLiteral( "pcMax" ), customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
     elemRenderer.setAttribute( QStringLiteral( "pcRamp" ), customProperty( QStringLiteral( "pcRamp" ),  QStringLiteral( "Viridis" ) ).toString() );
+    elemRenderer.setAttribute( QStringLiteral( "pcAttribute" ), customProperty( QStringLiteral( "pcAttribute" ),  QStringLiteral( "Z" ) ).toString() );
     elem.appendChild( elemRenderer );
   }
 
