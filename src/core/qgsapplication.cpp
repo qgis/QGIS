@@ -42,6 +42,7 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
+#include "qgspointcloudrendererregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscalloutsregistry.h"
@@ -2157,6 +2158,11 @@ QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry()
   return members()->mRasterRendererRegistry;
 }
 
+QgsPointCloudRendererRegistry *QgsApplication::pointCloudRendererRegistry()
+{
+  return members()->mPointCloudRendererRegistry;
+}
+
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
 {
   if ( auto *lInstance = instance() )
@@ -2386,6 +2392,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup point cloud renderer registry" ) );
+    mPointCloudRendererRegistry = new QgsPointCloudRendererRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup GPS registry" ) );
     mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
     profiler->end();
@@ -2480,6 +2491,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mPageSizeRegistry;
   delete mAnnotationItemRegistry;
   delete mLayoutItemRegistry;
+  delete mPointCloudRendererRegistry;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;

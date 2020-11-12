@@ -203,6 +203,7 @@ set(TESTS
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
  testqgspointcloudattribute.cpp
+ testqgspointcloudrendererregistry.cpp
  testqgsproject.cpp
  testqgsprojectstorage.cpp
  testqgsprojutils.cpp
