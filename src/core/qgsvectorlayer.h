@@ -1036,49 +1036,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     const QgsAuxiliaryLayer *auxiliaryLayer() const SIP_SKIP;
 
-    /**
-     * Reads the symbology for the current layer from the Dom node supplied.
-     * \param layerNode node that will contain the symbology definition for this layer.
-     * \param errorMessage reference to string that will be updated with any error messages
-     * \param context reading context (used for transform from relative to absolute paths)
-     * \param categories the style categories to be read
-     * \returns TRUE in case of success.
-     */
     bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) FINAL;
-
-    /**
-     * Reads the style for the current layer from the Dom node supplied.
-     * \param node node that will contain the style definition for this layer.
-     * \param errorMessage reference to string that will be updated with any error messages
-     * \param context reading context (used for transform from relative to absolute paths)
-     * \param categories the style categories to be read
-     * \returns TRUE in case of success.
-     */
     bool readStyle( const QDomNode &node, QString &errorMessage,
                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) FINAL;
-
-    /**
-     * Writes the symbology for the layer into the document provided.
-     *  \param node the node that will have the style element added to it.
-     *  \param doc the document that will have the QDomNode added.
-     *  \param errorMessage reference to string that will be updated with any error messages
-     *  \param context writing context (used for transform from absolute to relative paths)
-     *  \param categories the style categories to be written
-     *  \returns TRUE in case of success.
-     */
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const FINAL;
-
-    /**
-     * Writes just the style information for the layer into the document
-     *  \param node the node that will have the style element added to it.
-     *  \param doc the document that will have the QDomNode added.
-     *  \param errorMessage reference to string that will be updated with any error messages
-     *  \param context writing context (used for transform from absolute to relative paths)
-     *  \param categories the style categories to be written
-     *  \returns TRUE in case of success.
-     */
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const FINAL;
 
