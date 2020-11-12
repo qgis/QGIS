@@ -120,22 +120,6 @@ class TestQgsRasterLayer : public QObject
     QString mReport;
 };
 
-class TestSignalReceiver : public QObject
-{
-    Q_OBJECT
-
-  public:
-    TestSignalReceiver()
-      : QObject( nullptr )
-    {}
-    bool rendererChanged =  false ;
-  public slots:
-    void onRendererChanged()
-    {
-      rendererChanged = true;
-    }
-};
-
 //runs before all tests
 void TestQgsRasterLayer::initTestCase()
 {
@@ -906,13 +890,10 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoDataColor()
 
 void TestQgsRasterLayer::setRenderer()
 {
-  TestSignalReceiver receiver;
-  QObject::connect( mpRasterLayer, SIGNAL( rendererChanged() ),
-                    &receiver, SLOT( onRendererChanged() ) );
+  QSignalSpy spy( mpRasterLayer, &QgsRasterLayer::rendererChanged );
   QgsRasterRenderer *renderer = ( QgsRasterRenderer * ) mpRasterLayer->renderer()->clone();
-  QCOMPARE( receiver.rendererChanged, false );
   mpRasterLayer->setRenderer( renderer );
-  QCOMPARE( receiver.rendererChanged, true );
+  QCOMPARE( spy.count(), 1 );
   QCOMPARE( mpRasterLayer->renderer(), renderer );
 }
 

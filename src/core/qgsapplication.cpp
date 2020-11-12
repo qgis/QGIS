@@ -252,6 +252,7 @@ void QgsApplication::init( QString profileFolder )
   QMetaType::registerComparators<QgsProcessingModelChildDependency>();
   QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
   QMetaType::registerEqualsComparator<QgsProperty>();
+  qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
 
   ( void ) resolvePkgPath();
 
