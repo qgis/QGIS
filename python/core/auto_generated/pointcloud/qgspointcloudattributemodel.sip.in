@@ -28,6 +28,7 @@ A model for display of available attributes from a point cloud.
     enum FieldRoles
     {
       AttributeNameRole,
+      AttributeIndexRole,
       AttributeSizeRole,
       AttributeTypeRole,
       IsEmptyRole,

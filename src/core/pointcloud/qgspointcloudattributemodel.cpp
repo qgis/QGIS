@@ -142,6 +142,15 @@ QVariant QgsPointCloudAttributeModel::data( const QModelIndex &index, int role )
       return mAttributes.at( index.row() - fieldOffset ).name();
     }
 
+    case AttributeIndexRole:
+    {
+      if ( isEmpty )
+      {
+        return QVariant();
+      }
+      return index.row() - fieldOffset;
+    }
+
     case AttributeSizeRole:
     {
       if ( isEmpty )
