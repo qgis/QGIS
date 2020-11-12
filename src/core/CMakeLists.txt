@@ -639,6 +639,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudindex.cpp
   pointcloud/qgspointclouddataprovider.cpp
   pointcloud/qgspointcloudrenderer.cpp
+  pointcloud/qgspointcloudrendererregistry.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1325,6 +1326,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudindex.h
   pointcloud/qgspointclouddataprovider.h
   pointcloud/qgspointcloudrenderer.h
+  pointcloud/qgspointcloudrendererregistry.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h

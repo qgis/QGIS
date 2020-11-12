@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgspointcloudrenderer.h"
+#include "qgspointcloudrendererregistry.h"
+#include "qgsapplication.h"
 
 QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset )
   : mRenderContext( context )
@@ -46,17 +48,14 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
     return nullptr;
 
   // load renderer
-  QString rendererType = element.attribute( QStringLiteral( "type" ) );
+  const QString rendererType = element.attribute( QStringLiteral( "type" ) );
 
-#if 0
-  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
+  QgsPointCloudRendererAbstractMetadata *m = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( rendererType );
   if ( !m )
     return nullptr;
 
   std::unique_ptr< QgsPointCloudRenderer > r( m->createRenderer( element, context ) );
   return r.release();
-#endif
-  return QgsDummyPointCloudRenderer::create( element, context );
 }
 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
