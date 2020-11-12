@@ -284,6 +284,30 @@ QString QgsPointCloudLayer::htmlMetadata() const
   myMetadata += htmlFormatter.accessSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
+  // Attributes section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Attributes" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  const QgsPointCloudAttributeCollection attrs = attributes();
+
+  // count attributes
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( attrs.count() ) + QStringLiteral( "</td></tr>\n" );
+
+  myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
+  myMetadata += QLatin1String( "<tr><th>" ) + tr( "Attribute" ) + QLatin1String( "</th><th>" ) + tr( "Type" ) + QLatin1String( "</th></tr>\n" );
+
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    const QgsPointCloudAttribute attribute = attrs.at( i );
+    QString rowClass;
+    if ( i % 2 )
+      rowClass = QStringLiteral( "class=\"odd-row\"" );
+    myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + attribute.name() + QLatin1String( "</td><td>" ) + attribute.displayType() + QLatin1String( "</td></tr>\n" );
+  }
+
+  //close field list
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+
   // Start the contacts section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.contactsSectionHtml( );
