@@ -163,7 +163,7 @@ void QgsGeometryValidationDock::onRowsInserted()
 
 void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
 {
-  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ) == QLatin1String( "true" );
+  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 
   QModelIndex index = mErrorListView->indexAt( pos );
   QgsGeometryCheckError *error = index.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
