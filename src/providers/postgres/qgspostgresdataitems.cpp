@@ -428,12 +428,20 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       }
     }
 
+    QgsDataItem *prev = nullptr;
     for ( int i = 0; i < layerProperty.size(); i++ )
     {
       QgsDataItem *layerItem = nullptr;
       layerItem = createLayer( layerProperty.at( i ) );
       if ( layerItem )
+      {
+        if ( prev && prev->name().indexOf( layerItem->name() ) == 0 )
+        {
+          layerItem->setName( layerItem->name() + QString( ":" ) + QgsPostgresConn::displayStringForWkbType( layerProperty.types.at( i ) ) );
+        }
         items.append( layerItem );
+      }
+      prev = layerItem;
     }
   }
 
