@@ -180,6 +180,8 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
 void QgsColorRampShaderWidget::autoLabel()
 {
 
+  mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
+
 #ifdef QGISDEBUG
   dumpClasses();
 #endif
@@ -205,7 +207,7 @@ void QgsColorRampShaderWidget::autoLabel()
       currentItem->setForeground( LabelColumn, QBrush( QColor( Qt::gray ) ) );
     }
   }
-  mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
+
 }
 
 void QgsColorRampShaderWidget::setUnitFromLabels()
