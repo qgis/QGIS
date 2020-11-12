@@ -41,6 +41,8 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 
   mProblemDescriptionLabel->setStyleSheet( QStringLiteral( "font: bold" ) );
   mErrorListView->setAlternatingRowColors( true );
+  mErrorListView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mErrorListView, &QWidget::customContextMenuRequested, this, &QgsGeometryValidationDock::showErrorContextMenu );
 
   connect( mNextButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
   connect( mPreviousButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
@@ -54,6 +56,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mFeatureRubberband = new QgsRubberBand( mMapCanvas );
   mErrorRubberband = new QgsRubberBand( mMapCanvas );
   mErrorLocationRubberband = new QgsRubberBand( mMapCanvas );
+  mGeometryErrorContextMenu = new QMenu( this );
 
   double scaleFactor = mMapCanvas->fontMetrics().xHeight() * .4;
 
@@ -70,8 +73,9 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 
   mProblemDetailWidget->setVisible( false );
 
-  // Problem resolution is unstable and therefore disabled by default
-  mResolutionWidget->setVisible( QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ) == QLatin1String( "true" ) );
+  // Some problem resolutions are unstable, show all of them only if the user opted in
+  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  mResolutionWidget->setVisible( showUnreliableResolutionMethods );
 }
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
@@ -157,6 +161,35 @@ void QgsGeometryValidationDock::onRowsInserted()
     mQgisApp->addDockWidget( Qt::RightDockWidgetArea, this );
   }
   setUserVisible( true );
+}
+
+void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
+{
+  bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+
+  QModelIndex index = mErrorListView->indexAt( pos );
+  QgsGeometryCheckError *error = index.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
+  if ( error )
+  {
+    const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = error->check()->availableResolutionMethods();
+
+    mGeometryErrorContextMenu->clear();
+    for ( const QgsGeometryCheckResolutionMethod &resolutionMethod : resolutionMethods )
+    {
+      if ( resolutionMethod.isStable() || showUnreliableResolutionMethods )
+      {
+        QAction *action = new QAction( resolutionMethod.name(), mGeometryErrorContextMenu );
+        action->setToolTip( resolutionMethod.description() );
+        int fixId = resolutionMethod.id();
+        connect( action, &QAction::triggered, this, [ fixId, error, this ]()
+        {
+          mGeometryValidationService->fixError( error, fixId );
+        } );
+        mGeometryErrorContextMenu->addAction( action );
+      }
+    }
+    mGeometryErrorContextMenu->popup( mErrorListView->viewport()->mapToGlobal( pos ) );
+  }
 }
 
 QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationService() const
