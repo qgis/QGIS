@@ -102,6 +102,22 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(2, 0), QgsPointCloudAttributeModel.AttributeNameRole), 'y')
         self.assertEqual(m.data(m.index(5, 0), QgsPointCloudAttributeModel.AttributeNameRole), 'red')
 
+    def testAttributeIndexRole(self):
+        m = QgsPointCloudAttributeModel()
+        m.setAttributes(create_attributes())
+
+        self.assertEqual(m.data(m.index(0, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 0)
+        self.assertEqual(m.data(m.index(1, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 1)
+        self.assertEqual(m.data(m.index(2, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 2)
+        self.assertEqual(m.data(m.index(3, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 3)
+        self.assertEqual(m.data(m.index(4, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 4)
+        self.assertEqual(m.data(m.index(5, 0), QgsPointCloudAttributeModel.AttributeIndexRole), None)
+        m.setAllowEmptyAttributeName(True)
+        self.assertEqual(m.data(m.index(0, 0), QgsPointCloudAttributeModel.AttributeIndexRole), None)
+        self.assertEqual(m.data(m.index(1, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 0)
+        self.assertEqual(m.data(m.index(2, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 1)
+        self.assertEqual(m.data(m.index(5, 0), QgsPointCloudAttributeModel.AttributeIndexRole), 4)
+
     def testSizeRole(self):
         m = QgsPointCloudAttributeModel()
         m.setAttributes(create_attributes())

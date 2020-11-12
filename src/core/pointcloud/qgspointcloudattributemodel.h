@@ -42,6 +42,7 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
     enum FieldRoles
     {
       AttributeNameRole = Qt::UserRole + 1,  //!< Attribute name
+      AttributeIndexRole, //!< Attribute index if index corresponds to an attribute
       AttributeSizeRole, //!< Attribute size
       AttributeTypeRole, //!< Attribute type, see QgsPointCloudAttribute::DataType
       IsEmptyRole, //!< TRUE if the index corresponds to the empty value
