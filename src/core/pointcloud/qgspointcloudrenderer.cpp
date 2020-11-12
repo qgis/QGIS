@@ -17,10 +17,22 @@
 
 #include "qgspointcloudrenderer.h"
 
-QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context )
+QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset )
   : mRenderContext( context )
+  , mScale( scale )
+  , mOffset( offset )
 {
 
+}
+
+long QgsPointCloudRenderContext::pointsRendered() const
+{
+  return mPointsRendered;
+}
+
+void QgsPointCloudRenderContext::incrementPointsRendered( long count )
+{
+  mPointsRendered += count;
 }
 
 QgsPointCloudRenderer *QgsPointCloudRenderer::defaultRenderer()

@@ -26,9 +26,12 @@ Encapsulates the render context for a 2D point cloud rendering operation.
 %End
   public:
 
-    QgsPointCloudRenderContext( QgsRenderContext &context );
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset );
 %Docstring
 Constructor for QgsPointCloudRenderContext.
+
+The ``scale`` and ``offset`` arguments specify the scale and offset of the layer's int32 coordinates
+compared to CRS coordinates respectively.
 %End
 
 
@@ -38,6 +41,29 @@ Constructor for QgsPointCloudRenderContext.
 Returns a reference to the context's render context.
 %End
 
+
+    QgsVector3D scale() const;
+%Docstring
+Returns the scale of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    QgsVector3D offset() const;
+%Docstring
+Returns the offset of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    long pointsRendered() const;
+%Docstring
+Returns the total number of points rendered.
+%End
+
+    void incrementPointsRendered( long count );
+%Docstring
+Increments the count of points rendered by the specified amount.
+
+It is a point cloud renderer's responsibility to correctly call this after
+rendering a block of points.
+%End
 
   private:
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -64,7 +90,6 @@ Returns a new default point cloud renderer.
 
 Caller takes ownership of the returned renderer.
 %End
-
 
     virtual ~QgsPointCloudRenderer();
 
