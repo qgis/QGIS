@@ -557,6 +557,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! QgsVectorLayer cannot be copied.
     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsVectorLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderers for features and diagrams
