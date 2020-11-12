@@ -19,7 +19,8 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
     QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
-    QgsVertexId, QgsReferencedGeometry
+    QgsVertexId, QgsReferencedGeometry, QgsProviderRegistry, QgsRasterLayer, QgsAnnotationLayer, \
+    QgsVectorTileLayer, QgsMeshLayer
 
 start_app()
 
@@ -187,7 +188,15 @@ class TestPython__repr__(unittest.TestCase):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
             'QGIS搖滾', 'memory')
-        self.assertEqual(vl.__repr__(), "<QgsMapLayer: 'QGIS搖滾' (memory)>")
+        self.assertEqual(vl.__repr__(), "<QgsVectorLayer: 'QGIS搖滾' (memory)>")
+        rl = QgsRasterLayer('', 'QGIS搖滾', 'gdal')
+        self.assertEqual(rl.__repr__(), "<QgsRasterLayer: 'QGIS搖滾' (gdal)>")
+        ml = QgsMeshLayer('', 'QGIS搖滾', 'mdal')
+        self.assertEqual(ml.__repr__(), "<QgsMeshLayer: 'QGIS搖滾' (Invalid)>")
+        al = QgsAnnotationLayer('QGIS搖滾', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertEqual(al.__repr__(), "<QgsAnnotationLayer: 'QGIS搖滾'>")
+        vtl = QgsVectorTileLayer('', 'QGIS搖滾')
+        self.assertEqual(vtl.__repr__(), "<QgsVectorTileLayer: 'QGIS搖滾'>")
 
     def testQgsProjectRepr(self):
         p = QgsProject()
