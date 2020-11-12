@@ -118,7 +118,6 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     static QgsPointCloudRenderer *defaultRenderer() SIP_FACTORY;
 
-
     virtual ~QgsPointCloudRenderer() = default;
 
     /**
@@ -132,7 +131,58 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
 
-};
+    /**
+     * Creates a renderer from an XML \a element.
+     *
+     * Caller takes ownership of the returned renderer.
+     *
+     * \see save()
+     */
+    static QgsPointCloudRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
+    /**
+     * Saves the renderer configuration to an XML element.
+     * \see load()
+     */
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+
+    /**
+     * Returns a list of attributes required by this renderer. Attributes not listed in here may
+     * not be requested from the provider at rendering time.
+     *
+     * \note the "X" and "Y" attributes will always be fetched and do not need to be explicitly
+     * returned here.
+     */
+    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+
+    /**
+     * Must be called when a new render cycle is started. A call to startRender() must always
+     * be followed by a corresponding call to stopRender() after all features have been rendered.
+     *
+     * \see stopRender()
+     *
+     * \warning This method is not thread safe. Before calling startRender() in a non-main thread,
+     * the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+     */
+    virtual void startRender( QgsPointCloudRenderContext &context );
+
+    /**
+     * Must be called when a render cycle has finished, to allow the renderer to clean up.
+     *
+     * Calls to stopRender() must always be preceded by a call to startRender().
+     *
+     * \warning This method is not thread safe. Before calling startRender() in a non-main thread,
+     * the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+     *
+     * \see startRender()
+     */
+    virtual void stopRender( QgsPointCloudRenderContext &context );
+
+  private:
+#ifdef QGISDEBUG
+    //! Pointer to thread in which startRender was first called
+    QThread *mThread = nullptr;
+#endif
+};
 
 #endif // QGSPOINTCLOUDRENDERER_H

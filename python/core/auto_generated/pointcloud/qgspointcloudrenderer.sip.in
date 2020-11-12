@@ -104,8 +104,61 @@ and generate a proper subclass.
 Renders a ``block`` of point cloud data using the specified render ``context``.
 %End
 
-};
+    static QgsPointCloudRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a renderer from an XML ``element``.
 
+Caller takes ownership of the returned renderer.
+
+.. seealso:: :py:func:`save`
+%End
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Saves the renderer configuration to an XML element.
+
+.. seealso:: :py:func:`load`
+%End
+
+    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+%Docstring
+Returns a list of attributes required by this renderer. Attributes not listed in here may
+not be requested from the provider at rendering time.
+
+.. note::
+
+   the "X" and "Y" attributes will always be fetched and do not need to be explicitly
+   returned here.
+%End
+
+    virtual void startRender( QgsPointCloudRenderContext &context );
+%Docstring
+Must be called when a new render cycle is started. A call to :py:func:`~QgsPointCloudRenderer.startRender` must always
+be followed by a corresponding call to :py:func:`~QgsPointCloudRenderer.stopRender` after all features have been rendered.
+
+.. seealso:: :py:func:`stopRender`
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsPointCloudRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsPointCloudRenderer.startRender`/:py:func:`~QgsPointCloudRenderer.stopRender` called on the clone.
+%End
+
+    virtual void stopRender( QgsPointCloudRenderContext &context );
+%Docstring
+Must be called when a render cycle has finished, to allow the renderer to clean up.
+
+Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by a call to :py:func:`~QgsPointCloudRenderer.startRender`.
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsPointCloudRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsPointCloudRenderer.startRender`/:py:func:`~QgsPointCloudRenderer.stopRender` called on the clone.
+
+.. seealso:: :py:func:`startRender`
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
