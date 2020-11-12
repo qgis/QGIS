@@ -635,9 +635,10 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrequest.cpp
   pointcloud/qgspointcloudblock.cpp
   pointcloud/qgspointcloudlayer.cpp
-  pointcloud/qgspointcloudrenderer.cpp
+  pointcloud/qgspointcloudlayerrenderer.cpp
   pointcloud/qgspointcloudindex.cpp
   pointcloud/qgspointclouddataprovider.cpp
+  pointcloud/qgspointcloudrenderer.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1320,9 +1321,10 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrequest.h
   pointcloud/qgspointcloudblock.h
   pointcloud/qgspointcloudlayer.h
-  pointcloud/qgspointcloudrenderer.h
+  pointcloud/qgspointcloudlayerrenderer.h
   pointcloud/qgspointcloudindex.h
   pointcloud/qgspointclouddataprovider.h
+  pointcloud/qgspointcloudrenderer.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
