@@ -126,15 +126,6 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
   mRenderer.reset( mLayer->renderer()->clone() );
 
-  mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
-  mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
-
-  int offset;
-  const QgsPointCloudAttribute *renderAttribute = mLayer->attributes().find( mConfig.attribute(), offset );
-  if ( !renderAttribute )
-    return;
-
-  mAttributes.push_back( *renderAttribute );
   mScale = mLayer->dataProvider()->index()->scale();
   mOffset = mLayer->dataProvider()->index()->offset();
 }
@@ -147,6 +138,27 @@ bool QgsPointCloudLayerRenderer::render()
     return false;
 
   QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset );
+
+
+  mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+  mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+
+  // collect attributes required by renderer
+  const QSet< QString > rendererAttributes = mRenderer->usedAttributes( context );
+  for ( const QString &attribute : rendererAttributes )
+  {
+    if ( mAttributes.indexOf( attribute ) >= 0 )
+      continue; // don't re-add attributes we are already going to fetch
+
+    const int layerIndex = mLayer->attributes().indexOf( attribute );
+    if ( layerIndex < 0 )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Required attribute %1 not found in layer" ).arg( attribute ), QObject::tr( "Point Cloud" ) );
+      continue;
+    }
+
+    mAttributes.push_back( mLayer->attributes().at( layerIndex ) );
+  }
 
 
   // Set up the render configuration options
