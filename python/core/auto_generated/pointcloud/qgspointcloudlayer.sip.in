@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointCloudLayer : QgsMapLayer
 {
 %Docstring
@@ -90,6 +91,8 @@ QgsPointCloudLayer cannot be copied.
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
     virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
     virtual QString htmlMetadata() const;
 

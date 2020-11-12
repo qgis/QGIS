@@ -29,3 +29,12 @@ QgsPointCloudDataProvider::QgsPointCloudDataProvider(
 
 QgsPointCloudDataProvider::~QgsPointCloudDataProvider() = default;
 
+QgsPointCloudDataProvider::Capabilities QgsPointCloudDataProvider::capabilities() const
+{
+  return QgsPointCloudDataProvider::NoCapabilities;
+}
+
+QgsPointCloudRenderer *QgsPointCloudDataProvider::createRenderer( const QVariantMap & ) const
+{
+  return nullptr;
+}
