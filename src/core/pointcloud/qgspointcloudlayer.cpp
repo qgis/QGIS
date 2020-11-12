@@ -27,6 +27,8 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgspainting.h"
+#include "qgspointcloudrendererregistry.h"
+
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -162,7 +164,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     // make sure layer has a renderer - if none exists, fallback to a default renderer
     if ( !mRenderer )
     {
-      setRenderer( QgsPointCloudRenderer::defaultRenderer() );
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( attributes() ) );
     }
   }
 
@@ -334,7 +336,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     if ( !defaultLoadedFlag )
     {
       // all else failed, create default renderer
-      setRenderer( QgsPointCloudRenderer::defaultRenderer() );
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( attributes() ) );
     }
   }
 

@@ -74,3 +74,12 @@ QStringList QgsPointCloudRendererRegistry::renderersList() const
   return renderers;
 }
 
+QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const QgsPointCloudAttributeCollection &attributes )
+{
+  //if red/green/blue attributes are present, then default to a RGB renderer
+  if ( attributes.indexOf( QStringLiteral( "Red" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Green" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Blue" ) ) >= 0 )
+    return new QgsPointCloudRgbRenderer();
+
+  return new QgsDummyPointCloudRenderer();
+}
+

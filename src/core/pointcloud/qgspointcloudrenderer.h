@@ -162,13 +162,6 @@ class CORE_EXPORT QgsPointCloudRenderer
 
   public:
 
-    /**
-     * Returns a new default point cloud renderer.
-     *
-     * Caller takes ownership of the returned renderer.
-     */
-    static QgsPointCloudRenderer *defaultRenderer() SIP_FACTORY;
-
     virtual ~QgsPointCloudRenderer() = default;
 
     /**
