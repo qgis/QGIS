@@ -135,6 +135,8 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     return;
 
   mAttributes.push_back( *renderAttribute );
+  mScale = mLayer->dataProvider()->index()->scale();
+  mOffset = mLayer->dataProvider()->index()->offset();
 }
 
 bool QgsPointCloudLayerRenderer::render()
@@ -144,7 +146,7 @@ bool QgsPointCloudLayerRenderer::render()
   if ( !pc )
     return false;
 
-  QgsPointCloudRenderContext context( *renderContext() );
+  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset );
 
 
   // Set up the render configuration options

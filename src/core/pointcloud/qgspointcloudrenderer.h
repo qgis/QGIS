@@ -22,6 +22,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsvector3d.h"
 
 class QgsPointCloudBlock;
 
@@ -40,8 +41,11 @@ class CORE_EXPORT QgsPointCloudRenderContext
 
     /**
      * Constructor for QgsPointCloudRenderContext.
+     *
+     * The \a scale and \a offset arguments specify the scale and offset of the layer's int32 coordinates
+     * compared to CRS coordinates respectively.
      */
-    QgsPointCloudRenderContext( QgsRenderContext &context );
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh ) = delete;
@@ -60,13 +64,38 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
+    /**
+     * Returns the scale of the layer's int32 coordinates compared to CRS coords.
+     */
+    QgsVector3D scale() const { return mScale; }
+
+    /**
+     * Returns the offset of the layer's int32 coordinates compared to CRS coords.
+     */
+    QgsVector3D offset() const { return mOffset; }
+
+    /**
+     * Returns the total number of points rendered.
+     */
+    long pointsRendered() const;
+
+    /**
+     * Increments the count of points rendered by the specified amount.
+     *
+     * It is a point cloud renderer's responsibility to correctly call this after
+     * rendering a block of points.
+    */
+    void incrementPointsRendered( long count );
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 #endif
 
     QgsRenderContext &mRenderContext;
-
+    QgsVector3D mScale;
+    QgsVector3D mOffset;
+    long mPointsRendered = 0;
 };
 
 

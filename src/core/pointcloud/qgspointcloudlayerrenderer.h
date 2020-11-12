@@ -119,6 +119,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
 
     QgsPointCloudRendererConfig mConfig;
+    QgsVector3D mScale;
+    QgsVector3D mOffset;
 
     QgsPointCloudAttributeCollection mAttributes;
 
