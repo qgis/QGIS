@@ -45,7 +45,7 @@ void QgsShadowSettings::readXml( const QDomElement &element, const QgsReadWriteC
   Q_UNUSED( context );
   mRenderShadows = element.attribute( QStringLiteral( "shadow-rendering-enabled" ), QStringLiteral( "0" ) ).toInt();
   mSelectedDirectionalLight = element.attribute( QStringLiteral( "selected-directional-light" ), QStringLiteral( "-1" ) ).toInt();
-  mMaximumShadowRenderingDistance = element.attribute( QStringLiteral( "max-shadow-rendering-distance" ), QStringLiteral( "500" ) ).toInt();
+  mMaximumShadowRenderingDistance = element.attribute( QStringLiteral( "max-shadow-rendering-distance" ), QStringLiteral( "1500" ) ).toInt();
   mShadowBias = element.attribute( QStringLiteral( "shadow-bias" ), QStringLiteral( "0.00001" ) ).toFloat();
   mShadowMapResolution = element.attribute( QStringLiteral( "shadow-map-resolution" ), QStringLiteral( "2048" ) ).toInt();
 }
