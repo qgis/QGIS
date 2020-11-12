@@ -85,8 +85,8 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   setupGuiViews();
 
   mOrigSubsetString = layer->subsetString();
-
-  mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
+  connect( layer, &QgsVectorLayer::subsetStringChanged, this, &QgsQueryBuilder::layerSubsetStringChanged );
+  layerSubsetStringChanged();
 
   lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
   txtSQL->setText( mOrigSubsetString );
@@ -190,6 +190,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
+    mIgnoreLayerSubsetStringChangedSignal = true;
     mLayer->setSubsetString( QString() );
   }
 
@@ -199,6 +200,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   if ( prevSubsetString != mLayer->subsetString() )
   {
     mLayer->setSubsetString( prevSubsetString );
+    mIgnoreLayerSubsetStringChangedSignal = false;
   }
 
   lstValues->setCursor( Qt::ArrowCursor );
@@ -211,6 +213,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
+    mIgnoreLayerSubsetStringChangedSignal = true;
     mLayer->setSubsetString( QString() );
   }
 
@@ -220,6 +223,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   if ( prevSubsetString != mLayer->subsetString() )
   {
     mLayer->setSubsetString( prevSubsetString );
+    mIgnoreLayerSubsetStringChangedSignal = false;
   }
 
   lstValues->setCursor( Qt::ArrowCursor );
@@ -233,8 +237,6 @@ void QgsQueryBuilder::test()
 
   if ( mLayer->setSubsetString( txtSQL->text() ) )
   {
-    mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
-
     const long featureCount { mLayer->featureCount() };
     // Check for errors
     if ( featureCount < 0 )
@@ -434,7 +436,6 @@ void QgsQueryBuilder::clear()
 {
   txtSQL->clear();
   mLayer->setSubsetString( QString() );
-  mUseUnfilteredLayer->setDisabled( true );
 }
 
 void QgsQueryBuilder::btnILike_clicked()
@@ -532,4 +533,11 @@ void QgsQueryBuilder::loadQuery()
 
   txtSQL->clear();
   txtSQL->insertText( query );
+}
+
+void QgsQueryBuilder::layerSubsetStringChanged()
+{
+  if ( mIgnoreLayerSubsetStringChangedSignal )
+    return;
+  mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
 }

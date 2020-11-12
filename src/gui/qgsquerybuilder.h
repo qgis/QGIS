@@ -26,6 +26,7 @@
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
+class QgsCodeEditor;
 
 /**
  * \ingroup gui
@@ -59,18 +60,45 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     QString sql();
     void setSql( const QString &sqlStatement );
 
+#ifdef SIP_RUN
+    SIP_IF_FEATURE( HAVE_QSCI_SIP )
+
+    /**
+     * Returns the code editor widget for the SQL.
+     * \since QGIS 3.18
+     */
+    QgsCodeEditor *codeEditorWidget() const;
+    SIP_END
+    SIP_IF_FEATURE( !HAVE_QSCI_SIP )
+
+    /**
+     * Returns the code editor widget for the SQL.
+     * \since QGIS 3.18
+     */
+    QWidget *codeEditorWidget() const;
+    SIP_END
+#else
+
+    /**
+     * Returns the code editor widget for the SQL.
+     * \since QGIS 3.18
+     */
+    QgsCodeEditor *codeEditorWidget() const { return txtSQL; }
+#endif
+
   public slots:
     void accept() override;
     void reject() override;
     void clear();
 
     /**
-     * Test the constructed sql statement to see if the vector layer data provider likes it.
+     * The default implementation tests that the constructed sql statement to
+     * see if the vector layer data provider likes it.
      * The number of rows that would be returned is displayed in a message box.
      * The test uses a "select count(*) from ..." query to test the SQL
      * statement.
      */
-    void test();
+    virtual void test();
 
     /**
      * Save query to the XML file
@@ -105,6 +133,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void btnNot_clicked();
     void btnOr_clicked();
     void onTextChanged( const QString &text );
+    void layerSubsetStringChanged();
 
     /**
      * Gets all distinct values for the field. Values are inserted
@@ -150,5 +179,8 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     //! original subset string
     QString mOrigSubsetString;
+
+    //! whether to ignore subsetStringChanged() signal from the layer
+    bool mIgnoreLayerSubsetStringChangedSignal = false;
 };
 #endif //QGSQUERYBUILDER_H
