@@ -1,4 +1,4 @@
-SET(MSSQL_SRCS
+set(MSSQL_SRCS
   qgsmssqlconnection.cpp
   qgsmssqlprovider.cpp
   qgsmssqlproviderconnection.cpp
@@ -10,23 +10,23 @@ SET(MSSQL_SRCS
   qgsmssqlgeomcolumntypethread.cpp
 )
 
-IF (WITH_GUI)
-  SET(MSSQL_SRCS ${MSSQL_SRCS}
+if (WITH_GUI)
+  set(MSSQL_SRCS ${MSSQL_SRCS}
     qgsmssqlprovidergui.cpp
     qgsmssqldataitemguiprovider.cpp
     qgsmssqlsourceselect.cpp
     qgsmssqlnewconnection.cpp
   )
-ENDIF ()
+endif()
 
-SET(MSSQL_HDRS
+set(MSSQL_HDRS
   qgsmssqlexpressioncompiler.h
 )
 
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -41,36 +41,36 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
 )
 
-IF (WITH_GUI)
-  INCLUDE_DIRECTORIES(SYSTEM
+if (WITH_GUI)
+  include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
   )
-ENDIF ()
+endif()
 
 
-ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})
+add_library(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})
 
-TARGET_LINK_LIBRARIES(mssqlprovider
+target_link_libraries(mssqlprovider
   qgis_core
   ${Qt5Sql_LIBRARIES}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (mssqlprovider
+if (WITH_GUI)
+  target_link_libraries (mssqlprovider
     qgis_gui
   )
-  ADD_DEPENDENCIES(mssqlprovider ui)
-ENDIF ()
+  add_dependencies(mssqlprovider ui)
+endif()
 
 ########################################################
 # Install
 
-INSTALL (TARGETS mssqlprovider
+install (TARGETS mssqlprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

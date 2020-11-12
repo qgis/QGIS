@@ -1,7 +1,7 @@
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -53,7 +53,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
@@ -73,11 +73,11 @@ INCLUDE_DIRECTORIES(SYSTEM
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST testname testsrc)
-  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  TARGET_LINK_LIBRARIES(qgis_${testname}
+macro (ADD_QGIS_TEST testname testsrc)
+  set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
+  add_custom_target(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
+  add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
+  target_link_libraries(qgis_${testname}
     ${Qt5Core_LIBRARIES}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Sql_LIBRARIES}
@@ -91,28 +91,28 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     qgis_gui
     qgis_analysis
     qgis_app)
-  IF(WITH_QWTPOLAR AND NOT WITH_INTERNAL_QWTPOLAR)
-    TARGET_LINK_LIBRARIES(qgis_${testname} ${QWTPOLAR_LIBRARY})
-  ENDIF(WITH_QWTPOLAR AND NOT WITH_INTERNAL_QWTPOLAR)
-  IF(WIN32)
-    ADD_DEFINITIONS(-DQWT_DLL)
-    TARGET_LINK_LIBRARIES(qgis_${testname} dbghelp)
-  ENDIF(WIN32)
-  IF (APPLE)
-    TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY} )
-  ENDIF(APPLE)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
-  #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
+  if(WITH_QWTPOLAR AND NOT WITH_INTERNAL_QWTPOLAR)
+    target_link_libraries(qgis_${testname} ${QWTPOLAR_LIBRARY})
+  endif()
+  if(WIN32)
+    add_definitions(-DQWT_DLL)
+    target_link_libraries(qgis_${testname} dbghelp)
+  endif()
+  if (APPLE)
+    target_link_libraries(qgis_${testname} ${APP_SERVICES_LIBRARY} )
+  endif()
+  add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+  #set_target_properties(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
-ENDMACRO (ADD_QGIS_TEST)
+endmacro (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
-IF (WITH_BINDINGS)
+if (WITH_BINDINGS)
 ADD_QGIS_TEST(apppythontest testqgisapppython.cpp)
-ENDIF ()
+endif()
 ADD_QGIS_TEST(qgisapp testqgisapp.cpp)
 ADD_QGIS_TEST(appbrowserproviders testqgsappbrowserproviders.cpp)
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)

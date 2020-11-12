@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SET (WFS3_SRCS
+set (WFS3_SRCS
   ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgswfs3.cpp
@@ -11,14 +11,14 @@ SET (WFS3_SRCS
 ########################################################
 # Build
 
-ADD_LIBRARY (wfs3 MODULE ${WFS3_SRCS})
+add_library (wfs3 MODULE ${WFS3_SRCS})
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
@@ -45,7 +45,7 @@ INCLUDE_DIRECTORIES(
 )
 
 
-TARGET_LINK_LIBRARIES(wfs3
+target_link_libraries(wfs3
   qgis_core
   qgis_server
 )
@@ -54,7 +54,7 @@ TARGET_LINK_LIBRARIES(wfs3
 ########################################################
 # Install
 
-INSTALL(TARGETS wfs3
+install(TARGETS wfs3
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

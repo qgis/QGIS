@@ -2,42 +2,42 @@
 ########################################################
 # Files
 
-SET (offline_editing_plugin_SRCS
+set (offline_editing_plugin_SRCS
   offline_editing_plugin.cpp
   offline_editing_plugin_gui.cpp
   offline_editing_progress_dialog.cpp
 )
 
-SET (offline_editing_plugin_UIS
+set (offline_editing_plugin_UIS
   offline_editing_plugin_guibase.ui
   offline_editing_progress_dialog_base.ui
 )
 
-SET (offline_editing_plugin_RCCS  offline_editing_plugin.qrc)
+set (offline_editing_plugin_RCCS  offline_editing_plugin.qrc)
 
 ########################################################
 # Build
 
 QT5_WRAP_UI(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
 
-ADD_LIBRARY (offlineeditingplugin MODULE
+add_library (offlineeditingplugin MODULE
   ${offline_editing_plugin_SRCS}
   ${offline_editing_plugin_RCCS}
   ${offline_editing_plugin_UIS_H}
 )
 
-TARGET_LINK_LIBRARIES(offlineeditingplugin
+target_link_libraries(offlineeditingplugin
   qgis_core
   qgis_gui
   ${SPATIALITE_LIBRARY}
 )
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -62,7 +62,7 @@ INCLUDE_DIRECTORIES(
 ########################################################
 # Install
 
-INSTALL(TARGETS offlineeditingplugin
+install(TARGETS offlineeditingplugin
 	RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
 	LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
 )

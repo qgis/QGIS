@@ -1,4 +1,4 @@
-SET (WMS_SRCS
+set (WMS_SRCS
   qgswmscapabilities.cpp
   qgswmsprovider.cpp
   qgswmsconnection.cpp
@@ -6,8 +6,8 @@ SET (WMS_SRCS
   qgsxyzconnection.cpp
 )
 
-IF (WITH_GUI)
-  SET(WMS_GUI_SRCS
+if (WITH_GUI)
+  set(WMS_GUI_SRCS
     qgswmsprovidergui.cpp
     qgswmssourceselect.cpp
     qgswmsdataitemguiproviders.cpp
@@ -16,9 +16,9 @@ IF (WITH_GUI)
     qgsxyzconnectiondialog.cpp
     qgsxyzsourceselect.cpp
   )
-ENDIF ()
+endif()
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -38,7 +38,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
@@ -46,8 +46,8 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 # static library
-ADD_LIBRARY(wmsprovider_a STATIC ${WMS_SRCS})
-TARGET_LINK_LIBRARIES(wmsprovider_a
+add_library(wmsprovider_a STATIC ${WMS_SRCS})
+target_link_libraries(wmsprovider_a
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
   ${Qt5Svg_LIBRARIES}
@@ -55,11 +55,11 @@ TARGET_LINK_LIBRARIES(wmsprovider_a
   ${Qt5Sql_LIBRARIES}
   ${Qt5Concurrent_LIBRARIES}
 )
-TARGET_COMPILE_DEFINITIONS(wmsprovider_a PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(wmsprovider_a PRIVATE "-DQT_NO_FOREACH")
 
-IF (WITH_GUI)
-  ADD_LIBRARY(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
-  TARGET_LINK_LIBRARIES(wmsprovider_gui_a
+if (WITH_GUI)
+  add_library(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
+  target_link_libraries(wmsprovider_gui_a
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
@@ -69,37 +69,37 @@ IF (WITH_GUI)
     ${Qt5Gui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
   )
-  TARGET_COMPILE_DEFINITIONS(wmsprovider_gui_a PRIVATE "-DQT_NO_FOREACH")
-  ADD_DEPENDENCIES(wmsprovider_gui_a ui)
-  ADD_DEPENDENCIES(wmsprovider_a ui)
-ENDIF (WITH_GUI)
+  target_compile_definitions(wmsprovider_gui_a PRIVATE "-DQT_NO_FOREACH")
+  add_dependencies(wmsprovider_gui_a ui)
+  add_dependencies(wmsprovider_a ui)
+endif()
 
-IF (FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_PROVIDERS)
   # for (external) mobile apps to be able to pick up provider for linking
-  INSTALL (TARGETS wmsprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
-  IF (WITH_GUI)
-    INSTALL (TARGETS wmsprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
-  ENDIF (WITH_GUI)
-ELSE (FORCE_STATIC_PROVIDERS)
+  install (TARGETS wmsprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  if (WITH_GUI)
+    install (TARGETS wmsprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  endif()
+else()
   # dynamically loaded module
-  ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS})
+  add_library(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS})
 
-  TARGET_LINK_LIBRARIES(wmsprovider
+  target_link_libraries(wmsprovider
     qgis_core
     ${GDAL_LIBRARY}  # for OGR_G_CreateGeometryFromJson()
   )
 
-  IF (WITH_GUI)
-    TARGET_LINK_LIBRARIES (wmsprovider
+  if (WITH_GUI)
+    target_link_libraries (wmsprovider
       qgis_gui
     )
-    ADD_DEPENDENCIES(wmsprovider ui)
-  ENDIF (WITH_GUI)
+    add_dependencies(wmsprovider ui)
+  endif()
 
-  TARGET_COMPILE_DEFINITIONS(wmsprovider PRIVATE "-DQT_NO_FOREACH")
+  target_compile_definitions(wmsprovider PRIVATE "-DQT_NO_FOREACH")
 
-  INSTALL (TARGETS wmsprovider
+  install (TARGETS wmsprovider
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-ENDIF (FORCE_STATIC_PROVIDERS)
+endif()

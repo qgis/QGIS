@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (GPX_SRCS
+set (GPX_SRCS
   qgsgpxprovider.cpp
   qgsgpxfeatureiterator.cpp
   gpsdata.cpp
@@ -11,7 +11,7 @@ SET (GPX_SRCS
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
@@ -23,13 +23,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
-INCLUDE_DIRECTORIES (SYSTEM
+include_directories (SYSTEM
   ${EXPAT_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(gpxprovider MODULE ${GPX_SRCS})
+add_library(gpxprovider MODULE ${GPX_SRCS})
 
-TARGET_LINK_LIBRARIES(gpxprovider
+target_link_libraries(gpxprovider
   ${EXPAT_LIBRARY}
   qgis_core
 )
@@ -38,6 +38,6 @@ TARGET_LINK_LIBRARIES(gpxprovider
 ########################################################
 # Install
 
-INSTALL (TARGETS gpxprovider
+install (TARGETS gpxprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
