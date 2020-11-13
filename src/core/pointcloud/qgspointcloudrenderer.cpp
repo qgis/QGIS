@@ -89,6 +89,26 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
 #endif
 }
 
+double QgsPointCloudRenderer::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
+
+void QgsPointCloudRenderer::setMaximumScreenError( double error )
+{
+  mMaximumScreenError = error;
+}
+
+QgsUnitTypes::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const
+{
+  return mMaximumScreenErrorUnit;
+}
+
+void QgsPointCloudRenderer::setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit )
+{
+  mMaximumScreenErrorUnit = unit;
+}
+
 
 
 ///@cond PRIVATE

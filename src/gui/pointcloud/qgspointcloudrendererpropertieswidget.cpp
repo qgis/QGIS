@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgspointcloudrendererpropertieswidget.h"
 
+#include "qgis.h"
 #include "qgspointcloudrendererregistry.h"
 #include "qgsapplication.h"
 #include "qgssymbolwidgetcontext.h"
@@ -21,6 +22,8 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudrgbrendererwidget.h"
+
+#include "qgspointcloudrgbrenderer.h"
 
 static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -82,6 +85,12 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  mMaxErrorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  connect( mMaxErrorSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
   syncToLayer( layer );
 }
 
@@ -113,6 +122,9 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     // no renderer found... this mustn't happen
     Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
+
+    mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
+    mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
   }
 
   mBlockChangedSignal = false;
@@ -130,6 +142,9 @@ void QgsPointCloudRendererPropertiesWidget::apply()
     QDomElement elem;
     mLayer->setRenderer( QgsApplication::pointCloudRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() )->createRenderer( elem, QgsReadWriteContext() ) );
   }
+
+  mLayer->renderer()->setMaximumScreenError( mMaxErrorSpinBox->value() );
+  mLayer->renderer()->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

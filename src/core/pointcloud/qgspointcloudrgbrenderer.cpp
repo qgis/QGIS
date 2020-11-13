@@ -50,6 +50,9 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
     res->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
   }
 
+  res->setMaximumScreenError( maximumScreenError() );
+  res->setMaximumScreenErrorUnit( maximumScreenErrorUnit() );
+
   return res.release();
 }
 
@@ -213,6 +216,8 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
   r->setGreenAttribute( element.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
   r->setBlueAttribute( element.attribute( QStringLiteral( "blue" ), QStringLiteral( "Blue" ) ) );
 
+  r->setMaximumScreenError( element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "5" ) ).toDouble() );
+  r->setMaximumScreenErrorUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) ) );
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
@@ -255,6 +260,9 @@ QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWrit
   rendererElem.setAttribute( QStringLiteral( "red" ), mRedAttribute );
   rendererElem.setAttribute( QStringLiteral( "green" ), mGreenAttribute );
   rendererElem.setAttribute( QStringLiteral( "blue" ), mBlueAttribute );
+
+  rendererElem.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( maximumScreenError() ) );
+  rendererElem.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( maximumScreenErrorUnit() ) );
 
   //contrast enhancement
   if ( mRedContrastEnhancement )

@@ -235,6 +235,46 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual void stopRender( QgsPointCloudRenderContext &context );
 
+    /**
+     * Returns the maximum screen error allowed when rendering the point cloud.
+     *
+     * Larger values result in a faster render with less points rendered.
+     *
+     * Units are retrieved via maximumScreenErrorUnit().
+     *
+     * \see setMaximumScreenError()
+     * \see maximumScreenErrorUnit()
+     */
+    double maximumScreenError() const;
+
+    /**
+     * Sets the maximum screen \a error allowed when rendering the point cloud.
+     *
+     * Larger values result in a faster render with less points rendered.
+     *
+     * Units are set via setMaximumScreenErrorUnit().
+     *
+     * \see maximumScreenError()
+     * \see setMaximumScreenErrorUnit()
+     */
+    void setMaximumScreenError( double error );
+
+    /**
+     * Returns the unit for the maximum screen error allowed when rendering the point cloud.
+     *
+     * \see maximumScreenError()
+     * \see setMaximumScreenErrorUnit()
+     */
+    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const;
+
+    /**
+     * Sets the \a unit for the maximum screen error allowed when rendering the point cloud.
+     *
+     * \see setMaximumScreenError()
+     * \see maximumScreenErrorUnit()
+     */
+    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+
   protected:
 
     /**
@@ -258,6 +298,9 @@ class CORE_EXPORT QgsPointCloudRenderer
     //! Pointer to thread in which startRender was first called
     QThread *mThread = nullptr;
 #endif
+
+    double mMaximumScreenError = 5.0;
+    QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
 };
 
 #ifndef SIP_RUN
