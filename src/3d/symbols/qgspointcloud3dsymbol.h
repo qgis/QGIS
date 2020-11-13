@@ -51,7 +51,7 @@ class QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     void setPointSize( float size ) { mPointSize = size; }
 
   private:
-    bool mEnabled;
+    bool mEnabled = true;
     float mPointSize = 10.0f;
 };
 

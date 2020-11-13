@@ -65,7 +65,8 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
 void QgsPointCloudLayer3DRendererWidget::apply()
 {
   QgsPointCloudLayer3DRenderer *r = renderer();
-  r->setSymbol( mWidgetPointCloudSymbol->symbol() );
+  if ( r )
+    r->setSymbol( mWidgetPointCloudSymbol->symbol() );
   mLayer->setRenderer3D( r ? r->clone() : nullptr );
 }
 
