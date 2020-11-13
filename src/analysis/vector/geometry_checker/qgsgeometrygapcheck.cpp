@@ -171,7 +171,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
       const QgsGeometry geom = layerFeature.geometry();
-      if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance && QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, geom.constGet(), mContext->reducedTolerance ) > 0 )
+      if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance )
       {
         neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
         gapAreaBBox.combineExtentWith( geom.boundingBox() );
@@ -349,7 +349,9 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
             break;
 
           case LargestArea:
-            val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
+            // We might get a neighbour where we touch only a corner
+            if ( QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom.get(), QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance ) > 0 )
+              val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
             break;
         }
 
