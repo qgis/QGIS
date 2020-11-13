@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsvertexeditor.h"
+#include "qgscoordinateutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
 #include "qgslockedfeature.h"
@@ -338,11 +339,6 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   mTableView = new QTableView( this );
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
-  mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( this ) );
-  mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate( this ) );
-  mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( this ) );
-  mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( this ) );
-  mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( this ) );
   mTableView->setVisible( false );
   mTableView->setModel( mVertexModel );
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
@@ -368,6 +364,16 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
     mTableView->setVisible( true );
 
     connect( mLockedFeature, &QgsLockedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+
+    if ( mLockedFeature->layer() )
+    {
+      QgsCoordinateReferenceSystem crs = mLockedFeature->layer()->crs();
+      mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( crs, this ) );
+      mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate( crs, this ) );
+      mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( crs, this ) );
+      mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( crs, this ) );
+      mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( crs, this ) );
+    }
   }
   else
   {
@@ -469,15 +475,15 @@ void QgsVertexEditor::closeEvent( QCloseEvent *event )
 // CoordinateItemDelegate
 //
 
-CoordinateItemDelegate::CoordinateItemDelegate( QObject *parent )
-  : QStyledItemDelegate( parent )
+CoordinateItemDelegate::CoordinateItemDelegate( const QgsCoordinateReferenceSystem &crs, QObject *parent )
+  : QStyledItemDelegate( parent ), mCrs( crs )
 {
 
 }
 
 QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
-  return locale.toString( value.toDouble(), 'f', 4 );
+  return locale.toString( value.toDouble(), 'f', displayDecimalPlaces() );
 }
 
 QWidget *CoordinateItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
@@ -504,6 +510,11 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
   if ( lineEdit && index.isValid() )
   {
-    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', 4 ) );
+    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', displayDecimalPlaces() ) );
   }
+}
+
+int CoordinateItemDelegate::displayDecimalPlaces() const
+{
+  return QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( mCrs, QgsProject::instance() );
 }
