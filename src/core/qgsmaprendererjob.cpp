@@ -955,8 +955,12 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
       break;
     }
 
-    case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::PointCloudLayer:
+      // point cloud layers should always be rasterised -- we don't want to export points as vectors
+      // to formats like PDF!
+      return true;
+
+    case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
