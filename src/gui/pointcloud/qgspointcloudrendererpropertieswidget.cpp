@@ -20,6 +20,7 @@
 #include "qgspointcloudrendererwidget.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
+#include "qgspointcloudrgbrendererwidget.h"
 
 static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -48,7 +49,7 @@ static void _initRendererWidgetFunctions()
   if ( sInitialized )
     return;
 
-  //_initRenderer( QStringLiteral( "rgb" ), QgsSingleSymbolRendererWidget::create, QStringLiteral( "rendererSingleSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
 
   sInitialized = true;
 }

@@ -289,6 +289,7 @@ set(QGIS_GUI_SRCS
 
   pointcloud/qgspointcloudrendererwidget.cpp
   pointcloud/qgspointcloudrendererpropertieswidget.cpp
+  pointcloud/qgspointcloudrgbrendererwidget.cpp
 
   processing/qgsprocessingaggregatewidgets.cpp
   processing/qgsprocessingaggregatewidgetwrapper.cpp
@@ -1055,6 +1056,7 @@ set(QGIS_GUI_HDRS
 
   pointcloud/qgspointcloudrendererwidget.h
   pointcloud/qgspointcloudrendererpropertieswidget.h
+  pointcloud/qgspointcloudrgbrendererwidget.h
 
   processing/qgsprocessingaggregatewidgets.h
   processing/qgsprocessingaggregatewidgetwrapper.h
