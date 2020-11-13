@@ -1,0 +1,30 @@
+#ifndef QGSPOINTCLOUD3DSYMBOLWIDGET_H
+#define QGSPOINTCLOUD3DSYMBOLWIDGET_H
+
+#include "ui_qgspointcloud3dsymbolwidget.h"
+
+class QgsPointCloudLayer;
+class QgsPointCloud3DSymbol;
+
+class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DSymbolWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QWidget *parent = nullptr );
+
+    void setLayer( QgsPointCloudLayer *meshLayer, bool updateSymbol = true );
+
+    QgsPointCloudLayer *pointCloudLayer() const { return mLayer; }
+    void setSymbol( QgsPointCloud3DSymbol *symbol );
+
+    QgsPointCloud3DSymbol *symbol() const;
+
+  signals:
+    void changed();
+
+  private:
+    QgsPointCloudLayer *mLayer = nullptr;
+};
+
+#endif // QGSPOINTCLOUD3DSYMBOLWIDGET_H

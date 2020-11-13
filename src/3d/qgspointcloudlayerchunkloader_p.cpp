@@ -26,6 +26,8 @@
 #include "qgspoint3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
 
+#include "qgspointcloud3dsymbol.h"
+
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloudattribute.h"
@@ -93,7 +95,8 @@ void QgsPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHandl
 }
 
 
-QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler()
+QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler( QgsPointCloud3DSymbol *symbol )
+  : mSymbol( symbol )
 {
 
 }
@@ -167,6 +170,9 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // Material
   Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
 
+  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mSymbol->pointSize() ) );
+  mat->addParameter( pointSizeParameter );
+
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( mat );
   shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/pointcloud.vert" ) ) ) );
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/pointcloud.frag" ) ) ) );
@@ -176,6 +182,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   Qt3DRender::QPointSize *pointSize = new Qt3DRender::QPointSize( renderPass );
   pointSize->setSizeMode( Qt3DRender::QPointSize::Programmable );  // supported since OpenGL 3.2
+  pointSize->setValue( mSymbol->pointSize() );
   renderPass->addRenderState( pointSize );
 
   // without this filter the default forward renderer would not render this
@@ -206,7 +213,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 }
 
 
-QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node )
+QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, QgsPointCloud3DSymbol *symbol )
   : QgsChunkLoader( node )
   , mFactory( factory )
   , mContext( factory->mMap )
@@ -219,7 +226,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
 
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
 
-  QgsPointCloud3DSymbolHandler *handler = new QgsPointCloud3DSymbolHandler;
+  QgsPointCloud3DSymbolHandler *handler = new QgsPointCloud3DSymbolHandler( symbol );
   mHandler.reset( handler );
 
   //
@@ -274,9 +281,10 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 ///////////////
 
 
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc )
+QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol )
   : mMap( map )
   , mPointCloudIndex( pc )
+  , mSymbol( symbol )
 {
 }
 
@@ -284,7 +292,7 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
 {
   QgsChunkNodeId id = node->tileId();
   Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
-  return new QgsPointCloudLayerChunkLoader( this, node );
+  return new QgsPointCloudLayerChunkLoader( this, node, mSymbol );
 }
 
 QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map );
@@ -343,12 +351,12 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol )
   : QgsChunkedEntity( 5, // max. allowed screen error (in pixels)  -- // TODO
-                      new QgsPointCloudLayerChunkLoaderFactory( map, pc ), true )
+                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol ), true )
 {
   setUsingAdditiveStrategy( true );
-  setShowBoundingBoxes( true );
+  setShowBoundingBoxes( false );
 }
 
 QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()

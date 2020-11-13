@@ -43,6 +43,15 @@ Returns point cloud layer associated with the renderer
     virtual QgsPointCloudLayer3DRenderer *clone() const /Factory/;
 
 
+    void setSymbol( QgsPointCloud3DSymbol *symbol );
+%Docstring
+Sets 3D symbol associated with the renderer
+%End
+    const QgsPointCloud3DSymbol *symbol() const;
+%Docstring
+Returns 3D symbol associated with the renderer
+%End
+
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

@@ -27,13 +27,17 @@ class QgsMapCanvas;
 class QgsMessageBar;
 class QgsPointCloudLayer;
 class QgsMetadataWidget;
-
+class QgsMapLayerConfigWidgetFactory;
+class QgsMapLayerConfigWidget;
 
 class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
 {
     Q_OBJECT
   public:
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+
+    //! Adds a properties page factory to the vector layer properties dialog.
+    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
 
   private slots:
     void apply();
@@ -67,6 +71,9 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
+
+    //! A list of additional pages provided by plugins
+    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
 
     /**
      * Previous layer style. Used to reset style to previous state if new style

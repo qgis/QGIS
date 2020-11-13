@@ -286,6 +286,8 @@ IF (WITH_3D)
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
     3d/qgsshadowrenderingsettingswidget.cpp
+    3d/qgspointcloud3dsymbolwidget.cpp
+    3d/qgspointcloudlayer3drendererwidget.cpp
   )
 ENDIF (WITH_3D)
 

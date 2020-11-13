@@ -116,6 +116,7 @@
 #include "layout/qgslayoutviewrubberband.h"
 #include "qgsvectorlayer3drendererwidget.h"
 #include "qgsmeshlayer3drendererwidget.h"
+#include "qgspointcloudlayer3drendererwidget.h"
 #include "qgs3dapputils.h"
 #endif
 
@@ -1332,6 +1333,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #ifdef HAVE_3D
   registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
@@ -16252,6 +16254,32 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     case QgsMapLayerType::PointCloudLayer:
     {
       QgsPointCloudLayerProperties pointCloudLayerPropertiesDialog( qobject_cast<QgsPointCloudLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
+
+      //
+//      connect(
+//        pointCloudLayerPropertiesDialog, static_cast<void ( QgsPointCloudLayerProperties::* )( QgsMapLayer * )>( &QgsPointCloudLayerProperties::toggleEditing ),
+//      this, [ = ]( QgsMapLayer * layer ) { toggleEditing( layer ); }
+//      );
+//      connect( pointCloudLayerPropertiesDialog, &QgsVectorLayerProperties::exportAuxiliaryLayer, this, [ = ]( QgsAuxiliaryLayer * layer )
+//      {
+//        if ( layer )
+//        {
+//          std::unique_ptr<QgsVectorLayer> clone;
+//          clone.reset( layer->toSpatialLayer() );
+
+//          saveAsFile( clone.get() );
+//        }
+//      } );
+      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      {
+        pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
+      }
+
+      if ( !page.isEmpty() )
+        pointCloudLayerPropertiesDialog.setCurrentPage( page );
+      else
+        pointCloudLayerPropertiesDialog.restoreLastPage();
+
       if ( !page.isEmpty() )
         pointCloudLayerPropertiesDialog.setCurrentPage( page );
 

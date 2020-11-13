@@ -26,6 +26,7 @@
 #include <QObject>
 
 class QgsPointCloudLayer;
+class QgsPointCloud3DSymbol;
 
 #ifndef SIP_RUN
 
@@ -69,12 +70,18 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
     QgsPointCloudLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
 
+    //! Sets 3D symbol associated with the renderer
+    void setSymbol( QgsPointCloud3DSymbol *symbol );
+    //! Returns 3D symbol associated with the renderer
+    const QgsPointCloud3DSymbol *symbol() const { return mSymbol; }
+
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void resolveReferences( const QgsProject &project ) override;
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
+    QgsPointCloud3DSymbol *mSymbol = nullptr;
 
   private:
 #ifdef SIP_RUN

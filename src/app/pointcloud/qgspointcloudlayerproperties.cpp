@@ -30,6 +30,8 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 
+#include "qgspointcloudlayer3drendererwidget.h"
+
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsOptionsDialogBase( QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
   , mLayer( lyr )
@@ -103,6 +105,13 @@ void QgsPointCloudLayerProperties::apply()
 {
   mMetadataWidget->acceptMetadata();
 
+  for ( QgsMapLayerConfigWidget *configWidget : mLayerPropertiesPages )
+  {
+    QgsPointCloudLayer3DRendererWidget *pointCloudRendererWidget = dynamic_cast<QgsPointCloudLayer3DRendererWidget *>( configWidget );
+    if ( pointCloudRendererWidget )
+      pointCloudRendererWidget->apply();
+  }
+
   // TODO -- move to proper widget classes!
   mLayer->setCustomProperty( QStringLiteral( "pcMin" ), mMinZSpin->value() );
   mLayer->setCustomProperty( QStringLiteral( "pcMax" ), mMaxZSpin->value() );
@@ -142,6 +151,12 @@ void QgsPointCloudLayerProperties::syncToLayer()
   mMaxZSpin->setValue( mLayer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
   mBtnColorRamp->setColorRampFromName( mLayer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() );
   mBtnColorRamp->setColorRampName( mLayer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() );
+
+  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
+  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
+  {
+    page->syncToLayer( mLayer );
+  }
 }
 
 
@@ -376,3 +391,19 @@ void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int inde
   mBtnStyle->setVisible( ! isMetadataPanel );
   mBtnMetadata->setVisible( isMetadataPanel );
 }
+
+void QgsPointCloudLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+{
+  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
+    return;
+
+  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
+  mLayerPropertiesPages << page;
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+}
+

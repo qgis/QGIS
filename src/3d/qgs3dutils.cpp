@@ -36,6 +36,7 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+//#include "qgspointcloud3dsymbol.h"
 
 #include <Qt3DExtras/QPhongMaterial>
 
