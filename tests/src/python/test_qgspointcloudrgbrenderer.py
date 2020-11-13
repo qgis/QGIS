@@ -15,8 +15,18 @@ import qgis  # NOQA
 from qgis.core import (
     QgsProviderRegistry,
     QgsPointCloudLayer,
-    QgsPointCloudRgbRenderer
+    QgsPointCloudRgbRenderer,
+    QgsReadWriteContext,
+    QgsRenderContext,
+    QgsPointCloudRenderContext,
+    QgsVector3D,
+    QgsMultiRenderChecker,
+    QgsMapSettings,
+    QgsRectangle
 )
+
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -26,6 +36,16 @@ start_app()
 
 class TestQgsPointCloudRgbRenderer(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        cls.report = "<h1>Python QgsPointCloudRgbRenderer Tests</h1>\n"
+
+    @classmethod
+    def tearDownClass(cls):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(cls.report)
+
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testSetLayer(self):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
@@ -33,6 +53,61 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
 
         # test that a point cloud with RGB attributes is automatically assigned the RGB renderer by default
         self.assertIsInstance(layer.renderer(), QgsPointCloudRgbRenderer)
+
+    def testBasic(self):
+        renderer = QgsPointCloudRgbRenderer()
+        renderer.setBlueAttribute('b')
+        self.assertEqual(renderer.blueAttribute(), 'b')
+        renderer.setGreenAttribute('g')
+        self.assertEqual(renderer.greenAttribute(), 'g')
+        renderer.setRedAttribute('r')
+        self.assertEqual(renderer.redAttribute(), 'r')
+
+        rr = renderer.clone()
+        self.assertEqual(rr.blueAttribute(), 'b')
+        self.assertEqual(rr.greenAttribute(), 'g')
+        self.assertEqual(rr.redAttribute(), 'r')
+
+        doc = QDomDocument("testdoc")
+        elem = renderer.save(doc, QgsReadWriteContext())
+
+        r2 = QgsPointCloudRgbRenderer.create(elem, QgsReadWriteContext())
+        self.assertEqual(r2.blueAttribute(), 'b')
+        self.assertEqual(r2.greenAttribute(), 'g')
+        self.assertEqual(r2.redAttribute(), 'r')
+
+    def testUsedAttributes(self):
+        renderer = QgsPointCloudRgbRenderer()
+        renderer.setBlueAttribute('b')
+        renderer.setGreenAttribute('g')
+        renderer.setRedAttribute('r')
+
+        rc = QgsRenderContext()
+        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
+
+        self.assertEqual(renderer.usedAttributes(prc), {'r', 'g', 'b'})
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRender(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPenWidth(2)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_rgb_render')
+        result = renderchecker.runTest('expected_rgb_render')
+        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
+        self.assertTrue(result)
 
 
 if __name__ == '__main__':
