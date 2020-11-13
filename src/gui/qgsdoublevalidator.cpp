@@ -28,7 +28,7 @@ const QString PERMISSIVE_DOUBLE = R"(-?[\d]{0,1000}([\.%1][\d]{0,1000})?(e[+-]?[
 
 QgsDoubleValidator::QgsDoubleValidator( QObject *parent )
   : QRegularExpressionValidator( parent )
-  , mMinimum( std::numeric_limits<qreal>::min() )
+  , mMinimum( std::numeric_limits<qreal>::lowest() )
   , mMaximum( std::numeric_limits<qreal>::max() )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
@@ -58,6 +58,16 @@ QgsDoubleValidator::QgsDoubleValidator( double bottom, double top, int decimal, 
   : QRegularExpressionValidator( parent )
   , mMinimum( bottom )
   , mMaximum( top )
+{
+  // The regular expression accept double with point as decimal point but also the locale decimal point
+  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );
+  setRegularExpression( reg );
+}
+
+QgsDoubleValidator::QgsDoubleValidator( int decimal, QObject *parent )
+  : QRegularExpressionValidator( parent )
+  , mMinimum( std::numeric_limits<qreal>::lowest() )
+  , mMaximum( std::numeric_limits<qreal>::max() )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
   QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );

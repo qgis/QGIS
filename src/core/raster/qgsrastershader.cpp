@@ -115,3 +115,4 @@ void QgsRasterShader::readXml( const QDomElement &elem )
     setRasterShaderFunction( colorRampShader );
   }
 }
+
