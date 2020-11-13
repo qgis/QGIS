@@ -90,6 +90,12 @@ The main tasks carried out by the constructor are:
 
     ~QgsRasterLayer();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual QgsRasterLayer *clone() const /Factory/;
 
 %Docstring
@@ -331,6 +337,11 @@ In a world file, this is normally the first row (without the sign).
 
 .. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End
+
+    virtual void setOpacity( double opacity ) ${SIP_FINAL};
+
+    virtual double opacity() const ${SIP_FINAL};
+
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,

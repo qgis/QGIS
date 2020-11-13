@@ -157,6 +157,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     ~QgsRasterLayer() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderer is cloned too.
@@ -370,6 +378,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \see rasterUnitsPerPixelX()
      */
     double rasterUnitsPerPixelY() const;
+
+    void setOpacity( double opacity ) FINAL;
+    double opacity() const FINAL;
 
     /**
      * \brief Set contrast enhancement algorithm

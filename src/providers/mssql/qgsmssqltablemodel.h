@@ -82,8 +82,6 @@ class QgsMssqlTableModel : public QStandardItemModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata, bool disableInvalidGeometryHandling );
 
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
-
     static QgsWkbTypes::Type wkbTypeFromMssql( QString dbType );
 
   private:

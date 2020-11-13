@@ -1,34 +1,34 @@
 ########################################################
 # Files
 
-SET(PDAL_SRCS
+set(PDAL_SRCS
   qgspdaldataitems.cpp
   qgspdalprovider.cpp
 )
 
-SET(PDAL_HDRS
+set(PDAL_HDRS
   qgspdaldataitems.h
   qgspdalprovider.h
 )
 
-IF (WITH_GUI)
-  SET(PDAL_SRCS
+if (WITH_GUI)
+  set(PDAL_SRCS
     ${PDAL_SRCS}
     qgspdalprovidergui.cpp
     qgspdaldataitemguiprovider.cpp
   )
 
-  SET(PDAL_HDRS
+  set(PDAL_HDRS
     ${PDAL_HDRS}
     qgspdalprovidergui.h
     qgspdaldataitemguiprovider.h
   )
-ENDIF ()
+endif()
 
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -49,18 +49,18 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${PDAL_INCLUDE_DIR}
 )
 
-ADD_LIBRARY (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS})
-TARGET_LINK_LIBRARIES (pdalprovider
+add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS})
+target_link_libraries (pdalprovider
   ${PDAL_LIBRARIES}
 )
 
 # static library
-ADD_LIBRARY (pdalprovider_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
-TARGET_LINK_LIBRARIES (pdalprovider_a
+add_library (pdalprovider_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
+target_link_libraries (pdalprovider_a
   ${PDAL_LIBRARIES}
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
@@ -70,13 +70,13 @@ TARGET_LINK_LIBRARIES (pdalprovider_a
   ${Qt5Concurrent_LIBRARIES}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES(pdalprovider
+if (WITH_GUI)
+  target_link_libraries(pdalprovider
     qgis_gui
   )
-  ADD_DEPENDENCIES(pdalprovider ui)
-ENDIF (WITH_GUI)
+  add_dependencies(pdalprovider ui)
+endif()
 
-INSTALL(TARGETS pdalprovider
+install(TARGETS pdalprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

@@ -1,11 +1,11 @@
-IF (ENABLE_TESTS)
+if (ENABLE_TESTS)
 
-  IF (WITH_CORE)
-    ADD_SUBDIRECTORY(src)
-    ADD_SUBDIRECTORY(bench)
-  ENDIF (WITH_CORE)
+  if (WITH_CORE)
+    add_subdirectory(src)
+    add_subdirectory(bench)
+  endif()
 
-  ADD_SUBDIRECTORY(code_layout)
-ENDIF (ENABLE_TESTS)
+  add_subdirectory(code_layout)
+endif()
 
 

@@ -392,7 +392,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
-    Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
 
@@ -556,6 +555,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayer( const QgsVectorLayer &rhs ) = delete;
     //! QgsVectorLayer cannot be copied.
     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsVectorLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns a new instance equivalent to this one. A new provider is
@@ -1028,49 +1035,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     const QgsAuxiliaryLayer *auxiliaryLayer() const SIP_SKIP;
 
-    /**
-     * Reads the symbology for the current layer from the Dom node supplied.
-     * \param layerNode node that will contain the symbology definition for this layer.
-     * \param errorMessage reference to string that will be updated with any error messages
-     * \param context reading context (used for transform from relative to absolute paths)
-     * \param categories the style categories to be read
-     * \returns TRUE in case of success.
-     */
     bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) FINAL;
-
-    /**
-     * Reads the style for the current layer from the Dom node supplied.
-     * \param node node that will contain the style definition for this layer.
-     * \param errorMessage reference to string that will be updated with any error messages
-     * \param context reading context (used for transform from relative to absolute paths)
-     * \param categories the style categories to be read
-     * \returns TRUE in case of success.
-     */
     bool readStyle( const QDomNode &node, QString &errorMessage,
                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) FINAL;
-
-    /**
-     * Writes the symbology for the layer into the document provided.
-     *  \param node the node that will have the style element added to it.
-     *  \param doc the document that will have the QDomNode added.
-     *  \param errorMessage reference to string that will be updated with any error messages
-     *  \param context writing context (used for transform from absolute to relative paths)
-     *  \param categories the style categories to be written
-     *  \returns TRUE in case of success.
-     */
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const FINAL;
-
-    /**
-     * Writes just the style information for the layer into the document
-     *  \param node the node that will have the style element added to it.
-     *  \param doc the document that will have the QDomNode added.
-     *  \param errorMessage reference to string that will be updated with any error messages
-     *  \param context writing context (used for transform from absolute to relative paths)
-     *  \param categories the style categories to be written
-     *  \returns TRUE in case of success.
-     */
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const FINAL;
 
@@ -2251,24 +2221,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the current blending mode for features
     QPainter::CompositionMode featureBlendMode() const;
 
-    /**
-     * Sets the \a opacity for the vector layer, where \a opacity is a value between 0 (totally transparent)
-     * and 1.0 (fully opaque).
-     * \see opacity()
-     * \see opacityChanged()
-     * \since QGIS 3.0
-     */
-    void setOpacity( double opacity );
-
-    /**
-     * Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
-     * and 1.0 (fully opaque).
-     * \see setOpacity()
-     * \see opacityChanged()
-     * \since QGIS 3.0
-     */
-    double opacity() const;
-
     QString htmlMetadata() const FINAL;
 
     /**
@@ -2690,15 +2642,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 
     /**
-     * Emitted when the layer's opacity is changed, where \a opacity is a value between 0 (transparent)
-     * and 1 (opaque).
-     * \see setOpacity()
-     * \see opacity()
-     * \since QGIS 3.0
-     */
-    void opacityChanged( double opacity );
-
-    /**
      * Signal emitted when a new edit command has been started
      *
      * \param text Description for this edit command
@@ -2916,9 +2859,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Blend mode for features
     QPainter::CompositionMode mFeatureBlendMode = QPainter::CompositionMode_SourceOver;
-
-    //! Layer opacity
-    double mLayerOpacity = 1.0;
 
     //! Flag if the vertex markers should be drawn only for selection (TRUE) or for all features (FALSE)
     bool mVertexMarkerOnlyForSelection = false;

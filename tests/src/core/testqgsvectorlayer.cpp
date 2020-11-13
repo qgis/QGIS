@@ -37,32 +37,6 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-class TestSignalReceiver : public QObject
-{
-    Q_OBJECT
-
-  public:
-    TestSignalReceiver()
-      : QObject( nullptr )
-      , featureBlendMode( QPainter::CompositionMode( 0 ) )
-    {}
-    bool rendererChanged =  false ;
-    QPainter::CompositionMode featureBlendMode;
-    double opacity =  1.0 ;
-  public slots:
-    void onRendererChanged()
-    {
-      rendererChanged = true;
-    }
-    void onFeatureBlendModeChanged( const QPainter::CompositionMode blendMode )
-    {
-      featureBlendMode = blendMode;
-    }
-    void onLayerOpacityChanged( double layerOpacity )
-    {
-      opacity = layerOpacity;
-    }
-};
 
 /**
  * \ingroup UnitTests
@@ -76,9 +50,9 @@ class TestQgsVectorLayer : public QObject
 
   private:
     bool mTestHasError =  false ;
-    QgsMapLayer *mpPointsLayer = nullptr;
-    QgsMapLayer *mpLinesLayer = nullptr;
-    QgsMapLayer *mpPolysLayer = nullptr;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsVectorLayer *mpLinesLayer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
     QgsVectorLayer *mpNonSpatialLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
@@ -91,11 +65,11 @@ class TestQgsVectorLayer : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-    void QgsVectorLayerNonSpatialIterator();
-    void QgsVectorLayerGetValues();
-    void QgsVectorLayersetRenderer();
-    void QgsVectorLayersetFeatureBlendMode();
-    void QgsVectorLayersetLayerTransparency();
+    void nonSpatialIterator();
+    void getValues();
+    void setRenderer();
+    void setFeatureBlendMode();
+    void setLayerTransparency();
     void uniqueValues();
     void minimumValue();
     void maximumValue();
@@ -177,7 +151,7 @@ void TestQgsVectorLayer::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsVectorLayer::QgsVectorLayerNonSpatialIterator()
+void TestQgsVectorLayer::nonSpatialIterator()
 {
   QgsFeature f;
   QgsAttributeList myList;
@@ -192,7 +166,7 @@ void TestQgsVectorLayer::QgsVectorLayerNonSpatialIterator()
   QVERIFY( myCount == 3 );
 }
 
-void TestQgsVectorLayer::QgsVectorLayerGetValues()
+void TestQgsVectorLayer::getValues()
 {
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
@@ -269,69 +243,67 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   delete layer;
 }
 
-void TestQgsVectorLayer::QgsVectorLayersetRenderer()
+void TestQgsVectorLayer::setRenderer()
 {
-  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
-  TestSignalReceiver receiver;
-  QObject::connect( vLayer, SIGNAL( rendererChanged() ),
-                    &receiver, SLOT( onRendererChanged() ) );
+  QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::rendererChanged );
+
   QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
-  QCOMPARE( receiver.rendererChanged, false );
-  vLayer->setRenderer( symbolRenderer );
-  QCOMPARE( receiver.rendererChanged, true );
-  QCOMPARE( vLayer->renderer(), symbolRenderer );
+  mpPointsLayer->setRenderer( symbolRenderer );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( mpPointsLayer->renderer(), symbolRenderer );
 }
 
-void TestQgsVectorLayer::QgsVectorLayersetFeatureBlendMode()
+void TestQgsVectorLayer::setFeatureBlendMode()
 {
-  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
-  TestSignalReceiver receiver;
-  QObject::connect( vLayer, SIGNAL( featureBlendModeChanged( const QPainter::CompositionMode ) ),
-                    &receiver, SLOT( onFeatureBlendModeChanged( const QPainter::CompositionMode ) ) );
+  QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::featureBlendModeChanged );
 
-  QCOMPARE( int( receiver.featureBlendMode ), 0 );
-  vLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
-  QCOMPARE( receiver.featureBlendMode, QPainter::CompositionMode_Screen );
-  QCOMPARE( vLayer->featureBlendMode(), QPainter::CompositionMode_Screen );
+  mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Screen ) );
+  QCOMPARE( mpPointsLayer->featureBlendMode(), QPainter::CompositionMode_Screen );
+  mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.count(), 1 );
+
+  mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Darken );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Darken ) );
+  QCOMPARE( mpPointsLayer->featureBlendMode(), QPainter::CompositionMode_Darken );
 }
 
-void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
+void TestQgsVectorLayer::setLayerTransparency()
 {
-  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
-  TestSignalReceiver receiver;
-  QObject::connect( vLayer, &QgsVectorLayer::opacityChanged,
-                    &receiver, &TestSignalReceiver::onLayerOpacityChanged );
+  QSignalSpy spy( mpPointsLayer, &QgsMapLayer::opacityChanged );
 
-  QCOMPARE( receiver.opacity, 1.0 );
-  vLayer->setOpacity( 0.5 );
-  QCOMPARE( receiver.opacity, 0.5 );
-  QCOMPARE( vLayer->opacity(), 0.5 );
+  mpPointsLayer->setOpacity( 0.5 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toDouble(), 0.5 );
+  QCOMPARE( mpPointsLayer->opacity(), 0.5 );
+  mpPointsLayer->setOpacity( 0.5 );
+  QCOMPARE( spy.count(), 1 );
+  mpPointsLayer->setOpacity( 1.0 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toDouble(), 1.0 );
+  QCOMPARE( mpPointsLayer->opacity(), 1.0 );
 }
 
 void TestQgsVectorLayer::uniqueValues()
 {
-  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
-
   //test with invalid field
-  QSet<QVariant> values = vLayer->uniqueValues( 1000 );
+  QSet<QVariant> values = mpPointsLayer->uniqueValues( 1000 );
   QCOMPARE( values.count(), 0 );
 }
 
 void TestQgsVectorLayer::minimumValue()
 {
-  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
-
   //test with invalid field
-  QCOMPARE( vLayer->minimumValue( 1000 ), QVariant() );
+  QCOMPARE( mpPointsLayer->minimumValue( 1000 ), QVariant() );
 }
 
 void TestQgsVectorLayer::maximumValue()
 {
-  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
-
   //test with invalid field
-  QCOMPARE( vLayer->maximumValue( 1000 ), QVariant() );
+  QCOMPARE( mpPointsLayer->maximumValue( 1000 ), QVariant() );
 }
 
 void TestQgsVectorLayer::isSpatial()

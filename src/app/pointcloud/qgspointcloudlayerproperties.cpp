@@ -61,6 +61,9 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
 
+  mAttributeComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
+  mAttributeComboBox->setLayer( mLayer );
+
   // update based on lyr's current state
   syncToLayer();
 
@@ -101,6 +104,8 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   restoreOptionsBaseUi( title );
 }
 
+#include "qgspointcloudrenderer.h"
+
 void QgsPointCloudLayerProperties::apply()
 {
   mMetadataWidget->acceptMetadata();
@@ -113,9 +118,14 @@ void QgsPointCloudLayerProperties::apply()
   }
 
   // TODO -- move to proper widget classes!
-  mLayer->setCustomProperty( QStringLiteral( "pcMin" ), mMinZSpin->value() );
-  mLayer->setCustomProperty( QStringLiteral( "pcMax" ), mMaxZSpin->value() );
-  mLayer->setCustomProperty( QStringLiteral( "pcRamp" ), mBtnColorRamp->colorRampName().isEmpty() ? QStringLiteral( "Viridis" ) : mBtnColorRamp->colorRampName() );
+
+  std::unique_ptr< QgsDummyPointCloudRenderer > renderer = qgis::make_unique< QgsDummyPointCloudRenderer >();
+  renderer->setAttribute( mAttributeComboBox->currentAttribute() );
+  renderer->setZMin( mMinZSpin->value() );
+  renderer->setZMax( mMaxZSpin->value() );
+  renderer->setColorRamp( mBtnColorRamp->colorRamp() );
+  mLayer->setRenderer( renderer.release() );
+
   mLayer->triggerRepaint();
 }
 
@@ -147,16 +157,16 @@ void QgsPointCloudLayerProperties::syncToLayer()
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
 
   // TODO -- move to proper widget classes!
-  mMinZSpin->setValue( mLayer->customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
-  mMaxZSpin->setValue( mLayer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
-  mBtnColorRamp->setColorRampFromName( mLayer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() );
-  mBtnColorRamp->setColorRampName( mLayer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() );
-
+  if ( QgsDummyPointCloudRenderer *renderer = dynamic_cast< QgsDummyPointCloudRenderer * >( mLayer->renderer() ) )
+  {
+    mAttributeComboBox->setAttribute( renderer->attribute() );
+    mMinZSpin->setValue( renderer->zMin() );
+    mMaxZSpin->setValue( renderer->zMax() );
+    mBtnColorRamp->setColorRamp( renderer->colorRamp() );
+  }
   const auto constMLayerPropertiesPages = mLayerPropertiesPages;
   for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
-  {
     page->syncToLayer( mLayer );
-  }
 }
 
 

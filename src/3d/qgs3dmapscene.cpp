@@ -440,7 +440,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     {
       // the update didn't work out... this should not happen
       // well at least temporarily use some conservative starting values
-      qDebug() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
+      qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
       fnear = 1;
       ffar = 1e9;
     }
@@ -456,7 +456,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     }
   }
   else
-    qDebug() << "no terrain - not setting near/far plane";
+    qWarning() << "no terrain - not setting near/far plane";
 
   return false;
 }

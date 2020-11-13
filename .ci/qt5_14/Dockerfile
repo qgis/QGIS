@@ -14,6 +14,7 @@ RUN dnf -y install \
     libpq-devel \
     libspatialite-devel \
     libzip-devel \
+    libzstd-devel \
     ninja-build \
     proj-devel \
     protobuf-devel \

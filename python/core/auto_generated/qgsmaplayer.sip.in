@@ -450,6 +450,38 @@ Returns the current blending mode for a layer.
 .. seealso:: :py:func:`setBlendMode`
 %End
 
+    virtual void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` for the layer, where ``opacity`` is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`opacity`
+
+.. seealso:: :py:func:`opacityChanged`
+
+.. note::
+
+   Prior to QGIS 3.18, this method was available for vector layers only
+
+.. versionadded:: 3.18
+%End
+
+    virtual double opacity() const;
+%Docstring
+Returns the opacity for the layer, where opacity is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`setOpacity`
+
+.. seealso:: :py:func:`opacityChanged`
+
+.. note::
+
+   Prior to QGIS 3.18, this method was available for vector layers only
+
+.. versionadded:: 3.18
+%End
+
     bool readOnly() const;
 %Docstring
 Returns if this layer is read only.
@@ -1490,6 +1522,22 @@ Data of layer changed
 Signal emitted when the blend mode is changed, through :py:func:`QgsMapLayer.setBlendMode()`
 %End
 
+    void opacityChanged( double opacity );
+%Docstring
+Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
+and 1 (opaque).
+
+.. seealso:: :py:func:`setOpacity`
+
+.. seealso:: :py:func:`opacity`
+
+.. note::
+
+   Prior to QGIS 3.18, this signal was available for vector layers only
+
+.. versionadded:: 3.18
+%End
+
     void rendererChanged();
 %Docstring
 Signal emitted when renderer is changed.
@@ -1598,6 +1646,12 @@ Emitted when the validity of this layer changed.
 .. versionadded:: 3.16
 %End
 
+    void customPropertyChanged( const QString &key );
+%Docstring
+Emitted when a custom property of the layer has been changed or removed.
+
+.. versionadded:: 3.18
+%End
 
   protected:
 
@@ -1734,6 +1788,7 @@ this method is now deprecated and always return ``False``, because circular depe
 
 .. deprecated:: QGIS 3.10
 %End
+
 
 
 

@@ -723,7 +723,6 @@ int QgsLayerTreeModel::scaleIconSize( int standardSize )
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
-  Q_ASSERT( node );
   beginInsertRows( node2index( node ), indexFrom, indexTo );
 }
 
@@ -774,7 +773,7 @@ void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode *node )
 {
   Q_ASSERT( node );
 
-  QModelIndex index = node2index( node );
+  const QModelIndex index = node2index( node );
   emit dataChanged( index, index );
 }
 
@@ -783,7 +782,7 @@ void QgsLayerTreeModel::nodeNameChanged( QgsLayerTreeNode *node, const QString &
   Q_UNUSED( name )
   Q_ASSERT( node );
 
-  QModelIndex index = node2index( node );
+  const QModelIndex index = node2index( node );
   emit dataChanged( index, index );
 }
 
@@ -900,12 +899,12 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   {
     // in order to connect to layer, we need to have it loaded.
     // keep an eye on the layer ID: once loaded, we will use it
-    connect( nodeLayer, &QgsLayerTreeLayer::layerLoaded, this, &QgsLayerTreeModel::nodeLayerLoaded );
+    connect( nodeLayer, &QgsLayerTreeLayer::layerLoaded, this, &QgsLayerTreeModel::nodeLayerLoaded, Qt::UniqueConnection );
     return;
   }
 
   // watch if the layer is getting removed
-  connect( nodeLayer, &QgsLayerTreeLayer::layerWillBeUnloaded, this, &QgsLayerTreeModel::nodeLayerWillBeUnloaded );
+  connect( nodeLayer, &QgsLayerTreeLayer::layerWillBeUnloaded, this, &QgsLayerTreeModel::nodeLayerWillBeUnloaded, Qt::UniqueConnection );
 
   if ( testFlag( ShowLegend ) )
   {
@@ -1004,14 +1003,13 @@ void QgsLayerTreeModel::connectToRootNode()
 {
   Q_ASSERT( mRootNode );
 
-  connect( mRootNode, &QgsLayerTreeNode::willAddChildren, this, &QgsLayerTreeModel::nodeWillAddChildren );
-  connect( mRootNode, &QgsLayerTreeNode::addedChildren, this, &QgsLayerTreeModel::nodeAddedChildren );
-  connect( mRootNode, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeModel::nodeWillRemoveChildren );
-  connect( mRootNode, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeModel::nodeRemovedChildren );
-  connect( mRootNode, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeModel::nodeVisibilityChanged );
-  connect( mRootNode, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeModel::nodeNameChanged );
-
-  connect( mRootNode, &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeModel::nodeCustomPropertyChanged );
+  connect( mRootNode, &QgsLayerTreeNode::willAddChildren, this, &QgsLayerTreeModel::nodeWillAddChildren, Qt::ConnectionType::UniqueConnection );
+  connect( mRootNode, &QgsLayerTreeNode::addedChildren, this, &QgsLayerTreeModel::nodeAddedChildren, Qt::ConnectionType::UniqueConnection );
+  connect( mRootNode, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeModel::nodeWillRemoveChildren, Qt::ConnectionType::UniqueConnection );
+  connect( mRootNode, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeModel::nodeRemovedChildren, Qt::ConnectionType::UniqueConnection );
+  connect( mRootNode, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeModel::nodeVisibilityChanged, Qt::ConnectionType::UniqueConnection );
+  connect( mRootNode, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeModel::nodeNameChanged, Qt::ConnectionType::UniqueConnection );
+  connect( mRootNode, &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeModel::nodeCustomPropertyChanged, Qt::ConnectionType::UniqueConnection );
 
   connectToLayers( mRootNode );
 }
@@ -1365,7 +1363,17 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   int count = legendTree ? legendTree->children[nullptr].count() : filteredLstNew.count();
 
   if ( !filteredLstNew.isEmpty() )
+  {
+    // Make sure it's clear
+    const QModelIndex nodeIndex { node2index( nodeL ) };
+    if ( rowCount( nodeIndex ) > 0 )
+    {
+      beginRemoveRows( node2index( nodeL ), 0, rowCount( nodeIndex ) - 1 );
+      mLegend[nodeL] = LayerLegendData();
+      endRemoveRows();
+    }
     beginInsertRows( node2index( nodeL ), 0, count - 1 );
+  }
 
   LayerLegendData data;
   data.originalNodes = lstNew;
@@ -1376,7 +1384,9 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   mLegend[nodeL] = data;
 
   if ( !filteredLstNew.isEmpty() )
+  {
     endInsertRows();
+  }
 
   // invalidate map based data even if the data is not map-based to make sure
   // the symbol sizes are computed at least once

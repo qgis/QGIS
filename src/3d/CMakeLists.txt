@@ -1,7 +1,7 @@
 #############################################################
 # sources
 
-SET(QGIS_3D_SRCS
+set(QGIS_3D_SRCS
   qgs3d.cpp
   qgsaabb.cpp
   qgsabstract3dengine.cpp
@@ -91,7 +91,7 @@ SET(QGIS_3D_SRCS
   mesh/qgsmeshterraingenerator.cpp
 )
 
-SET(QGIS_3D_HDRS
+set(QGIS_3D_HDRS
   processing/qgs3dalgorithms.h
   qgs3d.h
   qgs3danimationsettings.h
@@ -151,7 +151,7 @@ SET(QGIS_3D_HDRS
   mesh/qgsmeshterraingenerator.h
 )
 
-SET(QGIS_3D_PRIVATE_HDRS
+set(QGIS_3D_PRIVATE_HDRS
   qgsrulebasedchunkloader_p.h
   qgsvectorlayerchunkloader_p.h
   qgspointcloudlayerchunkloader_p.h
@@ -176,11 +176,11 @@ SET(QGIS_3D_PRIVATE_HDRS
   mesh/qgsmesh3dmaterial_p.h
 )
 
-SET (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
+set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 # install headers
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
   ${CMAKE_CURRENT_SOURCE_DIR}/materials
@@ -206,7 +206,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
@@ -217,25 +217,25 @@ INCLUDE_DIRECTORIES(SYSTEM
 # qgis_3d library
 
 
-ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
+add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
 
-TARGET_LINK_LIBRARIES(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
+target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
 
 GENERATE_EXPORT_HEADER(
    qgis_3d
    BASE_NAME 3D
    EXPORT_FILE_NAME qgis_3d.h
 )
-IF(MSVC)
-  SET_TARGET_PROPERTIES(qgis_3d PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
-ENDIF(MSVC)
+if(MSVC)
+  set_target_properties(qgis_3d PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
+endif()
 
-SET(QGIS_3D_HDRS ${QGIS_3D_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_3d.h)
+set(QGIS_3D_HDRS ${QGIS_3D_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_3d.h)
 
-IF(NOT APPLE)
-  INSTALL(FILES ${QGIS_3D_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-ELSE(NOT APPLE)
-  SET_TARGET_PROPERTIES(qgis_3d PROPERTIES
+if(NOT APPLE)
+  install(FILES ${QGIS_3D_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+else()
+  set_target_properties(qgis_3d PROPERTIES
     # no moc headers, messes up PROPERTIES syntax
     CLEAN_DIRECT_OUTPUT 1
     FRAMEWORK 1
@@ -248,36 +248,36 @@ ELSE(NOT APPLE)
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
   # generated export header does not get copied with PUBLIC_HEADER files
-  ADD_CUSTOM_COMMAND(TARGET qgis_3d
+  add_custom_command(TARGET qgis_3d
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy qgis_3d.h
             "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_3d.framework/Headers"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS qgis_3d.h
   )
-ENDIF(NOT APPLE)
+endif()
 
 #generate unversioned libs for android
-IF (NOT ANDROID)
-  SET_TARGET_PROPERTIES(qgis_3d PROPERTIES
+if (NOT ANDROID)
+  set_target_properties(qgis_3d PROPERTIES
     VERSION ${COMPLETE_VERSION}
     SOVERSION ${COMPLETE_VERSION}
     )
-ENDIF (NOT ANDROID)
+endif()
 
-TARGET_LINK_LIBRARIES(qgis_3d qgis_core)
+target_link_libraries(qgis_3d qgis_core)
 
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
+if(CLANG_TIDY_EXE)
+  set_target_properties(
     qgis_3d PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
 # install
 
-INSTALL(TARGETS qgis_3d
+install(TARGETS qgis_3d
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
@@ -286,8 +286,8 @@ INSTALL(TARGETS qgis_3d
 
 # Mac dev frameworks
 
-IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  INSTALL(TARGETS qgis_3d FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_3d\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
-ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+  install(TARGETS qgis_3d FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_3d\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
+  install(CODE "execute_process(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
+endif()

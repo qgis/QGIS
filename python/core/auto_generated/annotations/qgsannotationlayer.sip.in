@@ -50,6 +50,12 @@ The ``options`` argument specifies load-time layer options.
 %End
     ~QgsAnnotationLayer();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsAnnotationLayer: '%1'>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     void reset();
 %Docstring
 Resets the annotation layer to a default state, and clears all items from it.
@@ -85,22 +91,6 @@ Returns a map of items contained in the layer, by unique item ID.
 
 This map contains references to items owned by the layer, and ownership of these remains
 with the layer.
-%End
-
-    void setOpacity( double opacity );
-%Docstring
-Sets the ``opacity`` for the annotation layer, where ``opacity`` is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`opacity`
-%End
-
-    double opacity() const;
-%Docstring
-Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`setOpacity`
 %End
 
     virtual QgsAnnotationLayer *clone() const /Factory/;

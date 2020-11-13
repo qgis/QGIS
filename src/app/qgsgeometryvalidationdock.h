@@ -57,6 +57,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void updateLayerTransform();
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
     void onRowsInserted();
+    void showErrorContextMenu( const QPoint &pos );
 
   private:
 
@@ -81,6 +82,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsRubberBand *mErrorLocationRubberband = nullptr;
     QgsVectorLayer *mCurrentLayer = nullptr;
     bool mPreventZoomToError = false;
+    QMenu *mGeometryErrorContextMenu = nullptr;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H

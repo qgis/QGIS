@@ -67,7 +67,7 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
     QDomNodeList paletteEntries = paletteElem.elementsByTagName( QStringLiteral( "paletteEntry" ) );
 
     QDomElement entryElem;
-    int value;
+    double value;
 
     for ( int i = 0; i < paletteEntries.size(); ++i )
     {
@@ -353,8 +353,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClas
   QgsPalettedRasterRenderer::ClassData classes;
   for ( ; colorIt != table.constEnd(); ++colorIt )
   {
-    int idx = ( int )( colorIt->value );
-    classes << QgsPalettedRasterRenderer::Class( idx, colorIt->color, colorIt->label );
+    classes << QgsPalettedRasterRenderer::Class( colorIt->value, colorIt->color, colorIt->label );
   }
   return classes;
 }
@@ -499,7 +498,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
     QgsRasterIterator iter( raster );
     iter.startRasterRead( bandNumber, raster->xSize(), raster->ySize(), raster->extent(), feedback );
 
-    int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * raster->ySize() / maxWidth ) );
+    int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * raster->xSize() / maxWidth ) );
     int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * raster->ySize() / maxHeight ) );
     int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
@@ -609,11 +608,9 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
 void QgsPalettedRasterRenderer::updateArrays()
 {
   mColors.clear();
-  int i = 0;
   ClassData::const_iterator it = mClassData.constBegin();
   for ( ; it != mClassData.constEnd(); ++it )
   {
     mColors[it->value] = qPremultiply( it->color.rgba() );
-    i++;
   }
 }

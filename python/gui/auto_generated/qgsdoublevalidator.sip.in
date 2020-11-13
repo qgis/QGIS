@@ -55,10 +55,19 @@ Constructor for QgsDoubleValidator.
 
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
-:param decimal: the number of decimal accepted by the validator
+:param decimal: the number of decimals accepted by the validator
 :param parent: parent object
 %End
 
+    QgsDoubleValidator( int decimal, QObject *parent );
+%Docstring
+Constructor for QgsDoubleValidator.
+
+:param decimal: the number of decimals accepted by the validator
+:param parent: parent object
+
+.. versionadded:: 3.16
+%End
 
 
     QValidator::State validate( QString &input ) const;

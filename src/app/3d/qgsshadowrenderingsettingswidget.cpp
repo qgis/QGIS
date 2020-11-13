@@ -25,7 +25,7 @@ QgsShadowRenderingSettingsWidget::QgsShadowRenderingSettingsWidget( QWidget *par
 {
   setupUi( this );
 
-  shadowRenderinMaximumDistanceSpinBox->setClearValue( 500.00 );
+  shadowRenderinMaximumDistanceSpinBox->setClearValue( 1500.00 );
   shadowBiasSpinBox->setClearValue( 0.000010 );
   shadowMapResolutionSpinBox->setClearValue( 2048 );
 }

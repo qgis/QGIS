@@ -206,6 +206,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 
   protected slots:
+
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
   protected:
@@ -228,6 +229,9 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     int mMutuallyExclusiveChildIndex = -1;
 
+    //! Sets parent to NULLPTR and disconnects all external and forwarded signals
+    virtual void makeOrphan() override SIP_SKIP;
+
   private:
 
 #ifdef SIP_RUN
@@ -239,6 +243,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 #endif
 
     QgsLayerTreeGroup &operator= ( const QgsLayerTreeGroup & ) = delete;
+
 
 };
 

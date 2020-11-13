@@ -35,6 +35,7 @@ class QgsPointCloudLayer;
 class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
 {
     Q_OBJECT
+    Q_PROPERTY( QgsPointCloudAttributeProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEmptyAttributeName READ allowEmptyAttributeName WRITE setAllowEmptyAttributeName )
 
   public:
@@ -44,6 +45,18 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
      * The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox::layerChanged to the slot setLayer.
      */
     explicit QgsPointCloudAttributeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets \a filters to allow filtering available attributes according to the attribute properties.
+     * \see filters()
+     */
+    void setFilters( QgsPointCloudAttributeProxyModel::Filters filters );
+
+    /**
+     * Returns the current filters used for filtering available attributes.
+     * \see setFilters()
+     */
+    QgsPointCloudAttributeProxyModel::Filters filters() const { return mProxyModel->filters(); }
 
     /**
      * Sets whether an optional empty attribute ("not set") option is shown in the combo box.
@@ -106,6 +119,7 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
 
   private:
     QgsPointCloudAttributeModel *mAttributeModel = nullptr;
+    QgsPointCloudAttributeProxyModel *mProxyModel = nullptr;
 };
 
 #endif // QGSPOINTCLOUDATTRIBUTECOMBOBOX_H

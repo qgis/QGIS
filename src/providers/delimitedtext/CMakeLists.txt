@@ -2,23 +2,23 @@
 ########################################################
 # Files
 
-SET (DTEXT_SRCS
+set (DTEXT_SRCS
   qgsdelimitedtextfeatureiterator.cpp
   qgsdelimitedtextprovider.cpp
   qgsdelimitedtextfile.cpp
 )
 
-IF (WITH_GUI)
-  SET(DTEXT_SRCS ${DTEXT_SRCS}
+if (WITH_GUI)
+  set(DTEXT_SRCS ${DTEXT_SRCS}
     qgsdelimitedtextprovidergui.cpp
     qgsdelimitedtextsourceselect.cpp
   )
-ENDIF ()
+endif()
 
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -34,35 +34,35 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-INCLUDE_DIRECTORIES (SYSTEM
+include_directories (SYSTEM
 )
 
-ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS})
+add_library(delimitedtextprovider MODULE ${DTEXT_SRCS})
 
-TARGET_LINK_LIBRARIES(delimitedtextprovider
+target_link_libraries(delimitedtextprovider
   qgis_core
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (delimitedtextprovider
+if (WITH_GUI)
+  target_link_libraries (delimitedtextprovider
     qgis_gui
   )
-  ADD_DEPENDENCIES(delimitedtextprovider ui)
-ENDIF ()
+  add_dependencies(delimitedtextprovider ui)
+endif()
 
-TARGET_COMPILE_DEFINITIONS(delimitedtextprovider PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(delimitedtextprovider PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
+if(CLANG_TIDY_EXE)
+  set_target_properties(
     delimitedtextprovider PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
 ########################################################
 # Install
 
-INSTALL (TARGETS delimitedtextprovider
+install (TARGETS delimitedtextprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

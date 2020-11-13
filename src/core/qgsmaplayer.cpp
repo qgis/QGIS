@@ -124,6 +124,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
+  layer->setOpacity( mLayerOpacity );
 }
 
 QgsMapLayerType QgsMapLayer::type() const
@@ -214,6 +215,19 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
   return mBlendMode;
 }
 
+void QgsMapLayer::setOpacity( double opacity )
+{
+  if ( qgsDoubleNear( mLayerOpacity, opacity ) )
+    return;
+  mLayerOpacity = opacity;
+  emit opacityChanged( opacity );
+  emit styleChanged();
+}
+
+double QgsMapLayer::opacity() const
+{
+  return mLayerOpacity;
+}
 
 bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
 {
@@ -1707,7 +1721,11 @@ QStringList QgsMapLayer::customPropertyKeys() const
 
 void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {
-  mCustomProperties.setValue( key, value );
+  if ( !mCustomProperties.contains( key ) || mCustomProperties.value( key ) != value )
+  {
+    mCustomProperties.setValue( key, value );
+    emit customPropertyChanged( key );
+  }
 }
 
 void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
@@ -1727,7 +1745,12 @@ QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defa
 
 void QgsMapLayer::removeCustomProperty( const QString &key )
 {
-  mCustomProperties.remove( key );
+
+  if ( mCustomProperties.contains( key ) )
+  {
+    mCustomProperties.remove( key );
+    emit customPropertyChanged( key );
+  }
 }
 
 QgsError QgsMapLayer::error() const

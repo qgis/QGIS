@@ -16,13 +16,19 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudrenderer.h"
+#include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudindex.h"
 #include "qgsrectangle.h"
 #include "qgspointclouddataprovider.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgslayermetadataformatter.h"
+#include "qgspointcloudrenderer.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
+#include "qgspainting.h"
+#include "qgspointcloudrendererregistry.h"
+
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -48,6 +54,10 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 
   QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
+
+  if ( mRenderer )
+    layer->setRenderer( mRenderer->clone() );
+
   return layer;
 }
 
@@ -124,21 +134,76 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
 
   readCommonStyle( elem, context, categories );
 
-  // hack for now !!
-  if ( categories.testFlag( Symbology ) )
-  {
-    const QDomElement elemRenderer = elem.firstChildElement( QStringLiteral( "renderer" ) );
-    if ( elemRenderer.isNull() )
-    {
-      errorMessage = tr( "Missing <renderer> tag" );
-      //  return false;
-    }
-    setCustomProperty( QStringLiteral( "pcMin" ), elemRenderer.attribute( QStringLiteral( "pcMin" ), QStringLiteral( "400" ) ).toInt() );
-    setCustomProperty( QStringLiteral( "pcMax" ), elemRenderer.attribute( QStringLiteral( "pcMax" ), QStringLiteral( "600" ) ).toInt() );
-    setCustomProperty( QStringLiteral( "pcRamp" ), elemRenderer.attribute( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ) );
-  }
+  readStyle( node, errorMessage, context, categories );
+
+  if ( categories.testFlag( CustomProperties ) )
+    readCustomProperties( node, QStringLiteral( "variable" ) );
 
   return true;
+}
+
+bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
+{
+  bool result = true;
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    QDomElement rendererElement = node.firstChildElement( QStringLiteral( "renderer" ) );
+    if ( !rendererElement.isNull() )
+    {
+      std::unique_ptr< QgsPointCloudRenderer > r( QgsPointCloudRenderer::load( rendererElement, context ) );
+      if ( r )
+      {
+        setRenderer( r.release() );
+      }
+      else
+      {
+        result = false;
+      }
+    }
+    // make sure layer has a renderer - if none exists, fallback to a default renderer
+    if ( !mRenderer )
+    {
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( attributes() ) );
+    }
+  }
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    // get and set the blend mode if it exists
+    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    if ( !blendModeNode.isNull() )
+    {
+      QDomElement e = blendModeNode.toElement();
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    }
+  }
+
+  // get and set the layer transparency and scale visibility if they exists
+  if ( categories.testFlag( Rendering ) )
+  {
+    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    if ( !layerOpacityNode.isNull() )
+    {
+      QDomElement e = layerOpacityNode.toElement();
+      setOpacity( e.text().toDouble() );
+    }
+
+    const bool hasScaleBasedVisibiliy { node.attributes().namedItem( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).nodeValue() == '1' };
+    setScaleBasedVisibility( hasScaleBasedVisibiliy );
+    bool ok;
+    const double maxScale { node.attributes().namedItem( QStringLiteral( "maxScale" ) ).nodeValue().toDouble( &ok ) };
+    if ( ok )
+    {
+      setMaximumScale( maxScale );
+    }
+    const double minScale { node.attributes().namedItem( QStringLiteral( "minScale" ) ).nodeValue().toDouble( &ok ) };
+    if ( ok )
+    {
+      setMinimumScale( minScale );
+    }
+  }
+  return result;
 }
 
 bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
@@ -149,14 +214,50 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   QDomElement elem = node.toElement();
   writeCommonStyle( elem, doc, context, categories );
 
-  // hack for now !!
+  ( void )writeStyle( node, doc, errorMessage, context, categories );
+
+  return true;
+}
+
+bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+{
+  QDomElement mapLayerNode = node.toElement();
+
   if ( categories.testFlag( Symbology ) )
   {
-    QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
-    elemRenderer.setAttribute( QStringLiteral( "pcMin" ), customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
-    elemRenderer.setAttribute( QStringLiteral( "pcMax" ), customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
-    elemRenderer.setAttribute( QStringLiteral( "pcRamp" ), customProperty( QStringLiteral( "pcRamp" ),  QStringLiteral( "Viridis" ) ).toString() );
-    elem.appendChild( elemRenderer );
+    if ( mRenderer )
+    {
+      QDomElement rendererElement = mRenderer->save( doc, context );
+      node.appendChild( rendererElement );
+    }
+  }
+
+  //save customproperties
+  if ( categories.testFlag( CustomProperties ) )
+  {
+    writeCustomProperties( node, doc );
+  }
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    // add the blend mode field
+    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
+    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    blendModeElem.appendChild( blendModeText );
+    node.appendChild( blendModeElem );
+  }
+
+  // add the layer opacity and scale visibility
+  if ( categories.testFlag( Rendering ) )
+  {
+    QDomElement layerOpacityElem = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    layerOpacityElem.appendChild( layerOpacityText );
+    node.appendChild( layerOpacityElem );
+
+    mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
+    mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
+    mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
   }
 
   return true;
@@ -205,16 +306,58 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
   setCrs( mDataProvider->crs() );
 
-  if ( loadDefaultStyleFlag )
+  if ( !mRenderer || loadDefaultStyleFlag )
   {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+
     bool defaultLoadedFlag = false;
-    loadDefaultStyle( defaultLoadedFlag );
+
+    if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
+    {
+      // first try to create a renderer directly from the data provider
+      std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
+      if ( defaultRenderer )
+      {
+        defaultLoadedFlag = true;
+        setRenderer( defaultRenderer.release() );
+      }
+    }
+
+    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
+    {
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+
+    if ( !defaultLoadedFlag )
+    {
+      // all else failed, create default renderer
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( attributes() ) );
+    }
   }
 
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
   emit dataSourceChanged();
   triggerRepaint();
+}
+
+QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
+{
+  if ( mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
+  {
+    // first try to create a renderer directly from the data provider
+    std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
+    if ( defaultRenderer )
+    {
+      resultFlag = true;
+      setRenderer( defaultRenderer.release() );
+      return QString();
+    }
+  }
+
+  return QgsMapLayer::loadDefaultStyle( resultFlag );
 }
 
 QString QgsPointCloudLayer::htmlMetadata() const
@@ -284,6 +427,30 @@ QString QgsPointCloudLayer::htmlMetadata() const
   myMetadata += htmlFormatter.accessSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
+  // Attributes section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Attributes" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+
+  const QgsPointCloudAttributeCollection attrs = attributes();
+
+  // count attributes
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( attrs.count() ) + QStringLiteral( "</td></tr>\n" );
+
+  myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
+  myMetadata += QLatin1String( "<tr><th>" ) + tr( "Attribute" ) + QLatin1String( "</th><th>" ) + tr( "Type" ) + QLatin1String( "</th></tr>\n" );
+
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    const QgsPointCloudAttribute attribute = attrs.at( i );
+    QString rowClass;
+    if ( i % 2 )
+      rowClass = QStringLiteral( "class=\"odd-row\"" );
+    myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + attribute.name() + QLatin1String( "</td><td>" ) + attribute.displayType() + QLatin1String( "</td></tr>\n" );
+  }
+
+  //close field list
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+
   // Start the contacts section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.contactsSectionHtml( );
@@ -301,4 +468,29 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   myMetadata += QLatin1String( "\n</body>\n</html>\n" );
   return myMetadata;
+}
+
+QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
+{
+  return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
+}
+
+QgsPointCloudRenderer *QgsPointCloudLayer::renderer()
+{
+  return mRenderer.get();
+}
+
+const QgsPointCloudRenderer *QgsPointCloudLayer::renderer() const
+{
+  return mRenderer.get();
+}
+
+void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
+{
+  if ( renderer == mRenderer.get() )
+    return;
+
+  mRenderer.reset( renderer );
+  emit rendererChanged();
+  emit styleChanged();
 }

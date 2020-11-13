@@ -1536,7 +1536,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem, context );
+    // Use a temporary tree to read the nodes to prevent signals being delivered to the models
+    QgsLayerTree tempTree;
+    tempTree.readChildrenFromXml( layerTreeElem, context );
+    mRootGroup->insertChildNodes( -1, tempTree.abandonChildren() );
   }
   else
   {

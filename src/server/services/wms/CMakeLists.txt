@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (WMS_SRCS
+set (WMS_SRCS
   qgswms.cpp
   qgswmsutils.cpp
   qgsdxfwriter.cpp
@@ -23,7 +23,7 @@ SET (WMS_SRCS
   qgswmsrendercontext.cpp
 )
 
-SET (WMS_HDRS
+set (WMS_HDRS
   qgswmsparameters.h
   qgswmsserviceexception.h
 )
@@ -31,15 +31,15 @@ SET (WMS_HDRS
 ########################################################
 # Build
 
-ADD_LIBRARY (wms MODULE ${WMS_SRCS} ${WMS_HDRS})
+add_library (wms MODULE ${WMS_SRCS} ${WMS_HDRS})
 
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
@@ -72,7 +72,7 @@ INCLUDE_DIRECTORIES(
 )
 
 
-TARGET_LINK_LIBRARIES(wms
+target_link_libraries(wms
   qgis_core
   qgis_server
 )
@@ -81,7 +81,7 @@ TARGET_LINK_LIBRARIES(wms
 ########################################################
 # Install
 
-INSTALL(TARGETS wms
+install(TARGETS wms
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

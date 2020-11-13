@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointCloudLayer : QgsMapLayer
 {
 %Docstring
@@ -56,11 +57,17 @@ Constructor - creates a point cloud layer
     ~QgsPointCloudLayer();
 
 
-    virtual QgsPointCloudLayer *clone() const /Factory/;
-
+    SIP_PYOBJECT __repr__();
 %Docstring
 QgsPointCloudLayer cannot be copied.
 %End
+%MethodCode
+    QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QgsPointCloudLayer *clone() const /Factory/;
+
     virtual QgsRectangle extent() const;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
@@ -77,16 +84,44 @@ QgsPointCloudLayer cannot be copied.
 
      virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) ${SIP_FINAL};
+
 
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                          StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const ${SIP_FINAL};
+
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
     virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
 
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
+
     virtual QString htmlMetadata() const;
 
+
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns the attributes available from the layer.
+%End
+
+    QgsPointCloudRenderer *renderer();
+%Docstring
+Returns the 2D renderer for the point cloud.
+
+.. seealso:: :py:func:`setRenderer`
+%End
+
+
+    void setRenderer( QgsPointCloudRenderer *renderer /Transfer/ );
+%Docstring
+Sets the 2D ``renderer`` for the point cloud.
+
+Ownership of ``renderer`` is transferred to the layer.
+
+.. seealso:: :py:func:`renderer`
+%End
 
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );

@@ -300,6 +300,15 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
   clearModifiers();
 }
 
+void QgsCollapsibleGroupBoxBasic::setStyleSheet( const QString &style )
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 4)
+  // Fix crash on old Qt versions, see #39693
+  QGroupBox::setStyleSheet( QString() );
+#endif
+  QGroupBox::setStyleSheet( style );
+}
+
 void QgsCollapsibleGroupBoxBasic::updateStyle()
 {
   setUpdatesEnabled( false );

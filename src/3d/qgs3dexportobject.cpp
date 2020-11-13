@@ -16,7 +16,6 @@
 #include "qgs3dexportobject.h"
 
 #include <QVector3D>
-#include <QDebug>
 #include <QDir>
 #include <QImage>
 

@@ -47,12 +47,13 @@ jobs:
           mkdir -p ../build-QGIS
           cd ../build-QGIS
 
+          # FIXME: PDAL disable because of #39971
           PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
           cmake -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
                -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
                -DWITH_BINDINGS=TRUE \
                -DWITH_3D=TRUE \
-               -DWITH_PDAL=TRUE \
+               -DWITH_PDAL=FALSE \
                -DWITH_EPT=TRUE \
                $QGIS_DIR
 

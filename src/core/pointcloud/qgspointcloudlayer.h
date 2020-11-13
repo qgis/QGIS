@@ -27,6 +27,8 @@ class QgsPointCloudLayerRenderer;
 #include <QString>
 #include <memory>
 
+class QgsPointCloudRenderer;
+
 /**
  * \ingroup core
  *
@@ -92,6 +94,14 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     //! QgsPointCloudLayer cannot be copied.
     QgsPointCloudLayer &operator=( QgsPointCloudLayer const &rhs ) = delete;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     QgsPointCloudLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
@@ -105,13 +115,45 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
     bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) FINAL;
 
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                          StyleCategories categories = AllStyleCategories ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const FINAL;
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
     QString htmlMetadata() const override;
+
+    /**
+     * Returns the attributes available from the layer.
+     */
+    QgsPointCloudAttributeCollection attributes() const;
+
+    /**
+     * Returns the 2D renderer for the point cloud.
+     *
+     * \see setRenderer()
+     */
+    QgsPointCloudRenderer *renderer();
+
+    /**
+     * Returns the 2D renderer for the point cloud.
+     * \note not available in Python bindings
+     *
+     * \see setRenderer()
+     */
+    const QgsPointCloudRenderer *renderer() const SIP_SKIP;
+
+    /**
+     * Sets the 2D \a renderer for the point cloud.
+     *
+     * Ownership of \a renderer is transferred to the layer.
+     *
+     * \see renderer()
+     */
+    void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
 
   private:
 
@@ -122,6 +164,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 #endif
 
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
+
+    std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
 };
 

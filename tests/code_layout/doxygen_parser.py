@@ -511,6 +511,8 @@ class DoxygenParser():
                 return True
             if ' override' in member_elem.find('argsstring').text:
                 return True
+            if ' final' in member_elem.find('argsstring').text.lower():
+                return True
         except:
             pass
 

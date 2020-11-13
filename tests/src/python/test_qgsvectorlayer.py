@@ -399,6 +399,46 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # should STILL have kept renderer!
         self.assertEqual(layer.renderer(), r)
 
+    def testSetCustomProperty(self):
+        """
+        Test setting a custom property of the layer
+        """
+        layer = createLayerWithOnePoint()
+        layer.setCustomProperty('Key_0', 'Value_0')
+        layer.setCustomProperty('Key_1', 'Value_1')
+
+        spy = QSignalSpy(layer.customPropertyChanged)
+
+        # change nothing by setting the same value
+        layer.setCustomProperty('Key_0', 'Value_0')
+        layer.setCustomProperty('Key_1', 'Value_1')
+        self.assertEqual(len(spy), 0)
+
+        # change one
+        layer.setCustomProperty('Key_0', 'Value zero')
+        self.assertEqual(len(spy), 1)
+
+        # add one
+        layer.setCustomProperty('Key_2', 'Value two')
+        self.assertEqual(len(spy), 2)
+
+        # add a null one and an empty one
+        layer.setCustomProperty('Key_3', None)
+        layer.setCustomProperty('Key_4', '')
+        self.assertEqual(len(spy), 4)
+
+        # remove one
+        layer.removeCustomProperty('Key_0')
+        self.assertEqual(len(spy), 5)
+
+        self.assertEqual(layer.customProperty('Key_0', 'no value'), 'no value')
+        self.assertEqual(layer.customProperty('Key_1', 'no value'), 'Value_1')
+        self.assertEqual(layer.customProperty('Key_2', 'no value'), 'Value two')
+        self.assertEqual(layer.customProperty('Key_3', 'no value'), None)
+        self.assertEqual(layer.customProperty('Key_4', 'no value'), '')
+
+        self.assertEqual(len(spy), 5)
+
     def testStoreWkbTypeInvalidLayers(self):
         """
         Test that layer wkb types are restored for projects with invalid layer paths

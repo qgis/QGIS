@@ -1,10 +1,10 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS)
+set (util_SRCS)
 
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/auth/oauth2
@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/auth/oauth2
 )
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
@@ -35,16 +35,16 @@ INCLUDE_DIRECTORIES(SYSTEM
 # libraries
 
 # because of htonl
-IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
-ENDIF (WIN32)
+if (WIN32)
+  set(PLATFORM_LIBRARIES wsock32)
+endif()
 
-MACRO (ADD_QGIS_TEST testname testsrc)
-  ADD_EXECUTABLE(qgis_${testname} ${testsrc} ${util_SRCS})
-  IF(APPLE)
-    TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY})
-  ENDIF(APPLE)
-  TARGET_LINK_LIBRARIES(qgis_${testname}
+macro (ADD_QGIS_TEST testname testsrc)
+  add_executable(qgis_${testname} ${testsrc} ${util_SRCS})
+  if(APPLE)
+    target_link_libraries(qgis_${testname} ${APP_SERVICES_LIBRARY})
+  endif()
+  target_link_libraries(qgis_${testname}
     ${Qt5Core_LIBRARIES}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
@@ -60,14 +60,14 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     qgis_core
     qgis_gui
     )
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
-ENDMACRO (ADD_QGIS_TEST)
+  add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+endmacro (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
-IF(WITH_OAUTH2_PLUGIN)
+if(WITH_OAUTH2_PLUGIN)
   ADD_QGIS_TEST(authoauthmethodtest testqgsauthoauth2method.cpp)
-  ADD_DEPENDENCIES(qgis_authoauthmethodtest oauth2authmethod_static)
-  TARGET_LINK_LIBRARIES(qgis_authoauthmethodtest oauth2authmethod_static)
-ENDIF()
+  add_dependencies(qgis_authoauthmethodtest oauth2authmethod_static)
+  target_link_libraries(qgis_authoauthmethodtest oauth2authmethod_static)
+endif()

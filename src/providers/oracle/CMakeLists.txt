@@ -1,9 +1,9 @@
 ########################################################
 # Files
 
-ADD_SUBDIRECTORY(ocispatial)
+add_subdirectory(ocispatial)
 
-SET(ORACLE_SRCS
+set(ORACLE_SRCS
   qgsoracleprovider.cpp
   qgsoracleconn.cpp
   qgsoracledataitems.cpp
@@ -17,13 +17,13 @@ SET(ORACLE_SRCS
   qgsoracletransaction.cpp
 )
 
-IF (WITH_GUI)
-  SET(ORACLE_SRCS ${ORACLE_SRCS}
+if (WITH_GUI)
+  set(ORACLE_SRCS ${ORACLE_SRCS}
     qgsoraclesourceselect.cpp
   )
-ENDIF ()
+endif()
 
-SET(ORACLE_HDRS
+set(ORACLE_HDRS
   qgsoracleexpressioncompiler.h
 )
 
@@ -31,7 +31,7 @@ SET(ORACLE_HDRS
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -48,35 +48,35 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QT_QTSQL_INCLUDEDIR}
 )
 
-IF (WITH_GUI)
-  INCLUDE_DIRECTORIES(SYSTEM
+if (WITH_GUI)
+  include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
   )
-ENDIF ()
+endif()
 
-ADD_LIBRARY (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
+add_library (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
 
-TARGET_LINK_LIBRARIES (oracleprovider
+target_link_libraries (oracleprovider
   qgis_core
   ${Qt5Sql_LIBRARIES}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (oracleprovider
+if (WITH_GUI)
+  target_link_libraries (oracleprovider
     qgis_gui
   )
-  ADD_DEPENDENCIES(oracleprovider ui)
-ENDIF ()
+  add_dependencies(oracleprovider ui)
+endif()
 
 
 ########################################################
 # Install
 
-INSTALL(TARGETS oracleprovider
+install(TARGETS oracleprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

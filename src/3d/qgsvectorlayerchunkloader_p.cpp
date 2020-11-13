@@ -175,7 +175,7 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
 
 void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
 {
-  qDebug() << "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged";
+  QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 

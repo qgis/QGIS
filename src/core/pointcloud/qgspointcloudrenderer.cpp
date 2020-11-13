@@ -15,241 +15,287 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QElapsedTimer>
-
 #include "qgspointcloudrenderer.h"
-#include "qgspointcloudlayer.h"
-#include "qgsrendercontext.h"
-#include "qgspointcloudindex.h"
-#include "qgsstyle.h"
-#include "qgscolorramp.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
-#include "qgslogger.h"
+#include "qgspointcloudrendererregistry.h"
+#include "qgsapplication.h"
+
+QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset )
+  : mRenderContext( context )
+  , mScale( scale )
+  , mOffset( offset )
+{
+
+}
+
+long QgsPointCloudRenderContext::pointsRendered() const
+{
+  return mPointsRendered;
+}
+
+void QgsPointCloudRenderContext::incrementPointsRendered( long count )
+{
+  mPointsRendered += count;
+}
+
+void QgsPointCloudRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
+{
+  mAttributes = attributes;
+  mPointRecordSize = mAttributes.pointRecordSize();
+
+  // fetch offset for x/y attributes
+  attributes.find( QStringLiteral( "X" ), mXOffset );
+  attributes.find( QStringLiteral( "Y" ), mYOffset );
+}
+
+QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
+{
+  if ( element.isNull() )
+    return nullptr;
+
+  // load renderer
+  const QString rendererType = element.attribute( QStringLiteral( "type" ) );
+
+  QgsPointCloudRendererAbstractMetadata *m = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( rendererType );
+  if ( !m )
+    return nullptr;
+
+  std::unique_ptr< QgsPointCloudRenderer > r( m->createRenderer( element, context ) );
+  return r.release();
+}
+
+QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+{
+  return QSet< QString >();
+}
+
+void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext & )
+{
+#ifdef QGISDEBUG
+  if ( !mThread )
+  {
+    mThread = QThread::currentThread();
+  }
+  else
+  {
+    Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::startRender", "startRender called in a different thread - use a cloned renderer instead" );
+  }
+#endif
+}
+
+void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
+{
+#ifdef QGISDEBUG
+  Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
+#endif
+}
+
+
 
 ///@cond PRIVATE
-QgsPointCloudRendererConfig::QgsPointCloudRendererConfig() = default;
 
-QgsPointCloudRendererConfig::QgsPointCloudRendererConfig( const QgsPointCloudRendererConfig &other )
+#include "qgscolorramp.h"
+#include "qgspointcloudblock.h"
+#include "qgsstyle.h"
+
+QgsDummyPointCloudRenderer::QgsDummyPointCloudRenderer()
 {
-  mZMin = other.zMin();
-  mZMax = other.zMax();
-  mPenWidth = other.penWidth();
-  mColorRamp.reset( other.colorRamp()->clone() );
+  mColorRamp.reset( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
 }
 
-QgsPointCloudRendererConfig &QgsPointCloudRendererConfig::QgsPointCloudRendererConfig::operator =( const QgsPointCloudRendererConfig &other )
+QgsPointCloudRenderer *QgsDummyPointCloudRenderer::clone() const
 {
-  mZMin = other.zMin();
-  mZMax = other.zMax();
-  mPenWidth = other.penWidth();
-  mColorRamp.reset( other.colorRamp()->clone() );
-  return *this;
+  std::unique_ptr< QgsDummyPointCloudRenderer > res = qgis::make_unique< QgsDummyPointCloudRenderer >();
+
+  res->mZMin = zMin();
+  res->mZMax = zMax();
+  res->mPenWidth = penWidth();
+  res->mColorRamp.reset( colorRamp()->clone() );
+  res->mAttribute = attribute();
+
+  return res.release();
 }
 
-double QgsPointCloudRendererConfig::zMin() const
+void QgsDummyPointCloudRenderer::renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context )
+{
+  const QgsMapToPixel mapToPixel = context.renderContext().mapToPixel();
+  const QgsVector3D scale = context.scale();
+  const QgsVector3D offset = context.offset();
+
+  QgsRectangle mapExtent = context.renderContext().mapExtent();
+
+  QPen pen;
+  pen.setWidth( mPainterPenWidth );
+  pen.setCapStyle( Qt::FlatCap );
+  //pen.setJoinStyle( Qt::MiterJoin );
+
+  const char *ptr = block->data();
+  int count = block->pointCount();
+  const QgsPointCloudAttributeCollection request = block->attributes();
+  const std::size_t recordSize = request.pointRecordSize();
+
+  int attributeOffset = 0;
+  const QgsPointCloudAttribute *attribute = request.find( mAttribute, attributeOffset );
+  if ( !attribute )
+    return;
+
+  const QgsPointCloudAttribute::DataType type = attribute->type();
+  const bool applyZOffset = attribute->name() == QLatin1String( "Z" );
+
+  int rendered = 0;
+  double x = 0;
+  double y = 0;
+  for ( int i = 0; i < count; ++i )
+  {
+    pointXY( context, ptr, i, x, y );
+
+    if ( mapExtent.contains( QgsPointXY( x, y ) ) )
+    {
+      double atr = 0;
+      switch ( type )
+      {
+        case QgsPointCloudAttribute::Char:
+          continue;
+
+        case QgsPointCloudAttribute::Int32:
+          atr = *( qint32 * )( ptr + i * recordSize + attributeOffset );
+          break;
+
+        case QgsPointCloudAttribute::Short:
+          atr = *( short * )( ptr + i * recordSize + attributeOffset );
+          break;
+
+        case QgsPointCloudAttribute::Float:
+          atr = *( float * )( ptr + i * recordSize + attributeOffset );
+          break;
+
+        case QgsPointCloudAttribute::Double:
+          atr = *( double * )( ptr + i * recordSize + attributeOffset );
+          break;
+      }
+
+      if ( applyZOffset )
+        atr = offset.z() + scale.z() * atr;
+
+      mapToPixel.transformInPlace( x, y );
+
+      pen.setColor( colorRamp()->color( ( atr - zMin() ) / ( zMax() - zMin() ) ) );
+      context.renderContext().painter()->setPen( pen );
+      context.renderContext().painter()->drawPoint( QPointF( x, y ) );
+
+      rendered++;
+    }
+  }
+  context.incrementPointsRendered( rendered );
+}
+
+#include "qgssymbollayerutils.h"
+
+
+QgsPointCloudRenderer *QgsDummyPointCloudRenderer::create( QDomElement &element, const QgsReadWriteContext & )
+{
+  std::unique_ptr< QgsDummyPointCloudRenderer > r = qgis::make_unique< QgsDummyPointCloudRenderer >();
+
+  r->setAttribute( element.attribute( QStringLiteral( "attribute" ) ) );
+  r->setZMin( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
+  r->setZMax( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
+  r->setPenWidth( element.attribute( QStringLiteral( "penwidth" ), QStringLiteral( "5" ) ).toInt() );
+
+  QDomElement sourceColorRampElem = element.firstChildElement( QStringLiteral( "colorramp" ) );
+  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
+  {
+    r->setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+  }
+
+  return r.release();
+}
+
+QDomElement QgsDummyPointCloudRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( context )
+  QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
+
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dummy" ) );
+  rendererElem.setAttribute( QStringLiteral( "penwidth" ), mPenWidth );
+  rendererElem.setAttribute( QStringLiteral( "min" ), mZMin );
+  rendererElem.setAttribute( QStringLiteral( "max" ), mZMax );
+  rendererElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
+
+  QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mColorRamp.get(), doc );
+  rendererElem.appendChild( colorRampElem );
+
+  return rendererElem;
+}
+
+void QgsDummyPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
+{
+  QgsPointCloudRenderer::startRender( context );
+
+  mPainterPenWidth = context.renderContext().convertToPainterUnits( mPenWidth, QgsUnitTypes::RenderUnit::RenderMillimeters );
+}
+
+void QgsDummyPointCloudRenderer::stopRender( QgsPointCloudRenderContext &context )
+{
+  QgsPointCloudRenderer::stopRender( context );
+}
+
+QSet<QString> QgsDummyPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+{
+  return QSet<QString>() << mAttribute;
+}
+
+double QgsDummyPointCloudRenderer::zMin() const
 {
   return mZMin;
 }
 
-void QgsPointCloudRendererConfig::setZMin( double value )
+void QgsDummyPointCloudRenderer::setZMin( double value )
 {
   mZMin = value;
 }
 
-double QgsPointCloudRendererConfig::zMax() const
+double QgsDummyPointCloudRenderer::zMax() const
 {
   return mZMax;
 }
 
-void QgsPointCloudRendererConfig::setZMax( double value )
+void QgsDummyPointCloudRenderer::setZMax( double value )
 {
   mZMax = value;
 }
 
-int QgsPointCloudRendererConfig::penWidth() const
+int QgsDummyPointCloudRenderer::penWidth() const
 {
   return mPenWidth;
 }
 
-void QgsPointCloudRendererConfig::setPenWidth( int value )
+void QgsDummyPointCloudRenderer::setPenWidth( int value )
 {
   mPenWidth = value;
 }
 
-QgsColorRamp *QgsPointCloudRendererConfig::colorRamp() const
+QgsColorRamp *QgsDummyPointCloudRenderer::colorRamp() const
 {
   return mColorRamp.get();
 }
 
-void QgsPointCloudRendererConfig::setColorRamp( QgsColorRamp *value )
+void QgsDummyPointCloudRenderer::setColorRamp( QgsColorRamp *value )
 {
   mColorRamp.reset( value );
 }
 
-float QgsPointCloudRendererConfig::maximumScreenError() const
+float QgsDummyPointCloudRenderer::maximumScreenError() const
 {
   return mMaximumScreenError;
 }
 
+QString QgsDummyPointCloudRenderer::attribute() const
+{
+  return mAttribute;
+}
+
+void QgsDummyPointCloudRenderer::setAttribute( const QString &attribute )
+{
+  mAttribute = attribute;
+}
+
 ///@endcond
-
-QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
-  : QgsMapLayerRenderer( layer->id(), &context )
-  , mLayer( layer )
-{
-  // TODO: use config from layer
-  mConfig.setPenWidth( context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters ) );
-  // good range for 26850_12580.laz
-  mConfig.setZMin( layer->customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
-  mConfig.setZMax( layer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
-  mConfig.setColorRamp( QgsStyle::defaultStyle()->colorRamp( layer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() ) );
-
-  // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
-  // or use some locking to prevent read/write from multiple threads
-  if ( !mLayer || !mLayer->dataProvider() || !mLayer->dataProvider()->index() )
-    return;
-}
-
-bool QgsPointCloudLayerRenderer::render()
-{
-  // TODO cache!?
-  QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
-  if ( !pc )
-    return false;
-
-  QgsRenderContext &context = *renderContext();
-
-  // Set up the render configuration options
-  QPainter *painter = context.painter();
-
-  painter->save();
-  context.setPainterFlagsUsingContext( painter );
-
-  QgsPointCloudDataBounds db;
-
-  QElapsedTimer t;
-  t.start();
-
-  const IndexedPointCloudNode root = pc->root();
-  float maximumError = mConfig.maximumScreenError(); // in pixels
-  float rootError = pc->nodeError( root ); // in map coords
-  double mapUnitsPerPixel = context.mapToPixel().mapUnitsPerPixel();
-  if ( ( rootError < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
-  {
-    qDebug() << "invalid screen error";
-    return false;
-  }
-  float rootErrorPixels = rootError / mapUnitsPerPixel; // in pixels
-  const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context, pc->root(), maximumError, rootErrorPixels );
-
-  // drawing
-  for ( const IndexedPointCloudNode &n : nodes )
-  {
-    if ( context.renderingStopped() )
-    {
-      qDebug() << "canceled";
-      break;
-    }
-    QgsPointCloudAttributeCollection attributes;
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::Char ) );
-    QgsPointCloudRequest request;
-    request.setAttributes( attributes );
-    std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
-    drawData( painter, block.get(), mConfig );
-  }
-
-  qDebug() << "totals:" << nodesDrawn << "nodes | " << pointsDrawn << " points | " << t.elapsed() << "ms";
-
-  painter->restore();
-
-  return true;
-}
-
-QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
-    const QgsRenderContext &context,
-    IndexedPointCloudNode n,
-    float maxErrorPixels,
-    float nodeErrorPixels )
-{
-  QList<IndexedPointCloudNode> nodes;
-
-  if ( context.renderingStopped() )
-  {
-    qDebug() << "canceled";
-    return nodes;
-  }
-
-  if ( !context.mapExtent().intersects( pc->nodeMapExtent( n ) ) )
-    return nodes;
-
-  nodes.append( n );
-
-  float childrenErrorPixels = nodeErrorPixels / 2.0f;
-  if ( childrenErrorPixels < maxErrorPixels )
-    return nodes;
-
-  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
-  for ( const IndexedPointCloudNode &nn : children )
-  {
-    nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels );
-  }
-
-  return nodes;
-}
-
-QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
-
-void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config )
-{
-  Q_ASSERT( mLayer->dataProvider() );
-  Q_ASSERT( mLayer->dataProvider()->index() );
-
-  if ( !data )
-    return;
-
-  const QgsMapToPixel mapToPixel = renderContext()->mapToPixel();
-  const QgsVector3D scale = mLayer->dataProvider()->index()->scale();
-  const QgsVector3D offset = mLayer->dataProvider()->index()->offset();
-
-  QgsRectangle mapExtent = renderContext()->mapExtent();
-
-  QPen pen;
-  pen.setWidth( config.penWidth() );
-  pen.setCapStyle( Qt::FlatCap );
-  //pen.setJoinStyle( Qt::MiterJoin );
-
-  const char *ptr = data->data();
-  int count = data->pointCount();
-  const QgsPointCloudAttributeCollection request = data->attributes();
-  const std::size_t recordSize = request.pointRecordSize();
-
-  for ( int i = 0; i < count; ++i )
-  {
-    // TODO generic based on reques
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
-    qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
-    char cls = *( char * )( ptr + i * recordSize + 12 );
-    Q_UNUSED( cls );
-
-    double x = offset.x() + scale.x() * ix;
-    double y = offset.y() + scale.y() * iy;
-    if ( mapExtent.contains( QgsPointXY( x, y ) ) )
-    {
-      double z = offset.z() + scale.z() * iz;
-      mapToPixel.transformInPlace( x, y );
-
-      pen.setColor( config.colorRamp()->color( ( z - config.zMin() ) / ( config.zMax() - config.zMin() ) ) );
-      painter->setPen( pen );
-      painter->drawPoint( QPointF( x, y ) );
-    }
-  }
-
-  // stats
-  ++nodesDrawn;
-  pointsDrawn += count;
-}

@@ -77,6 +77,12 @@ Constructs a new vector tile layer
 %End
     ~QgsVectorTileLayer();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 
     virtual QgsVectorTileLayer *clone() const /Factory/;
 

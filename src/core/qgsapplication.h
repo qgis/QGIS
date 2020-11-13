@@ -63,6 +63,7 @@ class QgsNumericFormatRegistry;
 class QgsConnectionRegistry;
 class QgsScaleBarRendererRegistry;
 class Qgs3DSymbolRegistry;
+class QgsPointCloudRendererRegistry;
 
 /**
  * \ingroup core
@@ -633,6 +634,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
 
     /**
+     * Returns the application's point cloud renderer registry, used for managing point cloud layer 2D renderers.
+     * \since QGIS 3.18
+     */
+    static QgsPointCloudRendererRegistry *pointCloudRendererRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's data item provider registry, which keeps a list of data item
      * providers that may add items to the browser tree.
      * \since QGIS 3.0
@@ -985,6 +992,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
+      QgsPointCloudRendererRegistry *mPointCloudRendererRegistry = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
       QgsSourceCache *mSourceCache = nullptr;

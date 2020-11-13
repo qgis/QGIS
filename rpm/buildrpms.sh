@@ -115,11 +115,11 @@ else
 fi
 
 # Get the version string
-major=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MAJOR' ../CMakeLists.txt |
+major=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MAJOR' ../CMakeLists.txt |
         sed -r 's/.*\"([0-9]+)\".*/\1/g')
-minor=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MINOR' ../CMakeLists.txt |
+minor=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MINOR' ../CMakeLists.txt |
         sed -r 's/.*\"([0-9]+)\".*/\1/g')
-patch=$(grep -e 'SET(CPACK_PACKAGE_VERSION_PATCH' ../CMakeLists.txt |
+patch=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_PATCH' ../CMakeLists.txt |
         sed -r 's/.*\"([0-9]+)\".*/\1/g')
 
 version=$major.$minor.$patch

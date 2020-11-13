@@ -251,7 +251,7 @@ void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
   if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
   {
     // something went horribly wrong but we need to at least try to fix it somehow
-    qDebug() << "camera position got NaN!";
+    qWarning() << "camera position got NaN!";
     mCameraPose.setCenterPoint( QgsVector3D( 0, 0, 0 ) );
   }
 

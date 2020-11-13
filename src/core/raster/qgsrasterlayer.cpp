@@ -590,6 +590,21 @@ double QgsRasterLayer::rasterUnitsPerPixelY() const
   return 1;
 }
 
+void QgsRasterLayer::setOpacity( double opacity )
+{
+  if ( !mPipe.renderer() || mPipe.renderer()->opacity() == opacity )
+    return;
+
+  mPipe.renderer()->setOpacity( opacity );
+  emit opacityChanged( opacity );
+  emit styleChanged();
+}
+
+double QgsRasterLayer::opacity() const
+{
+  return mPipe.renderer() ? mPipe.renderer()->opacity() : 1.0;
+}
+
 void QgsRasterLayer::init()
 {
   mRasterType = QgsRasterLayer::GrayOrUndefined;

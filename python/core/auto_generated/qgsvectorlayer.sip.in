@@ -427,6 +427,15 @@ data.
     ~QgsVectorLayer();
 
 
+    SIP_PYOBJECT __repr__();
+%Docstring
+QgsVectorLayer cannot be copied.
+%End
+%MethodCode
+    QString str = QStringLiteral( "<QgsVectorLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual QgsVectorLayer *clone() const /Factory/;
 
 %Docstring
@@ -971,57 +980,12 @@ Returns the current auxiliary layer.
 
      virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) ${SIP_FINAL};
-%Docstring
-Reads the symbology for the current layer from the Dom node supplied.
-
-:param layerNode: node that will contain the symbology definition for this layer.
-:param errorMessage: reference to string that will be updated with any error messages
-:param context: reading context (used for transform from relative to absolute paths)
-:param categories: the style categories to be read
-
-:return: ``True`` in case of success.
-%End
-
      virtual bool readStyle( const QDomNode &node, QString &errorMessage,
                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) ${SIP_FINAL};
-%Docstring
-Reads the style for the current layer from the Dom node supplied.
-
-:param node: node that will contain the style definition for this layer.
-:param errorMessage: reference to string that will be updated with any error messages
-:param context: reading context (used for transform from relative to absolute paths)
-:param categories: the style categories to be read
-
-:return: ``True`` in case of success.
-%End
-
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
-%Docstring
-Writes the symbology for the layer into the document provided.
-
-:param node: the node that will have the style element added to it.
-:param doc: the document that will have the QDomNode added.
-:param errorMessage: reference to string that will be updated with any error messages
-:param context: writing context (used for transform from absolute to relative paths)
-:param categories: the style categories to be written
-
-:return: ``True`` in case of success.
-%End
-
      virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
-%Docstring
-Writes just the style information for the layer into the document
-
-:param node: the node that will have the style element added to it.
-:param doc: the document that will have the QDomNode added.
-:param errorMessage: reference to string that will be updated with any error messages
-:param context: writing context (used for transform from absolute to relative paths)
-:param categories: the style categories to be written
-
-:return: ``True`` in case of success.
-%End
 
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 %Docstring
@@ -2444,30 +2408,6 @@ Sets the blending mode used for rendering each feature
 Returns the current blending mode for features
 %End
 
-    void setOpacity( double opacity );
-%Docstring
-Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`opacity`
-
-.. seealso:: :py:func:`opacityChanged`
-
-.. versionadded:: 3.0
-%End
-
-    double opacity() const;
-%Docstring
-Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
-
-.. seealso:: :py:func:`setOpacity`
-
-.. seealso:: :py:func:`opacityChanged`
-
-.. versionadded:: 3.0
-%End
-
     virtual QString htmlMetadata() const ${SIP_FINAL};
 
 
@@ -2898,18 +2838,6 @@ Emitted when the font family defined for labeling layer is not found on system
     void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 %Docstring
 Signal emitted when :py:func:`~QgsVectorLayer.setFeatureBlendMode` is called
-%End
-
-    void opacityChanged( double opacity );
-%Docstring
-Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
-and 1 (opaque).
-
-.. seealso:: :py:func:`setOpacity`
-
-.. seealso:: :py:func:`opacity`
-
-.. versionadded:: 3.0
 %End
 
     void editCommandStarted( const QString &text );

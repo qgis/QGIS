@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (WMTS_SRCS
+set (WMTS_SRCS
   qgswmts.cpp
   qgswmtsutils.cpp
   qgswmtsgetcapabilities.cpp
@@ -11,22 +11,22 @@ SET (WMTS_SRCS
   qgswmtsparameters.cpp
 )
 
-SET (WMTS_HDRS
+set (WMTS_HDRS
   qgswmtsparameters.h
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wmts MODULE ${WMTS_SRCS} ${WMTS_HDRS})
+add_library (wmts MODULE ${WMTS_SRCS} ${WMTS_HDRS})
 
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
@@ -55,7 +55,7 @@ INCLUDE_DIRECTORIES(
 )
 
 
-TARGET_LINK_LIBRARIES(wmts
+target_link_libraries(wmts
   qgis_core
   qgis_server
 )
@@ -64,7 +64,7 @@ TARGET_LINK_LIBRARIES(wmts
 ########################################################
 # Install
 
-INSTALL(TARGETS wmts
+install(TARGETS wmts
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

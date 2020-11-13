@@ -1,8 +1,8 @@
 
-FILE (GLOB MODULE_FILES *.qgm *.svg *.png)
-INSTALL (FILES ${MODULE_FILES}
+file (GLOB MODULE_FILES *.qgm *.svg *.png)
+install (FILES ${MODULE_FILES}
          DESTINATION ${QGIS_DATA_DIR}/grass/modules)
 
-FILE (GLOB CONFIG *.qgc)
-INSTALL (FILES ${CONFIG}
+file (GLOB CONFIG *.qgc)
+install (FILES ${CONFIG}
          DESTINATION ${QGIS_DATA_DIR}/grass/modules)

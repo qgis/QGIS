@@ -207,7 +207,7 @@ QHash<int, QByteArray> QgsQuickFeaturesListModel::roleNames() const
 
 int QgsQuickFeaturesListModel::featuresCount() const
 {
-  if ( mCurrentLayer )
+  if ( mCurrentLayer && mCurrentLayer->isValid() )
     return mCurrentLayer->featureCount();
   return 0;
 }

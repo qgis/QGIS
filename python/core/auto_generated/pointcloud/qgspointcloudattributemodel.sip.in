@@ -28,6 +28,7 @@ A model for display of available attributes from a point cloud.
     enum FieldRoles
     {
       AttributeNameRole,
+      AttributeIndexRole,
       AttributeSizeRole,
       AttributeTypeRole,
       IsEmptyRole,
@@ -111,6 +112,67 @@ Returns an icon corresponding to an attribute ``type``
 %End
 
 };
+
+
+class QgsPointCloudAttributeProxyModel : QSortFilterProxyModel
+{
+%Docstring
+
+A proxy model for filtering available attributes from a point cloud attribute model.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudattributemodel.h"
+%End
+  public:
+
+    enum Filter
+    {
+      Char,
+      Short,
+      Int32,
+      Float,
+      Double,
+      Numeric,
+      AllTypes,
+    };
+    typedef QFlags<QgsPointCloudAttributeProxyModel::Filter> Filters;
+
+
+    explicit QgsPointCloudAttributeProxyModel( QgsPointCloudAttributeModel *source, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPointCloudAttributeProxyModel, with the specified ``source``
+model and ``parent`` object.
+%End
+
+    QgsPointCloudAttributeModel *sourceAttributeModel();
+%Docstring
+Returns the QgsPointCloudAttributeModel used in this QSortFilterProxyModel.
+%End
+
+    QgsPointCloudAttributeProxyModel *setFilters( QgsPointCloudAttributeProxyModel::Filters filters );
+%Docstring
+Set flags that affect how fields are filtered in the model.
+
+.. seealso:: :py:func:`filters`
+%End
+
+    Filters filters() const;
+%Docstring
+Returns the filters controlling displayed attributes.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
+  public:
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+};
+QFlags<QgsPointCloudAttributeProxyModel::Filter> operator|(QgsPointCloudAttributeProxyModel::Filter f1, QFlags<QgsPointCloudAttributeProxyModel::Filter> f2);
 
 
 

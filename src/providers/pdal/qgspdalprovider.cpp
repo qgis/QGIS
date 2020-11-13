@@ -55,6 +55,12 @@ QgsRectangle QgsPdalProvider::extent() const
   return mExtent;
 }
 
+QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
+{
+  // TODO
+  return QgsPointCloudAttributeCollection();
+}
+
 bool QgsPdalProvider::isValid() const
 {
   return mIsValid;

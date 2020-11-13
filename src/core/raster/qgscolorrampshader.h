@@ -229,6 +229,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     //! Do not render values out of range
     bool mClip = false;
+
 };
 
 #endif

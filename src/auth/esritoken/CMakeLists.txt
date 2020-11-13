@@ -1,16 +1,16 @@
-SET(AUTH_ESRI_TOKEN_SRCS
+set(AUTH_ESRI_TOKEN_SRCS
   qgsauthesritokenmethod.cpp
   qgsauthesritokenedit.cpp
 )
 
-SET(AUTH_ESRI_TOKEN_HDRS
+set(AUTH_ESRI_TOKEN_HDRS
   qgsauthesritokenedit.h
   qgsauthesritokenmethod.h
 )
 
-SET(AUTH_ESRI_TOKEN_UIS qgsauthesritokenedit.ui)
+set(AUTH_ESRI_TOKEN_UIS qgsauthesritokenedit.ui)
 
-INCLUDE_DIRECTORIES (
+include_directories (
   ../../core
   ../../core/auth
   ../../core/geometry
@@ -18,11 +18,11 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
-INCLUDE_DIRECTORIES (SYSTEM
+include_directories (SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
-INCLUDE_DIRECTORIES (
+include_directories (
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -30,14 +30,14 @@ INCLUDE_DIRECTORIES (
 
 QT5_WRAP_UI (AUTH_ESRI_TOKEN_UIS_H ${AUTH_ESRI_TOKEN_UIS})
 
-ADD_LIBRARY (esritokenauthmethod MODULE ${AUTH_ESRI_TOKEN_SRCS} ${AUTH_ESRI_TOKEN_HDRS} ${AUTH_ESRI_TOKEN_UIS_H})
+add_library (esritokenauthmethod MODULE ${AUTH_ESRI_TOKEN_SRCS} ${AUTH_ESRI_TOKEN_HDRS} ${AUTH_ESRI_TOKEN_UIS_H})
 
-TARGET_LINK_LIBRARIES (esritokenauthmethod
+target_link_libraries (esritokenauthmethod
   qgis_core
   qgis_gui
 )
-TARGET_COMPILE_DEFINITIONS(esritokenauthmethod PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(esritokenauthmethod PRIVATE "-DQT_NO_FOREACH")
 
-INSTALL(TARGETS esritokenauthmethod
+install(TARGETS esritokenauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

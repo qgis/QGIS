@@ -1,11 +1,11 @@
 ########################################################
 # Files
 
-IF(WITH_QSPATIALITE)
+if(WITH_QSPATIALITE)
   SUBDIRS(${CMAKE_SOURCE_DIR}/external/qspatialite)
-ENDIF(WITH_QSPATIALITE)
+endif()
 
-SET(SPATIALITE_SRCS
+set(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
@@ -16,25 +16,25 @@ SET(SPATIALITE_SRCS
   qgsspatialitetransaction.cpp
 )
 
-IF (WITH_GUI)
-  SET(SPATIALITE_SRCS ${SPATIALITE_SRCS}
+if (WITH_GUI)
+  set(SPATIALITE_SRCS ${SPATIALITE_SRCS}
     qgsspatialiteprovidergui.cpp
     qgsspatialitedataitemguiprovider.cpp
     qgsspatialitesourceselect.cpp
   )
-ENDIF ()
+endif()
 
 
 ########################################################
 # Build
 
-IF (WITH_GUI)
-  INCLUDE_DIRECTORIES(SYSTEM
+if (WITH_GUI)
+  include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
   )
-ENDIF ()
+endif()
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
@@ -52,37 +52,37 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
 )
 
-ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS})
+add_library (spatialiteprovider MODULE ${SPATIALITE_SRCS})
 
-TARGET_LINK_LIBRARIES(spatialiteprovider
+target_link_libraries(spatialiteprovider
   qgis_core
   ${SPATIALITE_LIBRARY}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (spatialiteprovider
+if (WITH_GUI)
+  target_link_libraries (spatialiteprovider
     qgis_gui
   )
-  ADD_DEPENDENCIES(spatialiteprovider ui)
-ENDIF ()
+  add_dependencies(spatialiteprovider ui)
+endif()
 
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
+if(CLANG_TIDY_EXE)
+  set_target_properties(
     spatialiteprovider PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
 ########################################################
 # Install
 
-INSTALL(TARGETS spatialiteprovider
+install(TARGETS spatialiteprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

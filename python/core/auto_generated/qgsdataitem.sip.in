@@ -576,6 +576,14 @@ Use QgsDataItemGuiProvider.deleteLayer instead
   protected:
 
   public:
+
+    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+%Docstring
+Returns the icon for a vector layer whose geometry type is provided.
+
+.. versionadded:: 3.18
+%End
+
     static QIcon iconPoint();
     static QIcon iconLine();
     static QIcon iconPolygon();

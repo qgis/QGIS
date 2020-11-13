@@ -471,6 +471,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! Returns a temporary render context
     QgsRenderContext *createTemporaryRenderContext() const;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

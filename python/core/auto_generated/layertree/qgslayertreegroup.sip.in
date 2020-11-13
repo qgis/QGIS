@@ -203,6 +203,7 @@ of -1 will determine automatically (either first one currently checked or none)
 %End
 
   protected slots:
+
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
   protected:
@@ -211,6 +212,7 @@ of -1 will determine automatically (either first one currently checked or none)
 %Docstring
 Set check state of children - if mutually exclusive
 %End
+
 
 
 

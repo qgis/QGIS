@@ -30,6 +30,7 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgsmapboxglstyleconverter.h"
 #include "qgsjsonutils.h"
+#include "qgspainting.h"
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
@@ -265,6 +266,28 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
     }
   }
 
+  if ( categories.testFlag( Symbology ) )
+  {
+    // get and set the blend mode if it exists
+    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    if ( !blendModeNode.isNull() )
+    {
+      QDomElement e = blendModeNode.toElement();
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    }
+  }
+
+  // get and set the layer transparency
+  if ( categories.testFlag( Rendering ) )
+  {
+    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    if ( !layerOpacityNode.isNull() )
+    {
+      QDomElement e = layerOpacityNode.toElement();
+      setOpacity( e.text().toDouble() );
+    }
+  }
+
   return true;
 }
 
@@ -292,6 +315,24 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     elemLabeling.setAttribute( QStringLiteral( "type" ), mLabeling->type() );
     mLabeling->writeXml( elemLabeling, context );
     elem.appendChild( elemLabeling );
+  }
+
+  if ( categories.testFlag( Symbology ) )
+  {
+    // add the blend mode field
+    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
+    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    blendModeElem.appendChild( blendModeText );
+    node.appendChild( blendModeElem );
+  }
+
+  // add the layer opacity
+  if ( categories.testFlag( Rendering ) )
+  {
+    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    layerOpacityElem.appendChild( layerOpacityText );
+    node.appendChild( layerOpacityElem );
   }
 
   return true;

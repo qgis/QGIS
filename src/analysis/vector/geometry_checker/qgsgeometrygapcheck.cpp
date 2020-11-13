@@ -166,13 +166,15 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     // Get neighboring polygons
     QMap<QString, QgsFeatureIds> neighboringIds;
     const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds.keys(), gapAreaBBox, compatibleGeometryTypes(), mContext );
+    std::unique_ptr< QgsGeometryEngine > gapGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( gapGeom, mContext->tolerance );
+    gapGeomEngine->prepareGeometry();
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
       const QgsGeometry geom = layerFeature.geometry();
-      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, geom.constGet(), mContext->reducedTolerance ) > 0 )
+      if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance )
       {
         neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
-        gapAreaBBox.combineExtentWith( layerFeature.geometry().boundingBox() );
+        gapAreaBBox.combineExtentWith( geom.boundingBox() );
       }
     }
 
@@ -347,7 +349,9 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
             break;
 
           case LargestArea:
-            val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
+            // We might get a neighbour where we touch only a corner
+            if ( QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom.get(), QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance ) > 0 )
+              val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
             break;
         }
 
@@ -442,7 +446,7 @@ QList<QgsGeometryCheckResolutionMethod> QgsGeometryGapCheck::availableResolution
   };
 
   if ( mAllowedGapsSource )
-    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), false );
+    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add Gap to Allowed Exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), true );
 
   fixes << QgsGeometryCheckResolutionMethod( NoChange, tr( "No action" ), tr( "Do not perform any action and mark this error as fixed." ), false );
 

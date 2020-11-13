@@ -32,6 +32,10 @@
 #include <QHeaderView>
 #include <QScrollBar>
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 #include "qgslayertreeviewindicator.h"
 #include "qgslayertreeviewitemdelegate.h"
 
@@ -85,9 +89,6 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   if ( !treeModel )
     return;
 
-  connect( treeModel, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
-  connect( treeModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
-
   if ( mMessageBar )
     connect( treeModel, &QgsLayerTreeModel::messageEmitted,
              [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
@@ -95,6 +96,14 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
          );
 
   mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
+
+  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
+  connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mProxyModel, this );
+#endif
+
   mProxyModel->setShowPrivateLayers( mShowPrivateLayers );
   QTreeView::setModel( mProxyModel );
 
@@ -108,6 +117,8 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   connect( treeModel, &QAbstractItemModel::dataChanged, this, &QgsLayerTreeView::onDataChanged );
 
   updateExpandedStateFromNode( treeModel->rootGroup() );
+
+  //checkModel();
 }
 
 QgsLayerTreeModel *QgsLayerTreeView::layerTreeModel() const
@@ -176,7 +187,7 @@ void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
 
 void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, int end )
 {
-  QgsLayerTreeNode *parentNode = layerTreeModel()->index2node( index );
+  QgsLayerTreeNode *parentNode = index2node( index );
   if ( !parentNode )
     return;
 
@@ -303,6 +314,8 @@ void QgsLayerTreeView::onCurrentChanged()
     layerTreeModel()->setCurrentIndex( mProxyModel->mapToSource( proxyModelNodeLayerIndex ) );
   }
 
+  //checkModel();
+
   emit currentLayerChanged( layerCurrent );
 }
 
@@ -332,6 +345,7 @@ void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QS
 void QgsLayerTreeView::onModelReset()
 {
   updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
+  //checkModel();
 }
 
 void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
@@ -640,7 +654,37 @@ void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIn
 
   if ( roles.contains( Qt::SizeHintRole ) )
     viewport()->update();
+
+  //checkModel();
 }
+
+#if 0
+// for model debugging
+void QgsLayerTreeView::checkModel()
+{
+  std::function<void( QgsLayerTreeNode *, int )> debug;
+  debug = [ & ]( QgsLayerTreeNode * node, int depth )
+  {
+    if ( depth == 1 )
+      qDebug() << "----------------------------------------------";
+
+    qDebug() << depth << node->name() << node2index( node ) << layerTreeModel()->rowCount( node2sourceIndex( node ) ) << mProxyModel->rowCount( node2index( node ) );
+    Q_ASSERT( node == index2node( node2index( node ) ) );
+    Q_ASSERT( node == layerTreeModel()->index2node( node2sourceIndex( node ) ) );
+    Q_ASSERT( layerTreeModel()->rowCount( node2sourceIndex( node ) ) == mProxyModel->rowCount( node2index( node ) ) );
+
+    for ( int i = 0; i < mProxyModel->rowCount( node2index( node ) ); i++ )
+    {
+      QgsLayerTreeNode *childNode { index2node( mProxyModel->index( i, 0, node2index( node ) ) ) };
+      if ( childNode )
+        debug( childNode, depth + 1 );
+      else
+        qDebug() << "Warning no child node!";
+    }
+  };
+  debug( layerTreeModel()->rootGroup(), 1 );
+}
+#endif
 
 QgsLayerTreeProxyModel *QgsLayerTreeView::proxyModel() const
 {

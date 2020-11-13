@@ -12,7 +12,200 @@
 
 
 
+class QgsPointCloudRenderContext
+{
+%Docstring
 
+Encapsulates the render context for a 2D point cloud rendering operation.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrenderer.h"
+%End
+  public:
+
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset );
+%Docstring
+Constructor for QgsPointCloudRenderContext.
+
+The ``scale`` and ``offset`` arguments specify the scale and offset of the layer's int32 coordinates
+compared to CRS coordinates respectively.
+%End
+
+
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+%End
+
+
+    QgsVector3D scale() const;
+%Docstring
+Returns the scale of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    QgsVector3D offset() const;
+%Docstring
+Returns the offset of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    long pointsRendered() const;
+%Docstring
+Returns the total number of points rendered.
+%End
+
+    void incrementPointsRendered( long count );
+%Docstring
+Increments the count of points rendered by the specified amount.
+
+It is a point cloud renderer's responsibility to correctly call this after
+rendering a block of points.
+%End
+
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns the attributes associated with the rendered block.
+
+.. seealso:: :py:func:`setAttributes`
+%End
+
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
+%Docstring
+Sets the ``attributes`` associated with the rendered block.
+
+.. seealso:: :py:func:`attributes`
+%End
+
+    int pointRecordSize() const;
+%Docstring
+Returns the size of a single point record.
+%End
+
+    int xOffset() const;
+%Docstring
+Returns the offset for the x value in a point record.
+
+.. seealso:: :py:func:`yOffset`
+%End
+
+    int yOffset() const;
+%Docstring
+Returns the offset for the y value in a point record.
+
+.. seealso:: :py:func:`xOffset`
+%End
+
+  private:
+    QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
+};
+
+
+class QgsPointCloudRenderer
+{
+%Docstring
+
+Abstract base class for 2d point cloud renderers.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrenderer.h"
+%End
+%ConvertToSubClassCode
+
+    const QString type = sipCpp->type();
+
+    if ( type == QLatin1String( "rgb" ) )
+      sipType = sipType_QgsPointCloudRgbRenderer;
+    else
+      sipType = 0;
+%End
+  public:
+
+    virtual ~QgsPointCloudRenderer();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the identifier of the renderer type.
+%End
+
+    virtual QgsPointCloudRenderer *clone() const = 0 /Factory/;
+%Docstring
+Create a deep copy of this renderer. Should be implemented by all subclasses
+and generate a proper subclass.
+%End
+
+    virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
+%Docstring
+Renders a ``block`` of point cloud data using the specified render ``context``.
+%End
+
+    static QgsPointCloudRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a renderer from an XML ``element``.
+
+Caller takes ownership of the returned renderer.
+
+.. seealso:: :py:func:`save`
+%End
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Saves the renderer configuration to an XML element.
+
+.. seealso:: :py:func:`load`
+%End
+
+    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+%Docstring
+Returns a list of attributes required by this renderer. Attributes not listed in here may
+not be requested from the provider at rendering time.
+
+.. note::
+
+   the "X" and "Y" attributes will always be fetched and do not need to be explicitly
+   returned here.
+%End
+
+    virtual void startRender( QgsPointCloudRenderContext &context );
+%Docstring
+Must be called when a new render cycle is started. A call to :py:func:`~QgsPointCloudRenderer.startRender` must always
+be followed by a corresponding call to :py:func:`~QgsPointCloudRenderer.stopRender` after all features have been rendered.
+
+.. seealso:: :py:func:`stopRender`
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsPointCloudRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsPointCloudRenderer.startRender`/:py:func:`~QgsPointCloudRenderer.stopRender` called on the clone.
+%End
+
+    virtual void stopRender( QgsPointCloudRenderContext &context );
+%Docstring
+Must be called when a render cycle has finished, to allow the renderer to clean up.
+
+Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by a call to :py:func:`~QgsPointCloudRenderer.startRender`.
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsPointCloudRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsPointCloudRenderer.startRender`/:py:func:`~QgsPointCloudRenderer.stopRender` called on the clone.
+
+.. seealso:: :py:func:`startRender`
+%End
+
+  protected:
+
+    static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
+%Docstring
+Retrieves the x and y coordinate for the point at index ``i``.
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

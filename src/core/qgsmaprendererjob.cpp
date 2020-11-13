@@ -395,15 +395,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 
     job.blendMode = ml->blendMode();
-    job.opacity = 1.0;
-    if ( vl )
-    {
-      job.opacity = vl->opacity();
-    }
-    else if ( QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml ) )
-    {
-      job.opacity = al->opacity();
-    }
+
+    // raster layer opacity is handled directly within the raster layer renderer, so don't
+    // apply default opacity handling here!
+    job.opacity = ml->type() != QgsMapLayerType::RasterLayer ? ml->opacity() : 1.0;
 
     // if we can use the cache, let's do it and avoid rendering!
     if ( mCache && mCache->hasCacheImage( ml->id() ) )
@@ -964,13 +959,10 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
-      break;
-
     case QgsMapLayerType::AnnotationLayer:
     {
-      QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml );
       if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
-           ( !qgsDoubleNear( al->opacity(), 1.0 ) ) )
+           ( !qgsDoubleNear( ml->opacity(), 1.0 ) ) )
       {
         //layer properties require rasterization
         return true;

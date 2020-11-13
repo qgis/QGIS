@@ -57,6 +57,7 @@ RUN  apt-get update \
     libsqlite3-dev \
     libsqlite3-mod-spatialite \
     libzip-dev \
+    libzstd-dev \
     lighttpd \
     locales \
     ninja-build \
@@ -73,6 +74,7 @@ RUN  apt-get update \
     python3-gdal \
     python3-mock \
     python3-nose2 \
+    python3-owslib \
     python3-pip \
     python3-psycopg2 \
     python3-pyqt5 \
@@ -113,7 +115,6 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-    owslib \
     oauthlib \
     pyopenssl \
   && apt-get clean

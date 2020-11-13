@@ -28,10 +28,10 @@ QgsPointCloudAttributeModel::QgsPointCloudAttributeModel( QObject *parent )
 
 void QgsPointCloudAttributeModel::setLayer( QgsPointCloudLayer *layer )
 {
-  if ( layer && layer->dataProvider() && layer->dataProvider()->index() )
+  if ( layer )
   {
     mLayer = layer;
-    setAttributes( layer->dataProvider()->index()->attributes() );
+    setAttributes( layer->attributes() );
   }
   else
     setAttributes( QgsPointCloudAttributeCollection() );
@@ -142,6 +142,15 @@ QVariant QgsPointCloudAttributeModel::data( const QModelIndex &index, int role )
       return mAttributes.at( index.row() - fieldOffset ).name();
     }
 
+    case AttributeIndexRole:
+    {
+      if ( isEmpty )
+      {
+        return QVariant();
+      }
+      return index.row() - fieldOffset;
+    }
+
     case AttributeSizeRole:
     {
       if ( isEmpty )
@@ -234,4 +243,69 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
 
   }
   return QIcon();
+}
+
+//
+// QgsPointCloudAttributeProxyModel
+//
+
+QgsPointCloudAttributeProxyModel::QgsPointCloudAttributeProxyModel( QgsPointCloudAttributeModel *source, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mModel( source )
+{
+  setSourceModel( mModel );
+}
+
+QgsPointCloudAttributeProxyModel *QgsPointCloudAttributeProxyModel::setFilters( QgsPointCloudAttributeProxyModel::Filters filters )
+{
+  mFilters = filters;
+  invalidateFilter();
+  return this;
+}
+
+bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+
+  if ( mFilters.testFlag( AllTypes ) )
+    return true;
+
+  const QVariant typeVar = mModel->data( index, QgsPointCloudAttributeModel::AttributeTypeRole );
+  if ( typeVar.isNull() )
+    return true;
+
+  bool ok;
+  const QgsPointCloudAttribute::DataType type = static_cast< QgsPointCloudAttribute::DataType >( typeVar.toInt( &ok ) );
+  if ( !ok )
+    return true;
+
+  if ( ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::Char ) ||
+       ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::Short ) ||
+       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int32 ) ||
+       ( mFilters.testFlag( Float ) && type == QgsPointCloudAttribute::Float ) ||
+       ( mFilters.testFlag( Double ) && type == QgsPointCloudAttribute::Double ) )
+    return true;
+
+  return false;
+}
+
+bool QgsPointCloudAttributeProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  // empty field is always first
+  if ( sourceModel()->data( left, QgsPointCloudAttributeModel::IsEmptyRole ).toBool() )
+    return true;
+  else if ( sourceModel()->data( right, QgsPointCloudAttributeModel::IsEmptyRole ).toBool() )
+    return false;
+
+  // order is attribute order
+  bool lok, rok;
+  int leftId = sourceModel()->data( left, QgsPointCloudAttributeModel::AttributeIndexRole ).toInt( &lok );
+  int rightId = sourceModel()->data( right, QgsPointCloudAttributeModel::AttributeIndexRole ).toInt( &rok );
+
+  if ( !lok )
+    return false;
+  if ( !rok )
+    return true;
+
+  return leftId < rightId;
 }

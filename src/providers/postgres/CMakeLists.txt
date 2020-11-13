@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SET(PG_SRCS
+set(PG_SRCS
   qgspostgresprovider.cpp
   qgspostgresconn.cpp
   qgspostgresconnpool.cpp
@@ -16,17 +16,17 @@ SET(PG_SRCS
   qgspostgresproviderconnection.cpp
 )
 
-IF (WITH_GUI)
-  SET(PG_GUI_SRCS
+if (WITH_GUI)
+  set(PG_GUI_SRCS
     qgspostgresprovidergui.cpp
     qgspostgresdataitemguiprovider.cpp
     qgspgsourceselect.cpp
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp
   )
-ENDIF ()
+endif()
 
-SET(PG_HDRS
+set(PG_HDRS
   qgspostgresexpressioncompiler.h
   qgspostgresproviderconnection.h
 )
@@ -34,7 +34,7 @@ SET(PG_HDRS
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -53,7 +53,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -62,15 +62,15 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-IF (WITH_GUI)
-  INCLUDE_DIRECTORIES(SYSTEM
+if (WITH_GUI)
+  include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
   )
-ENDIF ()
+endif()
 
 # static library
-ADD_LIBRARY (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS})
-TARGET_LINK_LIBRARIES (postgresprovider_a
+add_library (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS})
+target_link_libraries (postgresprovider_a
   ${POSTGRES_LIBRARY}
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
@@ -80,9 +80,9 @@ TARGET_LINK_LIBRARIES (postgresprovider_a
   ${Qt5Concurrent_LIBRARIES}
 )
 
-IF (WITH_GUI)
-  ADD_LIBRARY(postgresprovider_gui_a STATIC ${PG_GUI_SRCS})
-  TARGET_LINK_LIBRARIES(postgresprovider_gui_a
+if (WITH_GUI)
+  add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS})
+  target_link_libraries(postgresprovider_gui_a
     ${POSTGRES_LIBRARY}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
@@ -93,13 +93,13 @@ IF (WITH_GUI)
     ${Qt5Gui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
   )
-  ADD_DEPENDENCIES(postgresprovider_gui_a ui)
-ENDIF (WITH_GUI)
+  add_dependencies(postgresprovider_gui_a ui)
+endif()
 
 #################################################################
 # Postgres Raster
 
-SET(PGRASTER_SRCS
+set(PGRASTER_SRCS
   raster/qgspostgresrasterprovider.cpp
   raster/qgspostgresrastershareddata.cpp
   raster/qgspostgresrasterutils.cpp
@@ -108,8 +108,8 @@ SET(PGRASTER_SRCS
 )
 
 # static library
-ADD_LIBRARY (postgresrasterprovider_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
-TARGET_LINK_LIBRARIES (postgresrasterprovider_a
+add_library (postgresrasterprovider_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
+target_link_libraries (postgresrasterprovider_a
     ${POSTGRES_LIBRARY}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
@@ -123,55 +123,55 @@ TARGET_LINK_LIBRARIES (postgresrasterprovider_a
 
 #################################################################
 
-IF (FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_PROVIDERS)
   # for (external) mobile apps to be able to pick up provider for linking
-  INSTALL (TARGETS postgresprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
-  INSTALL (TARGETS postgresrasterprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
-  IF (WITH_GUI)
-    INSTALL (TARGETS postgresprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
-  ENDIF (WITH_GUI)
-ELSE (FORCE_STATIC_PROVIDERS)
+  install (TARGETS postgresprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  install (TARGETS postgresrasterprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  if (WITH_GUI)
+    install (TARGETS postgresprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  endif()
+else()
   # dynamically loaded module
-  ADD_LIBRARY(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
-  ADD_LIBRARY(postgresrasterprovider MODULE ${PGRASTER_SRCS} ${PG_HDRS})
+  add_library(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
+  add_library(postgresrasterprovider MODULE ${PGRASTER_SRCS} ${PG_HDRS})
 
-  TARGET_LINK_LIBRARIES(postgresprovider
+  target_link_libraries(postgresprovider
     ${POSTGRES_LIBRARY}
     qgis_core
   )
 
-  TARGET_LINK_LIBRARIES(postgresrasterprovider
+  target_link_libraries(postgresrasterprovider
     ${POSTGRES_LIBRARY}
     qgis_core
   )
 
-  IF (WITH_GUI)
-    TARGET_LINK_LIBRARIES (postgresprovider
+  if (WITH_GUI)
+    target_link_libraries (postgresprovider
       qgis_gui
     )
-    ADD_DEPENDENCIES(postgresprovider ui)    
-  ENDIF (WITH_GUI)
+    add_dependencies(postgresprovider ui)    
+  endif()
 
 
   # clang-tidy
-  IF(CLANG_TIDY_EXE)
-    SET_TARGET_PROPERTIES(
+  if(CLANG_TIDY_EXE)
+    set_target_properties(
       postgresprovider PROPERTIES
       CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
     )
-    SET_TARGET_PROPERTIES(
+    set_target_properties(
       postgresrasterprovider PROPERTIES
       CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
     )
-  ENDIF(CLANG_TIDY_EXE)
+  endif()
 
-  INSTALL(TARGETS postgresprovider
+  install(TARGETS postgresprovider
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-  INSTALL(TARGETS postgresrasterprovider
+  install(TARGETS postgresrasterprovider
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
 
-ENDIF (FORCE_STATIC_PROVIDERS)
+endif()

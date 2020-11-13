@@ -20,11 +20,7 @@
 #include <QLabel>
 #include <QSlider>
 #include <QTimer>
-
-#include "qgsrasterlayer.h"
-#include "qgsrasterrenderer.h"
-#include "qgsvectorlayer.h"
-
+#include "qgsmaplayer.h"
 
 ///@cond PRIVATE
 
@@ -58,31 +54,8 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   connect( mSlider, &QAbstractSlider::valueChanged, this, &QgsLayerTreeOpacityWidget::sliderValueChanged );
 
   // init from layer
-  switch ( mLayer->type() )
-  {
-    case QgsMapLayerType::VectorLayer:
-    {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
-      mSlider->setValue( vl->opacity() * 1000.0 );
-      connect( vl, &QgsVectorLayer::opacityChanged, this, &QgsLayerTreeOpacityWidget::layerTrChanged );
-      break;
-    }
-
-    case QgsMapLayerType::RasterLayer:
-    {
-      mSlider->setValue( qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
-      // TODO: there is no signal for raster layers
-      break;
-    }
-
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-      break;
-
-  }
+  mSlider->setValue( mLayer->opacity() * 1000.0 );
+  connect( mLayer, &QgsMapLayer::opacityChanged, this, &QgsLayerTreeOpacityWidget::layerTrChanged );
 }
 
 QSize QgsLayerTreeOpacityWidget::sizeHint() const
@@ -103,35 +76,14 @@ void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 {
   int value = mSlider->value();
-
-  switch ( mLayer->type() )
-  {
-    case QgsMapLayerType::VectorLayer:
-    {
-      qobject_cast<QgsVectorLayer *>( mLayer )->setOpacity( value / 1000.0 );
-      break;
-    }
-    case QgsMapLayerType::RasterLayer:
-    {
-      qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( value / 1000.0 );
-      break;
-    }
-
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-      break;
-  }
-
+  mLayer->setOpacity( value / 1000.0 );
   mLayer->triggerRepaint();
 }
 
 void QgsLayerTreeOpacityWidget::layerTrChanged()
 {
   mSlider->blockSignals( true );
-  mSlider->setValue( qobject_cast<QgsVectorLayer *>( mLayer )->opacity() * 1000.0 );
+  mSlider->setValue( mLayer->opacity() * 1000.0 );
   mSlider->blockSignals( false );
 }
 
@@ -153,22 +105,9 @@ QgsLayerTreeOpacityWidget *QgsLayerTreeOpacityWidget::Provider::createWidget( Qg
   return new QgsLayerTreeOpacityWidget( layer );
 }
 
-bool QgsLayerTreeOpacityWidget::Provider::supportsLayer( QgsMapLayer *layer )
+bool QgsLayerTreeOpacityWidget::Provider::supportsLayer( QgsMapLayer * )
 {
-  switch ( layer->type() )
-  {
-    case QgsMapLayerType::VectorLayer:
-    case QgsMapLayerType::RasterLayer:
-      return true;
-
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-      return false;
-  }
-  return false;
+  return true;
 }
 
 ///@endcond

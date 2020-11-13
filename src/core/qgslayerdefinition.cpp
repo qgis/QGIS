@@ -186,9 +186,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   root->resolveReferences( project );
 
   QList<QgsLayerTreeNode *> nodes = root->children();
-  const auto constNodes = nodes;
-  for ( QgsLayerTreeNode *node : constNodes )
-    root->takeChild( node );
+  root->abandonChildren();
   delete root;
 
   rootGroup->insertChildNodes( -1, nodes );

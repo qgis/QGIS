@@ -623,8 +623,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     double dotsPerMM = context->scaleFactor();
 
     int opacity = 255;
-    if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
-      opacity = static_cast<int >( std::round( 255 * vectorLayer->opacity() ) );
+    if ( QgsMapLayer *layer = layerNode()->layer() )
+      opacity = static_cast<int >( std::round( 255 * layer->opacity() ) );
 
     QgsScopedQPainterState painterState( p );
     context->setPainterFlagsUsingContext( p );
@@ -718,8 +718,8 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   QImage img( pix.toImage().convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
 
   int opacity = 255;
-  if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
-    opacity = ( 255 * vectorLayer->opacity() );
+  if ( QgsMapLayer *layer = layerNode()->layer() )
+    opacity = ( 255 * layer->opacity() );
 
   if ( opacity != 255 )
   {
