@@ -78,9 +78,11 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   // connect layer opacity slider and spin box
   //connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::rendererChanged );
 
-  //syncToLayer();
-}
+  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  syncToLayer( layer );
+}
 
 void QgsPointCloudRendererPropertiesWidget::setContext( const QgsSymbolWidgetContext &context )
 {
@@ -90,5 +92,27 @@ void QgsPointCloudRendererPropertiesWidget::setContext( const QgsSymbolWidgetCon
   {
     mActiveWidget->setContext( context );
   }
+}
+
+void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
+{
+  mLayer = qobject_cast< QgsPointCloudLayer * >( layer );
+
+  mBlockChangedSignal = true;
+  mOpacityWidget->setOpacity( mLayer->opacity() );
+  mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
+  mBlockChangedSignal = false;
+}
+
+void QgsPointCloudRendererPropertiesWidget::apply()
+{
+  mLayer->setOpacity( mOpacityWidget->opacity() );
+  mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+}
+
+void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
+{
+  if ( !mBlockChangedSignal )
+    emit widgetChanged();
 }
 
