@@ -30,6 +30,7 @@ Item {
   property bool allowMultipleValues: config['AllowMulti']
   property var widgetValue: value
   property var currentFeatureLayerPair: featurePair
+  property string widgetType: ""
 
   property var model: QgsQuick.FeaturesListModel {
     id: vrModel
@@ -51,41 +52,18 @@ Item {
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  states: [
-    State {
-      name: "textfield"
-      when: allowMultipleValues || vrModel.featuresCount > customWidget.valueRelationLimit
-      PropertyChanges {
-        target: textField
-        visible: true
-      }
-      PropertyChanges {
-        target: combobox
-        visible: false
-      }
-    },
-    State {
-      name: "combobox"
-      when: state !== "textfield"
-      PropertyChanges {
-        target: textField
-        visible: false
-      }
-      PropertyChanges {
-        target: combobox
-        visible: true
-      }
-    }
-  ]
-
-  Component.onCompleted: vrModel.setupValueRelation( config )
+  Component.onCompleted: {
+    vrModel.setupValueRelation( config )
+    widgetType = customWidget.getTypeOfWidget( fieldItem, vrModel )
+    updateField()
+  }
 
   /**
     * setValue sets value for value relation field
     * function accepts feature id as either a single value or an array of values
     * if array is passed, ids are converted to Key model column and used as multivalues
     */
-  function setValue( featureIds ) {
+  function setValue( featureIds, isNull = false ) {
 
     if ( Array.isArray(featureIds) && allowMultipleValues )
     {
@@ -95,7 +73,7 @@ Item {
       let keys = featureIds.map( id => vrModel.attributeFromValue( QgsQuick.FeaturesListModel.FeatureId, id, QgsQuick.FeaturesListModel.KeyColumn ) )
       let valueList = '{' + keys.join(',') + '}'
 
-      valueChanged(valueList, false)
+      valueChanged(valueList, isNull)
     }
 
     else {
@@ -105,17 +83,8 @@ Item {
               featureIds,
               QgsQuick.FeaturesListModel.KeyColumn
               ),
-            false)
+            isNull)
     }
-  }
-
-  function valueRelationClicked() {
-    if ( state === "combobox" ) openCombobox()
-    else customWidget.valueRelationOpened( fieldItem, vrModel )
-  }
-
-  function openCombobox() {
-    combobox.popup.open()
   }
 
   // Called when data in different fields are changed.
@@ -137,6 +106,10 @@ Item {
     return undefined
   }
 
+  /**
+    * updateField function updates visible value of current field
+    * if value to be set is undefined, -1, empty string or similiar, it also resets current value
+    */
   function updateField() {
 
     if ( vrModel.currentFeature !== currentFeatureLayerPair.feature )
@@ -148,17 +121,26 @@ Item {
       return
     }
 
-    if ( state == "textfield" ) {
+    if ( widgetType === "textfield" ) {
       if ( allowMultipleValues && widgetValue.startsWith('{') )
       {
         let strings = vrModel.convertMultivalueFormat( widgetValue )
         textField.text = strings.join(", ")
+        if ( !strings || strings.length === 0 )
+          setValue( "", true )
       }
-      else
-        textField.text = vrModel.attributeFromValue( QgsQuick.FeaturesListModel.KeyColumn, widgetValue, QgsQuick.FeaturesListModel.FeatureTitle )
+      else {
+        let text = vrModel.attributeFromValue( QgsQuick.FeaturesListModel.KeyColumn, widgetValue, QgsQuick.FeaturesListModel.FeatureTitle )
+        textField.text = text || "" // if text is undefined, clear text
+        if ( !text )
+          setValue( -1, true)
+      }
     }
-    else {
-      combobox.currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, widgetValue )
+    else if ( widgetType === "combobox" ) {
+      let index = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, widgetValue )
+      combobox.currentIndex = index
+      if ( index < 0 )
+        setValue( -1, true )
     }
   }
 
@@ -166,6 +148,17 @@ Item {
     * onWidgetValueChanged signal updates value of either custom valueRelation widget or combobox widget
     */
   onWidgetValueChanged: updateField()
+
+  onWidgetTypeChanged: {
+    if ( widgetType === "combobox" ) {
+      textField.visible = false
+      combobox.visible = true
+    }
+    else if ( widgetType === "textfield" ) {
+      textField.visible = true
+      combobox.visible = false
+    }
+  }
 
   Item {
     id: textFieldContainer
@@ -175,7 +168,6 @@ Item {
       id: textField
       anchors.fill: parent
       readOnly: true
-      placeholderText: "Choose a " + fieldName
       font.pixelSize: customStyle.fields.fontPixelSize
       color: customStyle.fields.fontColor
       topPadding: 10 * QgsQuick.Utils.dp
@@ -185,7 +177,7 @@ Item {
         anchors.fill: parent
         propagateComposedEvents: false
         onClicked: {
-          valueRelationClicked()
+          customWidget.valueRelationOpened( fieldItem, vrModel )
           mouse.accepted = true
         }
       }
@@ -226,14 +218,6 @@ Item {
 
     Component.onCompleted: {
       currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
-    }
-
-    onPressedChanged: {
-      if( pressed && state !== "combobox" )
-      {
-        pressed = false // we close combobox and let custom handler react, it can open combobox via openCombobox()
-        valueRelationClicked()
-      }
     }
 
     /**
