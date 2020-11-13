@@ -131,12 +131,17 @@ void QgsPointCloudLayerProperties::apply()
 
   // TODO -- move to proper widget classes!
 
+#if 0
   std::unique_ptr< QgsDummyPointCloudRenderer > renderer = qgis::make_unique< QgsDummyPointCloudRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
   renderer->setZMin( mMinZSpin->value() );
   renderer->setZMax( mMaxZSpin->value() );
   renderer->setColorRamp( mBtnColorRamp->colorRamp() );
   mLayer->setRenderer( renderer.release() );
+#endif
+
+  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+    w->apply();
 
   mLayer->triggerRepaint();
 }
@@ -176,6 +181,9 @@ void QgsPointCloudLayerProperties::syncToLayer()
     mMaxZSpin->setValue( renderer->zMax() );
     mBtnColorRamp->setColorRamp( renderer->colorRamp() );
   }
+
+  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+    w->syncToLayer( mLayer );
 }
 
 

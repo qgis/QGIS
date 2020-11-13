@@ -51,11 +51,15 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
-    void syncToLayer( QgsMapLayer *layer ) override { Q_UNUSED( layer ) }
+    void syncToLayer( QgsMapLayer *layer ) override;
 
   public slots:
 
-    void apply() override {}
+    void apply() override;
+
+  private slots:
+
+    void emitWidgetChanged();
 
   private:
 
@@ -66,6 +70,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
+
+    bool mBlockChangedSignal = false;
 
 };
 
