@@ -191,11 +191,11 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
 
   //force data types on specific functions if input data types don't match
   if (
-      method == QgsRasterAnalysisUtils::Mean ||
-      method == QgsRasterAnalysisUtils::StandardDeviation ||
-      method == QgsRasterAnalysisUtils::Variance ||
-      (method == QgsRasterAnalysisUtils::Median && (mInputs.size() % 2 == 0) )
-     )
+    method == QgsRasterAnalysisUtils::Mean ||
+    method == QgsRasterAnalysisUtils::StandardDeviation ||
+    method == QgsRasterAnalysisUtils::Variance ||
+    ( method == QgsRasterAnalysisUtils::Median && ( mInputs.size() % 2 == 0 ) )
+  )
   {
     if ( static_cast<int>( mDataType ) < 6 )
       mDataType = Qgis::Float32; //force float on mean, stddev and median with equal number of input layers if all inputs are integer
