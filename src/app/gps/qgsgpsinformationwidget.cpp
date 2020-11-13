@@ -1061,11 +1061,13 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         bearingLine.setP2( wgs84ToCanvas.transform( res ).toQPointF() );
 
         mMapCanvas->setRotation( 270 - bearingLine.angle() );
+        mMapCanvas->refresh();
       }
       catch ( QgsCsException & )
       {
         QgsDebugMsg( QStringLiteral( "Coordinate exception encountered while calculating GPS bearing rotation" ) );
         mMapCanvas->setRotation( trueNorth - bearing - adjustment );
+        mMapCanvas->refresh();
       }
       mLastRotateTimer.restart();
     }
