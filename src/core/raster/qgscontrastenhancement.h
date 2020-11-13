@@ -35,7 +35,7 @@ class QString;
 
 /**
  * \ingroup core
- * Manipulates raster pixel values so that they enhanceContrast or clip into a
+ * Manipulates raster or point cloud pixel values so that they enhanceContrast or clip into a
  * specified numerical range according to the specified
  * ContrastEnhancementAlgorithm.
  */
@@ -47,8 +47,8 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief This enumerator describes the types of contrast enhancement algorithms that can be used.
     enum ContrastEnhancementAlgorithm
     {
-      NoEnhancement,                  //this should be the default color scaling algorithm
-      StretchToMinimumMaximum,        //linear histogram enhanceContrast
+      NoEnhancement, //!< Default color scaling algorithm, no scaling is applied
+      StretchToMinimumMaximum, //!< Linear histogram
       StretchAndClipToMinimumMaximum,
       ClipToMinimumMaximum,
       UserDefinedEnhancement
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsContrastEnhancement
     const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & ) = delete;
 
     /**
-     * Helper function that returns the maximum possible value for a GDAL data type.
+     * Helper function that returns the maximum possible value for a data type.
      */
     static double maximumValuePossible( Qgis::DataType dataType )
     {
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsContrastEnhancement
     }
 
     /**
-     * Helper function that returns the minimum possible value for a GDAL data type.
+     * Helper function that returns the minimum possible value for a data type.
      */
     static double minimumValuePossible( Qgis::DataType dataType )
     {

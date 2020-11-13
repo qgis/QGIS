@@ -162,6 +162,8 @@ class CORE_EXPORT QgsPointCloudRenderer
 
   public:
 
+    QgsPointCloudRenderer() = default;
+
     virtual ~QgsPointCloudRenderer() = default;
 
     /**
@@ -174,6 +176,12 @@ class CORE_EXPORT QgsPointCloudRenderer
      * and generate a proper subclass.
      */
     virtual QgsPointCloudRenderer *clone() const = 0 SIP_FACTORY;
+
+    //! QgsPointCloudRenderer cannot be copied -- use clone() instead
+    QgsPointCloudRenderer( const QgsPointCloudRenderer &other ) = delete;
+
+    //! QgsPointCloudRenderer cannot be copied -- use clone() instead
+    QgsPointCloudRenderer &operator=( const QgsPointCloudRenderer &other ) = delete;
 
     /**
      * Renders a \a block of point cloud data using the specified render \a context.
@@ -242,6 +250,10 @@ class CORE_EXPORT QgsPointCloudRenderer
     }
 
   private:
+#ifdef SIP_RUN
+    QgsPointCloudRenderer( const QgsPointCloudRenderer &other );
+#endif
+
 #ifdef QGISDEBUG
     //! Pointer to thread in which startRender was first called
     QThread *mThread = nullptr;
