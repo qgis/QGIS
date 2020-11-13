@@ -42,7 +42,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
     }
   }
 
-  connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), &QgsPointCloud3DSymbolWidget::changed );
+  connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::changed );
 }
 
 void QgsPointCloud3DSymbolWidget::setLayer( QgsPointCloudLayer *layer, bool updateSymbol )

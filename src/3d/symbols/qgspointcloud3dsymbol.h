@@ -57,12 +57,32 @@ class QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
       mPointSize = elem.attribute( "point-size", QStringLiteral( "5.0" ) ).toFloat();
     }
 
+    /**
+     * Returns whether rendering for this symbol is enabled
+     * \since QGIS 3.18
+     * \see setIsEnabled( bool enabled )
+     */
     bool isEnabled() const { return mEnabled; }
+
+    /**
+     * Sets whether rendering for this symbol is enabled
+     * \since QGIS 3.18
+     * \see isEnabled()
+     */
     void setIsEnabled( bool enabled ) { mEnabled = enabled; }
 
-    //! Returns the point size
+    /**
+     * Returns the point size of the point cloud
+     * \since QGIS 3.18
+     * \see setPointSize( float size )
+     */
     float pointSize() const { return mPointSize; }
-    //! Sets the point size
+
+    /**
+     * Sets the point size
+     * \since QGIS 3.18
+     * \see pointSize()
+     */
     void setPointSize( float size ) { mPointSize = size; }
 
   private:
