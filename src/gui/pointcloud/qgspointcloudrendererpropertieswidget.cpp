@@ -19,6 +19,7 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgspointcloudrendererwidget.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudrenderer.h"
 
 static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -75,8 +76,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
 
-  // connect layer opacity slider and spin box
-  //connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::rendererChanged );
+  connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::rendererChanged );
 
   connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -101,6 +101,19 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mBlockChangedSignal = true;
   mOpacityWidget->setOpacity( mLayer->opacity() );
   mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
+
+  if ( mLayer->renderer() )
+  {
+    // set current renderer from layer
+    QString rendererName = mLayer->renderer()->type();
+
+    int rendererIdx = cboRenderers->findData( rendererName );
+    cboRenderers->setCurrentIndex( rendererIdx );
+
+    // no renderer found... this mustn't happen
+    Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
+  }
+
   mBlockChangedSignal = false;
 }
 
@@ -108,6 +121,78 @@ void QgsPointCloudRendererPropertiesWidget::apply()
 {
   mLayer->setOpacity( mOpacityWidget->opacity() );
   mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+
+  if ( mActiveWidget )
+    mLayer->setRenderer( mActiveWidget->renderer() );
+  else if ( !cboRenderers->currentData().toString().isEmpty() )
+  {
+    QDomElement elem;
+    mLayer->setRenderer( QgsApplication::pointCloudRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() )->createRenderer( elem, QgsReadWriteContext() ) );
+  }
+}
+
+void QgsPointCloudRendererPropertiesWidget::rendererChanged()
+{
+  if ( cboRenderers->currentIndex() == -1 )
+  {
+    QgsDebugMsg( QStringLiteral( "No current item -- this should never happen!" ) );
+    return;
+  }
+
+  QString rendererName = cboRenderers->currentData().toString();
+
+  //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
+  std::unique_ptr< QgsPointCloudRenderer > oldRenderer;
+  if ( mActiveWidget && mActiveWidget->renderer() )
+  {
+    oldRenderer.reset( mActiveWidget->renderer()->clone() );
+  }
+  else
+  {
+    oldRenderer.reset( mLayer->renderer()->clone() );
+  }
+
+  // get rid of old active widget (if any)
+  if ( mActiveWidget )
+  {
+    stackedWidget->removeWidget( mActiveWidget );
+
+    delete mActiveWidget;
+    mActiveWidget = nullptr;
+  }
+
+  QgsPointCloudRendererWidget *w = nullptr;
+  QgsPointCloudRendererAbstractMetadata *m = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( rendererName );
+  if ( m )
+    w = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
+  oldRenderer.reset();
+
+  if ( w )
+  {
+    // instantiate the widget and set as active
+    mActiveWidget = w;
+    stackedWidget->addWidget( mActiveWidget );
+    stackedWidget->setCurrentWidget( mActiveWidget );
+    if ( mActiveWidget->renderer() )
+    {
+      if ( mMapCanvas || mMessageBar )
+      {
+        QgsSymbolWidgetContext context;
+        context.setMapCanvas( mMapCanvas );
+        context.setMessageBar( mMessageBar );
+        mActiveWidget->setContext( context );
+      }
+    }
+    connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
+    connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsPointCloudRendererPropertiesWidget::openPanel );
+    w->setDockMode( dockMode() );
+  }
+  else
+  {
+    // set default "no edit widget available" page
+    stackedWidget->setCurrentWidget( pageNoWidget );
+  }
+  emitWidgetChanged();
 }
 
 void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
