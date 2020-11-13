@@ -2344,6 +2344,17 @@ void TestQgsProcessingAlgs::cellStatistics_data()
       << QStringLiteral( "/cellstatistics_median_result_fourLayers.tif" )
       << Qgis::Float64;
 
+  /*
+   * Testcase 18: median with even number of layers and integer inputs
+   */
+  QTest::newRow( "testcase_18" )
+      << QStringList( {"/raster/statisticsRas1_int32.tif", "/raster/statisticsRas1_int32.tif", "/raster/statisticsRas2_int32.tif", "/raster/statisticsRas3_int32.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_int32.tif" )
+      << 3
+      << false
+      << QStringLiteral( "/cellstatistics_median_result_fourLayers_float32.tif" )
+      << Qgis::Float32;
+
 }
 
 void TestQgsProcessingAlgs::cellStatistics()
