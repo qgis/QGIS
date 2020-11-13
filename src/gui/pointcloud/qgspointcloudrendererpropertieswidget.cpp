@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgspointcloudrendererwidget.h"
+#include "qgspointcloudlayer.h"
 
 static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -52,10 +53,9 @@ static void _initRendererWidgetFunctions()
 }
 
 QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( QgsPointCloudLayer *layer, QgsStyle *style, QWidget *parent )
-  : QgsPanelWidget( parent )
+  : QgsMapLayerConfigWidget( layer, nullptr, parent )
   , mLayer( layer )
   , mStyle( style )
-
 {
   setupUi( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );

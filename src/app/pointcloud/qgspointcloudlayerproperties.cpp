@@ -25,6 +25,8 @@
 #include "qgsapplication.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmaplayerloadstyledialog.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmaplayerconfigwidget.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -100,6 +102,25 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
+}
+
+void QgsPointCloudLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+{
+  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
+  {
+    return;
+  }
+
+  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, mMapCanvas, false, this );
+  mConfigWidgets << page;
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+
+  page->syncToLayer( mLayer );
 }
 
 #include "qgspointcloudrenderer.h"

@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 
 #include "ui_qgspointcloudrendererpropsdialogbase.h"
+#include "qgsmaplayerconfigwidget.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;
@@ -34,7 +35,7 @@ class QgsMessageBar;
  *
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsPanelWidget, private Ui::QgsPointCloudRendererPropsDialogBase
+class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsPointCloudRendererPropsDialogBase
 {
     Q_OBJECT
 
@@ -49,6 +50,12 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsPanelWidget, 
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      */
     void setContext( const QgsSymbolWidgetContext &context );
+
+    void syncToLayer( QgsMapLayer *layer ) override { Q_UNUSED( layer ) }
+
+  public slots:
+
+    void apply() override {}
 
   private:
 

@@ -49,7 +49,7 @@ class GUI_EXPORT QgsPointCloudRendererWidget : public QgsPanelWidget
      *
      * Caller takes ownership of the returned object.
      */
-    virtual QgsPointCloudRenderer *renderer() SIP_FACTORY = 0;
+    virtual QgsPointCloudRenderer *renderer() = 0 SIP_FACTORY;
 
     /**
      * Sets the \a context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.

@@ -676,11 +676,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
       case QgsMapLayerType::PointCloudLayer:
       {
-        QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mCurrentLayer );
-        ( void )pcLayer;
-
-        //TODO
-        mStackedWidget->setCurrentIndex( mNotSupportedPage );
+        // everything is handled by factories for this layer type!
         break;
       }
 

@@ -27,7 +27,7 @@ Constructor for QgsPointCloudRendererWidget, associated with the
 specified ``layer`` and ``style`` database.
 %End
 
-    virtual QgsPointCloudRenderer *renderer() /Factory/ = 0;
+    virtual QgsPointCloudRenderer *renderer() = 0 /Factory/;
 %Docstring
 Returns a new instance of a renderer as defined by the settings in the widget.
 
