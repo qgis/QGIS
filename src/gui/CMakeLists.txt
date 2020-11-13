@@ -465,6 +465,7 @@ set(QGIS_GUI_SRCS
   qgslegendpatchshapebutton.cpp
   qgslegendpatchshapewidget.cpp
   qgslimitedrandomcolorrampdialog.cpp
+  qgslocaleawarenumericlineeditdelegate.cpp
   qgsratiolockbutton.cpp
   qgsludialog.cpp
   qgsmanageconnectionsdialog.cpp

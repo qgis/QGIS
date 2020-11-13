@@ -22,6 +22,8 @@
 #include "qgscolordialog.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgscolorrampshaderwidget.h"
+#include "qgslocaleawarenumericlineeditdelegate.h"
 
 #include <QColorDialog>
 #include <QInputDialog>
@@ -32,6 +34,7 @@
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
+
 
 QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
@@ -57,15 +60,23 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mButtonAdvanced->setMenu( mAdvancedMenu );
 
   mModel = new QgsPalettedRendererModel( this );
+  mProxyModel = new QgsPalettedRendererProxyModel( this );
+  mProxyModel->setSourceModel( mModel );
   mTreeView->setSortingEnabled( false );
-  mTreeView->setModel( mModel );
+  mTreeView->setModel( mProxyModel );
+
+  connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [ = ]
+  {
+    mProxyModel->sort( QgsPalettedRendererModel::Column::ValueColumn );
+  } );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this );
 #endif
 
-  mSwatchDelegate = new QgsColorSwatchDelegate( this );
-  mTreeView->setItemDelegateForColumn( QgsPalettedRendererModel::ColorColumn, mSwatchDelegate );
+  mTreeView->setItemDelegateForColumn( QgsPalettedRendererModel::ColorColumn, new QgsColorSwatchDelegate( this ) );
+  mValueDelegate = new QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::UnknownDataType, this );
+  mTreeView->setItemDelegateForColumn( QgsPalettedRendererModel::ValueColumn, mValueDelegate );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mTreeView->setColumnWidth( QgsPalettedRendererModel::ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
@@ -81,8 +92,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTreeView->setDefaultDropAction( Qt::MoveAction );
 
-  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { mContextMenu->exec( QCursor::pos() ); }
-         );
+  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { mContextMenu->exec( QCursor::pos() ); } );
 
   btnColorRamp->setShowRandomColorRamp( true );
 
@@ -107,10 +117,9 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( mAddEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::addEntry );
   connect( mClassifyButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::classify );
 
-  QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
-  if ( provider )
+  if ( mRasterLayer && mRasterLayer->dataProvider() )
   {
-    mLoadFromLayerAction->setEnabled( !provider->colorTable( mBandComboBox->currentBand() ).isEmpty() );
+    mLoadFromLayerAction->setEnabled( !mRasterLayer->dataProvider()->colorTable( mBandComboBox->currentBand() ).isEmpty() );
   }
   else
   {
@@ -132,7 +141,7 @@ QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
 
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
 {
-  QgsPalettedRasterRenderer::ClassData classes = mModel->classData();
+  QgsPalettedRasterRenderer::ClassData classes = mProxyModel->classData();
   int bandNumber = mBandComboBox->currentBand();
 
   QgsPalettedRasterRenderer *r = new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, classes );
@@ -170,6 +179,11 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
     std::unique_ptr< QgsColorRamp > ramp( new QgsRandomColorRamp() );
     whileBlocking( btnColorRamp )->setColorRamp( ramp.get() );
   }
+
+  if ( mRasterLayer && mRasterLayer->dataProvider() )
+  {
+    mValueDelegate->setDataType( mRasterLayer->dataProvider()->dataType( mBand ) );
+  }
 }
 
 void QgsPalettedRendererWidget::setSelectionColor( const QItemSelection &selection, const QColor &color )
@@ -198,7 +212,7 @@ void QgsPalettedRendererWidget::deleteEntry()
   // don't want to emit widgetChanged multiple times
   disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
 
-  QItemSelection sel = mTreeView->selectionModel()->selection();
+  QItemSelection sel = mProxyModel->mapSelectionToSource( mTreeView->selectionModel()->selection() );
   const auto constSel = sel;
   for ( const QItemSelectionRange &range : constSel )
   {
@@ -223,15 +237,14 @@ void QgsPalettedRendererWidget::addEntry()
   }
   QModelIndex newEntry = mModel->addEntry( color );
   mTreeView->scrollTo( newEntry );
-  mTreeView->selectionModel()->select( newEntry, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  mTreeView->selectionModel()->select( mProxyModel->mapFromSource( newEntry ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
   emit widgetChanged();
 }
 
 void QgsPalettedRendererWidget::changeColor()
 {
-  QItemSelection sel = mTreeView->selectionModel()->selection();
-
+  QItemSelection sel = mProxyModel->mapSelectionToSource( mTreeView->selectionModel()->selection() );
   QModelIndex colorIndex = mModel->index( sel.first().top(), QgsPalettedRendererModel::ColorColumn );
   QColor currentColor = mModel->data( colorIndex, Qt::DisplayRole ).value<QColor>();
 
@@ -257,8 +270,7 @@ void QgsPalettedRendererWidget::changeColor()
 
 void QgsPalettedRendererWidget::changeOpacity()
 {
-  QItemSelection sel = mTreeView->selectionModel()->selection();
-
+  QItemSelection sel = mProxyModel->mapSelectionToSource( mTreeView->selectionModel()->selection() );
   QModelIndex colorIndex = mModel->index( sel.first().top(), QgsPalettedRendererModel::ColorColumn );
   QColor currentColor = mModel->data( colorIndex, Qt::DisplayRole ).value<QColor>();
 
@@ -293,8 +305,7 @@ void QgsPalettedRendererWidget::changeOpacity()
 
 void QgsPalettedRendererWidget::changeLabel()
 {
-  QItemSelection sel = mTreeView->selectionModel()->selection();
-
+  QItemSelection sel = mProxyModel->mapSelectionToSource( mTreeView->selectionModel()->selection() );
   QModelIndex labelIndex = mModel->index( sel.first().top(), QgsPalettedRendererModel::LabelColumn );
   QString currentLabel = mModel->data( labelIndex, Qt::DisplayRole ).toString();
 
@@ -331,7 +342,7 @@ void QgsPalettedRendererWidget::applyColorRamp()
 
   disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
 
-  QgsPalettedRasterRenderer::ClassData data = mModel->classData();
+  QgsPalettedRasterRenderer::ClassData data = mProxyModel->classData();
   QgsPalettedRasterRenderer::ClassData::iterator cIt = data.begin();
 
   double numberOfEntries = data.count();
@@ -396,7 +407,7 @@ void QgsPalettedRendererWidget::saveColorTable()
     if ( outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream outputStream( &outputFile );
-      outputStream << QgsPalettedRasterRenderer::classDataToString( mModel->classData() );
+      outputStream << QgsPalettedRasterRenderer::classDataToString( mProxyModel->classData() );
       outputStream.flush();
       outputFile.close();
 
@@ -465,6 +476,11 @@ void QgsPalettedRendererWidget::bandChanged( int band )
 {
   if ( band == mBand )
     return;
+
+  if ( mRasterLayer && mRasterLayer->dataProvider( ) )
+  {
+    mValueDelegate->setDataType( mRasterLayer->dataProvider( )->dataType( mBand ) );
+  }
 
   bool deleteExisting = false;
   if ( !mModel->classData().isEmpty() )
@@ -653,7 +669,7 @@ bool QgsPalettedRendererModel::setData( const QModelIndex &index, const QVariant
     case ValueColumn:
     {
       bool ok = false;
-      int newValue = value.toInt( &ok );
+      double newValue = value.toDouble( &ok );
       if ( !ok )
         return false;
 
@@ -859,5 +875,17 @@ void QgsPalettedRendererClassGatherer::run()
 
   emit collectedClasses();
 }
+
+
+QgsPalettedRasterRenderer::ClassData QgsPalettedRendererProxyModel::classData() const
+{
+  QgsPalettedRasterRenderer::ClassData data;
+  for ( int i = 0; i < rowCount( ); ++i )
+  {
+    data.push_back( qobject_cast<QgsPalettedRendererModel *>( sourceModel() )->classAtIndex( mapToSource( index( i, 0 ) ) ) );
+  }
+  return data;
+}
+
 
 ///@endcond PRIVATE

@@ -115,6 +115,7 @@ class CORE_EXPORT Qgis
       ARGB32 = 12, //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
+    Q_ENUM( DataType )
 
     /**
      * Authorisation to run Python Macros

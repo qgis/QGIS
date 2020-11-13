@@ -20,7 +20,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
-#include "raster/qgscolorrampshaderwidget.h"
 #include "raster/qgsrasterminmaxwidget.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmessagelog.h"
