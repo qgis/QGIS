@@ -22,7 +22,8 @@ from qgis.core import (
     QgsVector3D,
     QgsMultiRenderChecker,
     QgsMapSettings,
-    QgsRectangle
+    QgsRectangle,
+    QgsContrastEnhancement
 )
 
 from qgis.PyQt.QtCore import QDir, QSize
@@ -64,10 +65,37 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         renderer.setRedAttribute('r')
         self.assertEqual(renderer.redAttribute(), 'r')
 
+        redce = QgsContrastEnhancement()
+        redce.setMinimumValue(100)
+        redce.setMaximumValue(120)
+        redce.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+        renderer.setRedContrastEnhancement(redce)
+
+        greence = QgsContrastEnhancement()
+        greence.setMinimumValue(130)
+        greence.setMaximumValue(150)
+        greence.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        renderer.setGreenContrastEnhancement(greence)
+
+        bluece = QgsContrastEnhancement()
+        bluece.setMinimumValue(170)
+        bluece.setMaximumValue(190)
+        bluece.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ClipToMinimumMaximum)
+        renderer.setBlueContrastEnhancement(bluece)
+
         rr = renderer.clone()
         self.assertEqual(rr.blueAttribute(), 'b')
         self.assertEqual(rr.greenAttribute(), 'g')
         self.assertEqual(rr.redAttribute(), 'r')
+        self.assertEqual(rr.redContrastEnhancement().minimumValue(), 100)
+        self.assertEqual(rr.redContrastEnhancement().maximumValue(), 120)
+        self.assertEqual(rr.redContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+        self.assertEqual(rr.greenContrastEnhancement().minimumValue(), 130)
+        self.assertEqual(rr.greenContrastEnhancement().maximumValue(), 150)
+        self.assertEqual(rr.greenContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(rr.blueContrastEnhancement().minimumValue(), 170)
+        self.assertEqual(rr.blueContrastEnhancement().maximumValue(), 190)
+        self.assertEqual(rr.blueContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.ClipToMinimumMaximum)
 
         doc = QDomDocument("testdoc")
         elem = renderer.save(doc, QgsReadWriteContext())
@@ -76,6 +104,15 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         self.assertEqual(r2.blueAttribute(), 'b')
         self.assertEqual(r2.greenAttribute(), 'g')
         self.assertEqual(r2.redAttribute(), 'r')
+        self.assertEqual(r2.redContrastEnhancement().minimumValue(), 100)
+        self.assertEqual(r2.redContrastEnhancement().maximumValue(), 120)
+        self.assertEqual(r2.redContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+        self.assertEqual(r2.greenContrastEnhancement().minimumValue(), 130)
+        self.assertEqual(r2.greenContrastEnhancement().maximumValue(), 150)
+        self.assertEqual(r2.greenContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(r2.blueContrastEnhancement().minimumValue(), 170)
+        self.assertEqual(r2.blueContrastEnhancement().maximumValue(), 190)
+        self.assertEqual(r2.blueContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.ClipToMinimumMaximum)
 
     def testUsedAttributes(self):
         renderer = QgsPointCloudRgbRenderer()
@@ -107,6 +144,46 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_rgb_render')
         result = renderchecker.runTest('expected_rgb_render')
+        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderWithContrast(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPenWidth(2)
+
+        redce = QgsContrastEnhancement()
+        redce.setMinimumValue(100)
+        redce.setMaximumValue(120)
+        redce.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        layer.renderer().setRedContrastEnhancement(redce)
+
+        greence = QgsContrastEnhancement()
+        greence.setMinimumValue(130)
+        greence.setMaximumValue(150)
+        greence.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        layer.renderer().setGreenContrastEnhancement(greence)
+
+        bluece = QgsContrastEnhancement()
+        bluece.setMinimumValue(170)
+        bluece.setMaximumValue(190)
+        bluece.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        layer.renderer().setBlueContrastEnhancement(bluece)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_rgb_contrast')
+        result = renderchecker.runTest('expected_rgb_contrast')
         TestQgsPointCloudRgbRenderer.report += renderchecker.report()
         self.assertTrue(result)
 

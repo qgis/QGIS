@@ -126,6 +126,8 @@ Abstract base class for 2d point cloud renderers.
 %End
   public:
 
+    QgsPointCloudRenderer();
+
     virtual ~QgsPointCloudRenderer();
 
     virtual QString type() const = 0;
@@ -138,6 +140,8 @@ Returns the identifier of the renderer type.
 Create a deep copy of this renderer. Should be implemented by all subclasses
 and generate a proper subclass.
 %End
+
+
 
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
 %Docstring
@@ -205,6 +209,8 @@ Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by
 Retrieves the x and y coordinate for the point at index ``i``.
 %End
 
+  private:
+    QgsPointCloudRenderer( const QgsPointCloudRenderer &other );
 };
 
 /************************************************************************
