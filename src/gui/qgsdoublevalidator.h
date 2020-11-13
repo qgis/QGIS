@@ -67,12 +67,8 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
      *
      * \param bottom the minimal range limit accepted by the validator
      * \param top the maximal range limit accepted by the validator
-<<<<<<< HEAD
-     * \param decimal the number of decimal accepted by the validator
-=======
      * \param decimal the number of decimals accepted by the validator
      * \param parent parent object
->>>>>>> 3f11294dfd (Merge pull request #39778 from elpaso/bugfix-gh39757-shared-locale-sort)
      */
     QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
 
