@@ -1,36 +1,36 @@
-SET(MDAL_SRCS
+set(MDAL_SRCS
   qgsmdalprovider.cpp
   qgsmdaldataitems.cpp
 )
 
-IF (WITH_GUI)
-  SET(MDAL_SRCS ${MDAL_SRCS}
+if (WITH_GUI)
+  set(MDAL_SRCS ${MDAL_SRCS}
     qgsmdalprovidergui.cpp
     qgsmdalsourceselect.cpp
   )
-ENDIF ()
+endif()
 
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/external/mdal/cmake ${CMAKE_MODULE_PATH})
-IF(MSVC)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/external/mdal/cmake ${CMAKE_MODULE_PATH})
+if(MSVC)
   # HDF5 with enabled thread safety (HDF5_ENABLE_THREADSAFE=ON) on Windows needs Threads::Threads
-  FIND_PACKAGE(Threads)
-ENDIF(MSVC)
-FIND_PACKAGE(HDF5)
-FIND_PACKAGE(NetCDF)
-FIND_PACKAGE(LibXml2)
+  find_package(Threads)
+endif()
+find_package(HDF5)
+find_package(NetCDF)
+find_package(LibXml2)
 
 ########################################################
 # Compile internal MDAL
-IF (WITH_INTERNAL_MDAL)
+if (WITH_INTERNAL_MDAL)
 
-  ADD_DEFINITIONS(-DMDAL_STATIC)
+  add_definitions(-DMDAL_STATIC)
 
-  INCLUDE_DIRECTORIES(
+  include_directories(
     ${CMAKE_SOURCE_DIR}/external/mdal
     ${CMAKE_SOURCE_DIR}/external/mdal/api
   )
 
-  SET(MDAL_LIB_SRCS
+  set(MDAL_LIB_SRCS
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.cpp
@@ -49,7 +49,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.cpp
   )
 
-  SET(MDAL_LIB_HDRS
+  set(MDAL_LIB_HDRS
     ${CMAKE_SOURCE_DIR}/external/mdal/api/mdal.h
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.hpp
@@ -66,108 +66,108 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.hpp
   )
 
-  IF(HDF5_FOUND)
-    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+  if(HDF5_FOUND)
+    set(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_hdf5.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xmdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_hec2d.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_flo2d.cpp
     )
-    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+    set(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_hdf5.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xmdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_hec2d.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_flo2d.hpp
     )
-    SET(MDAL_DEPS ${MDAL_DEPS} )
-    SET (HAVE_HDF5 TRUE)
-  ENDIF(HDF5_FOUND)
+    set(MDAL_DEPS ${MDAL_DEPS} )
+    set (HAVE_HDF5 TRUE)
+  endif()
 
-  IF(SQLITE3_FOUND)
-     SET(HAVE_SQLITE3 TRUE)
-  ENDIF(SQLITE3_FOUND)
+  if(SQLITE3_FOUND)
+     set(HAVE_SQLITE3 TRUE)
+  endif()
 
-  IF(SQLITE3_FOUND AND NETCDF_FOUND)
-     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+  if(SQLITE3_FOUND AND NETCDF_FOUND)
+     set(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sqlite3.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
     )
-    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+    set(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sqlite3.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
     )
-  ENDIF(SQLITE3_FOUND AND NETCDF_FOUND)
+  endif()
 
-  IF(GDAL_FOUND)
-    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+  if(GDAL_FOUND)
+    set(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_grib.cpp
     )
-    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+    set(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_grib.hpp
     )
-    SET (HAVE_GDAL TRUE)
-  ENDIF(GDAL_FOUND)
+    set (HAVE_GDAL TRUE)
+  endif()
 
-  IF(NETCDF_FOUND)
-    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+  if(NETCDF_FOUND)
+    set(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_tuflowfv.cpp
     )
-    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+    set(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_tuflowfv.hpp
     )
-    SET (HAVE_NETCDF TRUE)
-  ENDIF(NETCDF_FOUND)
+    set (HAVE_NETCDF TRUE)
+  endif()
 
-  IF(GDAL_FOUND AND NETCDF_FOUND)
-    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+  if(GDAL_FOUND AND NETCDF_FOUND)
+    set(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_netcdf.cpp
     )
-    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+    set(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_netcdf.hpp
     )
-  ENDIF(GDAL_FOUND AND NETCDF_FOUND)
+  endif()
 
-  IF(HDF5_FOUND AND LIBXML2_FOUND)
-    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+  if(HDF5_FOUND AND LIBXML2_FOUND)
+    set(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xml.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xdmf.cpp
     )
-    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+    set(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xml.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xdmf.hpp
     )
-    SET (HAVE_XML TRUE)
-  ENDIF(HDF5_FOUND AND LIBXML2_FOUND)
+    set (HAVE_XML TRUE)
+  endif()
 
 
   # create mdal_config.h
-  CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
-  INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
+  configure_file(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
+  include_directories(${CMAKE_BINARY_DIR})
 
-  UNSET(MDAL_LIBRARY)
-  UNSET(MDAL_INCLUDE_DIR)
+  unset(MDAL_LIBRARY)
+  unset(MDAL_INCLUDE_DIR)
 
-ELSE (WITH_INTERNAL_MDAL)
+else()
 
-  INCLUDE_DIRECTORIES (SYSTEM
+  include_directories (SYSTEM
     ${MDAL_INCLUDE_DIR}
   )
 
-ENDIF (WITH_INTERNAL_MDAL)
+endif()
 
 ########################################################
 
-INCLUDE_DIRECTORIES (
+include_directories (
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -184,50 +184,50 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-ADD_LIBRARY (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
+add_library (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
 
-TARGET_LINK_LIBRARIES (mdalprovider
+target_link_libraries (mdalprovider
   qgis_core
   ${MDAL_LIBRARY}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (mdalprovider
+if (WITH_GUI)
+  target_link_libraries (mdalprovider
     qgis_gui
   )
-  ADD_DEPENDENCIES(mdalprovider ui)
-ENDIF (WITH_GUI)
+  add_dependencies(mdalprovider ui)
+endif()
 
-IF (HDF5_FOUND)
-  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${HDF5_INCLUDE_DIRS})
-  TARGET_LINK_LIBRARIES(mdalprovider ${HDF5_C_LIBRARIES} )
-ENDIF (HDF5_FOUND)
+if (HDF5_FOUND)
+  target_include_directories(mdalprovider PRIVATE ${HDF5_INCLUDE_DIRS})
+  target_link_libraries(mdalprovider ${HDF5_C_LIBRARIES} )
+endif()
 
-IF (GDAL_FOUND)
-  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${GDAL_INCLUDE_DIR})
-  TARGET_LINK_LIBRARIES(mdalprovider ${GDAL_LIBRARY} )
-ENDIF (GDAL_FOUND)
+if (GDAL_FOUND)
+  target_include_directories(mdalprovider PRIVATE ${GDAL_INCLUDE_DIR})
+  target_link_libraries(mdalprovider ${GDAL_LIBRARY} )
+endif()
 
-IF (NETCDF_FOUND)
-  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${NETCDF_INCLUDE_DIR})
-  TARGET_LINK_LIBRARIES(mdalprovider ${NETCDF_LIBRARY} )
-ENDIF (NETCDF_FOUND)
+if (NETCDF_FOUND)
+  target_include_directories(mdalprovider PRIVATE ${NETCDF_INCLUDE_DIR})
+  target_link_libraries(mdalprovider ${NETCDF_LIBRARY} )
+endif()
 
-IF (LIBXML2_FOUND)
-  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${LIBXML2_INCLUDE_DIR})
-  TARGET_LINK_LIBRARIES(mdalprovider ${LIBXML2_LIBRARIES} )
-  TARGET_COMPILE_DEFINITIONS(mdalprovider PRIVATE ${LIBXML2_DEFINITIONS})
-ENDIF (LIBXML2_FOUND)
+if (LIBXML2_FOUND)
+  target_include_directories(mdalprovider PRIVATE ${LIBXML2_INCLUDE_DIR})
+  target_link_libraries(mdalprovider ${LIBXML2_LIBRARIES} )
+  target_compile_definitions(mdalprovider PRIVATE ${LIBXML2_DEFINITIONS})
+endif()
 
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
+if(CLANG_TIDY_EXE)
+  set_target_properties(
     mdalprovider PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
-INSTALL(TARGETS mdalprovider
+install(TARGETS mdalprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

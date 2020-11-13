@@ -1,4 +1,4 @@
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -22,95 +22,95 @@ INCLUDE_DIRECTORIES(
 
 )
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-IF (WITH_GUI)
-  INCLUDE_DIRECTORIES(SYSTEM
+if (WITH_GUI)
+  include_directories(SYSTEM
     ${QSCINTILLA_INCLUDE_DIR}
   )
-ENDIF ()
+endif()
 
 ###############################################################################
 
-SET (AFS_SRCS
+set (AFS_SRCS
   qgsarcgisrestutils.cpp
   qgsafsdataitems.cpp
   qgsafsfeatureiterator.cpp
   qgsafsprovider.cpp
   qgsafsshareddata.cpp
 )
-IF (WITH_GUI)
-  SET(AFS_SRCS ${AFS_SRCS}
+if (WITH_GUI)
+  set(AFS_SRCS ${AFS_SRCS}
     qgsafsprovidergui.cpp
     qgsafsdataitemguiprovider.cpp
     qgsafssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
   )
-ENDIF ()
+endif()
 
-ADD_LIBRARY (arcgisfeatureserverprovider_a STATIC ${AFS_SRCS})
-ADD_LIBRARY(arcgisfeatureserverprovider MODULE ${AFS_SRCS})
+add_library (arcgisfeatureserverprovider_a STATIC ${AFS_SRCS})
+add_library(arcgisfeatureserverprovider MODULE ${AFS_SRCS})
 
-TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
+target_link_libraries(arcgisfeatureserverprovider
   qgis_core
   ${QCA_LIBRARY}
 )
 
-TARGET_LINK_LIBRARIES (arcgisfeatureserverprovider_a
+target_link_libraries (arcgisfeatureserverprovider_a
   qgis_core
   ${QCA_LIBRARY}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
+if (WITH_GUI)
+  target_link_libraries(arcgisfeatureserverprovider
     qgis_gui
   )
-  TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider_a
+  target_link_libraries(arcgisfeatureserverprovider_a
     qgis_gui
   )
-  ADD_DEPENDENCIES(arcgisfeatureserverprovider ui)
-  ADD_DEPENDENCIES(arcgisfeatureserverprovider_a ui)
-ENDIF ()
+  add_dependencies(arcgisfeatureserverprovider ui)
+  add_dependencies(arcgisfeatureserverprovider_a ui)
+endif()
 
-INSTALL (TARGETS arcgisfeatureserverprovider
+install (TARGETS arcgisfeatureserverprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
 ###############################################################################
 
-SET (AMS_SRCS
+set (AMS_SRCS
   qgsarcgisrestutils.cpp
   qgsamsdataitems.cpp
   qgsamsprovider.cpp
 )
 
-IF (WITH_GUI)
-  SET(AMS_SRCS ${AMS_SRCS}
+if (WITH_GUI)
+  set(AMS_SRCS ${AMS_SRCS}
     qgsamsprovidergui.cpp
     qgsamsdataitemguiprovider.cpp
     qgsamssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
   )
-ENDIF ()
+endif()
 
-ADD_LIBRARY(arcgismapserverprovider MODULE ${AMS_SRCS})
+add_library(arcgismapserverprovider MODULE ${AMS_SRCS})
 
-TARGET_LINK_LIBRARIES(arcgismapserverprovider
+target_link_libraries(arcgismapserverprovider
   qgis_core
   ${QCA_LIBRARY}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES(arcgismapserverprovider
+if (WITH_GUI)
+  target_link_libraries(arcgismapserverprovider
     qgis_gui
   )
-  ADD_DEPENDENCIES(arcgismapserverprovider ui)
-ENDIF ()
+  add_dependencies(arcgismapserverprovider ui)
+endif()
 
-INSTALL (TARGETS arcgismapserverprovider
+install (TARGETS arcgismapserverprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

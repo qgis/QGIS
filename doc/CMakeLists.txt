@@ -1,10 +1,10 @@
 # include doxygen documentation
-SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
+set (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
 
 # include Qt documentation
-SET (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
+set (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
 
-SET(QGIS_DOC_FILES
+set(QGIS_DOC_FILES
   ../INSTALL.md
   ../NEWS.md
   NEWS.html
@@ -21,33 +21,33 @@ SET(QGIS_DOC_FILES
   LICENSE
 )
 
-INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
-INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
+install(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
+install(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
 
 # Sponsor images
-FILE (GLOB SPONSOR_IMAGES images/projects/thumbnails/* )
-INSTALL (FILES ${SPONSOR_IMAGES} DESTINATION ${QGIS_DATA_DIR}/doc/images/projects/thumbnails/)
+file (GLOB SPONSOR_IMAGES images/projects/thumbnails/* )
+install (FILES ${SPONSOR_IMAGES} DESTINATION ${QGIS_DATA_DIR}/doc/images/projects/thumbnails/)
 
-IF(WITH_APIDOC)
-  FIND_PACKAGE(Doxygen 1.8.2 REQUIRED)
-  IF(DOXYGEN_FOUND)
-    SET(QHP_FILES ${CMAKE_CURRENT_BINARY_DIR}/api/html/index.qhp)
+if(WITH_APIDOC)
+  find_package(Doxygen 1.8.2 REQUIRED)
+  if(DOXYGEN_FOUND)
+    set(QHP_FILES ${CMAKE_CURRENT_BINARY_DIR}/api/html/index.qhp)
 
     # Whether to generate QHP file
-    SET (GENERATE_QHP FALSE CACHE BOOL "Determines whether to generate Qt QHP help from the QGIS API Docs")
-    IF (GENERATE_QHP)
-      SET(WITH_QHP YES)
-      SET(QHP_FILES ${QHP_FILES} ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch)
-    ELSE(GENERATE_QHP)
-      SET(WITH_QHP NO)
-    ENDIF(GENERATE_QHP)
+    set (GENERATE_QHP FALSE CACHE BOOL "Determines whether to generate Qt QHP help from the QGIS API Docs")
+    if (GENERATE_QHP)
+      set(WITH_QHP YES)
+      set(QHP_FILES ${QHP_FILES} ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch)
+    else()
+      set(WITH_QHP NO)
+    endif()
 
-    SET(DOXYGEN_INCLUDE_PATH
+    set(DOXYGEN_INCLUDE_PATH
       ${CMAKE_SOURCE_DIR}/src/core
     )
-    STRING(REPLACE ";" " " DOXYGEN_INCLUDE_PATH "${DOXYGEN_INCLUDE_PATH}")
+    string(REPLACE ";" " " DOXYGEN_INCLUDE_PATH "${DOXYGEN_INCLUDE_PATH}")
 
-    SET(DOXYGEN_INPUT
+    set(DOXYGEN_INPUT
       ${CMAKE_SOURCE_DIR}/doc
       ${CMAKE_SOURCE_DIR}/src/core
       ${CMAKE_SOURCE_DIR}/src/core/3d
@@ -119,8 +119,8 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/quickgui/plugin
     )
 
-    IF(WITH_SERVER)
-      SET(DOXYGEN_INPUT
+    if(WITH_SERVER)
+      set(DOXYGEN_INPUT
         ${DOXYGEN_INPUT}
         ${CMAKE_SOURCE_DIR}/src/server/
         ${CMAKE_SOURCE_DIR}/src/server/services/
@@ -128,46 +128,46 @@ IF(WITH_APIDOC)
         ${CMAKE_SOURCE_DIR}/src/server/services/wfs
         ${CMAKE_SOURCE_DIR}/src/server/services/wcs
       )
-    ENDIF(WITH_SERVER)
+    endif()
 
-    SET(DOXYGEN_FILE_PATTERNS *.h *.cpp *.dox)
+    set(DOXYGEN_FILE_PATTERNS *.h *.cpp *.dox)
 
-    SET(DOXYGEN_FILES)
-    FOREACH(_dir ${DOXYGEN_INPUT})
-      FOREACH(_pattern ${DOXYGEN_FILE_PATTERNS})
-        FILE(GLOB_RECURSE _files ${_dir}/${_pattern})
-        LIST(APPEND DOXYGEN_FILES ${_files})
-      ENDFOREACH(_pattern)
-    ENDFOREACH(_dir)
+    set(DOXYGEN_FILES)
+    foreach(_dir ${DOXYGEN_INPUT})
+      foreach(_pattern ${DOXYGEN_FILE_PATTERNS})
+        file(GLOB_RECURSE _files ${_dir}/${_pattern})
+        list(APPEND DOXYGEN_FILES ${_files})
+      endforeach(_pattern)
+    endforeach(_dir)
 
-    STRING(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
+    string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
 
-    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 
-    SET (DOXYGEN_ON_DEMAND FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be build on demand only")
+    set (DOXYGEN_ON_DEMAND FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be build on demand only")
 
-    IF(DOXYGEN_ON_DEMAND)
-      ADD_CUSTOM_TARGET(apidoc DEPENDS ${QHP_FILES})
-      INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api OPTIONAL)
-    ELSE(DOXYGEN_ON_DEMAND)
-      INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
-      ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${QHP_FILES})
-    ENDIF(DOXYGEN_ON_DEMAND)
-    ADD_CUSTOM_COMMAND(
+    if(DOXYGEN_ON_DEMAND)
+      add_custom_target(apidoc DEPENDS ${QHP_FILES})
+      install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api OPTIONAL)
+    else()
+      install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
+      add_custom_target(apidoc ALL DEPENDS ${QHP_FILES})
+    endif()
+    add_custom_command(
       OUTPUT ${QHP_FILES}
       DEPENDS ${DOXYGEN_FILES}
       COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Generating API documentation" VERBATIM)
-    INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/api)
-    IF(GENERATE_QHP)
-      INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch DESTINATION ${QGIS_DATA_DIR}/doc/api)
-    ENDIF(GENERATE_QHP)
-    SET(WITH_DOT YES CACHE STRING "Determines if the dot application should be used to generate class diagrams for the documentation")
-    MARK_AS_ADVANCED(WITH_DOT)
-  ELSE(DOXYGEN_FOUND)
-    MESSAGE(STATUS "QGIS api documentation not built - Doxygen not found")
-  ENDIF(DOXYGEN_FOUND)
-ENDIF(WITH_APIDOC)
+    install(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/api)
+    if(GENERATE_QHP)
+      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch DESTINATION ${QGIS_DATA_DIR}/doc/api)
+    endif()
+    set(WITH_DOT YES CACHE STRING "Determines if the dot application should be used to generate class diagrams for the documentation")
+    mark_as_advanced(WITH_DOT)
+  else()
+    message(STATUS "QGIS api documentation not built - Doxygen not found")
+  endif()
+endif()
 
 #SUBDIRS (images plugins install_guide)

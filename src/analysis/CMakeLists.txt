@@ -1,7 +1,7 @@
 #############################################################
 # sources
 
-SET(QGIS_ANALYSIS_SRCS
+set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
 
   interpolation/qgsgridfilewriter.cpp
@@ -277,7 +277,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsvectorlayerfeaturepool.cpp
 )
 
-SET(QGIS_ANALYSIS_HDRS
+set(QGIS_ANALYSIS_HDRS
   qgsanalysis.h
 
   interpolation/Bezier3D.h
@@ -372,45 +372,45 @@ SET(QGIS_ANALYSIS_HDRS
   vector/qgszonalstatistics.h
 )
 
-FIND_PACKAGE(EXIV2 REQUIRED)
+find_package(EXIV2 REQUIRED)
 
-INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(SYSTEM ${SQLITE3_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(BEFORE raster)
-INCLUDE_DIRECTORIES(BEFORE mesh)
+include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
+include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
+include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
+include_directories(BEFORE raster)
+include_directories(BEFORE mesh)
 
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 
-IF(NOT MSVC)
-  SET_SOURCE_FILES_PROPERTIES(
+if(NOT MSVC)
+  set_source_files_properties(
     ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
     PROPERTIES COMPILE_FLAGS "-w"
   )
-ELSE(NOT MSVC)
-  IF(PEDANTIC)
+else()
+  if(PEDANTIC)
     # 4127 expression is constant
     # 4702 unreachable code
-    SET_SOURCE_FILES_PROPERTIES(
+    set_source_files_properties(
       ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
       PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702"
     )
-  ENDIF(PEDANTIC)
-ENDIF(NOT MSVC)
+  endif()
+endif()
 
-IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  SET_SOURCE_FILES_PROPERTIES(
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set_source_files_properties(
     interpolation/qgstininterpolator.cpp
     interpolation/NormVecDecorator.cpp
     interpolation/CloughTocherInterpolator.cpp
     PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
   )
-ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+endif()
 
 # install headers
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -435,7 +435,7 @@ INCLUDE_DIRECTORIES(
   interpolation
   network
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
@@ -443,32 +443,32 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${EXIV2_INCLUDE_DIR}
 )
 
-IF(HAVE_OPENCL)
-    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
-ENDIF(HAVE_OPENCL)
+if(HAVE_OPENCL)
+    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+endif()
 
 
 
 #############################################################
 # qgis_analysis library
 
-ADD_LIBRARY(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
+add_library(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis
    BASE_NAME ANALYSIS
    EXPORT_FILE_NAME qgis_analysis.h
 )
-IF(MSVC)
-  SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
-ENDIF(MSVC)
+if(MSVC)
+  set_target_properties(qgis_analysis PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
+endif()
 
-SET(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_analysis.h)
+set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_analysis.h)
 
-IF(NOT APPLE)
-  INSTALL(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-ELSE(NOT APPLE)
-  SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES
+if(NOT APPLE)
+  install(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+else()
+  set_target_properties(qgis_analysis PROPERTIES
     # no moc headers, messes up PROPERTIES syntax
     CLEAN_DIRECT_OUTPUT 1
     FRAMEWORK 1
@@ -481,46 +481,46 @@ ELSE(NOT APPLE)
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
   # generated export header does not get copied with PUBLIC_HEADER files
-  ADD_CUSTOM_COMMAND(TARGET qgis_analysis
+  add_custom_command(TARGET qgis_analysis
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy qgis_analysis.h
             "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_analysis.framework/Headers"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS qgis_analysis.h
   )
-ENDIF(NOT APPLE)
+endif()
 
 #generate unversioned libs for android
-IF (NOT ANDROID)
-  SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES
+if (NOT ANDROID)
+  set_target_properties(qgis_analysis PROPERTIES
     VERSION ${COMPLETE_VERSION}
     SOVERSION ${COMPLETE_VERSION}
     )
-ENDIF (NOT ANDROID)
+endif()
 
-TARGET_LINK_LIBRARIES(
+target_link_libraries(
   qgis_analysis
   qgis_core
   ${EXIV2_LIBRARY}
   )
 
-IF(HAVE_OPENCL)
-    TARGET_LINK_LIBRARIES(qgis_analysis ${OpenCL_LIBRARIES})
-ENDIF(HAVE_OPENCL)
+if(HAVE_OPENCL)
+    target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
+endif()
 
-TARGET_COMPILE_DEFINITIONS(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
+if(CLANG_TIDY_EXE)
+  set_target_properties(
     qgis_analysis PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
 # install
 
-INSTALL(TARGETS qgis_analysis
+install(TARGETS qgis_analysis
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
@@ -529,8 +529,8 @@ INSTALL(TARGETS qgis_analysis
 
 # Mac dev frameworks
 
-IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  INSTALL(TARGETS qgis_analysis FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_analysis\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
-ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+  install(TARGETS qgis_analysis FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_analysis\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
+  install(CODE "execute_process(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
+endif()

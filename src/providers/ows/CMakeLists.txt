@@ -1,9 +1,9 @@
-SET(OWS_SRCS
+set(OWS_SRCS
   qgsowsprovider.cpp
   qgsowsdataitems.cpp
 )
 
-INCLUDE_DIRECTORIES (
+include_directories (
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -19,21 +19,21 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
 )
 
-ADD_LIBRARY (owsprovider MODULE ${OWS_SRCS})
+add_library (owsprovider MODULE ${OWS_SRCS})
 
-TARGET_LINK_LIBRARIES (owsprovider
+target_link_libraries (owsprovider
   qgis_core
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (owsprovider
+if (WITH_GUI)
+  target_link_libraries (owsprovider
     qgis_gui
   )
-ENDIF ()
+endif()
 
-INSTALL(TARGETS owsprovider
+install(TARGETS owsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

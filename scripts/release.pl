@@ -28,10 +28,10 @@ sub updateCMakeLists($$$$) {
 	open I, "CMakeLists.txt.orig";
 	open O, ">CMakeLists.txt" or die "cannot create CMakeLists.txt: $!";
 	while(<I>) {
-		s/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/SET(CPACK_PACKAGE_VERSION_MAJOR "$major")/;
-		s/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/SET(CPACK_PACKAGE_VERSION_MINOR "$minor")/;
-		s/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/SET(CPACK_PACKAGE_VERSION_PATCH "$patch")/;
-		s/SET\(RELEASE_NAME "(.+)"\)/SET(RELEASE_NAME "$release")/;
+		s/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/set(CPACK_PACKAGE_VERSION_MAJOR "$major")/i;
+		s/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/set(CPACK_PACKAGE_VERSION_MINOR "$minor")/i;
+		s/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/set(CPACK_PACKAGE_VERSION_PATCH "$patch")/i;
+		s/SET\(RELEASE_NAME "(.+)"\)/set(RELEASE_NAME "$release")/i;
 		print O;
 	}
 	close O;
@@ -86,13 +86,13 @@ my $patch;
 my $releasename;
 open F, "CMakeLists.txt";
 while(<F>) {
-        if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/) {
+        if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/i) {
                 $major = $1;
-        } elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/) {
+        } elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/i) {
                 $minor = $1;
-        } elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/) {
+        } elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/i) {
                 $patch = $1;
-	} elsif(/SET\(RELEASE_NAME \"(.*)\"\)/) {
+	} elsif(/SET\(RELEASE_NAME \"(.*)\"\)/i) {
 		$releasename = $1;
         }
 }

@@ -1,12 +1,12 @@
 
 # for included scripts that set policies
-INSTALL (CODE "cmake_policy(SET CMP0011 NEW)")
+install (CODE "cmake_policy(SET CMP0011 NEW)")
 
-IF(MSVC AND NOT USING_NMAKE)
-  SET(CRSSYNC "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/crssync.exe")
-ELSE(MSVC AND NOT USING_NMAKE)
-  SET(CRSSYNC "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/crssync")
-ENDIF(MSVC AND NOT USING_NMAKE)
+if(MSVC AND NOT USING_NMAKE)
+  set(CRSSYNC "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/crssync.exe")
+else()
+  set(CRSSYNC "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/crssync")
+endif()
 
-CONFIGURE_FILE("PostInstall.cmake.in" "PostInstall.cmake" @ONLY)
-INSTALL(SCRIPT "${CMAKE_BINARY_DIR}/postinstall/PostInstall.cmake")
+configure_file("PostInstall.cmake.in" "PostInstall.cmake" @ONLY)
+install(SCRIPT "${CMAKE_BINARY_DIR}/postinstall/PostInstall.cmake")

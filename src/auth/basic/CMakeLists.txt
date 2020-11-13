@@ -1,16 +1,16 @@
-SET(AUTH_BASIC_SRCS
+set(AUTH_BASIC_SRCS
   qgsauthbasicmethod.cpp
   qgsauthbasicedit.cpp
 )
 
-SET(AUTH_BASIC_HDRS
+set(AUTH_BASIC_HDRS
   qgsauthbasicedit.h
   qgsauthbasicmethod.h
 )
 
-SET(AUTH_BASIC_UIS qgsauthbasicedit.ui)
+set(AUTH_BASIC_UIS qgsauthbasicedit.ui)
 
-INCLUDE_DIRECTORIES (
+include_directories (
   ../../core
   ../../core/auth
   ../../core/geometry
@@ -18,11 +18,11 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
-INCLUDE_DIRECTORIES (SYSTEM
+include_directories (SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
-INCLUDE_DIRECTORIES (
+include_directories (
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -30,14 +30,14 @@ INCLUDE_DIRECTORIES (
 
 QT5_WRAP_UI (AUTH_BASIC_UIS_H ${AUTH_BASIC_UIS})
 
-ADD_LIBRARY (basicauthmethod MODULE ${AUTH_BASIC_SRCS} ${AUTH_BASIC_HDRS} ${AUTH_BASIC_UIS_H})
+add_library (basicauthmethod MODULE ${AUTH_BASIC_SRCS} ${AUTH_BASIC_HDRS} ${AUTH_BASIC_UIS_H})
 
-TARGET_LINK_LIBRARIES (basicauthmethod
+target_link_libraries (basicauthmethod
   qgis_core
   qgis_gui
 )
-TARGET_COMPILE_DEFINITIONS(basicauthmethod PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(basicauthmethod PRIVATE "-DQT_NO_FOREACH")
 
-INSTALL(TARGETS basicauthmethod
+install(TARGETS basicauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
