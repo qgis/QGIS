@@ -22,6 +22,15 @@
 
 #define SIP_NO_FILE
 
+/**
+ * \ingroup 3d
+ * 3D symbol that draws point cloud geometries as 3D objects.
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.18
+ */
 class QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 {
   public:
@@ -59,29 +68,29 @@ class QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
     /**
      * Returns whether rendering for this symbol is enabled
-     * \since QGIS 3.18
      * \see setIsEnabled( bool enabled )
+     * \since QGIS 3.18
      */
     bool isEnabled() const { return mEnabled; }
 
     /**
      * Sets whether rendering for this symbol is enabled
-     * \since QGIS 3.18
      * \see isEnabled()
+     * \since QGIS 3.18
      */
     void setIsEnabled( bool enabled ) { mEnabled = enabled; }
 
     /**
      * Returns the point size of the point cloud
-     * \since QGIS 3.18
      * \see setPointSize( float size )
+     * \since QGIS 3.18
      */
     float pointSize() const { return mPointSize; }
 
     /**
      * Sets the point size
-     * \since QGIS 3.18
      * \see pointSize()
+     * \since QGIS 3.18
      */
     void setPointSize( float size ) { mPointSize = size; }
 
