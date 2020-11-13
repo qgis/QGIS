@@ -24,6 +24,7 @@
 #include <QImageWriter>
 #include <QFontDialog>
 #include <QApplication>
+#include <QRegularExpression>
 
 
 namespace QgsGuiUtils
@@ -275,11 +276,23 @@ namespace QgsGuiUtils
     return QSize( adjustedSize, adjustedSize );
   }
 
-  QString displayValueWithMaximumDecimals( const Qgis::DataType rasterDataType, const double value )
+  QString displayValueWithMaximumDecimals( const Qgis::DataType dataType, const double value, bool displayTrailingZeroes )
   {
-    const int precision { significantDigits( rasterDataType ) };
-    // Reduce
-    return QLocale().toString( value, 'f', precision );
+    const int precision { significantDigits( dataType ) };
+    QString result { QLocale().toString( value, 'f', precision ) };
+    if ( ! displayTrailingZeroes )
+    {
+      const QRegularExpression zeroesRe { QStringLiteral( R"raw(\%1\d*?(0+$))raw" ).arg( QLocale().decimalPoint() ) };
+      if ( zeroesRe.match( result ).hasMatch() )
+      {
+        result.truncate( zeroesRe.match( result ).capturedStart( 1 ) );
+        if ( result.endsWith( QLocale().decimalPoint( ) ) )
+        {
+          result.chop( 1 );
+        }
+      }
+    }
+    return result;
   }
 
   int significantDigits( const Qgis::DataType rasterDataType )
