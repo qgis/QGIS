@@ -46,7 +46,7 @@ QgsMultiBandColorRenderer cannot be copied. Use :py:func:`~QgsMultiBandColorRend
 
     const QgsContrastEnhancement *redContrastEnhancement() const;
 %Docstring
-Returns the contrast enchancement to use for the red channel.
+Returns the contrast enhancement to use for the red channel.
 
 .. seealso:: :py:func:`setRedContrastEnhancement`
 
@@ -57,7 +57,7 @@ Returns the contrast enchancement to use for the red channel.
 
     void setRedContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring
-Sets the contrast enchancement to use for the red channel.
+Sets the contrast enhancement to use for the red channel.
 
 Ownership of the enhancement is transferred.
 
@@ -70,7 +70,7 @@ Ownership of the enhancement is transferred.
 
     const QgsContrastEnhancement *greenContrastEnhancement() const;
 %Docstring
-Returns the contrast enchancement to use for the green channel.
+Returns the contrast enhancement to use for the green channel.
 
 .. seealso:: :py:func:`setGreenContrastEnhancement`
 
@@ -81,7 +81,7 @@ Returns the contrast enchancement to use for the green channel.
 
     void setGreenContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring
-Sets the contrast enchancement to use for the green channel.
+Sets the contrast enhancement to use for the green channel.
 
 Ownership of the enhancement is transferred.
 
@@ -94,7 +94,7 @@ Ownership of the enhancement is transferred.
 
     const QgsContrastEnhancement *blueContrastEnhancement() const;
 %Docstring
-Returns the contrast enchancement to use for the blue channel.
+Returns the contrast enhancement to use for the blue channel.
 
 .. seealso:: :py:func:`setBlueContrastEnhancement`
 
@@ -105,7 +105,7 @@ Returns the contrast enchancement to use for the blue channel.
 
     void setBlueContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring
-Sets the contrast enchancement to use for the blue channel.
+Sets the contrast enhancement to use for the blue channel.
 
 Ownership of the enhancement is transferred.
 
