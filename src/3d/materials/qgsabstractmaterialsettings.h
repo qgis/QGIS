@@ -131,6 +131,10 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     {
       sipType = sipType_QgsSimpleLineMaterialSettings;
     }
+    else if ( sipCpp->type() == "null" )
+    {
+      sipType = sipType_QgsNullMaterialSettings;
+    }
     else
     {
       sipType = 0;
