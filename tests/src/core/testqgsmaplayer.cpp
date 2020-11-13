@@ -120,7 +120,7 @@ void TestQgsMapLayer::setBlendMode()
   mpLayer->setBlendMode( QPainter::CompositionMode_Screen );
   // check the signal has been correctly emitted
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Screen ) );
   // check accessor
   QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Screen );
 
@@ -129,7 +129,7 @@ void TestQgsMapLayer::setBlendMode()
 
   mpLayer->setBlendMode( QPainter::CompositionMode_Darken );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), QPainter::CompositionMode_Darken );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Darken ) );
   QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Darken );
 }
 
