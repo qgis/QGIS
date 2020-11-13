@@ -492,7 +492,13 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     }
 
     // Resample the raster to the final bounds and resolution
-    QgsGdalUtils::resampleSingleBandRaster( tmpDS.get(), dstDS.get(), GDALResampleAlg::GRA_NearestNeighbour );
+    if (! QgsGdalUtils::resampleSingleBandRaster( tmpDS.get(), dstDS.get(), GDALResampleAlg::GRA_NearestNeighbour ) )
+    {
+      const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+      QgsMessageLog::logMessage( tr( "Unable to resample and transform destination raster for tiles from %1: %2" )
+                                 .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::Critical );
+      return false;
+    }
 
     // Copy to result buffer
     CPLErrorReset();
@@ -1146,11 +1152,6 @@ bool QgsPostgresRasterProvider::init()
         // is tiled?
         mIsTiled = ( mWidth != mTileWidth ) || ( mHeight != mTileHeight );
 
-        if ( ! checkExtent() )
-        {
-          return false;
-        }
-
         // Detect overviews
         findOverviews();
         return initFieldsAndTemporal( );
@@ -1370,11 +1371,6 @@ bool QgsPostgresRasterProvider::init()
   {
     QgsMessageLog::logMessage( tr( "An error occurred while fetching raster metadata" ),
                                QStringLiteral( "PostGIS" ), Qgis::Critical );
-    return false;
-  }
-
-  if ( ! checkExtent() )
-  {
     return false;
   }
 
@@ -1917,23 +1913,6 @@ QStringList QgsPostgresRasterProvider::parseUriKey( const QString &key )
   }
 
   return cols;
-}
-
-bool QgsPostgresRasterProvider::checkExtent()
-{
-  // Last check for extent and crs (see GH #39779 crash)
-  if ( ! mCrs.bounds().isEmpty() )
-  {
-    const QgsCoordinateTransform transformer { mCrs, QgsCoordinateReferenceSystem( 4326 ), transformContext() };
-    const QgsRectangle transformedExtent { transformer.transform( mExtent ) };
-    if ( ! mCrs.bounds().contains( transformedExtent ) )
-    {
-      QgsMessageLog::logMessage( tr( "The extent is outside the CRS bounds" ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
-      return false;
-    }
-  }
-  return true;
 }
 
 QgsPostgresProvider::Relkind QgsPostgresRasterProvider::relkind() const

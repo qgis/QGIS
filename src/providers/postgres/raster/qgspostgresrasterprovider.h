@@ -232,9 +232,6 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
     QStringList parseUriKey( const QString &key );
 
-    bool checkExtent();
-
-  public:
 };
 
 
