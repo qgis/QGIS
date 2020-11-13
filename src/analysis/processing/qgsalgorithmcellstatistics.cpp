@@ -77,7 +77,7 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
                       "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location.\n"
                       "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
-                      "arithmetic mean of the two middle values of the ordered cell input values.\n"
+                      "arithmetic mean of the two middle values of the ordered cell input values. In this case the output data type is Float32.\n"
                       "<i>Calculation details - Minority/Majority:</i> If no unique minority or majority could be found, the result is NoData, except all "
                       "input cell values are equal." );
 }
@@ -190,10 +190,15 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   //force data types on specific functions if input data types don't match
-  if ( method == QgsRasterAnalysisUtils::Mean || method == QgsRasterAnalysisUtils::StandardDeviation || method == QgsRasterAnalysisUtils::Variance )
+  if (
+      method == QgsRasterAnalysisUtils::Mean ||
+      method == QgsRasterAnalysisUtils::StandardDeviation ||
+      method == QgsRasterAnalysisUtils::Variance ||
+      (method == QgsRasterAnalysisUtils::Median && (mInputs.size() % 2 == 0) )
+     )
   {
     if ( static_cast<int>( mDataType ) < 6 )
-      mDataType = Qgis::Float32; //force float on mean and stddev if all inputs are integer
+      mDataType = Qgis::Float32; //force float on mean, stddev and median with equal number of input layers if all inputs are integer
   }
   else if ( method == QgsRasterAnalysisUtils::Count || method == QgsRasterAnalysisUtils::Variety ) //count, variety
   {
