@@ -287,6 +287,8 @@ set(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
+  pointcloud/qgspointcloudrendererwidget.cpp
+
   processing/qgsprocessingaggregatewidgets.cpp
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
@@ -1049,6 +1051,8 @@ set(QGIS_GUI_HDRS
   ogr/qgsnewogrconnection.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
+
+  pointcloud/qgspointcloudrendererwidget.h
 
   processing/qgsprocessingaggregatewidgets.h
   processing/qgsprocessingaggregatewidgetwrapper.h
