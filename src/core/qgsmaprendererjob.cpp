@@ -78,7 +78,7 @@ QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
   QHash<QgsMapLayer *, int> result;
   for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
   {
-    if ( auto &&lKey = it.key() )
+    if ( auto && lKey = it.key() )
       result.insert( lKey, it.value() );
   }
   return result;
@@ -956,7 +956,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     }
 
     case QgsMapLayerType::PointCloudLayer:
-      // point cloud layers should always be rasterised -- we don't want to export points as vectors
+      // point cloud layers should always be rasterized -- we don't want to export points as vectors
       // to formats like PDF!
       return true;
 
