@@ -8,7 +8,7 @@ if (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsLocalServer test_qgis_local_server.py)
 endif()
 
-ADD_PYTHON_TEST(PyCoreAdittions test_core_additions.py)
+ADD_PYTHON_TEST(PyCoreAdditions test_core_additions.py)
 ADD_PYTHON_TEST(PyPythonRepr test_python_repr.py)
 ADD_PYTHON_TEST(PyQgsActionManager test_qgsactionmanager.py)
 ADD_PYTHON_TEST(PyQgsAFSProvider test_provider_afs.py)
