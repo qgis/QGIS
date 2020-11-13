@@ -64,6 +64,7 @@ Item {
 
     if ( Array.isArray(featureIds) && allowMultipleValues )
     {
+      vrModel.searchExpression = "" // to be sure search is empty
       // construct JSON-like value list of key column
       // { val1, val2, val3, ... }
 
@@ -108,7 +109,7 @@ Item {
 
   /**
     * updateField function updates visible value of current field
-    * if value to be set is undefined, -1, empty string or similiar, it also resets current value
+    * if value to be set is undefined, -1, empty string or similar, it also resets current value
     */
   function updateField() {
     if ( widgetValue == null || widgetValue === ""  || widgetValue === -1 ) {
