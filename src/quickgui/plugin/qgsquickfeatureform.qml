@@ -94,6 +94,10 @@ Item {
      */
     property var valueRelationOpened: function valueRelationOpened( widget, valueRelationModel ) {}
 
+    property var getTypeOfWidget: function getTypeOfWidget( widget, valueRelationModel ) {
+      return "combobox"
+    }
+
     property int valueRelationLimit: 4
   }
 
