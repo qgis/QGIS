@@ -442,6 +442,13 @@ void QgsLayerTreeGroup::updateChildVisibilityMutuallyExclusive()
   mChangingChildVisibility = false;
 }
 
+void QgsLayerTreeGroup::makeOrphan()
+{
+  QgsLayerTreeNode::makeOrphan();
+  // Reconnect internal signals
+  connect( this, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeGroup::nodeVisibilityChanged );
+}
+
 void QgsLayerTreeGroup::setItemVisibilityCheckedRecursive( bool checked )
 {
   QgsLayerTreeNode::setItemVisibilityChecked( checked );

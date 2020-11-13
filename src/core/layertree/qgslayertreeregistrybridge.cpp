@@ -30,7 +30,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mInsertionPoint( root, 0 )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
-  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
+  connect( mProject, qgis::overload<const QStringList &>::of<QgsProject>( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
 
   connect( mRoot, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeRegistryBridge::groupWillRemoveChildren );
   connect( mRoot, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeRegistryBridge::groupRemovedChildren );
@@ -118,7 +118,7 @@ static void _collectLayerIdsInGroup( QgsLayerTreeGroup *group, int indexFrom, in
 
 void QgsLayerTreeRegistryBridge::groupWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
-  if ( mRegistryRemovingLayers )
+  if ( mRegistryRemovingLayers || QgsLayerTree::isGroup( node ) )
     return; // do not try to remove those layers again
 
   Q_ASSERT( mLayerIdsForRemoval.isEmpty() );

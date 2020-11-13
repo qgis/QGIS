@@ -43,6 +43,9 @@
 #include "qgssettings.h"
 #include "qgsscalewidget.h"
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 class SnapTypeMenu: public QMenu
 {
@@ -88,6 +91,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mLayerTreeView = new QTreeView();
   QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, mCanvas, this );
   model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( model, this );
+  new ModelTest( model->layerTreeModel(), this );
+#endif
+
   // connections
   connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );

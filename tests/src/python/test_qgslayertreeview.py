@@ -509,6 +509,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         view.setModel(self.model)
         if USE_MODEL_TESTER:
             proxy_tester = QAbstractItemModelTester(view.model())
+            tree_tester = QAbstractItemModelTester(view.layerTreeModel())
 
         view.setCurrentLayer(self.layer3)
         self.layer3.setFlags(self.layer.Private)
@@ -520,6 +521,8 @@ class TestQgsLayerTreeView(unittest.TestCase):
         view.setModel(self.model)
         if USE_MODEL_TESTER:
             proxy_tester = QAbstractItemModelTester(view.model())
+            tree_tester = QAbstractItemModelTester(view.layerTreeModel())
+
         tree_model = view.layerTreeModel()
         proxy_model = view.proxyModel()
 

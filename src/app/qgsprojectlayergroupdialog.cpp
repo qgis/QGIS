@@ -204,7 +204,10 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem, QgsReadWriteContext() );
+    // Use a temporary tree to read the nodes to prevent signals being delivered to the models
+    QgsLayerTree tempTree;
+    tempTree.readChildrenFromXml( layerTreeElem,  QgsReadWriteContext() );
+    mRootGroup->insertChildNodes( -1, tempTree.abandonChildren() );
   }
   else
   {

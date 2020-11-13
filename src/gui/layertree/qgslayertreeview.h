@@ -80,6 +80,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QString mFilterText;
     bool mShowPrivateLayers = false;
+
 };
 
 
@@ -402,6 +403,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mShowPrivateLayers = false;
+
+    // For model  debugging
+    // void checkModel( );
 
     // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
     friend class QgsLayerTreeViewItemDelegate;
