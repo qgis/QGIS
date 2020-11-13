@@ -113,7 +113,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     void setBlueAttribute( const QString &attribute );
 
     /**
-     * Returns the contrast enchancement to use for the red channel.
+     * Returns the contrast enhancement to use for the red channel.
      *
      * \see setRedContrastEnhancement()
      * \see greenContrastEnhancement()
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     const QgsContrastEnhancement *redContrastEnhancement() const;
 
     /**
-     * Sets the contrast \a enchancement to use for the red channel.
+     * Sets the contrast \a enhancement to use for the red channel.
      *
      * Ownership of \a enhancement is transferred.
      *
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     void setRedContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
 
     /**
-     * Returns the contrast enchancement to use for the green channel.
+     * Returns the contrast enhancement to use for the green channel.
      *
      * \see setGreenContrastEnhancement()
      * \see redContrastEnhancement()
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     const QgsContrastEnhancement *greenContrastEnhancement() const;
 
     /**
-     * Sets the contrast \a enchancement to use for the green channel.
+     * Sets the contrast \a enhancement to use for the green channel.
      *
      * Ownership of \a enhancement is transferred.
      *
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     void setGreenContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
 
     /**
-     * Returns the contrast enchancement to use for the blue channel.
+     * Returns the contrast enhancement to use for the blue channel.
      *
      * \see setBlueContrastEnhancement()
      * \see redContrastEnhancement()
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     const QgsContrastEnhancement *blueContrastEnhancement() const;
 
     /**
-     * Sets the contrast \a enchancement to use for the blue channel.
+     * Sets the contrast \a enhancement to use for the blue channel.
      *
      * Ownership of \a enhancement is transferred.
      *

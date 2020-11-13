@@ -56,7 +56,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void setBlueBand( int band ) { mBlueBand = band; }
 
     /**
-     * Returns the contrast enchancement to use for the red channel.
+     * Returns the contrast enhancement to use for the red channel.
      *
      * \see setRedContrastEnhancement()
      * \see greenContrastEnhancement()
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     const QgsContrastEnhancement *redContrastEnhancement() const { return mRedContrastEnhancement; }
 
     /**
-     * Sets the contrast enchancement to use for the red channel.
+     * Sets the contrast enhancement to use for the red channel.
      *
      * Ownership of the enhancement is transferred.
      *
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void setRedContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     /**
-     * Returns the contrast enchancement to use for the green channel.
+     * Returns the contrast enhancement to use for the green channel.
      *
      * \see setGreenContrastEnhancement()
      * \see redContrastEnhancement()
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     const QgsContrastEnhancement *greenContrastEnhancement() const { return mGreenContrastEnhancement; }
 
     /**
-     * Sets the contrast enchancement to use for the green channel.
+     * Sets the contrast enhancement to use for the green channel.
      *
      * Ownership of the enhancement is transferred.
      *
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void setGreenContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     /**
-     * Returns the contrast enchancement to use for the blue channel.
+     * Returns the contrast enhancement to use for the blue channel.
      *
      * \see setBlueContrastEnhancement()
      * \see redContrastEnhancement()
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     const QgsContrastEnhancement *blueContrastEnhancement() const { return mBlueContrastEnhancement; }
 
     /**
-     * Sets the contrast enchancement to use for the blue channel.
+     * Sets the contrast enhancement to use for the blue channel.
      *
      * Ownership of the enhancement is transferred.
      *
