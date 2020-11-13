@@ -31,15 +31,10 @@ Item {
   property var widgetValue: value
   property var currentFeatureLayerPair: featurePair
   property string widgetType: ""
+  property bool isReadOnly: readOnly
 
   property var model: QgsQuick.FeaturesListModel {
     id: vrModel
-
-    // recalculate index when model changes
-    onModelReset: {
-      combobox.currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
-      updateField()
-    }
   }
 
   id: fieldItem
@@ -52,9 +47,11 @@ Item {
     rightMargin: 10 * QgsQuick.Utils.dp
   }
 
-  Component.onCompleted: {
+  onCurrentFeatureLayerPairChanged: {
     vrModel.setupValueRelation( config )
-    widgetType = customWidget.getTypeOfWidget( fieldItem, vrModel )
+    vrModel.currentFeature = currentFeatureLayerPair.feature
+    if ( widgetType === "" )
+      widgetType = customWidget.getTypeOfWidget( fieldItem, vrModel )
     updateField()
   }
 
@@ -89,8 +86,11 @@ Item {
 
   // Called when data in different fields are changed.
   function dataUpdated( feature ) {
-    vrModel.currentFeature = feature
-    combobox.popup.close()
+    if ( !isReadOnly ) {
+      vrModel.currentFeature = feature
+      updateField()
+      combobox.popup.close()
+    }
   }
 
   /**
@@ -111,15 +111,12 @@ Item {
     * if value to be set is undefined, -1, empty string or similiar, it also resets current value
     */
   function updateField() {
-
-    if ( vrModel.currentFeature !== currentFeatureLayerPair.feature )
-      vrModel.currentFeature = currentFeatureLayerPair.feature
-
-    if ( widgetValue == null || widgetValue === "" ) {
+    if ( widgetValue == null || widgetValue === ""  || widgetValue === -1 ) {
       textField.clear()
       combobox.currentIndex = -1
       return
     }
+    let reset = false
 
     if ( widgetType === "textfield" ) {
       if ( allowMultipleValues && widgetValue.startsWith('{') )
@@ -127,21 +124,24 @@ Item {
         let strings = vrModel.convertMultivalueFormat( widgetValue )
         textField.text = strings.join(", ")
         if ( !strings || strings.length === 0 )
-          setValue( "", true )
+          reset = true
       }
       else {
         let text = vrModel.attributeFromValue( QgsQuick.FeaturesListModel.KeyColumn, widgetValue, QgsQuick.FeaturesListModel.FeatureTitle )
-        textField.text = text || "" // if text is undefined, clear text
+        textField.text = text || ""
         if ( !text )
-          setValue( -1, true)
+          reset = true
       }
     }
     else if ( widgetType === "combobox" ) {
       let index = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, widgetValue )
       combobox.currentIndex = index
       if ( index < 0 )
-        setValue( -1, true )
+        reset = true
     }
+
+    if ( reset && !isReadOnly )
+      setValue( -1, true )
   }
 
   /**
