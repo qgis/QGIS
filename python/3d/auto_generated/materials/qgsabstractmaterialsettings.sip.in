@@ -18,6 +18,7 @@ enum class QgsMaterialSettingsRenderingTechnique
   InstancedPoints,
   Points,
   TrianglesWithFixedTexture,
+  TrianglesFromModel,
 };
 
 

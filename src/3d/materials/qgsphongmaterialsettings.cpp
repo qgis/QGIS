@@ -43,6 +43,7 @@ bool QgsPhongMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTe
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
       return true;
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
@@ -90,6 +91,7 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
       if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();
