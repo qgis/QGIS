@@ -59,6 +59,8 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
   private slots:
 
+    void rendererChanged();
+
     void emitWidgetChanged();
 
   private:
