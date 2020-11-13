@@ -56,6 +56,7 @@ QtObject {
   property QtObject toolbutton: QtObject {
     property color backgroundColor: "transparent"
     property color backgroundColorInvalid: "#bdc3c7"
+    property color activeButtonColor: "black"
     property real size: 80 * QgsQuick.Utils.dp
   }
 

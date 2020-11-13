@@ -196,7 +196,7 @@ Item {
       ColorOverlay {
         anchors.fill: rightArrow
         source: rightArrow
-        color: customStyle.toolbutton.backgroundColorInvalid
+        color: isReadOnly ? customStyle.toolbutton.backgroundColorInvalid : customStyle.toolbutton.activeButtonColor
       }
 
       background: Rectangle {
