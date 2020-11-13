@@ -27,13 +27,16 @@ class QgsMapCanvas;
 class QgsMessageBar;
 class QgsPointCloudLayer;
 class QgsMetadataWidget;
-
+class QgsMapLayerConfigWidgetFactory;
+class QgsMapLayerConfigWidget;
 
 class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
 {
     Q_OBJECT
   public:
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+
+    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
 
   private slots:
     void apply();
@@ -73,6 +76,9 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
      * was loaded but dialog is canceled.
     */
     QgsMapLayerStyle mOldStyle;
+
+    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
+
 };
 
 #endif // QGSPOINTCLOUDLAYERPROPERTIES_H

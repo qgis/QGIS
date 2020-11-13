@@ -395,6 +395,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
+#include "pointcloud/qgspointcloudlayerstylewidget.h"
+
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
@@ -1334,6 +1336,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
 #endif
+
+  registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -16256,6 +16260,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       QgsPointCloudLayerProperties pointCloudLayerPropertiesDialog( qobject_cast<QgsPointCloudLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
       if ( !page.isEmpty() )
         pointCloudLayerPropertiesDialog.setCurrentPage( page );
+
+      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      {
+        pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
+      }
 
       mMapStyleWidget->blockUpdates( true );
       if ( pointCloudLayerPropertiesDialog.exec() )

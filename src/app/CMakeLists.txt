@@ -117,6 +117,7 @@ set(QGIS_APP_SRCS
   decorations/qgsdecorationgriddialog.cpp
 
   pointcloud/qgspointcloudlayerproperties.cpp
+  pointcloud/qgspointcloudlayerstylewidget.cpp
 
   vectortile/qgsvectortilelayerproperties.cpp
 

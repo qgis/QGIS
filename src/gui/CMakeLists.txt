@@ -288,6 +288,7 @@ set(QGIS_GUI_SRCS
   ogr/qgsvectorlayersaveasdialog.cpp
 
   pointcloud/qgspointcloudrendererwidget.cpp
+  pointcloud/qgspointcloudrendererpropertieswidget.cpp
 
   processing/qgsprocessingaggregatewidgets.cpp
   processing/qgsprocessingaggregatewidgetwrapper.cpp
@@ -1053,6 +1054,7 @@ set(QGIS_GUI_HDRS
   ogr/qgsvectorlayersaveasdialog.h
 
   pointcloud/qgspointcloudrendererwidget.h
+  pointcloud/qgspointcloudrendererpropertieswidget.h
 
   processing/qgsprocessingaggregatewidgets.h
   processing/qgsprocessingaggregatewidgetwrapper.h
