@@ -260,14 +260,14 @@ void TestQgsVectorLayer::setFeatureBlendMode()
 
   mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Screen ) );
   QCOMPARE( mpPointsLayer->featureBlendMode(), QPainter::CompositionMode_Screen );
   mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
   QCOMPARE( spy.count(), 1 );
 
   mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Darken );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), QPainter::CompositionMode_Darken );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Darken ) );
   QCOMPARE( mpPointsLayer->featureBlendMode(), QPainter::CompositionMode_Darken );
 }
 
