@@ -250,7 +250,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
 #ifndef SIP_RUN
 
-class QgsColorRamp;
+#include "qgscolorramp.h"
 
 
 ///@cond PRIVATE
