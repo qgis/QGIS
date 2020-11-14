@@ -32,14 +32,13 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
 
-  // TODO: add enabled checkbox
-//  mChkEnabled = new QCheckBox( tr( "Enable 3D Renderer" ), this );
-//  layout->addWidget( mChkEnabled );
+  mChkEnabled = new QCheckBox( tr( "Enable 3D Renderer" ), this );
+  layout->addWidget( mChkEnabled );
 
   mWidgetPointCloudSymbol = new QgsPointCloud3DSymbolWidget( layer, this );
   layout->addWidget( mWidgetPointCloudSymbol );
 
-//  connect( mChkEnabled, &QCheckBox::clicked, this, &QgsPointCloudLayer3DRendererWidget::onEnabledClicked );
+  connect( mChkEnabled, &QCheckBox::clicked, this, &QgsPointCloudLayer3DRendererWidget::onEnabledClicked );
   connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::widgetChanged );
 }
 
@@ -48,7 +47,7 @@ void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3D
   mRenderer.reset( renderer ? renderer->clone() : nullptr );
   if ( renderer != nullptr )
     mWidgetPointCloudSymbol->setSymbol( const_cast<QgsPointCloud3DSymbol *>( renderer->symbol() ) );
-//  whileBlocking( mChkEnabled )->setChecked( renderer ? renderer->symbol()->isEnabled() : false );
+  whileBlocking( mChkEnabled )->setChecked( renderer ? renderer->symbol()->isEnabled() : false );
 }
 
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
@@ -64,17 +63,21 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
 
 void QgsPointCloudLayer3DRendererWidget::apply()
 {
-  QgsPointCloudLayer3DRenderer *r = renderer();
-  if ( r )
-    r->setSymbol( mWidgetPointCloudSymbol->symbol() );
-  mLayer->setRenderer3D( r ? r->clone() : nullptr );
+  QgsPointCloudLayer3DRenderer *r = nullptr;
+  if ( mChkEnabled->isChecked() )
+  {
+    r = renderer()->clone();
+    if ( r )
+      r->setSymbol( mWidgetPointCloudSymbol->symbol() );
+  }
+  mLayer->setRenderer3D( r );
 }
 
-//void QgsPointCloudLayer3DRendererWidget::onEnabledClicked()
-//{
-//  mWidgetPointCloudSymbol->setEnabled( mChkEnabled->isChecked() );
-//  emit widgetChanged();
-//}
+void QgsPointCloudLayer3DRendererWidget::onEnabledClicked()
+{
+  mWidgetPointCloudSymbol->setEnabled( mChkEnabled->isChecked() );
+  emit widgetChanged();
+}
 
 void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
@@ -109,7 +112,10 @@ QgsMapLayerConfigWidget *QgsPointCloudLayer3DRendererWidgetFactory::createWidget
   QgsPointCloudLayer *pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( layer );
   if ( !pointCloudLayer )
     return nullptr;
-  return new QgsPointCloudLayer3DRendererWidget( pointCloudLayer, canvas, parent );
+  QgsPointCloudLayer3DRendererWidget *widget = new QgsPointCloudLayer3DRendererWidget( pointCloudLayer, canvas, parent );
+  if ( pointCloudLayer )
+    widget->setRenderer( dynamic_cast<QgsPointCloudLayer3DRenderer *>( pointCloudLayer->renderer3D() ) );
+  return widget;
 }
 
 bool QgsPointCloudLayer3DRendererWidgetFactory::supportLayerPropertiesDialog() const

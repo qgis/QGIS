@@ -46,10 +46,10 @@ class QgsPointCloudLayer3DRendererWidget : public QgsMapLayerConfigWidget
     void apply() override;
 
   private slots:
-//    void onEnabledClicked();
+    void onEnabledClicked();
 
   private:
-//    QCheckBox *mChkEnabled = nullptr;
+    QCheckBox *mChkEnabled = nullptr;
     QgsPointCloud3DSymbolWidget *mWidgetPointCloudSymbol = nullptr;
     std::unique_ptr<QgsPointCloudLayer3DRenderer> mRenderer;
 };
