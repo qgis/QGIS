@@ -27,7 +27,9 @@ echo "${bold}Docker build deps${endbold}"
 docker --version
 docker-compose --version
 docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml config
-docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
+#docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
+docker pull "qgis/qgis3-build-deps:release-3_16"
+docker tag "qgis/qgis3-build-deps:release-3_16" "qgis/qgis3-build-deps:${DOCKER_TAG}"
 docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
 echo "travis_fold:end:docker_build"
 
