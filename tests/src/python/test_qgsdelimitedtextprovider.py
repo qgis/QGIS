@@ -47,7 +47,7 @@ from qgis.core import (
     QgsFeatureSource)
 
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, compareWkt
+from utilities import unitTestDataPath, compareWkt, compareUrl
 
 from providertestbase import ProviderTestCase
 
@@ -292,6 +292,10 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             if verbose:
                 print(testname)
             layer = QgsVectorLayer(urlstr, 'test', 'delimitedtext')
+
+            # decodeUri / encodeUri check
+            self.assertTrue(compareUrl(layer.source(), QgsProviderRegistry.instance().encodeUri('delimitedtext', QgsProviderRegistry.instance().decodeUri('delimitedtext', layer.source()))))
+
             uri = layer.dataProvider().dataSourceUri()
             if verbose:
                 print(uri)
