@@ -1262,14 +1262,54 @@ QString  QgsDelimitedTextProvider::description() const
 
 QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri )
 {
+  const QUrl url( uri );
+  const QUrlQuery queryItems( url.query() );
+
+  QString subset;
+  QStringList openOptions;
+  for ( const auto &item : queryItems.queryItems() )
+  {
+    if ( item.first == QStringLiteral( "subset" ) )
+    {
+      subset = item.second;
+    }
+    else
+    {
+      openOptions << QStringLiteral( "%1=%2" ).arg( item.first, item.second );
+    }
+  }
+
   QVariantMap components;
-  components.insert( QStringLiteral( "path" ), QUrl( uri ).toLocalFile() );
+  components.insert( QStringLiteral( "path" ), url.toLocalFile() );
+  if ( !subset.isEmpty() )
+    components.insert( QStringLiteral( "subset" ), subset );
+  components.insert( QStringLiteral( "openOptions" ), openOptions );
   return components;
 }
 
 QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts )
 {
-  return QStringLiteral( "file://%1" ).arg( parts.value( QStringLiteral( "path" ) ).toString() );
+  QUrl url( QStringLiteral( "file://%1" ).arg( parts.value( QStringLiteral( "path" ) ).toString() ) );
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+
+  QUrlQuery queryItems;
+  for ( const auto &option : openOptions )
+  {
+    int separator = option.indexOf( '=' );
+    if ( separator >= 0 )
+    {
+      queryItems.addQueryItem( option.mid( 0, separator ), option.mid( separator + 1 ) );
+    }
+    else
+    {
+      queryItems.addQueryItem( option, QString() );
+    }
+  }
+  if ( parts.contains( QStringLiteral( "subset" ) ) )
+    queryItems.addQueryItem( QStringLiteral( "subset" ), parts.value( QStringLiteral( "subset" ) ).toString() );
+  url.setQuery( queryItems );
+
+  return url.toString();
 }
 
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
