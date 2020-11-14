@@ -37,7 +37,6 @@ class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymb
 
   private slots:
     void onShapeChanged();
-    void onOverwriteMaterialChecked( int state );
 };
 
 #endif // QGSPOINT3DSYMBOLWIDGET_H

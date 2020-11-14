@@ -14,7 +14,16 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="2" column="0" colspan="2">
@@ -182,7 +191,16 @@
       <string>Shading</string>
      </property>
      <layout class="QGridLayout" name="shadingGroup">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item row="0" column="0">
@@ -238,17 +256,7 @@
      <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="Qgs3DModelSourceLineEdit" name="lineEditModel"/>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="cbOverwriteMaterial">
-         <property name="toolTip">
-          <string>Overwrite model material</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        <widget class="Qgs3DModelSourceLineEdit" name="lineEditModel" native="true"/>
        </item>
       </layout>
      </item>
@@ -405,6 +413,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>Qgs3DModelSourceLineEdit</class>
    <extends>QWidget</extends>
    <header>qgs3dmodelsourcelineedit.h</header>
@@ -415,11 +428,6 @@
    <extends>QWidget</extends>
    <header>qgsmaterialwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
@@ -442,7 +450,6 @@
   <tabstop>spinSize</tabstop>
   <tabstop>spinLength</tabstop>
   <tabstop>lineEditModel</tabstop>
-  <tabstop>cbOverwriteMaterial</tabstop>
   <tabstop>spinBillboardHeight</tabstop>
   <tabstop>btnChangeSymbol</tabstop>
   <tabstop>cboAltClamping</tabstop>

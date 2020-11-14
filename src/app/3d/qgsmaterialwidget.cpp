@@ -87,6 +87,12 @@ QgsAbstractMaterialSettings *QgsMaterialWidget::settings()
   return mCurrentSettings->clone();
 }
 
+void QgsMaterialWidget::setType( const QString &type )
+{
+  mMaterialTypeComboBox->setCurrentIndex( mMaterialTypeComboBox->findData( type ) );
+  materialTypeChanged();
+}
+
 void QgsMaterialWidget::materialTypeChanged()
 {
   std::unique_ptr< QgsAbstractMaterialSettings > currentSettings( settings() );

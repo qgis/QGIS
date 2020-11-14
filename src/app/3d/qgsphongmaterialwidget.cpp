@@ -42,6 +42,18 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
+<<<<<<< HEAD
+=======
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
+    {
+      lblDiffuse->setVisible( true );
+      btnDiffuse->setVisible( true );
+      mAmbientDataDefinedButton->setVisible( true );
+      mDiffuseDataDefinedButton->setVisible( true );
+      mSpecularDataDefinedButton->setVisible( true );
+      break;
+    }
+>>>>>>> 2c349b2512 (Merge pull request #40037 from nyalldawson/model_mat)
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     {
