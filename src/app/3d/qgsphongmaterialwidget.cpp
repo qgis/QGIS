@@ -49,9 +49,9 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
     {
       lblDiffuse->setVisible( true );
       btnDiffuse->setVisible( true );
-      mAmbientDataDefinedButton->setVisible( true );
-      mDiffuseDataDefinedButton->setVisible( true );
-      mSpecularDataDefinedButton->setVisible( true );
+      mAmbientDataDefinedButton->setVisible( false );
+      mDiffuseDataDefinedButton->setVisible( false );
+      mSpecularDataDefinedButton->setVisible( false );
       break;
     }
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
@@ -72,6 +72,16 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
       mAmbientDataDefinedButton->setVisible( false );
       mDiffuseDataDefinedButton->setVisible( false );
       mSpecularDataDefinedButton->setVisible( false );
+      break;
+    }
+
+    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
+    {
+      lblDiffuse->setVisible( true );
+      btnDiffuse->setVisible( true );
+      mAmbientDataDefinedButton->setVisible( true );
+      mDiffuseDataDefinedButton->setVisible( true );
+      mSpecularDataDefinedButton->setVisible( true );
       break;
     }
 

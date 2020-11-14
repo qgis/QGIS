@@ -43,6 +43,7 @@ bool QgsGoochMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTe
     case QgsMaterialSettingsRenderingTechnique::Triangles:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
       return true;
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
@@ -94,12 +95,12 @@ Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettings
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
       if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();
-
       Qt3DExtras::QGoochMaterial *material  = new Qt3DExtras::QGoochMaterial;
       material->setDiffuse( mDiffuse );
       material->setWarm( mWarm );
