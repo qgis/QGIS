@@ -198,7 +198,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSql( const QString &sq
   return executeSqlPrivate( sql, true, feedback );
 }
 
-QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback ) const
+QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, QgsPostgresConn *pgconn ) const
 {
   QList<QVariantList> results;
 
@@ -209,7 +209,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
   }
 
   const QgsDataSourceUri dsUri { uri() };
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
+  QgsPostgresConn *conn = pgconn ? pgconn : QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
   if ( !conn )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
@@ -269,7 +269,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             break;
           }
           const Oid oid { res.PQftype( rowIdx ) };
-          QList<QVariantList> typeRes { executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false ) };
+          QList<QVariantList> typeRes { executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false, nullptr, conn ) };
           // Set the default to string
           QVariant::Type vType { QVariant::Type::String };
           if ( typeRes.size() > 0 && typeRes.first().size() > 0 )
@@ -357,7 +357,8 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
         results.push_back( row );
       }
     }
-    QgsPostgresConnPool::instance()->releaseConnection( conn );
+    if ( ! pgconn )
+      QgsPostgresConnPool::instance()->releaseConnection( conn );
     if ( ! errCause.isEmpty() )
     {
       throw QgsProviderConnectionException( errCause );
