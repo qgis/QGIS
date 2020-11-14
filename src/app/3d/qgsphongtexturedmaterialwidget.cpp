@@ -52,6 +52,8 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
   textureFile->setSource( phongMaterial->diffuseTexturePath() );
   textureScaleSpinBox->setValue( 100.0 / phongMaterial->textureScale() );
   textureRotationSpinBox->setValue( phongMaterial->textureRotation() );
+
+  mPropertyCollection = settings->dataDefinedProperties();
 }
 
 QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
@@ -63,6 +65,8 @@ QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
   m->setDiffuseTexturePath( textureFile->source() );
   m->setTextureScale( 100.0 / textureScaleSpinBox->value() );
   m->setTextureRotation( textureRotationSpinBox->value() );
+  m->setDataDefinedProperties( mPropertyCollection );
+
   return m.release();
 }
 
