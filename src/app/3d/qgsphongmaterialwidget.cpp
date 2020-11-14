@@ -101,9 +101,11 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   btnSpecular->setColor( phongMaterial->specular() );
   spinShininess->setValue( phongMaterial->shininess() );
 
-  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, settings->dataDefinedProperties(), settings->propertyDefinitions(), layer, true );
-  mAmbientDataDefinedButton->init( QgsAbstractMaterialSettings::Ambient, settings->dataDefinedProperties(), settings->propertyDefinitions(), layer, true );
-  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertyDefinitions(), layer, true );
+  mPropertyCollection = settings->dataDefinedProperties();
+
+  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mAmbientDataDefinedButton->init( QgsAbstractMaterialSettings::Ambient, mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, mPropertyCollection, settings->propertyDefinitions(), layer, true );
 }
 
 QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
@@ -114,12 +116,10 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );
 
-  QgsPropertyCollection dataDefinedProperty;
-
-  dataDefinedProperty.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
-  dataDefinedProperty.setProperty( QgsAbstractMaterialSettings::Ambient, mAmbientDataDefinedButton->toProperty() );
-  dataDefinedProperty.setProperty( QgsAbstractMaterialSettings::Specular, mSpecularDataDefinedButton->toProperty() );
-  m->setDataDefinedProperties( dataDefinedProperty );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Ambient, mAmbientDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Specular, mSpecularDataDefinedButton->toProperty() );
+  m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();
 }

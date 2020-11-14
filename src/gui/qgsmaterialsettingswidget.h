@@ -20,6 +20,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+#include "qgspropertycollection.h"
+
 #define SIP_NO_FILE
 
 class QgsAbstractMaterialSettings SIP_EXTERNAL;
@@ -68,6 +70,9 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
      * Emitted when the material definition is changed.
      */
     void changed();
+
+  protected:
+    QgsPropertyCollection mPropertyCollection;
 };
 
 #endif // QGSMATERIALSETTINGSWIDGET_H
