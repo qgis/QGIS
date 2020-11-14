@@ -19,6 +19,7 @@ enum class QgsMaterialSettingsRenderingTechnique
   Points,
   TrianglesWithFixedTexture,
   TrianglesFromModel,
+  TrianglesDataDefined,
 };
 
 

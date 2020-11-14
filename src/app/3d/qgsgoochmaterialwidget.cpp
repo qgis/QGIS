@@ -70,6 +70,32 @@ void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertyDefinitions(), layer, true );
 }
 
+void QgsGoochMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique technique )
+{
+  switch ( technique )
+  {
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    case QgsMaterialSettingsRenderingTechnique::Points:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+      mDiffuseDataDefinedButton->setVisible( false );
+      mWarmDataDefinedButton->setVisible( false );
+      mCoolDataDefinedButton->setVisible( false );
+      mSpecularDataDefinedButton->setVisible( false );
+      break;
+    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
+      mDiffuseDataDefinedButton->setVisible( true );
+      mWarmDataDefinedButton->setVisible( true );
+      mCoolDataDefinedButton->setVisible( true );
+      mSpecularDataDefinedButton->setVisible( true );
+      break;
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+      // not supported
+      break;
+  }
+}
+
 QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
 {
   std::unique_ptr< QgsGoochMaterialSettings > m = qgis::make_unique< QgsGoochMaterialSettings >();
