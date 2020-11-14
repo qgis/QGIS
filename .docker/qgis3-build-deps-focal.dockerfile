@@ -57,7 +57,6 @@ RUN  apt-get update \
     libsqlite3-dev \
     libsqlite3-mod-spatialite \
     libzip-dev \
-    libzstd-dev \
     lighttpd \
     locales \
     ninja-build \
