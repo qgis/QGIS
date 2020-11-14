@@ -30,8 +30,6 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 
-#include "qgspointcloudlayer3drendererwidget.h"
-
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsOptionsDialogBase( QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
   , mLayer( lyr )
@@ -110,12 +108,7 @@ void QgsPointCloudLayerProperties::apply()
 {
   mMetadataWidget->acceptMetadata();
 
-  for ( QgsMapLayerConfigWidget *configWidget : mLayerPropertiesPages )
-  {
-    QgsPointCloudLayer3DRendererWidget *pointCloudRendererWidget = dynamic_cast<QgsPointCloudLayer3DRendererWidget *>( configWidget );
-    if ( pointCloudRendererWidget )
-      pointCloudRendererWidget->apply();
-  }
+  for ( QgsMapLayerConfigWidget *configWidget : mLayerPropertiesPages ) configWidget->apply();
 
   // TODO -- move to proper widget classes!
 

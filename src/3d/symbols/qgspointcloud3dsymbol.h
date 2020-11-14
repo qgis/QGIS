@@ -31,7 +31,7 @@
  *
  * \since QGIS 3.18
  */
-class QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
+class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 {
   public:
     //! Constructor for QgsPointCloud3DSymbol
