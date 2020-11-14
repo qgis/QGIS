@@ -22,7 +22,7 @@ try:
 except ImportError:
     from urllib.request import urlopen, HTTPError, URLError
 
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import QDir, QUrl, QUrlQuery
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -128,6 +128,20 @@ def doubleNear(a, b, tol=0.0000000001):
     Tests whether two floats are near, within a specified tolerance
     """
     return abs(float(a) - float(b)) < tol
+
+
+def compareUrl(a, b):
+    url_a = QUrl(a)
+    url_b = QUrl(b)
+    query_a = QUrlQuery(url_a.query()).queryItems()
+    query_b = QUrlQuery(url_b.query()).queryItems()
+
+    url_equal = url_a.path() == url_b.path()
+    for item in query_a:
+        if item not in query_b:
+            url_equal = False
+
+    return url_equal
 
 
 def compareWkt(a, b, tol=0.000001):
