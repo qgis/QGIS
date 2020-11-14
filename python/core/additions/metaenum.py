@@ -17,6 +17,9 @@
 ***************************************************************************
 """
 
+META_OBJECT_BY_ENUM_CLASS = {}
+META_ENUM_BY_ENUM_CLASS = {}
+
 
 def metaEnumFromValue(enumValue, baseClass=None, raiseException=True):
     """
@@ -39,6 +42,11 @@ def metaEnumFromType(enumClass, baseClass=None, raiseException=True):
     :param raiseException: if False, no exception will be raised and None will be return in case of failure
     :return: the QMetaEnum if it succeeds, None otherwise
     """
+    global META_OBJECT_BY_ENUM_CLASS
+    global META_ENUM_BY_ENUM_CLASS
+    if enumClass in META_ENUM_BY_ENUM_CLASS:
+        return META_ENUM_BY_ENUM_CLASS[enumClass]
+
     if enumClass == int:
         if raiseException:
             raise TypeError("enumClass is an int, while it should be an enum")
@@ -54,8 +62,11 @@ def metaEnumFromType(enumClass, baseClass=None, raiseException=True):
                 raise ValueError("Enum type does not implement baseClass method. Provide the base class as argument.")
 
     try:
-        idx = baseClass.staticMetaObject.indexOfEnumerator(enumClass.__name__)
-        meta_enum = baseClass.staticMetaObject.enumerator(idx)
+        meta_object = baseClass.staticMetaObject
+        META_OBJECT_BY_ENUM_CLASS[enumClass] = meta_object
+        idx = meta_object.indexOfEnumerator(enumClass.__name__)
+        meta_enum = meta_object.enumerator(idx)
+        META_ENUM_BY_ENUM_CLASS[enumClass] = meta_enum
     except AttributeError:
         if raiseException:
             raise TypeError("could not get the metaEnum for {}".format(enumClass.__name__))
