@@ -220,6 +220,8 @@ class _3D_EXPORT QgsMaterialRegistry
 #endif
 
     QMap<QString, QgsMaterialSettingsAbstractMetadata *> mMetadata;
+    //! List of materials, maintained in the order that they have been added
+    QStringList mMaterialsOrder;
 };
 
 

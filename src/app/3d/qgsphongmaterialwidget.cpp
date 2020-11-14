@@ -45,6 +45,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
       lblDiffuse->setVisible( true );
       btnDiffuse->setVisible( true );

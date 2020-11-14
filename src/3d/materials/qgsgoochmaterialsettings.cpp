@@ -42,6 +42,7 @@ bool QgsGoochMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTe
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
       return true;
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
@@ -94,6 +95,7 @@ Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettings
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
       if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();

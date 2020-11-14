@@ -50,6 +50,7 @@ set(QGIS_3D_SRCS
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsgoochmaterialsettings.cpp
   materials/qgsmaterialregistry.cpp
+  materials/qgsnullmaterialsettings.cpp
   materials/qgsphongmaterialsettings.cpp
   materials/qgsphongtexturedmaterialsettings.cpp
   materials/qgssimplelinematerialsettings.cpp
@@ -125,6 +126,7 @@ set(QGIS_3D_HDRS
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
   materials/qgsmaterialregistry.h
+  materials/qgsnullmaterialsettings.h
   materials/qgsphongmaterialsettings.h
   materials/qgsphongtexturedmaterialsettings.h
   materials/qgssimplelinematerialsettings.h

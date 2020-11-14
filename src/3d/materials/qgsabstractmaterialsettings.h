@@ -47,6 +47,7 @@ enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNES
   InstancedPoints, //!< Instanced based rendering, requiring triangles and point data
   Points, //!< Point based rendering, requires point data
   TrianglesWithFixedTexture, //!< Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
+  TrianglesFromModel, //!< Triangle based rendering, using a model object source
 };
 
 
@@ -129,6 +130,10 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     else if ( sipCpp->type() == "simpleline" )
     {
       sipType = sipType_QgsSimpleLineMaterialSettings;
+    }
+    else if ( sipCpp->type() == "null" )
+    {
+      sipType = sipType_QgsNullMaterialSettings;
     }
     else
     {
