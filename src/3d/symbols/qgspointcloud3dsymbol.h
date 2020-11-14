@@ -96,7 +96,7 @@ class QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
   private:
     bool mEnabled = true;
-    float mPointSize = 10.0f;
+    float mPointSize = 2.0f;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H

@@ -28,7 +28,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
   public:
     explicit QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QWidget *parent = nullptr );
 
-    void setLayer( QgsPointCloudLayer *meshLayer, bool updateSymbol = true );
+    void setLayer( QgsPointCloudLayer *pointCloudLayer );
 
     QgsPointCloudLayer *pointCloudLayer() const { return mLayer; }
     void setSymbol( QgsPointCloud3DSymbol *symbol );
