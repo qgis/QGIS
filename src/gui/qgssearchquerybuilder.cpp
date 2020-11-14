@@ -191,7 +191,7 @@ void QgsSearchQueryBuilder::btnGetAllValues_clicked()
 
 void QgsSearchQueryBuilder::btnTest_clicked()
 {
-  long count = countRecords( txtSQL->text() );
+  long count = countRecords( mTxtSql->text() );
 
   // error?
   if ( count == -1 )
@@ -259,14 +259,14 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
 void QgsSearchQueryBuilder::btnOk_clicked()
 {
   // if user hits OK and there is no query, skip the validation
-  if ( txtSQL->text().trimmed().length() > 0 )
+  if ( mTxtSql->text().trimmed().length() > 0 )
   {
     accept();
     return;
   }
 
   // test the query to see if it will result in a valid layer
-  long numRecs = countRecords( txtSQL->text() );
+  long numRecs = countRecords( mTxtSql->text() );
   if ( numRecs == -1 )
   {
     // error shown in countRecords
@@ -284,97 +284,97 @@ void QgsSearchQueryBuilder::btnOk_clicked()
 
 void QgsSearchQueryBuilder::btnEqual_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " = " ) );
+  mTxtSql->insertText( QStringLiteral( " = " ) );
 }
 
 void QgsSearchQueryBuilder::btnLessThan_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " < " ) );
+  mTxtSql->insertText( QStringLiteral( " < " ) );
 }
 
 void QgsSearchQueryBuilder::btnGreaterThan_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " > " ) );
+  mTxtSql->insertText( QStringLiteral( " > " ) );
 }
 
 void QgsSearchQueryBuilder::btnPct_clicked()
 {
-  txtSQL->insertText( QStringLiteral( "%" ) );
+  mTxtSql->insertText( QStringLiteral( "%" ) );
 }
 
 void QgsSearchQueryBuilder::btnIn_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " IN " ) );
+  mTxtSql->insertText( QStringLiteral( " IN " ) );
 }
 
 void QgsSearchQueryBuilder::btnNotIn_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " NOT IN " ) );
+  mTxtSql->insertText( QStringLiteral( " NOT IN " ) );
 }
 
 void QgsSearchQueryBuilder::btnLike_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " LIKE " ) );
+  mTxtSql->insertText( QStringLiteral( " LIKE " ) );
 }
 
 QString QgsSearchQueryBuilder::searchString()
 {
-  return txtSQL->text();
+  return mTxtSql->text();
 }
 
 void QgsSearchQueryBuilder::setSearchString( const QString &searchString )
 {
-  txtSQL->setText( searchString );
+  mTxtSql->setText( searchString );
 }
 
 void QgsSearchQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
+  mTxtSql->insertText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
 }
 
 void QgsSearchQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertText( mModelValues->data( index ).toString() );
+  mTxtSql->insertText( mModelValues->data( index ).toString() );
 }
 
 void QgsSearchQueryBuilder::btnLessEqual_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " <= " ) );
+  mTxtSql->insertText( QStringLiteral( " <= " ) );
 }
 
 void QgsSearchQueryBuilder::btnGreaterEqual_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " >= " ) );
+  mTxtSql->insertText( QStringLiteral( " >= " ) );
 }
 
 void QgsSearchQueryBuilder::btnNotEqual_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " != " ) );
+  mTxtSql->insertText( QStringLiteral( " != " ) );
 }
 
 void QgsSearchQueryBuilder::btnAnd_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " AND " ) );
+  mTxtSql->insertText( QStringLiteral( " AND " ) );
 }
 
 void QgsSearchQueryBuilder::btnNot_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " NOT " ) );
+  mTxtSql->insertText( QStringLiteral( " NOT " ) );
 }
 
 void QgsSearchQueryBuilder::btnOr_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " OR " ) );
+  mTxtSql->insertText( QStringLiteral( " OR " ) );
 }
 
 void QgsSearchQueryBuilder::btnClear_clicked()
 {
-  txtSQL->clear();
+  mTxtSql->clear();
 }
 
 void QgsSearchQueryBuilder::btnILike_clicked()
 {
-  txtSQL->insertText( QStringLiteral( " ILIKE " ) );
+  mTxtSql->insertText( QStringLiteral( " ILIKE " ) );
 }
 
 void QgsSearchQueryBuilder::saveQuery()
@@ -402,7 +402,7 @@ void QgsSearchQueryBuilder::saveQuery()
 
   QDomDocument xmlDoc;
   QDomElement queryElem = xmlDoc.createElement( QStringLiteral( "Query" ) );
-  QDomText queryTextNode = xmlDoc.createTextNode( txtSQL->text() );
+  QDomText queryTextNode = xmlDoc.createTextNode( mTxtSql->text() );
   queryElem.appendChild( queryTextNode );
   xmlDoc.appendChild( queryElem );
 
@@ -506,8 +506,8 @@ void QgsSearchQueryBuilder::loadQuery()
   }
 #endif
 
-  txtSQL->clear();
-  txtSQL->insertText( newQueryText );
+  mTxtSql->clear();
+  mTxtSql->insertText( newQueryText );
 }
 
 void QgsSearchQueryBuilder::showHelp()
