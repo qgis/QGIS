@@ -77,7 +77,7 @@ void QgsGoochMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
-
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:

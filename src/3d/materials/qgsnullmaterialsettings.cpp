@@ -33,6 +33,7 @@ bool QgsNullMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTec
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
     case QgsMaterialSettingsRenderingTechnique::Lines:
       return false;
   }
