@@ -119,7 +119,31 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Create children. Children are not expected to have parent set.
      * \warning This method MUST BE THREAD SAFE.
     */
-    virtual QVector<QgsDataItem *> createChildren() SIP_FACTORY;
+    virtual QVector<QgsDataItem *> createChildren() SIP_TRANSFERBACK;
+#ifdef SIP_RUN
+    SIP_VIRTUAL_CATCHER_CODE
+    PyObject *sipResObj = sipCallMethod( 0, sipMethod, "" );
+    // H = Convert a Python object to a mapped type instance.
+    // 5 = 1 (disallows the conversion of Py_None to NULL) + 4 (returns a copy of the C/C++ instance)
+    sipIsErr = !sipResObj || sipParseResult( 0, sipMethod, sipResObj, "H5", sipType_QVector_0101QgsDataItem, &sipRes ) < 0;
+    if ( !sipIsErr )
+    {
+      for ( QgsDataItem *item : sipRes )
+      {
+        PyObject *pyItem = sipGetPyObject( item, sipType_QgsDataItem );
+        if ( pyItem != NULL )
+        {
+          // pyItem is given an extra reference which is removed when the C++ instance’s destructor is called.
+          sipTransferTo( pyItem, Py_None );
+        }
+      }
+    }
+    if ( sipResObj != NULL )
+    {
+      Py_DECREF( sipResObj );
+    }
+    SIP_END
+#endif
 
     enum State
     {
