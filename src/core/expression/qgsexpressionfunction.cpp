@@ -5325,7 +5325,7 @@ static QVariant fcnArrayGet( const QVariantList &values, const QgsExpressionCont
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   const int pos = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   if ( pos < list.length() && pos >=0 ) return list.at( pos );
-  elif ( pos < 0 && ( list.length() + pos ) >= 0 )
+  else if ( pos < 0 && ( list.length() + pos ) >= 0 )
     return list.at( list.length() + pos );
   return QVariant();
 }
