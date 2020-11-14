@@ -65,8 +65,8 @@ void QgsPointsToLinesAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Order expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NATURAL_SORT" ),
                 QObject::tr( "Sort text containing numbers naturally" ), false, true ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELD" ),
-                QObject::tr( "Line group field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "GROUP_EXPRESSION" ),
+                QObject::tr( "Line group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Lines" ), QgsProcessing::TypeVectorLine ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_LINES" ), QObject::tr( "Number of lines" ) ) );
@@ -85,24 +85,27 @@ QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
   const bool closeLines = parameterAsBool( parameters, QStringLiteral( "CLOSE_LINES" ), context );
 
-  QString orderExpression = parameterAsString( parameters, QStringLiteral( "ORDER_EXPRESSION" ), context );
+  QString orderExpressionString = parameterAsString( parameters, QStringLiteral( "ORDER_EXPRESSION" ), context );
   // If no order expression is given, default to the fid
-  if ( orderExpression.isEmpty() )
-    orderExpression = QString( "$id" );
+  if ( orderExpressionString.isEmpty() )
+    orderExpressionString = QString( "$id" );
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
-  QgsExpression expression = QgsExpression( orderExpression );
-  if ( expression.hasParserError() )
-    throw QgsProcessingException( expression.parserErrorString() );
+  QgsExpression orderExpression = QgsExpression( orderExpressionString );
+  if ( orderExpression.hasParserError() )
+    throw QgsProcessingException( orderExpression.parserErrorString() );
 
-  QStringList requiredFields = QStringList( expression.referencedColumns().values() );
-  expression.prepare( &expressionContext );
+  QStringList requiredFields = QStringList( orderExpression.referencedColumns().values() );
+  orderExpression.prepare( &expressionContext );
 
   QgsFields outputFields = QgsFields();
-  const QString groupField = parameterAsString( parameters, QStringLiteral( "GROUP_FIELD" ), context );
-  if ( ! groupField.isEmpty() )
+  QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
+  QgsExpression groupExpression = QgsExpression( groupExpressionString );
+  if ( groupExpression.hasParserError() )
+    throw QgsProcessingException( groupExpression.parserErrorString() );
+  if ( ! groupExpressionString.isEmpty() )
   {
-    const QgsField field = source->fields().field( groupField );
-    requiredFields.append( field.name() );
+    requiredFields.append( groupExpression.referencedColumns().values() );
+    const QgsField field = groupExpression.isField() ? source->fields().field( requiredFields.last() ) : QString( "group" );
     outputFields.append( field );
   }
 
@@ -141,10 +144,9 @@ QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &para
     if ( f.hasGeometry() && ! f.geometry().isNull() )
     {
       expressionContext.setFeature( f );
-      const QVariant orderValue = expression.evaluate( &expressionContext );
+      const QVariant orderValue = orderExpression.evaluate( &expressionContext );
+      const QVariant groupValue = groupExpressionString.isEmpty() ? QVariant() : groupExpression.evaluate( &expressionContext );
 
-      // If no group field is specified then an invalid QVariant is returned, we're ok with that as our only group
-      const QVariant groupValue = f.attribute( groupField );
       if ( ! allPoints.keys().contains( groupValue ) )
         allPoints[ groupValue ] = QVector< QPair< QVariant, const QgsPoint * > >();
       const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet()->clone() );
