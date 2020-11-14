@@ -27,10 +27,10 @@ class TestCoreAdditions(unittest.TestCase):
         self.assertIsNotNone(me)
         self.assertEqual(me.valueToKey(QgsTolerance.Pixels), 'Pixels')
 
-        # if using same variable twice (e.g. me = me2), this seg faults
-        me2 = metaEnumFromValue(QgsTolerance.Pixels, QgsTolerance)
+        # check that using same variable twice doesn't segfault
+        me = metaEnumFromValue(QgsTolerance.Pixels, QgsTolerance)
         self.assertIsNotNone(me)
-        self.assertEqual(me2.valueToKey(QgsTolerance.Pixels), 'Pixels')
+        self.assertEqual(me.valueToKey(QgsTolerance.Pixels), 'Pixels')
 
         # do not raise error
         self.assertIsNone(metaEnumFromValue(1, QgsTolerance, False))
