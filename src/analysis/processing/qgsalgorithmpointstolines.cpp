@@ -37,7 +37,7 @@ QString QgsPointsToLinesAlgorithm::shortHelpString() const
                       "If no order expression is specified, the fid is used.\n\n"
                       "A natural sort can be used when sorting by a string attribute "
                       "or expression (ie. place 'a9' before 'a10').\n\n"
-                      "An attribute can be selected to group points having the same value into the same resulting line." );
+                      "An attribute or expression can be selected to group points having the same value into the same resulting line." );
 }
 
 QStringList QgsPointsToLinesAlgorithm::tags() const
