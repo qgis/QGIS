@@ -27,15 +27,18 @@ email                : even.rouault at spatialys.com
 #include <QStringList>
 #include <QSet>
 #include "qgis_gui.h"
+#include "qgssubsetstringeditorinterface.h"
 
 SIP_NO_FILE
+
+class QgsVectorLayer;
 
 /**
  * \ingroup gui
  * SQL composer dialog
  *  \note not available in Python bindings
  */
-class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLComposerDialogBase
+class GUI_EXPORT QgsSQLComposerDialog : public QgsSubsetStringEditorInterface, private Ui::QgsSQLComposerDialogBase
 {
     Q_OBJECT
 
@@ -109,6 +112,15 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     //! constructor
     explicit QgsSQLComposerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+    /**
+     * This constructor is used on an existing layer. On successful accept, it will update the layer subset string.
+     * \param layer existing vector layer
+     * \param parent Parent widget
+     * \param fl dialog flags
+     */
+    QgsSQLComposerDialog( QgsVectorLayer *layer, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
     ~QgsSQLComposerDialog() override;
 
     //! initialize the SQL statement
@@ -116,6 +128,9 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     //! Gets the SQL statement
     QString sql() const;
+
+    QString subsetString() const override { return sql(); }
+    void setSubsetString( const QString &subsetString ) override { setSql( subsetString ); }
 
     //! add a list of table names
     void addTableNames( const QStringList &list );
@@ -174,6 +189,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void splitSQLIntoFields();
 
   private:
+    QgsVectorLayer *mLayer = nullptr;
     QStringList mApiList;
     QSet<QString> mAlreadySelectedTables;
     TableSelectedCallback *mTableSelectedCallback = nullptr;

@@ -21,6 +21,7 @@ email                : even.rouault at spatialys.com
 #include "qgssqlcomposerdialog.h"
 #include "qgssqlstatement.h"
 #include "qgshelp.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 #include <QKeyEvent>
@@ -28,7 +29,12 @@ email                : even.rouault at spatialys.com
 #include <Qsci/qscilexer.h>
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl )
+  : QgsSQLComposerDialog( nullptr, parent, fl )
+{}
+
+QgsSQLComposerDialog::QgsSQLComposerDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
+  : QgsSubsetStringEditorInterface( parent, fl )
+  , mLayer( layer )
 {
   setupUi( this );
   connect( mTablesCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSQLComposerDialog::mTablesCombo_currentIndexChanged );
@@ -220,6 +226,10 @@ void QgsSQLComposerDialog::accept()
     {
       QMessageBox::warning( this, tr( "SQL Evaluation" ), warningMsg );
     }
+  }
+  if ( mLayer )
+  {
+    mLayer->setSubsetString( sql() );
   }
   QDialog::accept();
 }
