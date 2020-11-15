@@ -289,7 +289,7 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
   utils.mouseClick( 3, 2, Qt::LeftButton );
   utils.mouseClick( 3, 2, Qt::RightButton );
 
-  // Cirular string need 3 points, so no feature created
+  // Circular string need 3 points, so no feature created
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( utils.existingFeatureIds().count(), 1 );
 
