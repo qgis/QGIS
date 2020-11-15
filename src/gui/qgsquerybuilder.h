@@ -58,7 +58,10 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
 
     void showEvent( QShowEvent *event ) override;
 
+    //! Returns the sql statement entered in the dialog.
     QString sql() const;
+
+    //! Set the sql statement to display in the dialog.
     void setSql( const QString &sqlStatement );
 
     QString subsetString() const override { return sql(); }
