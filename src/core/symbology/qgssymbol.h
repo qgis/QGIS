@@ -25,6 +25,7 @@
 #include "qgsrendercontext.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerreference.h"
+#include "qgspropertycollection.h"
 
 class QColor;
 class QImage;
@@ -106,6 +107,21 @@ class CORE_EXPORT QgsSymbol
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
     Q_DECLARE_FLAGS( RenderHints, RenderHint )
+
+    /**
+     * Data definable properties.
+     * \since QGIS 3.18
+     */
+    enum Property
+    {
+      PropertyOpacity, //!< Opacity
+    };
+
+    /**
+     * Returns the symbol property definitions.
+     * \since QGIS 3.18
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
     virtual ~QgsSymbol();
 
@@ -528,6 +544,38 @@ class CORE_EXPORT QgsSymbol
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     /**
+     * Sets a data defined property for the symbol. Any existing property with the same key
+     * will be overwritten.
+     * \see dataDefinedProperties()
+     * \see Property
+     * \since QGIS 3.18
+     */
+    void setDataDefinedProperty( Property key, const QgsProperty &property );
+
+    /**
+     * Returns a reference to the symbol's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \see Property
+     * \since QGIS 3.18
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the symbol's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 3.18
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+
+    /**
+     * Sets the symbol's property collection, used for data defined overrides.
+     * \param collection property collection. Existing properties will be replaced.
+     * \see dataDefinedProperties()
+     * \since QGIS 3.18
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
      * Returns whether the symbol utilizes any data defined properties.
      * \since QGIS 2.12
      */
@@ -644,6 +692,11 @@ class CORE_EXPORT QgsSymbol
     QgsSymbol( const QgsSymbol & );
 #endif
 
+    static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
     /**
      * TRUE if render has already been started - guards against multiple calls to
      * startRender() (usually a result of not cloning a shared symbol instance before rendering).
@@ -652,6 +705,8 @@ class CORE_EXPORT QgsSymbol
 
     //! Initialized in startRender, destroyed in stopRender
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
+
+    QgsPropertyCollection mDataDefinedProperties;
 
     /**
      * Called before symbol layers will be rendered for a particular \a feature.

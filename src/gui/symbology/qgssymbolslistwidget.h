@@ -95,10 +95,15 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateAssistantSymbol();
     void opacityChanged( double value );
     void createAuxiliaryField();
+    void createSymbolAuxiliaryField();
     void forceRHRToggled( bool checked );
     void saveSymbol();
+    void updateSymbolDataDefinedProperty();
 
   private:
+
+    void registerSymbolDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbol::Property key );
+
     QgsSymbol *mSymbol = nullptr;
     std::shared_ptr< QgsSymbol > mAssistantSymbol;
     QgsStyle *mStyle = nullptr;

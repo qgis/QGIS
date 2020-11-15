@@ -60,6 +60,7 @@ class TestQgsFontMarkerSymbol : public QObject
     void bounds();
     void fontMarkerSymbolDataDefinedProperties();
     void opacityWithDataDefinedColor();
+    void dataDefinedOpacity();
 
   private:
     bool mTestHasError =  false ;
@@ -228,6 +229,26 @@ void TestQgsFontMarkerSymbol::opacityWithDataDefinedColor()
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
   mMarkerSymbol->setOpacity( 1.0 );
+  QVERIFY( result );
+}
+
+void TestQgsFontMarkerSymbol::dataDefinedOpacity()
+{
+  mFontMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mFontMarkerLayer->setStrokeColor( QColor( 0, 0, 0 ) );
+  QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  mFontMarkerLayer->setFontFamily( font.family() );
+  mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
+  mFontMarkerLayer->setCharacter( QChar( 'X' ) );
+  mFontMarkerLayer->setSize( 12 );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mFontMarkerLayer->setStrokeWidth( 0.5 );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
+
+  bool result = imageCheck( QStringLiteral( "fontmarker_ddopacity" ) );
+  mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty() );
   QVERIFY( result );
 }
 

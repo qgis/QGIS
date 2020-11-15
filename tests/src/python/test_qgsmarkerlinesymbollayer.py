@@ -440,6 +440,49 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(res)
 
+    def testDataDefinedOpacity(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        simple_marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 10)
+        simple_marker.setColor(QColor(0, 255, 0))
+        simple_marker.setStrokeColor(QColor(255, 0, 0))
+        simple_marker.setStrokeWidth(1)
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'magenta', 'blue')"))
+
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, simple_marker)
+        marker_symbol.setOpacity(0.5)
+        marker_line.setSubSymbol(marker_symbol)
+        s.appendSymbolLayer(marker_line.clone())
+
+        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_markerline')
+        renderchecker.setControlName('expected_markerline_ddopacity')
+        res = renderchecker.runTest('expected_markerline_ddopacity')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)

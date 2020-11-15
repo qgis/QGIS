@@ -55,6 +55,7 @@ class TestQgsRasterMarker : public QObject
     void anchor();
     void alpha();
     void symbolOpacity();
+    void dataDefinedOpacity();
     void rotation();
     void fixedAspectRatio();
 
@@ -174,6 +175,15 @@ void TestQgsRasterMarker::symbolOpacity()
   mMarkerSymbol->setOpacity( 0.5 );
   bool result = imageCheck( QStringLiteral( "rastermarker_opacity" ) );
   mMarkerSymbol->setOpacity( 1.0 );
+  QVERIFY( result );
+}
+
+void TestQgsRasterMarker::dataDefinedOpacity()
+{
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
+
+  bool result = imageCheck( QStringLiteral( "rastermarker_ddopacity" ) );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty() );
   QVERIFY( result );
 }
 

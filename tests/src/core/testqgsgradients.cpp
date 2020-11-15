@@ -63,6 +63,7 @@ class TestQgsGradients : public QObject
     void gradientSymbolRepeatSpread();
     void gradientSymbolRotate();
     void opacityWithDataDefinedColor();
+    void dataDefinedOpacity();
     void gradientSymbolFromQml();
 
   private:
@@ -253,6 +254,17 @@ void TestQgsGradients::opacityWithDataDefinedColor()
   mFillSymbol->setOpacity( 0.5 );
 
   bool result = imageCheck( QStringLiteral( "gradient_opacityddcolor" ) );
+  QVERIFY( result );
+}
+
+void TestQgsGradients::dataDefinedOpacity()
+{
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mFillSymbol->setOpacity( 1.0 );
+  mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+
+  bool result = imageCheck( QStringLiteral( "gradient_ddopacity" ) );
   QVERIFY( result );
 }
 

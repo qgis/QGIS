@@ -71,6 +71,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
   connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
 
+  registerSymbolDataDefinedButton( mOpacityDDBtn, QgsSymbol::PropertyOpacity );
+
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
   updateAssistantSymbol();
 
@@ -157,6 +159,39 @@ void QgsSymbolsListWidget::createAuxiliaryField()
   emit changed();
 }
 
+void QgsSymbolsListWidget::createSymbolAuxiliaryField()
+{
+  // try to create an auxiliary layer if not yet created
+  if ( !mLayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
+    dlg.exec();
+  }
+
+  // return if still not exists
+  if ( !mLayer->auxiliaryLayer() )
+    return;
+
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsSymbol::propertyDefinitions()[key];
+
+  // create property in auxiliary storage if necessary
+  if ( !mLayer->auxiliaryLayer()->exists( def ) )
+    mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+
+  // update property with join field name from auxiliary storage
+  QgsProperty property = button->toProperty();
+  property.setField( QgsAuxiliaryLayer::nameFromProperty( def, true ) );
+  property.setActive( true );
+  button->updateFieldLists();
+  button->setToProperty( property );
+
+  mSymbol->setDataDefinedProperty( key, button->toProperty() );
+
+  emit changed();
+}
+
 void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
@@ -223,6 +258,26 @@ void QgsSymbolsListWidget::saveSymbol()
 
   // make sure the symbol is stored
   mStyle->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
+}
+
+void QgsSymbolsListWidget::updateSymbolDataDefinedProperty()
+{
+  if ( !mSymbol )
+    return;
+
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
+  mSymbol->setDataDefinedProperty( key, button->toProperty() );
+  emit changed();
+}
+
+void QgsSymbolsListWidget::registerSymbolDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbol::Property key )
+{
+  button->init( key, mSymbol ? mSymbol->dataDefinedProperties() : QgsPropertyCollection(), QgsSymbol::propertyDefinitions(), mLayer, true );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateSymbolDataDefinedProperty );
+  connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsSymbolsListWidget::createSymbolAuxiliaryField );
+
+  button->registerExpressionContextGenerator( this );
 }
 
 void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )
