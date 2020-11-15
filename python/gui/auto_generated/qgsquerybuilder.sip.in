@@ -39,7 +39,14 @@ vector layer properties dialog
 
 
     QString sql() const;
+%Docstring
+Returns the sql statement entered in the dialog.
+%End
+
     void setSql( const QString &sqlStatement );
+%Docstring
+Set the sql statement to display in the dialog.
+%End
 
     virtual QString subsetString() const;
     virtual void setSubsetString( const QString &subsetString );
