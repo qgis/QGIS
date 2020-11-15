@@ -339,6 +339,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsstatusbarscalewidget.h"
 #include "qgsstyle.h"
+#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgssubsetstringeditorprovider.h"
+#include "qgssubsetstringeditorinterface.h"
 #include "qgssvgannotation.h"
 #include "qgstaskmanager.h"
 #include "qgstaskmanagerwidget.h"
@@ -11496,16 +11499,16 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
   }
 
   // launch the query builder
-  std::unique_ptr<QgsQueryBuilder> qb( new QgsQueryBuilder( vlayer, this ) );
+  std::unique_ptr<QgsSubsetStringEditorInterface> qb( QgsGui::subsetStringEditorProviderRegistry()->createDialog( vlayer, this ) );
   QString subsetBefore = vlayer->subsetString();
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
-  qb->setSql( vlayer->subsetString() );
+  qb->setSubsetString( vlayer->subsetString() );
   // Open the query builder and refresh symbology if sql has changed
   // Note: repaintRequested is emitted directly from QgsQueryBuilder
   //       when the sql is set in the layer.
-  if ( qb->exec() && ( subsetBefore != qb->sql() ) && mLayerTreeView )
+  if ( qb->exec() && ( subsetBefore != qb->subsetString() ) && mLayerTreeView )
   {
     mLayerTreeView->refreshLayerSymbology( vlayer->id() );
     activateDeactivateLayerRelatedActions( vlayer );
