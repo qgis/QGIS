@@ -190,7 +190,16 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   //force data types on specific functions if input data types don't match
+<<<<<<< HEAD
   if ( method == QgsRasterAnalysisUtils::Mean || method == QgsRasterAnalysisUtils::StandardDeviation || method == QgsRasterAnalysisUtils::Variance )
+=======
+  if (
+    method == QgsRasterAnalysisUtils::Mean ||
+    method == QgsRasterAnalysisUtils::StandardDeviation ||
+    method == QgsRasterAnalysisUtils::Variance ||
+    ( method == QgsRasterAnalysisUtils::Median && ( mInputs.size() % 2 == 0 ) )
+  )
+>>>>>>> e0574c91a3 (fix styling)
   {
     if ( static_cast<int>( mDataType ) < 6 )
       mDataType = Qgis::Float32; //force float on mean and stddev if all inputs are integer
