@@ -592,6 +592,11 @@ void TestQgsProcessingAlgs::parseGeoTags()
   md.insert( QStringLiteral( "EXIF_GPSImgDirection" ), 15 );
   QCOMPARE( QgsImportPhotosAlgorithm::extractDirectionFromMetadata( md ).toDouble(), 15.0 );
 
+  // extractOrientationFromMetadata
+  QVERIFY( !QgsImportPhotosAlgorithm::extractOrientationFromMetadata( md ).isValid() );
+  md.insert( QStringLiteral( "EXIF_Orientation" ), 3 );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractOrientationFromMetadata( md ).toInt(), 180 );
+
   // extractTimestampFromMetadata
   QVERIFY( !QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).isValid() );
   md.insert( QStringLiteral( "EXIF_DateTimeOriginal" ), QStringLiteral( "xx" ) );
