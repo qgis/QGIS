@@ -1,0 +1,46 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssubsetstringeditorinterface.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsSubsetStringEditorInterface: QDialog
+{
+%Docstring
+Interface for a dialog that can edit subset strings
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgssubsetstringeditorinterface.h"
+%End
+  public:
+    QgsSubsetStringEditorInterface( QWidget *parent /TransferThis/ = 0,
+                                    Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
+%End
+
+    virtual QString subsetString() const = 0;
+%Docstring
+Returns the subset string entered in the dialog.
+%End
+
+    virtual void setSubsetString( const QString &subsetString ) = 0;
+%Docstring
+Sets a subset string into the dialog.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssubsetstringeditorinterface.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

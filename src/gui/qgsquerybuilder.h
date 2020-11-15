@@ -24,6 +24,7 @@
 #include "ui_qgsquerybuilderbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
+#include "qgssubsetstringeditorinterface.h"
 
 class QgsVectorLayer;
 class QgsCodeEditor;
@@ -40,7 +41,7 @@ class QgsCodeEditor;
  * will be returned.
  *
  */
-class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
+class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, private Ui::QgsQueryBuilderBase
 {
     Q_OBJECT
   public:
@@ -57,8 +58,11 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     void showEvent( QShowEvent *event ) override;
 
-    QString sql();
+    QString sql() const;
     void setSql( const QString &sqlStatement );
+
+    QString subsetString() const override { return sql(); }
+    void setSubsetString( const QString &subsetString ) override { setSql( subsetString ); }
 
 #ifdef SIP_RUN
     SIP_IF_FEATURE( HAVE_QSCI_SIP )

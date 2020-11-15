@@ -213,6 +213,14 @@ QList<QgsProjectStorageGuiProvider *> QgsProviderGuiRegistry::projectStorageGuiP
   return QList<QgsProjectStorageGuiProvider *>();
 }
 
+QList<QgsSubsetStringEditorProvider *> QgsProviderGuiRegistry::subsetStringEditorProviders( const QString &providerKey )
+{
+  QgsProviderGuiMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->subsetStringEditorProviders();
+  return QList<QgsSubsetStringEditorProvider *>();
+}
+
 QStringList QgsProviderGuiRegistry::providerList() const
 {
   QStringList lst;
