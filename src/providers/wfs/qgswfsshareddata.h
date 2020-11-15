@@ -46,6 +46,8 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     bool hasGeometry() const override { return !mGeometryAttribute.isEmpty(); }
 
+    const QgsWfsCapabilities::Capabilities &capabilities() const { return mCaps; }
+
   signals:
 
     //! Raise error

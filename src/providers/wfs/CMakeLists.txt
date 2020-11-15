@@ -35,6 +35,7 @@ if (WITH_GUI)
     qgswfssourceselect.cpp
     qgswfsnewconnection.cpp
     qgswfsguiutils.cpp
+    qgswfssubsetstringeditor.cpp
   )
 endif()
 
