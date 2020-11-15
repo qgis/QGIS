@@ -12,11 +12,24 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog
+
+from qgis.core import QgsVectorLayer
 from qgis.gui import (QgsGui,
+                      QgsQueryBuilder,
+                      QgsSubsetStringEditorInterface,
                       QgsSubsetStringEditorProvider)
 from qgis.testing import start_app, unittest
 
 app = start_app()
+
+
+class SubsetStringDialog(QgsSubsetStringEditorInterface):
+
+    def __init__(self, parent=None, fl=Qt.WindowFlags()):
+        super().__init__(parent, fl)
+        self.setObjectName("my_custom_dialog")
 
 
 class TestProvider(QgsSubsetStringEditorProvider):
@@ -29,10 +42,10 @@ class TestProvider(QgsSubsetStringEditorProvider):
         return self._name
 
     def canHandleLayer(self, layer):
-        return False
+        return layer.name() == "layer_for_this_provider"
 
     def createDialog(self, layer, parent, fl):
-        return None
+        return SubsetStringDialog(parent, fl)
 
 
 class TestQgsSubsetStringEditorProviderRegistry(unittest.TestCase):
@@ -77,6 +90,42 @@ class TestQgsSubsetStringEditorProviderRegistry(unittest.TestCase):
         self.assertIsNotNone(registry.providerByName('WFS'))
         self.assertIsNone(registry.providerByName('i_do_not_exist'))
         self.assertEqual(registry.providerByName('WFS').providerKey(), 'WFS')
+
+    def testCreateDialogWithDefaultImplementation(self):
+        """ Tests that createDialog() returns the default implementation when no provider kicks in """
+
+        registry = QgsGui.subsetStringEditorProviderRegistry()
+        p1 = TestProvider('p1')
+        try:
+            registry.addProvider(p1)
+
+            vl = QgsVectorLayer(
+                'Polygon?crs=epsg:4326&field=id:int',
+                'test',
+                'memory')
+            self.assertIsNotNone(registry.createDialog(vl))
+            self.assertEqual(registry.createDialog(vl).objectName(),
+                             QgsQueryBuilder(vl).objectName())
+        finally:
+            registry.removeProvider(p1)
+
+    def testCreateDialogWithCustomImplementation(self):
+        """ Tests that createDialog() returns a custom implementation """
+
+        registry = QgsGui.subsetStringEditorProviderRegistry()
+        p1 = TestProvider('p1')
+        try:
+            registry.addProvider(p1)
+
+            vl = QgsVectorLayer(
+                'Polygon?crs=epsg:4326&field=id:int',
+                'layer_for_this_provider',
+                'memory')
+            self.assertIsNotNone(registry.createDialog(vl))
+            self.assertEqual(registry.createDialog(vl).objectName(),
+                             SubsetStringDialog().objectName())
+        finally:
+            registry.removeProvider(p1)
 
 
 if __name__ == '__main__':
