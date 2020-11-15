@@ -44,6 +44,10 @@
       "returns": "an array of names, for the regions spatially disjoint from the current feature"
     },
     {
+      "expression": "array_to_string(overlay_disjoint('regions', name))",
+      "returns": "a string as a comma separated list of names, for the regions spatially disjoint from the current feature"
+    },
+    {
       "expression": "array_sort(overlay_disjoint(layer:='regions', expression:=\"name\", filter:= population > 10000))",
       "returns": "an ordered array of names, for the regions spatially disjoint from the current feature and with a population greater than 10000"
     },
