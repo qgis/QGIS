@@ -965,10 +965,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """Check that the provider URI decoding returns expected values"""
 
         filename = '/home/to/path/test.db'
-        uri = 'dbname=\'{}\' table="test" (geometry) sql='.format(filename)
+        uri = 'dbname=\'{}\' table="test" (geometry) key=testkey sql=1=1'.format(filename)
         registry = QgsProviderRegistry.instance()
         components = registry.decodeUri('spatialite', uri)
         self.assertEqual(components['path'], filename)
+        self.assertEqual(components['layerName'], 'test')
+        self.assertEqual(components['subset'], '1=1')
+        self.assertEqual(components['geometryColumn'], 'geometry')
+        self.assertEqual(components['keyColumn'], 'testkey')
 
     def testEncodeUri(self):
         """Check that the provider URI encoding returns expected values"""
@@ -976,9 +980,13 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         filename = '/home/to/path/test.db'
         registry = QgsProviderRegistry.instance()
 
-        parts = {'path': filename, 'layerName': 'test'}
+        parts = {'path': filename,
+                 'layerName': 'test',
+                 'subset': '1=1',
+                 'geometryColumn': 'geometry',
+                 'keyColumn': 'testkey'}
         uri = registry.encodeUri('spatialite', parts)
-        self.assertEqual(uri, 'dbname=\'{}\' table="test"'.format(filename))
+        self.assertEqual(uri, 'dbname=\'{}\' key=\'testkey\' table="test" (geometry) sql=1=1'.format(filename))
 
     def testPKNotInt(self):
         """ Check when primary key is not an integer """
