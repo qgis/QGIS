@@ -35,64 +35,40 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 {
   public:
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol() : QgsAbstract3DSymbol() {  }
-    ~QgsPointCloud3DSymbol() override = default;
+    QgsPointCloud3DSymbol();
+    //! Destructor for QgsPointCloud3DSymbol
+    ~QgsPointCloud3DSymbol() override;
 
     QString type() const override { return "pointcloud"; }
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY
-    {
-      // TODO: use unique_ptr
-      QgsPointCloud3DSymbol *result = new QgsPointCloud3DSymbol;
-      result->mEnabled = mEnabled;
-      result->mPointSize = mPointSize;
-      copyBaseSettings( result );
-      return result;
-    }
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override
-    {
-      Q_UNUSED( context )
-
-      elem.setAttribute( QStringLiteral( "enabled" ), mEnabled );
-      elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
-    }
-
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override
-    {
-      Q_UNUSED( context )
-
-      mEnabled = elem.attribute( "enabled", QStringLiteral( "0" ) ).toInt();
-      mPointSize = elem.attribute( "point-size", QStringLiteral( "5.0" ) ).toFloat();
-    }
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     /**
      * Returns whether rendering for this symbol is enabled
      * \see setIsEnabled( bool enabled )
-     * \since QGIS 3.18
      */
     bool isEnabled() const { return mEnabled; }
 
     /**
      * Sets whether rendering for this symbol is enabled
      * \see isEnabled()
-     * \since QGIS 3.18
      */
-    void setIsEnabled( bool enabled ) { mEnabled = enabled; }
+    void setIsEnabled( bool enabled );
 
     /**
      * Returns the point size of the point cloud
      * \see setPointSize( float size )
-     * \since QGIS 3.18
      */
     float pointSize() const { return mPointSize; }
 
     /**
      * Sets the point size
      * \see pointSize()
-     * \since QGIS 3.18
      */
-    void setPointSize( float size ) { mPointSize = size; }
+    void setPointSize( float size );
 
   private:
     bool mEnabled = true;
