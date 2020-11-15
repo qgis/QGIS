@@ -279,6 +279,7 @@ ADD_PYTHON_TEST(PyQgsSymbolExpressionVariables test_qgssymbolexpressionvariables
 ADD_PYTHON_TEST(PyQgsSyntacticSugar test_syntactic_sugar.py)
 ADD_PYTHON_TEST(PyQgsStringUtils test_qgsstringutils.py)
 ADD_PYTHON_TEST(PyQgsStyleModel test_qgsstylemodel.py)
+ADD_PYTHON_TEST(PyQgsSubsetStringEditorProviderRegistry test_qgssubsetstringeditorproviderregistry.py)
 ADD_PYTHON_TEST(PyQgsSvgSourceLineEdit test_qgssvgsourcelineedit.py)
 ADD_PYTHON_TEST(PyQgsSymbol test_qgssymbol.py)
 ADD_PYTHON_TEST(PyQgsSymbolLayerUtils test_qgssymbollayerutils.py)
