@@ -1048,7 +1048,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   while ( !layerNode.isNull() )
   {
     QDomElement e = layerNode.toElement();
-    if ( !e.isNull() )
+    if ( !e.isNull() && e.tagName() != QLatin1String( "data_defined_properties" ) )
     {
       if ( e.tagName() != QLatin1String( "layer" ) )
       {
@@ -1115,6 +1115,13 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   symbol->setOpacity( element.attribute( QStringLiteral( "alpha" ), QStringLiteral( "1.0" ) ).toDouble() );
   symbol->setClipFeaturesToExtent( element.attribute( QStringLiteral( "clip_to_extent" ), QStringLiteral( "1" ) ).toInt() );
   symbol->setForceRHR( element.attribute( QStringLiteral( "force_rhr" ), QStringLiteral( "0" ) ).toInt() );
+
+  QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
+  if ( !ddProps.isNull() )
+  {
+    symbol->dataDefinedProperties().readXml( ddProps, QgsSymbol::propertyDefinitions() );
+  }
+
   return symbol;
 }
 
@@ -1189,6 +1196,10 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
   symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   symEl.setAttribute( QStringLiteral( "force_rhr" ), symbol->forceRHR() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
+
+  QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
+  symbol->dataDefinedProperties().writeXml( ddProps, QgsSymbol::propertyDefinitions() );
+  symEl.appendChild( ddProps );
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {

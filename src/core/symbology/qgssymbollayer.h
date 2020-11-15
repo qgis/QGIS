@@ -495,7 +495,7 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Sets the symbol layer's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
-     * \see properties()
+     * \see dataDefinedProperties()
      * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }

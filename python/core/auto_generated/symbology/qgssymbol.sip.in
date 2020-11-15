@@ -55,6 +55,18 @@ Abstract base class for all rendered symbols.
     typedef QFlags<QgsSymbol::RenderHint> RenderHints;
 
 
+    enum Property
+    {
+      PropertyOpacity,
+    };
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the symbol property definitions.
+
+.. versionadded:: 3.18
+%End
+
     virtual ~QgsSymbol();
 
     static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
@@ -495,6 +507,41 @@ direction.
 Returns a list of attributes required to render this feature.
 This should include any attributes required by the symbology including
 the ones required by expressions.
+%End
+
+    void setDataDefinedProperty( Property key, const QgsProperty &property );
+%Docstring
+Sets a data defined property for the symbol. Any existing property with the same key
+will be overwritten.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
+
+.. versionadded:: 3.18
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the symbol's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. seealso:: Property
+
+.. versionadded:: 3.18
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the symbol's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.18
 %End
 
     bool hasDataDefinedProperties() const;

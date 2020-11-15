@@ -41,7 +41,8 @@ from qgis.core import (QgsGeometry,
                        QgsProperty,
                        QgsSingleSymbolRenderer,
                        QgsRectangle,
-                       QgsMultiRenderChecker
+                       QgsMultiRenderChecker,
+                       QgsSymbol
                        )
 
 from qgis.testing import unittest, start_app
@@ -149,6 +150,41 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('symbol_simplefill')
         renderchecker.setControlName('expected_simplefill_opacityddcolor')
         res = renderchecker.runTest('expected_simplefill_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def testDataDefinedOpacity(self):
+        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_shp, 'Polys', 'ogr')
+        self.assertTrue(poly_layer.isValid())
+
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setStrokeStyle(Qt.NoPen)
+        layer.setColor(QColor(200, 250, 50))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'red', 'green')"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'magenta', 'blue')"))
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        symbol.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
+
+        poly_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([poly_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_simplefill')
+        renderchecker.setControlName('expected_simplefill_ddopacity')
+        res = renderchecker.runTest('expected_simplefill_ddopacity')
         self.report += renderchecker.report()
         self.assertTrue(res)
 

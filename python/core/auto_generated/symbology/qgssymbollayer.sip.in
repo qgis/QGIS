@@ -503,7 +503,7 @@ Sets the symbol layer's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. seealso:: :py:func:`properties`
+.. seealso:: :py:func:`dataDefinedProperties`
 
 .. versionadded:: 3.0
 %End

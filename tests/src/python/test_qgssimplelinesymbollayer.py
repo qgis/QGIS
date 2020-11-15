@@ -49,7 +49,8 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayer,
                        QgsMultiRenderChecker,
                        QgsProperty,
-                       QgsSingleSymbolRenderer
+                       QgsSingleSymbolRenderer,
+                       QgsSymbol
                        )
 
 from qgis.testing import unittest, start_app
@@ -250,6 +251,34 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('symbol_simpleline')
         renderchecker.setControlName('expected_simpleline_opacityddcolor')
         res = renderchecker.runTest('expected_simpleline_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def testDataDefinedOpacity(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+
+        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_simpleline')
+        renderchecker.setControlName('expected_simpleline_ddopacity')
+        res = renderchecker.runTest('expected_simpleline_ddopacity')
         self.report += renderchecker.report()
         self.assertTrue(res)
 

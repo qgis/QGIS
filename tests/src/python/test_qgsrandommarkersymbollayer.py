@@ -47,7 +47,8 @@ from qgis.core import (QgsGeometry,
                        QgsProperty,
                        QgsSymbolLayer,
                        QgsRectangle,
-                       QgsMultiRenderChecker
+                       QgsMultiRenderChecker,
+                       QgsSymbol
                        )
 
 from qgis.testing import unittest, start_app
@@ -244,6 +245,47 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('symbol_randommarkerfill')
         renderchecker.setControlName('expected_randommarker_opacityddcolor')
         res = renderchecker.runTest('expected_randommarker_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def testDataDefinedOpacity(self):
+        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_shp, 'Polys', 'ogr')
+        self.assertTrue(poly_layer.isValid())
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        random_fill = QgsRandomMarkerFillSymbolLayer(1, seed=481523)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 6)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeWidth(1)
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'red', 'green')"))
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'magenta', 'blue')"))
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_symbol.setOpacity(0.5)
+        random_fill.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(random_fill.clone())
+
+        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
+
+        poly_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([poly_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_randommarkerfill')
+        renderchecker.setControlName('expected_randommarker_ddopacity')
+        res = renderchecker.runTest('expected_randommarker_ddopacity')
         self.report += renderchecker.report()
         self.assertTrue(res)
 
