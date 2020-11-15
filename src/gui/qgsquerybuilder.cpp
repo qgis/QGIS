@@ -37,7 +37,7 @@
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
                                   QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl )
+  : QgsSubsetStringEditorInterface( parent, fl )
   , mPreviousFieldRow( -1 )
   , mLayer( layer )
 {
@@ -345,7 +345,7 @@ void QgsQueryBuilder::btnLike_clicked()
   mTxtSql->setFocus();
 }
 
-QString QgsQueryBuilder::sql()
+QString QgsQueryBuilder::sql() const
 {
   return mTxtSql->text();
 }

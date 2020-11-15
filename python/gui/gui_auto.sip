@@ -183,6 +183,9 @@
 %Include auto_generated/qgsscalewidget.sip
 %Include auto_generated/qgsscrollarea.sip
 %Include auto_generated/qgssearchquerybuilder.sip
+%Include auto_generated/qgssubsetstringeditorinterface.sip
+%Include auto_generated/qgssubsetstringeditorprovider.sip
+%Include auto_generated/qgssubsetstringeditorproviderregistry.sip
 %Include auto_generated/qgsshortcutsmanager.sip
 %Include auto_generated/qgsslider.sip
 %Include auto_generated/qgssnapindicator.sip

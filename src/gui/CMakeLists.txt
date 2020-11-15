@@ -558,6 +558,9 @@ set(QGIS_GUI_SRCS
   qgsscalewidget.cpp
   qgsscrollarea.cpp
   qgssearchquerybuilder.cpp
+  qgssubsetstringeditorinterface.cpp
+  qgssubsetstringeditorprovider.cpp
+  qgssubsetstringeditorproviderregistry.cpp
   qgsshortcutsmanager.cpp
   qgsslider.cpp
   qgssnapindicator.cpp
@@ -796,6 +799,9 @@ set(QGIS_GUI_HDRS
   qgsscalewidget.h
   qgsscrollarea.h
   qgssearchquerybuilder.h
+  qgssubsetstringeditorinterface.h
+  qgssubsetstringeditorprovider.h
+  qgssubsetstringeditorproviderregistry.h
   qgsshortcutsmanager.h
   qgsslider.h
   qgssnapindicator.h
