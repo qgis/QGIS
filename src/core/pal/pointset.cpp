@@ -833,7 +833,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     {
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
       if ( ! mGeosPreparedBoundary )
       {
         mGeosPreparedBoundary = GEOSPrepare_r( geosctxt, extRing );
