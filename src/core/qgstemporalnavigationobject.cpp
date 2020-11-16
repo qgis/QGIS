@@ -195,7 +195,6 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
   emit temporalFrameDurationChanged( mFrameDuration );
 
   // temporarily disable the updateTemporalRange signal, as we'll emit it ourselves at the end of this function...
-  mBlockUpdateTemporalRangeSignal++;
   mBlockUpdateTemporalRangeSignal--;
 
   // forcing an update of our views
