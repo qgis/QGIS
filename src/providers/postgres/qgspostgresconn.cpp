@@ -29,6 +29,7 @@
 #include "qgssettings.h"
 #include "qgsjsonutils.h"
 #include "qgspostgresstringutils.h"
+#include "qgspostgresconnpool.h"
 
 #include <QApplication>
 #include <QStringList>
@@ -140,6 +141,17 @@ Oid QgsPostgresResult::PQoidValue()
 {
   Q_ASSERT( mRes );
   return ::PQoidValue( mRes );
+}
+
+QgsPoolPostgresConn::QgsPoolPostgresConn( const QString &connInfo )
+  : mPgConn( QgsPostgresConnPool::instance()->acquireConnection( connInfo ) )
+{
+}
+
+QgsPoolPostgresConn::~QgsPoolPostgresConn()
+{
+  if ( mPgConn )
+    QgsPostgresConnPool::instance()->releaseConnection( mPgConn );
 }
 
 
