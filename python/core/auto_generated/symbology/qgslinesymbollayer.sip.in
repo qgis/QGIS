@@ -646,7 +646,7 @@ calculating individual symbol angles.
 .. seealso:: :py:func:`averageAngleUnit`
 %End
 
-    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) ${SIP_FINAL};
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
     virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
 
@@ -794,6 +794,9 @@ Shall the marker be rotated.
 .. deprecated::
    Use setRotateSymbols() instead.
 %End
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
 
   protected:
 
@@ -949,6 +952,9 @@ Returns the map unit scale for the hash length.
 
 .. seealso:: :py:func:`hashLength`
 %End
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
 
   protected:
 

@@ -98,7 +98,9 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    brush.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor ) );
+    QColor fillColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    fillColor.setAlphaF( context.opacity() * fillColor.alphaF() );
+    brush.setColor( fillColor );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillStyle ) )
   {
@@ -110,7 +112,9 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
-    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor ) );
+    QColor penColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor );
+    penColor.setAlphaF( context.opacity() * penColor.alphaF() );
+    pen.setColor( penColor );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
@@ -276,6 +280,13 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
   {
     return;
   }
+
+  QColor fillColor = mColor;
+  fillColor.setAlphaF( context.opacity() * mColor.alphaF() );
+  mBrush.setColor( fillColor );
+  QColor strokeColor = mStrokeColor;
+  strokeColor.setAlphaF( context.opacity() * mStrokeColor.alphaF() );
+  mPen.setColor( strokeColor );
 
   applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
 
@@ -625,6 +636,7 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
     color = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    color.setAlphaF( context.opacity() * color.alphaF() );
   }
 
   //second gradient color
@@ -633,6 +645,7 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor2 ) );
     color2 = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
+    color2.setAlphaF( context.opacity() * color2.alphaF() );
   }
 
   //gradient rotation angle
@@ -3739,7 +3752,6 @@ QColor QgsCentroidFillSymbolLayer::color() const
 
 void QgsCentroidFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mMarker->setOpacity( context.opacity() );
   mMarker->startRender( context.renderContext(), context.fields() );
 
   mCurrentFeatureId = -1;
@@ -3762,12 +3774,16 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, const Q
   {
     // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
     // until after we've received the final part
+    mFeatureSymbolOpacity = context.opacity();
     mCurrentParts << part;
   }
   else
   {
     // not rendering a feature, so we can just render the polygon immediately
+    const double prevOpacity = mMarker->opacity();
+    mMarker->setOpacity( mMarker->opacity() * context.opacity() );
     render( context.renderContext(), QVector<Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
+    mMarker->setOpacity( prevOpacity );
   }
 }
 
@@ -3780,7 +3796,13 @@ void QgsCentroidFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRend
 void QgsCentroidFillSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
   mRenderingFeature = false;
+
+  const double prevOpacity = mMarker->opacity();
+  mMarker->setOpacity( mMarker->opacity() * mFeatureSymbolOpacity );
+
   render( context, mCurrentParts, feature, false );
+  mFeatureSymbolOpacity = 1;
+  mMarker->setOpacity( prevOpacity );
 }
 
 void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVector<QgsCentroidFillSymbolLayer::Part> &parts, const QgsFeature &feature, bool selected )
@@ -4123,7 +4145,7 @@ void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
 
 void QgsRasterFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  applyPattern( mBrush, mImageFilePath, mWidth, mOpacity, context );
+  applyPattern( mBrush, mImageFilePath, mWidth, mOpacity * context.opacity(), context );
 }
 
 void QgsRasterFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -4339,7 +4361,6 @@ QColor QgsRandomMarkerFillSymbolLayer::color() const
 
 void QgsRandomMarkerFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mMarker->setOpacity( context.opacity() );
   mMarker->startRender( context.renderContext(), context.fields() );
 }
 
@@ -4359,12 +4380,16 @@ void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   {
     // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
     // until after we've received the final part
+    mFeatureSymbolOpacity = context.opacity();
     mCurrentParts << part;
   }
   else
   {
     // not rendering a feature, so we can just render the polygon immediately
+    const double prevOpacity = mMarker->opacity();
+    mMarker->setOpacity( mMarker->opacity() * context.opacity() );
     render( context.renderContext(), QVector< Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
+    mMarker->setOpacity( prevOpacity );
   }
 }
 
@@ -4600,7 +4625,14 @@ void QgsRandomMarkerFillSymbolLayer::startFeatureRender( const QgsFeature &, Qgs
 void QgsRandomMarkerFillSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
   mRenderingFeature = false;
+
+  const double prevOpacity = mMarker->opacity();
+  mMarker->setOpacity( mMarker->opacity() * mFeatureSymbolOpacity );
+
   render( context, mCurrentParts, feature, false );
+
+  mFeatureSymbolOpacity = 1;
+  mMarker->setOpacity( prevOpacity );
 }
 
 

@@ -331,6 +331,10 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     return;
   }
 
+  QColor penColor = mColor;
+  penColor.setAlphaF( mColor.alphaF() * context.opacity() );
+  mPen.setColor( penColor );
+
   double offset = mOffset;
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
@@ -563,7 +567,10 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor ) );
+
+    QColor penColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor );
+    penColor.setAlphaF( context.opacity() * penColor.alphaF() );
+    pen.setColor( penColor );
   }
 
   //offset
@@ -2142,8 +2149,6 @@ QColor QgsMarkerLineSymbolLayer::color() const
 
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mMarker->setOpacity( context.opacity() );
-
   // if being rotated, it gets initialized with every line segment
   QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
   if ( rotateSymbols() )
@@ -2339,6 +2344,14 @@ void QgsMarkerLineSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property 
   QgsLineSymbolLayer::setDataDefinedProperty( key, property );
 }
 
+void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+{
+  const double prevOpacity = mMarker->opacity();
+  mMarker->setOpacity( mMarker->opacity() * context.opacity() );
+  QgsTemplatedLineSymbolLayerBase::renderPolyline( points, context );
+  mMarker->setOpacity( prevOpacity );
+}
+
 void QgsMarkerLineSymbolLayer::setSymbolLineAngle( double angle )
 {
   mMarker->setLineAngle( angle );
@@ -2449,8 +2462,6 @@ QString QgsHashedLineSymbolLayer::layerType() const
 
 void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mHashSymbol->setOpacity( context.opacity() );
-
   // if being rotated, it gets initialized with every line segment
   QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
   if ( rotateSymbols() )
@@ -2613,6 +2624,7 @@ void QgsHashedLineSymbolLayer::renderSymbol( const QPointF &point, const QgsFeat
   QPolygonF points;
   points <<  QPointF( start.x(), start.y() ) << QPointF( end.x(), end.y() );
 
+
   mHashSymbol->renderPolyline( points, feature, context, layer, selected );
 }
 
@@ -2626,4 +2638,10 @@ void QgsHashedLineSymbolLayer::setHashAngle( double angle )
   mHashAngle = angle;
 }
 
-
+void QgsHashedLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+{
+  const double prevOpacity = mHashSymbol->opacity();
+  mHashSymbol->setOpacity( mHashSymbol->opacity() * context.opacity() );
+  QgsTemplatedLineSymbolLayerBase::renderPolyline( points, context );
+  mHashSymbol->setOpacity( prevOpacity );
+}
