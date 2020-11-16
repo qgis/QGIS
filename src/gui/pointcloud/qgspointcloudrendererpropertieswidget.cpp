@@ -27,19 +27,18 @@
 
 static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
-  QgsPointCloudRendererRegistry *reg = QgsApplication::pointCloudRendererRegistry();
-  QgsPointCloudRendererAbstractMetadata *am = reg->rendererMetadata( name );
-  if ( !am )
+  QgsPointCloudRendererAbstractMetadata *rendererAbstractMetadata = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( name );
+  if ( !rendererAbstractMetadata )
     return false;
-  QgsPointCloudRendererMetadata *m = dynamic_cast<QgsPointCloudRendererMetadata *>( am );
-  if ( !m )
+  QgsPointCloudRendererMetadata *rendererMetadata = dynamic_cast<QgsPointCloudRendererMetadata *>( rendererAbstractMetadata );
+  if ( !rendererMetadata )
     return false;
 
-  m->setWidgetFunction( f );
+  rendererMetadata->setWidgetFunction( f );
 
   if ( !iconName.isEmpty() )
   {
-    m->setIcon( QgsApplication::getThemeIcon( iconName ) );
+    rendererMetadata->setIcon( QgsApplication::getThemeIcon( iconName ) );
   }
 
   QgsDebugMsgLevel( "Set for " + name, 2 );
@@ -177,16 +176,16 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
     mActiveWidget = nullptr;
   }
 
-  QgsPointCloudRendererWidget *w = nullptr;
-  QgsPointCloudRendererAbstractMetadata *m = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( rendererName );
-  if ( m )
-    w = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
+  QgsPointCloudRendererWidget *widget = nullptr;
+  QgsPointCloudRendererAbstractMetadata *rendererMetadata = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( rendererName );
+  if ( rendererMetadata )
+    widget = rendererMetadata->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
   oldRenderer.reset();
 
-  if ( w )
+  if ( widget )
   {
     // instantiate the widget and set as active
-    mActiveWidget = w;
+    mActiveWidget = widget;
     stackedWidget->addWidget( mActiveWidget );
     stackedWidget->setCurrentWidget( mActiveWidget );
     if ( mActiveWidget->renderer() )
@@ -201,7 +200,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
     }
     connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
     connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsPointCloudRendererPropertiesWidget::openPanel );
-    w->setDockMode( dockMode() );
+    widget->setDockMode( dockMode() );
   }
   else
   {
