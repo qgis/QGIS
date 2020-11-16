@@ -308,7 +308,7 @@ QgsTemporalNavigationObject::AnimationState QgsTemporalNavigationObject::animati
   return mPlayBackMode;
 }
 
-long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const QDateTime &frameStart )
+long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const
 {
   long bestFrame = 0;
   QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creatng an 'instant' Range here
