@@ -171,6 +171,14 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   double scaledWidth = mSymbolWidth;
   double scaledHeight = mSymbolHeight;
 
+  QColor brushColor = mColor;
+  brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
+  mBrush.setColor( brushColor );
+
+  QColor penColor = mStrokeColor;
+  penColor.setAlphaF( penColor.alphaF() * context.opacity() );
+  mPen.setColor( penColor );
+
   if ( mDataDefinedProperties.hasActiveProperties() )
   {
     bool ok;
@@ -204,10 +212,14 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     }
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    mBrush.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor ) );
+    QColor brushColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
+    mBrush.setColor( brushColor );
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
-    mPen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor ) );
+    QColor penColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor );
+    penColor.setAlphaF( penColor.alphaF() * context.opacity() );
+    mPen.setColor( penColor );
 
     if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
     {

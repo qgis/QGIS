@@ -854,6 +854,9 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyJoinStyle );
 
+  if ( mUsingCache )
+    mCachedOpacity = context.opacity();
+
   if ( !shapeIsFilled( mShape ) )
   {
     // some markers can't be drawn as a polygon (circle, cross)
@@ -960,20 +963,32 @@ void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
     return;
   }
 
+  QColor brushColor = mColor;
+  brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
+  mBrush.setColor( brushColor );
+
+  QColor penColor = mStrokeColor;
+  penColor.setAlphaF( penColor.alphaF() * context.opacity() );
+  mPen.setColor( penColor );
+
   bool ok = true;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
     QColor c = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor, &ok );
     if ( ok )
+    {
+      c.setAlphaF( c.alphaF() * context.opacity() );
       mBrush.setColor( c );
+    }
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
-    QColor c = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor, &ok );
+    QColor c = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor, &ok );
     if ( ok )
     {
+      c.setAlphaF( c.alphaF() * context.opacity() );
       mPen.setColor( c );
       mSelPen.setColor( c );
     }
@@ -1036,7 +1051,7 @@ void QgsSimpleMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
     return;
   }
 
-  if ( mUsingCache )
+  if ( mUsingCache && qgsDoubleNear( mCachedOpacity, context.opacity() ) )
   {
     QImage &img = context.selected() ? mSelCache : mCache;
     double s = img.width();
@@ -1717,6 +1732,9 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
     return;
   }
 
+  const double prevOpacity = mFill->opacity();
+  mFill->setOpacity( mFill->opacity() * context.opacity() );
+
   if ( shapeIsFilled( shape ) )
   {
     p->setBrush( Qt::red );
@@ -1737,7 +1755,7 @@ void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
     mFill->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, context.selected() );
   }
 
-
+  mFill->setOpacity( prevOpacity );
 }
 
 
@@ -3183,7 +3201,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     brushColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), brushColor );
   }
   brushColor = context.selected() ? context.renderContext().selectionColor() : brushColor;
-  if ( !SELECTION_IS_OPAQUE )
+  if ( !context.selected() || !SELECTION_IS_OPAQUE )
   {
     brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
   }
