@@ -1289,7 +1289,7 @@ QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri ) co
 
 QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  QUrl url( QStringLiteral( "file://%1" ).arg( parts.value( QStringLiteral( "path" ) ).toString() ) );
+  QUrl url = QUrl::fromLocalFile( parts.value( QStringLiteral( "path" ) ).toString() );
   const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
 
   QUrlQuery queryItems;
