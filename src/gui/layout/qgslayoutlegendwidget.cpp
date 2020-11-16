@@ -1153,6 +1153,8 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
       highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" );
       symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( legendSymbols.first().ruleKey() ) ), true ) );
       highlighted << QStringLiteral( "symbol_count" );
+      symbolLegendScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_expression" ), QVariant::fromValue( layerNode->symbolExpression( legendSymbols.first().ruleKey() ) ), true ) );
+      highlighted << QStringLiteral( "symbol_expression" );
     }
   }
 
