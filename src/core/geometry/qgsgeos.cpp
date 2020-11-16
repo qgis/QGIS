@@ -2247,7 +2247,19 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
   double ny = 0.0;
   try
   {
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+    geos::coord_sequence_unique_ptr nearestCoord;
+    if ( mGeosPrepared ) // use faster version with prepared geometry
+    {
+      nearestCoord.reset( GEOSNearestPoints_r( geosinit()->ctxt, mGeos.get(), otherGeom.get() ) );
+    }
+    else
+    {
+      nearestCoord.reset( GEOSPreparedNearestPoints_r( geosinit()->ctxt, mGeosPrepared.get(), otherGeom.get() ) );
+    }
+#else
     geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosinit()->ctxt, mGeos.get(), otherGeom.get() ) );
+#endif
 
     ( void )GEOSCoordSeq_getX_r( geosinit()->ctxt, nearestCoord.get(), 0, &nx );
     ( void )GEOSCoordSeq_getY_r( geosinit()->ctxt, nearestCoord.get(), 0, &ny );
