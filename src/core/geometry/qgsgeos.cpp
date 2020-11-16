@@ -2586,9 +2586,24 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
 
   for ( int i = 0; i < numMergedLines; ++i )
   {
-    const GEOSGeometry *currentGeom = nullptr;
+    const GEOSGeometry *currentGeom = GEOSGetGeometryN_r( geosinit()->ctxt, mergedLines.get(), i );
 
-    currentGeom = GEOSGetGeometryN_r( geosinit()->ctxt, mergedLines.get(), i );
+    // have we already added this part?
+    bool alreadyAdded = false;
+    double distance = 0;
+    double bufferDistance = std::pow( 10.0L, geomDigits( currentGeom ) - 11 );
+    for ( const GEOSGeometry *other : qgis::as_const( resultLineParts ) )
+    {
+      GEOSHausdorffDistance_r( geosinit()->ctxt, currentGeom, other, &distance );
+      if ( distance < bufferDistance )
+      {
+        alreadyAdded = true;
+        break;
+      }
+    }
+    if ( alreadyAdded )
+      continue;
+
     const GEOSCoordSequence *currentCoordSeq = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, currentGeom );
     unsigned int currentCoordSeqSize;
     GEOSCoordSeq_getSize_r( geosinit()->ctxt, currentCoordSeq, &currentCoordSeqSize );
