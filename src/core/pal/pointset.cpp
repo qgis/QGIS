@@ -842,7 +842,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
 #endif
     }
 
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     geos::coord_sequence_unique_ptr nearestCoord( GEOSPreparedNearestPoints_r( geosctxt, preparedExtRing, geosPt.get() ) );
 #else
     geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
