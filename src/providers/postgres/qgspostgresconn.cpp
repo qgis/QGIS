@@ -490,7 +490,14 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       dimName    = QStringLiteral( "l.coord_dimension" );
       gtableName = QStringLiteral( "geometry_columns" );
     }
+<<<<<<< HEAD
     else if ( i == SctGeography )
+=======
+    // Geography since postgis 1.5
+    else if ( i == SctGeography
+              && ( mPostgisVersionMajor >= 2
+                   || ( mPostgisVersionMajor == 1 && mPostgisVersionMinor >= 5 ) ) )
+>>>>>>> ef7e80d876 (Merge pull request #40098 from tomtor/FixGeographyTest)
     {
       tableName  = QStringLiteral( "l.f_table_name" );
       schemaName = QStringLiteral( "l.f_table_schema" );
