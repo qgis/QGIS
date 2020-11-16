@@ -2649,6 +2649,17 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = g.asWkt()
         self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
+        # test that tolerance is correctly handled
+        g = QgsGeometry.fromWkt(
+            'LineString(152.96370660521466789 -25.60915858374441356, 152.96370887800003402 -25.60912889999996978, 152.9640088780000724 -25.60858889999996535, 152.96423077601289719 -25.60858080133134962, 152.96423675797717578 -25.60854355430449658, 152.96427575123991005 -25.60857916087011432, 152.96537884400004259 -25.60853889999992106, 152.96576355343805176 -25.60880035169972047)')
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(152.9634281, -25.6079985),
+                                                          QgsPoint(152.9640088780000724, -25.60858889999996535),
+                                                          QgsPoint(152.96537884400004259, -25.60853889999992106),
+                                                          QgsPoint(152.9655739, -25.6083169)])), 0)
+        expWkt = 'LineString (152.96371 -25.60916, 152.96371 -25.60913, 152.96401 -25.60859, 152.96423 -25.60858, 152.96423 -25.60858, 152.96428 -25.60858, 152.96538 -25.60854, 152.96576 -25.6088)'
+        wkt = g.asWkt(5)
+        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
     def testConvertToMultiType(self):
         """ Test converting geometries to multi type """
         point = QgsGeometry.fromWkt('Point (1 2)')
