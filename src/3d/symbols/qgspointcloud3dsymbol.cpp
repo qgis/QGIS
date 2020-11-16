@@ -15,7 +15,6 @@
 
 #include "qgspointcloud3dsymbol.h"
 
-// TODO: For some reason whwn I define function on a .cpp file they don't get included in the qgis_app target
 
 QgsPointCloud3DSymbol::QgsPointCloud3DSymbol()
   : QgsAbstract3DSymbol()

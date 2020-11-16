@@ -292,7 +292,7 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
 {
   QgsChunkNodeId id = node->tileId();
   Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
-  return new QgsPointCloudLayerChunkLoader( this, node, mSymbol );
+  return new QgsPointCloudLayerChunkLoader( this, node, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ) );
 }
 
 QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map );

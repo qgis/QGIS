@@ -35,7 +35,7 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   mChkEnabled = new QCheckBox( tr( "Enable 3D Renderer" ), this );
   layout->addWidget( mChkEnabled );
 
-  mWidgetPointCloudSymbol = new QgsPointCloud3DSymbolWidget( layer, this );
+  mWidgetPointCloudSymbol = new QgsPointCloud3DSymbolWidget( nullptr, this );
   layout->addWidget( mWidgetPointCloudSymbol );
 
   connect( mChkEnabled, &QCheckBox::clicked, this, &QgsPointCloudLayer3DRendererWidget::onEnabledClicked );
@@ -44,7 +44,6 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
 
 void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3DRenderer *renderer )
 {
-  mRenderer.reset( renderer ? renderer->clone() : nullptr );
   if ( renderer != nullptr )
     mWidgetPointCloudSymbol->setSymbol( const_cast<QgsPointCloud3DSymbol *>( renderer->symbol() ) );
   whileBlocking( mChkEnabled )->setChecked( renderer ? renderer->symbol()->isEnabled() : false );
@@ -52,13 +51,11 @@ void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3D
 
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
 {
-  // TODO: use unique_ptr for point cloud symbol
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer;
   QgsPointCloud3DSymbol *sym = mWidgetPointCloudSymbol->symbol();
-  mRenderer.reset( new QgsPointCloudLayer3DRenderer );
-  mRenderer->setSymbol( sym );
-  delete sym;
-  mRenderer->setLayer( qobject_cast<QgsPointCloudLayer *>( mLayer ) );
-  return mRenderer.get();
+  renderer->setSymbol( sym );
+  renderer->setLayer( qobject_cast<QgsPointCloudLayer *>( mLayer ) );
+  return renderer;
 }
 
 void QgsPointCloudLayer3DRendererWidget::apply()
@@ -81,9 +78,6 @@ void QgsPointCloudLayer3DRendererWidget::onEnabledClicked()
 
 void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = layer ;
-  QgsPointCloudLayer *pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( layer );
-  mWidgetPointCloudSymbol->setLayer( pointCloudLayer );
   QgsAbstract3DRenderer *r = layer->renderer3D();
   if ( r && r->type() == QLatin1String( "pointcloud" ) )
   {

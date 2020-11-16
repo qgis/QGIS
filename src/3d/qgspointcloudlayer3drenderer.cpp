@@ -26,6 +26,7 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloud3dsymbol.h"
 
+#include "qgis.h"
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "pointcloud" ) )
@@ -79,12 +80,12 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !pcl || !pcl->dataProvider() || !pcl->dataProvider()->index() )
     return nullptr;
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, mSymbol );
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, mSymbol.get() );
 }
 
 void QgsPointCloudLayer3DRenderer::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
-  mSymbol = dynamic_cast<QgsPointCloud3DSymbol *>( symbol->clone() );
+  mSymbol.reset( symbol );
 }
 
 void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -109,7 +110,8 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  if ( !mSymbol ) mSymbol = new QgsPointCloud3DSymbol;
+  if ( !mSymbol )
+    mSymbol = qgis::make_unique< QgsPointCloud3DSymbol >();
   mSymbol->readXml( elemSymbol, context );
 }
 

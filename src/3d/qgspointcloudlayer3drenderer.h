@@ -70,10 +70,14 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
     QgsPointCloudLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
 
-    //! Sets 3D symbol associated with the renderer
-    void setSymbol( QgsPointCloud3DSymbol *symbol );
+    /**
+     * Sets the 3D \a symbol associated with the renderer.
+      * Ownership of \a symbol is transferred to the renderer.
+      * \see symbol()
+      */
+    void setSymbol( QgsPointCloud3DSymbol *symbol SIP_TRANSFER );
     //! Returns 3D symbol associated with the renderer
-    const QgsPointCloud3DSymbol *symbol() const { return mSymbol; }
+    const QgsPointCloud3DSymbol *symbol() const { return mSymbol.get(); }
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -81,7 +85,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
-    QgsPointCloud3DSymbol *mSymbol = nullptr;
+    std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
 
   private:
 #ifdef SIP_RUN

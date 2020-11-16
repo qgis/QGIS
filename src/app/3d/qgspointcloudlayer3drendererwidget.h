@@ -21,6 +21,7 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgspointcloud3dsymbol.h"
 
 class QCheckBox;
 
@@ -51,7 +52,6 @@ class QgsPointCloudLayer3DRendererWidget : public QgsMapLayerConfigWidget
   private:
     QCheckBox *mChkEnabled = nullptr;
     QgsPointCloud3DSymbolWidget *mWidgetPointCloudSymbol = nullptr;
-    std::unique_ptr<QgsPointCloudLayer3DRenderer> mRenderer;
 };
 
 class QgsPointCloudLayer3DRendererWidgetFactory : public QObject, public QgsMapLayerConfigWidgetFactory

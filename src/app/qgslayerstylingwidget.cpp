@@ -683,7 +683,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 #ifdef HAVE_3D
             if ( !mPointCloud3DWidget )
             {
-              mPointCloud3DWidget = new QgsPointCloudLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+              mPointCloud3DWidget = new QgsPointCloudLayer3DRendererWidget( pcLayer, mMapCanvas, mWidgetStack );
               mPointCloud3DWidget->setDockMode( true );
               connect( mPointCloud3DWidget, &QgsPointCloudLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }

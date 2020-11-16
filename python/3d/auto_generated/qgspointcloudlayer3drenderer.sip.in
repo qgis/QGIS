@@ -43,9 +43,12 @@ Returns point cloud layer associated with the renderer
     virtual QgsPointCloudLayer3DRenderer *clone() const /Factory/;
 
 
-    void setSymbol( QgsPointCloud3DSymbol *symbol );
+    void setSymbol( QgsPointCloud3DSymbol *symbol /Transfer/ );
 %Docstring
-Sets 3D symbol associated with the renderer
+Sets the 3D ``symbol`` associated with the renderer.
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`symbol`
 %End
     const QgsPointCloud3DSymbol *symbol() const;
 %Docstring

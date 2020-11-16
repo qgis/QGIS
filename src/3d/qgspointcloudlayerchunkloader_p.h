@@ -139,7 +139,11 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
 {
   public:
-    //! Constructs the loader
+
+    /**
+     * Constructs the loader
+     * QgsPointCloudLayerChunkLoader takes ownership over symbol
+     */
     QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, QgsPointCloud3DSymbol *symbol );
     ~QgsPointCloudLayerChunkLoader() override;
 
