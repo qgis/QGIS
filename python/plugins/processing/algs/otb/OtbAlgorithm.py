@@ -46,7 +46,8 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterBand)
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterField)
 
 from processing.core.parameters import getParameterFromString
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
@@ -220,6 +221,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 value = " ".join([param.options()[i]
                                   for i in self.parameterAsEnums(parameters, param.name(), context)
                                   if i >= 0 and i < len(param.options())])
+            elif isinstance(param, QgsProcessingParameterField):
+                value = " ".join(self.parameterAsFields(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterBoolean):
                 value = self.parameterAsBoolean(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterCrs):
