@@ -446,6 +446,7 @@ Prepares cache image
 
 
 
+
   private:
     virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path );
 

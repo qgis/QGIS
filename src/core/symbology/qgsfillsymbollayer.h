@@ -1989,6 +1989,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     bool mClipPoints = false;
 
     bool mRenderingFeature = false;
+    double mFeatureSymbolOpacity = 1;
 };
 
 
@@ -2103,6 +2104,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     bool mClipOnCurrentPartOnly = false;
 
     bool mRenderingFeature = false;
+    double mFeatureSymbolOpacity = 1;
 
     QgsFeatureId mCurrentFeatureId = -1;
     int mBiggestPartIndex = -1;

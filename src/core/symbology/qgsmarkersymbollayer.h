@@ -408,12 +408,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * be used when data defined properties are present
      */
     bool mUsingCache = false;
+
     //! Maximum width/height of cache image
     static const int MAXIMUM_CACHE_WIDTH = 3000;
 
   private:
 
     void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
+
+    double mCachedOpacity = 1.0;
+
 };
 
 /**
