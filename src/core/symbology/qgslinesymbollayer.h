@@ -592,7 +592,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     */
     const QgsMapUnitScale &averageAngleMapUnitScale() const { return mAverageAngleLengthMapUnitScale; }
 
-    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) FINAL;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
     QgsUnitTypes::RenderUnit outputUnit() const FINAL;
     void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
@@ -752,6 +752,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      */
     Q_DECL_DEPRECATED void setRotateMarker( bool rotate ) SIP_DEPRECATED { setRotateSymbols( rotate ); }
 
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+
   protected:
 
     std::unique_ptr< QgsMarkerSymbol > mMarker;
@@ -875,6 +877,8 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * \see hashLength()
      */
     const QgsMapUnitScale &hashLengthMapUnitScale() const { return mHashLengthMapUnitScale; }
+
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
 
   protected:
 
