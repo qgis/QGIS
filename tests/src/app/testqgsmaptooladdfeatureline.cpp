@@ -289,7 +289,7 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
   utils.mouseClick( 3, 2, Qt::LeftButton );
   utils.mouseClick( 3, 2, Qt::RightButton );
 
-  // Cirular string need 3 points, so no feature created
+  // Circular string need 3 points, so no feature created
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( utils.existingFeatureIds().count(), 1 );
 
@@ -298,13 +298,20 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
   utils.mouseClick( 3, 2, Qt::LeftButton );
   utils.mouseMove( 5, 5 );
   utils.mouseClick( 4, 2, Qt::LeftButton );
+
+  mCaptureTool->setCircularDigitizingEnabled( false );
+
   utils.mouseMove( 5, 5 );
-  utils.mouseClick( 4, 2, Qt::RightButton );
+  utils.mouseClick( 4, 3, Qt::LeftButton );
+
+  utils.mouseMove( 5, 5 );
+  utils.mouseClick( 4, 4, Qt::RightButton );
 
   newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( "CIRCULARSTRING(1 1, 3 2, 4 2)" ) );
+  // as here, QCOMPARE with QgsGeometry uses isGeosEqual() and geos does not support curve (need to convert curve to line string), test with wkt string
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 1, 3 2, 4 2),(4 2, 4 3))" ) ) ;
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
