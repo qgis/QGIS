@@ -281,7 +281,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
         {
           connect( layer, &QgsVectorLayer::editingStarted, gapsLayer, [gapsLayer] { gapsLayer->startEditing(); } );
           connect( layer, &QgsVectorLayer::beforeRollBack, gapsLayer, [gapsLayer] { gapsLayer->rollBack(); } );
-          connect( layer, &QgsVectorLayer::editingStopped, gapsLayer, [gapsLayer] { gapsLayer->commitChanges(); } );
+          connect( layer, &QgsVectorLayer::afterCommitChanges, gapsLayer, [gapsLayer] { gapsLayer->commitChanges(); } );
         }
         else
         {
