@@ -23,13 +23,16 @@ __copyright__ = '(C) 2018, Nyall Dawson'
 
 import qgis  # NOQA
 
+import os
+
 from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir, Qt
+from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsGeometry,
+                       QgsRectangle,
                        QgsFillSymbol,
                        QgsRenderContext,
                        QgsFeature,
@@ -42,8 +45,11 @@ from qgis.core import (QgsGeometry,
                        QgsLineSymbol,
                        QgsUnitTypes,
                        QgsMapUnitScale,
+                       QgsVectorLayer,
                        QgsSymbolLayer,
-                       QgsProperty
+                       QgsMultiRenderChecker,
+                       QgsProperty,
+                       QgsSingleSymbolRenderer
                        )
 
 from qgis.testing import unittest, start_app
@@ -218,6 +224,34 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('simpleline_interioronly', 'simpleline_interioronly', rendered_image)
+
+    def testOpacityWithDataDefinedColor(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+
+        s.setOpacity(0.5)
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_simpleline')
+        renderchecker.setControlName('expected_simpleline_opacityddcolor')
+        res = renderchecker.runTest('expected_simpleline_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def renderGeometry(self, symbol, geom):
         f = QgsFeature()
