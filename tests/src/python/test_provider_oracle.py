@@ -827,6 +827,12 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Type.Point, crs=QgsCoordinateReferenceSystem(4326), overwrite=True)
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
+        # check IF there is an empty table (will throw error if the EMPTY_LAYER table does not excist)
+        self.execSQLCommand('SELECT count(*) FROM "QGIS"."EMPTY_LAYER"')
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="QGIS"."EMPTY_LAYER" sql=',
+            'test', 'oracle')
+        self.assertTrue(vl.isValid())
         # cleanup
         self.execSQLCommand('DROP TABLE "QGIS"."EMPTY_LAYER"')
         self.execSQLCommand("DELETE FROM user_sdo_geom_metadata  where TABLE_NAME='EMPTY_LAYER'")
