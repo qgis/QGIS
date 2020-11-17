@@ -54,6 +54,7 @@ class TestQgsRasterMarker : public QObject
     void rasterMarkerSymbol();
     void anchor();
     void alpha();
+    void symbolOpacity();
     void rotation();
     void fixedAspectRatio();
 
@@ -163,6 +164,16 @@ void TestQgsRasterMarker::alpha()
   mReport += QLatin1String( "<h2>Raster marker alpha</h2>\n" );
   mRasterMarker->setOpacity( 0.5 );
   bool result = imageCheck( QStringLiteral( "rastermarker_alpha" ) );
+  QVERIFY( result );
+}
+
+void TestQgsRasterMarker::symbolOpacity()
+{
+  // test combination of layer opacity AND symbol level opacity
+  mRasterMarker->setOpacity( 0.5 );
+  mMarkerSymbol->setOpacity( 0.5 );
+  bool result = imageCheck( QStringLiteral( "rastermarker_opacity" ) );
+  mMarkerSymbol->setOpacity( 1.0 );
   QVERIFY( result );
 }
 
