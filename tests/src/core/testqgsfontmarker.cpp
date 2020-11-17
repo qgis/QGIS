@@ -216,6 +216,7 @@ void TestQgsFontMarkerSymbol::opacityWithDataDefinedColor()
   mFontMarkerLayer->setStrokeColor( QColor( 0, 0, 0 ) );
   QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   mFontMarkerLayer->setFontFamily( font.family() );
+  mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
   mFontMarkerLayer->setCharacter( QChar( 'X' ) );
   mFontMarkerLayer->setSize( 12 );
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
