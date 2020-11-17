@@ -16279,10 +16279,6 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 //          saveAsFile( clone.get() );
 //        }
 //      } );
-      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
-      {
-        pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
-      }
 
       if ( !page.isEmpty() )
         pointCloudLayerPropertiesDialog.setCurrentPage( page );
