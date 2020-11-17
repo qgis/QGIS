@@ -209,7 +209,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
   }
 
   if ( ! pgconn )
-    pgconn = std::shared_ptr<QgsPoolPostgresConn>( new QgsPoolPostgresConn( QgsDataSourceUri( uri() ).connectionInfo( false ) ) );
+    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
   QgsPostgresConn *conn = pgconn->get();
   if ( ! conn )
   {
