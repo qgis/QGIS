@@ -21,7 +21,6 @@
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
-//  , mLayer( layer )
 {
   this->setupUi( this );
   if ( symbol )

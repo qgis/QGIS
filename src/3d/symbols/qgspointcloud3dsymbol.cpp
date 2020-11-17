@@ -57,5 +57,5 @@ void QgsPointCloud3DSymbol::setIsEnabled( bool enabled )
 
 void QgsPointCloud3DSymbol::setPointSize( float size )
 {
-  mPointSize = size * 1.0f;
+  mPointSize = size;
 }

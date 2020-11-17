@@ -16264,22 +16264,6 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     {
       QgsPointCloudLayerProperties pointCloudLayerPropertiesDialog( qobject_cast<QgsPointCloudLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
 
-      //
-//      connect(
-//        pointCloudLayerPropertiesDialog, static_cast<void ( QgsPointCloudLayerProperties::* )( QgsMapLayer * )>( &QgsPointCloudLayerProperties::toggleEditing ),
-//      this, [ = ]( QgsMapLayer * layer ) { toggleEditing( layer ); }
-//      );
-//      connect( pointCloudLayerPropertiesDialog, &QgsVectorLayerProperties::exportAuxiliaryLayer, this, [ = ]( QgsAuxiliaryLayer * layer )
-//      {
-//        if ( layer )
-//        {
-//          std::unique_ptr<QgsVectorLayer> clone;
-//          clone.reset( layer->toSpatialLayer() );
-
-//          saveAsFile( clone.get() );
-//        }
-//      } );
-
       if ( !page.isEmpty() )
         pointCloudLayerPropertiesDialog.setCurrentPage( page );
       else
