@@ -654,6 +654,9 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
     c->transform( ct, QgsCoordinateTransform::ReverseTransform );
   }
   int countBefore = mCaptureCurve.vertexCount();
+  //if there is only one point, this the first digitized point that are in the this first curve added --> remove the point
+  if ( mCaptureCurve.numPoints() == 1 )
+    mCaptureCurve.removeCurve( 0 );
   mCaptureCurve.addCurve( c );
   int countAfter = mCaptureCurve.vertexCount();
   int addedPoint = countAfter - countBefore;
