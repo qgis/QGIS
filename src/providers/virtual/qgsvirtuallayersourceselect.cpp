@@ -218,7 +218,18 @@ void QgsVirtualLayerSourceSelect::testQuery()
     std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options ) );
     if ( vl->isValid() )
     {
-      QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
+      const QStringList fieldNames = vl->fields().names();
+      if ( !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
+      {
+        QStringList bulletedFieldNames;
+        for ( const QString &fieldName : fieldNames )
+        {
+          bulletedFieldNames.append( QStringLiteral( "<li>%1" ).arg( fieldName ) );
+        }
+        QMessageBox::warning( nullptr, tr( "Virtual layer test " ), tr( "The unique identifier field <b>%1</b> was not found in list of fields:<ul>%2</ul>" ).arg( mUIDField->text(), bulletedFieldNames.join( ' ' ) ) );
+      }
+      else
+        QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
     }
     else
     {
