@@ -126,3 +126,8 @@ QString QgsPointCloudLayer3DRendererWidgetFactory::layerPropertiesPagePositionHi
 {
   return QStringLiteral( "mOptsPage_Rendering" );
 }
+
+bool QgsPointCloudLayer3DRendererWidgetFactory::supportsStyleDock() const
+{
+  return true;
+}

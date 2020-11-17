@@ -64,6 +64,7 @@ class QgsPointCloudLayer3DRendererWidgetFactory : public QObject, public QgsMapL
     bool supportLayerPropertiesDialog() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
     QString layerPropertiesPagePositionHint() const override;
+    bool supportsStyleDock() const override;
 };
 
 #endif // QGSPOINTCLOUDLAYER3DRENDERERWIDGET_H

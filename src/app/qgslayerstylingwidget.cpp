@@ -57,7 +57,6 @@
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
 #include "qgsmeshlayer3drendererwidget.h"
-#include "qgspointcloudlayer3drendererwidget.h"
 #endif
 
 
@@ -255,16 +254,6 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::PointCloudLayer:
-    {
-#ifdef HAVE_3D
-      QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
-      symbol3DItem->setData( Qt::UserRole, Symbology3D );
-      symbol3DItem->setToolTip( tr( "3D View" ) );
-      mOptionsListWidget->addItem( symbol3DItem );
-#endif
-      break;
-    }
-
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
       break;
@@ -437,10 +426,6 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     else if ( QgsMeshLayer3DRendererWidget *widget = qobject_cast<QgsMeshLayer3DRendererWidget *>( current ) )
     {
       mMesh3DWidget = widget;
-    }
-    else if ( QgsPointCloudLayer3DRendererWidget *widget = qobject_cast<QgsPointCloudLayer3DRendererWidget *>( current ) )
-    {
-      mPointCloud3DWidget = widget;
     }
 #endif
   }
@@ -673,28 +658,6 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       }
 
       case QgsMapLayerType::PointCloudLayer:
-      {
-        QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mCurrentLayer );
-        switch ( row )
-        {
-          case 0:
-          {
-#ifdef HAVE_3D
-            if ( !mPointCloud3DWidget )
-            {
-              mPointCloud3DWidget = new QgsPointCloudLayer3DRendererWidget( pcLayer, mMapCanvas, mWidgetStack );
-              mPointCloud3DWidget->setDockMode( true );
-              connect( mPointCloud3DWidget, &QgsPointCloudLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-            }
-            mPointCloud3DWidget->syncToLayer( pcLayer );
-            mWidgetStack->setMainPanel( mPointCloud3DWidget );
-#endif
-            break;
-          }
-        }
-        break;
-      }
-
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
       {

@@ -149,7 +149,6 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 #ifdef HAVE_3D
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
-    QgsPointCloudLayer3DRendererWidget *mPointCloud3DWidget = nullptr;
 #endif
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
