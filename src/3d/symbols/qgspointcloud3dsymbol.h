@@ -20,8 +20,6 @@
 
 #include "qgsabstract3dsymbol.h"
 
-#define SIP_NO_FILE
-
 /**
  * \ingroup 3d
  * 3D symbol that draws point cloud geometries as 3D objects.
