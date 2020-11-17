@@ -59,6 +59,7 @@ class TestQgsCentroidFillSymbol : public QObject
     void centroidFillClipOnCurrentPartOnly();
     void centroidFillClipOnCurrentPartOnlyBiggest();
     void centroidFillClipMultiplayerPoints();
+    void opacityWithDataDefinedColor();
 
   private:
     bool mTestHasError =  false ;
@@ -198,6 +199,22 @@ void TestQgsCentroidFillSymbol::centroidFillClipMultiplayerPoints()
   mFillSymbol->deleteSymbolLayer( 2 );
   mFillSymbol->changeSymbolLayer( 0, mCentroidFill );
 }
+
+
+void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
+{
+  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
+  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
+  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
+  mCentroidFill->subSymbol()->setOpacity( 0.5 );
+  mFillSymbol->setOpacity( 0.5 );
+
+  QVERIFY( imageCheck( "symbol_centroidfill_opacityddcolor" ) );
+}
+
 
 //
 // Private helper functions not called directly by CTest
