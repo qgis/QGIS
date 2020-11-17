@@ -287,6 +287,10 @@ set(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
+  pointcloud/qgspointcloudrendererwidget.cpp
+  pointcloud/qgspointcloudrendererpropertieswidget.cpp
+  pointcloud/qgspointcloudrgbrendererwidget.cpp
+
   processing/qgsprocessingaggregatewidgets.cpp
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
@@ -558,6 +562,9 @@ set(QGIS_GUI_SRCS
   qgsscalewidget.cpp
   qgsscrollarea.cpp
   qgssearchquerybuilder.cpp
+  qgssubsetstringeditorinterface.cpp
+  qgssubsetstringeditorprovider.cpp
+  qgssubsetstringeditorproviderregistry.cpp
   qgsshortcutsmanager.cpp
   qgsslider.cpp
   qgssnapindicator.cpp
@@ -796,6 +803,9 @@ set(QGIS_GUI_HDRS
   qgsscalewidget.h
   qgsscrollarea.h
   qgssearchquerybuilder.h
+  qgssubsetstringeditorinterface.h
+  qgssubsetstringeditorprovider.h
+  qgssubsetstringeditorproviderregistry.h
   qgsshortcutsmanager.h
   qgsslider.h
   qgssnapindicator.h
@@ -1049,6 +1059,10 @@ set(QGIS_GUI_HDRS
   ogr/qgsnewogrconnection.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
+
+  pointcloud/qgspointcloudrendererwidget.h
+  pointcloud/qgspointcloudrendererpropertieswidget.h
+  pointcloud/qgspointcloudrgbrendererwidget.h
 
   processing/qgsprocessingaggregatewidgets.h
   processing/qgsprocessingaggregatewidgetwrapper.h

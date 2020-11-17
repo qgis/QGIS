@@ -548,19 +548,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
   {
-    bool isFile = false;
-    if ( layerItem )
-    {
-      // Also check for postgres layers (rasters are handled by GDAL)
-      isFile = ( layerItem->providerKey() == QLatin1String( "ogr" ) ||
-                 layerItem->providerKey() == QLatin1String( "gdal" ) ) &&
-               ! layerItem->uri().startsWith( QLatin1String( "PG:" ) );
-    }
-    else
-    {
-      isFile = QFileInfo::exists( item->path() );
-    }
-    if ( isFile )
+    if ( QFileInfo::exists( item->path() ) )
     {
       QAction *action = menu->addAction( tr( "File Properties…" ) );
       connect( action, &QAction::triggered, this, [ = ]

@@ -122,6 +122,8 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     bool empty() const override;
 
+    std::shared_ptr<QgsWFSSharedData> sharedData() const { return mShared; }
+
   private slots:
 
     void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );

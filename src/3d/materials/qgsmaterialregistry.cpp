@@ -31,6 +31,7 @@ bool QgsMaterialRegistry::addMaterialSettingsType( QgsMaterialSettingsAbstractMe
     return false;
 
   mMetadata[metadata->type()] = metadata;
+  mMaterialsOrder << metadata->type();
   return true;
 }
 
@@ -49,5 +50,11 @@ QgsMaterialSettingsAbstractMetadata *QgsMaterialRegistry::materialSettingsMetada
 
 QStringList QgsMaterialRegistry::materialSettingsTypes() const
 {
-  return mMetadata.keys();
+  QStringList types;
+  for ( const QString &material : mMaterialsOrder )
+  {
+    if ( mMetadata.value( material ) )
+      types << material;
+  }
+  return types;
 }

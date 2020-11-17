@@ -592,6 +592,11 @@ void TestQgsProcessingAlgs::parseGeoTags()
   md.insert( QStringLiteral( "EXIF_GPSImgDirection" ), 15 );
   QCOMPARE( QgsImportPhotosAlgorithm::extractDirectionFromMetadata( md ).toDouble(), 15.0 );
 
+  // extractOrientationFromMetadata
+  QVERIFY( !QgsImportPhotosAlgorithm::extractOrientationFromMetadata( md ).isValid() );
+  md.insert( QStringLiteral( "EXIF_Orientation" ), 3 );
+  QCOMPARE( QgsImportPhotosAlgorithm::extractOrientationFromMetadata( md ).toInt(), 180 );
+
   // extractTimestampFromMetadata
   QVERIFY( !QgsImportPhotosAlgorithm::extractTimestampFromMetadata( md ).isValid() );
   md.insert( QStringLiteral( "EXIF_DateTimeOriginal" ), QStringLiteral( "xx" ) );
@@ -2343,6 +2348,17 @@ void TestQgsProcessingAlgs::cellStatistics_data()
       << false
       << QStringLiteral( "/cellstatistics_median_result_fourLayers.tif" )
       << Qgis::Float64;
+
+  /*
+   * Testcase 18: median with even number of layers and integer inputs
+   */
+  QTest::newRow( "testcase_18" )
+      << QStringList( {"/raster/statisticsRas1_int32.tif", "/raster/statisticsRas1_int32.tif", "/raster/statisticsRas2_int32.tif", "/raster/statisticsRas3_int32.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_int32.tif" )
+      << 3
+      << false
+      << QStringLiteral( "/cellstatistics_median_result_fourLayers_float32.tif" )
+      << Qgis::Float32;
 
 }
 

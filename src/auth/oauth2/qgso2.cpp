@@ -21,8 +21,11 @@
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsblockingnetworkrequest.h"
 
 #include <QDir>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
@@ -347,4 +350,90 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 QNetworkAccessManager *QgsO2::getManager()
 {
   return QgsNetworkAccessManager::instance();
+}
+
+/// Parse JSON data into a QVariantMap
+static QVariantMap parseTokenResponse( const QByteArray &data )
+{
+  QJsonParseError err;
+  QJsonDocument doc = QJsonDocument::fromJson( data, &err );
+  if ( err.error != QJsonParseError::NoError )
+  {
+    qWarning() << "parseTokenResponse: Failed to parse token response due to err:" << err.errorString();
+    return QVariantMap();
+  }
+
+  if ( !doc.isObject() )
+  {
+    qWarning() << "parseTokenResponse: Token response is not an object";
+    return QVariantMap();
+  }
+
+  return doc.object().toVariantMap();
+}
+
+// Code adapted from O2::refresh(), but using QgsBlockingNetworkRequest
+void QgsO2::refreshSynchronous()
+{
+  qDebug() << "O2::refresh: Token: ..." << refreshToken().right( 7 );
+
+  if ( refreshToken().isEmpty() )
+  {
+    qWarning() << "O2::refresh: No refresh token";
+    onRefreshError( QNetworkReply::AuthenticationRequiredError );
+    return;
+  }
+  if ( refreshTokenUrl_.isEmpty() )
+  {
+    qWarning() << "O2::refresh: Refresh token URL not set";
+    onRefreshError( QNetworkReply::AuthenticationRequiredError );
+    return;
+  }
+
+  QNetworkRequest refreshRequest( refreshTokenUrl_ );
+  refreshRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
+  QMap<QString, QString> parameters;
+  parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
+  parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+  parameters.insert( O2_OAUTH2_REFRESH_TOKEN, refreshToken() );
+  parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_REFRESH_TOKEN );
+
+  QByteArray data = buildRequestBody( parameters );
+
+  QgsBlockingNetworkRequest blockingRequest;
+  QgsBlockingNetworkRequest::ErrorCode errCode = blockingRequest.post( refreshRequest, data, true );
+  if ( errCode == QgsBlockingNetworkRequest::NoError )
+  {
+    QByteArray reply = blockingRequest.reply().content();
+    QVariantMap tokens = parseTokenResponse( reply );
+    if ( tokens.contains( QStringLiteral( "error" ) ) )
+    {
+      qDebug() << " Error refreshing token" << tokens.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "message" ) ).toString().toLocal8Bit().constData();
+      unlink();
+    }
+    else
+    {
+      setToken( tokens.value( O2_OAUTH2_ACCESS_TOKEN ).toString() );
+      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() );
+      const QString refreshToken = tokens.value( O2_OAUTH2_REFRESH_TOKEN ).toString();
+      if ( !refreshToken.isEmpty() )
+        setRefreshToken( refreshToken );
+      setLinked( true );
+      qDebug() << " New token expires in" << expires() << "seconds";
+      emit linkingSucceeded();
+    }
+    emit refreshFinished( QNetworkReply::NoError );
+  }
+  else
+  {
+    unlink();
+    qDebug() << "O2::onRefreshFinished: Error" << blockingRequest.errorMessage();
+    emit refreshFinished( blockingRequest.reply().error() );
+  }
+}
+
+void QgsO2::computeExpirationDelay()
+{
+  const int lExpires = expires();
+  mExpirationDelay = lExpires > 0 ? lExpires - static_cast<int>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0;
 }

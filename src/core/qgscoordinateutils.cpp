@@ -67,6 +67,31 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   return dp;
 }
 
+int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project )
+{
+  QgsProject *prj = project;
+  if ( !prj )
+  {
+    prj = QgsProject::instance();
+  }
+
+  bool automatic = prj->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
+  if ( !automatic )
+  {
+    return prj->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 6 );
+  }
+
+  QgsUnitTypes::DistanceUnit unit = crs.mapUnits();
+  if ( unit == QgsUnitTypes::DistanceDegrees )
+  {
+    return 8;
+  }
+  else
+  {
+    return 3;
+  }
+}
+
 QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision )
 {
   if ( !project )

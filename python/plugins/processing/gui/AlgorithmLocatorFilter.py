@@ -161,17 +161,31 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
             if not a.supportInPlaceEdit(iface.activeLayer()):
                 continue
 
-            if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \
-                    (context.usingPrefix and not string):
-                result = QgsLocatorResult()
-                result.filter = self
-                result.displayString = a.displayName()
-                result.icon = a.icon()
-                result.userData = a.id()
-                if string and QgsLocatorFilter.stringMatches(a.displayName(), string):
-                    result.score = float(len(string)) / len(a.displayName())
-                else:
-                    result.score = 0
+            result = QgsLocatorResult()
+            result.filter = self
+            result.displayString = a.displayName()
+            result.icon = a.icon()
+            result.userData = a.id()
+            result.score = 0
+
+            if (context.usingPrefix and not string):
+                self.resultFetched.emit(result)
+
+            if not string:
+                return
+
+            string = string.lower()
+            tagScore = 0
+            tags = [*a.tags(), a.provider().name(), a.group()]
+
+            for t in tags:
+                if string in t.lower():
+                    tagScore = 1
+                    break
+
+            result.score = QgsStringUtils.fuzzyScore(result.displayString, string) * 0.5 + tagScore * 0.5
+
+            if result.score > 0:
                 self.resultFetched.emit(result)
 
     def triggerResult(self, result):

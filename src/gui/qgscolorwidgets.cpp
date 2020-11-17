@@ -1734,9 +1734,9 @@ void QgsColorWidgetAction::onHover()
 void QgsColorWidgetAction::setColor( const QColor &color )
 {
   emit colorChanged( color );
-  QAction::trigger();
   if ( mMenu && mDismissOnColorSelection )
   {
+    QAction::trigger();
     mMenu->hide();
   }
 }

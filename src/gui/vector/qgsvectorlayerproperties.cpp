@@ -46,7 +46,9 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
-#include "qgsquerybuilder.h"
+#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgssubsetstringeditorprovider.h"
+#include "qgssubsetstringeditorinterface.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontext.h"
@@ -844,16 +846,16 @@ void QgsVectorLayerProperties::urlClicked( const QUrl &url )
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 {
   // launch the query builder
-  QgsQueryBuilder *qb = new QgsQueryBuilder( mLayer, this );
+  QgsSubsetStringEditorInterface *dialog = QgsGui::subsetStringEditorProviderRegistry()->createDialog( mLayer, this );
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
-  qb->setSql( txtSubsetSQL->text() );
+  dialog->setSubsetString( txtSubsetSQL->text() );
   // Open the query builder
-  if ( qb->exec() )
+  if ( dialog->exec() )
   {
     // if the sql is changed, update it in the prop subset text box
-    txtSubsetSQL->setText( qb->sql() );
+    txtSubsetSQL->setText( dialog->subsetString() );
     //TODO If the sql is changed in the prop dialog, the layer extent should be recalculated
 
     // The datasource for the layer needs to be updated with the new sql since this gets
@@ -861,7 +863,7 @@ void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 
   }
   // delete the query builder object
-  delete qb;
+  delete dialog;
 }
 
 void QgsVectorLayerProperties::pbnIndex_clicked()

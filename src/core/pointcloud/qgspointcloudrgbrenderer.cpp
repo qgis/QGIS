@@ -17,6 +17,7 @@
 
 #include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudblock.h"
+#include "qgscontrastenhancement.h"
 
 QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
 {
@@ -35,6 +36,23 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
   res->mRedAttribute = mRedAttribute;
   res->mGreenAttribute = mGreenAttribute;
   res->mBlueAttribute = mBlueAttribute;
+
+  if ( mRedContrastEnhancement )
+  {
+    res->setRedContrastEnhancement( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
+  }
+  if ( mGreenContrastEnhancement )
+  {
+    res->setGreenContrastEnhancement( new QgsContrastEnhancement( *mGreenContrastEnhancement ) );
+  }
+  if ( mBlueContrastEnhancement )
+  {
+    res->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
+  }
+
+  res->setMaximumScreenError( maximumScreenError() );
+  res->setMaximumScreenErrorUnit( maximumScreenErrorUnit() );
+
   return res.release();
 }
 
@@ -71,6 +89,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   if ( !attribute )
     return;
   const QgsPointCloudAttribute::DataType blueType = attribute->type();
+
+  const bool useRedContrastEnhancement = mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
+  const bool useBlueContrastEnhancement = mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
+  const bool useGreenContrastEnhancement = mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
 
   int rendered = 0;
   double x = 0;
@@ -150,6 +172,28 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
           break;
       }
 
+      //skip if red, green or blue not in displayable range
+      if ( ( useRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( red ) )
+           || ( useGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( green ) )
+           || ( useBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( blue ) ) )
+      {
+        continue;
+      }
+
+      //stretch color values
+      if ( useRedContrastEnhancement )
+      {
+        red = mRedContrastEnhancement->enhanceContrast( red );
+      }
+      if ( useGreenContrastEnhancement )
+      {
+        green = mGreenContrastEnhancement->enhanceContrast( green );
+      }
+      if ( useBlueContrastEnhancement )
+      {
+        blue = mBlueContrastEnhancement->enhanceContrast( blue );
+      }
+
       mapToPixel.transformInPlace( x, y );
 
       pen.setColor( QColor( red, green, blue ) );
@@ -166,11 +210,42 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext & )
 {
   std::unique_ptr< QgsPointCloudRgbRenderer > r = qgis::make_unique< QgsPointCloudRgbRenderer >();
-  r->setPenWidth( element.attribute( QStringLiteral( "penwidth" ), QStringLiteral( "5" ) ).toInt() );
+  r->setPenWidth( element.attribute( QStringLiteral( "penwidth" ), QStringLiteral( "1" ) ).toInt() );
 
   r->setRedAttribute( element.attribute( QStringLiteral( "red" ), QStringLiteral( "Red" ) ) );
   r->setGreenAttribute( element.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
   r->setBlueAttribute( element.attribute( QStringLiteral( "blue" ), QStringLiteral( "Blue" ) ) );
+
+  r->setMaximumScreenError( element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "5" ) ).toDouble() );
+  r->setMaximumScreenErrorUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) ) );
+
+  //contrast enhancements
+  QgsContrastEnhancement *redContrastEnhancement = nullptr;
+  QDomElement redContrastElem = element.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
+  if ( !redContrastElem.isNull() )
+  {
+    redContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    redContrastEnhancement->readXml( redContrastElem );
+    r->setRedContrastEnhancement( redContrastEnhancement );
+  }
+
+  QgsContrastEnhancement *greenContrastEnhancement = nullptr;
+  QDomElement greenContrastElem = element.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
+  if ( !greenContrastElem.isNull() )
+  {
+    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    greenContrastEnhancement->readXml( greenContrastElem );
+    r->setGreenContrastEnhancement( greenContrastEnhancement );
+  }
+
+  QgsContrastEnhancement *blueContrastEnhancement = nullptr;
+  QDomElement blueContrastElem = element.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
+  if ( !blueContrastElem.isNull() )
+  {
+    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    blueContrastEnhancement->readXml( blueContrastElem );
+    r->setBlueContrastEnhancement( blueContrastEnhancement );
+  }
 
   return r.release();
 }
@@ -185,6 +260,29 @@ QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWrit
   rendererElem.setAttribute( QStringLiteral( "red" ), mRedAttribute );
   rendererElem.setAttribute( QStringLiteral( "green" ), mGreenAttribute );
   rendererElem.setAttribute( QStringLiteral( "blue" ), mBlueAttribute );
+
+  rendererElem.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( maximumScreenError() ) );
+  rendererElem.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( maximumScreenErrorUnit() ) );
+
+  //contrast enhancement
+  if ( mRedContrastEnhancement )
+  {
+    QDomElement redContrastElem = doc.createElement( QStringLiteral( "redContrastEnhancement" ) );
+    mRedContrastEnhancement->writeXml( doc, redContrastElem );
+    rendererElem.appendChild( redContrastElem );
+  }
+  if ( mGreenContrastEnhancement )
+  {
+    QDomElement greenContrastElem = doc.createElement( QStringLiteral( "greenContrastEnhancement" ) );
+    mGreenContrastEnhancement->writeXml( doc, greenContrastElem );
+    rendererElem.appendChild( greenContrastElem );
+  }
+  if ( mBlueContrastEnhancement )
+  {
+    QDomElement blueContrastElem = doc.createElement( QStringLiteral( "blueContrastEnhancement" ) );
+    mBlueContrastEnhancement->writeXml( doc, blueContrastElem );
+    rendererElem.appendChild( blueContrastElem );
+  }
 
   return rendererElem;
 }
@@ -244,4 +342,34 @@ QString QgsPointCloudRgbRenderer::blueAttribute() const
 void QgsPointCloudRgbRenderer::setBlueAttribute( const QString &blueAttribute )
 {
   mBlueAttribute = blueAttribute;
+}
+
+const QgsContrastEnhancement *QgsPointCloudRgbRenderer::redContrastEnhancement() const
+{
+  return mRedContrastEnhancement.get();
+}
+
+void QgsPointCloudRgbRenderer::setRedContrastEnhancement( QgsContrastEnhancement *enhancement )
+{
+  mRedContrastEnhancement.reset( enhancement );
+}
+
+const QgsContrastEnhancement *QgsPointCloudRgbRenderer::greenContrastEnhancement() const
+{
+  return mGreenContrastEnhancement.get();
+}
+
+void QgsPointCloudRgbRenderer::setGreenContrastEnhancement( QgsContrastEnhancement *enhancement )
+{
+  mGreenContrastEnhancement.reset( enhancement );
+}
+
+const QgsContrastEnhancement *QgsPointCloudRgbRenderer::blueContrastEnhancement() const
+{
+  return mBlueContrastEnhancement.get();
+}
+
+void QgsPointCloudRgbRenderer::setBlueContrastEnhancement( QgsContrastEnhancement *enhancement )
+{
+  mBlueContrastEnhancement.reset( enhancement );
 }

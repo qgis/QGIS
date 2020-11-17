@@ -89,8 +89,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   const IndexedPointCloudNode root = pc->root();
 
-  // TODO -- move to renderer
-  float maximumError = 5; // mConfig.maximumScreenError(); // in pixels
+  const float maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
 
   float rootError = pc->nodeError( root ); // in map coords
   double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();

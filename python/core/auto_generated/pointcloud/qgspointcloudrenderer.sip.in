@@ -126,6 +126,11 @@ Abstract base class for 2d point cloud renderers.
 %End
   public:
 
+    QgsPointCloudRenderer();
+%Docstring
+Constructor for QgsPointCloudRenderer.
+%End
+
     virtual ~QgsPointCloudRenderer();
 
     virtual QString type() const = 0;
@@ -138,6 +143,8 @@ Returns the identifier of the renderer type.
 Create a deep copy of this renderer. Should be implemented by all subclasses
 and generate a proper subclass.
 %End
+
+
 
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
 %Docstring
@@ -198,6 +205,50 @@ Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by
 .. seealso:: :py:func:`startRender`
 %End
 
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum screen error allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+Units are retrieved via :py:func:`~QgsPointCloudRenderer.maximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum screen ``error`` allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+Units are set via :py:func:`~QgsPointCloudRenderer.setMaximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+%End
+
+    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const;
+%Docstring
+Returns the unit for the maximum screen error allowed when rendering the point cloud.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+%End
+
+    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the maximum screen error allowed when rendering the point cloud.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+%End
+
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
@@ -205,6 +256,8 @@ Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by
 Retrieves the x and y coordinate for the point at index ``i``.
 %End
 
+  private:
+    QgsPointCloudRenderer( const QgsPointCloudRenderer &other );
 };
 
 /************************************************************************

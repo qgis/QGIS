@@ -89,6 +89,26 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
 #endif
 }
 
+double QgsPointCloudRenderer::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
+
+void QgsPointCloudRenderer::setMaximumScreenError( double error )
+{
+  mMaximumScreenError = error;
+}
+
+QgsUnitTypes::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const
+{
+  return mMaximumScreenErrorUnit;
+}
+
+void QgsPointCloudRenderer::setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit )
+{
+  mMaximumScreenErrorUnit = unit;
+}
+
 
 
 ///@cond PRIVATE
@@ -109,7 +129,7 @@ QgsPointCloudRenderer *QgsDummyPointCloudRenderer::clone() const
   res->mZMin = zMin();
   res->mZMax = zMax();
   res->mPenWidth = penWidth();
-  res->mColorRamp.reset( colorRamp()->clone() );
+  res->mColorRamp.reset( colorRamp() ? colorRamp()->clone() : QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
   res->mAttribute = attribute();
 
   return res.release();

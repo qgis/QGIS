@@ -81,6 +81,17 @@ Returns all project storage gui providers registered in provider with ``provider
    Ownership of created project storage gui providers is passed to the caller.
 %End
 
+    virtual QList<QgsSubsetStringEditorProvider *> subsetStringEditorProviders( const QString &providerKey ) /Factory/;
+%Docstring
+Returns all subset string editor providers registered in provider with ``providerKey``
+
+.. note::
+
+   Ownership of providers is passed to the caller.
+
+.. versionadded:: 3.18
+%End
+
 
 };
 

@@ -18,6 +18,8 @@ enum class QgsMaterialSettingsRenderingTechnique
   InstancedPoints,
   Points,
   TrianglesWithFixedTexture,
+  TrianglesFromModel,
+  TrianglesDataDefined,
 };
 
 
@@ -102,6 +104,10 @@ Abstract base class for material settings.
     else if ( sipCpp->type() == "simpleline" )
     {
       sipType = sipType_QgsSimpleLineMaterialSettings;
+    }
+    else if ( sipCpp->type() == "null" )
+    {
+      sipType = sipType_QgsNullMaterialSettings;
     }
     else
     {

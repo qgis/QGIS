@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/pointcloud/qgspointcloudrendererwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsPointCloudRendererWidget : QgsPanelWidget
+{
+%Docstring
+Base class for point cloud 2D renderer settings widgets.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrendererwidget.h"
+%End
+  public:
+
+    QgsPointCloudRendererWidget( QgsPointCloudLayer *layer, QgsStyle *style );
+%Docstring
+Constructor for QgsPointCloudRendererWidget, associated with the
+specified ``layer`` and ``style`` database.
+%End
+
+    virtual QgsPointCloudRenderer *renderer() = 0 /Factory/;
+%Docstring
+Returns a new instance of a renderer as defined by the settings in the widget.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+%End
+
+    const QgsPointCloudLayer *layer() const;
+%Docstring
+Returns the point cloud layer associated with the widget.
+%End
+
+  signals:
+
+  protected:
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/pointcloud/qgspointcloudrendererwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

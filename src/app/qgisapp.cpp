@@ -340,6 +340,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsstatusbarscalewidget.h"
 #include "qgsstyle.h"
+#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgssubsetstringeditorprovider.h"
+#include "qgssubsetstringeditorinterface.h"
 #include "qgssvgannotation.h"
 #include "qgstaskmanager.h"
 #include "qgstaskmanagerwidget.h"
@@ -395,6 +398,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
+
+#include "pointcloud/qgspointcloudlayerstylewidget.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -1336,6 +1341,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
+
+  registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -5325,7 +5332,7 @@ void QgisApp::about()
 
 #ifdef HAVE_PDAL
     versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against PDAL" ), PDAL_VERSION );
-#if PDAL_VERSION_MAJOR_INT >= 2
+#if PDAL_VERSION_MAJOR_INT > 1 || (PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7)
     versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PDAL" ) ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) );
 #else
     versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PDAL" ) ).arg( QString::fromStdString( pdal::GetFullVersionString() ) );
@@ -11498,16 +11505,16 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
   }
 
   // launch the query builder
-  std::unique_ptr<QgsQueryBuilder> qb( new QgsQueryBuilder( vlayer, this ) );
+  std::unique_ptr<QgsSubsetStringEditorInterface> qb( QgsGui::subsetStringEditorProviderRegistry()->createDialog( vlayer, this ) );
   QString subsetBefore = vlayer->subsetString();
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
-  qb->setSql( vlayer->subsetString() );
+  qb->setSubsetString( vlayer->subsetString() );
   // Open the query builder and refresh symbology if sql has changed
   // Note: repaintRequested is emitted directly from QgsQueryBuilder
   //       when the sql is set in the layer.
-  if ( qb->exec() && ( subsetBefore != qb->sql() ) && mLayerTreeView )
+  if ( qb->exec() && ( subsetBefore != qb->subsetString() ) && mLayerTreeView )
   {
     mLayerTreeView->refreshLayerSymbology( vlayer->id() );
     activateDeactivateLayerRelatedActions( vlayer );
@@ -16284,6 +16291,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 
       if ( !page.isEmpty() )
         pointCloudLayerPropertiesDialog.setCurrentPage( page );
+
+      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      {
+        pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
+      }
 
       mMapStyleWidget->blockUpdates( true );
       if ( pointCloudLayerPropertiesDialog.exec() )

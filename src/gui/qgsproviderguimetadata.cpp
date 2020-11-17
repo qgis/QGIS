@@ -42,6 +42,11 @@ QList<QgsSourceSelectProvider *> QgsProviderGuiMetadata::sourceSelectProviders()
   return QList<QgsSourceSelectProvider *>();
 }
 
+QList<QgsSubsetStringEditorProvider *> QgsProviderGuiMetadata::subsetStringEditorProviders()
+{
+  return QList<QgsSubsetStringEditorProvider *>();
+}
+
 QString QgsProviderGuiMetadata::key() const
 {
   return mKey;

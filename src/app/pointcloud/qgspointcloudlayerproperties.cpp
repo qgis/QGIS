@@ -25,6 +25,8 @@
 #include "qgsapplication.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmaplayerloadstyledialog.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmaplayerconfigwidget.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -115,12 +117,17 @@ void QgsPointCloudLayerProperties::apply()
 
   // TODO -- move to proper widget classes!
 
+#if 0
   std::unique_ptr< QgsDummyPointCloudRenderer > renderer = qgis::make_unique< QgsDummyPointCloudRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
   renderer->setZMin( mMinZSpin->value() );
   renderer->setZMax( mMaxZSpin->value() );
   renderer->setColorRamp( mBtnColorRamp->colorRamp() );
   mLayer->setRenderer( renderer.release() );
+#endif
+
+  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+    w->apply();
 
   mLayer->triggerRepaint();
 }
@@ -160,9 +167,9 @@ void QgsPointCloudLayerProperties::syncToLayer()
     mMaxZSpin->setValue( renderer->zMax() );
     mBtnColorRamp->setColorRamp( renderer->colorRamp() );
   }
-  const auto constMLayerPropertiesPages = mLayerPropertiesPages;
-  for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
-    page->syncToLayer( mLayer );
+
+  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+    w->syncToLayer( mLayer );
 }
 
 
@@ -411,5 +418,6 @@ void QgsPointCloudLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWi
     addPage( factory->title(), factory->title(), factory->icon(), page );
   else
     insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
-}
 
+  page->syncToLayer( mLayer );
+}

@@ -183,6 +183,9 @@
 %Include auto_generated/qgsscalewidget.sip
 %Include auto_generated/qgsscrollarea.sip
 %Include auto_generated/qgssearchquerybuilder.sip
+%Include auto_generated/qgssubsetstringeditorinterface.sip
+%Include auto_generated/qgssubsetstringeditorprovider.sip
+%Include auto_generated/qgssubsetstringeditorproviderregistry.sip
 %Include auto_generated/qgsshortcutsmanager.sip
 %Include auto_generated/qgsslider.sip
 %Include auto_generated/qgssnapindicator.sip
@@ -331,6 +334,8 @@
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatguiregistry.sip
+%Include auto_generated/pointcloud/qgspointcloudrendererwidget.sip
+%Include auto_generated/pointcloud/qgspointcloudrendererpropertieswidget.sip
 %Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip

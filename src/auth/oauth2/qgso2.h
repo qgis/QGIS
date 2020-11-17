@@ -58,6 +58,19 @@ class QgsO2: public O2
     //! Store oauth2 state to a random value when called
     void setState( const QString &value );
 
+    //! Refresh token in a synchronous way
+    void refreshSynchronous();
+
+    /**
+     * Compute expiration delay from current timestamp and expires()
+     * Should only be called just after a refresh / link event. */
+    void computeExpirationDelay();
+
+    /** Returns expiration delay.
+     * May be 0 if it is unknown
+     */
+    int expirationDelay() const { return mExpirationDelay; }
+
   public slots:
 
     //! Clear all properties
@@ -101,6 +114,8 @@ class QgsO2: public O2
     QString state_;
     QgsAuthOAuth2Config *mOAuth2Config;
     bool mIsLocalHost = false;
+    int mExpirationDelay = 0;
+
     static QString O2_OAUTH2_STATE;
 };
 

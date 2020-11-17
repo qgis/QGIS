@@ -118,6 +118,13 @@ Returns the registry of GUI-related components of data providers
 .. versionadded:: 3.10
 %End
 
+    static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() /KeepReference/;
+%Docstring
+Returns the registry of subset string editors of data providers
+
+.. versionadded:: 3.18
+%End
+
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.

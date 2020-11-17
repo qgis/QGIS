@@ -22,6 +22,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+class QgsContrastEnhancement;
+
 /**
  * \ingroup core
  * An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
@@ -36,6 +38,7 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      * Constructor for QgsPointCloudRgbRenderer.
      */
     QgsPointCloudRgbRenderer();
+
     QString type() const override;
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
@@ -109,13 +112,78 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      */
     void setBlueAttribute( const QString &attribute );
 
+    /**
+     * Returns the contrast enhancement to use for the red channel.
+     *
+     * \see setRedContrastEnhancement()
+     * \see greenContrastEnhancement()
+     * \see blueContrastEnhancement()
+     */
+    const QgsContrastEnhancement *redContrastEnhancement() const;
+
+    /**
+     * Sets the contrast \a enhancement to use for the red channel.
+     *
+     * Ownership of \a enhancement is transferred.
+     *
+     * \see redContrastEnhancement()
+     * \see setGreenContrastEnhancement()
+     * \see setBlueContrastEnhancement()
+     */
+    void setRedContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
+
+    /**
+     * Returns the contrast enhancement to use for the green channel.
+     *
+     * \see setGreenContrastEnhancement()
+     * \see redContrastEnhancement()
+     * \see blueContrastEnhancement()
+     */
+    const QgsContrastEnhancement *greenContrastEnhancement() const;
+
+    /**
+     * Sets the contrast \a enhancement to use for the green channel.
+     *
+     * Ownership of \a enhancement is transferred.
+     *
+     * \see greenContrastEnhancement()
+     * \see setRedContrastEnhancement()
+     * \see setBlueContrastEnhancement()
+     */
+    void setGreenContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
+
+    /**
+     * Returns the contrast enhancement to use for the blue channel.
+     *
+     * \see setBlueContrastEnhancement()
+     * \see redContrastEnhancement()
+     * \see greenContrastEnhancement()
+     */
+    const QgsContrastEnhancement *blueContrastEnhancement() const;
+
+    /**
+     * Sets the contrast \a enhancement to use for the blue channel.
+     *
+     * Ownership of \a enhancement is transferred.
+     *
+     * \see blueContrastEnhancement()
+     * \see setRedContrastEnhancement()
+     * \see setGreenContrastEnhancement()
+     */
+    void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
+
   private:
+
     int mPenWidth = 1;
     int mPainterPenWidth = 1;
 
     QString mRedAttribute = QStringLiteral( "Red" );
     QString mGreenAttribute = QStringLiteral( "Green" );
     QString mBlueAttribute = QStringLiteral( "Blue" );
+
+    std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
 
 };
 

@@ -5860,6 +5860,12 @@ QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri ) const
   QVariantMap components;
   components.insert( QStringLiteral( "path" ), dsUri.database() );
   components.insert( QStringLiteral( "layerName" ), dsUri.table() );
+  if ( !dsUri.sql().isEmpty() )
+    components.insert( QStringLiteral( "subset" ), dsUri.sql() );
+  if ( !dsUri.geometryColumn().isEmpty() )
+    components.insert( QStringLiteral( "geometryColumn" ), dsUri.geometryColumn() );
+  if ( !dsUri.keyColumn().isEmpty() )
+    components.insert( QStringLiteral( "keyColumn" ), dsUri.keyColumn() );
   return components;
 }
 
@@ -5876,6 +5882,9 @@ QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) con
   QgsDataSourceUri dsUri;
   dsUri.setDatabase( parts.value( QStringLiteral( "path" ) ).toString() );
   dsUri.setTable( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  dsUri.setSql( parts.value( QStringLiteral( "subset" ) ).toString() );
+  dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometryColumn" ) ).toString() );
+  dsUri.setKeyColumn( parts.value( QStringLiteral( "keyColumn" ) ).toString() );
   return dsUri.uri();
 }
 

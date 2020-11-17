@@ -36,7 +36,7 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
   public:
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    //! Adds a properties page factory to the vector layer properties dialog.
+
     void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
 
   private slots:
@@ -80,6 +80,9 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
      * was loaded but dialog is canceled.
     */
     QgsMapLayerStyle mOldStyle;
+
+    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
+
 };
 
 #endif // QGSPOINTCLOUDLAYERPROPERTIES_H

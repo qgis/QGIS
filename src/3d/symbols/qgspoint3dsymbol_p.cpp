@@ -413,7 +413,9 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   }
   else
   {
-    if ( mSymbol->shapeProperties()[QStringLiteral( "overwriteMaterial" )].toBool() )
+    //  "overwriteMaterial" is a legacy setting indicating that non-embedded material should be used
+    if ( mSymbol->shapeProperties()[QStringLiteral( "overwriteMaterial" )].toBool()
+         || ( mSymbol->material() && mSymbol->material()->type() != QLatin1String( "null" ) ) )
     {
       addMeshEntities( context.map(), out.positions, mSymbol.get(), parent, false );
     }

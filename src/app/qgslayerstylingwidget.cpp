@@ -675,7 +675,6 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case QgsMapLayerType::PointCloudLayer:
       {
         QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mCurrentLayer );
-        ( void )pcLayer;
         switch ( row )
         {
           case 0:
@@ -693,7 +692,6 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
         }
-
         break;
       }
 

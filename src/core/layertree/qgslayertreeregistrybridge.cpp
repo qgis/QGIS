@@ -118,7 +118,7 @@ static void _collectLayerIdsInGroup( QgsLayerTreeGroup *group, int indexFrom, in
 
 void QgsLayerTreeRegistryBridge::groupWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
-  if ( mRegistryRemovingLayers || QgsLayerTree::isGroup( node ) )
+  if ( mRegistryRemovingLayers )
     return; // do not try to remove those layers again
 
   Q_ASSERT( mLayerIdsForRemoval.isEmpty() );
