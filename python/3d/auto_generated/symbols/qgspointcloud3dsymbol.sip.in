@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspointcloud3dsymbol.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
+{
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsPointCloud3DSymbol();
+%Docstring
+Constructor for QgsPointCloud3DSymbol
+%End
+    ~QgsPointCloud3DSymbol();
+
+    virtual QString type() const;
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    bool isEnabled() const;
+%Docstring
+Returns whether rendering for this symbol is enabled
+
+.. seealso:: :py:func:`setIsEnabled`
+%End
+
+    void setIsEnabled( bool enabled );
+%Docstring
+Sets whether rendering for this symbol is enabled
+
+.. seealso:: :py:func:`isEnabled`
+%End
+
+    float pointSize() const;
+%Docstring
+Returns the point size of the point cloud
+
+.. seealso:: :py:func:`setPointSize`
+%End
+
+    void setPointSize( float size );
+%Docstring
+Sets the point size
+
+.. seealso:: :py:func:`pointSize`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspointcloud3dsymbol.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
