@@ -142,15 +142,14 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   if ( uri.hasParam( QStringLiteral( "opacities" ) ) )
   {
     mOpacities.clear();
-    QStringList opacities = uri.params( QStringLiteral( "opacities" ) );
-    QStringList::const_iterator oIt = opacities.constBegin();
-    for ( ; oIt != opacities.constEnd(); ++oIt )
+    const QStringList opacities = uri.params( QStringLiteral( "opacities" ) );
+    for ( const QString &opacity : opacities )
     {
       bool ok = false;
-      oIt->toInt( &ok );
+      opacity.toInt( &ok );
       if ( ok )
       {
-        mOpacities.append( *oIt );
+        mOpacities.append( opacity );
       }
       else
       {
