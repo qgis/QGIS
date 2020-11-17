@@ -1891,7 +1891,7 @@ namespace QgsWms
     for ( ; paramIt != paramMap.constEnd(); ++paramIt )
     {
       QString paramName = paramIt.key().toLower();
-      if ( paramName == QLatin1String( "layers" ) || paramName == QLatin1String( "styles" ) )
+      if ( paramName == QLatin1String( "layers" ) || paramName == QLatin1String( "styles" ) || paramName == QLatin1String( "opacities" ) )
       {
         const QStringList values = paramIt.value().split( ',' );
         for ( const QString &value : values )
