@@ -7299,7 +7299,7 @@ bool QgisApp::fileSave()
   }
 
   // Store current map view settings into the project
-  QgsProject::instance()->viewSettings()->setDefaultViewExtent( { mapCanvas()->extent(), QgsProject::instance()->crs() } );
+  QgsProject::instance()->viewSettings()->setDefaultViewExtent( QgsReferencedRectangle( mapCanvas()->extent(), QgsProject::instance()->crs() ) );
 
   if ( QgsProject::instance()->write() )
   {
