@@ -32,9 +32,6 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 
-#include "qgsmaplayerconfigwidget.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
-
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsOptionsDialogBase( QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
   , mLayer( lyr )
@@ -107,13 +104,30 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   restoreOptionsBaseUi( title );
 }
 
+void QgsPointCloudLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+{
+  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
+  {
+    return;
+  }
+
+  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, mMapCanvas, false, this );
+  mConfigWidgets << page;
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+
+  page->syncToLayer( mLayer );
+}
+
 #include "qgspointcloudrenderer.h"
 
 void QgsPointCloudLayerProperties::apply()
 {
   mMetadataWidget->acceptMetadata();
-
-  for ( QgsMapLayerConfigWidget *configWidget : mLayerPropertiesPages ) configWidget->apply();
 
   // TODO -- move to proper widget classes!
 
@@ -405,19 +419,3 @@ void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int inde
   mBtnMetadata->setVisible( isMetadataPanel );
 }
 
-void QgsPointCloudLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
-{
-  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
-    return;
-
-  QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
-  mLayerPropertiesPages << page;
-
-  const QString beforePage = factory->layerPropertiesPagePositionHint();
-  if ( beforePage.isEmpty() )
-    addPage( factory->title(), factory->title(), factory->icon(), page );
-  else
-    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
-
-  page->syncToLayer( mLayer );
-}
