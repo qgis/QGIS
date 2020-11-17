@@ -56,6 +56,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mButtonSelect->setDefaultAction( mActionSelect );
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  context.appendScope( QgsExpressionContextUtils::atlasScope( nullptr ) );
   mExpressionBuilder->initWithLayer( layer, context, QStringLiteral( "selection" ) );
   mExpressionBuilder->setExpressionText( startText );
 
@@ -156,6 +157,7 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
     return;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  context.appendScope( QgsExpressionContextUtils::atlasScope( nullptr ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
                               .setExpressionContext( context )
