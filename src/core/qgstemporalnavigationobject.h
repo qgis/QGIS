@@ -187,7 +187,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     /**
      * Returns the total number of frames for the navigation.
      */
-    long long totalFrameCount();
+    long long totalFrameCount() const;
 
     /**
      * Returns TRUE if the animation should loop after hitting the end or start frame.
