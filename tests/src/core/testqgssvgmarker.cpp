@@ -64,6 +64,7 @@ class TestQgsSvgMarkerSymbol : public QObject
     void dynamicWidthWithAspectRatio();
     void dynamicAspectRatio();
     void resetDefaultAspectRatio();
+    void opacityWithDataDefinedColor();
 
   private:
     bool mTestHasError =  false ;
@@ -267,6 +268,8 @@ void TestQgsSvgMarkerSymbol::dynamicAspectRatio()
 
   bool result = imageCheck( QStringLiteral( "svgmarker_dynamic_aspectratio" ) );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyHeight, QgsProperty() );
+  mSvgMarkerLayer->setFixedAspectRatio( 0 );
+
   QVERIFY( result );
 }
 
@@ -295,6 +298,27 @@ void TestQgsSvgMarkerSymbol::resetDefaultAspectRatio()
   QGSCOMPARENEAR( layer.defaultAspectRatio(), 1.58258242005, 0.0001 );
   QCOMPARE( layer.fixedAspectRatio(), 0.5 );
   QVERIFY( !layer.preservedAspectRatio() );
+}
+
+
+void TestQgsSvgMarkerSymbol::opacityWithDataDefinedColor()
+{
+  QString svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/transport/transport_airport.svg" ), QgsPathResolver() );
+
+  mSvgMarkerLayer->setPath( svgPath );
+  mSvgMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mSvgMarkerLayer->setStrokeColor( QColor( 0, 0, 0 ) );
+  mSvgMarkerLayer->setSize( 10 );
+  mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mSvgMarkerLayer->setStrokeWidth( 1.0 );
+  mMarkerSymbol->setOpacity( 0.5 );
+
+  bool result = imageCheck( QStringLiteral( "svgmarker_opacityddcolor" ) );
+  mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
+  mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
+  mMarkerSymbol->setOpacity( 1.0 );
+  QVERIFY( result );
 }
 
 //
