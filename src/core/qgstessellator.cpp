@@ -626,7 +626,10 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         }
         mData << p.first << p.second;
       }
-      xData++; yData++; zData++;
+      xData++; yData++;
+      // zData can be nullptr if mNoZ or triangle is 2D
+      if ( zData )
+        zData++;
     }
 
     if ( mAddBackFaces )
