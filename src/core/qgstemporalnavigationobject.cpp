@@ -288,7 +288,7 @@ void QgsTemporalNavigationObject::skipToEnd()
   setCurrentFrameNumber( frame );
 }
 
-long long QgsTemporalNavigationObject::totalFrameCount()
+long long QgsTemporalNavigationObject::totalFrameCount() const
 {
   QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
   return std::floor( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
