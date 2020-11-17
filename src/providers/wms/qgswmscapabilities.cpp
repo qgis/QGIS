@@ -138,6 +138,27 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mActiveSubStyles = uri.params( QStringLiteral( "styles" ) );
   QgsDebugMsgLevel( "Entering: layers:" + mActiveSubLayers.join( ", " ) + ", styles:" + mActiveSubStyles.join( ", " ), 2 );
 
+  //opacities
+  if ( uri.hasParam( QStringLiteral( "opacities" ) ) )
+  {
+    mOpacities.clear();
+    QStringList opacities = uri.params( QStringLiteral( "opacities" ) );
+    QStringList::const_iterator oIt = opacities.constBegin();
+    for ( ; oIt != opacities.constEnd(); ++oIt )
+    {
+      bool ok = false;
+      oIt->toInt( &ok );
+      if ( ok )
+      {
+        mOpacities.append( *oIt );
+      }
+      else
+      {
+        mOpacities.append( QStringLiteral( "255" ) );
+      }
+    }
+  }
+
   mImageMimeType = uri.param( QStringLiteral( "format" ) );
   QgsDebugMsgLevel( "Setting image encoding to " + mImageMimeType + '.', 2 );
 

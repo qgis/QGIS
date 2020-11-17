@@ -933,6 +933,8 @@ class QgsWmsSettings
     QStringList mActiveSubLayers;
     QStringList mActiveSubStyles;
 
+    QStringList mOpacities;
+
     /**
      * Visibility status of the given active sublayer
      */
