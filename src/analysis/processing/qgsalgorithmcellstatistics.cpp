@@ -277,7 +277,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
             outputBlock->setValue( row, col, mNoDataValue );
           }
         }
-        else if ( !noDataInStack || mIgnoreNoData )
+        else if ( !noDataInStack || ( mIgnoreNoData && cellValueStackSize > 0 ) )
         {
           switch ( method )
           {
@@ -319,6 +319,11 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
               break;
           }
           outputBlock->setValue( row, col, result );
+        }
+        else
+        {
+          //result is NoData if cellValueStack contains no valid values, eg. all cellValues are NoData
+          outputBlock->setValue( row, col, mNoDataValue );
         }
       }
     }
