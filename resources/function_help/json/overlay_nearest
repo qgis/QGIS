@@ -47,11 +47,15 @@
     },
     {
       "expression": "overlay_nearest('airports', name)",
-      "returns": "the name of the closest airport to the current feature"
+      "returns": "the name of the closest airport to the current feature, as an array"
+    },
+    {
+      "expression": "array_to_string(overlay_nearest('airports', name))",
+      "returns": "the name of the closest airport to the current feature, as a string"
     },
     {
       "expression": "overlay_nearest(layer:='airports', expression:= name, max_distance:= 5000)",
-      "returns": "the name of the closest airport within a distance of 5000 map units from the current feature"
+      "returns": "the name of the closest airport within a distance of 5000 map units from the current feature, as an array"
     },
     {
       "expression": "overlay_nearest(layer:='airports', expression:=\"name\", filter:= \"Use\"='Civilian', limit:=3)",
