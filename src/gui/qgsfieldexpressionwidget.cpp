@@ -69,7 +69,8 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mExpressionContext = QgsExpressionContext();
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                     << QgsExpressionContextUtils::atlasScope( nullptr );
 
   mCombo->installEventFilter( this );
 }
