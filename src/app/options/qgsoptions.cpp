@@ -1019,7 +1019,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   for ( const auto &l : language18nList )
   {
     // QTBUG-57802: eo locale is improperly handled
-    QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
+    QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : l.startsWith( QLatin1String( "sc" ) ) ? QStringLiteral( "sardu" ) : QLocale( l ).nativeLanguageName();
     cboTranslation->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
   }
 
