@@ -169,7 +169,7 @@ Returns the animation temporal range cumulative settings.
 .. seealso:: :py:func:`setTemporalRangeCumulative`
 %End
 
-    long long totalFrameCount();
+    long long totalFrameCount() const;
 %Docstring
 Returns the total number of frames for the navigation.
 %End
