@@ -96,9 +96,8 @@ void QgsPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHandl
 
 
 QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler( QgsPointCloud3DSymbol *symbol )
-  : mSymbol( symbol )
 {
-
+  mSymbol.reset( symbol );
 }
 
 bool QgsPointCloud3DSymbolHandler::prepare( const Qgs3DRenderContext &context )
@@ -226,8 +225,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
 
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
 
-  QgsPointCloud3DSymbolHandler *handler = new QgsPointCloud3DSymbolHandler( symbol );
-  mHandler.reset( handler );
+  mHandler.reset( new QgsPointCloud3DSymbolHandler( symbol ) );
 
   //
   // this will be run in a background thread
@@ -284,8 +282,8 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol )
   : mMap( map )
   , mPointCloudIndex( pc )
-  , mSymbol( symbol )
 {
+  mSymbol.reset( symbol );
 }
 
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const

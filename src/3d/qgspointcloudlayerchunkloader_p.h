@@ -30,6 +30,7 @@
 #include "qgschunkloader_p.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"
+#include "qgspointcloud3dsymbol.h"
 
 #define SIP_NO_FILE
 
@@ -37,7 +38,8 @@ class Qgs3DMapSettings;
 class QgsPointCloudLayer;
 class IndexedPointCloudNode;
 class QgsPointCloudIndex;
-class QgsPointCloud3DSymbol;
+
+#include <memory>
 
 #include <QFutureWatcher>
 #include <Qt3DRender/QGeometry>
@@ -87,7 +89,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     PointData outNormal;  //!< Features that are not selected
     // PointData outSelected;  //!< Features that are selected
 
-    QgsPointCloud3DSymbol *mSymbol = nullptr;
+    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
 };
 
 class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
@@ -114,7 +116,10 @@ class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
   public:
-    //! Constructs the factory
+    /*
+     * Constructs the factory
+     * The factory takes ownership over the passed \a symbol
+     */
     QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
@@ -124,7 +129,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
-    QgsPointCloud3DSymbol *mSymbol = nullptr;
+    std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
 };
 
 
