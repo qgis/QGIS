@@ -933,6 +933,7 @@ class QgsWmsSettings
     QStringList mActiveSubLayers;
     QStringList mActiveSubStyles;
 
+    //! Opacities for wms layers. Same ordering as mActiveSubLayers/mActiveSubStyles
     QStringList mOpacities;
 
     /**
