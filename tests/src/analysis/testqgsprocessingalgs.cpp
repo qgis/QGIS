@@ -2360,6 +2360,17 @@ void TestQgsProcessingAlgs::cellStatistics_data()
       << QStringLiteral( "/cellstatistics_median_result_fourLayers_float32.tif" )
       << Qgis::Float32;
 
+  /*
+   * Testcase 19: sum with raster cell stacks containing only nodata
+   */
+  QTest::newRow( "testcase_19" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas1_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas3_int32.tif" )
+      << 0
+      << true
+      << QStringLiteral( "/cellstatistics_sum_result_ignoreNoData.tif" )
+      << Qgis::Float64;
+
 }
 
 void TestQgsProcessingAlgs::cellStatistics()
