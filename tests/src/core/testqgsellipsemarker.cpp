@@ -60,6 +60,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void ellipseMarkerSymbolRoundJoin();
     void selected();
     void bounds();
+    void opacityWithDataDefinedColor();
 
   private:
     bool mTestHasError =  false ;
@@ -225,6 +226,26 @@ void TestQgsEllipseMarkerSymbol::bounds()
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
   bool result = imageCheck( QStringLiteral( "ellipsemarker_bounds" ) );
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
+  QVERIFY( result );
+}
+
+void TestQgsEllipseMarkerSymbol::opacityWithDataDefinedColor()
+{
+  mEllipseMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mEllipseMarkerLayer->setStrokeColor( QColor( 0, 0, 0 ) );
+  mEllipseMarkerLayer->setSymbolName( QStringLiteral( "circle" ) );
+  mEllipseMarkerLayer->setSymbolName( QStringLiteral( "circle" ) );
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mEllipseMarkerLayer->setStrokeWidth( 0.5 );
+  mMarkerSymbol->setOpacity( 0.5 );
+
+  bool result = imageCheck( QStringLiteral( "ellipsemarker_opacityddcolor" ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
+  mMarkerSymbol->setOpacity( 1.0 );
   QVERIFY( result );
 }
 
