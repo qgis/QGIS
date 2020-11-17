@@ -98,8 +98,8 @@ QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &para
   orderExpression.prepare( &expressionContext );
 
   QgsFields outputFields = QgsFields();
-  QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
-  QgsExpression groupExpression = QgsExpression( groupExpressionString );
+  const QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
+  QgsExpression groupExpression = groupExpressionString.isEmpty() ? QgsExpression( QString( "true" ) ) : QgsExpression( groupExpressionString );
   if ( groupExpression.hasParserError() )
     throw QgsProcessingException( groupExpression.parserErrorString() );
   if ( ! groupExpressionString.isEmpty() )
@@ -191,14 +191,14 @@ QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
 
     QVector<QgsPoint> linePoints;
-    for ( const auto pair : pairs )
+    for ( QVector< QPair< QVariant, const QgsPoint * > >::ConstIterator pit = pairs.constBegin(); pit != pairs.constEnd(); ++pit )
     {
       if ( feedback->isCanceled() )
       {
         break;
       }
       feedback->setProgress( currentPoint * totalPoints );
-      linePoints.append( *pair.second );
+      linePoints.append( *pit->second );
       ++currentPoint;
     }
     if ( linePoints.size() < 2 )
