@@ -1068,6 +1068,11 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( pixelHeight ) );
   setQueryItem( query, QStringLiteral( "LAYERS" ), layers );
   setQueryItem( query, QStringLiteral( "STYLES" ), styles );
+  QStringList opacityList = mSettings.mOpacities;
+  if ( !opacityList.isEmpty() )
+  {
+    setQueryItem( query, QStringLiteral( "OPACITIES" ), mSettings.mOpacities.join( ',' ) );
+  }
 
   // For WMS-T layers
   if ( temporalCapabilities() &&
