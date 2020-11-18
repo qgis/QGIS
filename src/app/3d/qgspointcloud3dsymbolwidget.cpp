@@ -22,7 +22,10 @@
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
 {
-  this->setupUi( this );
+  setupUi( this );
+
+  mPointSizeSpinBox->setClearValue( 2.0 );
+
   if ( symbol )
     setSymbol( symbol );
 
