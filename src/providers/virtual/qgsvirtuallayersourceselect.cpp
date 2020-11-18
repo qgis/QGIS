@@ -224,16 +224,16 @@ void QgsVirtualLayerSourceSelect::testQuery()
         QStringList bulletedFieldNames;
         for ( const QString &fieldName : fieldNames )
         {
-          bulletedFieldNames.append( QStringLiteral( "<li>%1" ).arg( fieldName ) );
+          bulletedFieldNames.append( QLatin1String( "<li>" ) + fieldName + QLatin1String( "</li>" ) );
         }
-        QMessageBox::warning( nullptr, tr( "Virtual layer test " ), tr( "The unique identifier field <b>%1</b> was not found in list of fields:<ul>%2</ul>" ).arg( mUIDField->text(), bulletedFieldNames.join( ' ' ) ) );
+        QMessageBox::warning( nullptr, tr( "Test Virtual Layer " ), tr( "The unique identifier field <b>%1</b> was not found in list of fields:<ul>%2</ul>" ).arg( mUIDField->text(), bulletedFieldNames.join( ' ' ) ) );
       }
       else
-        QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
+        QMessageBox::information( nullptr, tr( "Test Virtual Layer" ), tr( "No error" ) );
     }
     else
     {
-      QMessageBox::critical( nullptr, tr( "Virtual layer test" ), vl->dataProvider()->error().summary() );
+      QMessageBox::critical( nullptr, tr( "Test Virtual Layer" ), vl->dataProvider()->error().summary() );
     }
   }
 }
