@@ -2657,6 +2657,13 @@ void QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRende
     return;
   }
 
+  // don't even try to register linestrings with only one vertex as an obstacle
+  if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( geom.constGet() ) )
+  {
+    if ( ls->numPoints() < 2 )
+      return;
+  }
+
   // simplify?
   const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
   std::unique_ptr<QgsGeometry> scopedClonedGeom;
