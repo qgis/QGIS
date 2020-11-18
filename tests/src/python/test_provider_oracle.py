@@ -824,7 +824,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
     def testCreateEmptyLayer(self):
         uri = self.dbconn + "srid=4326 type=POINT table=\"EMPTY_LAYER\" (GEOM)"
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Type.Point, crs=QgsCoordinateReferenceSystem(4326), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem(4326), overwrite=True)
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
         # check IF there is an empty table (will throw error if the EMPTY_LAYER table does not excist)
