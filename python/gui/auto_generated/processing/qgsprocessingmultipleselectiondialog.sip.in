@@ -74,6 +74,12 @@ Sets a callback function to use when encountering an invalid geometry and
 Returns the ordered list of selected options.
 %End
 
+    void selectOptions( const QVariantList &options ) const;
+%Docstring
+Select the given ``options``. Existing selected option are not unselected.
+%End
+
+
     QDialogButtonBox *buttonBox();
 %Docstring
 Returns the widget's button box.

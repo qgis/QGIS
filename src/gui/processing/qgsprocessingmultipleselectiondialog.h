@@ -94,6 +94,12 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     QVariantList selectedOptions() const;
 
     /**
+     * Select the given \a options. Existing selected option are not unselected.
+     */
+    void selectOptions( const QVariantList &options ) const;
+
+
+    /**
      * Returns the widget's button box.
      */
     QDialogButtonBox *buttonBox() { return mButtonBox; }

@@ -6510,9 +6510,10 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue, mModelSources, mModel );
+    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, QVariantList(), mModelSources, mModel );
     widget->setPanelTitle( mParam->description() );
     widget->setProject( mProject );
+    widget->selectOptions( mValue );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
     {
       setValue( widget->selectedOptions() );

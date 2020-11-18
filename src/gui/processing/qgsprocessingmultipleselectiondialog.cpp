@@ -30,6 +30,17 @@
 
 ///@cond NOT_STABLE
 
+//! returns true \a optionA equals \a optionB
+bool areOptionsEqual( const QVariant &optionA, const QVariant &optionB )
+{
+  return ( optionA == optionB ||
+           ( optionA.canConvert< QgsProcessingModelChildParameterSource >() &&
+             optionB.canConvert< QgsProcessingModelChildParameterSource >() &&
+             optionA.value< QgsProcessingModelChildParameterSource >() ==
+             optionB.value< QgsProcessingModelChildParameterSource >() ) );
+}
+
+
 QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWidget( const QVariantList &availableOptions,
     const QVariantList &selectedOptions,
     QWidget *parent )
@@ -76,6 +87,25 @@ void QgsProcessingMultipleSelectionPanelWidget::setValueFormatter( const std::fu
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
     mModel->item( i )->setText( mValueFormatter( mModel->item( i )->data( Qt::UserRole ) ) );
+  }
+}
+
+void QgsProcessingMultipleSelectionPanelWidget::selectOptions( const QVariantList &options ) const
+{
+  QVariantList opts = options;
+  for ( int i = 0; i < mModel->rowCount(); ++i )
+  {
+    QStandardItem *item = mModel->item( i );
+    for ( int o = 0; o < opts.count(); o++ )
+    {
+      QVariant option = opts.at( o );
+      if ( areOptionsEqual( item->data( Qt::UserRole ), option ) )
+      {
+        item->setCheckState( Qt::Checked );
+        opts.removeAt( o );
+        break;
+      }
+    }
   }
 }
 
@@ -187,12 +217,7 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   // don't add duplicate options
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
-    if ( mModel->item( i )->data( Qt::UserRole ) == value ||
-         ( mModel->item( i )->data( Qt::UserRole ).canConvert< QgsProcessingModelChildParameterSource >() &&
-           value.canConvert< QgsProcessingModelChildParameterSource >() &&
-           mModel->item( i )->data( Qt::UserRole ).value< QgsProcessingModelChildParameterSource >() ==
-           value.value< QgsProcessingModelChildParameterSource >() )
-       )
+    if ( areOptionsEqual( mModel->item( i )->data( Qt::UserRole ), value ) )
     {
       if ( updateExistingTitle )
         mModel->item( i )->setText( title );
