@@ -205,6 +205,74 @@ Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by
 .. seealso:: :py:func:`startRender`
 %End
 
+    void setPointSize( double size );
+%Docstring
+Sets the point ``size``. Point size units are specified via :py:func:`~QgsPointCloudRenderer.setPointSizeUnit`.
+
+.. seealso:: :py:func:`pointSize`
+
+.. seealso:: :py:func:`setPointSizeUnit`
+
+.. seealso:: :py:func:`setPointSizeMapUnitScale`
+%End
+
+    double pointSize() const;
+%Docstring
+Returns the point size.
+
+The point size units are retrieved by calling :py:func:`~QgsPointCloudRenderer.pointSizeUnit`.
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. seealso:: :py:func:`pointSizeMapUnitScale`
+%End
+
+    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units );
+%Docstring
+Sets the ``units`` used for the point size.
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. seealso:: :py:func:`setPointSizeMapUnitScale`
+%End
+
+    QgsUnitTypes::RenderUnit pointSizeUnit() const;
+%Docstring
+Returns the units used for the point size.
+
+.. seealso:: :py:func:`setPointSizeUnit`
+
+.. seealso:: :py:func:`pointSize`
+
+.. seealso:: :py:func:`pointSizeMapUnitScale`
+%End
+
+    void setPointSizeMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` used for the point size.
+
+.. seealso:: :py:func:`pointSizeMapUnitScale`
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`setPointSizeUnit`
+%End
+
+    const QgsMapUnitScale &pointSizeMapUnitScale() const;
+%Docstring
+Returns the map unit scale used for the point size.
+
+.. seealso:: :py:func:`setPointSizeMapUnitScale`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. seealso:: :py:func:`pointSize`
+%End
+
     double maximumScreenError() const;
 %Docstring
 Returns the maximum screen error allowed when rendering the point cloud.
@@ -254,6 +322,27 @@ Sets the ``unit`` for the maximum screen error allowed when rendering the point 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
 %Docstring
 Retrieves the x and y coordinate for the point at index ``i``.
+%End
+
+    void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
+%Docstring
+Copies common point cloud properties (such as point size and screen error) to the ``destination`` renderer.
+%End
+
+    void restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Restores common renderer properties (such as point size and screen error) from the
+specified DOM ``element``.
+
+.. seealso:: :py:func:`saveCommonProperties`
+%End
+
+    void saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Saves common renderer properties (such as point size and screen error) to the
+specified DOM ``element``.
+
+.. seealso:: :py:func:`restoreCommonProperties`
 %End
 
   private:

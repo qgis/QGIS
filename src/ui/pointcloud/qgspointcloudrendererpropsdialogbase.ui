@@ -91,6 +91,57 @@
           </widget>
          </item>
          <item>
+          <widget class="QGroupBox" name="mLayerRenderingGroupBox_2">
+           <property name="title">
+            <string>Point Symbol</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="1" colspan="2">
+             <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
+              <property name="decimals">
+               <number>6</number>
+              </property>
+              <property name="maximum">
+               <double>99999999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QgsUnitSelectionWidget" name="mPointSizeUnitWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblTransparency_4">
+              <property name="text">
+               <string>Point size</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
           <widget class="QGroupBox" name="mLayerRenderingGroupBox">
            <property name="title">
             <string>Layer Rendering</string>
