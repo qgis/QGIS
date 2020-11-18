@@ -438,6 +438,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     QgsMapLayerConfigWidget *panel = mUserPages[row]->createWidget( mCurrentLayer, mMapCanvas, true, mWidgetStack );
     if ( panel )
     {
+      panel->setDockMode( true );
       connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
       mWidgetStack->setMainPanel( panel );
     }
