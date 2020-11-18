@@ -790,8 +790,6 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
       return true;
 
     case QgsMapLayerType::VectorTileLayer:
-      return false;  // TODO
-
     case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
