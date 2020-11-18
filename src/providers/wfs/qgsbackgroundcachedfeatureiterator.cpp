@@ -766,7 +766,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       mWaitCond.wait( &mMutex, timeout );
       if ( requestMadeFromMainThread && mProcessEvents )
       {
-        QgsApplication::instance()->processEvents();
+        QApplication::instance()->processEvents();
         mProcessEvents = false;
       }
       if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
