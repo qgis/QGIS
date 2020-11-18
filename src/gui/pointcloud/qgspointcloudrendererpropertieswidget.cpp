@@ -24,6 +24,7 @@
 #include "qgspointcloudrgbrendererwidget.h"
 
 #include "qgspointcloudrgbrenderer.h"
+#include "qgslogger.h"
 
 static bool _initRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -62,7 +63,6 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   , mStyle( style )
 {
   setupUi( this );
-  mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
 

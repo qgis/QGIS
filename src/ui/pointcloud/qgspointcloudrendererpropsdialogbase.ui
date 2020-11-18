@@ -91,7 +91,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QgsCollapsibleGroupBox" name="mLayerRenderingGroupBox">
+          <widget class="QGroupBox" name="mLayerRenderingGroupBox">
            <property name="title">
             <string>Layer Rendering</string>
            </property>
@@ -99,12 +99,6 @@
             <bool>true</bool>
            </property>
            <property name="checkable">
-            <bool>false</bool>
-           </property>
-           <property name="collapsed" stdset="0">
-            <bool>true</bool>
-           </property>
-           <property name="saveCollapsedState" stdset="0">
             <bool>false</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout">
@@ -188,15 +182,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -209,11 +202,6 @@
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
