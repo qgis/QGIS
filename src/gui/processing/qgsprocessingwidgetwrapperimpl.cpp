@@ -4093,7 +4093,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layers.at( 0 ) );
     QgsFields fields = vlayer && vlayer->isValid() ? vlayer->fields() : QgsFields();
     const  QList< QgsMapLayer * > remainingLayers = layers.mid( 1 );
-    for ( QgsMapLayer* layer : remainingLayers )
+    for ( QgsMapLayer *layer : remainingLayers )
     {
       if ( fields.isEmpty() )
         break;
@@ -6472,6 +6472,14 @@ void QgsProcessingMultipleLayerPanelWidget::setValue( const QVariant &value )
 void QgsProcessingMultipleLayerPanelWidget::setProject( QgsProject *project )
 {
   mProject = project;
+  connect( mProject, &QgsProject::layerRemoved, this, [&]( const QString & layerId )
+  {
+    if ( mValue.removeAll( layerId ) )
+    {
+      updateSummaryText();
+      emit changed();
+    }
+  } );
 }
 
 void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorithm *model, const QString &modelChildAlgorithmID )
