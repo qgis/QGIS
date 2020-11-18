@@ -563,12 +563,12 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
     enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
                              .arg( layer->displayExpression(), enhancedSearch ) );
-    req.setLimit( 6 );
+    req.setLimit( mMaxResultsPerLayer );
 
     QgsFeatureRequest exactMatchRequest = req;
     exactMatchRequest.setFilterExpression( QStringLiteral( "%1 ILIKE '%2'" )
                                            .arg( layer->displayExpression(), enhancedSearch ) );
-    exactMatchRequest.setLimit( 10 );
+    exactMatchRequest.setLimit( mMaxResultsPerLayer );
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
     preparedLayer->expression = expression;
@@ -625,6 +625,8 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
       if ( foundInCurrentLayer >= mMaxResultsPerLayer )
         break;
     }
+    if ( foundInCurrentLayer >= mMaxResultsPerLayer )
+      continue;
     if ( foundInTotal >= mMaxTotalResults )
       break;
 
