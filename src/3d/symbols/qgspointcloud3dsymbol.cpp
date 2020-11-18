@@ -26,7 +26,6 @@ QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol() {  }
 
 QgsAbstract3DSymbol *QgsPointCloud3DSymbol::clone() const
 {
-  // TODO: fix memory leak
   QgsPointCloud3DSymbol *result = new QgsPointCloud3DSymbol;
   result->mEnabled = mEnabled;
   result->mPointSize = mPointSize;

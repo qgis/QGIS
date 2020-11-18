@@ -72,9 +72,6 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
-    //! A list of additional pages provided by plugins
-    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
-
     /**
      * Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled.

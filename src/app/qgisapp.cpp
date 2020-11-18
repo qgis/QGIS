@@ -16269,9 +16269,6 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       else
         pointCloudLayerPropertiesDialog.restoreLastPage();
 
-      if ( !page.isEmpty() )
-        pointCloudLayerPropertiesDialog.setCurrentPage( page );
-
       for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
       {
         pointCloudLayerPropertiesDialog.addPropertiesPageFactory( factory );
