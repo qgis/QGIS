@@ -31,7 +31,7 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
   mFontButton->setNoFormatString( tr( "Clear Formatting" ) );
 
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setColorDialogTitle( tr( "Text Color" ) );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Background Color" ) );
   mBackgroundColorButton->setDefaultColor( QColor( 255, 255, 255 ) );
   mBackgroundColorButton->setShowNull( true );
 
