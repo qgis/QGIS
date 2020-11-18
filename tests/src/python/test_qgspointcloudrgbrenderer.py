@@ -23,7 +23,9 @@ from qgis.core import (
     QgsMultiRenderChecker,
     QgsMapSettings,
     QgsRectangle,
-    QgsContrastEnhancement
+    QgsContrastEnhancement,
+    QgsUnitTypes,
+    QgsMapUnitScale
 )
 
 from qgis.PyQt.QtCore import QDir, QSize
@@ -83,7 +85,20 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         bluece.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ClipToMinimumMaximum)
         renderer.setBlueContrastEnhancement(bluece)
 
+        renderer.setMaximumScreenError(18)
+        renderer.setMaximumScreenErrorUnit(QgsUnitTypes.RenderInches)
+        renderer.setPointSize(13)
+        renderer.setPointSizeUnit(QgsUnitTypes.RenderPoints)
+        renderer.setPointSizeMapUnitScale(QgsMapUnitScale(1000, 2000))
+
         rr = renderer.clone()
+        self.assertEqual(rr.maximumScreenError(), 18)
+        self.assertEqual(rr.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(rr.pointSize(), 13)
+        self.assertEqual(rr.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(rr.pointSizeMapUnitScale().minScale, 1000)
+        self.assertEqual(rr.pointSizeMapUnitScale().maxScale, 2000)
+
         self.assertEqual(rr.blueAttribute(), 'b')
         self.assertEqual(rr.greenAttribute(), 'g')
         self.assertEqual(rr.redAttribute(), 'r')
@@ -101,6 +116,13 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         elem = renderer.save(doc, QgsReadWriteContext())
 
         r2 = QgsPointCloudRgbRenderer.create(elem, QgsReadWriteContext())
+        self.assertEqual(r2.maximumScreenError(), 18)
+        self.assertEqual(r2.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(r2.pointSize(), 13)
+        self.assertEqual(r2.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(r2.pointSizeMapUnitScale().minScale, 1000)
+        self.assertEqual(r2.pointSizeMapUnitScale().maxScale, 2000)
+
         self.assertEqual(r2.blueAttribute(), 'b')
         self.assertEqual(r2.greenAttribute(), 'g')
         self.assertEqual(r2.redAttribute(), 'r')
@@ -130,7 +152,8 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
 
-        layer.renderer().setPenWidth(2)
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -152,7 +175,8 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
 
-        layer.renderer().setPenWidth(2)
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
 
         redce = QgsContrastEnhancement()
         redce.setMinimumValue(100)
@@ -192,7 +216,8 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
 
-        layer.renderer().setPenWidth(2)
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
 
         layer.setOpacity(0.5)
 
@@ -216,7 +241,8 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
 
-        layer.renderer().setPenWidth(2)
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
 
         layer.setBlendMode(QPainter.CompositionMode_ColorBurn)
 
@@ -232,6 +258,29 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_blendmode')
         result = renderchecker.runTest('expected_blendmode')
+        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderPointSize(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(0.05)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_pointsize')
+        result = renderchecker.runTest('expected_pointsize')
         TestQgsPointCloudRgbRenderer.report += renderchecker.report()
         self.assertTrue(result)
 
