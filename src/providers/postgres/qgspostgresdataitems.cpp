@@ -437,7 +437,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       {
         if ( prev && prev->name().indexOf( layerItem->name() ) == 0 )
         {
-          layerItem->setName( layerItem->name() + QString( ":" ) + QgsPostgresConn::displayStringForWkbType( layerProperty.types.at( i ) ) );
+          layerItem->setName( layerItem->name() + QChar( ':' ) + QgsPostgresConn::displayStringForWkbType( layerProperty.types.at( i ) ) );
         }
         items.append( layerItem );
       }
