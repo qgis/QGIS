@@ -91,7 +91,9 @@ class TestQgsSubsetStringEditorProviderRegistry(unittest.TestCase):
         self.assertIsNone(registry.providerByName('i_do_not_exist'))
         self.assertEqual(registry.providerByName('WFS').providerKey(), 'WFS')
 
-    def testCreateDialogWithDefaultImplementation(self):
+    # Test disabled since there's a memory corruption issue with QgsQueryBuilder()
+    # creation in non-GUI mode.
+    def DISABLED_testCreateDialogWithDefaultImplementation(self):
         """ Tests that createDialog() returns the default implementation when no provider kicks in """
 
         registry = QgsGui.subsetStringEditorProviderRegistry()
