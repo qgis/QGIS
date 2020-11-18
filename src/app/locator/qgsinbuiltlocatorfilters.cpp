@@ -625,6 +625,8 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
       if ( foundInCurrentLayer >= mMaxResultsPerLayer )
         break;
     }
+    if ( foundInCurrentLayer >= mMaxResultsPerLayer )
+      continue;
     if ( foundInTotal >= mMaxTotalResults )
       break;
 
