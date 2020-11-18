@@ -63,7 +63,7 @@ void QgsPointCloudLayer3DRendererWidget::apply()
   QgsPointCloudLayer3DRenderer *r = nullptr;
   if ( mChkEnabled->isChecked() )
   {
-    r = renderer()->clone();
+    r = renderer();
     if ( r )
       r->setSymbol( mWidgetPointCloudSymbol->symbol() );
   }
