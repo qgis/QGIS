@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgsapplication.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -35,6 +34,7 @@
 #include "qgswfsutils.h"
 #include "qgssettings.h"
 
+#include <QApplication>
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDomNodeList>
@@ -126,7 +126,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     {
       auto processEvents = []()
       {
-        QgsApplication::instance()->processEvents();
+        QApplication::instance()->processEvents();
       };
       connect( &downloader, &QgsWFSFeatureDownloader::resumeMainThread,
                this, processEvents );
