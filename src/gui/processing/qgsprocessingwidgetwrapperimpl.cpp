@@ -3907,6 +3907,17 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
+      else if ( const QgsProcessingParameterMultipleLayers *definition = dynamic_cast< const QgsProcessingParameterMultipleLayers * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        if ( definition->layerType() == QgsProcessing::TypeVector )
+        {
+          mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+          if ( !initialParent.isEmpty() && initialParent == definition->name() )
+          {
+            mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+          }
+        }
+      }
     }
   }
 
