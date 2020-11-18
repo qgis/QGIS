@@ -122,11 +122,11 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
           {
             return QgsLayerItem::iconPoint();
           }
-          case QgsWkbTypes::PolygonGeometry :
+          case QgsWkbTypes::PolygonGeometry:
           {
             return QgsLayerItem::iconPolygon();
           }
-          case QgsWkbTypes::LineGeometry :
+          case QgsWkbTypes::LineGeometry:
           {
             return QgsLayerItem::iconLine();
           }
