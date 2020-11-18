@@ -67,6 +67,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
   expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
+  expContext.appendScope( QgsExpressionContextUtils::atlasScope( nullptr ) );
 
   populateFields();
   populateOutputFieldTypes();
@@ -178,6 +179,7 @@ void QgsFieldCalculator::accept()
   exp.setAreaUnits( QgsProject::instance()->areaUnits() );
 
   QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+  expContext.appendScope( QgsExpressionContextUtils::atlasScope( nullptr ) );
 
   if ( !exp.prepare( &expContext ) )
   {
