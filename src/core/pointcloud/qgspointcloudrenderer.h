@@ -239,6 +239,58 @@ class CORE_EXPORT QgsPointCloudRenderer
     virtual void stopRender( QgsPointCloudRenderContext &context );
 
     /**
+     * Sets the point \a size. Point size units are specified via setPointSizeUnit().
+     * \see pointSize()
+     * \see setPointSizeUnit()
+     * \see setPointSizeMapUnitScale()
+     */
+    void setPointSize( double size ) { mPointSize = size; }
+
+    /**
+     * Returns the point size.
+     *
+     * The point size units are retrieved by calling pointSizeUnit().
+     *
+     * \see setPointSize()
+     * \see pointSizeUnit()
+     * \see pointSizeMapUnitScale()
+     */
+    double pointSize() const { return mPointSize; }
+
+    /**
+     * Sets the \a units used for the point size.
+     *
+     * \see setPointSize()
+     * \see pointSizeUnit()
+     * \see setPointSizeMapUnitScale()
+     */
+    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units ) { mPointSizeUnit = units; }
+
+    /**
+     * Returns the units used for the point size.
+     * \see setPointSizeUnit()
+     * \see pointSize()
+     * \see pointSizeMapUnitScale()
+     */
+    QgsUnitTypes::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
+
+    /**
+     * Sets the map unit \a scale used for the point size.
+     * \see pointSizeMapUnitScale()
+     * \see setPointSize()
+     * \see setPointSizeUnit()
+     */
+    void setPointSizeMapUnitScale( const QgsMapUnitScale &scale ) { mPointSizeMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale used for the point size.
+     * \see setPointSizeMapUnitScale()
+     * \see pointSizeUnit()
+     * \see pointSize()
+     */
+    const QgsMapUnitScale &pointSizeMapUnitScale() const { return mPointSizeMapUnitScale; }
+
+    /**
      * Returns the maximum screen error allowed when rendering the point cloud.
      *
      * Larger values result in a faster render with less points rendered.
@@ -292,6 +344,27 @@ class CORE_EXPORT QgsPointCloudRenderer
       y = context.offset().y() + context.scale().y() * iy;
     }
 
+    /**
+     * Copies common point cloud properties (such as point size and screen error) to the \a destination renderer.
+     */
+    void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
+
+    /**
+     * Restores common renderer properties (such as point size and screen error) from the
+     * specified DOM \a element.
+     *
+     * \see saveCommonProperties()
+     */
+    void restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Saves common renderer properties (such as point size and screen error) to the
+     * specified DOM \a element.
+     *
+     * \see restoreCommonProperties()
+     */
+    void saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderer( const QgsPointCloudRenderer &other );
@@ -304,6 +377,11 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     double mMaximumScreenError = 5.0;
     QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
+
+    double mPointSize = 1;
+    QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mPointSizeMapUnitScale;
+
 };
 
 #ifndef SIP_RUN

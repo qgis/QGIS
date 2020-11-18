@@ -48,16 +48,6 @@ Constructor for QgsPointCloudRgbRenderer.
 Creates an RGB renderer from an XML ``element``.
 %End
 
-    int penWidth() const;
-%Docstring
-Returns pen width
-%End
-
-    void setPenWidth( int value );
-%Docstring
-Sets pen width
-%End
-
     QString redAttribute() const;
 %Docstring
 Returns the attribute to use for the red channel.
