@@ -153,7 +153,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
 
   std::function<void()> downloaderFunction = [ this, request, synchronous, &waitConditionMutex, &waitCondition, &threadFinished, &success ]()
   {
-    if ( QThread::currentThread() != QgsApplication::instance()->thread() )
+    if ( QThread::currentThread() != QApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
 
     success = true;
@@ -229,7 +229,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
       {
         waitConditionMutex.unlock();
 
-        QgsApplication::instance()->processEvents();
+        QApplication::instance()->processEvents();
         // we don't need to wake up the worker thread - it will automatically be woken when
         // the auth request has been dealt with by QgsNetworkAccessManager
       }
