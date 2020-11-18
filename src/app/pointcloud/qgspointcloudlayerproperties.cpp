@@ -418,3 +418,4 @@ void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int inde
   mBtnStyle->setVisible( ! isMetadataPanel );
   mBtnMetadata->setVisible( isMetadataPanel );
 }
+

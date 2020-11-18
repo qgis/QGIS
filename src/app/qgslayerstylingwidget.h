@@ -43,6 +43,7 @@ class QgsRasterHistogramWidget;
 class QgsMapLayerStyleManagerWidget;
 class QgsVectorLayer3DRendererWidget;
 class QgsMeshLayer3DRendererWidget;
+class QgsPointCloudLayer3DRendererWidget;
 class QgsMessageBar;
 class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileBasicLabelingWidget;

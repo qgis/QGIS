@@ -30,6 +30,7 @@
 #include "qgschunkloader_p.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"
+#include "qgspointcloud3dsymbol.h"
 
 #define SIP_NO_FILE
 
@@ -37,6 +38,8 @@ class Qgs3DMapSettings;
 class QgsPointCloudLayer;
 class IndexedPointCloudNode;
 class QgsPointCloudIndex;
+
+#include <memory>
 
 #include <QFutureWatcher>
 #include <Qt3DRender/QGeometry>
@@ -47,7 +50,7 @@ class QgsPointCloudIndex;
 class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
 {
   public:
-    QgsPointCloud3DSymbolHandler( );
+    QgsPointCloud3DSymbolHandler( QgsPointCloud3DSymbol *symbol );
 
     bool prepare( const Qgs3DRenderContext &context );// override;
     void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const Qgs3DRenderContext &context ); // override;
@@ -85,6 +88,8 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     // outputs
     PointData outNormal;  //!< Features that are not selected
     // PointData outSelected;  //!< Features that are selected
+
+    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
 };
 
 class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
@@ -111,8 +116,11 @@ class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
   public:
-    //! Constructs the factory
-    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc );
+    /*
+     * Constructs the factory
+     * The factory takes ownership over the passed \a symbol
+     */
+    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -121,6 +129,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
+    std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
 };
 
 
@@ -135,8 +144,12 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
 {
   public:
-    //! Constructs the loader
-    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node );
+
+    /**
+     * Constructs the loader
+     * QgsPointCloudLayerChunkLoader takes ownership over symbol
+     */
+    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, QgsPointCloud3DSymbol *symbol );
     ~QgsPointCloudLayerChunkLoader() override;
 
     virtual void cancel() override;
@@ -165,7 +178,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map );
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol );
 
     ~QgsPointCloudLayerChunkedEntity();
 };
