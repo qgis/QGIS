@@ -1336,13 +1336,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
 
   registerMapLayerPropertiesFactory( new QgsVectorLayerDigitizingPropertiesFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
 #ifdef HAVE_3D
   registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
-
-  registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
