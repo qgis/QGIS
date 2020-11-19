@@ -1925,6 +1925,11 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       QgsWkbTypes::Type type = layerProperty.types.value( 0, QgsWkbTypes::Unknown );
       if ( type == QgsWkbTypes::Unknown )
       {
+        // Note that we would like to apply a "LIMIT GEOM_TYPE_SELECT_LIMIT"
+        // here, so that the previous "array_agg(DISTINCT" does not scan the
+        // full table. However SQL does not allow that.
+        // So we have to do a subselect on the table to add the LIMIT,
+        // see comment in the following code.
         sql += QStringLiteral( "UPPER(geometrytype(%1%2))" )
                .arg( quotedIdentifier( layerProperty.geometryColName ),
                      castToGeometry ?  "::geometry" : "" );
@@ -1938,7 +1943,18 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
 
       sql += QLatin1String( ") " );
 
-      sql += " FROM " + table;
+      if ( type == QgsWkbTypes::Unknown )
+      {
+        // Subselect to limit the "array_agg(DISTINCT", see previous comment.
+        sql += QStringLiteral( " FROM (SELECT %1 from %2 LIMIT %3) as _unused" )
+               .arg( quotedIdentifier( layerProperty.geometryColName ) )
+               .arg( table )
+               .arg( GEOM_TYPE_SELECT_LIMIT );
+      }
+      else
+      {
+        sql += " FROM " + table;
+      }
 
       QgsDebugMsgLevel( "Geometry types,srids and dims query: " + sql, 2 );
 
