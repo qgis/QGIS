@@ -63,7 +63,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
      * \returns the project or NULLPTR if an error happened
      * \since QGIS 3.0
      */
-    const QgsProject *project( const QString &path, QgsServerSettings *settings = nullptr );
+    const QgsProject *project( const QString &path, const QgsServerSettings *settings = nullptr );
 
   private:
     QgsConfigCache() SIP_FORCE;
