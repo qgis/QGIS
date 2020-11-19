@@ -188,6 +188,17 @@ class QgsPostgresResult
 
 };
 
+//! Wraps acquireConnection() and releaseConnection() from a QgsPostgresConnPool.
+// This can be used for creating std::shared_ptr<QgsPoolPostgresConn>.
+class QgsPoolPostgresConn
+{
+    class QgsPostgresConn *mPgConn;
+  public:
+    QgsPoolPostgresConn( const QString &connInfo );
+    ~QgsPoolPostgresConn();
+
+    class QgsPostgresConn *get() const { return mPgConn; }
+};
 
 class QgsPostgresConn : public QObject
 {
