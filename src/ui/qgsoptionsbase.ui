@@ -4905,7 +4905,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <item row="1" column="2">
                    <widget class="QgsDoubleSpinBox" name="mTracingCustomAngleToleranceSpinBox">
                     <property name="toolTip">
-                     <string>Parameter used by the convert to curves algorithm when tracing curves.</string>
+                     <string>This specifies the maximum angular deviation (in radians) allowed for a series of points to be converted to a curve.</string>
                     </property>
                     <property name="decimals">
                      <number>10</number>
@@ -4918,7 +4918,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <item row="2" column="2">
                    <widget class="QgsDoubleSpinBox" name="mTracingCustomDistanceToleranceSpinBox">
                     <property name="toolTip">
-                     <string>Parameter used by the convert to curves algorithm when tracing curves.</string>
+                     <string>This specifies the maximum deviation allowed between the original location of vertices and where they would fall on the candidate curved geometry for a series of points to be converted to a curve.</string>
                     </property>
                     <property name="decimals">
                      <number>10</number>
