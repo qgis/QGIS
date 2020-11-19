@@ -58,7 +58,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
       * Feature that has opened feature form.
       * This property needs to be set before opening feature form to be able to evaulate filter expressions that contain form scope.
       */
-    Q_PROPERTY( QgsFeature currentFeature WRITE setCurrentFeature NOTIFY currentFeatureChanged )
+    Q_PROPERTY( QgsFeature currentFeature READ currentFeature WRITE setCurrentFeature NOTIFY currentFeatureChanged )
 
   public:
 
@@ -76,7 +76,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
 
     //! Create features list model
     explicit QgsQuickFeaturesListModel( QObject *parent = nullptr );
-    ~QgsQuickFeaturesListModel() override {};
+    ~QgsQuickFeaturesListModel() override;
 
     //! Function to get QgsQuickFeatureLayerPair by feature id
     Q_INVOKABLE QgsQuickFeatureLayerPair featureLayerPair( const int &featureId );
@@ -160,6 +160,9 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
 
     //! Sets current feature property
     void setCurrentFeature( QgsFeature feature );
+
+    //! Gets current feature property
+    QgsFeature currentFeature() const;
 
   signals:
 

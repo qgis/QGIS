@@ -23,6 +23,8 @@ QgsQuickFeaturesListModel::QgsQuickFeaturesListModel( QObject *parent )
 {
 }
 
+QgsQuickFeaturesListModel::~QgsQuickFeaturesListModel() = default;
+
 int QgsQuickFeaturesListModel::rowCount( const QModelIndex &parent ) const
 {
   // For list models only the root node (an invalid parent) should return the list's size. For all
@@ -303,6 +305,11 @@ void QgsQuickFeaturesListModel::setCurrentFeature( QgsFeature feature )
   mCurrentFeature = feature;
   reloadFeatures();
   emit currentFeatureChanged( mCurrentFeature );
+}
+
+QgsFeature QgsQuickFeaturesListModel::currentFeature() const
+{
+  return mCurrentFeature;
 }
 
 int QgsQuickFeaturesListModel::featuresLimit() const
