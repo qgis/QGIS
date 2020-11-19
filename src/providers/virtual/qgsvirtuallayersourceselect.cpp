@@ -218,9 +218,6 @@ void QgsVirtualLayerSourceSelect::testQuery()
     std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options ) );
     if ( vl->isValid() )
     {
-<<<<<<< HEAD
-      QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
-=======
       const QStringList fieldNames = vl->fields().names();
       if ( !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
       {
@@ -233,7 +230,6 @@ void QgsVirtualLayerSourceSelect::testQuery()
       }
       else
         QMessageBox::information( nullptr, tr( "Test Virtual Layer" ), tr( "No error" ) );
->>>>>>> f3f052247b (Beautiful HTML)
     }
     else
     {
