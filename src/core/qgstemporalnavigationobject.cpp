@@ -135,7 +135,9 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
   {
     return;
   }
+  QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
   mTemporalExtents = temporalExtents;
+  mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalExtentsChanged( mTemporalExtents );
 
   switch ( mNavigationMode )
@@ -143,11 +145,10 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
     case Animated:
     {
       int currentFrameNumber = mCurrentFrameNumber;
-      setCurrentFrameNumber( 0 );
 
-      //Force to emit signal if the current frame number doesn't change
+      // Force to emit signal if the current frame number doesn't change
       if ( currentFrameNumber == mCurrentFrameNumber && !mBlockUpdateTemporalRangeSignal )
-        emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
+        emit updateTemporalRange( dateTimeRangeForFrameNumber( mCurrentFrameNumber ) );
       break;
     }
     case FixedRange:
@@ -188,13 +189,12 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
   {
     return;
   }
+  QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
   mFrameDuration = frameDuration;
+  mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalFrameDurationChanged( mFrameDuration );
 
   // temporarily disable the updateTemporalRange signal, as we'll emit it ourselves at the end of this function...
-  mBlockUpdateTemporalRangeSignal++;
-  setCurrentFrameNumber( 0 );
-  mBlockUpdateTemporalRangeSignal--;
 
   // forcing an update of our views
   QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
@@ -306,4 +306,20 @@ void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )
 QgsTemporalNavigationObject::AnimationState QgsTemporalNavigationObject::animationState() const
 {
   return mPlayBackMode;
+}
+
+long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const
+{
+  long bestFrame = 0;
+  QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creatng an 'instant' Range here
+  for ( long i = 0; i < totalFrameCount(); ++i )
+  {
+    QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );
+    if ( range.overlaps( testFrame ) )
+    {
+      bestFrame = i;
+      break;
+    }
+  }
+  return bestFrame;
 }

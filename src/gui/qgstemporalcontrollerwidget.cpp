@@ -283,7 +283,7 @@ void QgsTemporalControllerWidget::updateTemporalExtent()
                                     mEndDateTime->dateTime() );
   mNavigationObject->setTemporalExtents( temporalExtent );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
-  mSlider->setValue( 0 );
+  mSlider->setValue( mNavigationObject->currentFrameNumber() );
 }
 
 void QgsTemporalControllerWidget::updateFrameDuration()
@@ -296,9 +296,11 @@ void QgsTemporalControllerWidget::updateFrameDuration()
   QgsProject::instance()->timeSettings()->setTimeStep( mStepSpinBox->value() );
 
   if ( !mBlockFrameDurationUpdates )
+  {
     mNavigationObject->setFrameDuration( QgsInterval( QgsProject::instance()->timeSettings()->timeStep(),
                                          QgsProject::instance()->timeSettings()->timeStepUnit() ) );
-
+    mSlider->setValue( mNavigationObject->currentFrameNumber() );
+  }
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
 }
 
