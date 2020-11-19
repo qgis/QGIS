@@ -2,7 +2,7 @@
   "name": "overlay_within",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature is spatially within at least one feature from a target layer, or an array of expression-based results for the features in the target layer that contain the current feature.<br><br>Read more on the underlying GEOS \"Within\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Within.html'>ST_WITHIN</a> function.",
+  "description": "Returns whether the current feature is spatially within at least one feature from a target layer, or an array of expression-based results for the features in the target layer that contain the current feature.<br><br>Read more on the underlying GEOS \"Within\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Within.html'>ST_Within</a> function.",
   "arguments": [
     {
       "arg": "layer",

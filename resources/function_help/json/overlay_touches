@@ -2,7 +2,7 @@
   "name": "overlay_touches",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature spatially touches at least one feature from a target layer, or an array of expression-based results for the features in the target layer touched by the current feature.<br><br>Read more on the underlying GEOS \"Touches\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Touches.html'>ST_TOUCHES</a> function.",
+  "description": "Returns whether the current feature spatially touches at least one feature from a target layer, or an array of expression-based results for the features in the target layer touched by the current feature.<br><br>Read more on the underlying GEOS \"Touches\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Touches.html'>ST_Touches</a> function.",
   "arguments": [
     {
       "arg": "layer",
