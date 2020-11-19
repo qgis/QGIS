@@ -370,7 +370,10 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
         // load the project if needed and not empty
-        project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
+        if ( ! configFilePath.isEmpty() )
+        {
+          project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
+        }
       }
 
       // Set the current project instance
@@ -380,6 +383,14 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       {
         sServerInterface->setConfigFilePath( project->fileName() );
       }
+      else
+      {
+        sServerInterface->setConfigFilePath( QString() );
+      }
+
+      // Note that at this point we still might not have set a valid project.
+      // There are APIs that work without a project (e.g. the landing page catalog API that
+      // lists the available projects metadata).
 
       // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
       // TODO: QGIS 4 fix the OWS services and treat them as APIs
