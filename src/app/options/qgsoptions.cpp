@@ -1160,6 +1160,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mCurveOffsetMiterLimitComboBox->setClearValue( 5.0 );
 
   mTracingConvertToCurveCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() );
+  mTracingCustomAngleToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-6 ).toDouble() );
+  mTracingCustomAngleToleranceSpinBox->setClearValue( 1e-6 );
+  mTracingCustomDistanceToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-6 ).toDouble() );
+  mTracingCustomDistanceToleranceSpinBox->setClearValue( 1e-6 );
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
@@ -1782,6 +1786,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), mTracingConvertToCurveCheckBox->isChecked() );
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), mTracingCustomAngleToleranceSpinBox->value() );
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), mTracingCustomDistanceToleranceSpinBox->value() );
 
   // default scale list
   QString myPaths;
