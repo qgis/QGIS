@@ -211,7 +211,7 @@
           <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Feature limit for GetFeatureInfo</string>
+             <string>Maximum number of GetFeatureInfo results</string>
             </property>
             <property name="buddy">
              <cstring>mFeatureCount</cstring>
