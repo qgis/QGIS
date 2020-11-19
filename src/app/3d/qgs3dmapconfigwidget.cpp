@@ -68,6 +68,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mMeshSymbolWidget = new QgsMesh3dSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
 
+  cboCameraProjectionType->addItem( tr( "Perspective projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
+  cboCameraProjectionType->addItem( tr( "Orthogonal projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
+  connect( cboCameraProjectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
+  {
+    spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( Qt3DRender::QCameraLens::PerspectiveProjection ) );
+  } );
+
   spinCameraFieldOfView->setClearValue( 45.0 );
   spinTerrainScale->setClearValue( 1.0 );
   spinTerrainResolution->setClearValue( 16 );
@@ -125,6 +132,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   }
 
   spinCameraFieldOfView->setValue( mMap->fieldOfView() );
+  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( mMap->projectionType() ) );
   spinTerrainScale->setValue( mMap->terrainVerticalScale() );
   spinMapResolution->setValue( mMap->mapTileResolution() );
   spinScreenError->setValue( mMap->maxTerrainScreenError() );
@@ -293,6 +301,7 @@ void Qgs3DMapConfigWidget::apply()
   }
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
+  mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
   mMap->setMapTileResolution( spinMapResolution->value() );
   mMap->setMaxTerrainScreenError( spinScreenError->value() );
