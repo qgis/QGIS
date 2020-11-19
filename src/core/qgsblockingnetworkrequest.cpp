@@ -199,6 +199,10 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
 #endif
       }
       QEventLoop loop;
+      // connecting to aboutToQuit avoids an on-going request to remain stalled
+      // when QThreadPool::globalInstance()->waitForDone()
+      // is called at process termination
+      connect( qApp, &QCoreApplication::aboutToQuit, &loop, &QEventLoop::quit, Qt::DirectConnection );
       connect( this, &QgsBlockingNetworkRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
       loop.exec();
     }
