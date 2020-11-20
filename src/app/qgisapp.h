@@ -701,9 +701,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
-    //! Gets timeout for timed messages: default of 5 seconds
-    int messageTimeout();
-
     //! emit initializationCompleted signal
     void completeInitialization();
 

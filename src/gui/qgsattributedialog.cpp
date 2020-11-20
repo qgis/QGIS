@@ -75,8 +75,7 @@ void QgsAttributeDialog::accept()
   {
     mMessageBar->pushMessage( QString(),
                               tr( "Your JSON value is invalid and has not been saved" ),
-                              Qgis::MessageLevel::Critical,
-                              5 );
+                              Qgis::MessageLevel::Critical );
   }
 }
 

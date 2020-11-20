@@ -1147,14 +1147,13 @@ void QgsVectorLayerProperties::saveStyleAs()
 
         mLayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
-        int messageTimeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
         if ( !msgError.isNull() )
         {
-          mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning, messageTimeout );
+          mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
         }
         else
         {
-          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Info, messageTimeout );
+          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Success );
         }
         break;
       }
@@ -1261,15 +1260,14 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             mLayer->saveStyleToDatabase( name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
-            const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
             if ( !msgError.isNull() )
             {
-              mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning, timeout );
+              mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
             }
             else
             {
               mMessageBar->pushMessage( infoWindowTitle, tr( "Style '%1' saved" ).arg( styleName ),
-                                        Qgis::Info, timeout );
+                                        Qgis::Success );
             }
             break;
           }
@@ -2067,9 +2065,8 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
   else
   {
     const QString title = QObject::tr( "Delete Auxiliary Field" );
-    const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
     const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QLatin1String( "\n  " ) );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
-    mMessageBar->pushMessage( title, msg, Qgis::Warning, timeout );
+    mMessageBar->pushMessage( title, msg, Qgis::Warning );
   }
 }

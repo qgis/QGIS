@@ -60,7 +60,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
     {
       QgisApp::instance()->messageBar()->pushMessage( tr( "Start editing failed" ),
           tr( "Provider cannot be opened for editing" ),
-          Qgis::Info, QgisApp::instance()->messageTimeout() );
+          Qgis::Info );
       return false;
     }
 

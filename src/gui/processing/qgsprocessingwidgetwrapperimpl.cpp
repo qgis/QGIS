@@ -4126,7 +4126,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
       {
         widgetContext().messageBar()->clearWidgets();
         widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
-            Qgis::Warning, 5 );
+            Qgis::Info );
       }
     }
     return;
@@ -6262,7 +6262,7 @@ void QgsProcessingBandWidgetWrapper::setParentLayerWrapperValue( const QgsAbstra
     {
       widgetContext().messageBar()->clearWidgets();
       widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent bands could not be populated" ),
-          Qgis::Warning, 5 );
+          Qgis::Info );
     }
   }
 

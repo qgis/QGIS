@@ -58,25 +58,25 @@ class GUI_EXPORT QgsAuthGuiUtils
 
 
     //! Verify the authentication system is active, else notify user
-    static bool isDisabled( QgsMessageBar *msgbar, int timeout = 0 );
+    static bool isDisabled( QgsMessageBar *msgbar );
 
     //! Sets the cached master password (and verifies it if its hash is in authentication database)
-    static void setMasterPassword( QgsMessageBar *msgbar, int timeout = 0 );
+    static void setMasterPassword( QgsMessageBar *msgbar );
 
     //! Clear the currently cached master password (not its hash in database)
-    static void clearCachedMasterPassword( QgsMessageBar *msgbar, int timeout = 0 );
+    static void clearCachedMasterPassword( QgsMessageBar *msgbar );
 
     //! Reset the cached master password, updating its hash in authentication database and resetting all existing configs to use it
-    static void resetMasterPassword( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+    static void resetMasterPassword( QgsMessageBar *msgbar, QWidget *parent = nullptr );
 
     //! Clear all cached authentication configs for session
-    static void clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, int timeout = 0 );
+    static void clearCachedAuthenticationConfigs( QgsMessageBar *msgbar );
 
     //! Remove all authentication configs
-    static void removeAuthenticationConfigs( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+    static void removeAuthenticationConfigs( QgsMessageBar *msgbar, QWidget *parent = nullptr );
 
     //! Completely clear out the authentication database (configs and master password)
-    static void eraseAuthenticationDatabase( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+    static void eraseAuthenticationDatabase( QgsMessageBar *msgbar, QWidget *parent = nullptr );
 
     //! Color a widget via a stylesheet if a file path is found or not
     static void fileFound( bool found, QWidget *widget );
@@ -85,13 +85,13 @@ class GUI_EXPORT QgsAuthGuiUtils
     static QString getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter );
 
     //! Remove master password from wallet
-    static void passwordHelperDelete( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+    static void passwordHelperDelete( QgsMessageBar *msgbar, QWidget *parent = nullptr );
 
     //! Store master password into the wallet
-    static void passwordHelperSync( QgsMessageBar *msgbar, int timeout = 0 );
+    static void passwordHelperSync( QgsMessageBar *msgbar );
 
     //! Sets password helper enabled (enable/disable)
-    static void passwordHelperEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );
+    static void passwordHelperEnable( bool enabled, QgsMessageBar *msgbar );
 
     //! Sets password helper logging enabled (enable/disable)
     static void passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );

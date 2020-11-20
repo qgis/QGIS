@@ -75,8 +75,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Coordinate transform error" ),
         tr( "Cannot transform the point to the layers coordinate system" ),
-        Qgis::Info,
-        QgisApp::instance()->messageTimeout() );
+        Qgis::Info );
       return;
     }
 
@@ -143,30 +142,26 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "No features were split" ),
           tr( "If there are selected features, the split tool only applies to those. If you would like to split all features under the split line, clear the selection." ),
-          Qgis::Warning,
-          QgisApp::instance()->messageTimeout() );
+          Qgis::Warning );
         break;
       case QgsGeometry::OperationResult::GeometryEngineError:
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "No feature split done" ),
           tr( "Cut edges detected. Make sure the line splits features into multiple parts." ),
-          Qgis::Warning,
-          QgisApp::instance()->messageTimeout() );
+          Qgis::Warning );
         break;
       case QgsGeometry::OperationResult::InvalidBaseGeometry:
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "No feature split done" ),
           tr( "The geometry is invalid. Please repair before trying to split it." ),
-          Qgis::Warning,
-          QgisApp::instance()->messageTimeout() );
+          Qgis::Warning );
         break;
       default:
         //several intersections but only one split (most likely line)
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "No feature split done" ),
           tr( "An error occurred during splitting." ),
-          Qgis::Warning,
-          QgisApp::instance()->messageTimeout() );
+          Qgis::Warning );
         break;
     }
     stopCapturing();
