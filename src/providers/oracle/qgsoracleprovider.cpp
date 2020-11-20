@@ -1213,7 +1213,7 @@ QVariant QgsOracleProvider::defaultValue( int fieldId ) const
 QString QgsOracleProvider::defaultValueClause( int fieldId ) const
 {
   QString defVal = mDefaultValues.value( fieldId, QString() ).toString();
-  bool isGenerated = mAlwaysGenerated.value( fieldId, false );
+  const bool isGenerated = mAlwaysGenerated.value( fieldId, false );
 
   if ( isGenerated )
   {
