@@ -326,7 +326,7 @@ void Qgs3DMapScene::onCameraChanged()
     QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
     const float viewWidthFromCenter = mCameraController->distance();
     const float viewHeightFromCenter =  viewportRect.height() * viewWidthFromCenter / viewportRect.width();
-    mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, 10.0f, 10000.0f );
+    mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
   }
 
   updateScene();
