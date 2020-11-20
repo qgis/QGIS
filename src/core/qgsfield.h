@@ -61,6 +61,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QgsDefaultValue defaultValueDefinition READ defaultValueDefinition WRITE setDefaultValueDefinition )
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
     Q_PROPERTY( ConfigurationFlags configurationFlags READ configurationFlags WRITE setConfigurationFlags )
+    Q_PROPERTY( bool isReadOnly READ isReadOnly WRITE setReadOnly )
 
 
   public:
