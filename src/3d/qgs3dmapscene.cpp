@@ -324,9 +324,9 @@ void Qgs3DMapScene::onCameraChanged()
   if ( mMap.projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
   {
     QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
-    const float viewWidthFromCenter = mEngine->camera()->position().distanceToPoint( mEngine->camera()->viewCenter() );
+    const float viewWidthFromCenter = mCameraController->distance();
     const float viewHeightFromCenter =  viewportRect.height() * viewWidthFromCenter / viewportRect.width();
-    mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, 1.0f, 10000.0f );
+    mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, 10.0f, 10000.0f );
   }
 
   updateScene();
