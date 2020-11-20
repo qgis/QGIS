@@ -15,11 +15,6 @@
 #include "qgsgeopackagedataitems.h"
 ///@cond PRIVATE
 
-#include <QAction>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QInputDialog>
-
 #include "qgssqliteutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrdbconnection.h"
