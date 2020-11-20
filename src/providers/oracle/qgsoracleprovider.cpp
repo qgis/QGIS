@@ -3093,7 +3093,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
       }
     }
 
-    if ( !exec( qry, QString( "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (?,?,?,%1)" ).arg( QString( diminfo ) ),
+    if ( !exec( qry, QStringLiteral( "INSERT INTO mdsys.user_sdo_geom_metadata(table_name,column_name,srid,diminfo) VALUES (?,?,?,%1)" ).arg( diminfo ),
                 QVariantList() << tableName.toUpper() << geometryColumn.toUpper() << srid ) )
     {
       throw OracleException( tr( "Could not insert metadata." ), qry );
