@@ -73,59 +73,38 @@ QWidget *QgsDataItemGuiProvider::createParamWidget( QgsDataItem *, QgsDataItemGu
   return nullptr;
 }
 
-void QgsDataItemGuiProvider::notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level )
+void QgsDataItemGuiProvider::notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level, int duration, QWidget *parent )
 {
-  switch ( level )
+  if ( QgsMessageBar *bar = context.messageBar() )
   {
-    case Qgis::MessageLevel::Info:
-    case Qgis::MessageLevel::None:
+    bar->pushMessage( title, message, level, duration );
+  }
+  else
+  {
+    switch ( level )
     {
-      if ( auto *lMessageBar = context.messageBar() )
+      case Qgis::MessageLevel::Info:
+      case Qgis::MessageLevel::None:
       {
-        lMessageBar->pushInfo( title, message );
+        QMessageBox::information( parent, title, message );
+        break;
       }
-      else
+      case Qgis::MessageLevel::Warning:
       {
-        QMessageBox::information( nullptr, title, message );
+        QMessageBox::warning( parent, title, message );
+        break;
       }
-      break;
-    }
-    case Qgis::MessageLevel::Warning:
-    {
-      if ( auto *lMessageBar = context.messageBar() )
+      case Qgis::MessageLevel::Critical:
       {
-        lMessageBar->pushWarning( title, message );
+        QMessageBox::critical( parent, title, message );
+        break;
       }
-      else
-      {
-        QMessageBox::warning( nullptr, title, message );
-      }
-      break;
-    }
-    case Qgis::MessageLevel::Critical:
-    {
-      if ( auto *lMessageBar = context.messageBar() )
-      {
-        lMessageBar->pushCritical( title, message );
-      }
-      else
-      {
-        QMessageBox::critical( nullptr, title, message );
-      }
-      break;
-    }
-    case Qgis::MessageLevel::Success:
-    {
-      if ( auto *lMessageBar = context.messageBar() )
-      {
-        lMessageBar->pushSuccess( title, message );
-      }
-      else
+      case Qgis::MessageLevel::Success:
       {
         // There is no "success" in message box, let's use information instead
-        QMessageBox::information( nullptr, title, message );
+        QMessageBox::information( parent, title, message );
+        break;
       }
-      break;
     }
   }
 }

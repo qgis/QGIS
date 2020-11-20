@@ -152,17 +152,11 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg( const QString &itemPath, const QS
 
       if ( !QFile::remove( path ) )
       {
-        if ( context.messageBar() )
-          context.messageBar()->pushMessage( title, tr( "Could not delete GeoPackage." ), Qgis::Critical );
-        else
-          QMessageBox::warning( nullptr, title, tr( "Could not delete GeoPackage." ) );
+        notify( title, tr( "Could not delete GeoPackage." ), context, Qgis::Critical );
       }
       else
       {
-        if ( context.messageBar() )
-          context.messageBar()->pushMessage( title, tr( "GeoPackage deleted successfully." ), Qgis::Success );
-        else
-          QMessageBox::information( nullptr, title, tr( "GeoPackage deleted successfully." ) );
+        notify( title, tr( "GeoPackage deleted successfully." ), context, Qgis::Success );
         // If the deleted file was a stored connection, remove it too
         if ( ! name.isEmpty() )
         {
@@ -182,12 +176,8 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg( const QString &itemPath, const QS
     }
     else
     {
-      if ( context.messageBar() )
-        context.messageBar()->pushMessage( title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
-                                           " remove it from the project and retry." ).arg( path, projectLayer->name() ), Qgis::Critical );
-      else
-        QMessageBox::warning( nullptr, title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
-                              " remove it from the project and retry." ).arg( path, projectLayer->name() ) );
+      notify( title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
+                                  " remove it from the project and retry." ).arg( path, projectLayer->name() ), context, Qgis::Critical );
     }
   }
 }
@@ -265,10 +255,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
 
     if ( ! errCause.isEmpty() )
     {
-      if ( context.messageBar() )
-        context.messageBar()->pushMessage( QObject::tr( "Error renaming layer" ), errCause, Qgis::Critical );
-      else
-        QMessageBox::critical( nullptr, QObject::tr( "Error renaming layer" ), errCause );
+      notify( QObject::tr( "Error renaming layer" ), errCause, context, Qgis::Critical );
     }
     else if ( layerItem->parent() )
     {
@@ -333,10 +320,7 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
     bool res = item->executeDeleteLayer( errCause );
     if ( !res )
     {
-      if ( context.messageBar() )
-        context.messageBar()->pushMessage( tr( "Delete Layer" ), errCause, Qgis::Critical );
-      else
-        QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+      notify( tr( "Delete Layer" ), errCause, context, Qgis::Critical );
     }
     else
     {
@@ -352,10 +336,7 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
       }
       else
       {
-        if ( context.messageBar() )
-          context.messageBar()->pushMessage( tr( "Delete Layer" ), tr( "The layer <b>%1</b> was successfully deleted." ).arg( item->name() ), Qgis::Success );
-        else
-          QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "The layer <b>%1</b> was successfully deleted." ).arg( item->name() ) );
+        notify( tr( "Delete Layer" ), tr( "The layer <b>%1</b> was successfully deleted." ).arg( item->name() ), context, Qgis::Success );
       }
       if ( item->parent() )
       {
@@ -377,10 +358,7 @@ void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path
   bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( name, path, errCause );
   if ( !result || !errCause.isEmpty() )
   {
-    if ( context.messageBar() )
-      context.messageBar()->pushMessage( tr( "Database compact (VACUUM)" ), errCause, Qgis::Critical );
-    else
-      QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
+    notify( tr( "Database compact (VACUUM)" ), errCause, context, Qgis::Critical );
   }
   else if ( context.messageBar() )
   {
@@ -503,12 +481,8 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
 
         if ( exists && !isVector )
         {
-          if ( context.messageBar() )
-            context.messageBar()->pushMessage( tr( "Cannot Overwrite Layer" ),
-                                               tr( "Destination layer <b>%1</b> already exists. Overwriting with raster layers is not currently supported." ).arg( dropUri.name ), Qgis::Critical );
-          else
-            QMessageBox::warning( nullptr, tr( "Cannot Overwrite Layer" ),
-                                  tr( "Destination layer <b>%1</b> already exists. Overwriting with raster layers is not currently supported." ).arg( dropUri.name ) );
+          notify( tr( "Cannot Overwrite Layer" ),
+                  tr( "Destination layer <b>%1</b> already exists. Overwriting with raster layers is not currently supported." ).arg( dropUri.name ), context, Qgis::Critical );
         }
         else if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
                   tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
@@ -527,10 +501,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             // when export is successful:
             connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [ = ]()
             {
-              if ( context.messageBar() )
-                context.messageBar()->pushMessage( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), Qgis::Success );
-              else
-                QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
+              notify( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), context, Qgis::Success );
               item->refresh();
             } );
 
@@ -555,10 +526,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             // when export is successful:
             connect( exportTask, &QgsGeoPackageRasterWriterTask::writeComplete, item, [ = ]()
             {
-              if ( context.messageBar() )
-                context.messageBar()->pushMessage( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), Qgis::Success );
-              else
-                QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
+              notify( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), context, Qgis::Success );
               item->refresh();
             } );
 
