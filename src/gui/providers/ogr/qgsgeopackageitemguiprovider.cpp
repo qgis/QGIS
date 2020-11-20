@@ -272,7 +272,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
     }
     else if ( layerItem->parent() )
     {
-      layerItem->parent()->refreshConnections();
+      layerItem->parent()->refresh();
     }
 
     return errCause.isEmpty();
@@ -358,8 +358,9 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
           QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "The layer <b>%1</b> was successfully deleted." ).arg( item->name() ) );
       }
       if ( item->parent() )
-        item->parent()->refreshConnections();
-
+      {
+        item->parent()->refresh();
+      }
     }
     return true;
   }
@@ -530,7 +531,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
                 context.messageBar()->pushMessage( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), Qgis::Success );
               else
                 QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
-              item->refreshConnections();
+              item->refresh();
             } );
 
             // when an error occurs:
@@ -558,7 +559,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
                 context.messageBar()->pushMessage( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), Qgis::Success );
               else
                 QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
-              item->refreshConnections();
+              item->refresh();
             } );
 
             // when an error occurs:
