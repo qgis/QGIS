@@ -145,7 +145,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image
   return hSrcDS;
 }
 
-void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg )
+bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg )
 {
   gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
   psWarpOptions->hSrcDS = hSrcDS;
@@ -164,15 +164,20 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
     GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef( hSrcDS ),
                                      hDstDS, GDALGetProjectionRef( hDstDS ),
                                      FALSE, 0.0, 1 );
+  if ( ! psWarpOptions->pTransformerArg )
+  {
+    return false;
+  }
+
   psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
   // Initialize and execute the warp operation.
   GDALWarpOperation oOperation;
   oOperation.Initialize( psWarpOptions.get() );
 
-  oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) );
-
+  const bool retVal { oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) != CE_None };
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
+  return retVal;
 }
 
 QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg )
