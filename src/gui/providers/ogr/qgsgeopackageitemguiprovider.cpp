@@ -381,6 +381,10 @@ void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path
     else
       QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
   }
+  else if ( context.messageBar() )
+  {
+    context.messageBar()->pushMessage( tr( "Database compacted" ), Qgis::Success );
+  }
 }
 
 void QgsGeoPackageItemGuiProvider::vacuum( const QString &itemPath, const QString &name, const QgsDataItemGuiContext &context )
