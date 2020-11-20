@@ -259,7 +259,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
 
     QgsDockWidget *mDock = nullptr;
-    int messageTimeout();
 };
 
 #endif

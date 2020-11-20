@@ -71,6 +71,9 @@ QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level,
 
 void QgsMessageBarItem::writeContent()
 {
+  if ( mDuration < 0 )
+    mDuration = QgsMessageBar::defaultMessageTimeout( mLevel );
+
   if ( !mLayout )
   {
     mLayout = new QHBoxLayout( this );

@@ -31,7 +31,8 @@ The ``level`` argument specifies the desired message level (severity) of the mes
 how the message bar is styled when the item is displayed.
 
 The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user.
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 %End
 
     QgsMessageBarItem( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
@@ -42,7 +43,8 @@ The ``level`` argument specifies the desired message level (severity) of the mes
 how the message bar is styled when the item is displayed.
 
 The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user.
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 %End
 
     QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
@@ -53,7 +55,8 @@ The ``level`` argument specifies the desired message level (severity) of the mes
 how the message bar is styled when the item is displayed.
 
 The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user.
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 %End
 
     QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
@@ -64,7 +67,8 @@ The ``level`` argument specifies the desired message level (severity) of the mes
 how the message bar is styled when the item is displayed.
 
 The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user.
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 %End
 
     QgsMessageBarItem *setText( const QString &text );
