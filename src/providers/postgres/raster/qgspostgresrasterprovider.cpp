@@ -131,7 +131,6 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterPro
   , mRasterColumn( other.mRasterColumn )
   , mSchemaName( other.mSchemaName )
   , mSqlWhereClause( other.mSqlWhereClause )
-  , mExtent( other.mExtent )
   , mUseEstimatedMetadata( other.mUseEstimatedMetadata )
   , mDataTypes( other.mDataTypes )
   , mDataSizes( other.mDataSizes )
@@ -484,7 +483,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     // Write data to the output block
     gdal::dataset_unique_ptr dstDS { QgsGdalUtils::createSingleBandMemoryDataset(
                                        gdalDataType, viewExtent, width, height, mCrs ) };
-    if ( !  dstDS )
+    if ( ! dstDS )
     {
       const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
       QgsMessageLog::logMessage( tr( "Unable to create destination raster for tiles from %1: %2" )
@@ -493,7 +492,13 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     }
 
     // Resample the raster to the final bounds and resolution
-    QgsGdalUtils::resampleSingleBandRaster( tmpDS.get(), dstDS.get(), GDALResampleAlg::GRA_NearestNeighbour );
+    if ( ! QgsGdalUtils::resampleSingleBandRaster( tmpDS.get(), dstDS.get(), GDALResampleAlg::GRA_NearestNeighbour ) )
+    {
+      const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+      QgsMessageLog::logMessage( tr( "Unable to resample and transform destination raster for tiles from %1: %2" )
+                                 .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::Critical );
+      return false;
+    }
 
     // Copy to result buffer
     CPLErrorReset();
@@ -1368,6 +1373,7 @@ bool QgsPostgresRasterProvider::init()
                                QStringLiteral( "PostGIS" ), Qgis::Critical );
     return false;
   }
+
   return initFieldsAndTemporal( );
 }
 
