@@ -589,7 +589,7 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QSet<QString> subtraction = enumValues.toSet().subtract( enumDef->options().toSet() );
 #else
-  QSet<QString> subtraction = enumValues.toSet( enumValues.begin(), enumValues.end() ).subtract( enumDef->options().toSet( enumDef->options().begin(), enumDef->options().end() ) );
+  QSet<QString> subtraction = QSet<QString>( enumValues.begin(), enumValues.end() ).subtract( QSet<QString>( enumDef->options().begin(), enumDef->options().end() ) );
 #endif
 
   if ( enumValues.isEmpty() || !subtraction.isEmpty() )
