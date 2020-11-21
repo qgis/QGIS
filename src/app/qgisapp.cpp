@@ -13184,6 +13184,8 @@ void QgisApp::initNativeProcessing()
 
 void QgisApp::initLayouts()
 {
+  QgsLayoutGuiUtils::registerGuiForKnownItemTypes( mMapCanvas );
+
   // 3D map item
 #ifdef HAVE_3D
   QgsApplication::layoutItemRegistry()->addLayoutItemType(
@@ -13202,8 +13204,6 @@ void QgisApp::initLayouts()
   }, createRubberBand );
   QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( map3dMetadata.release() );
 #endif
-
-  QgsLayoutGuiUtils::registerGuiForKnownItemTypes( mMapCanvas );
 
   mLayoutQptDropHandler = new QgsLayoutQptDropHandler( this );
   registerCustomLayoutDropHandler( mLayoutQptDropHandler );
