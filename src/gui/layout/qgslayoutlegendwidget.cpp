@@ -710,9 +710,10 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
     return;
   }
 
-  QModelIndex index = mItemTreeView->selectionModel()->currentIndex();
-  QModelIndex parentIndex = index.parent();
-  if ( !index.isValid() || index.row() == mItemTreeView->model()->rowCount( parentIndex ) - 1 )
+  const QModelIndex index = mItemTreeView->selectionModel()->currentIndex();
+  const QModelIndex sourceIndex = mItemTreeView->proxyModel()->mapToSource( index );
+  const QModelIndex parentIndex = sourceIndex.parent();
+  if ( !sourceIndex.isValid() || sourceIndex.row() == mItemTreeView->layerTreeModel()->rowCount( parentIndex ) - 1 )
     return;
 
   QgsLayerTreeNode *node = mItemTreeView->index2node( index );
@@ -725,7 +726,7 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
   if ( node )
   {
     QgsLayerTreeGroup *parentGroup = QgsLayerTree::toGroup( node->parent() );
-    parentGroup->insertChildNode( index.row() + 2, node->clone() );
+    parentGroup->insertChildNode( sourceIndex.row() + 2, node->clone() );
     parentGroup->removeChildNode( node );
   }
   else // legend node
@@ -734,7 +735,7 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
     mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
-  mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( index.row() + 1, 0, parentIndex ) ) );
+  mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() + 1, 0, parentIndex ) ) );
 
   mLegend->update();
   mLegend->endCommand();
@@ -747,9 +748,10 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
     return;
   }
 
-  QModelIndex index = mItemTreeView->selectionModel()->currentIndex();
-  QModelIndex parentIndex = index.parent();
-  if ( !index.isValid() || index.row() == 0 )
+  const QModelIndex index = mItemTreeView->selectionModel()->currentIndex();
+  const QModelIndex sourceIndex = mItemTreeView->proxyModel()->mapToSource( index );
+  const QModelIndex parentIndex = sourceIndex.parent();
+  if ( !sourceIndex.isValid() || sourceIndex.row() == 0 )
     return;
 
   QgsLayerTreeNode *node = mItemTreeView->index2node( index );
@@ -762,7 +764,7 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   if ( node )
   {
     QgsLayerTreeGroup *parentGroup = QgsLayerTree::toGroup( node->parent() );
-    parentGroup->insertChildNode( index.row() - 1, node->clone() );
+    parentGroup->insertChildNode( sourceIndex.row() - 1, node->clone() );
     parentGroup->removeChildNode( node );
   }
   else // legend node
@@ -771,7 +773,7 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
     mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
-  mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( index.row() - 1, 0, parentIndex ) ) );
+  mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() - 1, 0, parentIndex ) ) );
 
   mLegend->update();
   mLegend->endCommand();
