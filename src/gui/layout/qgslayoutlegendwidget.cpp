@@ -939,16 +939,16 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
 
   mLegend->beginCommand( tr( "Remove Legend Item" ) );
 
-  QList<QPersistentModelIndex> indexes;
-  const auto constSelectedIndexes = selectionModel->selectedIndexes();
-  for ( const QModelIndex &index : constSelectedIndexes )
-    indexes << index;
+  QList<QPersistentModelIndex> proxyIndexes;
+  const QModelIndexList viewSelection = selectionModel->selectedIndexes();
+  for ( const QModelIndex &index : viewSelection )
+    proxyIndexes << index;
 
   // first try to remove legend nodes
   QHash<QgsLayerTreeLayer *, QList<int> > nodesWithRemoval;
-  for ( const QPersistentModelIndex &index : qgis::as_const( indexes ) )
+  for ( const QPersistentModelIndex &proxyIndex : qgis::as_const( proxyIndexes ) )
   {
-    if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( index ) )
+    if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( proxyIndex ) )
     {
       QgsLayerTreeLayer *nodeLayer = legendNode->layerNode();
       nodesWithRemoval[nodeLayer].append( _unfilteredLegendNodeIndex( legendNode ) );
@@ -960,8 +960,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
     std::sort( toDelete.begin(), toDelete.end(), std::greater<int>() );
     QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( it.key() );
 
-    const auto constToDelete = toDelete;
-    for ( int i : constToDelete )
+    for ( int i : qgis::as_const( toDelete ) )
     {
       if ( i >= 0 && i < order.count() )
         order.removeAt( i );
@@ -972,10 +971,13 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
   }
 
   // then remove layer tree nodes
-  for ( const QPersistentModelIndex &index : qgis::as_const( indexes ) )
+  for ( const QPersistentModelIndex &proxyIndex : qgis::as_const( proxyIndexes ) )
   {
-    if ( index.isValid() && mItemTreeView->index2node( index ) )
-      mLegend->model()->removeRow( index.row(), index.parent() );
+    if ( proxyIndex.isValid() && mItemTreeView->index2node( proxyIndex ) )
+    {
+      const QModelIndex sourceIndex = mItemTreeView->proxyModel()->mapToSource( proxyIndex );
+      mLegend->model()->removeRow( sourceIndex.row(), sourceIndex.parent() );
+    }
   }
 
   mLegend->updateLegend();
