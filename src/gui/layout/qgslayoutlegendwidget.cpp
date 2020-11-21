@@ -1570,6 +1570,24 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     mPatchShapeButton->hide();
   }
 
+  if ( mLegendNode )
+  {
+    switch ( static_cast< QgsLayerTreeModelLegendNode::NodeTypes >( mLegendNode->data( QgsLayerTreeModelLegendNode::NodeTypeRole ).toInt() ) )
+    {
+      case QgsLayerTreeModelLegendNode::EmbeddedWidget:
+      case QgsLayerTreeModelLegendNode::RasterSymbolLegend:
+      case QgsLayerTreeModelLegendNode::ImageLegend:
+      case QgsLayerTreeModelLegendNode::WmsLegend:
+      case QgsLayerTreeModelLegendNode::DataDefinedSizeLegend:
+        mCustomSymbolCheckBox->hide();
+        break;
+
+      case QgsLayerTreeModelLegendNode::SimpleLegend:
+      case QgsLayerTreeModelLegendNode::SymbolLegend:
+        break;
+    }
+  }
+
   mLabelEdit->setPlainText( currentLabel );
   connect( mLabelEdit, &QPlainTextEdit::textChanged, this, &QgsLayoutLegendNodeWidget::labelChanged );
   connect( mPatchShapeButton, &QgsLegendPatchShapeButton::changed, this, &QgsLayoutLegendNodeWidget::patchChanged );
