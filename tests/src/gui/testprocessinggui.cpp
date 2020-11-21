@@ -3772,6 +3772,27 @@ void TestProcessingGui::testEnumSelectionPanel()
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() );
   QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+
+  // static strings
+  QgsProcessingParameterEnum enumParam2( QString(), QString(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), false, true );
+  QgsProcessingEnumPanelWidget w2( nullptr, &enumParam2 );
+  QSignalSpy spy2( &w2, &QgsProcessingEnumPanelWidget::changed );
+
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  w2.setValue( QStringLiteral( "a" ) );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( w2.value().toList(), QVariantList() << QStringLiteral( "a" ) );
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+
+  w2.setValue( QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "a" ) );
+  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( w2.value().toList(), QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "a" ) );
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+
+  w2.setValue( QVariant() );
+  QCOMPARE( spy2.count(), 3 );
+  QCOMPARE( w2.value().toList(), QVariantList() );
+  QCOMPARE( w2.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
 }
 
 void TestProcessingGui::testEnumCheckboxPanel()
@@ -3879,6 +3900,110 @@ void TestProcessingGui::testEnumCheckboxPanel()
   QVERIFY( !panel3.mButtons[ 1 ]->isChecked() );
   QVERIFY( !panel3.mButtons[ 2 ]->isChecked() );
   QCOMPARE( spy3.count(), 9 );
+
+  //single value using static strings
+  QgsProcessingParameterEnum param4( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false, QVariant(), false, true );
+  QgsProcessingEnumCheckboxPanelWidget panel4( nullptr, &param4 );
+  QSignalSpy spy4( &panel4, &QgsProcessingEnumCheckboxPanelWidget::changed );
+
+  QCOMPARE( panel4.value(), QVariant() );
+  panel4.setValue( QStringLiteral( "c" ) );
+  QCOMPARE( spy4.count(), 1 );
+  QCOMPARE( panel4.value().toString(), QStringLiteral( "c" ) );
+  QVERIFY( !panel4.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel4.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel4.mButtons[ 2 ]->isChecked() );
+  panel4.setValue( QStringLiteral( "a" ) );
+  QCOMPARE( spy4.count(), 2 );
+  QCOMPARE( panel4.value().toString(), QStringLiteral( "a" ) );
+  QVERIFY( panel4.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel4.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel4.mButtons[ 2 ]->isChecked() );
+  panel4.mButtons[1]->setChecked( true );
+  QCOMPARE( spy4.count(), 4 );
+  QCOMPARE( panel4.value().toString(), QStringLiteral( "b" ) );
+  panel4.setValue( QVariantList() << QStringLiteral( "c" ) );
+  QCOMPARE( spy4.count(), 5 );
+  QCOMPARE( panel4.value().toString(), QStringLiteral( "c" ) );
+  QVERIFY( !panel4.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel4.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel4.mButtons[ 2 ]->isChecked() );
+
+  // multiple value with static strings
+  QgsProcessingParameterEnum param5( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), false, true );
+  QgsProcessingEnumCheckboxPanelWidget panel5( nullptr, &param5 );
+  QSignalSpy spy5( &panel5, &QgsProcessingEnumCheckboxPanelWidget::changed );
+
+  QCOMPARE( panel5.value().toList(), QVariantList() );
+  panel5.setValue( QStringLiteral( "c" ) );
+  QCOMPARE( spy5.count(), 1 );
+  QCOMPARE( panel5.value().toList(), QVariantList() << QStringLiteral( "c" ) );
+  QVERIFY( !panel5.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel5.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel5.mButtons[ 2 ]->isChecked() );
+  panel5.setValue( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QCOMPARE( spy5.count(), 2 );
+  QCOMPARE( panel5.value().toList(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QVERIFY( panel5.mButtons[ 0 ]->isChecked() );
+  QVERIFY( panel5.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel5.mButtons[ 2 ]->isChecked() );
+  panel5.mButtons[0]->setChecked( false );
+  QCOMPARE( spy5.count(), 3 );
+  QCOMPARE( panel5.value().toList(), QVariantList()  << QStringLiteral( "b" ) );
+  panel5.mButtons[2]->setChecked( true );
+  QCOMPARE( spy5.count(), 4 );
+  QCOMPARE( panel5.value().toList(), QVariantList() << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+  panel5.deselectAll();
+  QCOMPARE( spy5.count(), 5 );
+  QCOMPARE( panel5.value().toList(), QVariantList() );
+  panel5.selectAll();
+  QCOMPARE( spy5.count(), 6 );
+  QCOMPARE( panel5.value().toList(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+
+  // multiple value optional with statis strings
+  QgsProcessingParameterEnum param6( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), true, true );
+  QgsProcessingEnumCheckboxPanelWidget panel6( nullptr, &param6 );
+  QSignalSpy spy6( &panel6, &QgsProcessingEnumCheckboxPanelWidget::changed );
+
+  QCOMPARE( panel6.value().toList(), QVariantList() );
+  panel6.setValue( QStringLiteral( "c" ) );
+  QCOMPARE( spy6.count(), 1 );
+  QCOMPARE( panel6.value().toList(), QVariantList() << QStringLiteral( "c" ) );
+  QVERIFY( !panel6.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel6.mButtons[ 1 ]->isChecked() );
+  QVERIFY( panel6.mButtons[ 2 ]->isChecked() );
+  panel6.setValue( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QCOMPARE( spy6.count(), 2 );
+  QCOMPARE( panel6.value().toList(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QVERIFY( panel6.mButtons[ 0 ]->isChecked() );
+  QVERIFY( panel6.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel6.mButtons[ 2 ]->isChecked() );
+  panel6.mButtons[0]->setChecked( false );
+  QCOMPARE( spy6.count(), 3 );
+  QCOMPARE( panel6.value().toList(), QVariantList() << QStringLiteral( "b" ) );
+  panel6.mButtons[2]->setChecked( true );
+  QCOMPARE( spy6.count(), 4 );
+  QCOMPARE( panel6.value().toList(), QVariantList() << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+  panel6.deselectAll();
+  QCOMPARE( spy6.count(), 5 );
+  QCOMPARE( panel6.value().toList(), QVariantList() );
+  panel6.selectAll();
+  QCOMPARE( spy6.count(), 6 );
+  QCOMPARE( panel6.value().toList(), QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+  panel6.setValue( QVariantList() );
+  QCOMPARE( panel6.value().toList(), QVariantList() );
+  QVERIFY( !panel6.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel6.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel6.mButtons[ 2 ]->isChecked() );
+  QCOMPARE( spy6.count(), 7 );
+  panel6.selectAll();
+  QCOMPARE( spy6.count(), 8 );
+  panel6.setValue( QVariant() );
+  QCOMPARE( panel6.value().toList(), QVariantList() );
+  QVERIFY( !panel6.mButtons[ 0 ]->isChecked() );
+  QVERIFY( !panel6.mButtons[ 1 ]->isChecked() );
+  QVERIFY( !panel6.mButtons[ 2 ]->isChecked() );
+  QCOMPARE( spy6.count(), 9 );
 }
 
 void TestProcessingGui::testEnumWrapper()
@@ -3948,7 +4073,6 @@ void TestProcessingGui::testEnumWrapper()
     delete w;
 
     // optional
-
     QgsProcessingParameterEnum param2( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false, QVariant(), true );
     if ( checkboxStyle )
       param2.setMetadata( metadata );
@@ -4000,7 +4124,7 @@ void TestProcessingGui::testEnumWrapper()
 
     delete w;
 
-    // allow multiple
+    // allow multiple, non optional
     QgsProcessingParameterEnum param3( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), false );
     if ( checkboxStyle )
       param3.setMetadata( metadata );
@@ -4048,7 +4172,7 @@ void TestProcessingGui::testEnumWrapper()
     delete w;
 
     // allow multiple, optional
-    QgsProcessingParameterEnum param4( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), false );
+    QgsProcessingParameterEnum param4( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), true );
     if ( checkboxStyle )
       param4.setMetadata( metadata );
 
@@ -4118,6 +4242,219 @@ void TestProcessingGui::testEnumWrapper()
 
     delete w;
 
+    // non optional, single with static strings
+    QgsProcessingParameterEnum param5( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false, QVariant(), false, true );
+    if ( checkboxStyle )
+      param5.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper5( &param5, type );
+
+    w = wrapper5.createWrappedWidget( context );
+
+    QSignalSpy spy5( &wrapper5, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper5.setWidgetValue( QStringLiteral( "b" ), context );
+    QCOMPARE( spy5.count(), 1 );
+    QCOMPARE( wrapper5.widgetValue().toString(), QStringLiteral( "b" ) );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper5.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper5.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper5.wrappedWidget() )->value().toString(), QStringLiteral( "b" ) );
+    }
+    wrapper5.setWidgetValue( QStringLiteral( "a" ), context );
+    QCOMPARE( spy5.count(), 2 );
+    QCOMPARE( wrapper5.widgetValue().toString(), QStringLiteral( "a" ) );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper5.wrappedWidget() )->currentIndex(), 0 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper5.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper5.wrappedWidget() )->value().toString(), QStringLiteral( "a" ) );
+    }
+
+    // check signal
+    if ( !checkboxStyle )
+      static_cast< QComboBox * >( wrapper5.wrappedWidget() )->setCurrentIndex( 2 );
+    else
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper5.wrappedWidget() )->setValue( QStringLiteral( "c" ) );
+    QCOMPARE( spy5.count(), 3 );
+
+    delete w;
+
+    // single, optional with static strings
+    QgsProcessingParameterEnum param6( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false, QVariant(), true, true );
+    if ( checkboxStyle )
+      param6.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper6( &param6, type );
+
+    w = wrapper6.createWrappedWidget( context );
+
+    QSignalSpy spy6( &wrapper6, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper6.setWidgetValue( QStringLiteral( "b" ), context );
+    QCOMPARE( spy6.count(), 1 );
+    QCOMPARE( wrapper6.widgetValue().toString(), QStringLiteral( "b" ) );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper6.wrappedWidget() )->currentIndex(), 2 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper6.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper6.wrappedWidget() )->value().toString(), QStringLiteral( "b" ) );
+    }
+    wrapper6.setWidgetValue( QStringLiteral( "a" ), context );
+    QCOMPARE( spy6.count(), 2 );
+    QCOMPARE( wrapper6.widgetValue().toString(), QStringLiteral( "a" ) );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( static_cast< QComboBox * >( wrapper6.wrappedWidget() )->currentIndex(), 1 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper6.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper6.wrappedWidget() )->value().toString(), QStringLiteral( "a" ) );
+    }
+    wrapper6.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy6.count(), 3 );
+    if ( !checkboxStyle )
+    {
+      QVERIFY( !wrapper6.widgetValue().isValid() );
+      QCOMPARE( static_cast< QComboBox * >( wrapper6.wrappedWidget() )->currentIndex(), 0 );
+      QCOMPARE( static_cast< QComboBox * >( wrapper6.wrappedWidget() )->currentText(), QStringLiteral( "[Not selected]" ) );
+    }
+
+    // check signal
+    if ( !checkboxStyle )
+      static_cast< QComboBox * >( wrapper6.wrappedWidget() )->setCurrentIndex( 2 );
+    else
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper6.wrappedWidget() )->setValue( QStringLiteral( "a" ) );
+    QCOMPARE( spy6.count(), 4 );
+
+    delete w;
+
+    // multiple, non optional with static strings
+    QgsProcessingParameterEnum param7( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), false, true );
+    if ( checkboxStyle )
+      param7.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper7( &param7, type );
+
+    w = wrapper7.createWrappedWidget( context );
+
+    QSignalSpy spy7( &wrapper7, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper7.setWidgetValue( QStringLiteral( "b" ), context );
+    QCOMPARE( spy7.count(), 1 );
+    QCOMPARE( wrapper7.widgetValue().toList(), QVariantList() << QStringLiteral( "b" ) );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper7.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "b" ) );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper7.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "b" ) );
+    wrapper7.setWidgetValue( QStringLiteral( "a" ), context );
+    QCOMPARE( spy7.count(), 2 );
+    QCOMPARE( wrapper7.widgetValue().toList(), QVariantList() << QStringLiteral( "a" ) );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper7.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "a" ) );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper7.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "a" ) );
+    wrapper7.setWidgetValue( QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "b" ), context );
+    QCOMPARE( spy7.count(), 3 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( wrapper7.widgetValue().toList(), QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "b" ) );
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper7.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "b" ) );
+    }
+    else
+    {
+      // checkbox style isn't ordered
+      QCOMPARE( wrapper7.widgetValue().toList(), QVariantList() << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper7.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+    }
+    // check signal
+    if ( !checkboxStyle )
+      static_cast< QgsProcessingEnumPanelWidget * >( wrapper7.wrappedWidget() )->setValue( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+    else
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper7.wrappedWidget() )->setValue( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+
+    QCOMPARE( spy7.count(), 4 );
+
+    delete w;
+
+    // multiple, optional with static strings
+    QgsProcessingParameterEnum param8( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), true, QVariant(), true, true );
+    if ( checkboxStyle )
+      param8.setMetadata( metadata );
+
+    QgsProcessingEnumWidgetWrapper wrapper8( &param8, type );
+
+    w = wrapper8.createWrappedWidget( context );
+
+    QSignalSpy spy8( &wrapper8, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper8.setWidgetValue( QStringLiteral( "b" ), context );
+    QCOMPARE( spy8.count(), 1 );
+    QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() << QStringLiteral( "b" ) );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "b" ) );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "b" ) );
+    wrapper8.setWidgetValue( QStringLiteral( "a" ), context );
+    QCOMPARE( spy8.count(), 2 );
+    QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() << QStringLiteral( "a" ) );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "a" ) );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "a" ) );
+    wrapper8.setWidgetValue( QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "b" ), context );
+    QCOMPARE( spy8.count(), 3 );
+    if ( !checkboxStyle )
+    {
+      QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "b" ) );
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "c" ) << QStringLiteral( "b" ) );
+    }
+    else
+    {
+      // checkbox style isn't ordered
+      QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() << QStringLiteral( "b" ) << QStringLiteral( "c" ) );
+    }
+    wrapper8.setWidgetValue( QVariantList(), context );
+    QCOMPARE( spy8.count(), 4 );
+    QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() );
+
+    wrapper8.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy8.count(), 5 );
+    QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() );
+    if ( !checkboxStyle )
+      QCOMPARE( static_cast< QgsProcessingEnumPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() );
+    else
+      QCOMPARE( static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper8.wrappedWidget() )->value().toList(), QVariantList() );
+
+    // check signal
+    if ( !checkboxStyle )
+    {
+      static_cast< QgsProcessingEnumPanelWidget * >( wrapper8.wrappedWidget() )->setValue( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+      QCOMPARE( spy8.count(), 6 );
+      static_cast< QgsProcessingEnumPanelWidget * >( wrapper8.wrappedWidget() )->setValue( QVariant() );
+      QCOMPARE( spy8.count(), 7 );
+    }
+    else
+    {
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper8.wrappedWidget() )->setValue( QVariantList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+      QCOMPARE( spy8.count(), 6 );
+      static_cast< QgsProcessingEnumCheckboxPanelWidget * >( wrapper8.wrappedWidget() )->setValue( QVariant() );
+      QCOMPARE( spy8.count(), 7 );
+    }
+
+    delete w;
   };
 
   // standard wrapper

@@ -617,6 +617,16 @@ QList<int> QgsProcessingAlgorithm::parameterAsEnums( const QVariantMap &paramete
   return QgsProcessingParameters::parameterAsEnums( parameterDefinition( name ), parameters, context );
 }
 
+QString QgsProcessingAlgorithm::parameterAsEnumString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsEnumString( parameterDefinition( name ), parameters, context );
+}
+
+QStringList QgsProcessingAlgorithm::parameterAsEnumStrings( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition( name ), parameters, context );
+}
+
 bool QgsProcessingAlgorithm::parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );

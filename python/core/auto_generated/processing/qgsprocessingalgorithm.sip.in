@@ -655,6 +655,20 @@ Evaluates the parameter with matching ``name`` to a enum value.
 Evaluates the parameter with matching ``name`` to list of enum values.
 %End
 
+    QString parameterAsEnumString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a static enum string.
+
+.. versionadded:: 3.18
+%End
+
+    QStringList parameterAsEnumStrings( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to list of static enum strings.
+
+.. versionadded:: 3.18
+%End
+
     bool parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a static boolean value.

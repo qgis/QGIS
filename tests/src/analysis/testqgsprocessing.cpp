@@ -4778,6 +4778,8 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be acceptable, because falls back to default value
+  QVERIFY( !def->checkValueIsAcceptable( "B" ) ); // should not be acceptable, because static strings flag is not set
+  QVERIFY( !def->checkValueIsAcceptable( "Z" ) ); // should not be acceptable, because static strings flag is not set
 
   // string representing a number
   QVariantMap params;
@@ -4811,7 +4813,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
   QString pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=False, defaultValue=2)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=False, usesStaticStrings=False, defaultValue=2)" ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=enum A;B;C 2" ) );
@@ -4823,6 +4825,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->options(), def->options() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->usesStaticStrings(), def->usesStaticStrings() );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterEnum fromMap( "x" );
@@ -4833,6 +4836,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.options(), def->options() );
   QCOMPARE( fromMap.allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromMap.usesStaticStrings(), def->usesStaticStrings() );
   def.reset( dynamic_cast< QgsProcessingParameterEnum *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterEnum *>( def.get() ) );
 
@@ -4852,6 +4856,8 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( "B" ) ); // should not be acceptable, because static strings flag is not set
+  QVERIFY( !def->checkValueIsAcceptable( "Z" ) ); // should not be acceptable, because static strings flag is not set
 
   params.insert( "non_optional", QString( "1,2" ) );
   QList< int > iNumbers = QgsProcessingParameters::parameterAsEnums( def.get(), params, context );
@@ -4870,7 +4876,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "1,2" ), context ), QStringLiteral( "[1,2]" ) );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=True, defaultValue=5)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=True, usesStaticStrings=False, defaultValue=5)" ) );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=enum multiple A;B;C 5" ) );
@@ -4882,6 +4888,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->options(), def->options() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->usesStaticStrings(), def->usesStaticStrings() );
 
   // optional
   def.reset( new QgsProcessingParameterEnum( "optional", QString(), QStringList() << "a" << "b", false, 5, true ) );
@@ -4899,7 +4906,7 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('optional', '', optional=True, options=['a','b'], allowMultiple=False, defaultValue=5)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('optional', '', optional=True, options=['a','b'], allowMultiple=False, usesStaticStrings=False, defaultValue=5)" ) );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional enum a;b 5" ) );
@@ -4911,6 +4918,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->options(), def->options() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->usesStaticStrings(), def->usesStaticStrings() );
 
   params.insert( "optional",  QVariant() );
   iNumber = QgsProcessingParameters::parameterAsEnum( def.get(), params, context );
@@ -4933,6 +4941,8 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( "B" ) ); // should not be acceptable, because static strings flag is not set
+  QVERIFY( !def->checkValueIsAcceptable( "Z" ) ); // should not be acceptable, because static strings flag is not set
 
   params.insert( "optional",  QVariant() );
   iNumbers = QgsProcessingParameters::parameterAsEnums( def.get(), params, context );
@@ -4947,7 +4957,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( iNumbers, QList<int>() );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('optional', '', optional=True, options=['A','B','C'], allowMultiple=True, defaultValue=[1,2])" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('optional', '', optional=True, options=['A','B','C'], allowMultiple=True, usesStaticStrings=False, defaultValue=[1,2])" ) );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional enum multiple A;B;C 1,2" ) );
@@ -4959,6 +4969,7 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->options(), def->options() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->usesStaticStrings(), def->usesStaticStrings() );
 
   // non optional, no default
   def.reset( new QgsProcessingParameterEnum( "non_optional", QString(), QStringList() << "A" << "B" << "C", false, QVariant(), false ) );
@@ -4976,6 +4987,119 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) ); // should NOT be acceptable, because falls back to invalid default value
+  QVERIFY( !def->checkValueIsAcceptable( "B" ) ); // should not be acceptable, because static strings flag is not set
+  QVERIFY( !def->checkValueIsAcceptable( "Z" ) ); // should not be acceptable, because static strings flag is not set
+
+  // not optional with static strings
+  def.reset( new QgsProcessingParameterEnum( "non_optional", QString(), QStringList() << "A" << "B" << "C", false, "B", false, true ) );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1,2" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 15 ) );
+  QVERIFY( !def->checkValueIsAcceptable( -1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be acceptable, because falls back to default value
+  QVERIFY( def->checkValueIsAcceptable( "B" ) ); // should be acceptable, because this is a valid enum value
+  QVERIFY( !def->checkValueIsAcceptable( "b" ) ); // should not be acceptable, because values are case sensitive
+  QVERIFY( !def->checkValueIsAcceptable( "Z" ) ); // should not be acceptable, because value is not in the list of enum values
+
+  // valid enum value
+  params.insert( "non_optional", QString( "A" ) );
+  QString iString = QgsProcessingParameters::parameterAsEnumString( def.get(), params, context );
+  QCOMPARE( iString, QStringLiteral( "A" ) );
+
+  // invalid enum value
+  params.insert( "non_optional", QString( "Z" ) );
+  iString = QgsProcessingParameters::parameterAsEnumString( def.get(), params, context );
+  QCOMPARE( iString, QStringLiteral( "B" ) );
+
+  // lowercase
+  params.insert( "non_optional", QString( "a" ) );
+  iString = QgsProcessingParameters::parameterAsEnumString( def.get(), params, context );
+  QCOMPARE( iString, QStringLiteral( "B" ) );
+
+  // empty string
+  params.insert( "non_optional", QString() );
+  iString = QgsProcessingParameters::parameterAsEnumString( def.get(), params, context );
+  QCOMPARE( iString, QStringLiteral( "B" ) );
+
+  // number
+  params.insert( "non_optional", 1 );
+  iString = QgsProcessingParameters::parameterAsEnumString( def.get(), params, context );
+  QCOMPARE( iString, QStringLiteral( "B" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=False, usesStaticStrings=True, defaultValue='B')" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=enum static A;B;C B" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterEnum * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->options(), def->options() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->usesStaticStrings(), def->usesStaticStrings() );
+
+  // multiple with static strings
+  def.reset( new QgsProcessingParameterEnum( "non_optional", QString(), QStringList() << "A" << "B" << "C", true, "B", false, true ) );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1,2" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "A" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 15 ) );
+  QVERIFY( !def->checkValueIsAcceptable( -1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be acceptable, because falls back to default value
+  QVERIFY( def->checkValueIsAcceptable( "B" ) ); // should be acceptable, because this is a valid enum value
+  QVERIFY( !def->checkValueIsAcceptable( "b" ) ); // should not be acceptable, because values are case sensitive
+  QVERIFY( !def->checkValueIsAcceptable( "Z" ) ); // should not be acceptable, because value is not in the list of enum values
+
+  // comma-separated string
+  params.insert( "non_optional", QString( "A,B" ) );
+  QStringList iStrings = QgsProcessingParameters::parameterAsEnumStrings( def.get(), params, context );
+  QCOMPARE( iStrings, QStringList() << "A" << "B" );
+
+  // list
+  params.insert( "non_optional", QVariantList() << "A" << "C" );
+  iStrings = QgsProcessingParameters::parameterAsEnumStrings( def.get(), params, context );
+  QCOMPARE( iStrings, QStringList() << "A" << "C" );
+
+  // empty list
+  params.insert( "non_optional", QVariantList() );
+  iStrings = QgsProcessingParameters::parameterAsEnumStrings( def.get(), params, context );
+  QCOMPARE( iStrings, QStringList() << "B" );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=True, usesStaticStrings=True, defaultValue='B')" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=enum multiple static A;B;C B" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterEnum * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->options(), def->options() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+  QCOMPARE( fromCode->usesStaticStrings(), def->usesStaticStrings() );
 }
 
 void TestQgsProcessing::parameterString()
