@@ -32,8 +32,15 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
     QgsPointCloud3DSymbol *symbol() const;
 
+  private slots:
+    void reloadColorRampShaderMinMax();
+    void onRenderingStyleChanged( int current );
+
   signals:
     void changed();
+
+  private:
+    void setColorRampMinMax( double min, double max );
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOLWIDGET_H

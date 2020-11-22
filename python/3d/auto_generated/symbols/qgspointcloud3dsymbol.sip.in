@@ -26,6 +26,21 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
+
+    enum RenderingStyle
+    {
+      //! Render the mesh with a single color
+      SingleColor,
+      //! Render the mesh with a color ramp
+      ColorRamp,
+    };
+
+    enum RenderingParameter
+    {
+      Height,
+      ClassID
+    };
+
     QgsPointCloud3DSymbol();
 %Docstring
 Constructor for QgsPointCloud3DSymbol
@@ -68,6 +83,79 @@ Returns the point size of the point cloud
 Sets the point size
 
 .. seealso:: :py:func:`pointSize`
+%End
+
+    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
+%Docstring
+Returns the rendering style
+
+.. seealso:: :py:func:`setRenderingStyle`
+%End
+
+    void setRenderingStyle( QgsPointCloud3DSymbol::RenderingStyle style );
+%Docstring
+Sets the rendering style
+
+.. seealso:: :py:func:`renderingStyle`
+%End
+
+    QgsPointCloud3DSymbol::RenderingParameter renderingParameter() const;
+%Docstring
+Returns the parameter used to select the color of the point cloud when using color ramp coloring
+
+.. seealso:: :py:func:`setRenderingParameter`
+%End
+
+    void setRenderingParameter( QgsPointCloud3DSymbol::RenderingParameter parameter );
+%Docstring
+Sets the parameter used to select the color of the point cloud when using color ramp coloring
+
+.. seealso:: :py:func:`renderingParameter`
+%End
+
+    QColor singleColor() const;
+%Docstring
+Returns the color used by the renderer when using SingleColor rendering mode
+
+.. seealso:: :py:func:`setSingleColor`
+%End
+
+    void setSingleColor( QColor color );
+%Docstring
+Sets the color used by the renderer when using SingleColor rendering mode
+
+.. seealso:: :py:func:`singleColor`
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns the color ramp shader used to render the color
+%End
+
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+%Docstring
+Sets the color ramp shader used to render the color
+%End
+
+    double colorRampShaderMin() const;
+%Docstring
+Returns the minimum value used when classifying colors in the color ramp shader
+
+.. seealso:: :py:func:`setColorRampShaderMinMax`
+%End
+
+    double colorRampShaderMax() const;
+%Docstring
+Returns the maximum value used when classifying colors in the color ramp shader
+
+.. seealso:: :py:func:`setColorRampShaderMinMax`
+%End
+
+    void setColorRampShaderMinMax( double min, double max );
+%Docstring
+Sets the minimum and maximum values used when classifying colors in the color ramp shader
+
+.. seealso:: :py:func:`setColorRampShaderMinMax`
 %End
 
 };
