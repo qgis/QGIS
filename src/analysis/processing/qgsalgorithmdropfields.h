@@ -60,8 +60,46 @@ class QgsDropTableFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
     QStringList mFieldsToDelete;
     mutable QList< int > mFieldIndices;
-    QgsField mField;
 };
+
+
+/**
+ * Native retain fields algorithm.
+ */
+class QgsRetainTableFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsRetainTableFieldsAlgorithm() = default;
+    QgsProcessingAlgorithm::Flags flags() const override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QList<int> inputLayerTypes() const override;
+    QgsRetainTableFieldsAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QString outputName() const override;
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+
+  private:
+
+    QStringList mFieldsToRetain;
+    mutable QList< int > mFieldIndices;
+};
+
 
 ///@endcond PRIVATE
 
