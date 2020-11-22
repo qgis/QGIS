@@ -17,6 +17,8 @@
 
 #include "qgscolorramptexture.h"
 
+/// @cond PRIVATE
+
 // ColorRampTextureGenerator
 
 ColorRampTextureGenerator::ColorRampTextureGenerator( const QgsColorRampShader &colorRampShader, double verticalScale )
@@ -111,3 +113,5 @@ Qt3DRender::QTextureImageDataGeneratorPtr ColorRampTexture::dataGenerator() cons
 {
   return Qt3DRender::QTextureImageDataGeneratorPtr( new ColorRampTextureGenerator( mColorRampShader, mVerticalScale ) );
 }
+
+/// @endcond
