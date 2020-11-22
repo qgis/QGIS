@@ -147,4 +147,139 @@ bool QgsDropTableFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer )
   return false;
 }
 
+
+
+//
+// QgsRetainTableFieldsAlgorithm
+//
+
+QgsProcessingAlgorithm::Flags QgsRetainTableFieldsAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() & ~QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+}
+
+QString QgsRetainTableFieldsAlgorithm::name() const
+{
+  return QStringLiteral( "retainfields" );
+}
+
+QString QgsRetainTableFieldsAlgorithm::displayName() const
+{
+  return QObject::tr( "Retain fields" );
+}
+
+QString QgsRetainTableFieldsAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a vector layer and generates a new one that retains only the selected fields. All other fields will be dropped." );
+}
+
+QString QgsRetainTableFieldsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Retains selected fields from a vector layer." );
+}
+
+QStringList QgsRetainTableFieldsAlgorithm::tags() const
+{
+  return QObject::tr( "drop,delete,remove,retain,keep,other,fields,columns,attributes" ).split( ',' );
+}
+
+QString QgsRetainTableFieldsAlgorithm::group() const
+{
+  return QObject::tr( "Vector table" );
+}
+
+QString QgsRetainTableFieldsAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectortable" );
+}
+
+QString QgsRetainTableFieldsAlgorithm::outputName() const
+{
+  return QObject::tr( "Retained fields" );
+}
+
+QList<int> QgsRetainTableFieldsAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVector;
+}
+
+QgsProcessingFeatureSource::Flag QgsRetainTableFieldsAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
+QgsRetainTableFieldsAlgorithm *QgsRetainTableFieldsAlgorithm::createInstance() const
+{
+  return new QgsRetainTableFieldsAlgorithm();
+}
+
+void QgsRetainTableFieldsAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS" ), QObject::tr( "Fields to retain" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true ) );
+}
+
+QgsFields QgsRetainTableFieldsAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  // loop through twice - first we need to build up a list of original attribute indices
+  for ( const QString &field : mFieldsToRetain )
+  {
+    const int index = inputFields.lookupField( field );
+    if ( index >= 0 )
+      mFieldIndices.append( index );
+  }
+
+  std::sort( mFieldIndices.begin(), mFieldIndices.end() );
+
+  // this second time we make a cleaned version of the fields
+  QgsFields outFields;
+  for ( const int index : qgis::as_const( mFieldIndices ) )
+  {
+    outFields.append( inputFields.at( index ) );
+  }
+  return outFields;
+}
+
+bool QgsRetainTableFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  mFieldsToRetain = parameterAsFields( parameters, QStringLiteral( "FIELDS" ), context );
+
+  if ( feedback )
+  {
+    std::unique_ptr< QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+    if ( source )
+    {
+      for ( const QString &field : qgis::as_const( mFieldsToRetain ) )
+      {
+        const int index = source->fields().lookupField( field );
+        if ( index < 0 )
+        {
+          feedback->pushInfo( QObject::tr( "Field “%1” does not exist in input layer " ).arg( field ) );
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+QgsFeatureList QgsRetainTableFieldsAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  const QgsAttributes inputAttributes = f.attributes();
+  QgsAttributes outputAttributes;
+  outputAttributes.reserve( mFieldIndices.count() );
+  for ( const int index : mFieldIndices )
+  {
+    outputAttributes.append( inputAttributes.at( index ) );
+  }
+  f.setAttributes( outputAttributes );
+  return QgsFeatureList() << f;
+}
+
+bool QgsRetainTableFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  Q_UNUSED( layer )
+  return false;
+}
+
 ///@endcond
