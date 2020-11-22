@@ -48,9 +48,9 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mFrameStyleComboBox->addItem( tr( "Line Border (Nautical)" ), QgsLayoutItemMapGrid::LineBorderNautical );
 
   mRotatedTicksLengthModeComboBox->addItem( tr( "Orthogonal" ), QgsLayoutItemMapGrid::OrthogonalTicks );
-  mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed length" ), QgsLayoutItemMapGrid::NormalizedTicks );
+  mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed Length" ), QgsLayoutItemMapGrid::NormalizedTicks );
   mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Orthogonal" ), QgsLayoutItemMapGrid::OrthogonalTicks );
-  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed length" ), QgsLayoutItemMapGrid::NormalizedTicks );
+  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed Length" ), QgsLayoutItemMapGrid::NormalizedTicks );
 
   mGridFrameMarginSpinBox->setShowClearButton( true );
   mGridFrameMarginSpinBox->setClearValue( 0 );
