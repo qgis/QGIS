@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgspointcloud3dsymbol.h
   ------------------------------
   Date                 : November 2020
@@ -78,7 +78,7 @@ void QgsPointCloud3DSymbol::setIsEnabled( bool enabled )
   mEnabled = enabled;
 }
 
-void QgsPointCloud3DSymbol::setRenderingStyle( QgsPointCloud3DSymbol::RenderingStyle style )
+void QgsPointCloud3DSymbol::setRenderingStyle(QgsPointCloud3DSymbol::RenderingStyle style)
 {
   mRenderingStyle = style;
 }
@@ -118,7 +118,7 @@ void QgsPointCloud3DSymbol::setColorRampShader( const QgsColorRampShader &colorR
   mColorRampShader = colorRampShader;
 }
 
-void QgsPointCloud3DSymbol::setColorRampShaderMinMax( double min, double max )
+void QgsPointCloud3DSymbol::setColorRampShaderMinMax(double min, double max)
 {
   mColorRampShaderMin = min;
   mColorRampShaderMax = max;

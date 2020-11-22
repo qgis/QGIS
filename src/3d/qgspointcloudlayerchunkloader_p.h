@@ -44,6 +44,7 @@ class QgsPointCloudIndex;
 #include <QFutureWatcher>
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QMaterial>
 #include <QVector3D>
 
 
@@ -76,7 +77,8 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     //static void addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
     //static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol );
 
-
+  private:
+    Qt3DRender::QMaterial *constructMaterial();
 
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
@@ -126,7 +128,6 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     virtual QgsChunkNode *createRootNode() const override;
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
-
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;

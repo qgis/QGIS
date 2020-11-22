@@ -5,10 +5,13 @@ uniform mat4 modelViewProjection;
 uniform mat4 projectionMatrix;
 uniform mat4 viewportMatrix;
 uniform float u_pointSize;
+// used parameter to choose point cloud points color: 0 for height, 1 for classID
+uniform int u_renderingParameter;
 
 in vec3 vertexPosition;
 in float cls;
 
+out float magnitude;
 out float clsid;
 
 void main(void)
@@ -21,6 +24,15 @@ void main(void)
     gl_PointSize = u_pointSize; //5 + vertexPosition.x * 10 + vertexPosition.y * 10;
     //gl_PointSize = viewportMatrix[1][1] * projectionMatrix[1][1] * 1.0 / gl_Position.w;
     //gl_PointSize = 100.0;
+    switch (u_renderingParameter)
+    {
+    case 0:
+      magnitude = vertexPosition.y;
+      break;
+    case 1:
+      magnitude = cls;
+      break;
+    }
 
     clsid = cls;
 }
