@@ -222,8 +222,8 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial()
   mat->addParameter( singleColorParameter );
   Qt3DRender::QParameter *textureTypeParameter = new Qt3DRender::QParameter( "u_textureType", static_cast<int>( mSymbol->renderingStyle() ) );
   mat->addParameter( textureTypeParameter );
-  Qt3DRender::QParameter *renderingParamter = new Qt3DRender::QParameter( "u_renderingParameter", mSymbol->renderingParameter() );
-  mat->addParameter( renderingParamter );
+  Qt3DRender::QParameter *renderingParameter = new Qt3DRender::QParameter( "u_renderingParameter", mSymbol->renderingParameter() );
+  mat->addParameter( renderingParameter );
   if ( mSymbol->renderingStyle() == QgsPointCloud3DSymbol::ColorRamp )
   {
     QgsColorRampShader colorRampShader = mSymbol->colorRampShader();
