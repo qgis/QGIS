@@ -20,7 +20,7 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
     QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
     QgsVertexId, QgsReferencedGeometry, QgsProviderRegistry, QgsRasterLayer, QgsAnnotationLayer, \
-    QgsVectorTileLayer, QgsMeshLayer
+    QgsVectorTileLayer, QgsMeshLayer, QgsDataSourceUri
 
 start_app()
 
@@ -262,6 +262,11 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3>')
         v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 CurveVertex>')
+
+    def testDataSourceUri(self):
+        ds = QgsDataSourceUri()
+        ds.setConnection(aHost='my_host', aPort='2322', aDatabase='my_db', aUsername='user', aPassword='pw')
+        self.assertEqual(ds.__repr__(), "<QgsDataSourceUri: dbname='my_db' host=my_host port=2322 user='user' password='pw'>")
 
 
 if __name__ == "__main__":
