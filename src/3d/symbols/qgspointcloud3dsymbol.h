@@ -161,8 +161,8 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::ColorRamp;
     QgsPointCloud3DSymbol::RenderingParameter mRenderingParameter = QgsPointCloud3DSymbol::RenderingParameter::ClassID;
     QgsColorRampShader mColorRampShader;
-    double mColorRampShaderMin;
-    double mColorRampShaderMax;
+    double mColorRampShaderMin = 0.0;
+    double mColorRampShaderMax = 1.0;
     QColor mSingleColor = Qt::blue;
 };
 

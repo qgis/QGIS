@@ -68,8 +68,8 @@ void QgsPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWrite
   mSingleColor.setGreenF( elem.attribute( "single-color-green", QStringLiteral( "0.0" ) ).toFloat() );
   mSingleColor.setBlueF( elem.attribute( "single-color-blue", QStringLiteral( "1.0" ) ).toFloat() );
   mRenderingParameter = static_cast< QgsPointCloud3DSymbol::RenderingParameter >( elem.attribute( "rendering-parameter", QStringLiteral( "0" ) ).toInt() );
-  mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ) ).toDouble();
-  mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ) ).toDouble();
+  mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ), QStringLiteral( "0.0" ) ).toDouble();
+  mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ), QStringLiteral( "1.0" ) ).toDouble();
   mColorRampShader.readXml( elem );
 }
 
