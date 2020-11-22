@@ -53,6 +53,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdrape.cpp
+  processing/qgsalgorithmdropfields.cpp
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
   processing/qgsalgorithmdxfexport.cpp
