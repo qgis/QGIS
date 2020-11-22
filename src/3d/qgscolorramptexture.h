@@ -18,6 +18,8 @@
 #ifndef QGSCOLORRAMPTEXTURE_H
 #define QGSCOLORRAMPTEXTURE_H
 
+/// @cond PRIVATE
+
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
@@ -65,5 +67,7 @@ class ColorRampTexture: public Qt3DRender::QAbstractTextureImage
     QgsColorRampShader mColorRampShader;
     double mVerticalScale = 1;
 };
+
+/// @endcond
 
 #endif // QGSCOLORRAMPTEXTURE_H
