@@ -91,8 +91,8 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
       return QVariant::fromValue( *this );
     }
 
-    bool operator==( const QgsReferencedRectangle &other );
-    bool operator!=( const QgsReferencedRectangle &other );
+    bool operator==( const QgsReferencedRectangle &other ) const;
+    bool operator!=( const QgsReferencedRectangle &other ) const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

@@ -29,7 +29,12 @@ QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
 void QgsProjectViewSettings::reset()
 {
   mDefaultViewExtent = QgsReferencedRectangle();
+
+  const bool fullExtentChanged = !mPresetFullExtent.isNull();
   mPresetFullExtent = QgsReferencedRectangle();
+  if ( fullExtentChanged )
+    emit presetFullExtentChanged();
+
   if ( mUseProjectScales || !mMapScales.empty() )
   {
     mUseProjectScales = false;
@@ -55,7 +60,11 @@ QgsReferencedRectangle QgsProjectViewSettings::presetFullExtent() const
 
 void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &extent )
 {
+  if ( extent == mPresetFullExtent )
+    return;
+
   mPresetFullExtent = extent;
+  emit presetFullExtentChanged();
 }
 
 QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
@@ -208,11 +217,11 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
     double yMax = presetViewElement.attribute( QStringLiteral( "ymax" ) ).toDouble();
     QgsCoordinateReferenceSystem crs;
     crs.readXml( presetViewElement );
-    mPresetFullExtent = QgsReferencedRectangle( QgsRectangle( xMin, yMin, xMax, yMax ), crs );
+    setPresetFullExtent( QgsReferencedRectangle( QgsRectangle( xMin, yMin, xMax, yMax ), crs ) );
   }
   else
   {
-    mPresetFullExtent = QgsReferencedRectangle();
+    setPresetFullExtent( QgsReferencedRectangle() );
   }
 
   return true;

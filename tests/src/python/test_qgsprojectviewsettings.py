@@ -141,6 +141,25 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.reset()
         self.assertTrue(p.presetFullExtent().isNull())
 
+    def testPresetFullExtentChangedSignal(self):
+        p = QgsProjectViewSettings()
+        spy = QSignalSpy(p.presetFullExtentChanged)
+
+        p.setPresetFullExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
+        self.assertEqual(len(spy), 1)
+
+        p.setPresetFullExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3857")))
+        self.assertEqual(len(spy), 1)
+
+        p.setPresetFullExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:4326")))
+        self.assertEqual(len(spy), 2)
+
+        p.reset()
+        self.assertEqual(len(spy), 3)
+
+        p.reset()
+        self.assertEqual(len(spy), 3)
+
     def testFullExtent(self):
         p = QgsProject()
         p.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))

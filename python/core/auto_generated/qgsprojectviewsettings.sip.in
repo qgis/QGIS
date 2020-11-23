@@ -182,6 +182,13 @@ Emitted when the list of custom project map scales changes.
 .. seealso:: :py:func:`setMapScales`
 %End
 
+    void presetFullExtentChanged();
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectViewSettings.presetFullExtent` is changed.
+
+.. versionadded:: 3.18
+%End
+
 };
 
 /************************************************************************
