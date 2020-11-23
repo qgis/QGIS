@@ -822,6 +822,44 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
+    def testCrsChanged(self):
+        """
+        Test that the CRS changed signal is emitted in the right circumstances
+        """
+        p = QgsProject()
+        layout = QgsLayout(p)
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+
+        spy = QSignalSpy(map.crsChanged)
+        # map has no explicit crs set, so follows project crs => signal should be emitted
+        # when project crs is changed
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 1)
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(len(spy), 2)
+        # set explicit crs on map item
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        self.assertEqual(len(spy), 3)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        self.assertEqual(len(spy), 3)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28355'))
+        self.assertEqual(len(spy), 4)
+        # should not care about project crs changes anymore..
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 4)
+        # set back to project crs
+        map.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(len(spy), 5)
+
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28355'))
+        self.assertEqual(len(spy), 6)
+        # data defined crs
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapCrs, QgsProperty.fromValue('EPSG:4283'))
+        self.assertEqual(len(spy), 6)
+        map.refresh()
+        self.assertEqual(len(spy), 7)
+
 
 if __name__ == '__main__':
     unittest.main()

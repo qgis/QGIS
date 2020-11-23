@@ -1118,6 +1118,15 @@ Retrieves the second fill color for the grid frame.
     virtual void refresh();
 
 
+  signals:
+
+    void crsChanged();
+%Docstring
+Emitted whenever the grid's CRS is changed.
+
+.. versionadded:: 3.18
+%End
+
 };
 
 QFlags<QgsLayoutItemMapGrid::FrameSideFlag> operator|(QgsLayoutItemMapGrid::FrameSideFlag f1, QFlags<QgsLayoutItemMapGrid::FrameSideFlag> f2);

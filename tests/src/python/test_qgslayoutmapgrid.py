@@ -14,6 +14,7 @@ import qgis  # NOQA
 
 from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QPainter, QColor
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (QgsLayoutItemMap,
                        QgsLayoutItemMapGrid,
@@ -851,6 +852,57 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         myTestResult, myMessage = checker.testLayout()
         self.report += checker.report()
         self.assertTrue(myTestResult, myMessage)
+
+    def testCrsChanged(self):
+        """
+        Test that the CRS changed signal is emitted in the right circumstances
+        """
+        p = QgsProject()
+        layout = QgsLayout(p)
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+
+        grid = map.grid()
+
+        spy = QSignalSpy(grid.crsChanged)
+        # map grid and map have no explicit crs set, so follows project crs => signal should be emitted
+        # when project crs is changed
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 1)
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(len(spy), 2)
+        # set explicit crs on map item
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        self.assertEqual(len(spy), 3)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        self.assertEqual(len(spy), 3)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28355'))
+        self.assertEqual(len(spy), 4)
+        # should not care about project crs changes anymore..
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 4)
+        # set back to project crs
+        map.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(len(spy), 5)
+
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:28355'))
+        self.assertEqual(len(spy), 6)
+        # data defined crs
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapCrs, QgsProperty.fromValue('EPSG:4283'))
+        self.assertEqual(len(spy), 6)
+        map.refresh()
+        self.assertEqual(len(spy), 7)
+
+        # explicit crs for map grid
+        grid.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(len(spy), 8)
+        grid.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(len(spy), 8)
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapCrs, QgsProperty.fromValue('EPSG:3111'))
+        map.refresh()
+        self.assertEqual(len(spy), 8)
+        grid.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(len(spy), 9)
 
 
 if __name__ == '__main__':

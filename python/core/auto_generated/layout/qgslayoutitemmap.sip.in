@@ -990,6 +990,13 @@ Emitted when the map's associated ``theme`` is changed.
 .. versionadded:: 3.14
 %End
 
+    void crsChanged();
+%Docstring
+Emitted when the map's coordinate reference system is changed.
+
+.. versionadded:: 3.18
+%End
+
   public slots:
 
     virtual void refresh();

@@ -203,6 +203,11 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
 
   connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapGrid::refreshDataDefinedProperties );
   connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapGrid::refreshDataDefinedProperties );
+  connect( mMap, &QgsLayoutItemMap::crsChanged, this, [ = ]
+  {
+    if ( !mCRS.isValid() )
+      emit crsChanged();
+  } );
 }
 
 void QgsLayoutItemMapGrid::createDefaultGridLineSymbol()
@@ -438,8 +443,12 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
 
 void QgsLayoutItemMapGrid::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  if ( mCRS == crs )
+    return;
+
   mCRS = crs;
   mTransformDirty = true;
+  emit crsChanged();
 }
 
 bool QgsLayoutItemMapGrid::usesAdvancedEffects() const

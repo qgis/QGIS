@@ -910,6 +910,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     void themeChanged( const QString &theme );
 
+    /**
+     * Emitted when the map's coordinate reference system is changed.
+     *
+     * \since QGIS 3.18
+     */
+    void crsChanged();
+
   public slots:
 
     void refresh() override;
