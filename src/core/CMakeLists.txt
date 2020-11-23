@@ -11,11 +11,6 @@ set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
   ${CMAKE_SOURCE_DIR}/external/nmea/tok.c
 
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/advancing_front.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
-  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
 
   callouts/qgscallout.cpp
@@ -733,6 +728,19 @@ set(QGIS_CORE_SRCS
   qgsuserprofile.cpp
   qgsuserprofilemanager.cpp
 )
+
+if (WITH_INTERNAL_POLY2TRI)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
+    ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/advancing_front.cc
+    ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
+    ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
+    ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
+  )
+  include_directories(${CMAKE_SOURCE_DIR}/external/poly2tri)
+else (WITH_INTERNAL_POLY2TRI)
+  include_directories(${Poly2Tri_INCLUDE_DIR})
+endif (WITH_INTERNAL_POLY2TRI)
 
 file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
 if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
@@ -1624,7 +1632,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
-  ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
 )
@@ -1730,6 +1737,9 @@ if(ENABLE_MODELTEST)
   target_link_libraries(qgis_core ${Qt5Test_LIBRARIES})
 endif()
 
+if (NOT WITH_INTERNAL_POLY2TRI)
+   target_link_libraries(qgis_core ${Poly2Tri_LIBRARY})
+endif()
 
 if(HAVE_OPENCL)
   target_link_libraries(qgis_core ${OpenCL_LIBRARY})
