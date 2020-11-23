@@ -115,7 +115,7 @@ Sets the frame ``duration``, which dictates the temporal length of each frame in
 
 .. note::
 
-   Calling this will reset the :py:func:`~QgsTemporalNavigationObject.currentFrameNumber` to the first frame.
+   Calling this will reset the :py:func:`~QgsTemporalNavigationObject.currentFrameNumber` to the closest temporal match for the previous temporal range.
 
 .. seealso:: :py:func:`frameDuration`
 %End
@@ -186,6 +186,11 @@ Returns ``True`` if the animation should loop after hitting the end or start fra
 Sets whether the animation should ``loop`` after hitting the end or start frame.
 
 .. seealso:: :py:func:`isLooping`
+%End
+
+    long findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const;
+%Docstring
+Returns the best suited frame number for the specified datetime, based on the start of the corresponding temporal range.
 %End
 
     virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;

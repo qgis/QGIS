@@ -89,7 +89,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
           mTable = pval;
         }
 
-        if ( uri[i] == '(' )
+        if ( i < uri.length() && uri[i] == '(' )
         {
           i++;
 

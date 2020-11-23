@@ -124,10 +124,12 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void minIntervalChanged( double interval );
     void maxIntervalChanged( double interval );
     void annotationTextFormatChanged();
+    void onCrsChanged();
 
   private:
     QPointer< QgsLayoutItemMap > mMap;
     QPointer< QgsLayoutItemMapGrid > mMapGrid;
+    int mBlockAnnotationFormatUpdates = 0;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );

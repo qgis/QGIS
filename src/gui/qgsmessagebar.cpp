@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
+#include "qgssettings.h"
 
 #include <QWidget>
 #include <QPalette>
@@ -211,6 +212,26 @@ void QgsMessageBar::pushCritical( const QString &title, const QString &message )
   pushMessage( title, message, Qgis::Critical );
 }
 
+int QgsMessageBar::defaultMessageTimeout( Qgis::MessageLevel level )
+{
+  // critical/warning messages don't auto dismiss by default
+  switch ( level )
+  {
+    case Qgis::Success:
+    case Qgis::Info:
+    case Qgis::None:
+    {
+      QgsSettings settings;
+      return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+    }
+
+    case Qgis::Warning:
+    case Qgis::Critical:
+      return 0;
+  }
+  return 0;
+}
+
 void QgsMessageBar::showItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
@@ -340,6 +361,11 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, cons
   showMoreButton->setDefaultAction( act );
   connect( showMoreButton, &QToolButton::triggered, mv, &QDialog::exec );
   connect( showMoreButton, &QToolButton::triggered, showMoreButton, &QObject::deleteLater );
+
+  if ( duration < 0 )
+  {
+    duration = defaultMessageTimeout( level );
+  }
 
   QgsMessageBarItem *item = new QgsMessageBarItem(
     title,

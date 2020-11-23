@@ -19,7 +19,6 @@
 #include "qgslandingpageutils.h"
 #include "qgsserverinterface.h"
 #include "qgsserverresponse.h"
-#include "qgsproject.h"
 #include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreenode.h"
@@ -91,7 +90,7 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );
   }
-  data[ "project" ] = QgsLandingPageUtils::projectInfo( projectPath );
+  data[ "project" ] = QgsLandingPageUtils::projectInfo( projectPath, mSettings );
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
 }
 

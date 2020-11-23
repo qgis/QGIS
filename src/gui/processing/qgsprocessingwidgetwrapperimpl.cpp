@@ -2141,7 +2141,12 @@ QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, con
 void QgsProcessingEnumPanelWidget::setValue( const QVariant &value )
 {
   if ( value.isValid() )
+  {
     mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+
+    if ( mParam->usesStaticStrings() && mValue.count() == 1 && mValue.at( 0 ).toString().isEmpty() )
+      mValue.clear();
+  }
   else
     mValue.clear();
 
@@ -2166,11 +2171,22 @@ void QgsProcessingEnumPanelWidget::showDialog()
     QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, mValue );
     widget->setPanelTitle( mParam->description() );
 
-    widget->setValueFormatter( [options]( const QVariant & v ) -> QString
+    if ( mParam->usesStaticStrings() )
     {
-      const int i = v.toInt();
-      return options.size() > i ? options.at( i ) : QString();
-    } );
+      widget->setValueFormatter( [options]( const QVariant & v ) -> QString
+      {
+        const QString i = v.toString();
+        return options.contains( i ) ? i : QString();
+      } );
+    }
+    else
+    {
+      widget->setValueFormatter( [options]( const QVariant & v ) -> QString
+      {
+        const int i = v.toInt();
+        return options.size() > i ? options.at( i ) : QString();
+      } );
+    }
 
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
     {
@@ -2232,6 +2248,7 @@ QgsProcessingEnumCheckboxPanelWidget::QgsProcessingEnumCheckboxPanelWidget( QWid
     } );
 
     mButtons.insert( i, button );
+
     mButtonGroup->addButton( button, i );
     l->addWidget( button, i % rows, i / rows );
   }
@@ -2253,13 +2270,16 @@ QVariant QgsProcessingEnumCheckboxPanelWidget::value() const
     for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
     {
       if ( it.value()->isChecked() )
-        value.append( it.key() );
+        value.append( mParam->usesStaticStrings() ? mParam->options().at( it.key().toInt() ) : it.key() );
     }
     return value;
   }
   else
   {
-    return mButtonGroup->checkedId() >= 0 ? mButtonGroup->checkedId() : QVariant();
+    if ( mParam->usesStaticStrings() )
+      return mButtonGroup->checkedId() >= 0 ? mParam->options().at( mButtonGroup->checkedId() ) : QVariant();
+    else
+      return mButtonGroup->checkedId() >= 0 ? mButtonGroup->checkedId() : QVariant();
   }
 }
 
@@ -2273,7 +2293,8 @@ void QgsProcessingEnumCheckboxPanelWidget::setValue( const QVariant &value )
       selected = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
     for ( auto it = mButtons.constBegin(); it != mButtons.constEnd(); ++it )
     {
-      it.value()->setChecked( selected.contains( it.key() ) );
+      QVariant v = mParam->usesStaticStrings() ? mParam->options().at( it.key().toInt() ) : it.key();
+      it.value()->setChecked( selected.contains( v ) );
     }
   }
   else
@@ -2281,6 +2302,8 @@ void QgsProcessingEnumCheckboxPanelWidget::setValue( const QVariant &value )
     QVariant v = value;
     if ( v.type() == QVariant::List )
       v = v.toList().value( 0 );
+
+    v = mParam->usesStaticStrings() ? mParam->options().indexOf( v.toString() ) : v;
     if ( mButtons.contains( v ) )
       mButtons.value( v )->setChecked( true );
   }
@@ -2396,7 +2419,12 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
           mComboBox->addItem( tr( "[Not selected]" ), QVariant() );
         const QStringList options = expParam->options();
         for ( int i = 0; i < options.count(); ++i )
-          mComboBox->addItem( options.at( i ), i );
+        {
+          if ( expParam->usesStaticStrings() )
+            mComboBox->addItem( options.at( i ), options.at( i ) );
+          else
+            mComboBox->addItem( options.at( i ), i );
+        }
 
         mComboBox->setToolTip( parameterDefinition()->toolTip() );
         connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
@@ -2418,8 +2446,17 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
       mComboBox->setCurrentIndex( mComboBox->findData( QVariant() ) );
     else
     {
-      const int v = QgsProcessingParameters::parameterAsEnum( parameterDefinition(), value, context );
-      mComboBox->setCurrentIndex( mComboBox->findData( v ) );
+      const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( parameterDefinition() );
+      if ( enumDef->usesStaticStrings() )
+      {
+        const QString v = QgsProcessingParameters::parameterAsEnumString( parameterDefinition(), value, context );
+        mComboBox->setCurrentIndex( mComboBox->findData( v ) );
+      }
+      else
+      {
+        const int v = QgsProcessingParameters::parameterAsEnum( parameterDefinition(), value, context );
+        mComboBox->setCurrentIndex( mComboBox->findData( v ) );
+      }
     }
   }
   else if ( mPanel || mCheckboxPanel )
@@ -2427,10 +2464,21 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
     QVariantList opts;
     if ( value.isValid() )
     {
-      const QList< int > v = QgsProcessingParameters::parameterAsEnums( parameterDefinition(), value, context );
-      opts.reserve( v.size() );
-      for ( int i : v )
-        opts << i;
+      const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( parameterDefinition() );
+      if ( enumDef->usesStaticStrings() )
+      {
+        const QStringList v = QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition(), value, context );
+        opts.reserve( v.size() );
+        for ( QString i : v )
+          opts << i;
+      }
+      else
+      {
+        const QList< int > v = QgsProcessingParameters::parameterAsEnums( parameterDefinition(), value, context );
+        opts.reserve( v.size() );
+        for ( int i : v )
+          opts << i;
+      }
     }
     if ( mPanel )
       mPanel->setValue( opts );
@@ -4078,7 +4126,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
       {
         widgetContext().messageBar()->clearWidgets();
         widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
-            Qgis::Warning, 5 );
+            Qgis::Info );
       }
     }
     return;
@@ -6214,7 +6262,7 @@ void QgsProcessingBandWidgetWrapper::setParentLayerWrapperValue( const QgsAbstra
     {
       widgetContext().messageBar()->clearWidgets();
       widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent bands could not be populated" ),
-          Qgis::Warning, 5 );
+          Qgis::Info );
     }
   }
 

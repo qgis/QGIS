@@ -30,6 +30,7 @@ from qgis.core import (
     QgsTestUtils,
     QgsFeatureSource,
     QgsFieldConstraints,
+    QgsVectorLayerUtils,
     NULL
 )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
@@ -1171,38 +1172,45 @@ class ProviderTestCase(FeatureSourceTestCase):
         vl.startEditing()
 
         feature = next(vl.getFeatures())
-        # to be fixed
-        # self.assertEqual(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature), editable)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
 
         # same test on a new inserted feature
         feature = QgsFeature(vl.fields())
         feature.setAttribute(0, 2)
         vl.addFeature(feature)
         self.assertTrue(feature.id() < 0)
-        # to be fixed
-        # self.assertEqual(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature), editable)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
         vl.commitChanges()
 
         feature = vl.getFeature(2)
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.attribute(1), "test:2")
-
-        # to be fixed
-        # self.assertEqual(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature), editable)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
 
         # test update id and commit
         vl.startEditing()
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
         self.assertTrue(vl.changeAttributeValue(2, 0, 10))
         self.assertTrue(vl.commitChanges())
         feature = vl.getFeature(10)
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.attribute(0), 10)
         self.assertEqual(feature.attribute(1), "test:10")
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
 
         # test update the_field and commit (the value is not changed because the field is generated)
         vl.startEditing()
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
         self.assertTrue(vl.changeAttributeValue(10, 1, "new value"))
         self.assertTrue(vl.commitChanges())
         feature = vl.getFeature(10)
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.attribute(1), "test:10")
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))

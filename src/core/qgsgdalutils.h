@@ -63,9 +63,10 @@ class CORE_EXPORT QgsGdalUtils
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
      * Ideally the source dataset should cover the whole area or the destination dataset.
+     * \returns TRUE on success
      * \since QGIS 3.8
      */
-    static void resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
+    static bool resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
 
     /**
      * Resamples a QImage \a image using GDAL resampler.

@@ -396,7 +396,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! update the default values in the fields after a referenced field changed
     bool updateDefaultValues( const int originIdx );
 
-    int messageTimeout();
     void clearMultiEditMessages();
     void pushSelectedFeaturesMessage();
     void runSearchSelect( QgsVectorLayer::SelectBehavior behavior );

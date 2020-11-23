@@ -26,7 +26,7 @@
 #include <QObject>
 
 class QgsPointCloudLayer;
-class QgsPointCloud3DSymbol;
+#include "qgspointcloud3dsymbol.h"
 
 #ifndef SIP_RUN
 

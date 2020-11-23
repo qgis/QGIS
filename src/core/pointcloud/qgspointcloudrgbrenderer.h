@@ -52,12 +52,6 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
      */
     static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    //! Returns pen width
-    int penWidth() const;
-
-    //! Sets pen width
-    void setPenWidth( int value );
-
     /**
      * Returns the attribute to use for the red channel.
      *
@@ -174,7 +168,6 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
 
   private:
 
-    int mPenWidth = 1;
     int mPainterPenWidth = 1;
 
     QString mRedAttribute = QStringLiteral( "Red" );

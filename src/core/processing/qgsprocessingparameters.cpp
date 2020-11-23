@@ -511,6 +511,96 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   return result;
 }
 
+QString QgsProcessingParameters::parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  return parameterAsEnumString( definition, parameters.value( definition->name() ), context );
+}
+
+QString QgsProcessingParameters::parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  QString enumText = parameterAsString( definition, value, context );
+  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  if ( enumText.isEmpty() || !enumDef->options().contains( enumText ) )
+    enumText = definition->defaultValue().toString();
+
+  return enumText;
+}
+
+QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  return parameterAsEnumStrings( definition, parameters.value( definition->name() ), context );
+}
+
+QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  QVariant val = value;
+
+  QStringList enumValues;
+
+  std::function< void( const QVariant &var ) > processVariant;
+  processVariant = [ &enumValues, &context, &definition, &processVariant ]( const QVariant & var )
+  {
+    if ( var.type() == QVariant::List )
+    {
+      const auto constToList = var.toList();
+      for ( const QVariant &listVar : constToList )
+      {
+        processVariant( listVar );
+      }
+    }
+    else if ( var.type() == QVariant::StringList )
+    {
+      const auto constToStringList = var.toStringList();
+      for ( const QString &s : constToStringList )
+      {
+        processVariant( s );
+      }
+    }
+    else if ( var.canConvert<QgsProperty>() )
+      processVariant( var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() ) );
+    else
+    {
+      const QStringList parts = var.toString().split( ',' );
+      for ( const QString &s : parts )
+      {
+        enumValues << s;
+      }
+    }
+  };
+
+  processVariant( val );
+
+  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  // check that values are valid enum values. The resulting set will be empty
+  // if all values are present in the enumDef->options(), otherwise it will contain
+  // values which are invalid
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QSet<QString> subtraction = enumValues.toSet().subtract( enumDef->options().toSet() );
+#else
+  QSet<QString> subtraction = QSet<QString>( enumValues.begin(), enumValues.end() ).subtract( QSet<QString>( enumDef->options().begin(), enumDef->options().end() ) );
+#endif
+
+  if ( enumValues.isEmpty() || !subtraction.isEmpty() )
+  {
+    enumValues.clear();
+    processVariant( definition->defaultValue() );
+  }
+
+  return enumValues;
+}
+
 bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
   if ( !definition )
@@ -754,7 +844,6 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerNam
 
   return parameterAsCompatibleSourceLayerPathInternal( definition, parameters, context, compatibleFormats, preferredFormat, feedback, destLayer );
 }
-
 
 QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint )
 {
@@ -1537,7 +1626,6 @@ QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingPar
   return QgsGeometry();
 }
 
-
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   QVariant val = parameters.value( definition->name() );
@@ -1590,9 +1678,6 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsGeometryCrs( co
   else
     return QgsCoordinateReferenceSystem();
 }
-
-
-
 
 QString QgsProcessingParameters::parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
@@ -4120,10 +4205,11 @@ QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScript
   return new QgsProcessingParameterRasterLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, const QString &description, const QStringList &options, bool allowMultiple, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, const QString &description, const QStringList &options, bool allowMultiple, const QVariant &defaultValue, bool optional, bool usesStaticStrings )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mOptions( options )
   , mAllowMultiple( allowMultiple )
+  , mUsesStaticStrings( usesStaticStrings )
 {
 
 }
@@ -4149,54 +4235,112 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &value, 
     return true;
   }
 
-  if ( input.type() == QVariant::List )
+  if ( mUsesStaticStrings )
   {
-    if ( !mAllowMultiple )
-      return false;
-
-    const QVariantList values = input.toList();
-    if ( values.empty() && !( mFlags & FlagOptional ) )
-      return false;
-
-    for ( const QVariant &val : values )
+    if ( input.type() == QVariant::List )
     {
-      bool ok = false;
-      int res = val.toInt( &ok );
-      if ( !ok )
+      if ( !mAllowMultiple )
         return false;
-      else if ( res < 0 || res >= mOptions.count() )
-        return false;
-    }
 
-    return true;
-  }
-  else if ( input.type() == QVariant::String )
-  {
-    QStringList parts = input.toString().split( ',' );
-    if ( parts.count() > 1 && !mAllowMultiple )
-      return false;
+      const QVariantList values = input.toList();
+      if ( values.empty() && !( mFlags & FlagOptional ) )
+        return false;
 
-    const auto constParts = parts;
-    for ( const QString &part : constParts )
-    {
-      bool ok = false;
-      int res = part.toInt( &ok );
-      if ( !ok )
-        return false;
-      else if ( res < 0 || res >= mOptions.count() )
-        return false;
-    }
-    return true;
-  }
-  else if ( input.type() == QVariant::Int || input.type() == QVariant::Double )
-  {
-    bool ok = false;
-    int res = input.toInt( &ok );
-    if ( !ok )
-      return false;
-    else if ( res >= 0 && res < mOptions.count() )
+      for ( const QVariant &val : values )
+      {
+        if ( !mOptions.contains( val.toString() ) )
+          return false;
+      }
+
       return true;
+    }
+    else if ( input.type() == QVariant::StringList )
+    {
+      if ( !mAllowMultiple )
+        return false;
+
+      const QStringList values = input.toStringList();
+
+      if ( values.empty() && !( mFlags & FlagOptional ) )
+        return false;
+
+      if ( values.count() > 1 && !mAllowMultiple )
+        return false;
+
+      for ( const QString &val : values )
+      {
+        if ( !mOptions.contains( val ) )
+          return false;
+      }
+      return true;
+    }
+    else if ( input.type() == QVariant::String )
+    {
+      QStringList parts = input.toString().split( ',' );
+      if ( parts.count() > 1 && !mAllowMultiple )
+        return false;
+
+      const auto constParts = parts;
+      for ( const QString &part : constParts )
+      {
+        if ( !mOptions.contains( part ) )
+          return false;
+      }
+      return true;
+    }
   }
+  else
+  {
+    if ( input.type() == QVariant::List )
+    {
+      if ( !mAllowMultiple )
+        return false;
+
+      const QVariantList values = input.toList();
+      if ( values.empty() && !( mFlags & FlagOptional ) )
+        return false;
+
+      for ( const QVariant &val : values )
+      {
+        bool ok = false;
+        int res = val.toInt( &ok );
+        if ( !ok )
+          return false;
+        else if ( res < 0 || res >= mOptions.count() )
+          return false;
+      }
+
+      return true;
+    }
+    else if ( input.type() == QVariant::String )
+    {
+      QStringList parts = input.toString().split( ',' );
+      if ( parts.count() > 1 && !mAllowMultiple )
+        return false;
+
+      const auto constParts = parts;
+      for ( const QString &part : constParts )
+      {
+        bool ok = false;
+        int res = part.toInt( &ok );
+        if ( !ok )
+          return false;
+        else if ( res < 0 || res >= mOptions.count() )
+          return false;
+      }
+      return true;
+    }
+    else if ( input.type() == QVariant::Int || input.type() == QVariant::Double )
+    {
+      bool ok = false;
+      int res = input.toInt( &ok );
+      if ( !ok )
+        return false;
+      else if ( res >= 0 && res < mOptions.count() )
+        return true;
+    }
+  }
+
   return false;
 }
 
@@ -4208,26 +4352,57 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  if ( value.type() == QVariant::List )
+  if ( mUsesStaticStrings )
   {
-    QStringList parts;
-    const auto constToList = value.toList();
-    for ( const QVariant &val : constToList )
+    if ( value.type() == QVariant::StringList )
     {
-      parts << QString::number( static_cast< int >( val.toDouble() ) );
-    }
-    return parts.join( ',' ).prepend( '[' ).append( ']' );
-  }
-  else if ( value.type() == QVariant::String )
-  {
-    QStringList parts = value.toString().split( ',' );
-    if ( parts.count() > 1 )
-    {
+      QStringList parts;
+      const QStringList constList = value.toStringList();
+      for ( const QString &val : constList )
+      {
+        parts << QgsProcessingUtils::stringToPythonLiteral( val );
+      }
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
-  }
+    else if ( value.type() == QVariant::String )
+    {
+      QStringList parts;
+      const QStringList constList = value.toString().split( ',' );
+      if ( constList.count() > 1 )
+      {
+        for ( const QString &val : constList )
+        {
+          parts << QgsProcessingUtils::stringToPythonLiteral( val );
+        }
+        return parts.join( ',' ).prepend( '[' ).append( ']' );
+      }
+    }
 
-  return QString::number( static_cast< int >( value.toDouble() ) );
+    return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+  }
+  else
+  {
+    if ( value.type() == QVariant::List )
+    {
+      QStringList parts;
+      const auto constToList = value.toList();
+      for ( const QVariant &val : constToList )
+      {
+        parts << QString::number( static_cast< int >( val.toDouble() ) );
+      }
+      return parts.join( ',' ).prepend( '[' ).append( ']' );
+    }
+    else if ( value.type() == QVariant::String )
+    {
+      QStringList parts = value.toString().split( ',' );
+      if ( parts.count() > 1 )
+      {
+        return parts.join( ',' ).prepend( '[' ).append( ']' );
+      }
+    }
+
+    return QString::number( static_cast< int >( value.toDouble() ) );
+  }
 }
 
 QString QgsProcessingParameterEnum::asScriptCode() const
@@ -4239,6 +4414,9 @@ QString QgsProcessingParameterEnum::asScriptCode() const
 
   if ( mAllowMultiple )
     code += QLatin1String( "multiple " );
+
+  if ( mUsesStaticStrings )
+    code += QLatin1String( "static " );
 
   code += mOptions.join( ';' ) + ' ';
 
@@ -4264,8 +4442,11 @@ QString QgsProcessingParameterEnum::asPythonString( const QgsProcessing::PythonO
 
       code += QStringLiteral( ", allowMultiple=%1" ).arg( mAllowMultiple ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
 
+      code += QStringLiteral( ", usesStaticStrings=%1" ).arg( mUsesStaticStrings ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+
       QgsProcessingContext c;
       code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+
       return code;
     }
   }
@@ -4292,11 +4473,22 @@ void QgsProcessingParameterEnum::setAllowMultiple( bool allowMultiple )
   mAllowMultiple = allowMultiple;
 }
 
+bool QgsProcessingParameterEnum::usesStaticStrings() const
+{
+  return mUsesStaticStrings;
+}
+
+void QgsProcessingParameterEnum::setUsesStaticStrings( bool usesStaticStrings )
+{
+  mUsesStaticStrings = usesStaticStrings;
+}
+
 QVariantMap QgsProcessingParameterEnum::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "options" ), mOptions );
   map.insert( QStringLiteral( "allow_multiple" ), mAllowMultiple );
+  map.insert( QStringLiteral( "uses_static_strings" ), mUsesStaticStrings );
   return map;
 }
 
@@ -4305,18 +4497,27 @@ bool QgsProcessingParameterEnum::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mOptions = map.value( QStringLiteral( "options" ) ).toStringList();
   mAllowMultiple = map.value( QStringLiteral( "allow_multiple" ) ).toBool();
+  mUsesStaticStrings = map.value( QStringLiteral( "uses_static_strings" ) ).toBool();
   return true;
 }
 
 QgsProcessingParameterEnum *QgsProcessingParameterEnum::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString defaultVal;
-  bool multiple = false;
   QString def = definition;
+
+  bool multiple = false;
   if ( def.startsWith( QLatin1String( "multiple" ), Qt::CaseInsensitive ) )
   {
     multiple = true;
     def = def.mid( 9 );
+  }
+
+  bool staticStrings = false;
+  if ( def.startsWith( QLatin1String( "static" ), Qt::CaseInsensitive ) )
+  {
+    staticStrings = true;
+    def = def.mid( 7 );
   }
 
   QRegularExpression re( QStringLiteral( "(.*)\\s+(.*?)$" ) );
@@ -4328,7 +4529,7 @@ QgsProcessingParameterEnum *QgsProcessingParameterEnum::fromScriptCode( const QS
     defaultVal = m.captured( 2 );
   }
 
-  return new QgsProcessingParameterEnum( name, description, values.split( ';' ), multiple, defaultVal.isEmpty() ? QVariant() : defaultVal, isOptional );
+  return new QgsProcessingParameterEnum( name, description, values.split( ';' ), multiple, defaultVal.isEmpty() ? QVariant() : defaultVal, isOptional, staticStrings );
 }
 
 QgsProcessingParameterString::QgsProcessingParameterString( const QString &name, const QString &description, const QVariant &defaultValue, bool multiLine, bool optional )

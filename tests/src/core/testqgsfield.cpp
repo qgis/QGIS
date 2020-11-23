@@ -87,6 +87,7 @@ void TestQgsField::create()
   QCOMPARE( field->length(), 5 );
   QCOMPARE( field->precision(), 2 );
   QCOMPARE( field->comment(), QString( "comment" ) );
+  QCOMPARE( field->isReadOnly(), false );
 }
 
 void TestQgsField::copy()
@@ -97,6 +98,7 @@ void TestQgsField::copy()
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
+  original.setReadOnly( true );
   QgsField copy( original );
   QVERIFY( copy == original );
 
@@ -113,6 +115,7 @@ void TestQgsField::assignment()
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
+  original.setReadOnly( true );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
@@ -177,6 +180,9 @@ void TestQgsField::gettersSetters()
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
   field.setConstraints( constraints );
   QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthSoft );
+
+  field.setReadOnly( true );
+  QCOMPARE( field.isReadOnly(), true );
 }
 
 void TestQgsField::isNumeric()
@@ -275,6 +281,10 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setAlias( QString() );
+  field2.setReadOnly( true );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setReadOnly( false );
   field2.setDefaultValueDefinition( QgsDefaultValue( QStringLiteral( "1+2" ) ) );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );

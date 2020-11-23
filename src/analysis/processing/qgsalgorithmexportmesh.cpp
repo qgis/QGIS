@@ -996,7 +996,7 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
       throw QgsProcessingException( QObject::tr( "Invalid minimum and maximum values, minimum must be lesser than maximum" ) );
 
     if ( interval > ( maximum - minimum ) )
-      throw QgsProcessingException( QObject::tr( "Invalid minimum, maximum and inerval values, difference between minimum and maximum must be greater or equal than interval" ) );
+      throw QgsProcessingException( QObject::tr( "Invalid minimum, maximum and interval values, difference between minimum and maximum must be greater or equal than interval" ) );
 
     int intervalCount = ( maximum - minimum ) / interval;
 

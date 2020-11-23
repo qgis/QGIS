@@ -107,7 +107,7 @@ The caller takes ownership of the returned item.
    instead.
 %End
 
-    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = -1 );
 %Docstring
 A convenience method for pushing a message with the specified ``text`` to the bar.
 
@@ -115,10 +115,11 @@ The ``level`` argument specifies the desired message level (severity) of the mes
 how the message bar is styled.
 
 The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user.
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 %End
 
-    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = -1 );
 %Docstring
 A convenience method for pushing a message with the specified ``title`` and ``text`` to the bar.
 
@@ -126,10 +127,11 @@ The ``level`` argument specifies the desired message level (severity) of the mes
 how the message bar is styled.
 
 The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user.
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 %End
 
-    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = -1 );
 %Docstring
 A convenience method for pushing a message with the specified ``title`` and ``text`` to the bar. Additional
 message content specified via ``showMore`` will be shown when the user presses a "more" button.
@@ -138,7 +140,8 @@ The ``level`` argument specifies the desired message level (severity) of the mes
 how the message bar is styled.
 
 The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
-is set to 0, then the message must be manually dismissed by the user.
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 %End
 
     QgsMessageBarItem *currentItem();
@@ -151,6 +154,13 @@ Returns the current visible item, or ``None`` if no item is shown.
 Returns a list of all items currently visible or queued for the bar.
 
 .. versionadded:: 3.14
+%End
+
+    static int defaultMessageTimeout( Qgis::MessageLevel level = Qgis::None );
+%Docstring
+Returns the default timeout in seconds for timed messages of the specified ``level``.
+
+.. versionadded:: 3.18
 %End
 
   signals:

@@ -124,7 +124,7 @@ bool QgsPointCloudLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsPointCloudLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return QStringLiteral( "mOptsPage_Metadata" );
 }
 
 bool QgsPointCloudLayer3DRendererWidgetFactory::supportsStyleDock() const

@@ -21,6 +21,7 @@
 #include <memory>
 #include <QColor>
 #include <QMatrix4x4>
+#include <Qt3DRender/QCamera>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
@@ -464,6 +465,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setFieldOfView( const float fieldOfView );
 
     /**
+     * Returns the camera lens' projection type
+     * \since QGIS 3.18
+     */
+    Qt3DRender::QCameraLens::ProjectionType projectionType() const SIP_SKIP { return mProjectionType; }
+
+    /**
+     * Sets the camera lens' projection type
+     * \since QGIS 3.18
+     */
+    void setProjectionType( const Qt3DRender::QCameraLens::ProjectionType projectionType ) SIP_SKIP;
+
+    /**
      * Sets DPI used for conversion between real world units (e.g. mm) and pixels
      * \param dpi the number of dot per inch
      * \since QGIS 3.10
@@ -646,6 +659,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void fieldOfViewChanged();
 
     /**
+     * Emitted when the camera lens projection type changes
+     * \since QGIS 3.18
+     */
+    void projectionTypeChanged();
+
+    /**
      * Emitted when skybox settings are changed
      * \since QGIS 3.16
      */
@@ -685,6 +704,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
+    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object

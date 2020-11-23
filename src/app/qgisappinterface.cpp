@@ -46,6 +46,7 @@
 #include "qgsattributetabledialog.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
+#include "qgsmessagebar.h"
 
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
@@ -847,7 +848,7 @@ QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const
 
 int QgisAppInterface::messageTimeout()
 {
-  return qgis->messageTimeout();
+  return QgsMessageBar::defaultMessageTimeout();
 }
 
 QgsStatusBar *QgisAppInterface::statusBarIface()
