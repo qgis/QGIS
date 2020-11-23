@@ -252,15 +252,22 @@ void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsMapOverviewCanvas::updateFullExtent()
 {
-  QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
-  QgsCoordinateTransform ct( extent.crs(), mSettings.destinationCrs(), QgsProject::instance()->transformContext() );
-  ct.setBallparkTransformsAreAppropriate( true );
   QgsRectangle rect;
-  try
+  if ( !QgsProject::instance()->viewSettings()->presetFullExtent().isNull() )
   {
-    rect = ct.transformBoundingBox( extent );
+    QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+    QgsCoordinateTransform ct( extent.crs(), mSettings.destinationCrs(), QgsProject::instance()->transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
+    try
+    {
+      rect = ct.transformBoundingBox( extent );
+    }
+    catch ( QgsCsException & )
+    {
+    }
   }
-  catch ( QgsCsException & )
+
+  if ( rect.isNull() )
   {
     if ( mSettings.hasValidSettings() )
       rect = mSettings.fullExtent();
