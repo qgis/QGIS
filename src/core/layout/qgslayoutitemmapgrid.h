@@ -1006,6 +1006,15 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     void refresh() override;
 
+  signals:
+
+    /**
+     * Emitted whenever the grid's CRS is changed.
+     *
+     * \since QGIS 3.18
+     */
+    void crsChanged();
+
   private:
 
     QgsLayoutItemMapGrid() = delete;
