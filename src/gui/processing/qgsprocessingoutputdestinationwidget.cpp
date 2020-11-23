@@ -55,7 +55,7 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   QgsSettings settings;
   mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
 
-  if ( !mParameter->defaultValue().isValid() )
+  if ( !mParameter->defaultValueForGui().isValid() )
   {
     // no default value -- we default to either skipping the output or a temporary output, depending on the createByDefault value
     if ( mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional && !mParameter->createByDefault() )
@@ -65,7 +65,7 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   }
   else
   {
-    setValue( mParameter->defaultValue() );
+    setValue( mParameter->defaultValueForGui() );
   }
 
   setToolTip( mParameter->toolTip() );
