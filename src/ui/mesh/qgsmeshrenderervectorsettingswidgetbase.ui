@@ -405,7 +405,7 @@
     </widget>
    </item>
    <item row="11" column="0" colspan="2">
-    <widget class="QGroupBox" name="headOptionsGroupBox">
+    <widget class="QGroupBox" name="mHeadOptionsGroupBox">
      <property name="title">
       <string>Head Options</string>
      </property>
@@ -465,7 +465,7 @@
     </widget>
    </item>
    <item row="12" column="0" colspan="2">
-    <widget class="QGroupBox" name="generalOptionsGroupBox">
+    <widget class="QGroupBox" name="mArrowLengthGroupBox">
      <property name="title">
       <string>Arrow Length</string>
      </property>
@@ -591,27 +591,6 @@
           </item>
          </layout>
         </widget>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="mArrowWidget" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
        </widget>
       </item>
      </layout>
