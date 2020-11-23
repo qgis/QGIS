@@ -19,8 +19,13 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
     QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
+<<<<<<< HEAD
     QgsVertexId, QgsReferencedGeometry, QgsProviderRegistry, QgsRasterLayer, QgsAnnotationLayer, \
     QgsVectorTileLayer, QgsMeshLayer
+=======
+    QgsVertexId, QgsReferencedGeometry, QgsProviderRegistry, QgsRasterLayer, QgsAnnotationLayer, QgsPointCloudLayer,\
+    QgsVectorTileLayer, QgsMeshLayer, QgsDataSourceUri
+>>>>>>> 3234489d87 (Add a __repr__ method to QgsDataSourceUri)
 
 start_app()
 
@@ -263,6 +268,17 @@ class TestPython__repr__(unittest.TestCase):
         v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 CurveVertex>')
 
+<<<<<<< HEAD
+=======
+    def testProviderMetadata(self):
+        self.assertEqual(QgsProviderRegistry.instance().providerMetadata('ogr').__repr__(), '<QgsProviderMetadata: ogr>')
+
+    def testDataSourceUri(self):
+        ds = QgsDataSourceUri()
+        ds.setConnection(aHost='my_host', aPort='2322', aDatabase='my_db', aUsername='user', aPassword='pw')
+        self.assertEqual(ds.__repr__(), "<QgsDataSourceUri: dbname='my_db' host=my_host port=2322 user='user' password='pw'>")
+
+>>>>>>> 3234489d87 (Add a __repr__ method to QgsDataSourceUri)
 
 if __name__ == "__main__":
     unittest.main()
