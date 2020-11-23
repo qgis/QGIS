@@ -288,6 +288,12 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgs3DTypes::Altitude
     if ( altClamp == Qgs3DTypes::AltClampAbsolute || altClamp == Qgs3DTypes::AltClampRelative )
       geomZ = lineString->zAt( i );
 
+
+    // if altitude is exactly coincident with terrain, add a tiny "tie breaker" amount to avoid geometry planes coinciding exactly
+    // with terrain planes and the rendering artifacts which happen as a result of this...
+    if ( qgsDoubleNear( geomZ, terrainZ ) )
+      geomZ += 0.05; // magic number, based on my graphics card ;)
+
     float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
     lineString->setZAt( i, z );
   }
