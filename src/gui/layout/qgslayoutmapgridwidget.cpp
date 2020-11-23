@@ -48,9 +48,9 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mFrameStyleComboBox->addItem( tr( "Line Border (Nautical)" ), QgsLayoutItemMapGrid::LineBorderNautical );
 
   mRotatedTicksLengthModeComboBox->addItem( tr( "Orthogonal" ), QgsLayoutItemMapGrid::OrthogonalTicks );
-  mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed length" ), QgsLayoutItemMapGrid::NormalizedTicks );
+  mRotatedTicksLengthModeComboBox->addItem( tr( "Fixed Length" ), QgsLayoutItemMapGrid::NormalizedTicks );
   mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Orthogonal" ), QgsLayoutItemMapGrid::OrthogonalTicks );
-  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed length" ), QgsLayoutItemMapGrid::NormalizedTicks );
+  mRotatedAnnotationsLengthModeComboBox->addItem( tr( "Fixed Length" ), QgsLayoutItemMapGrid::NormalizedTicks );
 
   mGridFrameMarginSpinBox->setShowClearButton( true );
   mGridFrameMarginSpinBox->setClearValue( 0 );
@@ -133,16 +133,6 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   insertFrameDisplayEntries( mFrameDivisionsTopComboBox );
   insertFrameDisplayEntries( mFrameDivisionsBottomComboBox );
 
-  mAnnotationFormatComboBox->addItem( tr( "Decimal" ), QgsLayoutItemMapGrid::Decimal );
-  mAnnotationFormatComboBox->addItem( tr( "Decimal with Suffix" ), QgsLayoutItemMapGrid::DecimalWithSuffix );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, Minute" ), QgsLayoutItemMapGrid::DegreeMinuteNoSuffix );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, Minute with Suffix" ), QgsLayoutItemMapGrid::DegreeMinute );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, Minute Aligned" ), QgsLayoutItemMapGrid::DegreeMinutePadded );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second" ), QgsLayoutItemMapGrid::DegreeMinuteSecondNoSuffix );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second with Suffix" ), QgsLayoutItemMapGrid::DegreeMinuteSecond );
-  mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second Aligned" ), QgsLayoutItemMapGrid::DegreeMinuteSecondPadded );
-  mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsLayoutItemMapGrid::CustomFormat );
-
   insertAnnotationDisplayEntries( mAnnotationDisplayLeftComboBox );
   insertAnnotationDisplayEntries( mAnnotationDisplayRightComboBox );
   insertAnnotationDisplayEntries( mAnnotationDisplayTopComboBox );
@@ -201,6 +191,9 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   registerDataDefinedButton( mFrameDivisionsTopDDBtn, QgsLayoutObject::MapGridFrameDivisionsTop );
   registerDataDefinedButton( mFrameDivisionsBottomDDBtn, QgsLayoutObject::MapGridFrameDivisionsBottom );
 
+  // call to initially populate mAnnotationFormatComboBox
+  onCrsChanged();
+
   updateGuiElements();
 
   blockAllSignals( false );
@@ -220,6 +213,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   }
   mAnnotationFontButton->setLayer( coverageLayer() );
   mAnnotationFontButton->registerExpressionContextGenerator( mMapGrid );
+
+  connect( mMapGrid, &QgsLayoutItemMapGrid::crsChanged, this, &QgsLayoutMapGridWidget::onCrsChanged );
 }
 
 void QgsLayoutMapGridWidget::populateDataDefinedButtons()
@@ -1079,6 +1074,55 @@ void QgsLayoutMapGridWidget::annotationTextFormatChanged()
   mMap->update();
 }
 
+void QgsLayoutMapGridWidget::onCrsChanged()
+{
+  mBlockAnnotationFormatUpdates++;
+  const QgsLayoutItemMapGrid::AnnotationFormat prevFormat = static_cast< QgsLayoutItemMapGrid::AnnotationFormat  >( mAnnotationFormatComboBox->currentData().toInt() );
+
+  mAnnotationFormatComboBox->clear();
+  mAnnotationFormatComboBox->addItem( tr( "Decimal" ), QgsLayoutItemMapGrid::Decimal );
+  mAnnotationFormatComboBox->addItem( tr( "Decimal with Suffix" ), QgsLayoutItemMapGrid::DecimalWithSuffix );
+
+  // only show degree based options for geographic CRSes
+  const QgsCoordinateReferenceSystem crs = mMapGrid->crs().isValid() ? mMapGrid->crs() : mMap->crs();
+  switch ( crs.mapUnits() )
+  {
+    case QgsUnitTypes::DistanceMeters:
+    case QgsUnitTypes::DistanceKilometers:
+    case QgsUnitTypes::DistanceFeet:
+    case QgsUnitTypes::DistanceNauticalMiles:
+    case QgsUnitTypes::DistanceYards:
+    case QgsUnitTypes::DistanceMiles:
+    case QgsUnitTypes::DistanceCentimeters:
+    case QgsUnitTypes::DistanceMillimeters:
+      break;
+
+    case QgsUnitTypes::DistanceDegrees:
+    case QgsUnitTypes::DistanceUnknownUnit:
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute" ), QgsLayoutItemMapGrid::DegreeMinuteNoSuffix );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute with Suffix" ), QgsLayoutItemMapGrid::DegreeMinute );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute Aligned" ), QgsLayoutItemMapGrid::DegreeMinutePadded );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second" ), QgsLayoutItemMapGrid::DegreeMinuteSecondNoSuffix );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second with Suffix" ), QgsLayoutItemMapGrid::DegreeMinuteSecond );
+      mAnnotationFormatComboBox->addItem( tr( "Degree, Minute, Second Aligned" ), QgsLayoutItemMapGrid::DegreeMinuteSecondPadded );
+      break;
+  }
+  mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsLayoutItemMapGrid::CustomFormat );
+
+  const int prevIndex = mAnnotationFormatComboBox->findData( prevFormat );
+  if ( prevIndex >= 0 )
+    mAnnotationFormatComboBox->setCurrentIndex( prevIndex );
+  else
+    mAnnotationFormatComboBox->setCurrentIndex( 0 );
+  mBlockAnnotationFormatUpdates--;
+
+  const QgsLayoutItemMapGrid::AnnotationFormat newFormat = static_cast< QgsLayoutItemMapGrid::AnnotationFormat  >( mAnnotationFormatComboBox->currentData().toInt() );
+  if ( newFormat != prevFormat )
+  {
+    mAnnotationFormatComboBox_currentIndexChanged( mAnnotationFormatComboBox->currentIndex() );
+  }
+}
+
 void QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index )
@@ -1335,6 +1379,8 @@ void QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged( int 
   {
     return;
   }
+  if ( mBlockAnnotationFormatUpdates )
+    return;
 
   mMap->beginCommand( tr( "Change Annotation Format" ) );
 
