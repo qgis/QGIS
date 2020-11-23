@@ -260,7 +260,6 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
 {
   mStreamlineWidget->setVisible( currentIndex == QgsMeshRendererVectorSettings::Streamlines );
-  mArrowWidget->setVisible( currentIndex == QgsMeshRendererVectorSettings::Arrows );
   mArrowLengthGroupBox->setVisible( currentIndex == QgsMeshRendererVectorSettings::Arrows );
   mHeadOptionsGroupBox->setVisible( currentIndex == QgsMeshRendererVectorSettings::Arrows );
   mTracesGroupBox->setVisible( currentIndex == QgsMeshRendererVectorSettings::Traces );
