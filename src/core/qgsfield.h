@@ -61,6 +61,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QgsDefaultValue defaultValueDefinition READ defaultValueDefinition WRITE setDefaultValueDefinition )
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
     Q_PROPERTY( ConfigurationFlags configurationFlags READ configurationFlags WRITE setConfigurationFlags )
+    Q_PROPERTY( bool isReadOnly READ isReadOnly WRITE setReadOnly )
 
 
   public:
@@ -432,6 +433,20 @@ class CORE_EXPORT QgsField
      * \returns the value
      */
     QgsEditorWidgetSetup editorWidgetSetup() const;
+
+    /**
+     * Make field read-only if \a readOnly is set to true. This is the case for
+     * providers which support generated fields for instance.
+     * \since QGIS 3.18
+     */
+    void setReadOnly( bool readOnly );
+
+    /**
+     * Returns TRUE if this field is a read-only field. This is the case for
+     * providers which support generated fields for instance.
+     * \since QGIS 3.18
+     */
+    bool isReadOnly() const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
