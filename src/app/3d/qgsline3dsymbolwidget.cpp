@@ -24,7 +24,7 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   setupUi( this );
 
   spinHeight->setClearValue( 0.0 );
-  spinWidth->setClearValue( 0.0 );
+  spinWidth->setClearValue( 0.0, tr( "Hairline" ) );
   spinExtrusion->setClearValue( 0.0 );
 
   QgsLine3DSymbol defaultLine;
@@ -86,7 +86,6 @@ QString QgsLine3DSymbolWidget::symbolType() const
 void QgsLine3DSymbolWidget::updateGuiState()
 {
   bool simple = chkSimpleLines->isChecked();
-  //spinWidth->setEnabled( !simple );
   spinExtrusion->setEnabled( !simple );
   widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? QgsMaterialSettingsRenderingTechnique::Lines
                                 : QgsMaterialSettingsRenderingTechnique::Triangles );
