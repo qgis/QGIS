@@ -708,7 +708,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
     {
       const QgsProcessingParameterDefinition *def = ppww->parameterDefinition();
-      QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+      QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
       ppww->setParameterValue( value, context );
     }
   }
@@ -841,7 +841,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
     QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
     mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
 
-    QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+    QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
     ppww->setParameterValue( value, context );
 
     connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );

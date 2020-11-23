@@ -251,7 +251,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     }
     else
     {
-      val = val.value< QgsProperty >().valueAsString( context.expressionContext(), mParameter->defaultValue().toString() );
+      val = val.value< QgsProperty >().valueAsString( context.expressionContext(), mParameter->defaultValueForGui().toString() );
     }
   }
 

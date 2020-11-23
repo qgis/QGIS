@@ -404,6 +404,10 @@ the parameter's behavior and use in depth.
 Returns the default value for the parameter.
 
 .. seealso:: :py:func:`setDefaultValue`
+
+.. seealso:: :py:func:`defaultValueForGui`
+
+.. seealso:: :py:func:`guiDefaultValueOverride`
 %End
 
     void setDefaultValue( const QVariant &value );
@@ -412,6 +416,52 @@ Sets the default ``value`` for the parameter. Caller takes responsibility
 to ensure that ``value`` is a valid input for the parameter subclass.
 
 .. seealso:: :py:func:`defaultValue`
+
+.. seealso:: :py:func:`setGuiDefaultValueOverride`
+%End
+
+    QVariant guiDefaultValueOverride() const;
+%Docstring
+Returns the default value to use in the GUI for the parameter.
+
+Usually this will return an invalid variant, which indicates that the standard :py:func:`~QgsProcessingParameterDefinition.defaultValue`
+will be used in the GUI.
+
+.. seealso:: :py:func:`defaultValue`
+
+.. seealso:: :py:func:`setGuiDefaultValueOverride`
+
+.. seealso:: :py:func:`defaultValueForGui`
+
+.. versionadded:: 3.18
+%End
+
+    void setGuiDefaultValueOverride( const QVariant &value );
+%Docstring
+Sets the default ``value`` to use for the parameter in GUI widgets. Caller takes responsibility
+to ensure that ``value`` is a valid input for the parameter subclass.
+
+Usually the :py:func:`~QgsProcessingParameterDefinition.guiDefaultValueOverride` is a invalid variant, which indicates that the standard :py:func:`~QgsProcessingParameterDefinition.defaultValue`
+should be used in the GUI. In cases where it is decided that a previous default value was inappropriate,
+setting a non-invalid default GUI value can be used to change the default value for the parameter shown
+to users when running algorithms without changing the actual :py:func:`~QgsProcessingParameterDefinition.defaultValue` and potentially breaking
+third party scripts.
+
+.. seealso:: :py:func:`guiDefaultValueOverride`
+
+.. seealso:: :py:func:`setDefaultValue`
+
+.. versionadded:: 3.18
+%End
+
+    QVariant defaultValueForGui() const;
+%Docstring
+Returns the default value to use for the parameter in a GUI.
+
+This will be the parameter's :py:func:`~QgsProcessingParameterDefinition.defaultValue`, unless a :py:func:`~QgsProcessingParameterDefinition.guiDefaultValueOverride` is set to
+override that.
+
+.. versionadded:: 3.18
 %End
 
     Flags flags() const;
@@ -636,6 +686,7 @@ The ``variables`` list should contain the variable names only, without the usual
 %End
 
   protected:
+
 
 
 
