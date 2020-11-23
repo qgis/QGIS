@@ -275,6 +275,7 @@
      </layout>
     </widget>
    </item>
+<<<<<<< HEAD
    <item>
     <widget class="QWidget" name="mArrowWidget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -297,6 +298,28 @@
        <widget class="QGroupBox" name="headOptionsGroupBox">
         <property name="title">
          <string>Head Options</string>
+=======
+   <item row="11" column="0" colspan="2">
+    <widget class="QGroupBox" name="mHeadOptionsGroupBox">
+     <property name="title">
+      <string>Head Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="headWidthLabel">
+        <property name="text">
+         <string>Width</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mHeadWidthLineEdit"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="percShaftLenLabel">
+        <property name="text">
+         <string>% of shaft length</string>
+>>>>>>> 5657fbc02d (fix mesh vector ui)
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="0">
@@ -539,8 +562,30 @@
      </layout>
     </widget>
    </item>
+<<<<<<< HEAD
    <item>
     <widget class="QGroupBox" name="mTracesGroupBox">
+=======
+   <item row="5" column="0">
+    <widget class="QLabel" name="mSingleColorLabel">
+     <property name="text">
+      <string>Color</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="2">
+    <widget class="QGroupBox" name="mArrowLengthGroupBox">
+>>>>>>> 5657fbc02d (fix mesh vector ui)
      <property name="title">
       <string>Traces</string>
      </property>
@@ -619,12 +664,28 @@
           <property name="value">
            <double>10.000000000000000</double>
           </property>
+<<<<<<< HEAD
          </widget>
         </item>
         <item>
          <widget class="QgsUnitSelectionWidget" name="mTracesTailLengthMapUnitWidget"/>
         </item>
        </layout>
+=======
+          <item row="0" column="0">
+           <widget class="QLabel" name="LengthLabel">
+            <property name="text">
+             <string>Length</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mShaftLengthLineEdit"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+>>>>>>> 5657fbc02d (fix mesh vector ui)
       </item>
      </layout>
     </widget>

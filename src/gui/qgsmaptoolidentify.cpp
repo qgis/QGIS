@@ -56,7 +56,6 @@
 #include <QPixmap>
 #include <QStatusBar>
 #include <QVariant>
-#include <QMenu>
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
