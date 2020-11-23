@@ -22,6 +22,7 @@
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
+#include "qgsprojectviewsettings.h"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -249,11 +250,21 @@ void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsMapOverviewCanvas::updateFullExtent()
 {
+  QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+  QgsCoordinateTransform ct( extent.crs(), mSettings.destinationCrs(), QgsProject::instance()->transformContext() );
+  ct.setBallparkTransformsAreAppropriate( true );
   QgsRectangle rect;
-  if ( mSettings.hasValidSettings() )
-    rect = mSettings.fullExtent();
-  else
-    rect = mMapCanvas->fullExtent();
+  try
+  {
+    rect = ct.transformBoundingBox( extent );
+  }
+  catch ( QgsCsException & )
+  {
+    if ( mSettings.hasValidSettings() )
+      rect = mSettings.fullExtent();
+    else
+      rect = mMapCanvas->fullExtent();
+  }
 
   // expand a bit to keep features on margin
   rect.scale( 1.1 );
