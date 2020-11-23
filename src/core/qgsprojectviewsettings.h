@@ -184,6 +184,13 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      */
     void mapScalesChanged();
 
+    /**
+     * Emitted whenever the presetFullExtent() is changed.
+     *
+     * \since QGIS 3.18
+     */
+    void presetFullExtentChanged();
+
   private:
 
     QgsProject *mProject = nullptr;

@@ -77,8 +77,8 @@ Constructor for QgsReferencedRectangle.
 
     operator QVariant() const;
 
-    bool operator==( const QgsReferencedRectangle &other );
-    bool operator!=( const QgsReferencedRectangle &other );
+    bool operator==( const QgsReferencedRectangle &other ) const;
+    bool operator!=( const QgsReferencedRectangle &other ) const;
 
     SIP_PYOBJECT __repr__();
 %MethodCode
