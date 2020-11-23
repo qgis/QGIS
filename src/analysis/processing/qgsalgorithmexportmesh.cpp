@@ -750,6 +750,10 @@ void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration 
 
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 
+  std::unique_ptr< QgsProcessingParameterString > createOptsParam = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setFlags( createOptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( createOptsParam.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster layer" ) ) );
 }
 
@@ -818,9 +822,12 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   QString fileName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fileInfo( fileName );
   QString outputFormat = QgsRasterFileWriter::driverForExtension( fileInfo.suffix() );
+  QString optionsText = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
   QgsRasterFileWriter rasterFileWriter( fileName );
   rasterFileWriter.setOutputProviderKey( QStringLiteral( "gdal" ) );
   rasterFileWriter.setOutputFormat( outputFormat );
+  if ( !optionsText.isEmpty() )
+    rasterFileWriter.setCreateOptions( optionsText.split( ' ' ) );
 
   std::unique_ptr<QgsRasterDataProvider> rasterDataProvider(
     rasterFileWriter.createMultiBandRaster( Qgis::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );

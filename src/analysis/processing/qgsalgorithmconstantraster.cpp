@@ -66,7 +66,7 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Desired extent" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ),
-                QgsProcessingParameterNumber::Double, 0.00001, false, 0.01 ) );
+                QgsProcessingParameterNumber::Double, 0.001, false, 0.00001 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Constant value" ),
                 QgsProcessingParameterNumber::Double, 1, false ) );
 
@@ -80,9 +80,13 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
                   << QStringLiteral( "Float64" );
 
   //QGIS3: parameter set to Float32 by default so that existing models/scripts don't break
-  std::unique_ptr< QgsProcessingParameterDefinition > rasterTypeParameter = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "OUTPUT_TYPE" ), QObject::tr( "Output raster data type" ),  rasterDataTypes, false, 5, false );
+  std::unique_ptr< QgsProcessingParameterDefinition > rasterTypeParameter = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "OUTPUT_TYPE" ), QObject::tr( "Output raster data type" ), rasterDataTypes, false, 5, false );
   rasterTypeParameter->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( rasterTypeParameter.release() );
+
+  std::unique_ptr< QgsProcessingParameterString > createOptsParam = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setFlags( createOptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( createOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Constant" ) ) );
 }
@@ -147,6 +151,9 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
     default:
       break;
   }
+
+  QString optionsText = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
@@ -161,6 +168,8 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
   std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
+  if ( !optionsText.isEmpty() )
+    writer->setCreateOptions( optionsText.split( ' ' ) );
   std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( rasterDataType, cols, rows, rasterExtent, crs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );

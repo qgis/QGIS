@@ -54,6 +54,10 @@ void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "RADIUS" ), QObject::tr( "Search radius" ), 10, QStringLiteral( "INPUT" ), false, 0 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 10, QStringLiteral( "INPUT" ), false ) );
 
+  std::unique_ptr< QgsProcessingParameterString > createOptsParam = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setFlags( createOptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( createOptsParam.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Line density raster" ) ) );
 }
 
@@ -130,6 +134,8 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
+  QString optionsText = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+
   int rows = std::max( std::ceil( mExtent.height() / mPixelSize ), 1.0 );
   int cols = std::max( std::ceil( mExtent.width() / mPixelSize ), 1.0 );
 
@@ -140,6 +146,9 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   QgsRasterFileWriter writer = QgsRasterFileWriter( outputFile );
   writer.setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer.setOutputFormat( outputFormat );
+  if ( !optionsText.isEmpty() )
+    writer.setCreateOptions( optionsText.split( ' ' ) );
+
   std::unique_ptr<QgsRasterDataProvider > provider( writer.createOneBandRaster( Qgis::Float32, cols, rows, rasterExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
