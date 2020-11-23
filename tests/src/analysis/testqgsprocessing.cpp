@@ -2331,6 +2331,12 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( param.flags(), QgsProcessingParameterDefinition::FlagHidden );
   param.setDefaultValue( true );
   QCOMPARE( param.defaultValue(), QVariant( true ) );
+  QCOMPARE( param.defaultValueForGui(), QVariant( true ) );
+  QVERIFY( !param.guiDefaultValueOverride().isValid() );
+  param.setGuiDefaultValueOverride( false );
+  QCOMPARE( param.guiDefaultValueOverride(), QVariant( false ) );
+  QCOMPARE( param.defaultValueForGui(), QVariant( false ) );
+
   param.setDefaultValue( QVariant() );
   QCOMPARE( param.defaultValue(), QVariant() );
   param.setHelp( QStringLiteral( "my help" ) );
@@ -2348,6 +2354,7 @@ void TestQgsProcessing::parameterGeneral()
   param.setAdditionalExpressionContextVariables( QStringList() << "a" << "b" );
   QCOMPARE( param.additionalExpressionContextVariables(), QStringList() << "a" << "b" );
   std::unique_ptr< QgsProcessingParameterDefinition > param2( param.clone() );
+  QCOMPARE( param2->guiDefaultValueOverride(), param.guiDefaultValueOverride() );
   QCOMPARE( param2->additionalExpressionContextVariables(), QStringList() << "a" << "b" );
 
   QVariantMap map = param.toVariantMap();
@@ -2357,6 +2364,7 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( fromMap.description(), param.description() );
   QCOMPARE( fromMap.flags(), param.flags() );
   QCOMPARE( fromMap.defaultValue(), param.defaultValue() );
+  QCOMPARE( fromMap.guiDefaultValueOverride(), param.guiDefaultValueOverride() );
   QCOMPARE( fromMap.metadata(), param.metadata() );
   QCOMPARE( fromMap.help(), QStringLiteral( "my help" ) );
 }
