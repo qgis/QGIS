@@ -119,7 +119,16 @@ void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DR
   const double mitreLimit = 0;
 
   QgsGeos engine( g );
-  QgsAbstractGeometry *buffered = engine.buffer( mSymbol->width() / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+
+  double width = mSymbol->width();
+  if ( qgsDoubleNear( width, 0 ) )
+  {
+    // a zero-width buffered line should be treated like a "wall" or "fence" -- we fake this by bumping the width to a very tiny amount,
+    // so that we get a very narrow polygon shape to work with...
+    width = 0.001;
+  }
+
+  QgsAbstractGeometry *buffered = engine.buffer( width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
   if ( !buffered )
     return;
 
