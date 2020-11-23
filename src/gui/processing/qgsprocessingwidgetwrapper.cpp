@@ -153,7 +153,7 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
   if ( !dynamic_cast<const QgsProcessingDestinationParameter * >( mParameterDefinition ) )
   {
     // an exception -- output widgets handle this themselves
-    setWidgetValue( mParameterDefinition->defaultValue(), context );
+    setWidgetValue( mParameterDefinition->defaultValueForGui(), context );
   }
 
   return wrappedWidget;
