@@ -232,7 +232,7 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial()
     if ( colorRampShader.colorRampItemList().count() > 0 )
     {
       colorRampTexture = new Qt3DRender::QTexture1D( mat );
-      colorRampTexture->addTextureImage( new ColorRampTexture( colorRampShader, 1 ) );
+      colorRampTexture->addTextureImage( new QgsColorRampTexture( colorRampShader, 1 ) );
       colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
       colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
     }

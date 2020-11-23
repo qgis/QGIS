@@ -152,11 +152,11 @@ void QgsMesh3dMaterial::configure()
     {
       case QgsMesh3dMaterial::ZValue:
         // if the color shading is done with the Z value of vertices, the color ramp has to be adapted with vertical scale
-        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol->colorRampShader(), mSymbol->verticalScale() ) );
+        colorRampTexture->addTextureImage( new QgsColorRampTexture( mSymbol->colorRampShader(), mSymbol->verticalScale() ) );
         break;
       case QgsMesh3dMaterial::ScalarDataSet:
         // if the color shading is done with scalar dataset, no vertical scale to use
-        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol->colorRampShader(), 1 ) );
+        colorRampTexture->addTextureImage( new QgsColorRampTexture( mSymbol->colorRampShader(), 1 ) );
         break;
     }
 
