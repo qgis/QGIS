@@ -21,13 +21,13 @@
 
 // ColorRampTextureGenerator
 
-ColorRampTextureGenerator::ColorRampTextureGenerator( const QgsColorRampShader &colorRampShader, double verticalScale )
+QgsColorRampTextureGenerator::QgsColorRampTextureGenerator( const QgsColorRampShader &colorRampShader, double verticalScale )
   : mColorRampShader( colorRampShader )
   , mVerticalScale( verticalScale )
 {
 }
 
-Qt3DRender::QTextureImageDataPtr ColorRampTextureGenerator::operator()()
+Qt3DRender::QTextureImageDataPtr QgsColorRampTextureGenerator::operator()()
 {
   Qt3DRender::QTextureImageDataPtr dataPtr = Qt3DRender::QTextureImageDataPtr::create();
   dataPtr->setFormat( QOpenGLTexture::RGBA32F );
@@ -67,9 +67,9 @@ Qt3DRender::QTextureImageDataPtr ColorRampTextureGenerator::operator()()
   return dataPtr;
 }
 
-bool ColorRampTextureGenerator::operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const
+bool QgsColorRampTextureGenerator::operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const
 {
-  const ColorRampTextureGenerator *otherFunctor = functor_cast<ColorRampTextureGenerator>( &other );
+  const QgsColorRampTextureGenerator *otherFunctor = functor_cast<QgsColorRampTextureGenerator>( &other );
   if ( !otherFunctor )
     return false;
 
@@ -101,7 +101,7 @@ bool ColorRampTextureGenerator::operator==( const Qt3DRender::QTextureImageDataG
 
 // ColorRampTexture
 
-ColorRampTexture::ColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale, Qt3DCore::QNode *parent )
+QgsColorRampTexture::QgsColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale, Qt3DCore::QNode *parent )
   : Qt3DRender::QAbstractTextureImage( parent ),
     mColorRampShader( colorRampShader ),
     mVerticalScale( verticalScale )
@@ -109,9 +109,9 @@ ColorRampTexture::ColorRampTexture( const QgsColorRampShader &colorRampShader, d
 
 }
 
-Qt3DRender::QTextureImageDataGeneratorPtr ColorRampTexture::dataGenerator() const
+Qt3DRender::QTextureImageDataGeneratorPtr QgsColorRampTexture::dataGenerator() const
 {
-  return Qt3DRender::QTextureImageDataGeneratorPtr( new ColorRampTextureGenerator( mColorRampShader, mVerticalScale ) );
+  return Qt3DRender::QTextureImageDataGeneratorPtr( new QgsColorRampTextureGenerator( mColorRampShader, mVerticalScale ) );
 }
 
 /// @endcond

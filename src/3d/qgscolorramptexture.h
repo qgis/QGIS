@@ -36,18 +36,18 @@
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
 
-class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
+class QgsColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 {
 
   public:
-    ColorRampTextureGenerator( const QgsColorRampShader &colorRampShader, double verticalScale = 1 );
+    QgsColorRampTextureGenerator( const QgsColorRampShader &colorRampShader, double verticalScale = 1 );
 
   public:
     Qt3DRender::QTextureImageDataPtr operator()() override;
 
     bool operator ==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
 
-    QT3D_FUNCTOR( ColorRampTextureGenerator )
+    QT3D_FUNCTOR( QgsColorRampTextureGenerator )
 
   private:
     QgsColorRampShader mColorRampShader;
@@ -55,10 +55,10 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 };
 
 
-class ColorRampTexture: public Qt3DRender::QAbstractTextureImage
+class QgsColorRampTexture: public Qt3DRender::QAbstractTextureImage
 {
   public:
-    ColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale = 1, Qt3DCore::QNode *parent = nullptr );
+    QgsColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale = 1, Qt3DCore::QNode *parent = nullptr );
     // QAbstractTextureImage interface
   protected:
     Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
