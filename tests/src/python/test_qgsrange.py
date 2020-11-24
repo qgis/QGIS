@@ -42,6 +42,13 @@ class TestQgsIntRange(unittest.TestCase):
         range2 = QgsIntRange(5, range.upper())
         self.assertFalse(range2.isInfinite())
 
+    def testEquality(self):
+        self.assertEqual(QgsIntRange(1, 10), QgsIntRange(1, 10))
+        self.assertNotEqual(QgsIntRange(1, 10), QgsIntRange(1, 11))
+        self.assertNotEqual(QgsIntRange(1, 10), QgsIntRange(2, 10))
+        self.assertNotEqual(QgsIntRange(1, 10, False), QgsIntRange(1, 10))
+        self.assertNotEqual(QgsIntRange(1, 10, True, False), QgsIntRange(1, 10))
+
     def testIsEmpty(self):
         range = QgsIntRange(1, 1)
         # should not be empty because 1 is included
@@ -211,6 +218,13 @@ class TestQgsDoubleRange(unittest.TestCase):
         self.assertEqual(range.upper(), 3)
         self.assertFalse(range.includeLower())
         self.assertFalse(range.includeUpper())
+
+    def testEquality(self):
+        self.assertEqual(QgsDoubleRange(1, 10), QgsDoubleRange(1, 10))
+        self.assertNotEqual(QgsDoubleRange(1, 10), QgsDoubleRange(1, 11))
+        self.assertNotEqual(QgsDoubleRange(1, 10), QgsDoubleRange(2, 10))
+        self.assertNotEqual(QgsDoubleRange(1, 10, False), QgsDoubleRange(1, 10))
+        self.assertNotEqual(QgsDoubleRange(1, 10, True, False), QgsDoubleRange(1, 10))
 
     def testIsInfinite(self):
         range = QgsDoubleRange()
