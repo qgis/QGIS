@@ -131,6 +131,36 @@ bool QgsRangeSlider::event( QEvent *event )
   return QWidget::event( event );
 }
 
+int QgsRangeSlider::pick( const QPoint &pt ) const
+{
+  return mStyleOption.orientation == Qt::Horizontal ? pt.x() : pt.y();
+}
+
+int QgsRangeSlider::pixelPosToRangeValue( int pos ) const
+{
+  QRect gr = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, this );
+  QRect sr = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+  int sliderMin, sliderMax, sliderLength;
+  if ( mStyleOption.orientation == Qt::Horizontal )
+  {
+    sliderLength = sr.width();
+    sliderMin = gr.x();
+    sliderMax = gr.right() - sliderLength + 1;
+  }
+  else
+  {
+    sliderLength = sr.height();
+    sliderMin = gr.y();
+    sliderMax = gr.bottom() - sliderLength + 1;
+  }
+
+  int value = QStyle::sliderValueFromPosition( mStyleOption.minimum, mStyleOption.maximum, pos - sliderMin,
+              sliderMax - sliderMin );
+  if ( mInverted )
+    value = mStyleOption.maximum - value;
+  return value;
+}
+
 bool QgsRangeSlider::updateHoverControl( const QPoint &pos )
 {
   const QRect lastHoverRect = mHoverRect;
@@ -325,43 +355,101 @@ void QgsRangeSlider::mousePressEvent( QMouseEvent *event )
 
   event->accept();
 
-  mActiveControl = None;
-
   mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mLowerValue : mLowerValue;
-  if ( style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this ) == QStyle::SC_SliderHandle )
-    mActiveControl = Lower;
-  else
+  const bool overLowerControl = style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this ) == QStyle::SC_SliderHandle;
+  const QRect lowerSliderRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+  mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mUpperValue : mUpperValue;
+  const bool overUpperControl = style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this ) == QStyle::SC_SliderHandle;
+  const QRect upperSliderRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+
+  mLowerClickOffset = pick( event->pos() - lowerSliderRect.topLeft() );
+  mUpperClickOffset = pick( event->pos() - upperSliderRect.topLeft() );
+
+  if ( overLowerControl && overUpperControl )
   {
-    mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mUpperValue : mUpperValue;
-    if ( style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this ) )
-      mActiveControl = Upper;
+    mActiveControl = Both;
+    mPreDragLowerValue = mLowerValue;
+    mPreDragUpperValue = mUpperValue;
+  }
+  else if ( overLowerControl )
+    mActiveControl = Lower;
+  else if ( overUpperControl )
+    mActiveControl = Upper;
+  else
+    mActiveControl = None;
+
+  if ( mActiveControl != None )
+  {
+    mStartDragPos = pixelPosToRangeValue( pick( event->pos() ) );
   }
 }
 
 void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
 {
-  const int distance = mStyleOption.maximum - mStyleOption.minimum;
+  if ( mActiveControl == None )
+  {
+    event->ignore();
+    return;
+  }
 
-  int pos = style()->sliderValueFromPosition( 0, distance,
-            mStyleOption.orientation == Qt::Horizontal ? event->pos().x() : event->pos().y(),
-            mStyleOption.orientation == Qt::Horizontal ? rect().width() : rect().height() );
+  event->accept();
 
-  if ( mInverted )
-    pos = mStyleOption.maximum - pos;
+  int newPosition = pixelPosToRangeValue( pick( event->pos() ) );
 
   bool changed = false;
-  switch ( mActiveControl )
+  Control destControl = mActiveControl;
+  if ( destControl == Both )
+  {
+    // if click was over both handles, then the direction of the drag changes which control is affected
+    if ( newPosition < mStartDragPos )
+    {
+      destControl = Lower;
+      if ( mUpperValue != mPreDragUpperValue )
+      {
+        changed = true;
+        mUpperValue = mPreDragUpperValue;
+      }
+    }
+    else if ( newPosition > mStartDragPos )
+    {
+      destControl = Upper;
+      if ( mLowerValue != mPreDragLowerValue )
+      {
+        changed = true;
+        mLowerValue = mPreDragLowerValue;
+      }
+    }
+    else
+    {
+      destControl = None;
+      if ( mUpperValue != mPreDragUpperValue )
+      {
+        changed = true;
+        mUpperValue = mPreDragUpperValue;
+      }
+      if ( mLowerValue != mPreDragLowerValue )
+      {
+        changed = true;
+        mLowerValue = mPreDragLowerValue;
+      }
+    }
+  }
+
+  switch ( destControl )
   {
     case None:
-      return;
+    case Both:
+      break;
 
     case Lower:
     {
-      if ( pos <= mUpperValue )
+      // adjust value to account for lower handle click offset
+      newPosition = pixelPosToRangeValue( pick( event->pos() ) - mLowerClickOffset );
+      if ( newPosition <= mUpperValue )
       {
-        if ( mLowerValue != pos )
+        if ( mLowerValue != newPosition )
         {
-          mLowerValue = pos;
+          mLowerValue = newPosition;
           changed = true;
         }
       }
@@ -370,11 +458,13 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
 
     case Upper:
     {
-      if ( pos >= mLowerValue )
+      // adjust value to account for upper handle click offset
+      newPosition = pixelPosToRangeValue( pick( event->pos() ) - mUpperClickOffset );
+      if ( newPosition >= mLowerValue )
       {
-        if ( mUpperValue != pos )
+        if ( mUpperValue != newPosition )
         {
-          mUpperValue = pos;
+          mUpperValue = newPosition;
           changed = true;
         }
       }
