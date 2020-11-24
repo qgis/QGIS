@@ -186,7 +186,7 @@ static inline ushort encodeNibble( ushort c )
   return ushort( toHexUpper( c ) );
 }
 
-bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
+static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
 {
   while ( ptr + 4 <= end )
   {
