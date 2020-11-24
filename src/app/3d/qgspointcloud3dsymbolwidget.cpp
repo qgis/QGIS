@@ -40,6 +40,8 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   mRenderingStyleComboBox->setCurrentIndex( symbol->renderingStyle() );
   switch ( symbol->renderingStyle() )
   {
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
+      break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
     {
       QgsSingleColorPointCloud3DSymbol *symb = static_cast<QgsSingleColorPointCloud3DSymbol *>( symbol );
@@ -70,6 +72,11 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
 
   switch ( renderingStyle )
   {
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
+    {
+      ret_symb = new QgsNoRenderingPointCloud3DSymbol;
+      break;
+    }
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
     {
       QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
@@ -111,13 +118,20 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged( int current )
   QgsPointCloud3DSymbol::RenderingStyle currentStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( current );
   switch ( currentStyle )
   {
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
+      mColorRampGroupBox->setVisible( false );
+      mSingleColorGroupBox->setVisible( false );
+      mPointSizeGroupBox->setVisible( false );
+      break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
       mColorRampGroupBox->setVisible( false );
       mSingleColorGroupBox->setVisible( true );
+      mPointSizeGroupBox->setVisible( true );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
       mColorRampGroupBox->setVisible( true );
       mSingleColorGroupBox->setVisible( false );
+      mPointSizeGroupBox->setVisible( true );
       break;
   }
 }

@@ -29,9 +29,11 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
 
     enum RenderingStyle
     {
-      //! Render the mesh with a single color
+      // Do not render anything
+      NoRendering,
+      //! Render the point cloud with a single color
       SingleColor,
-      //! Render the mesh with a color ramp
+      //! Render the point cloud with a color ramp
       ColorRamp,
     };
 
@@ -48,20 +50,6 @@ Constructor for QgsPointCloud3DSymbol
 
     virtual QString type() const;
 
-    bool isEnabled() const;
-%Docstring
-Returns whether rendering for this symbol is enabled
-
-.. seealso:: :py:func:`setIsEnabled`
-%End
-
-    void setIsEnabled( bool enabled );
-%Docstring
-Sets whether rendering for this symbol is enabled
-
-.. seealso:: :py:func:`isEnabled`
-%End
-
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
 %Docstring
 Returns the rendering style
@@ -70,6 +58,34 @@ Returns the rendering style
 %End
 
   protected:
+};
+
+class QgsNoRenderingPointCloud3DSymbol : QgsPointCloud3DSymbol
+{
+%Docstring
+3D symbol that is used to indicate that the point cloud won't be rendered
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsNoRenderingPointCloud3DSymbol();
+
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
 };
 
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
