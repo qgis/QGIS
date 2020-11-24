@@ -1,7 +1,6 @@
 #version 150
 
-in float magnitude;
-in float clsid;
+in float parameter;
 
 out vec4 color;
 
@@ -16,29 +15,29 @@ uniform sampler1D u_colorRampTexture; //
 // Sets the color ramp value count, used to check the if not void
 uniform int u_colorRampCount; //
 
-vec4 clsidBasedRendering()
-{
-  vec4 color;
-  if ( abs(clsid-2) < 0.1 )         // ground
-    color = vec4(1,1,0,1);
-  else if ( abs( clsid - 3 ) < 0.1 )      // low vegetation
-    color = vec4(0,0.4,0,1);
-  else if ( abs( clsid - 4 ) < 0.1 )      // medium vegetation
-    color = vec4(0,0.6,0,1);
-  else if ( abs( clsid - 5 ) < 0.1 )     // high vegetation
-    color = vec4(0,1,0,1);
-  else if ( abs( clsid - 12 ) < 0.1 )   // overlaps
-  {
-    color = vec4(1,0,0,1);
-    discard;  // skip overlaps
-  }
-  else
-  {
-    color = vec4(0,1,1,1);
-    //discard;
-  }
-  return color;
-}
+//vec4 clsidBasedRendering()
+//{
+//  vec4 color;
+//  if ( abs(clsid-2) < 0.1 )         // ground
+//    color = vec4(1,1,0,1);
+//  else if ( abs( clsid - 3 ) < 0.1 )      // low vegetation
+//    color = vec4(0,0.4,0,1);
+//  else if ( abs( clsid - 4 ) < 0.1 )      // medium vegetation
+//    color = vec4(0,0.6,0,1);
+//  else if ( abs( clsid - 5 ) < 0.1 )     // high vegetation
+//    color = vec4(0,1,0,1);
+//  else if ( abs( clsid - 12 ) < 0.1 )   // overlaps
+//  {
+//    color = vec4(1,0,0,1);
+//    discard;  // skip overlaps
+//  }
+//  else
+//  {
+//    color = vec4(0,1,1,1);
+//    //discard;
+//  }
+//  return color;
+//}
 
 vec3 linearColorRamp()
 {
@@ -62,12 +61,12 @@ vec3 linearColorRamp()
     float value1=colorRampLine1.x;
     float value2=colorRampLine2.x;
 
-    if (magnitude<=value1 )
+    if (parameter <= value1 )
       return color1;
 
-    if (magnitude>value1 && magnitude<=value2)
+    if (parameter > value1 && parameter <= value2)
     {
-      float mixValue=(magnitude-value1)/(value2-value1);
+      float mixValue=(parameter - value1)/(value2-value1);
       return mix(color1,color2,mixValue);
     }
   }
@@ -89,7 +88,7 @@ vec3 discreteColorRamp()
     vec4 colorRampLine=texelFetch(u_colorRampTexture,i,0);
     color=colorRampLine.yzw;
     float value=colorRampLine.x;
-    if ( isinf(value) || magnitude<value)
+    if ( isinf(value) || parameter < value)
       return color;
   }
 
@@ -105,7 +104,7 @@ vec3 exactColorRamp()
     vec4 colorRampLine = texelFetch( u_colorRampTexture, i, 0 );
     vec3 color=colorRampLine.yzw;
     float value=colorRampLine.x;
-    if ( abs( magnitude - value ) < 0.01 )
+    if ( abs( parameter - value ) < 0.01 )
       return color;
   }
 

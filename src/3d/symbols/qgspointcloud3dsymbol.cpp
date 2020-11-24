@@ -17,24 +17,30 @@
 
 // QgsPointCloud3DSymbol
 
-QgsPointCloud3DSymbol::QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style )
+QgsPointCloud3DSymbol::QgsPointCloud3DSymbol( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol::RenderingStyle style )
   : QgsAbstract3DSymbol()
   , mRenderingStyle( style )
+  , mLayer( layer )
 {
 }
 
 QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol() {  }
 
+void QgsPointCloud3DSymbol::setLayer( QgsPointCloudLayer *layer )
+{
+  mLayer = layer;
+}
+
 // QgsNoRenderingPointCloud3DSymbol
 
-QgsNoRenderingPointCloud3DSymbol::QgsNoRenderingPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::NoRendering )
+QgsNoRenderingPointCloud3DSymbol::QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer )
+  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::NoRendering )
 {
 }
 
 QgsAbstract3DSymbol *QgsNoRenderingPointCloud3DSymbol::clone() const
 {
-  QgsNoRenderingPointCloud3DSymbol *result = new QgsNoRenderingPointCloud3DSymbol;
+  QgsNoRenderingPointCloud3DSymbol *result = new QgsNoRenderingPointCloud3DSymbol( mLayer );
   result->mRenderingStyle = mRenderingStyle;
   copyBaseSettings( result );
   return result;
@@ -54,15 +60,15 @@ void QgsNoRenderingPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
 
 // QgsSingleColorPointCloud3DSymbol
 
-QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::SingleColor )
+QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer )
+  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::SingleColor )
 {
 
 }
 
 QgsAbstract3DSymbol *QgsSingleColorPointCloud3DSymbol::clone() const
 {
-  QgsSingleColorPointCloud3DSymbol *result = new QgsSingleColorPointCloud3DSymbol;
+  QgsSingleColorPointCloud3DSymbol *result = new QgsSingleColorPointCloud3DSymbol( mLayer );
   result->mPointSize = mPointSize;
   result->mRenderingStyle = mRenderingStyle;
   result->mSingleColor = mSingleColor;
@@ -104,15 +110,15 @@ void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
 
 // QgsColorRampPointCloud3DSymbol
 
-QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::ColorRamp )
+QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer )
+  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::ColorRamp )
 {
 
 }
 
 QgsAbstract3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
 {
-  QgsColorRampPointCloud3DSymbol *result = new QgsColorRampPointCloud3DSymbol;
+  QgsColorRampPointCloud3DSymbol *result = new QgsColorRampPointCloud3DSymbol( mLayer );
   result->mPointSize = mPointSize;
   result->mRenderingStyle = mRenderingStyle;
   result->mRenderingParameter = mRenderingParameter;
@@ -143,18 +149,18 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
 
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
   mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "0" ) ).toInt() );
-  mRenderingParameter = static_cast< QgsColorRampPointCloud3DSymbol::RenderingParameter >( elem.attribute( "rendering-parameter", QStringLiteral( "0" ) ).toInt() );
+  mRenderingParameter = elem.attribute( "rendering-parameter", QStringLiteral( "0" ) );
   mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ), QStringLiteral( "0.0" ) ).toDouble();
   mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ), QStringLiteral( "1.0" ) ).toDouble();
   mColorRampShader.readXml( elem );
 }
 
-QgsColorRampPointCloud3DSymbol::RenderingParameter QgsColorRampPointCloud3DSymbol::renderingParameter() const
+QString QgsColorRampPointCloud3DSymbol::renderingParameter() const
 {
   return mRenderingParameter;
 }
 
-void QgsColorRampPointCloud3DSymbol::setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter )
+void QgsColorRampPointCloud3DSymbol::setRenderingParameter( const QString &parameter )
 {
   mRenderingParameter = parameter;
 }

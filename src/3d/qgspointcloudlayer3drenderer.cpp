@@ -51,6 +51,8 @@ QgsPointCloudLayer3DRenderer::QgsPointCloudLayer3DRenderer( )
 void QgsPointCloudLayer3DRenderer::setLayer( QgsPointCloudLayer *layer )
 {
   mLayerRef = QgsMapLayerRef( layer );
+  if ( mSymbol )
+    mSymbol->setLayer( layer );
 }
 
 QgsPointCloudLayer *QgsPointCloudLayer3DRenderer::layer() const
@@ -117,13 +119,13 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   switch ( renderingStyle )
   {
     case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
+      mSymbol.reset( new QgsNoRenderingPointCloud3DSymbol( layer() ) );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
+      mSymbol.reset( new QgsSingleColorPointCloud3DSymbol( layer() ) );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
+      mSymbol.reset( new QgsColorRampPointCloud3DSymbol( layer() ) );
       break;
   }
   mSymbol->readXml( elemSymbol, context );
@@ -132,4 +134,5 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 void QgsPointCloudLayer3DRenderer::resolveReferences( const QgsProject &project )
 {
   mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
+  mSymbol->setLayer( layer() );
 }

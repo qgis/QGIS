@@ -19,12 +19,18 @@
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayer3drenderer.h"
 
-QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloud3DSymbol *symbol, QWidget *parent )
+QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
   mPointSizeSpinBox->setClearValue( 2.0 );
+
+  for ( QgsPointCloudAttribute attr : layer->attributes().attributes() )
+  {
+    mRenderingParameterComboBox->addItem( attr.name() );
+  }
 
   if ( symbol )
     setSymbol( symbol );
@@ -53,7 +59,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     {
       QgsColorRampPointCloud3DSymbol *symb = static_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
       mPointSizeSpinBox->setValue( symb->pointSize() );
-      mRenderingParameterComboBox->setCurrentIndex( symb->renderingParameter() );
+      mRenderingParameterComboBox->setCurrentText( symb->renderingParameter() );
       QgsColorRampShader shader = symb->colorRampShader();
       setColorRampMinMax( symb->colorRampShaderMin(), symb->colorRampShaderMax() );
       mColorRampShaderWidget->setFromShader( symb->colorRampShader() );
@@ -74,12 +80,12 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   {
     case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
     {
-      ret_symb = new QgsNoRenderingPointCloud3DSymbol;
+      ret_symb = new QgsNoRenderingPointCloud3DSymbol( mLayer );
       break;
     }
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
     {
-      QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
+      QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol( mLayer );
       symb->setPointSize( mPointSizeSpinBox->value() );
       symb->setSingleColor( mSingleColorBtn->color() );
       ret_symb = symb;
@@ -87,8 +93,8 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     }
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
     {
-      QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
-      symb->setRenderingParameter( static_cast< QgsColorRampPointCloud3DSymbol::RenderingParameter >( mRenderingParameterComboBox->currentIndex() ) );
+      QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol( mLayer );
+      symb->setRenderingParameter( mRenderingParameterComboBox->currentText() );
       symb->setPointSize( mPointSizeSpinBox->value() );
       symb->setColorRampShader( mColorRampShaderWidget->shader() );
       symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );

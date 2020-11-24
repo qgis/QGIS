@@ -32,7 +32,7 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
 
-  mWidgetPointCloudSymbol = new QgsPointCloud3DSymbolWidget( nullptr, this );
+  mWidgetPointCloudSymbol = new QgsPointCloud3DSymbolWidget( layer, nullptr, this );
   layout->addWidget( mWidgetPointCloudSymbol );
 
   connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::widgetChanged );
