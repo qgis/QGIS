@@ -52,9 +52,7 @@ Constructor for QgsPointCloud3DSymbol
 
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
 %Docstring
-Returns the rendering style
-
-.. seealso:: :py:func:`setRenderingStyle`
+Returns the rendering style used to render the point cloud
 %End
 
   protected:
@@ -195,14 +193,14 @@ Sets the point size
 
     QgsColorRampPointCloud3DSymbol::RenderingParameter renderingParameter() const;
 %Docstring
-Returns the parameter used to select the color of the point cloud when using color ramp coloring
+Returns the parameter used to select the color of the point cloud
 
 .. seealso:: :py:func:`setRenderingParameter`
 %End
 
     void setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter );
 %Docstring
-Sets the parameter used to select the color of the point cloud when using color ramp coloring
+Sets the parameter used to select the color of the point cloud
 
 .. seealso:: :py:func:`renderingParameter`
 %End
