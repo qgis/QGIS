@@ -48,6 +48,9 @@ Item {
     }
 
     Component.onCompleted: {
+      var currentMap;
+      var currentKey;
+
       if( config['map'] )
       {
         if( config['map'].length )
@@ -55,8 +58,8 @@ Item {
           //it's a list (>=QGIS3.0)
           for(var i=0; i<config['map'].length; i++)
           {
-            var currentMap = config['map'][i]
-            var currentKey = Object.keys(currentMap)[0]
+            currentMap = config['map'][i]
+            currentKey = Object.keys(currentMap)[0]
             listModel.append( { display: currentKey } )
             reverseConfig[currentMap[currentKey]] = currentKey;
           }
@@ -64,8 +67,8 @@ Item {
         else
         {
           //it's a map (<=QGIS2.18)
-          var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
-          var currentKey = Object.keys(currentMap)[0]
+          currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
+          currentKey = Object.keys(currentMap)[0]
           for(var key in config['map']) {
             listModel.append( { display: key } )
             reverseConfig[config['map'][key]] = key;
@@ -77,7 +80,8 @@ Item {
 
     onCurrentTextChanged: {
       var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
-      valueChanged(currentMap[currentText], false)
+      if (currentMap)
+        valueChanged(currentMap[currentText], false)
     }
 
     // Workaround to get a signal when the value has changed

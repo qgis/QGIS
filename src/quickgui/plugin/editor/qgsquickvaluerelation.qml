@@ -189,6 +189,7 @@ Item {
         width: 15
         anchors.right: parent.right
         anchors.rightMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
         height: 30
         smooth: true
         visible: false
