@@ -89,6 +89,8 @@ Returns the size of a single point record.
 Returns the offset for the x value in a point record.
 
 .. seealso:: :py:func:`yOffset`
+
+.. seealso:: :py:func:`zOffset`
 %End
 
     int yOffset() const;
@@ -96,6 +98,17 @@ Returns the offset for the x value in a point record.
 Returns the offset for the y value in a point record.
 
 .. seealso:: :py:func:`xOffset`
+
+.. seealso:: :py:func:`zOffset`
+%End
+
+    int zOffset() const;
+%Docstring
+Returns the offset for the y value in a point record.
+
+.. seealso:: :py:func:`xOffset`
+
+.. seealso:: :py:func:`yOffset`
 %End
 
   private:

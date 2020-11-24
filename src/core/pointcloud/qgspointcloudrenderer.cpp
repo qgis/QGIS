@@ -43,9 +43,10 @@ void QgsPointCloudRenderContext::setAttributes( const QgsPointCloudAttributeColl
   mAttributes = attributes;
   mPointRecordSize = mAttributes.pointRecordSize();
 
-  // fetch offset for x/y attributes
+  // fetch offset for x/y/z attributes
   attributes.find( QStringLiteral( "X" ), mXOffset );
   attributes.find( QStringLiteral( "Y" ), mYOffset );
+  attributes.find( QStringLiteral( "Z" ), mZOffset );
 }
 
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
