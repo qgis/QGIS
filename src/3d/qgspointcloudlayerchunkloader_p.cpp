@@ -173,6 +173,9 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   Qt3DRender::QMaterial *mat = nullptr;
   switch ( mSymbol->renderingStyle() )
   {
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
+      mat = constructMaterial( dynamic_cast<QgsNoRenderingPointCloud3DSymbol *>( mSymbol.get() ) );
+      break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
       mat = constructMaterial( dynamic_cast<QgsSingleColorPointCloud3DSymbol *>( mSymbol.get() ) );
       break;
@@ -192,6 +195,9 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   pointSize->setSizeMode( Qt3DRender::QPointSize::Programmable );  // supported since OpenGL 3.2
   switch ( mSymbol->renderingStyle() )
   {
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
+      // Do Nothing since there is no rendering
+      break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
       pointSize->setValue( dynamic_cast<QgsSingleColorPointCloud3DSymbol *>( mSymbol.get() )->pointSize() );
       break;
@@ -228,6 +234,14 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // cppcheck-suppress memleak
 }
 
+Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsNoRenderingPointCloud3DSymbol *symbol )
+{
+  Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
+  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", symbol->renderingStyle() );
+  mat->addParameter( renderingStyle );
+  return mat;
+}
+
 Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsSingleColorPointCloud3DSymbol *symbol )
 {
   Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
@@ -236,6 +250,7 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsSingl
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( symbol->pointSize() ) );
   mat->addParameter( pointSizeParameter );
   QColor singleColor = symbol->singleColor();
+  qDebug() << "color: " << singleColor.redF() << " " << singleColor.greenF() << " " << singleColor.blueF();
   Qt3DRender::QParameter *singleColorParameter = new Qt3DRender::QParameter( "u_singleColor", QVector3D( singleColor.redF(), singleColor.greenF(), singleColor.blueF() ) );
   mat->addParameter( singleColorParameter );
   return mat;
@@ -248,8 +263,6 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsColor
   mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( symbol->pointSize() ) );
   mat->addParameter( pointSizeParameter );
-  Qt3DRender::QParameter *textureTypeParameter = new Qt3DRender::QParameter( "u_textureType", static_cast<int>( symbol->renderingStyle() ) );
-  mat->addParameter( textureTypeParameter );
   Qt3DRender::QParameter *renderingParameter = new Qt3DRender::QParameter( "u_renderingParameter", symbol->renderingParameter() );
   mat->addParameter( renderingParameter );
   QgsColorRampShader colorRampShader = symbol->colorRampShader();

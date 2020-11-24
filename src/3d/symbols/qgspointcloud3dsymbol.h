@@ -39,9 +39,11 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
      */
     enum RenderingStyle
     {
-      //! Render the mesh with a single color
-      SingleColor = 0,
-      //! Render the mesh with a color ramp
+      // Do not render anything
+      NoRendering = 0,
+      //! Render the point cloud with a single color
+      SingleColor,
+      //! Render the point cloud with a color ramp
       ColorRamp,
     };
 
@@ -50,24 +52,12 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY { Q_ASSERT( false ); return nullptr; }
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY { return nullptr; }
 
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override { Q_UNUSED( context ); Q_ASSERT( false ); }
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override { Q_UNUSED( context ); Q_ASSERT( false ); }
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override { Q_UNUSED( context ); }
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override { Q_UNUSED( context ); }
 
     QString type() const override { return "pointcloud"; }
-
-    /**
-     * Returns whether rendering for this symbol is enabled
-     * \see setIsEnabled( bool enabled )
-     */
-    bool isEnabled() const { return mEnabled; }
-
-    /**
-     * Sets whether rendering for this symbol is enabled
-     * \see isEnabled()
-     */
-    void setIsEnabled( bool enabled );
 
     /**
      * Returns the rendering style
@@ -76,8 +66,27 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const { return mRenderingStyle; }
 
   protected:
-    bool mEnabled = true;
-    QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::ColorRamp;
+    QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::NoRendering;
+};
+
+/**
+ * \ingroup 3d
+ * 3D symbol that is used to indicate that the point cloud won't be rendered
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.18
+ */
+class _3D_EXPORT QgsNoRenderingPointCloud3DSymbol : public QgsPointCloud3DSymbol
+{
+  public:
+    QgsNoRenderingPointCloud3DSymbol();
+
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 };
 
 /**

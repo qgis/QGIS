@@ -6,7 +6,7 @@ in float clsid;
 out vec4 color;
 
 // Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering
-uniform int u_textureType;
+uniform int u_renderingStyle;
 // Sets the unique mesh color
 uniform vec3 u_singleColor; //
 // Sets the color ramp type, 0: linear, 1: discrete, 2: exact
@@ -137,13 +137,16 @@ vec4 colorRamp()
 
 void main(void)
 {
-  switch (u_textureType)
+  switch (u_renderingStyle)
   {
-  case 0: // single color
+  case 0: //  no rendering
+    color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    break;
+  case 1: // single color
     color = vec4(u_singleColor, 1.0f);
     break;
-  case 1: // color ramp
-    color=colorRamp();
+  case 2: // color ramp
+    color = colorRamp();
     break;
   }
 }
