@@ -220,6 +220,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     int pixelPosToRangeValue( int pos ) const;
     bool updateHoverControl( const QPoint &pos );
     bool newHoverControl( const QPoint &pos );
+    QRect selectedRangeRect();
 
     int mLowerValue = 0;
     int mUpperValue = 0;
@@ -230,7 +231,8 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
       None,
       Lower,
       Upper,
-      Both
+      Both,
+      Range
     };
     Control mActiveControl = None;
     int mStartDragPos = -1;

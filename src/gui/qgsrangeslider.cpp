@@ -261,6 +261,52 @@ bool QgsRangeSlider::newHoverControl( const QPoint &pos )
   return mHoverSubControl != lastHoverSubControl || mHoverControl != lastHoverControl;
 }
 
+QRect QgsRangeSlider::selectedRangeRect()
+{
+  QRect selectionRect;
+
+  mStyleOption.activeSubControls = mHoverControl == Lower || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
+  mStyleOption.sliderPosition = mFlipped ? mStyleOption.maximum - mLowerValue : mLowerValue;
+  const QRect lowerHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, nullptr );
+
+  mStyleOption.activeSubControls = mHoverControl == Upper || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
+  mStyleOption.sliderPosition = mFlipped ? mStyleOption.maximum - mUpperValue : mUpperValue;
+  const QRect upperHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, nullptr );
+
+  const QRect grooveRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, nullptr );
+
+  switch ( mStyleOption.orientation )
+  {
+    case Qt::Horizontal:
+      selectionRect = mFlipped ? QRect( upperHandleRect.left(),
+                                        grooveRect.y(),
+                                        lowerHandleRect.right() - upperHandleRect.right(),
+                                        grooveRect.height()
+                                      )
+                      : QRect( lowerHandleRect.right(),
+                               grooveRect.y(),
+                               upperHandleRect.left() - lowerHandleRect.right(),
+                               grooveRect.height()
+                             );
+      break;
+
+    case Qt::Vertical:
+      selectionRect = mFlipped ? QRect( grooveRect.x(),
+                                        lowerHandleRect.bottom(),
+                                        grooveRect.width(),
+                                        upperHandleRect.top() - lowerHandleRect.top()
+                                      )
+                      : QRect( grooveRect.x(),
+                               upperHandleRect.top(),
+                               grooveRect.width(),
+                               lowerHandleRect.bottom() - upperHandleRect.top()
+                             );
+      break;
+  }
+
+  return selectionRect.adjusted( -1, 1, 1, -1 );
+}
+
 void QgsRangeSlider::setTickPosition( QSlider::TickPosition position )
 {
   mStyleOption.tickPosition = position;
@@ -328,48 +374,7 @@ void QgsRangeSlider::paintEvent( QPaintEvent * )
   color.setAlpha( 160 );
   painter.setBrush( QBrush( color ) );
   painter.setPen( Qt::NoPen );
-
-  mStyleOption.activeSubControls = mHoverControl == Lower || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
-  mStyleOption.sliderPosition = mFlipped ? mStyleOption.maximum - mLowerValue : mLowerValue;
-  const QRect lowerHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, nullptr );
-
-  mStyleOption.activeSubControls = mHoverControl == Upper || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
-  mStyleOption.sliderPosition = mFlipped ? mStyleOption.maximum - mUpperValue : mUpperValue;
-  const QRect upperHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, nullptr );
-
-  const QRect grooveRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, nullptr );
-
-  QRect selectionRect;
-  switch ( mStyleOption.orientation )
-  {
-    case Qt::Horizontal:
-      selectionRect = mFlipped ? QRect( upperHandleRect.left(),
-                                        grooveRect.y(),
-                                        lowerHandleRect.right() - upperHandleRect.right(),
-                                        grooveRect.height()
-                                      )
-                      : QRect( lowerHandleRect.right(),
-                               grooveRect.y(),
-                               upperHandleRect.left() - lowerHandleRect.right(),
-                               grooveRect.height()
-                             );
-      break;
-
-    case Qt::Vertical:
-      selectionRect = mFlipped ? QRect( grooveRect.x(),
-                                        lowerHandleRect.bottom(),
-                                        grooveRect.width(),
-                                        upperHandleRect.top() - lowerHandleRect.top()
-                                      )
-                      : QRect( grooveRect.x(),
-                               upperHandleRect.top(),
-                               grooveRect.width(),
-                               lowerHandleRect.bottom() - upperHandleRect.top()
-                             );
-      break;
-  }
-
-  painter.drawRect( selectionRect.adjusted( -1, 1, 1, -1 ) );
+  painter.drawRect( selectedRangeRect() );
 
   // draw first handle
   mStyleOption.subControls = QStyle::SC_SliderHandle;
@@ -408,19 +413,22 @@ void QgsRangeSlider::mousePressEvent( QMouseEvent *event )
   const bool overUpperControl = style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this ) == QStyle::SC_SliderHandle;
   const QRect upperSliderRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
 
+  const bool overSelectedRange = selectedRangeRect().contains( event->pos() );
+
   mLowerClickOffset = pick( event->pos() - lowerSliderRect.topLeft() );
   mUpperClickOffset = pick( event->pos() - upperSliderRect.topLeft() );
 
+  mPreDragLowerValue = mLowerValue;
+  mPreDragUpperValue = mUpperValue;
+
   if ( overLowerControl && overUpperControl )
-  {
     mActiveControl = Both;
-    mPreDragLowerValue = mLowerValue;
-    mPreDragUpperValue = mUpperValue;
-  }
   else if ( overLowerControl )
     mActiveControl = Lower;
   else if ( overUpperControl )
     mActiveControl = Upper;
+  else if ( overSelectedRange )
+    mActiveControl = Range;
   else
     mActiveControl = None;
 
@@ -508,6 +516,33 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
         mUpperValue = newPosition;
         changed = true;
       }
+      break;
+    }
+
+    case Range:
+    {
+      int delta = newPosition - mStartDragPos;
+
+      if ( delta > 0 )
+      {
+        // move range up
+        int maxDelta = mStyleOption.maximum - mPreDragUpperValue;
+        delta = std::min( maxDelta, delta );
+        mLowerValue = mPreDragLowerValue + delta;
+        mUpperValue = mPreDragUpperValue + delta;
+        changed = true;
+      }
+      else if ( delta < 0 )
+      {
+        // move range down
+        delta = -delta;
+        int maxDelta = mPreDragLowerValue - mStyleOption.minimum ;
+        delta = std::min( maxDelta, delta );
+        mLowerValue = mPreDragLowerValue - delta;
+        mUpperValue = mPreDragUpperValue - delta;
+        changed = true;
+      }
+
       break;
     }
   }
