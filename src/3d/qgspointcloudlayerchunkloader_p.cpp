@@ -119,11 +119,10 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
   if ( mSymbol.get()->renderingStyle() == QgsPointCloud3DSymbol::ColorRamp )
   {
     QgsColorRampPointCloud3DSymbol *symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( mSymbol.get() );
-    QgsPointCloudLayer *layer = symbol->layer();
-    if ( symbol && layer )
+    if ( symbol && symbol->layer() )
     {
       int offset = 0;
-      const QgsPointCloudAttribute *attr = layer->attributes().find( symbol->renderingParameter(), offset );
+      const QgsPointCloudAttribute *attr = symbol->layer()->attributes().find( symbol->renderingParameter(), offset );
       if ( attr )
       {
         parameterAttribute.reset( new QgsPointCloudAttribute( attr->name(), attr->type() ) );
@@ -132,8 +131,6 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
     }
   }
 
-
-//  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::Char ) );
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
   std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
