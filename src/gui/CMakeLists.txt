@@ -551,6 +551,7 @@ set(QGIS_GUI_SRCS
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
+  qgsrangeslider.cpp
   qgsrasterformatsaveoptionswidget.cpp
   qgsrasterlayersaveasdialog.cpp
   qgsrasterpyramidsoptionswidget.cpp
@@ -791,6 +792,7 @@ set(QGIS_GUI_HDRS
   qgsproviderguiregistry.h
   qgsproxystyle.h
   qgsquerybuilder.h
+  qgsrangeslider.h
   qgsrasterformatsaveoptionswidget.h
   qgsrasterlayersaveasdialog.h
   qgsrasterpyramidsoptionswidget.h
