@@ -70,6 +70,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mClippingRegions( rh.mClippingRegions )
   , mFeatureClipGeometry( rh.mFeatureClipGeometry )
   , mTextureOrigin( rh.mTextureOrigin )
+  , mZRange( rh.mZRange )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -106,6 +107,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mClippingRegions = rh.mClippingRegions;
   mFeatureClipGeometry = rh.mFeatureClipGeometry;
   mTextureOrigin = rh.mTextureOrigin;
+  mZRange = rh.mZRange;
   setIsTemporal( rh.isTemporal() );
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
@@ -237,6 +239,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setIsTemporal( mapSettings.isTemporal() );
   if ( ctx.isTemporal() )
     ctx.setTemporalRange( mapSettings.temporalRange() );
+
+  ctx.setZRange( mapSettings.zRange() );
 
   ctx.mClippingRegions = mapSettings.clippingRegions();
 
@@ -545,6 +549,16 @@ QPointF QgsRenderContext::textureOrigin() const
 void QgsRenderContext::setTextureOrigin( const QPointF &origin )
 {
   mTextureOrigin = origin;
+}
+
+QgsDoubleRange QgsRenderContext::zRange() const
+{
+  return mZRange;
+}
+
+void QgsRenderContext::setZRange( const QgsDoubleRange &range )
+{
+  mZRange = range;
 }
 
 

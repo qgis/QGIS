@@ -1326,6 +1326,16 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   zoomToFeatureExtent( rect );
 }
 
+QgsDoubleRange QgsMapCanvas::zRange() const
+{
+  return mSettings.zRange();
+}
+
+void QgsMapCanvas::setZRange( const QgsDoubleRange &range )
+{
+  mSettings.setZRange( range );
+}
+
 void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
 {
   // no selected features, only one selected point feature

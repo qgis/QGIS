@@ -316,7 +316,7 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(QgsDoubleRange(1, 10, False).__repr__(),
                          "<QgsDoubleRange: (1, 10]>")
         self.assertEqual(QgsDoubleRange(1, 10, True, False).__repr__(),
-                         "<QgsDoubleRange:  [1, 10)>")
+                         "<QgsDoubleRange: [1, 10)>")
 
     def testIntRange(self):
         self.assertEqual(QgsIntRange(1, 10).__repr__(), "<QgsIntRange: [1, 10]>")

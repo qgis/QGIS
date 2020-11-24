@@ -856,6 +856,22 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setTextureOrigin( const QPointF &origin );
 
+    /**
+     * Returns the range of z-values which should be rendered.
+     *
+     * \see setZRange()
+     * \since QGIS 3.18
+     */
+    QgsDoubleRange zRange() const;
+
+    /**
+     * Sets the \a range of z-values which should be rendered.
+     *
+     * \see zRange()
+     * \since QGIS 3.18
+     */
+    void setZRange( const QgsDoubleRange &range );
+
   private:
 
     Flags mFlags;
@@ -951,6 +967,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsGeometry mFeatureClipGeometry;
 
     QPointF mTextureOrigin;
+
+    QgsDoubleRange mZRange;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
