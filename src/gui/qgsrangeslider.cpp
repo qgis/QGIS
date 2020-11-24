@@ -22,6 +22,15 @@ QgsRangeSlider::QgsRangeSlider( QWidget *parent )
 {
   mStyleOption.minimum = 0;
   mStyleOption.maximum = 100;
+
+  setFocusPolicy( Qt::FocusPolicy( style()->styleHint( QStyle::SH_Button_FocusPolicy ) ) );
+  QSizePolicy sp( QSizePolicy::Expanding, QSizePolicy::Fixed, QSizePolicy::Slider );
+  if ( mStyleOption.orientation == Qt::Vertical )
+    sp.transpose();
+  setSizePolicy( sp );
+  setAttribute( Qt::WA_WState_OwnSizePolicy, false );
+
+  installEventFilter( this );
 }
 
 int QgsRangeSlider::maximum() const
@@ -106,6 +115,82 @@ void QgsRangeSlider::setRange( int lower, int upper )
   update();
 }
 
+bool QgsRangeSlider::event( QEvent *event )
+{
+  switch ( event->type() )
+  {
+    case QEvent::HoverEnter:
+    case QEvent::HoverLeave:
+    case QEvent::HoverMove:
+      if ( const QHoverEvent *he = static_cast<const QHoverEvent *>( event ) )
+        updateHoverControl( he->pos() );
+      break;
+    default:
+      break;
+  }
+  return QWidget::event( event );
+}
+
+bool QgsRangeSlider::updateHoverControl( const QPoint &pos )
+{
+  const QRect lastHoverRect = mHoverRect;
+  const bool doesHover = testAttribute( Qt::WA_Hover );
+  if ( doesHover && newHoverControl( pos ) )
+  {
+    update( lastHoverRect );
+    update( mHoverRect );
+    return true;
+  }
+  return !doesHover;
+}
+
+bool QgsRangeSlider::newHoverControl( const QPoint &pos )
+{
+  const Control lastHoverControl = mHoverControl;
+  const QStyle::SubControl lastHoverSubControl = mHoverSubControl;
+
+  mStyleOption.subControls = QStyle::SC_All;
+
+  mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mLowerValue : mLowerValue;
+  QRect lowerHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+  mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mUpperValue : mUpperValue;
+  QRect upperHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+
+  QRect grooveRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, this );
+  QRect tickmarksRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderTickmarks, this );
+  if ( lowerHandleRect.contains( pos ) )
+  {
+    mHoverRect = lowerHandleRect;
+    mHoverControl = Lower;
+    mHoverSubControl = QStyle::SC_SliderHandle;
+  }
+  else if ( upperHandleRect.contains( pos ) )
+  {
+    mHoverRect = upperHandleRect;
+    mHoverControl = Upper;
+    mHoverSubControl = QStyle::SC_SliderHandle;
+  }
+  else if ( grooveRect.contains( pos ) )
+  {
+    mHoverRect = grooveRect;
+    mHoverControl = None;
+    mHoverSubControl = QStyle::SC_SliderGroove;
+  }
+  else if ( tickmarksRect.contains( pos ) )
+  {
+    mHoverRect = tickmarksRect;
+    mHoverControl = None;
+    mHoverSubControl = QStyle::SC_SliderTickmarks;
+  }
+  else
+  {
+    mHoverRect = QRect();
+    mHoverControl = None;
+    mHoverSubControl = QStyle::SC_None;
+  }
+  return mHoverSubControl != lastHoverSubControl || mHoverControl != lastHoverControl;
+}
+
 void QgsRangeSlider::setTickPosition( QSlider::TickPosition position )
 {
   mStyleOption.tickPosition = position;
@@ -159,6 +244,7 @@ void QgsRangeSlider::paintEvent( QPaintEvent * )
   mStyleOption.sliderPosition = 0;
   mStyleOption.subControls = QStyle::SC_SliderGroove | QStyle::SC_SliderTickmarks;
 
+  mStyleOption.activeSubControls = mHoverSubControl;
   // draw groove
   style()->drawComplexControl( QStyle::CC_Slider, &mStyleOption, &painter );
 
@@ -167,9 +253,11 @@ void QgsRangeSlider::paintEvent( QPaintEvent * )
   painter.setBrush( QBrush( color ) );
   painter.setPen( Qt::NoPen );
 
+  mStyleOption.activeSubControls = mHoverControl == Lower || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
   mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mLowerValue : mLowerValue;
   const QRect lowerHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, nullptr );
 
+  mStyleOption.activeSubControls = mHoverControl == Upper || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
   mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mUpperValue : mUpperValue;
   const QRect upperHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, nullptr );
 
@@ -209,21 +297,45 @@ void QgsRangeSlider::paintEvent( QPaintEvent * )
 
   // draw first handle
   mStyleOption.subControls = QStyle::SC_SliderHandle;
+  mStyleOption.activeSubControls = mHoverControl == Lower || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
   mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mLowerValue : mLowerValue;
+  if ( mActiveControl == Lower )
+    mStyleOption.state |= QStyle::State_Sunken;
+  else
+    mStyleOption.state &= ~QStyle::State_Sunken;
   style()->drawComplexControl( QStyle::CC_Slider, &mStyleOption, &painter );
 
   // draw second handle
+  mStyleOption.activeSubControls = mHoverControl == Upper || mActiveControl == Lower ? QStyle::SC_SliderHandle : QStyle::SC_None;
   mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mUpperValue : mUpperValue;
+  if ( mActiveControl == Upper )
+    mStyleOption.state |= QStyle::State_Sunken;
+  else
+    mStyleOption.state &= ~QStyle::State_Sunken;
   style()->drawComplexControl( QStyle::CC_Slider, &mStyleOption, &painter );
 }
 
 void QgsRangeSlider::mousePressEvent( QMouseEvent *event )
 {
-  mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mLowerValue : mLowerValue;
-  mLowerControl = style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this );
+  if ( mStyleOption.maximum == mStyleOption.minimum || ( event->buttons() ^ event->button() ) )
+  {
+    event->ignore();
+    return;
+  }
 
-  mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mUpperValue : mUpperValue;
-  mUpperControl = style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this );
+  event->accept();
+
+  mActiveControl = None;
+
+  mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mLowerValue : mLowerValue;
+  if ( style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this ) == QStyle::SC_SliderHandle )
+    mActiveControl = Lower;
+  else
+  {
+    mStyleOption.sliderPosition = mInverted ? mStyleOption.maximum - mUpperValue : mUpperValue;
+    if ( style()->hitTestComplexControl( QStyle::CC_Slider, &mStyleOption, event->pos(), this ) )
+      mActiveControl = Upper;
+  }
 }
 
 void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
@@ -238,29 +350,35 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
     pos = mStyleOption.maximum - pos;
 
   bool changed = false;
-  bool overLowerHandle = false;
-  if ( mLowerControl == QStyle::SC_SliderHandle )
+  switch ( mActiveControl )
   {
-    if ( pos <= mUpperValue )
-    {
-      overLowerHandle = true;
-      if ( mLowerValue != pos )
-      {
-        mLowerValue = pos;
-        changed = true;
-      }
-    }
-  }
+    case None:
+      return;
 
-  if ( !overLowerHandle && mUpperControl == QStyle::SC_SliderHandle )
-  {
-    if ( pos >= mLowerValue )
+    case Lower:
     {
-      if ( mUpperValue != pos )
+      if ( pos <= mUpperValue )
       {
-        mUpperValue = pos;
-        changed = true;
+        if ( mLowerValue != pos )
+        {
+          mLowerValue = pos;
+          changed = true;
+        }
       }
+      break;
+    }
+
+    case Upper:
+    {
+      if ( pos >= mLowerValue )
+      {
+        if ( mUpperValue != pos )
+        {
+          mUpperValue = pos;
+          changed = true;
+        }
+      }
+      break;
     }
   }
 
@@ -269,6 +387,19 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
     update();
     emit rangeChanged( mLowerValue, mUpperValue );
   }
+}
+
+void QgsRangeSlider::mouseReleaseEvent( QMouseEvent *event )
+{
+  if ( mActiveControl == None || event->buttons() )
+  {
+    event->ignore();
+    return;
+  }
+
+  event->accept();
+  mActiveControl = None;
+  update();
 }
 
 QSize QgsRangeSlider::sizeHint() const
