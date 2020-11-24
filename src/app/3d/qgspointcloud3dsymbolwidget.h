@@ -26,7 +26,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     Q_OBJECT
 
   public:
-    explicit QgsPointCloud3DSymbolWidget( QgsPointCloud3DSymbol *symbol, QWidget *parent = nullptr );
+    explicit QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent = nullptr );
 
     void setSymbol( QgsPointCloud3DSymbol *symbol );
 
@@ -41,6 +41,10 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
   private:
     void setColorRampMinMax( double min, double max );
+
+  private:
+    QgsPointCloudLayer *mLayer = nullptr;
+
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOLWIDGET_H

@@ -37,7 +37,7 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
       ColorRamp,
     };
 
-    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
+    QgsPointCloud3DSymbol( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol::RenderingStyle style );
 %Docstring
 Constructor for QgsPointCloud3DSymbol
 %End
@@ -49,6 +49,18 @@ Constructor for QgsPointCloud3DSymbol
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual QString type() const;
+
+    QgsPointCloudLayer *layer();
+%Docstring
+Returns the point cloud layer object used by the symbol
+see setLayer( :py:class:`QgsPointCloudLayer` *layer )
+%End
+
+    void setLayer( QgsPointCloudLayer *layer );
+%Docstring
+Sets the point cloud layer object used by the symbol
+see :py:func:`~QgsPointCloud3DSymbol.layer`
+%End
 
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
 %Docstring
@@ -75,7 +87,7 @@ class QgsNoRenderingPointCloud3DSymbol : QgsPointCloud3DSymbol
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
-    QgsNoRenderingPointCloud3DSymbol();
+    QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -103,7 +115,7 @@ class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
-    QgsSingleColorPointCloud3DSymbol();
+    QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -160,14 +172,7 @@ class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
-
-    enum RenderingParameter
-    {
-      Height,
-      ClassID
-    };
-
-    QgsColorRampPointCloud3DSymbol();
+    QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -191,14 +196,14 @@ Sets the point size
 .. seealso:: :py:func:`pointSize`
 %End
 
-    QgsColorRampPointCloud3DSymbol::RenderingParameter renderingParameter() const;
+    QString renderingParameter() const;
 %Docstring
 Returns the parameter used to select the color of the point cloud
 
 .. seealso:: :py:func:`setRenderingParameter`
 %End
 
-    void setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter );
+    void setRenderingParameter( const QString &parameter );
 %Docstring
 Sets the parameter used to select the color of the point cloud
 
@@ -208,11 +213,15 @@ Sets the parameter used to select the color of the point cloud
     QgsColorRampShader colorRampShader() const;
 %Docstring
 Returns the color ramp shader used to render the color
+
+.. seealso:: :py:func:`setColorRampShader`
 %End
 
     void setColorRampShader( const QgsColorRampShader &colorRampShader );
 %Docstring
 Sets the color ramp shader used to render the point cloud
+
+.. seealso:: :py:func:`colorRampShader`
 %End
 
     double colorRampShaderMin() const;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>310</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -175,18 +175,7 @@
        </widget>
       </item>
       <item row="0" column="2" colspan="3">
-       <widget class="QComboBox" name="mRenderingParameterComboBox">
-        <item>
-         <property name="text">
-          <string>Height</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>ClassID</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="mRenderingParameterComboBox"/>
       </item>
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="label_5">

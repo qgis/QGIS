@@ -64,7 +64,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     struct PointData
     {
       QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
-      QVector<char> classes;
+      QVector<float> parameter;
     };
 
   protected:
@@ -105,7 +105,7 @@ class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
     void makeVertexBuffer( const QgsPointCloud3DSymbolHandler::PointData &data );
 
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QAttribute *mClassAttribute = nullptr;
+    Qt3DRender::QAttribute *mParameterAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
     int mVertexCount = 0;
 };

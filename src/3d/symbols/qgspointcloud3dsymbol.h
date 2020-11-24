@@ -20,6 +20,7 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
+#include "qgspointcloudlayer.h"
 
 /**
  * \ingroup 3d
@@ -48,7 +49,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     };
 
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
+    QgsPointCloud3DSymbol( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol::RenderingStyle style );
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
@@ -59,11 +60,24 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
     QString type() const override { return "pointcloud"; }
 
+    /**
+     * Returns the point cloud layer object used by the symbol
+     * see setLayer( QgsPointCloudLayer *layer )
+     */
+    QgsPointCloudLayer *layer() { return mLayer; }
+
+    /**
+     * Sets the point cloud layer object used by the symbol
+     * see layer()
+     */
+    void setLayer( QgsPointCloudLayer *layer );
+
     //! Returns the rendering style used to render the point cloud
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const { return mRenderingStyle; }
 
   protected:
     QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::NoRendering;
+    QgsPointCloudLayer *mLayer = nullptr;
 };
 
 /**
@@ -78,7 +92,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 class _3D_EXPORT QgsNoRenderingPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
-    QgsNoRenderingPointCloud3DSymbol();
+    QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
@@ -98,7 +112,7 @@ class _3D_EXPORT QgsNoRenderingPointCloud3DSymbol : public QgsPointCloud3DSymbol
 class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
-    QgsSingleColorPointCloud3DSymbol();
+    QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
@@ -146,17 +160,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
-
-    /**
-     * The value used to select colors from the color ramp
-     */
-    enum RenderingParameter
-    {
-      Height = 0,
-      ClassID
-    };
-
-    QgsColorRampPointCloud3DSymbol();
+    QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
@@ -179,21 +183,23 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
     * Returns the parameter used to select the color of the point cloud
     * \see setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter )
     */
-    QgsColorRampPointCloud3DSymbol::RenderingParameter renderingParameter() const;
+    QString renderingParameter() const;
 
     /**
     * Sets the parameter used to select the color of the point cloud
     * \see renderingParameter()
     */
-    void setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter );
+    void setRenderingParameter( const QString &parameter );
 
     /**
     * Returns the color ramp shader used to render the color
+    * \see setColorRampShader( const QgsColorRampShader &colorRampShader )
     */
     QgsColorRampShader colorRampShader() const;
 
     /**
      * Sets the color ramp shader used to render the point cloud
+     * \see colorRampShader()
      */
     void setColorRampShader( const QgsColorRampShader &colorRampShader );
 
@@ -217,7 +223,7 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
   private:
     float mPointSize = 2.0f;
-    QgsColorRampPointCloud3DSymbol::RenderingParameter mRenderingParameter = QgsColorRampPointCloud3DSymbol::RenderingParameter::Height;
+    QString mRenderingParameter;
     QgsColorRampShader mColorRampShader;
     double mColorRampShaderMin = 0.0;
     double mColorRampShaderMax = 1.0;
