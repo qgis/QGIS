@@ -142,6 +142,8 @@ position for the widget. If the value is ``True``, the minimum and maximum appea
 
     virtual QSize sizeHint() const;
 
+    virtual QSize minimumSizeHint() const;
+
 
   public slots:
 

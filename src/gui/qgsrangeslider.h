@@ -145,6 +145,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
 
   public slots:
 
