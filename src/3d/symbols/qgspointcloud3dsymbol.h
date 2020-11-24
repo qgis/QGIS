@@ -35,7 +35,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
   public:
 
     /**
-     * How to render the color of the point cloud
+     * How to render the point cloud
      */
     enum RenderingStyle
     {
@@ -45,26 +45,17 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
       ColorRamp,
     };
 
-    /**
-     * The value used to select colors from the color ramp
-     */
-    enum RenderingParameter
-    {
-      Height = 0,
-      ClassID
-    };
-
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol();
+    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY { Q_ASSERT( false ); return nullptr; }
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override { Q_UNUSED( context ); Q_ASSERT( false ); }
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override { Q_UNUSED( context ); Q_ASSERT( false ); }
+
     QString type() const override { return "pointcloud"; }
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
-
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
-
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     /**
      * Returns whether rendering for this symbol is enabled
@@ -79,6 +70,36 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     void setIsEnabled( bool enabled );
 
     /**
+     * Returns the rendering style
+     * \see setRenderingStyle( QgsPointCloud3DSymbol::RenderingStyle style )
+     */
+    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const { return mRenderingStyle; }
+
+  protected:
+    bool mEnabled = true;
+    QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::ColorRamp;
+};
+
+/**
+ * \ingroup 3d
+ * 3D symbol that draws point cloud geometries as 3D objects.using one color
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.18
+ */
+class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
+{
+  public:
+    QgsSingleColorPointCloud3DSymbol();
+
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    /**
      * Returns the point size of the point cloud
      * \see setPointSize( float size )
      */
@@ -89,30 +110,6 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
      * \see pointSize()
      */
     void setPointSize( float size );
-
-    /**
-     * Returns the rendering style
-     * \see setRenderingStyle( QgsPointCloud3DSymbol::RenderingStyle style )
-     */
-    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
-
-    /**
-     * Sets the rendering style
-     * \see renderingStyle()
-     */
-    void setRenderingStyle( QgsPointCloud3DSymbol::RenderingStyle style );
-
-    /**
-     * Returns the parameter used to select the color of the point cloud when using color ramp coloring
-     * \see setRenderingParameter( QgsPointCloud3DSymbol::RenderingParameter parameter )
-     */
-    QgsPointCloud3DSymbol::RenderingParameter renderingParameter() const;
-
-    /**
-    * Sets the parameter used to select the color of the point cloud when using color ramp coloring
-    * \see renderingParameter()
-    */
-    void setRenderingParameter( QgsPointCloud3DSymbol::RenderingParameter parameter );
 
     /**
     * Returns the color used by the renderer when using SingleColor rendering mode
@@ -126,44 +123,98 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     */
     void setSingleColor( QColor color );
 
+  private:
+    float mPointSize = 2.0f;
+    QColor mSingleColor = Qt::blue;
+};
+
+/**
+ * \ingroup 3d
+ * 3D symbol that draws point cloud geometries as 3D objects.using color ramp shader
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.18
+ */
+class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
+{
+  public:
+
+    /**
+     * The value used to select colors from the color ramp
+     */
+    enum RenderingParameter
+    {
+      Height = 0,
+      ClassID
+    };
+
+    QgsColorRampPointCloud3DSymbol();
+
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    /**
+     * Returns the point size of the point cloud
+     * \see setPointSize( float size )
+     */
+    float pointSize() const { return mPointSize; }
+
+    /**
+     * Sets the point size
+     * \see pointSize()
+     */
+    void setPointSize( float size );
+
+    /**
+    * Returns the parameter used to select the color of the point cloud when using color ramp coloring
+    * \see setRenderingParameter( QgsPointCloud3DSymbol::RenderingParameter parameter )
+    */
+    QgsColorRampPointCloud3DSymbol::RenderingParameter renderingParameter() const;
+
+    /**
+    * Sets the parameter used to select the color of the point cloud when using color ramp coloring
+    * \see renderingParameter()
+    */
+    void setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter );
+
     /**
     * Returns the color ramp shader used to render the color
     */
     QgsColorRampShader colorRampShader() const;
 
     /**
-     * Sets the color ramp shader used to render the color
+     * Sets the color ramp shader used to render the point cloud
      */
     void setColorRampShader( const QgsColorRampShader &colorRampShader );
 
     /**
      * Returns the minimum value used when classifying colors in the color ramp shader
-     * \see setColorRampShaderMinMax( double min, double max );
+     * \see setColorRampShaderMinMax( double min, double max )
      */
     double colorRampShaderMin() const { return mColorRampShaderMin; }
 
     /**
      * Returns the maximum value used when classifying colors in the color ramp shader
-     * \see setColorRampShaderMinMax( double min, double max );
+     * \see setColorRampShaderMinMax( double min, double max )
      */
     double colorRampShaderMax() const { return mColorRampShaderMax; }
 
     /**
      * Sets the minimum and maximum values used when classifying colors in the color ramp shader
-     * \see setColorRampShaderMinMax( double min, double max );
+     * \see colorRampShaderMin() colorRampShaderMax()
      */
     void setColorRampShaderMinMax( double min, double max );
 
   private:
-    bool mEnabled = true;
     float mPointSize = 2.0f;
-
-    QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::ColorRamp;
-    QgsPointCloud3DSymbol::RenderingParameter mRenderingParameter = QgsPointCloud3DSymbol::RenderingParameter::ClassID;
+    QgsColorRampPointCloud3DSymbol::RenderingParameter mRenderingParameter = QgsColorRampPointCloud3DSymbol::RenderingParameter::Height;
     QgsColorRampShader mColorRampShader;
     double mColorRampShaderMin = 0.0;
     double mColorRampShaderMax = 1.0;
-    QColor mSingleColor = Qt::blue;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H

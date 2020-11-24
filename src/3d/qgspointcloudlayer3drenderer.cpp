@@ -110,8 +110,17 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  if ( !mSymbol )
-    mSymbol = qgis::make_unique< QgsPointCloud3DSymbol >();
+  int renderingStyleInt = elemSymbol.attribute( QStringLiteral( "rendering-style" ), QStringLiteral( "0" ) ).toInt();
+  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = static_cast<QgsPointCloud3DSymbol::RenderingStyle>( renderingStyleInt );
+  switch ( renderingStyle )
+  {
+    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
+      mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
+      break;
+    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
+      mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
+      break;
+  }
   mSymbol->readXml( elemSymbol, context );
 }
 

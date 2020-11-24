@@ -37,27 +37,59 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloud3DSymbol 
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
-  mPointSizeSpinBox->setValue( symbol->pointSize() );
   mRenderingStyleComboBox->setCurrentIndex( symbol->renderingStyle() );
-  mRenderingParameterComboBox->setCurrentIndex( symbol->renderingParameter() );
-  mSingleColorBtn->setColor( symbol->singleColor() );
-  QgsColorRampShader shader = symbol->colorRampShader();
-  setColorRampMinMax( symbol->colorRampShaderMin(), symbol->colorRampShaderMax() );
-  mColorRampShaderWidget->setFromShader( symbol->colorRampShader() );
+  switch ( symbol->renderingStyle() )
+  {
+    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
+    {
+      QgsSingleColorPointCloud3DSymbol *symb = static_cast<QgsSingleColorPointCloud3DSymbol *>( symbol );
+      mPointSizeSpinBox->setValue( symb->pointSize() );
+      mSingleColorBtn->setColor( symb->singleColor() );
+      break;
+    }
+    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
+    {
+      QgsColorRampPointCloud3DSymbol *symb = static_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
+      mPointSizeSpinBox->setValue( symb->pointSize() );
+      mRenderingParameterComboBox->setCurrentIndex( symb->renderingParameter() );
+      QgsColorRampShader shader = symb->colorRampShader();
+      setColorRampMinMax( symb->colorRampShaderMin(), symb->colorRampShaderMax() );
+      mColorRampShaderWidget->setFromShader( symb->colorRampShader() );
+      break;
+    }
+  }
 
   onRenderingStyleChanged( symbol->renderingStyle() );
 }
 
 QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
 {
-  QgsPointCloud3DSymbol *symb = new QgsPointCloud3DSymbol;
-  symb->setPointSize( mPointSizeSpinBox->value() );
-  symb->setRenderingStyle( static_cast< QgsPointCloud3DSymbol::RenderingStyle >( mRenderingStyleComboBox->currentIndex() ) );
-  symb->setRenderingParameter( static_cast< QgsPointCloud3DSymbol::RenderingParameter >( mRenderingParameterComboBox->currentIndex() ) );
-  symb->setSingleColor( mSingleColorBtn->color() );
-  symb->setColorRampShader( mColorRampShaderWidget->shader() );
-  symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
-  return symb;
+
+  QgsPointCloud3DSymbol *ret_symb = nullptr;
+  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( mRenderingStyleComboBox->currentIndex() );
+
+  switch ( renderingStyle )
+  {
+    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
+    {
+      QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
+      symb->setPointSize( mPointSizeSpinBox->value() );
+      symb->setSingleColor( mSingleColorBtn->color() );
+      ret_symb = symb;
+      break;
+    }
+    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
+    {
+      QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
+      symb->setRenderingParameter( static_cast< QgsColorRampPointCloud3DSymbol::RenderingParameter >( mRenderingParameterComboBox->currentIndex() ) );
+      symb->setPointSize( mPointSizeSpinBox->value() );
+      symb->setColorRampShader( mColorRampShaderWidget->shader() );
+      symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
+      ret_symb = symb;
+      break;
+    }
+  }
+  return ret_symb;
 }
 
 void QgsPointCloud3DSymbolWidget::setColorRampMinMax( double min, double max )
