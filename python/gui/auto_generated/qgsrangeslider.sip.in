@@ -112,24 +112,25 @@ Returns the orientation of the slider.
 .. seealso:: :py:func:`setOrientation`
 %End
 
-    bool invertedAppearance() const;
+    bool flippedDirection() const;
 %Docstring
-Returns ``True`` if the slider has its values inverted.
+Returns ``True`` if the slider has its values flipped.
 
 If this property is ``False`` (the default), the minimum and maximum will be shown in its classic
 position for the widget. If the value is ``True``, the minimum and maximum appear at their opposite location.
 
-.. seealso:: :py:func:`setInvertedAppearance`
+.. seealso:: :py:func:`setFlippedDirection`
 %End
 
-    void setInvertedAppearance( bool inverted );
+    void setFlippedDirection( bool flipped );
 %Docstring
-Sets whether the slider has its values ``inverted``.
+Sets whether the slider has its values ``flipped``.
 
 If this property is ``False`` (the default), the minimum and maximum will be shown in its classic
 position for the widget. If the value is ``True``, the minimum and maximum appear at their opposite location.
+(i.e. minimum at the bottom of a vertical slider, maximum at the top of a vertical slider).
 
-.. seealso:: :py:func:`setInvertedAppearance`
+.. seealso:: :py:func:`flippedDirection`
 %End
 
     virtual void paintEvent( QPaintEvent *event );
