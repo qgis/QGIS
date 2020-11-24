@@ -54,15 +54,12 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY { return nullptr; }
 
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override { Q_UNUSED( context ); }
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override { Q_UNUSED( context ); }
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override { Q_UNUSED( elem ); Q_UNUSED( context ); }
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override { Q_UNUSED( elem ); Q_UNUSED( context ); }
 
     QString type() const override { return "pointcloud"; }
 
-    /**
-     * Returns the rendering style
-     * \see setRenderingStyle( QgsPointCloud3DSymbol::RenderingStyle style )
-     */
+    //! Returns the rendering style used to render the point cloud
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const { return mRenderingStyle; }
 
   protected:
@@ -179,13 +176,13 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void setPointSize( float size );
 
     /**
-    * Returns the parameter used to select the color of the point cloud when using color ramp coloring
-    * \see setRenderingParameter( QgsPointCloud3DSymbol::RenderingParameter parameter )
+    * Returns the parameter used to select the color of the point cloud
+    * \see setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter )
     */
     QgsColorRampPointCloud3DSymbol::RenderingParameter renderingParameter() const;
 
     /**
-    * Sets the parameter used to select the color of the point cloud when using color ramp coloring
+    * Sets the parameter used to select the color of the point cloud
     * \see renderingParameter()
     */
     void setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter );
