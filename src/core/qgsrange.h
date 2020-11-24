@@ -192,6 +192,7 @@ class QgsRange
 
 /**
  * QgsRange which stores a range of double values.
+ * \ingroup core
  * \see QgsIntRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
@@ -263,6 +264,7 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
 
 /**
  * QgsRange which stores a range of integer values.
+ * \ingroup core
  * \see QgsDoubleRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
