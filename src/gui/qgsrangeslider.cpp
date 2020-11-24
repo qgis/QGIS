@@ -18,10 +18,16 @@
 #include <QMouseEvent>
 
 QgsRangeSlider::QgsRangeSlider( QWidget *parent )
+  : QgsRangeSlider( Qt::Horizontal, parent )
+{
+}
+
+QgsRangeSlider::QgsRangeSlider( Qt::Orientation orientation, QWidget *parent )
   : QWidget( parent )
 {
   mStyleOption.minimum = 0;
   mStyleOption.maximum = 100;
+  mStyleOption.orientation = orientation;
 
   setFocusPolicy( Qt::FocusPolicy( style()->styleHint( QStyle::SH_Button_FocusPolicy ) ) );
   QSizePolicy sp( QSizePolicy::Expanding, QSizePolicy::Fixed, QSizePolicy::Slider );

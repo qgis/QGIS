@@ -27,6 +27,13 @@ A slider control with two interactive endpoints, for interactive selection of a 
 Constructor for QgsRangeSlider, with the specified ``parent`` widget.
 %End
 
+    QgsRangeSlider( Qt::Orientation orientation, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRangeSlider, with the specified ``parent`` widget.
+
+The ``orientation`` parameter determines whether the slider is horizontal or vertical.
+%End
+
     int minimum() const;
 %Docstring
 Returns the minimum value allowed by the widget.

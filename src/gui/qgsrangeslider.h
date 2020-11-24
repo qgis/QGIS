@@ -40,6 +40,13 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     QgsRangeSlider( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Constructor for QgsRangeSlider, with the specified \a parent widget.
+     *
+     * The \a orientation parameter determines whether the slider is horizontal or vertical.
+     */
+    QgsRangeSlider( Qt::Orientation orientation, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
      * Returns the minimum value allowed by the widget.
      *
      * \see setMinimum()
