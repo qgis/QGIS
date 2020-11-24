@@ -241,7 +241,7 @@ Sets the ``scheme`` for the URI.
 
     void setSql( const QString &sql );
 %Docstring
-Sets the \sql filter for the URI.
+Sets the ``sql`` filter for the URI.
 
 The ``sql`` represents a subset filter string to be applied to the source, and should take the
 form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").

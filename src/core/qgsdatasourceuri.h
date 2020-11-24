@@ -237,7 +237,7 @@ class CORE_EXPORT QgsDataSourceUri
     void setSchema( const QString &schema );
 
     /**
-     * Sets the \sql filter for the URI.
+     * Sets the \a sql filter for the URI.
      *
      * The \a sql represents a subset filter string to be applied to the source, and should take the
      * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
