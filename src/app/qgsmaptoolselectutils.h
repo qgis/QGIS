@@ -19,6 +19,7 @@ email                : jpalmer at linz dot govt dot nz
 #include <Qt>
 #include <QRect>
 #include <QPoint>
+#include <QList>
 
 #include "qgsvectorlayer.h"
 
@@ -27,6 +28,8 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsGeometry;
 class QgsRubberBand;
+class QMenu;
+class QgsHighlight;
 
 /**
   Namespace containing methods which are useful for the select maptool widgets
@@ -114,6 +117,49 @@ namespace QgsMapToolSelectUtils
    * \param rubberBand The rubberband that will be set in map units using the input rectangle
   */
   void setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand );
+
+  /**
+   * Class that handles actions which can be displayed in a context menu related to feature selection.
+   */
+  class QgsMapToolSelectMenuActions : public QObject
+  {
+      Q_OBJECT
+    public:
+
+      /**
+      * Constructor
+      * \param canvas The map canvas where where are the selected features
+      * \param vectorLayr The vector layer
+      * \param behavior behavior of select
+      * \param parent a QObject that owns the instance ot this class
+      */
+      QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
+                                   QgsVectorLayer *vectorLayer,
+                                   QgsVectorLayer::SelectBehavior behavior,
+                                   QObject *parent );
+
+      /**
+       * Returns action that correspond to the feature canditate to be selected.
+       * @param featureIds
+       * @return
+       */
+      QList<QAction *> actions( const QgsFeatureIds &featureCanditateIds );
+      ~QgsMapToolSelectMenuActions();
+
+    private slots:
+      void selectFeature();
+      void highLightFeatures();
+      void onLayerDestroyed();
+      void removeHighLight();
+
+    private:
+      QgsMapCanvas *mCanvas = nullptr;
+      QList<QgsHighlight *> mHighLight;
+      QgsVectorLayer *mVectorLayer = nullptr;
+      QgsVectorLayer::SelectBehavior mBehavior = QgsVectorLayer::SetSelection;
+
+      void styleHighlight( QgsHighlight *highlight );
+  };
 }
 
 #endif

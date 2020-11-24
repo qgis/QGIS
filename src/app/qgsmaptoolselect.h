@@ -21,6 +21,8 @@
 #include "qgsmaptoolselectionhandler.h"
 
 class QgsMapCanvas;
+class QgsHighlight;
+
 class QMouseEvent;
 
 class APP_EXPORT QgsMapToolSelect : public QgsMapTool
@@ -52,6 +54,9 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     void deactivate() override;
     Flags flags() const override;
 
+
+    void populateContextMenu( QMenu *menu, QgsMapMouseEvent *event = nullptr ) override;
+
   signals:
 
     void modeChanged( Mode mode );
@@ -63,6 +68,11 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
 
     void modifiersChanged( bool ctrlModifier, bool shiftModifier, bool altModifier );
+
+    void hightLightFeature( const QgsFeatureId &id, QgsVectorLayer *layer );
+
+    QList<QgsHighlight *> mHightlights;
+
 };
 
 #endif

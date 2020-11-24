@@ -118,7 +118,6 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   : QGraphicsView( parent )
   , mCanvasProperties( new CanvasProperties )
-  , mMenu( new QMenu( this ) )
   , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   mScene = new QGraphicsScene();
@@ -810,12 +809,12 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
 {
   const QgsPointXY mapPoint = event->originalMapPoint();
 
-  mMenu->clear();
+  QMenu menu;
 
-  QMenu *copyCoordinateMenu = new QMenu( tr( "Copy Coordinate" ), mMenu );
+  QMenu *copyCoordinateMenu = new QMenu( tr( "Copy Coordinate" ), &menu );
   copyCoordinateMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
 
-  auto addCoordinateFormat = [ = ]( const QString identifier, const QgsCoordinateReferenceSystem & crs )
+  auto addCoordinateFormat = [ &, this]( const QString identifier, const QgsCoordinateReferenceSystem & crs )
   {
     QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
     try
@@ -857,7 +856,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       QAction *copyCoordinateAction = new QAction( QStringLiteral( "%3 (%1, %2)" ).arg(
             QString::number( transformedPoint.x(), 'f', displayPrecision ),
             QString::number( transformedPoint.y(), 'f', displayPrecision ),
-            identifier ), mMenu );
+            identifier ), &menu );
 
       connect( copyCoordinateAction, &QAction::triggered, this, [displayPrecision, transformedPoint]
       {
@@ -896,7 +895,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     }
   }
   copyCoordinateMenu->addSeparator();
-  QAction *setCustomCrsAction = new QAction( tr( "Set Custom CRS…" ), mMenu );
+  QAction *setCustomCrsAction = new QAction( tr( "Set Custom CRS…" ), &menu );
   connect( setCustomCrsAction, &QAction::triggered, this, [ = ]
   {
     QgsProjectionSelectionDialog selector( this );
@@ -908,14 +907,14 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   } );
   copyCoordinateMenu->addAction( setCustomCrsAction );
 
-  mMenu->addMenu( copyCoordinateMenu );
+  menu.addMenu( copyCoordinateMenu );
 
   if ( mMapTool )
-    mMapTool->populateContextMenu( mMenu );
+    mMapTool->populateContextMenu( &menu, event );
 
-  emit contextMenuAboutToShow( mMenu, event );
+  emit contextMenuAboutToShow( &menu, event );
 
-  mMenu->exec( event->globalPos() );
+  menu.exec( event->globalPos() );
 }
 
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )

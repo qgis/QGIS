@@ -26,6 +26,8 @@
 #include <QGestureEvent>
 #include "qgis_gui.h"
 
+#include "qgspointxy.h"
+
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRenderContext;
@@ -205,6 +207,8 @@ class GUI_EXPORT QgsMapTool : public QObject
      * \a menu will be initially populated with a set of default, generic actions.
      * Any new actions added to the menu should be correctly parented to \a menu.
      *
+     * A pointer to the map mouse \a event can be provided to allow particular behavior depending on the map tool.
+     *
      * The default implementation does nothing.
      *
      * \note The context menu is only shown when the ShowContextMenu flag
@@ -212,7 +216,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      *
      * \since QGIS 3.14
      */
-    virtual void populateContextMenu( QMenu *menu );
+    virtual void populateContextMenu( QMenu *menu, QgsMapMouseEvent *event = nullptr );
 
   signals:
     //! emit a message

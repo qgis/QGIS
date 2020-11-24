@@ -11,6 +11,7 @@
 
 
 
+
 %ModuleHeaderCode
 // fix to allow compilation with sip 4.7 that for some reason
 // doesn't add these includes to the file where the code from
@@ -194,13 +195,15 @@ The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
 .. versionadded:: 2.3
 %End
 
-    virtual void populateContextMenu( QMenu *menu );
+    virtual void populateContextMenu( QMenu *menu, QgsMapMouseEvent *event = 0 );
 %Docstring
 Allows the tool to populate and customize the given ``menu``,
 prior to showing it in response to a right-mouse button click.
 
 ``menu`` will be initially populated with a set of default, generic actions.
 Any new actions added to the menu should be correctly parented to ``menu``.
+
+A pointer to the map mouse ``event`` can be provided to allow particular behavior depending on the map tool.
 
 The default implementation does nothing.
 

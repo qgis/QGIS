@@ -18,14 +18,17 @@
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgshighlight.h"
 
 #include <QMouseEvent>
+#include <QMenu>
 #include <QRect>
 #include <QColor>
 
@@ -138,6 +141,37 @@ QgsMapTool::Flags QgsMapToolSelect::flags() const
   return QgsMapTool::flags();
 }
 
+
+
+void QgsMapToolSelect::populateContextMenu( QMenu *menu, QgsMapMouseEvent *event )
+{
+  menu->addSeparator();
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+
+  Qt::KeyboardModifiers modifiers = Qt::NoModifier;
+  QgsPointXY mapPoint;
+  if ( event )
+  {
+    modifiers = event->modifiers();
+    mapPoint = event->mapPoint();
+  }
+  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
+  if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
+    behavior = QgsVectorLayer::IntersectSelection;
+  else if ( modifiers & Qt::ShiftModifier )
+    behavior = QgsVectorLayer::AddToSelection;
+  else if ( modifiers & Qt::ControlModifier )
+    behavior = QgsVectorLayer::RemoveFromSelection;
+
+  QgsMapToolSelectUtils::QgsMapToolSelectMenuActions *menuActions
+    = new QgsMapToolSelectUtils::QgsMapToolSelectMenuActions( mCanvas, vlayer, behavior, menu );
+
+  QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, vlayer );
+  QgsFeatureIds selectedFeatures = QgsMapToolSelectUtils::getMatchingFeatures( mCanvas, QgsGeometry::fromRect( r ), false, false );
+
+  menu->addActions( menuActions->actions( selectedFeatures ) );
+}
+
 void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
   if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&
@@ -170,3 +204,21 @@ void QgsMapToolSelect::modifiersChanged( bool ctrlModifier, bool shiftModifier, 
   else if ( ctrlModifier && shiftModifier && altModifier )
     emit modeChanged( GeometryWithinIntersectWithSelection );
 }
+
+void QgsMapToolSelect::hightLightFeature( const QgsFeatureId &id, QgsVectorLayer *layer )
+{
+  for ( QgsHighlight *hl : mHightlights )
+    delete hl;
+
+  mHightlights.clear();
+
+  QgsFeature feat = layer->getFeature( id );
+  mHightlights.append( new QgsHighlight( mCanvas, feat.geometry(), layer ) );
+
+}
+
+
+
+
+
+

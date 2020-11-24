@@ -1168,9 +1168,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Pointer to project linked to this canvas
     QgsProject *mProject = nullptr;
 
-    //! Context menu
-    QMenu *mMenu = nullptr;
-
     //! recently used extent
     QList <QgsRectangle> mLastExtent;
     int mLastExtentIndex = -1;

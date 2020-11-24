@@ -23,6 +23,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgshighlight.h"
 #include "qgsrenderer.h"
 #include "qgsrubberband.h"
 #include "qgsexception.h"
@@ -34,6 +35,7 @@ email                : jpalmer at linz dot govt dot nz
 
 #include <QMouseEvent>
 #include <QApplication>
+#include <QAction>
 
 QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canvas )
 {
@@ -335,3 +337,193 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   return newSelectedFeatures;
 }
 
+
+QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions(
+  QgsMapCanvas *canvas,
+  QgsVectorLayer *vectorLayer,
+  QgsVectorLayer::SelectBehavior behavior,
+  QObject *parent ):
+  QObject( parent ),
+  mCanvas( canvas ),
+  mVectorLayer( vectorLayer ),
+  mBehavior( behavior )
+{
+  connect( mVectorLayer, &QgsMapLayer::destroyed, this, &QgsMapToolSelectMenuActions::onLayerDestroyed );
+}
+
+QList<QAction *> QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::actions( const QgsFeatureIds &featureCanditateIds )
+{
+  QList<QAction *> actionsList;
+
+  QString beginningOfText;
+
+  QgsFeatureIds effectiveFeatureIds = featureCanditateIds;
+
+  switch ( mBehavior )
+  {
+    case QgsVectorLayer::SetSelection:
+      beginningOfText = tr( "Select " );
+      break;
+    case QgsVectorLayer::AddToSelection:
+    {
+      beginningOfText = tr( "Add " );
+      QgsFeatureIds existingSelection = mVectorLayer->selectedFeatureIds();
+      for ( const QgsFeatureId &selected : featureCanditateIds )
+      {
+        if ( existingSelection.contains( selected ) )
+          effectiveFeatureIds.remove( selected );
+      }
+    }
+    break;
+
+    case QgsVectorLayer::IntersectSelection:
+    {
+      beginningOfText = tr( "Intersect " );
+      QgsFeatureIds existingSelection = mVectorLayer->selectedFeatureIds();
+      for ( const QgsFeatureId &selected : featureCanditateIds )
+      {
+        if ( !existingSelection.contains( selected ) )
+          effectiveFeatureIds.remove( selected );
+      }
+    }
+    break;
+    case QgsVectorLayer::RemoveFromSelection:
+    {
+      beginningOfText = tr( "Remove " );
+      QgsFeatureIds existingSelection = mVectorLayer->selectedFeatureIds();
+      for ( const QgsFeatureId &selected : featureCanditateIds )
+      {
+        if ( !existingSelection.contains( selected ) )
+          effectiveFeatureIds.remove( selected );
+      }
+    }
+    break;
+  }
+
+  if ( !effectiveFeatureIds.isEmpty() )
+  {
+    if ( effectiveFeatureIds.size() > 1 )
+    {
+      QAction *actionAll = new QAction( beginningOfText + tr( "All Features (%1)" ).arg( effectiveFeatureIds.count() ), this );
+      connect( actionAll, &QAction::triggered, this, &QgsMapToolSelectMenuActions::selectFeature );
+      connect( actionAll, &QAction::hovered, this, &QgsMapToolSelectMenuActions::highLightFeatures );
+      QVariantList list;
+      for ( const QgsFeatureId &id : effectiveFeatureIds )
+        list.append( id );
+
+      actionAll->setData( list );
+      actionsList.append( actionAll );
+    }
+    for ( const QgsFeatureId &id : effectiveFeatureIds )
+    {
+      QAction *featureAction = new QAction( beginningOfText + tr( "Feature %1" ).arg( id ), this ) ;
+      featureAction->setData( id );
+      connect( featureAction, &QAction::triggered, this, &QgsMapToolSelectMenuActions::selectFeature );
+      connect( featureAction, &QAction::hovered, this, &QgsMapToolSelectMenuActions::highLightFeatures );
+      actionsList.append( featureAction );
+    }
+  }
+  return actionsList;
+}
+
+QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::~QgsMapToolSelectMenuActions()
+{
+  removeHighLight();
+}
+
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::selectFeature()
+{
+  if ( !mVectorLayer )
+    return;
+  QAction *senderAction = qobject_cast<QAction *>( sender() );
+
+  if ( !senderAction )
+    return;
+
+  QVariant featureVariant = senderAction->data();
+
+  QgsFeatureIds ids;
+  if ( featureVariant.type() == QVariant::List )
+  {
+    QVariantList list = featureVariant.toList();
+    for ( const QVariant &var : list )
+      ids.insert( var.toLongLong() );
+  }
+
+  if ( featureVariant.type() == QVariant::LongLong )
+    ids.insert( featureVariant.toLongLong() );
+
+  if ( !ids.empty() )
+    mVectorLayer->selectByIds( ids, mBehavior );
+
+}
+
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highLightFeatures()
+{
+  removeHighLight();
+
+  if ( !mVectorLayer )
+    return;
+
+  QAction *senderAction = qobject_cast<QAction *>( sender() );
+  if ( !senderAction )
+    return;
+
+  QVariant featureVariant = senderAction->data();
+
+  QgsFeatureIds ids;
+  if ( featureVariant.type() == QVariant::List )
+  {
+    QVariantList list = featureVariant.toList();
+    for ( const QVariant &var : list )
+      ids.insert( var.toLongLong() );
+  }
+
+  if ( featureVariant.type() == QVariant::LongLong )
+    ids.insert( featureVariant.toLongLong() );
+
+  if ( !ids.empty() )
+  {
+    for ( const QgsFeatureId &id : ids )
+    {
+      QgsFeature feat = mVectorLayer->getFeature( id );
+      QgsGeometry geom = feat.geometry();
+      if ( !geom.isEmpty() )
+      {
+        QgsHighlight *hl = new QgsHighlight( mCanvas, geom, mVectorLayer );
+        styleHighlight( hl );
+        mHighLight.append( hl );
+      }
+    }
+  }
+
+}
+
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::onLayerDestroyed()
+{
+  mVectorLayer = nullptr;
+  removeHighLight();
+}
+
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::removeHighLight()
+{
+  for ( QgsHighlight *hl : mHighLight )
+    delete hl;
+
+  mHighLight.clear();
+}
+
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::styleHighlight( QgsHighlight *highlight )
+{
+  QgsSettings settings;
+  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+
+  highlight->setColor( color ); // sets also fill with default alpha
+  color.setAlpha( alpha );
+  highlight->setFillColor( color ); // sets fill with alpha
+  highlight->setBuffer( buffer );
+  highlight->setMinWidth( minWidth );
+}
