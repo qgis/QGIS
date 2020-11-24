@@ -117,6 +117,10 @@ Returns ``True`` if this range overlaps another range.
 .. seealso:: :py:func:`contains`
 %End
 
+    bool operator==( const QgsRange<T> &other ) const;
+
+    bool operator!=( const QgsRange<T> &other ) const;
+
 };
 
 

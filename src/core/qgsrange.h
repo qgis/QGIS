@@ -167,6 +167,19 @@ class QgsRange
       return false;
     }
 
+    bool operator==( const QgsRange<T> &other ) const
+    {
+      return mLower == other.mLower &&
+             mUpper == other.mUpper &&
+             mIncludeLower == other.includeLower() &&
+             mIncludeUpper == other.includeUpper();
+    }
+
+    bool operator!=( const QgsRange<T> &other ) const
+    {
+      return ( ! operator==( other ) );
+    }
+
   private:
 
     T mLower;
