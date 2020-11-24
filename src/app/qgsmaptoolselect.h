@@ -69,9 +69,9 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 
     void modifiersChanged( bool ctrlModifier, bool shiftModifier, bool altModifier );
 
-    void hightLightFeature( const QgsFeatureId &id, QgsVectorLayer *layer );
+    void highlightFeature( const QgsFeatureId &id, QgsVectorLayer *layer );
 
-    QList<QgsHighlight *> mHightlights;
+    QList<QgsHighlight *> mHighlights;
 
 };
 

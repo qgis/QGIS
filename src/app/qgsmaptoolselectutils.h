@@ -140,8 +140,8 @@ namespace QgsMapToolSelectUtils
 
       /**
        * Returns action that correspond to the feature canditate to be selected.
-       * @param featureIds
-       * @return
+       * \param featureIds the feature ids
+       * \return the list ad adapted actions
        */
       QList<QAction *> actions( const QgsFeatureIds &featureCanditateIds );
       ~QgsMapToolSelectMenuActions();
@@ -150,11 +150,11 @@ namespace QgsMapToolSelectUtils
       void selectFeature();
       void highLightFeatures();
       void onLayerDestroyed();
-      void removeHighLight();
+      void removeHighlight();
 
     private:
       QgsMapCanvas *mCanvas = nullptr;
-      QList<QgsHighlight *> mHighLight;
+      QList<QgsHighlight *> mHighlight;
       QgsVectorLayer *mVectorLayer = nullptr;
       QgsVectorLayer::SelectBehavior mBehavior = QgsVectorLayer::SetSelection;
 

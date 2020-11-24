@@ -428,7 +428,7 @@ QList<QAction *> QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::actions( co
 
 QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::~QgsMapToolSelectMenuActions()
 {
-  removeHighLight();
+  removeHighlight();
 }
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::selectFeature()
@@ -460,7 +460,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::selectFeature()
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highLightFeatures()
 {
-  removeHighLight();
+  removeHighlight();
 
   if ( !mVectorLayer )
     return;
@@ -492,7 +492,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highLightFeatures()
       {
         QgsHighlight *hl = new QgsHighlight( mCanvas, geom, mVectorLayer );
         styleHighlight( hl );
-        mHighLight.append( hl );
+        mHighlight.append( hl );
       }
     }
   }
@@ -502,15 +502,15 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highLightFeatures()
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::onLayerDestroyed()
 {
   mVectorLayer = nullptr;
-  removeHighLight();
+  removeHighlight();
 }
 
-void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::removeHighLight()
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::removeHighlight()
 {
-  for ( QgsHighlight *hl : mHighLight )
+  for ( QgsHighlight *hl : mHighlight )
     delete hl;
 
-  mHighLight.clear();
+  mHighlight.clear();
 }
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::styleHighlight( QgsHighlight *highlight )

@@ -205,15 +205,15 @@ void QgsMapToolSelect::modifiersChanged( bool ctrlModifier, bool shiftModifier, 
     emit modeChanged( GeometryWithinIntersectWithSelection );
 }
 
-void QgsMapToolSelect::hightLightFeature( const QgsFeatureId &id, QgsVectorLayer *layer )
+void QgsMapToolSelect::highlightFeature( const QgsFeatureId &id, QgsVectorLayer *layer )
 {
-  for ( QgsHighlight *hl : mHightlights )
+  for ( QgsHighlight *hl : mHighlights )
     delete hl;
 
-  mHightlights.clear();
+  mHighlights.clear();
 
   QgsFeature feat = layer->getFeature( id );
-  mHightlights.append( new QgsHighlight( mCanvas, feat.geometry(), layer ) );
+  mHighlights.append( new QgsHighlight( mCanvas, feat.geometry(), layer ) );
 
 }
 
