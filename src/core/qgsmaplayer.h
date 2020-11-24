@@ -48,6 +48,7 @@ class QgsMapLayerStyleManager;
 class QgsProject;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
+class QgsMapLayerElevationProperties;
 
 class QDomDocument;
 class QKeyEvent;
@@ -1227,6 +1228,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.14
      */
     virtual QgsMapLayerTemporalProperties *temporalProperties() { return nullptr; }
+
+    /**
+     * Returns the layer's elevation properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
 
   public slots:
 

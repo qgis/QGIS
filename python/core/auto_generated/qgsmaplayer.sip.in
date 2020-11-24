@@ -1362,6 +1362,13 @@ Returns the layer's temporal properties. This may be ``None``, depending on the 
 .. versionadded:: 3.14
 %End
 
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+%Docstring
+Returns the layer's elevation properties. This may be ``None``, depending on the layer type.
+
+.. versionadded:: 3.18
+%End
+
   public slots:
 
     void setMinimumScale( double scale );

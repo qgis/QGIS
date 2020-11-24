@@ -329,6 +329,7 @@ set(QGIS_CORE_SRCS
   qgsmapdecoration.cpp
   qgsmaphittest.cpp
   qgsmaplayer.cpp
+  qgsmaplayerelevationproperties.cpp
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
@@ -932,6 +933,7 @@ set(QGIS_CORE_HDRS
   qgsmaplayerstore.h
   qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
+  qgsmaplayerelevationproperties.h
   qgsmaplayertemporalproperties.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
