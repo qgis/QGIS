@@ -136,6 +136,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     void paintEvent( QPaintEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
     QSize sizeHint() const override;
 
   public slots:
@@ -190,6 +191,8 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      */
     void setRange( int lower, int upper );
 
+    bool event( QEvent *event ) override;
+
   signals:
 
     /**
@@ -204,12 +207,24 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
 
   private:
 
+    bool updateHoverControl( const QPoint &pos );
+    bool newHoverControl( const QPoint &pos );
+
     int mLowerValue = 0;
     int mUpperValue = 0;
 
     QStyleOptionSlider mStyleOption;
-    QStyle::SubControl mLowerControl = QStyle::SC_None;
-    QStyle::SubControl mUpperControl = QStyle::SC_None;
+    enum Control
+    {
+      None,
+      Lower,
+      Upper
+    };
+    Control mActiveControl = None;
+    Control mHoverControl = None;
+    QStyle::SubControl mHoverSubControl = QStyle::SC_None;
+    QRect mHoverRect;
+
     bool mInverted = false;
 };
 

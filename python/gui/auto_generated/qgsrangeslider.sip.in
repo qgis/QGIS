@@ -131,6 +131,8 @@ position for the widget. If the value is ``True``, the minimum and maximum appea
 
     virtual void mouseMoveEvent( QMouseEvent *event );
 
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
     virtual QSize sizeHint() const;
 
 
@@ -193,6 +195,9 @@ Sets the current range selected in the widget.
 
 .. seealso:: :py:func:`setUpperValue`
 %End
+
+    virtual bool event( QEvent *event );
+
 
   signals:
 
