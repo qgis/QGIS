@@ -1,4 +1,5 @@
-find_program(QT_LRELEASE_EXECUTABLE NAMES lrelease-qt5 lrelease)
+find_package(Qt5LinguistTools REQUIRED)
+set(QT_LRELEASE_EXECUTABLE Qt5::lrelease)
 
 macro(ADD_TRANSLATION_FILES _sources )
     foreach (_current_FILE ${ARGN})
