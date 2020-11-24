@@ -50,7 +50,16 @@ void QgsRangeSlider::setMaximum( int maximum )
     return;
 
   mStyleOption.maximum = maximum;
+  mStyleOption.minimum = std::min( maximum, mStyleOption.minimum );
   emit rangeLimitsChanged( mStyleOption.minimum, mStyleOption.maximum );
+
+  if ( mUpperValue > maximum || mLowerValue > maximum )
+  {
+    mUpperValue = std::min( mUpperValue, maximum );
+    mLowerValue = std::min( mLowerValue, maximum );
+    emit rangeChanged( mLowerValue, mUpperValue );
+  }
+
   update();
 }
 
@@ -64,7 +73,16 @@ void QgsRangeSlider::setMinimum( int minimum )
   if ( mStyleOption.minimum == minimum )
     return;
   mStyleOption.minimum = minimum;
+  mStyleOption.maximum = std::max( minimum, mStyleOption.maximum );
   emit rangeLimitsChanged( mStyleOption.minimum, mStyleOption.maximum );
+
+  if ( mUpperValue < minimum || mLowerValue < minimum )
+  {
+    mUpperValue = std::max( mUpperValue, minimum );
+    mLowerValue = std::max( mLowerValue, minimum );
+    emit rangeChanged( mLowerValue, mUpperValue );
+  }
+
   update();
 }
 
@@ -73,9 +91,20 @@ void QgsRangeSlider::setRangeLimits( int minimum, int maximum )
   if ( mStyleOption.minimum == minimum && mStyleOption.maximum == maximum )
     return;
 
+  maximum = std::max( minimum, maximum );
+
   mStyleOption.minimum = minimum;
   mStyleOption.maximum = maximum;
   emit rangeLimitsChanged( mStyleOption.minimum, mStyleOption.maximum );
+
+
+  if ( mUpperValue < minimum || mLowerValue < minimum || mUpperValue > maximum || mLowerValue > maximum )
+  {
+    mUpperValue = std::min( maximum, std::max( mUpperValue, minimum ) );
+    mLowerValue = std::min( maximum, std::max( mLowerValue, minimum ) );
+    emit rangeChanged( mLowerValue, mUpperValue );
+  }
+
   update();
 }
 
@@ -89,7 +118,8 @@ void QgsRangeSlider::setLowerValue( int lowerValue )
   if ( lowerValue == mLowerValue )
     return;
 
-  mLowerValue = lowerValue;
+  mLowerValue = std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, lowerValue ) );
+  mUpperValue = std::max( mLowerValue, mUpperValue );
   emit rangeChanged( mLowerValue, mUpperValue );
   update();
 }
@@ -105,7 +135,8 @@ void QgsRangeSlider::setUpperValue( int upperValue )
   if ( upperValue == mUpperValue )
     return;
 
-  mUpperValue = upperValue;
+  mUpperValue = std::max( mStyleOption.minimum, std::min( mStyleOption.maximum, upperValue ) );
+  mLowerValue = std::min( mLowerValue, mUpperValue );
   emit rangeChanged( mLowerValue, mUpperValue );
   update();
 }
@@ -115,8 +146,11 @@ void QgsRangeSlider::setRange( int lower, int upper )
   if ( lower == mLowerValue && upper == mUpperValue )
     return;
 
-  mLowerValue = lower;
-  mUpperValue = upper;
+  if ( upper < lower )
+    std::swap( lower, upper );
+
+  mLowerValue = std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, lower ) );
+  mUpperValue = std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, upper ) );
   emit rangeChanged( mLowerValue, mUpperValue );
   update();
 }
@@ -252,7 +286,13 @@ int QgsRangeSlider::tickInterval() const
 void QgsRangeSlider::setOrientation( Qt::Orientation orientation )
 {
   mStyleOption.orientation = orientation;
+  if ( !testAttribute( Qt::WA_WState_OwnSizePolicy ) )
+  {
+    setSizePolicy( sizePolicy().transposed() );
+    setAttribute( Qt::WA_WState_OwnSizePolicy, false );
+  }
   update();
+  updateGeometry();
 }
 
 Qt::Orientation QgsRangeSlider::orientation() const
