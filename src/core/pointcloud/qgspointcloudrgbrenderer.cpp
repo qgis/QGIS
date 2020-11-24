@@ -92,6 +92,9 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const bool useBlueContrastEnhancement = mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
   const bool useGreenContrastEnhancement = mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
 
+  const QgsDoubleRange zRange = context.renderContext().zRange();
+  const bool considerZ = !zRange.isInfinite();
+
   int rendered = 0;
   double x = 0;
   double y = 0;
@@ -100,6 +103,15 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const bool reproject = ct.isValid();
   for ( int i = 0; i < count; ++i )
   {
+    if ( considerZ )
+    {
+      // z value filtering is cheapest, if we're doing it...
+      qint32 iz = *( qint32 * )( ptr + i * context.pointRecordSize() + context.zOffset() );
+      z = context.offset().z() + context.scale().z() * iz;
+      if ( !zRange.contains( z ) )
+        continue;
+    }
+
     pointXY( context, ptr, i, x, y );
     if ( visibleExtent.contains( QgsPointXY( x, y ) ) )
     {
@@ -307,9 +319,15 @@ void QgsPointCloudRgbRenderer::stopRender( QgsPointCloudRenderContext &context )
   QgsPointCloudRenderer::stopRender( context );
 }
 
-QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
 {
-  return QSet<QString>() << mRedAttribute << mGreenAttribute << mBlueAttribute;
+  QSet<QString> res;
+  res << mRedAttribute << mGreenAttribute << mBlueAttribute;
+
+  if ( !context.renderContext().zRange().isInfinite() )
+    res << QStringLiteral( "Z" );
+
+  return res;
 }
 
 QString QgsPointCloudRgbRenderer::redAttribute() const
