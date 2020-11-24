@@ -92,6 +92,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 class _3D_EXPORT QgsNoRenderingPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
+    //! Constructor for QgsNoRenderingPointCloud3DSymbol
     QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -112,6 +113,7 @@ class _3D_EXPORT QgsNoRenderingPointCloud3DSymbol : public QgsPointCloud3DSymbol
 class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
+    //! Constructor for QgsSingleColorPointCloud3DSymbol
     QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -160,6 +162,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
+    //! Constructor for QgsColorRampPointCloud3DSymbol
     QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer );
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -181,7 +184,7 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     /**
     * Returns the parameter used to select the color of the point cloud
-    * \see setRenderingParameter( QgsColorRampPointCloud3DSymbol::RenderingParameter parameter )
+    * \see setRenderingParameter( const QString &parameter )
     */
     QString renderingParameter() const;
 

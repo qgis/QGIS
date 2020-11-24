@@ -88,6 +88,9 @@ class QgsNoRenderingPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer );
+%Docstring
+Constructor for QgsNoRenderingPointCloud3DSymbol
+%End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -116,6 +119,9 @@ class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer );
+%Docstring
+Constructor for QgsSingleColorPointCloud3DSymbol
+%End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -173,6 +179,9 @@ class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer );
+%Docstring
+Constructor for QgsColorRampPointCloud3DSymbol
+%End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
