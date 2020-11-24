@@ -552,6 +552,8 @@ Sets the camera lens' field of view
 .. versionadded:: 3.8
 %End
 
+
+
     void setOutputDpi( const double dpi );
 %Docstring
 Sets DPI used for conversion between real world units (e.g. mm) and pixels
@@ -757,6 +759,13 @@ Emitted when the list of directional lights changes
 Emitted when the camera lens field of view changes
 
 .. versionadded:: 3.8
+%End
+
+    void projectionTypeChanged();
+%Docstring
+Emitted when the camera lens projection type changes
+
+.. versionadded:: 3.18
 %End
 
     void skyboxSettingsChanged();

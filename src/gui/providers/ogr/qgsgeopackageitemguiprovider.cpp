@@ -38,6 +38,7 @@
 #include "qgsogrdataitems.h"
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
+#include "qgsmessagebar.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
     const QList<QgsDataItem *> &,
@@ -50,13 +51,14 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     {
       QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), this );
       QVariantMap data;
-      data.insert( QStringLiteral( "uri" ), layerItem->uri() );
-      data.insert( QStringLiteral( "key" ), layerItem->providerKey() );
-      data.insert( QStringLiteral( "tableNames" ), layerItem->tableNames() );
-      data.insert( QStringLiteral( "item" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem ) ) );
-      data.insert( QStringLiteral( "context" ), QVariant::fromValue( context ) );
-      actionRenameLayer->setData( data );
-      connect( actionRenameLayer, &QAction::triggered, this, &QgsGeoPackageItemGuiProvider::renameVectorLayer );
+      const QString uri = layerItem->uri();
+      const QString providerKey = layerItem->providerKey();
+      const QStringList tableNames = layerItem->tableNames();
+      QPointer< QgsDataItem > itemPointer( layerItem );
+      connect( actionRenameLayer, &QAction::triggered, this, [this, uri, providerKey, tableNames, itemPointer, context ]
+      {
+        renameVectorLayer( uri, providerKey, tableNames, itemPointer, context );
+      } );
       menu->addAction( actionRenameLayer );
     }
   }
@@ -68,10 +70,11 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     menu->addAction( actionNew );
 
     QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), rootItem->parent() );
-    QVariantMap data;
-    data.insert( QStringLiteral( "item" ), QVariant::fromValue( QPointer< QgsGeoPackageRootItem >( rootItem ) ) );
-    actionCreateDatabase->setData( data );
-    connect( actionCreateDatabase, &QAction::triggered, this, &QgsGeoPackageItemGuiProvider::createDatabase );
+    QPointer< QgsGeoPackageRootItem > rootItemPointer( rootItem );
+    connect( actionCreateDatabase, &QAction::triggered, this, [this, rootItemPointer ]
+    {
+      createDatabase( rootItemPointer );
+    } );
     menu->addAction( actionCreateDatabase );
   }
 
@@ -97,32 +100,33 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
     QString message = QObject::tr( "Delete %1…" ).arg( collectionItem->name() );
     QAction *actionDelete = new QAction( message, collectionItem->parent() );
-    QVariantMap dataDelete;
-    dataDelete.insert( QStringLiteral( "path" ), collectionItem->path() );
-    dataDelete.insert( QStringLiteral( "name" ), collectionItem->name() );
-    dataDelete.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( collectionItem->parent() ) ) );
-    actionDelete->setData( dataDelete );
-    connect( actionDelete, &QAction::triggered, this, &QgsGeoPackageItemGuiProvider::deleteGpkg );
+    QString collectionPath = collectionItem->path();
+    QString collectionName = collectionItem->name();
+    QPointer< QgsDataItem > parent( collectionItem->parent() );
+    connect( actionDelete, &QAction::triggered, this, [this, collectionPath, collectionName, parent, context ]()
+    {
+      deleteGpkg( collectionPath, collectionName, parent, context );
+    } );
     menu->addAction( actionDelete );
 
     // Run VACUUM
     QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), collectionItem->parent() );
     QVariantMap dataVacuum;
-    dataVacuum.insert( QStringLiteral( "name" ), collectionItem->name() );
-    dataVacuum.insert( QStringLiteral( "path" ), collectionItem->path() );
+    const QString name = collectionItem->name();
+    const QString path = collectionItem->path();
     actionVacuumDb->setData( dataVacuum );
-    connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageItemGuiProvider::vacuum );
+    connect( actionVacuumDb, &QAction::triggered, this, [this, context, name, path]
+    {
+      vacuum( path, name, context );
+    } );
     menu->addAction( actionVacuumDb );
   }
 }
 
-void QgsGeoPackageItemGuiProvider::deleteGpkg()
+void QgsGeoPackageItemGuiProvider::deleteGpkg( const QString &itemPath, const QString &name, QPointer< QgsDataItem > parent, const QgsDataItemGuiContext &context )
 {
-  QAction *s = qobject_cast<QAction *>( sender() );
-  QVariantMap data = s->data().toMap();
-  const QString path = data[QStringLiteral( "path" )].toString().remove( QStringLiteral( "gpkg:/" ) );
-  const QString name = data[QStringLiteral( "name" )].toString();
-  QPointer< QgsDataItem > parent = data[QStringLiteral( "parent" )].value<QPointer< QgsDataItem >>();
+  QString path = itemPath;
+  path = path.remove( QStringLiteral( "gpkg:/" ) );
   if ( parent )
   {
     const QString title = QObject::tr( "Delete GeoPackage" );
@@ -148,11 +152,11 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg()
 
       if ( !QFile::remove( path ) )
       {
-        QMessageBox::warning( nullptr, title, tr( "Could not delete GeoPackage." ) );
+        notify( title, tr( "Could not delete GeoPackage." ), context, Qgis::Critical );
       }
       else
       {
-        QMessageBox::information( nullptr, title, tr( "GeoPackage deleted successfully." ) );
+        notify( title, tr( "GeoPackage deleted successfully." ), context, Qgis::Success );
         // If the deleted file was a stored connection, remove it too
         if ( ! name.isEmpty() )
         {
@@ -172,13 +176,13 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg()
     }
     else
     {
-      QMessageBox::warning( nullptr, title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
-                            " remove it from the project and retry." ).arg( path, projectLayer->name() ) );
+      notify( title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
+                                  " remove it from the project and retry." ).arg( path, projectLayer->name() ), context, Qgis::Critical );
     }
   }
 }
 
-bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &newName, QgsDataItemGuiContext )
+bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &newName, QgsDataItemGuiContext context )
 {
   if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast< QgsGeoPackageVectorLayerItem * >( item ) )
   {
@@ -243,12 +247,20 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
           errCause = ex.what();
         }
       }
+      if ( errCause.isEmpty() && context.messageBar() )
+      {
+        context.messageBar()->pushMessage( tr( "Rename Layer" ), tr( "The layer <b>%1</b> was successfully renamed." ).arg( oldName ), Qgis::Success );
+      }
     }
 
     if ( ! errCause.isEmpty() )
-      QMessageBox::critical( nullptr, QObject::tr( "Error renaming layer" ), errCause );
+    {
+      notify( QObject::tr( "Error renaming layer" ), errCause, context, Qgis::Critical );
+    }
     else if ( layerItem->parent() )
-      layerItem->parent()->refreshConnections();
+    {
+      layerItem->parent()->refresh();
+    }
 
     return errCause.isEmpty();
   }
@@ -256,17 +268,9 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
   return false;
 }
 
-void QgsGeoPackageItemGuiProvider::renameVectorLayer()
+void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames,
+    QPointer< QgsDataItem > item, const QgsDataItemGuiContext &context )
 {
-  QAction *s = qobject_cast<QAction *>( sender() );
-  QVariantMap data = s->data().toMap();
-  const QString uri = data[QStringLiteral( "uri" )].toString();
-  const QString key = data[QStringLiteral( "key" )].toString();
-  // Collect existing table names
-  const QStringList tableNames = data[QStringLiteral( "tableNames" )].toStringList();
-  QPointer< QgsDataItem > item = data[QStringLiteral( "item" )].value<QPointer< QgsDataItem >>();
-  QgsDataItemGuiContext context = data[QStringLiteral( "context" )].value< QgsDataItemGuiContext >();
-
   // Get layer name from layer URI
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( key, uri ) );
   QString layerName = pieces[QStringLiteral( "layerName" )].toString();
@@ -285,7 +289,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer()
 }
 
 
-bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsDataItemGuiContext )
+bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   if ( QgsGeoPackageAbstractLayerItem *item = qobject_cast< QgsGeoPackageAbstractLayerItem * >( layerItem ) )
   {
@@ -316,7 +320,7 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
     bool res = item->executeDeleteLayer( errCause );
     if ( !res )
     {
-      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+      notify( tr( "Delete Layer" ), errCause, context, Qgis::Critical );
     }
     else
     {
@@ -327,16 +331,17 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
         if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> was successfully deleted."
                                     " Compact database (VACUUM) <b>%2</b> now?" ).arg( item->name(), connectionParentItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
         {
-          vacuumGeoPackageDbAction( connectionParentItem->path(), connectionParentItem->name() );
+          vacuumGeoPackageDbAction( connectionParentItem->path(), connectionParentItem->name(), context );
         }
       }
       else
       {
-        QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "The layer <b>%1</b> was successfully deleted." ).arg( item->name() ) );
+        notify( tr( "Delete Layer" ), tr( "The layer <b>%1</b> was successfully deleted." ).arg( item->name() ), context, Qgis::Success );
       }
       if ( item->parent() )
-        item->parent()->refreshConnections();
-
+      {
+        item->parent()->refresh();
+      }
     }
     return true;
   }
@@ -346,31 +351,30 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
   }
 }
 
-void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path, const QString &name )
+void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path, const QString &name, const QgsDataItemGuiContext &context )
 {
   Q_UNUSED( path )
   QString errCause;
   bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( name, path, errCause );
   if ( !result || !errCause.isEmpty() )
   {
-    QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
+    notify( tr( "Database compact (VACUUM)" ), errCause, context, Qgis::Critical );
+  }
+  else if ( context.messageBar() )
+  {
+    context.messageBar()->pushMessage( tr( "Database compacted" ), Qgis::Success );
   }
 }
 
-void QgsGeoPackageItemGuiProvider::vacuum()
+void QgsGeoPackageItemGuiProvider::vacuum( const QString &itemPath, const QString &name, const QgsDataItemGuiContext &context )
 {
-  QAction *s = qobject_cast<QAction *>( sender() );
-  QVariantMap data = s->data().toMap();
-  const QString path = data[QStringLiteral( "path" )].toString().remove( QStringLiteral( "gpkg:/" ) );
-  const QString name = data[QStringLiteral( "name" )].toString();
-  vacuumGeoPackageDbAction( path, name );
+  QString path = itemPath;
+  path = path.remove( QStringLiteral( "gpkg:/" ) );
+  vacuumGeoPackageDbAction( path, name, context );
 }
 
-void QgsGeoPackageItemGuiProvider::createDatabase()
+void QgsGeoPackageItemGuiProvider::createDatabase( QPointer< QgsGeoPackageRootItem > item )
 {
-  QAction *s = qobject_cast<QAction *>( sender() );
-  QVariantMap data = s->data().toMap();
-  QPointer< QgsGeoPackageRootItem > item = data[QStringLiteral( "item" )].value<QPointer< QgsGeoPackageRootItem >>();
   if ( item )
   {
     QgsNewGeoPackageLayerDialog dialog( nullptr );
@@ -395,18 +399,17 @@ bool QgsGeoPackageItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGui
   return false;
 }
 
-bool QgsGeoPackageItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
+bool QgsGeoPackageItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
 {
   if ( QgsGeoPackageCollectionItem *collectionItem = qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
   {
-    return handleDropGeopackage( collectionItem, data );
+    return handleDropGeopackage( collectionItem, data, context );
   }
   return false;
 }
 
-bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data )
+bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, const QgsDataItemGuiContext &context )
 {
-
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
@@ -478,8 +481,8 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
 
         if ( exists && !isVector )
         {
-          QMessageBox::warning( nullptr, tr( "Cannot Overwrite Layer" ),
-                                tr( "Destination layer <b>%1</b> already exists. Overwriting with raster layers is not currently supported." ).arg( dropUri.name ) );
+          notify( tr( "Cannot Overwrite Layer" ),
+                  tr( "Destination layer <b>%1</b> already exists. Overwriting with raster layers is not currently supported." ).arg( dropUri.name ), context, Qgis::Critical );
         }
         else if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
                   tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
@@ -498,9 +501,8 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             // when export is successful:
             connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [ = ]()
             {
-              // this is gross - TODO - find a way to get access to messageBar from data items
-              QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
-              item->refreshConnections();
+              notify( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), context, Qgis::Success );
+              item->refresh();
             } );
 
             // when an error occurs:
@@ -524,9 +526,8 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             // when export is successful:
             connect( exportTask, &QgsGeoPackageRasterWriterTask::writeComplete, item, [ = ]()
             {
-              // this is gross - TODO - find a way to get access to messageBar from data items
-              QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
-              item->refreshConnections();
+              notify( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), context, Qgis::Success );
+              item->refresh();
             } );
 
             // when an error occurs:

@@ -213,59 +213,59 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
 
 void QgsAuthEditorWidgets::setMasterPassword()
 {
-  QgsAuthGuiUtils::setMasterPassword( messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::setMasterPassword( messageBar() );
 }
 
 void QgsAuthEditorWidgets::clearCachedMasterPassword()
 {
-  QgsAuthGuiUtils::clearCachedMasterPassword( messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::clearCachedMasterPassword( messageBar() );
 }
 
 void QgsAuthEditorWidgets::resetMasterPassword()
 {
-  QgsAuthGuiUtils::resetMasterPassword( messageBar(), messageTimeout(), this );
+  QgsAuthGuiUtils::resetMasterPassword( messageBar(), this );
 }
 
 void QgsAuthEditorWidgets::clearCachedAuthenticationConfigs()
 {
-  QgsAuthGuiUtils::clearCachedAuthenticationConfigs( messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::clearCachedAuthenticationConfigs( messageBar() );
 }
 
 void QgsAuthEditorWidgets::removeAuthenticationConfigs()
 {
-  QgsAuthGuiUtils::removeAuthenticationConfigs( messageBar(), messageTimeout(), this );
+  QgsAuthGuiUtils::removeAuthenticationConfigs( messageBar(), this );
 }
 
 void QgsAuthEditorWidgets::eraseAuthenticationDatabase()
 {
-  QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), messageTimeout(), this );
+  QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), this );
 }
 
 void QgsAuthEditorWidgets::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   int levelint = static_cast<int>( level );
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
+  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
 }
 
 void QgsAuthEditorWidgets::passwordHelperDelete()
 {
-  QgsAuthGuiUtils::passwordHelperDelete( messageBar(), messageTimeout(), this );
+  QgsAuthGuiUtils::passwordHelperDelete( messageBar(), this );
 }
 
 void QgsAuthEditorWidgets::passwordHelperSync()
 {
-  QgsAuthGuiUtils::passwordHelperSync( messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::passwordHelperSync( messageBar() );
 }
 
 void QgsAuthEditorWidgets::passwordHelperEnableTriggered()
 {
   // Only fire on real changes
-  QgsAuthGuiUtils::passwordHelperEnable( mActionPasswordHelperEnable->isChecked(), messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::passwordHelperEnable( mActionPasswordHelperEnable->isChecked(), messageBar() );
 }
 
 void QgsAuthEditorWidgets::passwordHelperLoggingEnableTriggered()
 {
-  QgsAuthGuiUtils::passwordHelperLoggingEnable( mActionPasswordHelperLoggingEnable->isChecked(), messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::passwordHelperLoggingEnable( mActionPasswordHelperLoggingEnable->isChecked(), messageBar() );
 }
 
 QgsMessageBar *QgsAuthEditorWidgets::messageBar()
@@ -273,8 +273,3 @@ QgsMessageBar *QgsAuthEditorWidgets::messageBar()
   return mMsgBar;
 }
 
-int QgsAuthEditorWidgets::messageTimeout()
-{
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-}

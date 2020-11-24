@@ -2561,4 +2561,91 @@ tests:
             angle:
               precision: 2
 
+  - algorithm: native:deletecolumn
+    name: Delete one column
+    params:
+      COLUMN:
+      - fid
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/drop_fields_one.gml
+        type: vector
+
+  - algorithm: native:deletecolumn
+    name: Delete two columns
+    params:
+      COLUMN:
+      - name
+      - floatval
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/delete_columns_two.gml
+        type: vector
+
+  - algorithm: native:deletecolumn
+    name: Delete three columns
+    params:
+      COLUMN:
+        - fid
+        - intval
+        - doesntexist # should NOT cause algorithm to abort, just a warning -- otherwise we can't make flexible models
+        - floatval
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/delete_columns_three.gml
+        type: vector
+
+  - algorithm: native:retainfields
+    name: Retain one field
+    params:
+      FIELDS:
+      - name
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/retain_fields_one.gml
+        type: vector
+
+  - algorithm: native:retainfields
+    name: Retain two fields
+    params:
+      FIELDS:
+      - floatval
+      - name
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/retain_fields_two.gml
+        type: vector
+
+  - algorithm: native:retainfields
+    name: Retain three fields
+    params:
+      FIELDS:
+      - name
+      - floatval
+      - doesntexist # should NOT cause algorithm to abort, just a warning -- otherwise we can't make flexible models
+      - intval
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/retain_fields_three.gml
+        type: vector
+
+
 # See ../README.md for a description of the file format

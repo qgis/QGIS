@@ -32,11 +32,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   , mLayer( layer )
 {
   setupUi( this );
-  connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
   spinAngle->setClearValue( 0 );
-
-  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   mStyleItemsListWidget->setStyle( mStyle );
   mStyleItemsListWidget->setEntityType( QgsStyle::SymbolEntity );
@@ -51,36 +47,80 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   mStandardizeRingsAction->setCheckable( true );
   connect( mStandardizeRingsAction, &QAction::toggled, this, &QgsSymbolsListWidget::forceRHRToggled );
 
+
+  // select correct page in stacked widget
+  QgsPropertyOverrideButton *opacityDDBtn = nullptr;
+  switch ( symbol->type() )
+  {
+    case QgsSymbol::Marker:
+    {
+      stackedWidget->removeWidget( stackedWidget->widget( 2 ) );
+      stackedWidget->removeWidget( stackedWidget->widget( 1 ) );
+      mSymbolColorButton = btnMarkerColor;
+      opacityDDBtn = mMarkerOpacityDDBtn;
+      mSymbolOpacityWidget = mMarkerOpacityWidget;
+      mSymbolUnitWidget = mMarkerUnitWidget;
+      connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSymbolsListWidget::setMarkerAngle );
+      connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSymbolsListWidget::setMarkerSize );
+      registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
+      connect( mSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerSize );
+      registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
+      connect( mRotationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerAngle );
+      break;
+    }
+
+    case QgsSymbol::Line:
+    {
+      stackedWidget->removeWidget( stackedWidget->widget( 2 ) );
+      stackedWidget->removeWidget( stackedWidget->widget( 0 ) );
+      mSymbolColorButton = btnLineColor;
+      opacityDDBtn = mLineOpacityDDBtn;
+      mSymbolOpacityWidget = mLineOpacityWidget;
+      mSymbolUnitWidget = mLineUnitWidget;
+      connect( spinWidth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSymbolsListWidget::setLineWidth );
+      registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
+      connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
+      break;
+    }
+
+    case QgsSymbol::Fill:
+    {
+      stackedWidget->removeWidget( stackedWidget->widget( 1 ) );
+      stackedWidget->removeWidget( stackedWidget->widget( 0 ) );
+      mSymbolColorButton = btnFillColor;
+      opacityDDBtn = mFillOpacityDDBtn;
+      mSymbolOpacityWidget = mFillOpacityWidget;
+      mSymbolUnitWidget = mFillUnitWidget;
+      break;
+    }
+
+    case QgsSymbol::Hybrid:
+      break;
+  }
+
+  stackedWidget->setCurrentIndex( 0 );
+
   if ( mSymbol )
   {
     updateSymbolInfo();
   }
 
-  // select correct page in stacked widget
-  // there's a correspondence between symbol type number and page numbering => exploit it!
-  stackedWidget->setCurrentIndex( symbol->type() );
-  connect( btnColor, &QgsColorButton::colorChanged, this, &QgsSymbolsListWidget::setSymbolColor );
-  connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSymbolsListWidget::setMarkerAngle );
-  connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSymbolsListWidget::setMarkerSize );
-  connect( spinWidth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSymbolsListWidget::setLineWidth );
+  connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
+  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
-  connect( mRotationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerAngle );
-  registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
-  connect( mSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedMarkerSize );
-  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
-  connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsSymbolsListWidget::updateDataDefinedLineWidth );
+  connect( mSymbolColorButton, &QgsColorButton::colorChanged, this, &QgsSymbolsListWidget::setSymbolColor );
 
-  registerSymbolDataDefinedButton( mOpacityDDBtn, QgsSymbol::PropertyOpacity );
+  registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::PropertyOpacity );
 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
   updateAssistantSymbol();
 
-  btnColor->setAllowOpacity( true );
-  btnColor->setColorDialogTitle( tr( "Select Color" ) );
-  btnColor->setContext( QStringLiteral( "symbology" ) );
+  mSymbolColorButton->setAllowOpacity( true );
+  mSymbolColorButton->setColorDialogTitle( tr( "Select Color" ) );
+  mSymbolColorButton->setContext( QStringLiteral( "symbology" ) );
 
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
+  connect( mSymbolOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
 
   connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
   connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbolsListWidget::saveSymbol );
@@ -412,9 +452,9 @@ void QgsSymbolsListWidget::opacityChanged( double opacity )
 
 void QgsSymbolsListWidget::updateSymbolColor()
 {
-  btnColor->blockSignals( true );
-  btnColor->setColor( mSymbol->color() );
-  btnColor->blockSignals( false );
+  mSymbolColorButton->blockSignals( true );
+  mSymbolColorButton->setColor( mSymbol->color() );
+  mSymbolColorButton->blockSignals( false );
 }
 
 QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
@@ -494,7 +534,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   mSymbolUnitWidget->setMapUnitScale( mSymbol->mapUnitScale() );
   mSymbolUnitWidget->blockSignals( false );
 
-  mOpacityWidget->setOpacity( mSymbol->opacity() );
+  mSymbolOpacityWidget->setOpacity( mSymbol->opacity() );
 
   // Clean up previous advanced symbol actions
   const QList<QAction *> actionList( mStyleItemsListWidget->advancedMenu()->actions() );

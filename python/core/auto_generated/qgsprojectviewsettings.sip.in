@@ -22,9 +22,11 @@ map canvas, e.g. map scales and default view extent for the project.
 %End
   public:
 
-    QgsProjectViewSettings( QObject *parent = 0 );
+    QgsProjectViewSettings( QgsProject *project = 0 );
 %Docstring
-Constructor for QgsProjectViewSettings with the specified ``parent`` object.
+Constructor for QgsProjectViewSettings for the specified ``project``.
+
+Ownership is transferred to the ``project``.
 %End
 
     void reset();
@@ -62,6 +64,49 @@ when this project is opened.
    view used when the project is opened for the very first time.
 
 .. seealso:: :py:func:`defaultViewExtent`
+%End
+
+    QgsReferencedRectangle presetFullExtent() const;
+%Docstring
+Returns the project's preset full extent.
+
+This extent represents the maximal limits of the project. The full extent defaults to a null rectangle,
+which indicates that the maximal extent should be calculated based on the layers in the project.
+
+.. seealso:: :py:func:`setPresetFullExtent`
+
+.. seealso:: :py:func:`fullExtent`
+
+.. versionadded:: 3.18
+%End
+
+    void setPresetFullExtent( const QgsReferencedRectangle &extent );
+%Docstring
+Sets the project's preset full ``extent``.
+
+This extent represents the maximal limits of the project. Setting the full ``extent`` to a null rectangle
+indicates that the maximal extent should be calculated based on the layers in the project.
+
+.. seealso:: :py:func:`setPresetFullExtent`
+
+.. seealso:: :py:func:`fullExtent`
+
+.. versionadded:: 3.18
+%End
+
+    QgsReferencedRectangle fullExtent() const;
+%Docstring
+Returns the full extent of the project, which represents the maximal limits of the project.
+
+The returned extent will be in the project's CRS.
+
+If the :py:func:`~QgsProjectViewSettings.presetFullExtent` is non null, this will be returned as the full extent.
+Otherwise the full extent will be calculated based on the extent of all layers
+in the project.
+
+.. seealso:: :py:func:`presetFullExtent`
+
+.. seealso:: :py:func:`setPresetFullExtent`
 %End
 
     void setMapScales( const QVector<double> &scales );
@@ -135,6 +180,13 @@ Emitted when the list of custom project map scales changes.
 .. seealso:: :py:func:`mapScales`
 
 .. seealso:: :py:func:`setMapScales`
+%End
+
+    void presetFullExtentChanged();
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectViewSettings.presetFullExtent` is changed.
+
+.. versionadded:: 3.18
 %End
 
 };

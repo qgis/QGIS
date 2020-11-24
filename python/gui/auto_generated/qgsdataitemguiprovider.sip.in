@@ -158,11 +158,15 @@ The function is replacement of :py:func:`QgsDataItem.paramWidget()`
 .. versionadded:: 3.10
 %End
 
-    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info );
+    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info, int duration = -1, QWidget *parent = 0 );
 %Docstring
 Notify the user showing a ``message`` with ``title`` and ``level``
 If the context has a message bar the message will be shown in the message bar
 else a message dialog will be used.
+
+Since QGIS 3.18, the optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
+is set to 0, then the message must be manually dismissed by the user. A duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
 
 .. versionadded:: 3.16
 %End

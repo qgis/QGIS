@@ -180,9 +180,14 @@ class GUI_EXPORT QgsDataItemGuiProvider
      * Notify the user showing a \a message with \a title and \a level
      * If the context has a message bar the message will be shown in the message bar
      * else a message dialog will be used.
+     *
+     * Since QGIS 3.18, the optional \a duration argument can be used to specify the message timeout in seconds. If \a duration
+     * is set to 0, then the message must be manually dismissed by the user. A duration of -1 indicates that
+     * the default timeout for the message \a level should be used.
+     *
      * \since QGIS 3.16
      */
-    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info );
+    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info, int duration = -1, QWidget *parent = nullptr );
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H

@@ -32,7 +32,6 @@ QString QgsPointCloudRgbRenderer::type() const
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
 {
   std::unique_ptr< QgsPointCloudRgbRenderer > res = qgis::make_unique< QgsPointCloudRgbRenderer >();
-  res->mPenWidth = penWidth();
   res->mRedAttribute = mRedAttribute;
   res->mGreenAttribute = mGreenAttribute;
   res->mBlueAttribute = mBlueAttribute;
@@ -50,8 +49,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
     res->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
   }
 
-  res->setMaximumScreenError( maximumScreenError() );
-  res->setMaximumScreenErrorUnit( maximumScreenErrorUnit() );
+  copyCommonProperties( res.get() );
 
   return res.release();
 }
@@ -207,17 +205,15 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 }
 
 
-QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext & )
+QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   std::unique_ptr< QgsPointCloudRgbRenderer > r = qgis::make_unique< QgsPointCloudRgbRenderer >();
-  r->setPenWidth( element.attribute( QStringLiteral( "penwidth" ), QStringLiteral( "1" ) ).toInt() );
 
   r->setRedAttribute( element.attribute( QStringLiteral( "red" ), QStringLiteral( "Red" ) ) );
   r->setGreenAttribute( element.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
   r->setBlueAttribute( element.attribute( QStringLiteral( "blue" ), QStringLiteral( "Blue" ) ) );
 
-  r->setMaximumScreenError( element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "5" ) ).toDouble() );
-  r->setMaximumScreenErrorUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) ) );
+  r->restoreCommonProperties( element, context );
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
@@ -250,19 +246,17 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
   return r.release();
 }
 
-QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWriteContext & ) const
+QDomElement QgsPointCloudRgbRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
 
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "rgb" ) );
-  rendererElem.setAttribute( QStringLiteral( "penwidth" ), mPenWidth );
 
   rendererElem.setAttribute( QStringLiteral( "red" ), mRedAttribute );
   rendererElem.setAttribute( QStringLiteral( "green" ), mGreenAttribute );
   rendererElem.setAttribute( QStringLiteral( "blue" ), mBlueAttribute );
 
-  rendererElem.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( maximumScreenError() ) );
-  rendererElem.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( maximumScreenErrorUnit() ) );
+  saveCommonProperties( rendererElem, context );
 
   //contrast enhancement
   if ( mRedContrastEnhancement )
@@ -291,7 +285,7 @@ void QgsPointCloudRgbRenderer::startRender( QgsPointCloudRenderContext &context 
 {
   QgsPointCloudRenderer::startRender( context );
 
-  mPainterPenWidth = context.renderContext().convertToPainterUnits( mPenWidth, QgsUnitTypes::RenderUnit::RenderMillimeters );
+  mPainterPenWidth = context.renderContext().convertToPainterUnits( pointSize(), pointSizeUnit(), pointSizeMapUnitScale() );
 }
 
 void QgsPointCloudRgbRenderer::stopRender( QgsPointCloudRenderContext &context )
@@ -302,16 +296,6 @@ void QgsPointCloudRgbRenderer::stopRender( QgsPointCloudRenderContext &context )
 QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
 {
   return QSet<QString>() << mRedAttribute << mGreenAttribute << mBlueAttribute;
-}
-
-int QgsPointCloudRgbRenderer::penWidth() const
-{
-  return mPenWidth;
-}
-
-void QgsPointCloudRgbRenderer::setPenWidth( int value )
-{
-  mPenWidth = value;
 }
 
 QString QgsPointCloudRgbRenderer::redAttribute() const

@@ -110,6 +110,7 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QTextStream out( &file );
+    out.setCodec( "UTF-8" );
     out << composition;
   }
   else

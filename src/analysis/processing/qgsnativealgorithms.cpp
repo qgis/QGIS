@@ -49,6 +49,7 @@
 #include "qgsalgorithmdifference.h"
 #include "qgsalgorithmdissolve.h"
 #include "qgsalgorithmdrape.h"
+#include "qgsalgorithmdropfields.h"
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
 #include "qgsalgorithmdxfexport.h"
@@ -278,6 +279,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDissolveAlgorithm() );
   addAlgorithm( new QgsDrapeToMAlgorithm() );
   addAlgorithm( new QgsDrapeToZAlgorithm() );
+  addAlgorithm( new QgsDropTableFieldsAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
   addAlgorithm( new QgsDxfExportAlgorithm() );
@@ -410,6 +412,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRenameTableFieldAlgorithm() );
   addAlgorithm( new QgsRepairShapefileAlgorithm() );
   addAlgorithm( new QgsRescaleRasterAlgorithm() );
+  addAlgorithm( new QgsRetainTableFieldsAlgorithm() );
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsRoundRasterValuesAlgorithm() );

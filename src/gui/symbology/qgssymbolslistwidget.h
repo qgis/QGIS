@@ -113,6 +113,10 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 
+    QgsColorButton *mSymbolColorButton = nullptr;
+    QgsOpacityWidget *mSymbolOpacityWidget = nullptr;
+    QgsUnitSelectionWidget *mSymbolUnitWidget = nullptr;
+
     void updateSymbolColor();
     void updateSymbolInfo();
     QgsSymbolWidgetContext mContext;

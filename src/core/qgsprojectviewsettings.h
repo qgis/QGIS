@@ -23,6 +23,7 @@
 class QDomElement;
 class QgsReadWriteContext;
 class QDomDocument;
+class QgsProject;
 
 /**
  * Contains settings and properties relating to how a QgsProject should be displayed inside
@@ -38,9 +39,11 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
   public:
 
     /**
-     * Constructor for QgsProjectViewSettings with the specified \a parent object.
+     * Constructor for QgsProjectViewSettings for the specified \a project.
+     *
+     * Ownership is transferred to the \a project.
      */
-    QgsProjectViewSettings( QObject *parent = nullptr );
+    QgsProjectViewSettings( QgsProject *project = nullptr );
 
     /**
      * Resets the settings to a default state.
@@ -74,6 +77,46 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * \see defaultViewExtent()
      */
     void setDefaultViewExtent( const QgsReferencedRectangle &extent );
+
+    /**
+     * Returns the project's preset full extent.
+     *
+     * This extent represents the maximal limits of the project. The full extent defaults to a null rectangle,
+     * which indicates that the maximal extent should be calculated based on the layers in the project.
+     *
+     * \see setPresetFullExtent()
+     * \see fullExtent()
+     *
+     * \since QGIS 3.18
+     */
+    QgsReferencedRectangle presetFullExtent() const;
+
+    /**
+     * Sets the project's preset full \a extent.
+     *
+     * This extent represents the maximal limits of the project. Setting the full \a extent to a null rectangle
+     * indicates that the maximal extent should be calculated based on the layers in the project.
+     *
+     * \see setPresetFullExtent()
+     * \see fullExtent()
+     *
+     * \since QGIS 3.18
+     */
+    void setPresetFullExtent( const QgsReferencedRectangle &extent );
+
+    /**
+     * Returns the full extent of the project, which represents the maximal limits of the project.
+     *
+     * The returned extent will be in the project's CRS.
+     *
+     * If the presetFullExtent() is non null, this will be returned as the full extent.
+     * Otherwise the full extent will be calculated based on the extent of all layers
+     * in the project.
+     *
+     * \see presetFullExtent()
+     * \see setPresetFullExtent()
+     */
+    QgsReferencedRectangle fullExtent() const;
 
     /**
      * Sets the list of custom project map \a scales.
@@ -141,11 +184,20 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      */
     void mapScalesChanged();
 
+    /**
+     * Emitted whenever the presetFullExtent() is changed.
+     *
+     * \since QGIS 3.18
+     */
+    void presetFullExtentChanged();
+
   private:
 
+    QgsProject *mProject = nullptr;
     QVector<double> mMapScales;
     bool mUseProjectScales = false;
     QgsReferencedRectangle mDefaultViewExtent;
+    QgsReferencedRectangle mPresetFullExtent;
 };
 
 #endif // QGSPROJECTVIEWSETTINGS_H

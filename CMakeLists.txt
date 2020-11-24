@@ -217,10 +217,13 @@ if(WITH_CORE)
   endif()
 
   # try to configure and build MDAL support
-  set (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL support should be built")
+  set (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL should be built from internal copy")
   if (NOT WITH_INTERNAL_MDAL)
     set (MDAL_PREFIX "" CACHE PATH "Path to MDAL base directory")
   endif()
+
+  # try to configure and build POLY2TRI support
+  set (WITH_INTERNAL_POLY2TRI TRUE CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
 
   # try to configure and build POSTGRESQL support
   set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
@@ -367,6 +370,10 @@ if(WITH_CORE)
 
   if (NOT WITH_INTERNAL_MDAL)
     find_package(MDAL REQUIRED) # MDAL provider
+  endif()
+
+  if (NOT WITH_INTERNAL_POLY2TRI)
+    find_package(Poly2Tri REQUIRED)
   endif()
 
   find_package(SpatiaLite REQUIRED)

@@ -39,7 +39,7 @@ QgsConfigCache::QgsConfigCache()
 }
 
 
-const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSettings *settings )
+const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerSettings *settings )
 {
   if ( ! mProjectCache[ path ] )
   {

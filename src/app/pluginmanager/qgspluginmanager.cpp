@@ -1818,10 +1818,6 @@ void QgsPluginManager::showEvent( QShowEvent *e )
 
 void QgsPluginManager::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
 {
-  if ( duration == -1 )
-  {
-    duration = QgisApp::instance()->messageTimeout();
-  }
   msgBar->pushMessage( text, level, duration );
 }
 

@@ -611,15 +611,13 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
   {
     mMessageBar->pushMessage( QString(),
                               tr( "%n matching feature(s) selected", "matching features", count ),
-                              Qgis::Info,
-                              messageTimeout() );
+                              Qgis::Info );
   }
   else
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Warning,
-                              messageTimeout() );
+                              Qgis::Info );
   }
 }
 
@@ -627,8 +625,7 @@ void QgsAttributeForm::displayWarning( const QString &message )
 {
   mMessageBar->pushMessage( QString(),
                             message,
-                            Qgis::Warning,
-                            messageTimeout() );
+                            Qgis::Warning );
 }
 
 void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior )
@@ -722,12 +719,12 @@ bool QgsAttributeForm::saveMultiEdits()
   {
     mLayer->endEditCommand();
     mLayer->triggerRepaint();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied." ), Qgis::Success, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied." ), Qgis::Success, -1 );
   }
   else
   {
     mLayer->destroyEditCommand();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied." ), Qgis::Warning, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied." ), Qgis::Warning, 0 );
   }
 
   if ( !mButtonBox->isVisible() )
@@ -1850,8 +1847,7 @@ void QgsAttributeForm::initPython()
       else
         mMessageBar->pushMessage( QString(),
                                   tr( "Python macro could not be run due to missing permissions." ),
-                                  Qgis::MessageLevel::Warning,
-                                  messageTimeout() );
+                                  Qgis::MessageLevel::Warning );
     }
 
     QgsPythonRunner::run( QStringLiteral( "import inspect" ) );
@@ -2426,12 +2422,6 @@ QString QgsAttributeForm::aggregateFilter() const
 void QgsAttributeForm::setExtraContextScope( QgsExpressionContextScope *extraScope )
 {
   mExtraContextScope.reset( extraScope );
-}
-
-int QgsAttributeForm::messageTimeout()
-{
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }
 
 void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expressionContext )

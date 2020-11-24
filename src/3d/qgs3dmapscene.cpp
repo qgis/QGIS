@@ -128,6 +128,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
+  connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
@@ -320,6 +321,14 @@ QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController 
 
 void Qgs3DMapScene::onCameraChanged()
 {
+  if ( mMap.projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
+  {
+    QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
+    const float viewWidthFromCenter = mCameraController->distance();
+    const float viewHeightFromCenter =  viewportRect.height() * viewWidthFromCenter / viewportRect.width();
+    mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
+  }
+
   updateScene();
   bool changedCameraPlanes = updateCameraNearFarPlanes();
 
@@ -623,6 +632,7 @@ void Qgs3DMapScene::updateLights()
 void Qgs3DMapScene::updateCameraLens()
 {
   mEngine->camera()->lens()->setFieldOfView( mMap.fieldOfView() );
+  mEngine->camera()->lens()->setProjectionType( mMap.projectionType() );
   onCameraChanged();
 }
 

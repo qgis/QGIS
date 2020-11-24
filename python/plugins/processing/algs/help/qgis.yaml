@@ -62,9 +62,6 @@ qgis:definecurrentprojection: >
 qgis:delaunaytriangulation: >
   This algorithm creates a polygon layer with the delaunay triangulation corresponding to a points layer.
 
-qgis:deletecolumn: >
-  This algorithm takes a vector layer and generates a new one that has the exact same content but without the selected columns.
-
 qgis:deleteholes: >
   This algorithm takes a polygon layer and removes holes in polygons. It creates a new vector layer in which polygons with holes have been replaced by polygons with only their external ring. Attributes are not modified.
 

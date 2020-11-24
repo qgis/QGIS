@@ -158,6 +158,9 @@ class CORE_EXPORT QgsDataSourceUri
 
     /**
      * Sets all data source related members at once.
+     *
+     * The \a aSql argument represents a subset filter string to be applied to the source, and should take the
+     * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
      */
     void setDataSource( const QString &aSchema,
                         const QString &aTable,
@@ -199,7 +202,14 @@ class CORE_EXPORT QgsDataSourceUri
     //! Returns the table name stored in the URI.
     QString table() const;
 
-    //! Returns the SQL query stored in the URI, if set.
+    /**
+     * Returns the SQL filter stored in the URI, if set.
+     *
+     * This represents a subset filter string to be applied to the source, and takes the
+     * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+     *
+     * \see setSql()
+     */
     QString sql() const;
 
     //! Returns the name of the geometry column stored in the URI, if set.
@@ -226,7 +236,14 @@ class CORE_EXPORT QgsDataSourceUri
      */
     void setSchema( const QString &schema );
 
-    //! Sets the SQL query for the URI.
+    /**
+     * Sets the \a sql filter for the URI.
+     *
+     * The \a sql represents a subset filter string to be applied to the source, and should take the
+     * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+     *
+     * \see sql()
+     */
     void setSql( const QString &sql );
 
     //! Returns the host name stored in the URI.
@@ -300,6 +317,14 @@ class CORE_EXPORT QgsDataSourceUri
      * \since QGIS 3.10
      */
     void setGeometryColumn( const QString &geometryColumn );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     void skipBlanks( const QString &uri, int &i );

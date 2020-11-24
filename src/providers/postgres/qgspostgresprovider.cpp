@@ -898,7 +898,7 @@ bool QgsPostgresProvider::loadFields()
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
-        generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? "" : defVal;
+        generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? QString() : defVal;
 
         // Also include atttype oid from pg_attribute, because PQnfields only returns basic type for for domains
         attroids.insert( attType );
@@ -1236,9 +1236,13 @@ bool QgsPostgresProvider::loadFields()
     }
 
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
-    mGeneratedValues.insert( mAttributeFields.size(), generatedMap[tableoid][attnum] );
+
+    const QString generatedValue = generatedMap[tableoid][attnum];
+    if ( !generatedValue.isNull() )
+      mGeneratedValues.insert( mAttributeFields.size(), generatedValue );
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
+    newField.setReadOnly( !generatedValue.isNull() );
 
     QgsFieldConstraints constraints;
     if ( notNullMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == i ) || identityMap[tableoid][attnum] != ' ' )
@@ -2115,7 +2119,6 @@ bool QgsPostgresProvider::isValid() const
 QString QgsPostgresProvider::defaultValueClause( int fieldId ) const
 {
   QString defVal = mDefaultValues.value( fieldId, QString() );
-  QString genVal = mGeneratedValues.value( fieldId, QString() );
 
   // with generated columns (PostgreSQL 12+), the provider will ALWAYS evaluate the default values.
   // The only acceptable value for such columns on INSERT or UPDATE clauses is the keyword "DEFAULT".
@@ -2124,7 +2127,7 @@ QString QgsPostgresProvider::defaultValueClause( int fieldId ) const
   // On inserting a new feature or updating a generated field, this is
   // omitted from the generated queries.
   // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
-  if ( !genVal.isEmpty() )
+  if ( mGeneratedValues.contains( fieldId ) )
   {
     return defVal;
   }
@@ -2994,7 +2997,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
           pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
 
-          if ( mGeneratedValues.contains( siter.key() ) && !mGeneratedValues.value( siter.key(), QString() ).isEmpty() )
+          if ( mGeneratedValues.contains( siter.key() ) )
           {
             QgsLogger::warning( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
             continue;
@@ -3358,7 +3361,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
           pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
 
-          if ( mGeneratedValues.contains( siter.key() ) && !mGeneratedValues.value( siter.key(), QString() ).isEmpty() )
+          if ( mGeneratedValues.contains( siter.key() ) )
           {
             QgsLogger::warning( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
             continue;

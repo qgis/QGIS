@@ -854,6 +854,34 @@ Evaluates the parameter with matching ``definition`` and ``value`` to list of en
 .. versionadded:: 3.4
 %End
 
+    static QString parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a static enum string.
+
+.. versionadded:: 3.18
+%End
+
+    static QString parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static enum string.
+
+.. versionadded:: 3.18
+%End
+
+    static QStringList parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to list of static enum strings.
+
+.. versionadded:: 3.18
+%End
+
+    static QStringList parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to list of static enum strings.
+
+.. versionadded:: 3.18
+%End
+
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a static boolean value.
@@ -2320,7 +2348,8 @@ An enum based parameter for processing algorithms, allowing for selection from p
     QgsProcessingParameterEnum( const QString &name, const QString &description = QString(), const QStringList &options = QStringList(),
                                 bool allowMultiple = false,
                                 const QVariant &defaultValue = QVariant(),
-                                bool optional = false );
+                                bool optional = false,
+                                bool usesStaticStrings = false );
 %Docstring
 Constructor for QgsProcessingParameterEnum.
 %End
@@ -2367,6 +2396,26 @@ Returns ``True`` if the parameter allows multiple selected values.
 Sets whether the parameter allows multiple selected values.
 
 .. seealso:: :py:func:`allowMultiple`
+%End
+
+    bool usesStaticStrings() const;
+%Docstring
+Returns ``True`` if the parameter uses static (non-translated) string
+values for its enumeration choice list.
+
+.. seealso:: :py:func:`setUsesStaticStrings`
+
+.. versionadded:: 3.18
+%End
+
+    void setUsesStaticStrings( bool usesStaticStrings );
+%Docstring
+Sets whether the parameter uses static (non-translated) string
+values for its enumeration choice list.
+
+.. seealso:: :py:func:`usesStaticStrings`
+
+.. versionadded:: 3.18
 %End
 
     virtual QVariantMap toVariantMap() const;

@@ -944,6 +944,30 @@ class CORE_EXPORT QgsProcessingParameters
     static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition to a static enum string.
+     * \since QGIS 3.18
+     */
+    static QString parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static enum string.
+     * \since QGIS 3.18
+     */
+    static QString parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to list of static enum strings.
+     * \since QGIS 3.18
+     */
+    static QStringList parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to list of static enum strings.
+     * \since QGIS 3.18
+     */
+    static QStringList parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a static boolean value.
      */
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
@@ -2278,7 +2302,8 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
     QgsProcessingParameterEnum( const QString &name, const QString &description = QString(), const QStringList &options = QStringList(),
                                 bool allowMultiple = false,
                                 const QVariant &defaultValue = QVariant(),
-                                bool optional = false );
+                                bool optional = false,
+                                bool usesStaticStrings = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2315,6 +2340,22 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
      */
     void setAllowMultiple( bool allowMultiple );
 
+    /**
+     * Returns TRUE if the parameter uses static (non-translated) string
+     * values for its enumeration choice list.
+     * \see setUsesStaticStrings()
+     * \since QGIS 3.18
+     */
+    bool usesStaticStrings() const;
+
+    /**
+     * Sets whether the parameter uses static (non-translated) string
+     * values for its enumeration choice list.
+     * \see usesStaticStrings()
+     * \since QGIS 3.18
+     */
+    void setUsesStaticStrings( bool usesStaticStrings );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -2327,7 +2368,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
 
     QStringList mOptions;
     bool mAllowMultiple = false;
-
+    bool mUsesStaticStrings = false;
 };
 
 /**

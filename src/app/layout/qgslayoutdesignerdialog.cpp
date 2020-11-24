@@ -2034,7 +2034,7 @@ void QgsLayoutDesignerDialog::print()
       }
       mMessageBar->pushMessage( tr( "Print layout" ),
                                 message,
-                                Qgis::Success, 0 );
+                                Qgis::Success );
       break;
     }
 
@@ -2646,7 +2646,7 @@ void QgsLayoutDesignerDialog::printAtlas()
       }
       mMessageBar->pushMessage( tr( "Print atlas" ),
                                 message,
-                                Qgis::Success, 0 );
+                                Qgis::Success );
       break;
     }
 
@@ -3741,7 +3741,7 @@ void QgsLayoutDesignerDialog::printReport()
       }
       mMessageBar->pushMessage( tr( "Print report" ),
                                 message,
-                                Qgis::Success, 0 );
+                                Qgis::Success );
       break;
     }
 

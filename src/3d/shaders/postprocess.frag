@@ -1,4 +1,4 @@
-#version 150 core
+#version 330
 
 uniform sampler2D colorTexture;
 uniform sampler2D depthTexture;
@@ -73,7 +73,7 @@ float CalcShadowFactor(vec4 LightSpacePos)
   {
     for(int y = -k; y <= k; ++y)
     {
-      float pcfDepth = texture2D(shadowTexture, UVCoords + vec2(x, y) * texelSize).r;
+      float pcfDepth = texture(shadowTexture, UVCoords + vec2(x, y) * texelSize).r;
       shadow += z - shadowBias >= pcfDepth ? 0.5 : 1.0;
     }
   }
@@ -92,11 +92,11 @@ float edlFactor(vec2 coords)
   vec2 texelSize = 2.0 / textureSize(depthTexture, 0);
   vec2 neighbours[4] = vec2[4](vec2(-1.0f, 0.0f), vec2(1.0f, 0.0f), vec2(0.0f, -1.0f), vec2(0.0f, 1.0f) );
   float factor = 0.0f;
-  float centerDepth = linearizeDepth( texture2D(depthTexture, coords).r ) / farPlane;
+  float centerDepth = linearizeDepth( texture(depthTexture, coords).r ) / farPlane;
   for (int i = 0; i < 4; i++)
   {
     vec2 neighbourCoords = coords + edlDistance * texelSize * neighbours[i];
-    float neighbourDepth = linearizeDepth( texture2D(depthTexture, neighbourCoords).r ) / farPlane;
+    float neighbourDepth = linearizeDepth( texture(depthTexture, neighbourCoords).r ) / farPlane;
     neighbourDepth = (neighbourDepth == 1.0) ? 0.0 : neighbourDepth;
     if (neighbourDepth != 0.0f)
     {
@@ -109,10 +109,10 @@ float edlFactor(vec2 coords)
 
 void main()
 {
-  vec3 worldPosition = WorldPosFromDepth(texture2D(depthTexture, texCoord).r);
+  vec3 worldPosition = WorldPosFromDepth(texture(depthTexture, texCoord).r);
   vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
   positionInLightSpace /= positionInLightSpace.w;
-  vec3 color = texture2D(colorTexture, texCoord).rgb;
+  vec3 color = texture(colorTexture, texCoord).rgb;
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
   if (renderShadows == 0 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ) {
     fragColor = vec4(color.rgb, 1.0f);

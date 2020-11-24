@@ -79,7 +79,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void btnConnect_clicked();
 
     //! Opens the Spatial Reference System dialog.
-    void btnChangeSpatialRefSys_clicked();
+    void crsSelectorChanged( const QgsCoordinateReferenceSystem &crs );
 
     //! Signaled when a layer selection is changed.
     void lstLayers_itemSelectionChanged();
