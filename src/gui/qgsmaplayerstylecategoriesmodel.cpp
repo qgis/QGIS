@@ -274,6 +274,18 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       }
       break;
 
+    case QgsMapLayer::StyleCategory::Elevation:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return tr( "Elevation Properties" );
+        case Qt::ToolTipRole:
+          return tr( "Elevation properties" );
+        case Qt::DecorationRole:
+          return QIcon(); // TODO
+      }
+      break;
+
     case QgsMapLayer::StyleCategory::AllStyleCategories:
       switch ( role )
       {
