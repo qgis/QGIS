@@ -24,6 +24,17 @@ how an individual QgsMapLayer behaves with relation to z values or elevations.
 
 %TypeHeaderCode
 #include "qgsmaplayerelevationproperties.h"
+#include "qgspointcloudlayerelevationproperties.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsPointCloudLayerElevationProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
 %End
   public:
 

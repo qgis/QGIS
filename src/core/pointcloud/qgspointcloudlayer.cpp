@@ -28,13 +28,14 @@
 #include "qgsapplication.h"
 #include "qgspainting.h"
 #include "qgspointcloudrendererregistry.h"
-
+#include "qgspointcloudlayerelevationproperties.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
+  , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
 {
   if ( !path.isEmpty() && !providerLib.isEmpty() )
   {
@@ -468,6 +469,11 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   myMetadata += QLatin1String( "\n</body>\n</html>\n" );
   return myMetadata;
+}
+
+QgsMapLayerElevationProperties *QgsPointCloudLayer::elevationProperties()
+{
+  return mElevationProperties;
 }
 
 QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
