@@ -111,8 +111,8 @@ class buildvrt(GdalAlgorithm):
                                                      defaultValue=0))
 
         separate_param = QgsProcessingParameterBoolean(self.SEPARATE,
-                                                        self.tr('Place each input file into a separate band'),
-                                                        defaultValue=True)
+                                                       self.tr('Place each input file into a separate band'),
+                                                       defaultValue=True)
         # default to not using separate bands is a friendlier option, but we can't change the parameter's actual
         # defaultValue without breaking API!
         separate_param.setGuiDefaultValueOverride(False)
