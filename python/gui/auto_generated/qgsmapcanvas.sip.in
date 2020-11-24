@@ -973,6 +973,24 @@ Set a list of resolutions (map units per pixel) to which to "snap to" when zoomi
 .. versionadded:: 3.12
 %End
 
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the range of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`setZRange`
+
+.. versionadded:: 3.18
+%End
+
+    void setZRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`zRange`
+
+.. versionadded:: 3.18
+%End
+
   signals:
 
     void xyCoordinates( const QgsPointXY &p );

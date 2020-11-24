@@ -879,6 +879,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     const QList<double> &zoomResolutions() const { return mZoomResolutions; }
 
+    /**
+     * Returns the range of z-values which will be visible in the map.
+     *
+     * \see setZRange()
+     * \since QGIS 3.18
+     */
+    QgsDoubleRange zRange() const;
+
+    /**
+     * Sets the \a range of z-values which will be visible in the map.
+     *
+     * \see zRange()
+     * \since QGIS 3.18
+     */
+    void setZRange( const QgsDoubleRange &range );
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
