@@ -170,6 +170,15 @@ Returns ``True`` if the range consists of all possible values.
 .. versionadded:: 3.18
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 
@@ -217,6 +226,15 @@ Constructor for QgsIntRange containing an infinite range (see :py:func:`~QgsIntR
 Returns ``True`` if the range consists of all possible values.
 
 .. versionadded:: 3.18
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 };

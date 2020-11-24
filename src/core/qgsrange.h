@@ -247,6 +247,17 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
       return lower() == std::numeric_limits< double >::lowest() && upper() == std::numeric_limits< double >::max();
     }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
 };
 
 
@@ -306,6 +317,17 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
     {
       return lower() == std::numeric_limits< int >::lowest() && upper() == std::numeric_limits< int >::max();
     }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
 };
 
