@@ -444,14 +444,11 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
     case Lower:
     {
       // adjust value to account for lower handle click offset
-      newPosition = pixelPosToRangeValue( pick( event->pos() ) - mLowerClickOffset );
-      if ( newPosition <= mUpperValue )
+      newPosition = std::min( mUpperValue, pixelPosToRangeValue( pick( event->pos() ) - mLowerClickOffset ) );
+      if ( mLowerValue != newPosition )
       {
-        if ( mLowerValue != newPosition )
-        {
-          mLowerValue = newPosition;
-          changed = true;
-        }
+        mLowerValue = newPosition;
+        changed = true;
       }
       break;
     }
@@ -459,14 +456,11 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
     case Upper:
     {
       // adjust value to account for upper handle click offset
-      newPosition = pixelPosToRangeValue( pick( event->pos() ) - mUpperClickOffset );
-      if ( newPosition >= mLowerValue )
+      newPosition = std::max( mLowerValue, pixelPosToRangeValue( pick( event->pos() ) - mUpperClickOffset ) );
+      if ( mUpperValue != newPosition )
       {
-        if ( mUpperValue != newPosition )
-        {
-          mUpperValue = newPosition;
-          changed = true;
-        }
+        mUpperValue = newPosition;
+        changed = true;
       }
       break;
     }
