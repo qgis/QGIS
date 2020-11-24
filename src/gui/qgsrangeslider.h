@@ -121,24 +121,25 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     Qt::Orientation orientation() const;
 
     /**
-     * Returns TRUE if the slider has its values inverted.
+     * Returns TRUE if the slider has its values flipped.
      *
      * If this property is FALSE (the default), the minimum and maximum will be shown in its classic
      * position for the widget. If the value is TRUE, the minimum and maximum appear at their opposite location.
      *
-     * \see setInvertedAppearance()
+     * \see setFlippedDirection()
      */
-    bool invertedAppearance() const;
+    bool flippedDirection() const;
 
     /**
-     * Sets whether the slider has its values \a inverted.
+     * Sets whether the slider has its values \a flipped.
      *
      * If this property is FALSE (the default), the minimum and maximum will be shown in its classic
      * position for the widget. If the value is TRUE, the minimum and maximum appear at their opposite location.
+     * (i.e. minimum at the bottom of a vertical slider, maximum at the top of a vertical slider).
      *
-     * \see setInvertedAppearance()
+     * \see flippedDirection()
      */
-    void setInvertedAppearance( bool inverted );
+    void setFlippedDirection( bool flipped );
 
     void paintEvent( QPaintEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
@@ -241,7 +242,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     QStyle::SubControl mHoverSubControl = QStyle::SC_None;
     QRect mHoverRect;
 
-    bool mInverted = false;
+    bool mFlipped = false;
 };
 
 #endif // QGSRANGESLIDER_H
