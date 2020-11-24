@@ -494,17 +494,33 @@ void QgsRangeSlider::mouseReleaseEvent( QMouseEvent *event )
 
 QSize QgsRangeSlider::sizeHint() const
 {
-  static constexpr int sliderLength = 84;
-  static constexpr int tickSpace = 5;
+  ensurePolished();
 
-  int w = sliderLength;
-  int h = style()->pixelMetric( QStyle::PM_SliderThickness, &mStyleOption, this );
+  // these hardcoded magic values look like a hack, but they are taken straight from the Qt QSlider widget code!
+  static constexpr int SLIDER_LENGTH = 84;
+  static constexpr int TICK_SPACE = 5;
 
-  if ( mStyleOption.tickPosition & QSlider::TicksAbove || mStyleOption.tickPosition & QSlider::TicksBelow )
+  int thick = style()->pixelMetric( QStyle::PM_SliderThickness, &mStyleOption, this );
+  if ( mStyleOption.tickPosition & QSlider::TicksAbove )
+    thick += TICK_SPACE;
+  if ( mStyleOption.tickPosition & QSlider::TicksBelow )
+    thick += TICK_SPACE;
+  int w = thick, h = SLIDER_LENGTH;
+  if ( mStyleOption.orientation == Qt::Horizontal )
   {
-    h += tickSpace;
+    std::swap( w, h );
   }
-
   return style()->sizeFromContents( QStyle::CT_Slider, &mStyleOption, QSize( w, h ), this );
+}
+
+QSize QgsRangeSlider::minimumSizeHint() const
+{
+  QSize s = sizeHint();
+  int length = style()->pixelMetric( QStyle::PM_SliderLength, &mStyleOption, this );
+  if ( mStyleOption.orientation == Qt::Horizontal )
+    s.setWidth( length );
+  else
+    s.setHeight( length );
+  return s;
 }
 
