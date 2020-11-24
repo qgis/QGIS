@@ -7175,20 +7175,20 @@ QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connSt
   return new QgsOgrTransaction( connString, ds );
 }
 
-QgsGeoPackageProjectStorage *gProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+QgsGeoPackageProjectStorage *gGeoPackageProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
 
 void QgsOgrProviderMetadata::initProvider()
 {
-  Q_ASSERT( !gProjectStorage );
-  gProjectStorage = new QgsGeoPackageProjectStorage;
-  QgsApplication::projectStorageRegistry()->registerProjectStorage( gProjectStorage );  // takes ownership
+  Q_ASSERT( !gGeoPackageProjectStorage );
+  gGeoPackageProjectStorage = new QgsGeoPackageProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gGeoPackageProjectStorage );  // takes ownership
 }
 
 
 void QgsOgrProviderMetadata::cleanupProvider()
 {
-  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gProjectStorage );  // destroys the object
-  gProjectStorage = nullptr;
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gGeoPackageProjectStorage );  // destroys the object
+  gGeoPackageProjectStorage = nullptr;
   QgsOgrConnPool::cleanupInstance();
   // NOTE: QgsApplication takes care of
   // calling OGRCleanupAll();
