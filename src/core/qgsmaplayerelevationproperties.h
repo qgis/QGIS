@@ -59,6 +59,11 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     QgsMapLayerElevationProperties( QObject *parent SIP_TRANSFERTHIS );
 
     /**
+     * Returns TRUE if the layer has an elevation or z component.
+     */
+    virtual bool hasElevation() const;
+
+    /**
      * Writes the properties to a DOM \a element, to be used later with readXml().
      *
      * \see readXml()

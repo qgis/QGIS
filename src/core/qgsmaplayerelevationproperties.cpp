@@ -22,6 +22,11 @@ QgsMapLayerElevationProperties::QgsMapLayerElevationProperties( QObject *parent 
 {
 }
 
+bool QgsMapLayerElevationProperties::hasElevation() const
+{
+  return false;
+}
+
 bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
 {
   return true;

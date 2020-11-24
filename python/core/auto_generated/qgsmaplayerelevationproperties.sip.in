@@ -39,6 +39,11 @@ how an individual QgsMapLayer behaves with relation to z values or elevations.
 Constructor for QgsMapLayerElevationProperties, with the specified ``parent`` object.
 %End
 
+    virtual bool hasElevation() const;
+%Docstring
+Returns ``True`` if the layer has an elevation or z component.
+%End
+
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Writes the properties to a DOM ``element``, to be used later with :py:func:`~QgsMapLayerElevationProperties.readXml`.

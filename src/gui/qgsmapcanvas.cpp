@@ -84,6 +84,7 @@ email                : sherman at mrcc.com
 #include "qgsruntimeprofiler.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsannotationlayer.h"
+#include "qgsmaplayerelevationproperties.h"
 
 /**
  * \ingroup gui
@@ -731,6 +732,7 @@ void QgsMapCanvas::rendererJobFinished()
   {
     mRefreshAfterJob = false;
     clearTemporalCache();
+    clearElevationCache();
     refresh();
   }
 }
@@ -798,6 +800,24 @@ void QgsMapCanvas::clearTemporalCache()
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
       {
         if ( layer->temporalProperties()->flags() & QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges )
+          continue;
+
+        mCache->invalidateCacheForLayer( layer );
+      }
+    }
+  }
+}
+
+void QgsMapCanvas::clearElevationCache()
+{
+  if ( mCache )
+  {
+    const QList<QgsMapLayer *> layerList = mapSettings().layers();
+    for ( QgsMapLayer *layer : layerList )
+    {
+      if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
+      {
+        if ( layer->elevationProperties()->flags() & QgsMapLayerElevationProperties::FlagDontInvalidateCachedRendersWhenRangeChanges )
           continue;
 
         mCache->invalidateCacheForLayer( layer );
@@ -1333,7 +1353,19 @@ QgsDoubleRange QgsMapCanvas::zRange() const
 
 void QgsMapCanvas::setZRange( const QgsDoubleRange &range )
 {
+  if ( zRange() == range )
+    return;
+
   mSettings.setZRange( range );
+
+  emit zRangeChanged();
+
+  // we need to discard any previously cached images which are elevation aware, so that these will be updated when
+  // the canvas is redrawn
+  if ( !mJob )
+    clearElevationCache();
+
+  autoRefreshTriggered();
 }
 
 void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
