@@ -262,8 +262,8 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
 
     bool operator==( const QgsDoubleRange &other ) const
     {
-      return qgsDoubleNear( mIncludeLower, other.mIncludeLower ) &&
-             qgsDoubleNear( mIncludeUpper, other.mIncludeUpper ) &&
+      return qgsDoubleNear( mLower, other.mLower ) &&
+             qgsDoubleNear( mUpper, other.mUpper ) &&
              mIncludeLower == other.includeLower() &&
              mIncludeUpper == other.includeUpper();
     }
