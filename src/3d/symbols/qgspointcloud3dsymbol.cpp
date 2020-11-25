@@ -146,7 +146,7 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
 
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
   mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "2" ) ).toInt() );
-  mRenderingParameter = elem.attribute( "rendering-parameter", QStringLiteral( "" ) );
+  mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
   mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ), QStringLiteral( "0.0" ) ).toDouble();
   mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ), QStringLiteral( "1.0" ) ).toDouble();
   mColorRampShader.readXml( elem );
