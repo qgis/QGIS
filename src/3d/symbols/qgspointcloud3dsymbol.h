@@ -46,6 +46,8 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
       SingleColor,
       //! Render the point cloud with a color ramp
       ColorRamp,
+      //! Render the RGB colors of the point cloud
+      RGBRendering
     };
 
     //! Constructor for QgsPointCloud3DSymbol
@@ -230,6 +232,41 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QgsColorRampShader mColorRampShader;
     double mColorRampShaderMin = 0.0;
     double mColorRampShaderMax = 1.0;
+};
+
+/**
+ * \ingroup 3d
+ * 3D symbol that draws point cloud geometries as 3D objects using RGB colors in the dataset
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.18
+ */
+class _3D_EXPORT QgsRGBPointCloud3DSymbol : public QgsPointCloud3DSymbol
+{
+  public:
+    //! Constructor for QgsRGBPointCloud3DSymbol
+    QgsRGBPointCloud3DSymbol( QgsPointCloudLayer *layer );
+
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    /**
+    * Returns the point size of the point cloud
+    * \see setPointSize( float size )
+    */
+    float pointSize() const { return mPointSize; }
+
+    /**
+     * Sets the point size
+     * \see pointSize()
+     */
+    void setPointSize( float size );
+  private:
+    float mPointSize;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H

@@ -28,6 +28,11 @@
        <string>Color ramp</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>RGB rendering</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="7" column="0" colspan="4">

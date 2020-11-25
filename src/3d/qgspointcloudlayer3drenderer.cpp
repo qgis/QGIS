@@ -127,6 +127,9 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
       mSymbol.reset( new QgsColorRampPointCloud3DSymbol( layer() ) );
       break;
+    case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
+      mSymbol.reset( new QgsRGBPointCloud3DSymbol( layer() ) );
+      break;
   }
   mSymbol->readXml( elemSymbol, context );
 }

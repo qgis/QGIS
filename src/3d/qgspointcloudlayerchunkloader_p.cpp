@@ -45,23 +45,26 @@
 
 ///@cond PRIVATE
 
-QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data )
+QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, QgsPointCloud3DSymbol *symbol )
   : Qt3DRender::QGeometry( parent )
   , mPositionAttribute( new Qt3DRender::QAttribute( this ) )
   , mParameterAttribute( new Qt3DRender::QAttribute( this ) )
+  , mColorAttribute( new Qt3DRender::QAttribute( this ) )
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   , mVertexBuffer( new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this ) )
 #else
   , mVertexBuffer( new Qt3DRender::QBuffer( this ) )
 #endif
+  , mRenderingStyle( symbol->renderingStyle() )
 {
+  unsigned int byte_stride = mRenderingStyle == QgsPointCloud3DSymbol::RenderingStyle::RGBRendering ? 28 : 16;
   mPositionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
   mPositionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
   mPositionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
   mPositionAttribute->setByteOffset( 0 );
-  mPositionAttribute->setByteStride( 16 );
+  mPositionAttribute->setByteStride( byte_stride );
 
   mParameterAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   mParameterAttribute->setBuffer( mVertexBuffer );
@@ -69,10 +72,22 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
   mParameterAttribute->setVertexSize( 1 );
   mParameterAttribute->setName( "vertexParameter" );
   mParameterAttribute->setByteOffset( 12 );
-  mParameterAttribute->setByteStride( 16 );
+  mParameterAttribute->setByteStride( byte_stride );
 
   addAttribute( mPositionAttribute );
   addAttribute( mParameterAttribute );
+
+  if ( mRenderingStyle == QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+  {
+    mColorAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+    mColorAttribute->setBuffer( mVertexBuffer );
+    mColorAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+    mColorAttribute->setVertexSize( 3 );
+    mColorAttribute->setName( QStringLiteral( "vertexColor" ) );
+    mColorAttribute->setByteOffset( 16 );
+    mColorAttribute->setByteStride( byte_stride );
+    addAttribute( mColorAttribute );
+  }
 
   makeVertexBuffer( data );
 }
@@ -80,7 +95,10 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
 void QgsPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHandler::PointData &data )
 {
   QByteArray vertexBufferData;
-  vertexBufferData.resize( data.positions.size() * 4 * sizeof( float ) );
+  if ( mRenderingStyle == QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+    vertexBufferData.resize( data.positions.size() * 7 * sizeof( float ) );
+  else
+    vertexBufferData.resize( data.positions.size() * 4 * sizeof( float ) );
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
   Q_ASSERT( data.positions.count() == data.parameter.count() );
@@ -90,6 +108,12 @@ void QgsPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHandl
     rawVertexArray[idx++] = data.positions.at( i ).y();
     rawVertexArray[idx++] = data.positions.at( i ).z();
     rawVertexArray[idx++] = data.parameter.at( i );
+    if ( mRenderingStyle == QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+    {
+      rawVertexArray[idx++] = data.colors.at( i ).x();
+      rawVertexArray[idx++] = data.colors.at( i ).y();
+      rawVertexArray[idx++] = data.colors.at( i ).z();
+    }
   }
 
   mVertexCount = data.positions.size();
@@ -129,6 +153,13 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
         attributes.push_back( *parameterAttribute.get() );
       }
     }
+  }
+
+  if ( mSymbol.get()->renderingStyle() == QgsPointCloud3DSymbol::RGBRendering )
+  {
+    attributes.push_back( QgsPointCloudAttribute( "Red", QgsPointCloudAttribute::DataType::Short ) );
+    attributes.push_back( QgsPointCloudAttribute( "Green", QgsPointCloudAttribute::DataType::Short ) );
+    attributes.push_back( QgsPointCloudAttribute( "Blue", QgsPointCloudAttribute::DataType::Short ) );
   }
 
   QgsPointCloudRequest request;
@@ -180,12 +211,33 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
     if ( parameterAttribute && parameterAttribute->name() == "X" )
       outNormal.parameter.push_back( x );
-    if ( parameterAttribute && parameterAttribute->name() == "Y" )
+    else if ( parameterAttribute && parameterAttribute->name() == "Y" )
       outNormal.parameter.push_back( y );
-    if ( parameterAttribute && parameterAttribute->name() == "Z" )
+    else if ( parameterAttribute && parameterAttribute->name() == "Z" )
       outNormal.parameter.push_back( z );
     else
       outNormal.parameter.push_back( iParam );
+
+    if ( mSymbol.get()->renderingStyle() == QgsPointCloud3DSymbol::RGBRendering )
+    {
+      QVector3D color( 0.0f, 0.0f, 0.0f );
+      if ( recordSize > 10 )
+      {
+        short ir = *( short * )( ptr + i * recordSize + 12 );
+        color.setX( ( ( float )ir ) / 256.0f );
+      }
+      if ( recordSize > 12 )
+      {
+        short ig = *( short * )( ptr + i * recordSize + 14 );
+        color.setY( ( ( float )ig ) / 256.0f );
+      }
+      if ( recordSize > 14 )
+      {
+        short ib = *( short * )( ptr + i * recordSize + 16 );
+        color.setZ( ( ( float )ib ) / 256.0f );
+      }
+      outNormal.colors.push_back( color );
+    }
   }
 }
 
@@ -203,7 +255,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
     return;
 
   // Geometry
-  QgsPointCloud3DGeometry *geom = new QgsPointCloud3DGeometry( parent, out );
+  QgsPointCloud3DGeometry *geom = new QgsPointCloud3DGeometry( parent, out, mSymbol.get() );
   Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
   gr->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
   gr->setVertexCount( out.positions.count() );
@@ -224,6 +276,9 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
       mat = constructMaterial( dynamic_cast<QgsColorRampPointCloud3DSymbol *>( mSymbol.get() ) );
+      break;
+    case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
+      mat = constructMaterial( dynamic_cast<QgsRGBPointCloud3DSymbol *>( mSymbol.get() ) );
       break;
   }
 
@@ -246,6 +301,9 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
       pointSize->setValue( dynamic_cast<QgsColorRampPointCloud3DSymbol *>( mSymbol.get() )->pointSize() );
+      break;
+    case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
+      pointSize->setValue( dynamic_cast<QgsRGBPointCloud3DSymbol *>( mSymbol.get() )->pointSize() );
       break;
   }
   renderPass->addRenderState( pointSize );
@@ -305,9 +363,8 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsColor
   mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( symbol->pointSize() ) );
   mat->addParameter( pointSizeParameter );
-//  Qt3DRender::QParameter *renderingParameter = new Qt3DRender::QParameter( "u_renderingParameter", symbol->renderingParameter() );
-//  mat->addParameter( renderingParameter );
   QgsColorRampShader colorRampShader = symbol->colorRampShader();
+
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = nullptr;
   if ( colorRampShader.colorRampItemList().count() > 0 )
@@ -317,6 +374,7 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsColor
     colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
     colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
   }
+
   // Parameters
   Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( "u_colorRampTexture", colorRampTexture );
   mat->addParameter( colorRampTextureParameter );
@@ -325,6 +383,16 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsColor
   int colorRampType = colorRampShader.colorRampType();
   Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
   mat->addParameter( colorRampTypeParameter );
+  return mat;
+}
+
+Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsRGBPointCloud3DSymbol *symbol )
+{
+  Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
+  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", symbol->renderingStyle() );
+  mat->addParameter( renderingStyle );
+  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( symbol->pointSize() ) );
+  mat->addParameter( pointSizeParameter );
   return mat;
 }
 

@@ -10,8 +10,10 @@ uniform int u_renderingParameter;
 
 in vec3 vertexPosition;
 in float vertexParameter;
+in vec3 vertexColor;
 
 out float parameter;
+out vec3 pointColor;
 
 void main(void)
 {
@@ -25,4 +27,5 @@ void main(void)
     //gl_PointSize = 100.0;
 
     parameter = vertexParameter;
+    pointColor = vertexColor;
 }
