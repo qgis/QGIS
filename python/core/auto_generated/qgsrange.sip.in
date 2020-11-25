@@ -121,6 +121,9 @@ Returns ``True`` if this range overlaps another range.
 
     bool operator!=( const QgsRange<T> &other ) const;
 
+  protected:
+
+
 };
 
 
@@ -178,6 +181,10 @@ Returns ``True`` if the range consists of all possible values.
                   .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    bool operator==( const QgsDoubleRange &other ) const;
+
+    bool operator!=( const QgsDoubleRange &other ) const;
 
 };
 
