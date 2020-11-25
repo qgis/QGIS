@@ -404,6 +404,33 @@ void QgsRangeSlider::paintEvent( QPaintEvent * )
   else
     mStyleOption.state &= ~QStyle::State_Sunken;
   style()->drawComplexControl( QStyle::CC_Slider, &mStyleOption, &painter );
+
+  if ( hasFocus() && mFocusControl != None )
+  {
+    //draw focus rect
+    QStyleOptionFocusRect option;
+    option.initFrom( this );
+    option.state = QStyle::State_KeyboardFocusChange;
+    if ( mFocusControl == Lower )
+    {
+      mStyleOption.sliderPosition = mFlipped ? mStyleOption.maximum - mLowerValue : mLowerValue;
+      option.rect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+    }
+    else if ( mFocusControl == Upper )
+    {
+      mStyleOption.sliderPosition = mFlipped ? mStyleOption.maximum - mUpperValue : mUpperValue;
+      option.rect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+    }
+    else if ( mFocusControl == Range )
+    {
+      option.rect = selectedRangeRect();
+      if ( mStyleOption.orientation == Qt::Horizontal )
+        option.rect = option.rect.adjusted( 0, -1, 0, 1 );
+      else
+        option.rect = option.rect.adjusted( -1, 0, 1, 0 );
+    }
+    style()->drawPrimitive( QStyle::PE_FrameFocusRect, &option, &painter );
+  }
 }
 
 void QgsRangeSlider::mousePressEvent( QMouseEvent *event )
@@ -436,16 +463,24 @@ void QgsRangeSlider::mousePressEvent( QMouseEvent *event )
   {
     mActiveControl = Range; // shift + drag over handle moves the whole range
     mRangeDragOffset = overUpperControl ? mUpperClickOffset : mLowerClickOffset;
+    mFocusControl = overUpperControl ? Upper : Lower;
   }
   else if ( overLowerControl && overUpperControl )
     mActiveControl = Both;
   else if ( overLowerControl )
+  {
     mActiveControl = Lower;
+    mFocusControl = Lower;
+  }
   else if ( overUpperControl )
+  {
     mActiveControl = Upper;
+    mFocusControl = Upper;
+  }
   else if ( overSelectedRange )
   {
     mActiveControl = Range;
+    mFocusControl = Range;
   }
   else
     mActiveControl = None;
@@ -476,6 +511,7 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
     if ( newPosition < mStartDragPos )
     {
       destControl = Lower;
+      mFocusControl = Lower;
       if ( mUpperValue != mPreDragUpperValue )
       {
         changed = true;
@@ -485,6 +521,7 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
     else if ( newPosition > mStartDragPos )
     {
       destControl = Upper;
+      mFocusControl = Upper;
       if ( mLowerValue != mPreDragLowerValue )
       {
         changed = true;
@@ -617,4 +654,5 @@ QSize QgsRangeSlider::minimumSizeHint() const
     s.setHeight( length );
   return s;
 }
+
 
