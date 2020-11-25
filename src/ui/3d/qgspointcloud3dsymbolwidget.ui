@@ -102,7 +102,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" rowspan="2" colspan="2">
+      <item row="0" column="0" rowspan="2">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Single Color</string>
@@ -161,7 +161,7 @@
       <item row="1" column="4">
        <widget class="QPushButton" name="mColorRampShaderMinMaxReloadButton">
         <property name="text">
-         <string>reload</string>
+         <string>Apply</string>
         </property>
        </widget>
       </item>

@@ -41,7 +41,6 @@ QgsNoRenderingPointCloud3DSymbol::QgsNoRenderingPointCloud3DSymbol( QgsPointClou
 QgsAbstract3DSymbol *QgsNoRenderingPointCloud3DSymbol::clone() const
 {
   QgsNoRenderingPointCloud3DSymbol *result = new QgsNoRenderingPointCloud3DSymbol( mLayer );
-  result->mRenderingStyle = mRenderingStyle;
   copyBaseSettings( result );
   return result;
 }
@@ -70,7 +69,6 @@ QgsAbstract3DSymbol *QgsSingleColorPointCloud3DSymbol::clone() const
 {
   QgsSingleColorPointCloud3DSymbol *result = new QgsSingleColorPointCloud3DSymbol( mLayer );
   result->mPointSize = mPointSize;
-  result->mRenderingStyle = mRenderingStyle;
   result->mSingleColor = mSingleColor;
   copyBaseSettings( result );
   return result;
@@ -92,7 +90,7 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
   Q_UNUSED( context )
 
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
-  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "0" ) ).toInt() );
+  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "1" ) ).toInt() );
   mSingleColor.setRedF( elem.attribute( "single-color-red", QStringLiteral( "0.0" ) ).toFloat() );
   mSingleColor.setGreenF( elem.attribute( "single-color-green", QStringLiteral( "0.0" ) ).toFloat() );
   mSingleColor.setBlueF( elem.attribute( "single-color-blue", QStringLiteral( "1.0" ) ).toFloat() );
@@ -120,7 +118,6 @@ QgsAbstract3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
 {
   QgsColorRampPointCloud3DSymbol *result = new QgsColorRampPointCloud3DSymbol( mLayer );
   result->mPointSize = mPointSize;
-  result->mRenderingStyle = mRenderingStyle;
   result->mRenderingParameter = mRenderingParameter;
   result->mColorRampShader = mColorRampShader;
   result->mColorRampShaderMin = mColorRampShaderMin;
@@ -148,8 +145,8 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
   Q_UNUSED( context )
 
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
-  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "0" ) ).toInt() );
-  mRenderingParameter = elem.attribute( "rendering-parameter", QStringLiteral( "0" ) );
+  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "2" ) ).toInt() );
+  mRenderingParameter = elem.attribute( "rendering-parameter", QStringLiteral( "" ) );
   mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ), QStringLiteral( "0.0" ) ).toDouble();
   mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ), QStringLiteral( "1.0" ) ).toDouble();
   mColorRampShader.readXml( elem );
