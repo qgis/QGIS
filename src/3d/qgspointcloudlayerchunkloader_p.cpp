@@ -178,11 +178,11 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
     QVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
-    if ( parameterAttribute->name() == "X" )
+    if ( parameterAttribute && parameterAttribute->name() == "X" )
       outNormal.parameter.push_back( x );
-    if ( parameterAttribute->name() == "Y" )
+    if ( parameterAttribute && parameterAttribute->name() == "Y" )
       outNormal.parameter.push_back( y );
-    if ( parameterAttribute->name() == "Z" )
+    if ( parameterAttribute && parameterAttribute->name() == "Z" )
       outNormal.parameter.push_back( z );
     else
       outNormal.parameter.push_back( iParam );
@@ -293,7 +293,6 @@ Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsSingl
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( symbol->pointSize() ) );
   mat->addParameter( pointSizeParameter );
   QColor singleColor = symbol->singleColor();
-  qDebug() << "color: " << singleColor.redF() << " " << singleColor.greenF() << " " << singleColor.blueF();
   Qt3DRender::QParameter *singleColorParameter = new Qt3DRender::QParameter( "u_singleColor", QVector3D( singleColor.redF(), singleColor.greenF(), singleColor.blueF() ) );
   mat->addParameter( singleColorParameter );
   return mat;
