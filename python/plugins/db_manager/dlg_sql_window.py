@@ -44,8 +44,7 @@ from qgis.PyQt.QtGui import (QKeySequence,
                              QClipboard,
                              QIcon,
                              QStandardItemModel,
-                             QStandardItem,
-                             QTextOption
+                             QStandardItem
                              )
 from qgis.PyQt.Qsci import QsciAPIs, QsciScintilla
 
