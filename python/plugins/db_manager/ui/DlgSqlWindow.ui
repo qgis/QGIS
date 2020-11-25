@@ -249,7 +249,7 @@
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QTextEdit" name="errorText">
+        <widget class="QgsCodeEditorSQL" name="errorText">
          <property name="visible">
           <bool>false</bool>
          </property>

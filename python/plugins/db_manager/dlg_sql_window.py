@@ -47,7 +47,7 @@ from qgis.PyQt.QtGui import (QKeySequence,
                              QStandardItem,
                              QTextOption
                              )
-from qgis.PyQt.Qsci import QsciAPIs
+from qgis.PyQt.Qsci import QsciAPIs, QsciScintilla
 
 from qgis.core import (
     QgsProject,
@@ -439,8 +439,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if error:
             self.viewResult.setVisible(False)
             self.errorText.setVisible(True)
-            self.errorText.setWordWrapMode(QTextOption.WrapAnywhere)
-            self.errorText.setHtml('<code>' + error.msg + '</code>')
+            self.errorText.setText(error.msg)
+            self.errorText.setWrapMode(QsciScintilla.WrapWord)
         else:
             self.viewResult.setVisible(True)
             self.errorText.setVisible(False)
