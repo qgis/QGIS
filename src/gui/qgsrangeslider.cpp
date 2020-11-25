@@ -317,6 +317,26 @@ QRect QgsRangeSlider::selectedRangeRect()
   return selectionRect.adjusted( -1, 1, 1, -1 );
 }
 
+int QgsRangeSlider::pageStep() const
+{
+  return mPageStep;
+}
+
+void QgsRangeSlider::setPageStep( int step )
+{
+  mPageStep = step;
+}
+
+int QgsRangeSlider::singleStep() const
+{
+  return mSingleStep;
+}
+
+void QgsRangeSlider::setSingleStep( int step )
+{
+  mSingleStep = step;
+}
+
 void QgsRangeSlider::setTickPosition( QSlider::TickPosition position )
 {
   mStyleOption.tickPosition = position;

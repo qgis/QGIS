@@ -148,6 +148,26 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
+    /**
+     * Returns the single step value for the widget.
+     *
+     * This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+     *
+     * \see setSingleStep()
+     * \see pageStep()
+     */
+    int singleStep() const;
+
+    /**
+     * Returns the page step value for the widget.
+     *
+     * This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+     *
+     * \see setPageStep()
+     * \see singleStep()
+     */
+    int pageStep() const;
+
   public slots:
 
     /**
@@ -200,6 +220,26 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      */
     void setRange( int lower, int upper );
 
+    /**
+     * Sets the single \a step value for the widget.
+     *
+     * This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+     *
+     * \see singleStep()
+     * \see pageStep()
+     */
+    void setSingleStep( int step );
+
+    /**
+     * Sets the page \a step value for the widget.
+     *
+     * This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+     *
+     * \see pageStep()
+     * \see setSingleStep()
+     */
+    void setPageStep( int step );
+
     bool event( QEvent *event ) override;
 
   signals:
@@ -225,6 +265,9 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
 
     int mLowerValue = 0;
     int mUpperValue = 0;
+
+    int mSingleStep = 1;
+    int mPageStep = 10;
 
     QStyleOptionSlider mStyleOption;
     enum Control

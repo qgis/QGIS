@@ -39,6 +39,12 @@ class TestQgsRangeSlider(unittest.TestCase):
         w.setFlippedDirection(True)
         self.assertTrue(w.flippedDirection())
 
+        w.setSingleStep(2)
+        self.assertEqual(w.singleStep(), 2)
+
+        w.setPageStep(5)
+        self.assertEqual(w.pageStep(), 5)
+
     def testLimits(self):
         w = QgsRangeSlider()
         spy = QSignalSpy(w.rangeLimitsChanged)
