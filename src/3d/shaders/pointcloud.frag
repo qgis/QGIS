@@ -2,6 +2,7 @@
 
 in float parameter;
 
+in vec3 pointColor;
 out vec4 color;
 
 // Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering
@@ -146,6 +147,9 @@ void main(void)
     break;
   case 2: // color ramp
     color = colorRamp();
+    break;
+  case 3: // RGB
+    color = vec4(pointColor, 1.0f);
     break;
   }
 }

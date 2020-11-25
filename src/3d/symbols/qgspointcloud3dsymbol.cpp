@@ -182,3 +182,39 @@ void QgsColorRampPointCloud3DSymbol::setColorRampShaderMinMax( double min, doubl
   mColorRampShaderMin = min;
   mColorRampShaderMax = max;
 }
+
+// QgsRGBPointCloud3DSymbol
+
+QgsRGBPointCloud3DSymbol::QgsRGBPointCloud3DSymbol( QgsPointCloudLayer *layer )
+  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+{
+
+}
+
+QgsAbstract3DSymbol *QgsRGBPointCloud3DSymbol::clone() const
+{
+  QgsRGBPointCloud3DSymbol *result = new QgsRGBPointCloud3DSymbol( mLayer );
+  result->mPointSize = mPointSize;
+  copyBaseSettings( result );
+  return result;
+}
+
+void QgsRGBPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( context )
+  elem.setAttribute( QStringLiteral( "rendering-style" ), mRenderingStyle );
+  elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
+}
+
+void QgsRGBPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( context )
+  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "3" ) ).toInt() );
+  mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
+}
+
+void QgsRGBPointCloud3DSymbol::setPointSize( float size )
+{
+  mPointSize = size;
+}
+

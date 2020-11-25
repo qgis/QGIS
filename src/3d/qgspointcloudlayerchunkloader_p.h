@@ -65,6 +65,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     {
       QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
       QVector<float> parameter;
+      QVector<QVector3D> colors;
     };
 
   protected:
@@ -81,6 +82,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     Qt3DRender::QMaterial *constructMaterial( QgsNoRenderingPointCloud3DSymbol *symbol );
     Qt3DRender::QMaterial *constructMaterial( QgsSingleColorPointCloud3DSymbol *symbol );
     Qt3DRender::QMaterial *constructMaterial( QgsColorRampPointCloud3DSymbol *symbol );
+    Qt3DRender::QMaterial *constructMaterial( QgsRGBPointCloud3DSymbol *symbol );
 
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
@@ -99,15 +101,18 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
 class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 {
   public:
-    QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data );
+    QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, QgsPointCloud3DSymbol *symbol );
 
   private:
     void makeVertexBuffer( const QgsPointCloud3DSymbolHandler::PointData &data );
 
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mParameterAttribute = nullptr;
+    Qt3DRender::QAttribute *mColorAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
     int mVertexCount = 0;
+
+    QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle;
 };
 
 /**
