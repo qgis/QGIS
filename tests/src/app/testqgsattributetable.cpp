@@ -244,7 +244,7 @@ void TestQgsAttributeTable::testVisibleTemporal()
   mQgisApp->mapCanvas()->resize( 500, 500 );
   mQgisApp->mapCanvas()->setLayers( QList< QgsMapLayer *>() << tempLayer.get() );
   mQgisApp->mapCanvas()->setExtent( QgsRectangle( -1, -1, 1, 1 ) );
-  mQgisApp->mapCanvas()->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ), QDateTime( QDate( 2020, 2, 1 ) ) ) );
+  mQgisApp->mapCanvas()->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 2, 1 ), QTime( 0, 0, 0 ) ) ) );
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible ) );
 
