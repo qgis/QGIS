@@ -430,21 +430,29 @@ void QgsRangeSlider::mousePressEvent( QMouseEvent *event )
 
   mPreDragLowerValue = mLowerValue;
   mPreDragUpperValue = mUpperValue;
+  mRangeDragOffset = 0;
 
-  if ( overLowerControl && overUpperControl )
+  if ( ( overLowerControl || overUpperControl ) && event->modifiers() & Qt::ShiftModifier )
+  {
+    mActiveControl = Range; // shift + drag over handle moves the whole range
+    mRangeDragOffset = overUpperControl ? mUpperClickOffset : mLowerClickOffset;
+  }
+  else if ( overLowerControl && overUpperControl )
     mActiveControl = Both;
   else if ( overLowerControl )
     mActiveControl = Lower;
   else if ( overUpperControl )
     mActiveControl = Upper;
   else if ( overSelectedRange )
+  {
     mActiveControl = Range;
+  }
   else
     mActiveControl = None;
 
   if ( mActiveControl != None )
   {
-    mStartDragPos = pixelPosToRangeValue( pick( event->pos() ) );
+    mStartDragPos = pixelPosToRangeValue( pick( event->pos() ) - mRangeDragOffset );
   }
 }
 
@@ -531,6 +539,7 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
 
     case Range:
     {
+      newPosition = pixelPosToRangeValue( pick( event->pos() ) - mRangeDragOffset ) ;
       int delta = newPosition - mStartDragPos;
 
       if ( delta > 0 )
