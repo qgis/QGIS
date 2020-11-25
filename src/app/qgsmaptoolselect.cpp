@@ -141,9 +141,7 @@ QgsMapTool::Flags QgsMapToolSelect::flags() const
   return QgsMapTool::flags();
 }
 
-
-
-void QgsMapToolSelect::populateContextMenu( QMenu *menu, QgsMapMouseEvent *event )
+bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
 {
   menu->addSeparator();
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
@@ -163,13 +161,14 @@ void QgsMapToolSelect::populateContextMenu( QMenu *menu, QgsMapMouseEvent *event
   else if ( modifiers & Qt::ControlModifier )
     behavior = QgsVectorLayer::RemoveFromSelection;
 
-  QgsMapToolSelectUtils::QgsMapToolSelectMenuActions *menuActions
-    = new QgsMapToolSelectUtils::QgsMapToolSelectMenuActions( mCanvas, vlayer, behavior, menu );
-
   QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, vlayer );
-  QgsFeatureIds selectedFeatures = QgsMapToolSelectUtils::getMatchingFeatures( mCanvas, QgsGeometry::fromRect( r ), false, false );
 
-  menu->addActions( menuActions->actions( selectedFeatures ) );
+  QgsMapToolSelectUtils::QgsMapToolSelectMenuActions *menuActions
+    = new QgsMapToolSelectUtils::QgsMapToolSelectMenuActions( mCanvas, vlayer, behavior, QgsGeometry::fromRect( r ), menu );
+
+  menuActions->populateMenu( menu );
+
+  return true;
 }
 
 void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
@@ -204,21 +203,3 @@ void QgsMapToolSelect::modifiersChanged( bool ctrlModifier, bool shiftModifier, 
   else if ( ctrlModifier && shiftModifier && altModifier )
     emit modeChanged( GeometryWithinIntersectWithSelection );
 }
-
-void QgsMapToolSelect::highlightFeature( const QgsFeatureId &id, QgsVectorLayer *layer )
-{
-  for ( QgsHighlight *hl : mHighlights )
-    delete hl;
-
-  mHighlights.clear();
-
-  QgsFeature feat = layer->getFeature( id );
-  mHighlights.append( new QgsHighlight( mCanvas, feat.geometry(), layer ) );
-
-}
-
-
-
-
-
-

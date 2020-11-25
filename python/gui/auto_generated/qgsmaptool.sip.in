@@ -195,7 +195,25 @@ The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
 .. versionadded:: 2.3
 %End
 
-    virtual void populateContextMenu( QMenu *menu, QgsMapMouseEvent *event = 0 );
+    virtual void populateContextMenu( QMenu *menu );
+%Docstring
+Allows the tool to populate and customize the given ``menu``,
+prior to showing it in response to a right-mouse button click.
+
+``menu`` will be initially populated with a set of default, generic actions.
+Any new actions added to the menu should be correctly parented to ``menu``.
+
+The default implementation does nothing.
+
+.. note::
+
+   The context menu is only shown when the ShowContextMenu flag
+   is present in :py:func:`~QgsMapTool.flags`.
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
 %Docstring
 Allows the tool to populate and customize the given ``menu``,
 prior to showing it in response to a right-mouse button click.
@@ -205,7 +223,9 @@ Any new actions added to the menu should be correctly parented to ``menu``.
 
 A pointer to the map mouse ``event`` can be provided to allow particular behavior depending on the map tool.
 
-The default implementation does nothing.
+This method can return true to inform the caller that the menu was effectivly populated.
+
+The default implementation does nothing and return false;
 
 .. note::
 

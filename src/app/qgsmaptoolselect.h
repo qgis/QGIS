@@ -54,8 +54,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     void deactivate() override;
     Flags flags() const override;
 
-
-    void populateContextMenu( QMenu *menu, QgsMapMouseEvent *event = nullptr ) override;
+    bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
 
   signals:
 
@@ -68,11 +67,6 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
 
     void modifiersChanged( bool ctrlModifier, bool shiftModifier, bool altModifier );
-
-    void highlightFeature( const QgsFeatureId &id, QgsVectorLayer *layer );
-
-    QList<QgsHighlight *> mHighlights;
-
 };
 
 #endif

@@ -910,7 +910,8 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   menu.addMenu( copyCoordinateMenu );
 
   if ( mMapTool )
-    mMapTool->populateContextMenu( &menu, event );
+    if ( !mapTool()->populateContextMenuWithEvent( &menu, event ) )
+      mMapTool->populateContextMenu( &menu );
 
   emit contextMenuAboutToShow( &menu, event );
 
