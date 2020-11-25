@@ -530,7 +530,7 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
       return tr( "Intersect All with Selection (%1)" ).arg( featureCountText );
       break;
     case QgsVectorLayer::RemoveFromSelection:
-      return tr( "Remove All (%1) from Selection (%1)" ).arg( featureCountText );
+      return tr( "Remove All from Selection (%1)" ).arg( featureCountText );
       break;
   }
 
