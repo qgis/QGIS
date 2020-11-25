@@ -72,10 +72,10 @@ void QgsMeshRendererMeshSettingsWidget::syncToLayer( )
   switch ( mMeshType )
   {
     case Native:
-      settings = rendererSettings.triangularMeshSettings();
+      settings = rendererSettings.nativeMeshSettings();
       break;
     case Triangular:
-      settings = rendererSettings.nativeMeshSettings();
+      settings = rendererSettings.triangularMeshSettings();
       break;
     case Edge:
       settings = rendererSettings.edgeMeshSettings();
