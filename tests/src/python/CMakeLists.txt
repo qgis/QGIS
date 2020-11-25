@@ -229,6 +229,7 @@ ADD_PYTHON_TEST(PyQgsProviderConnectionSpatialite test_qgsproviderconnection_spa
 ADD_PYTHON_TEST(PyQgsProviderRegistry test_qgsproviderregistry.py)
 ADD_PYTHON_TEST(TestQgsRandomMarkerSymbolLayer test_qgsrandommarkersymbollayer.py)
 ADD_PYTHON_TEST(PyQgsRange test_qgsrange.py)
+ADD_PYTHON_TEST(PyQgsRangeSlider test_qgsrangeslider.py)
 ADD_PYTHON_TEST(PyQgsRangeWidgets test_qgsrangewidgets.py)
 ADD_PYTHON_TEST(PyQgsRasterBandComboBox test_qgsrasterbandcombobox.py)
 ADD_PYTHON_TEST(PyQgsRasterFileWriter test_qgsrasterfilewriter.py)
