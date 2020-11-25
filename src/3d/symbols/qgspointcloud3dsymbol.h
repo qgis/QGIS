@@ -266,7 +266,7 @@ class _3D_EXPORT QgsRGBPointCloud3DSymbol : public QgsPointCloud3DSymbol
      */
     void setPointSize( float size );
   private:
-    float mPointSize;
+    float mPointSize = 2.0f;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H
