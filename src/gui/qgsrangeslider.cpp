@@ -89,15 +89,15 @@ void QgsRangeSlider::setMinimum( int minimum )
 
 void QgsRangeSlider::setRangeLimits( int minimum, int maximum )
 {
+  if ( maximum < minimum )
+    std::swap( minimum, maximum );
+
   if ( mStyleOption.minimum == minimum && mStyleOption.maximum == maximum )
     return;
-
-  maximum = std::max( minimum, maximum );
 
   mStyleOption.minimum = minimum;
   mStyleOption.maximum = maximum;
   emit rangeLimitsChanged( mStyleOption.minimum, mStyleOption.maximum );
-
 
   if ( mUpperValue < minimum || mLowerValue < minimum || mUpperValue > maximum || mLowerValue > maximum )
   {
