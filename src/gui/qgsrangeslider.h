@@ -221,6 +221,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     bool updateHoverControl( const QPoint &pos );
     bool newHoverControl( const QPoint &pos );
     QRect selectedRangeRect();
+    void drawFocusRect();
 
     int mLowerValue = 0;
     int mUpperValue = 0;
@@ -242,6 +243,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     int mPreDragLowerValue = -1;
     int mPreDragUpperValue = -1;
     Control mHoverControl = None;
+    Control mFocusControl = Lower;
     QStyle::SubControl mHoverSubControl = QStyle::SC_None;
     QRect mHoverRect;
 

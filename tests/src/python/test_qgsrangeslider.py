@@ -260,7 +260,7 @@ class TestQgsRangeSlider(unittest.TestCase):
         w.setRange(0, 10)
         self.assertEqual(len(spy), 5)
 
-        w.setRangeLimits(7, 3) # flipped
+        w.setRangeLimits(7, 3)  # flipped
         self.assertEqual(w.lowerValue(), 3)
         self.assertEqual(w.upperValue(), 7)
         self.assertEqual(len(spy), 6)
