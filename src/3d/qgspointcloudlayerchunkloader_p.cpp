@@ -157,14 +157,14 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
         case QgsPointCloudAttribute::DataType::Char:
           iParam = *( char * )( ptr + i * recordSize + 12 );
           break;
-        case QgsPointCloudAttribute::DataType::Float:
-          iParam = *( float * )( ptr + i * recordSize + 12 );
+        case QgsPointCloudAttribute::DataType::Short:
+          iParam = *( short * )( ptr + i * recordSize + 12 );
           break;
         case QgsPointCloudAttribute::DataType::Int32:
           iParam = *( qint32 * )( ptr + i * recordSize + 12 );
           break;
-        case QgsPointCloudAttribute::DataType::Short:
-          iParam = *( short * )( ptr + i * recordSize + 12 );
+        case QgsPointCloudAttribute::DataType::Float:
+          iParam = *( float * )( ptr + i * recordSize + 12 );
           break;
         case QgsPointCloudAttribute::DataType::Double:
           iParam = *( double * )( ptr + i * recordSize + 12 );
@@ -178,11 +178,15 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
     QVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
-    outNormal.parameter.push_back( iParam );
+    if ( parameterAttribute->name() == "X" )
+      outNormal.parameter.push_back( x );
+    if ( parameterAttribute->name() == "Y" )
+      outNormal.parameter.push_back( y );
+    if ( parameterAttribute->name() == "Z" )
+      outNormal.parameter.push_back( z );
+    else
+      outNormal.parameter.push_back( iParam );
   }
-  qDebug() << "outNormal.positions.size() " << outNormal.positions.size();
-  qDebug() << "outNormal.parameter.size() " << outNormal.parameter.size();
-  qDebug() << "--------------------------------------------------";
 }
 
 void QgsPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
