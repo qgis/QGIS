@@ -36,7 +36,8 @@ QgsRangeSlider::QgsRangeSlider( Qt::Orientation orientation, QWidget *parent )
   setSizePolicy( sp );
   setAttribute( Qt::WA_WState_OwnSizePolicy, false );
 
-  installEventFilter( this );
+  setAttribute( Qt::WA_Hover );
+  setMouseTracking( true );
 }
 
 int QgsRangeSlider::maximum() const
@@ -233,30 +234,39 @@ bool QgsRangeSlider::newHoverControl( const QPoint &pos )
     mHoverRect = lowerHandleRect;
     mHoverControl = Lower;
     mHoverSubControl = QStyle::SC_SliderHandle;
+    setCursor( Qt::OpenHandCursor );
   }
   else if ( upperHandleRect.contains( pos ) )
   {
     mHoverRect = upperHandleRect;
     mHoverControl = Upper;
     mHoverSubControl = QStyle::SC_SliderHandle;
+    setCursor( Qt::OpenHandCursor );
   }
   else if ( grooveRect.contains( pos ) )
   {
     mHoverRect = grooveRect;
     mHoverControl = None;
     mHoverSubControl = QStyle::SC_SliderGroove;
+
+    if ( selectedRangeRect().contains( pos ) )
+      setCursor( Qt::OpenHandCursor );
+    else
+      unsetCursor();
   }
   else if ( tickmarksRect.contains( pos ) )
   {
     mHoverRect = tickmarksRect;
     mHoverControl = None;
     mHoverSubControl = QStyle::SC_SliderTickmarks;
+    unsetCursor();
   }
   else
   {
     mHoverRect = QRect();
     mHoverControl = None;
     mHoverSubControl = QStyle::SC_None;
+    unsetCursor();
   }
   return mHoverSubControl != lastHoverSubControl || mHoverControl != lastHoverControl;
 }
