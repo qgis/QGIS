@@ -125,19 +125,19 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged( int current )
   switch ( currentStyle )
   {
     case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      mColorRampGroupBox->setVisible( false );
-      mSingleColorGroupBox->setVisible( false );
-      mPointSizeGroupBox->setVisible( false );
+      mColorRampFrame->setVisible( false );
+      mSingleColorFrame->setVisible( false );
+      mPointSizeFrame->setVisible( false );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      mColorRampGroupBox->setVisible( false );
-      mSingleColorGroupBox->setVisible( true );
-      mPointSizeGroupBox->setVisible( true );
+      mColorRampFrame->setVisible( false );
+      mSingleColorFrame->setVisible( true );
+      mPointSizeFrame->setVisible( true );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      mColorRampGroupBox->setVisible( true );
-      mSingleColorGroupBox->setVisible( false );
-      mPointSizeGroupBox->setVisible( true );
+      mColorRampFrame->setVisible( true );
+      mSingleColorFrame->setVisible( false );
+      mPointSizeFrame->setVisible( true );
       break;
   }
 }
