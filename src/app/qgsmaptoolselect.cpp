@@ -143,6 +143,7 @@ QgsMapTool::Flags QgsMapToolSelect::flags() const
 
 bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
 {
+  Q_ASSERT( menu );
   menu->addSeparator();
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
 

@@ -372,7 +372,7 @@ QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::~QgsMapToolSelectMenuActions
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateMenu( QMenu *menu )
 {
-  mActionChooseAll = new QAction( textForChooseAll(), menu );
+  mActionChooseAll = new QAction( textForChooseAll(), this );
   menu->addAction( mActionChooseAll );
   connect( mActionChooseAll, &QAction::triggered, this, &QgsMapToolSelectMenuActions::chooseAllCandidateFeature );
   mMenuChooseOne = new QMenu( textForChooseOneMenu() );

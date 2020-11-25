@@ -147,7 +147,7 @@ namespace QgsMapToolSelectUtils
 
       /**
       * Populates the \a menu with "All Feature" action and a empty menu that could contain later the "One Feature" actions
-      * Starts the search for canditate features to be selected on an other thread, actions/menus will be updated at the end of this task
+      * Starts the search for canditate features to be selected on another thread, actions/menus will be updated at the end of this task
       */
       void populateMenu( QMenu *menu );
 
