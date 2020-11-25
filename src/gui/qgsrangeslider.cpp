@@ -936,14 +936,49 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
       break;
     }
 
-#if 0
     case Qt::Key_Home:
-      action = SliderToMinimum;
+      switch ( mFocusControl )
+      {
+        case Lower:
+          applyStep( mFlipped ? mUpperValue - mLowerValue : mStyleOption.minimum - mLowerValue );
+          break;
+
+        case Upper:
+          applyStep( mFlipped ? mStyleOption.maximum - mUpperValue : mLowerValue - mUpperValue );
+          break;
+
+        case Range:
+          applyStep( mFlipped ? mStyleOption.maximum - mUpperValue : mStyleOption.minimum  - mLowerValue );
+          break;
+
+        case None:
+        case Both:
+          break;
+      }
+
       break;
+
     case Qt::Key_End:
-      action = SliderToMaximum;
+      switch ( mFocusControl )
+      {
+        case Lower:
+          applyStep( mFlipped ? mStyleOption.minimum - mLowerValue : mUpperValue - mLowerValue );
+          break;
+
+        case Upper:
+          applyStep( mFlipped ? mLowerValue - mUpperValue : mStyleOption.maximum - mUpperValue );
+          break;
+
+        case Range:
+          applyStep( mFlipped ? mStyleOption.minimum  - mLowerValue : mStyleOption.maximum - mUpperValue );
+          break;
+
+        case None:
+        case Both:
+          break;
+      }
       break;
-#endif
+
     default:
       event->ignore();
       break;
