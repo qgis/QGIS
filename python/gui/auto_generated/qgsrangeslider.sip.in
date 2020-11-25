@@ -146,6 +146,28 @@ position for the widget. If the value is ``True``, the minimum and maximum appea
     virtual QSize minimumSizeHint() const;
 
 
+    int singleStep() const;
+%Docstring
+Returns the single step value for the widget.
+
+This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+
+.. seealso:: :py:func:`setSingleStep`
+
+.. seealso:: :py:func:`pageStep`
+%End
+
+    int pageStep() const;
+%Docstring
+Returns the page step value for the widget.
+
+This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+
+.. seealso:: :py:func:`setPageStep`
+
+.. seealso:: :py:func:`singleStep`
+%End
+
   public slots:
 
     void setMaximum( int maximum );
@@ -204,6 +226,28 @@ Sets the current range selected in the widget.
 .. seealso:: :py:func:`setLowerValue`
 
 .. seealso:: :py:func:`setUpperValue`
+%End
+
+    void setSingleStep( int step );
+%Docstring
+Sets the single ``step`` value for the widget.
+
+This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+
+.. seealso:: :py:func:`singleStep`
+
+.. seealso:: :py:func:`pageStep`
+%End
+
+    void setPageStep( int step );
+%Docstring
+Sets the page ``step`` value for the widget.
+
+This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+
+.. seealso:: :py:func:`pageStep`
+
+.. seealso:: :py:func:`setSingleStep`
 %End
 
     virtual bool event( QEvent *event );
