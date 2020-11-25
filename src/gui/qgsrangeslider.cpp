@@ -317,6 +317,69 @@ QRect QgsRangeSlider::selectedRangeRect()
   return selectionRect.adjusted( -1, 1, 1, -1 );
 }
 
+void QgsRangeSlider::applyStep( int step )
+{
+  switch ( mFocusControl )
+  {
+    case Lower:
+    {
+      int newLowerValue = std::min( mUpperValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mLowerValue + step ) ) );
+      if ( newLowerValue != mLowerValue )
+      {
+        mLowerValue = newLowerValue;
+        emit rangeChanged( mLowerValue, mUpperValue );
+        update();
+      }
+      break;
+    }
+
+    case Upper:
+    {
+      int newUpperValue = std::max( mLowerValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mUpperValue + step ) ) );
+      if ( newUpperValue != mUpperValue )
+      {
+        mUpperValue = newUpperValue;
+        emit rangeChanged( mLowerValue, mUpperValue );
+        update();
+      }
+      break;
+    }
+
+    case Range:
+    {
+      if ( step < 0 )
+      {
+        int previousWidth = mUpperValue - mLowerValue;
+        int newLowerValue = std::min( mUpperValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mLowerValue + step ) ) );
+        if ( newLowerValue != mLowerValue )
+        {
+          mLowerValue = newLowerValue;
+          mUpperValue = std::min( mStyleOption.maximum, mLowerValue + previousWidth );
+          emit rangeChanged( mLowerValue, mUpperValue );
+          update();
+        }
+      }
+      else
+      {
+        int previousWidth = mUpperValue - mLowerValue;
+        int newUpperValue = std::max( mLowerValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mUpperValue + step ) ) );
+        if ( newUpperValue != mUpperValue )
+        {
+          mUpperValue = newUpperValue;
+          mLowerValue = std::max( mStyleOption.minimum, mUpperValue - previousWidth );
+          emit rangeChanged( mLowerValue, mUpperValue );
+          update();
+        }
+      }
+      break;
+    }
+
+    case None:
+    case Both:
+      break;
+  }
+}
+
 int QgsRangeSlider::pageStep() const
 {
   return mPageStep;
@@ -641,6 +704,250 @@ void QgsRangeSlider::mouseReleaseEvent( QMouseEvent *event )
   event->accept();
   mActiveControl = None;
   update();
+}
+
+void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
+{
+  switch ( event->key() )
+  {
+    case Qt::Key_Left:
+    {
+      switch ( mStyleOption.orientation )
+      {
+        case Qt::Horizontal:
+          applyStep( mFlipped ? mSingleStep : -mSingleStep );
+          break;
+
+        case Qt::Vertical:
+          if ( mFlipped )
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+                mFocusControl = Range;
+                break;
+              case Range:
+                mFocusControl = Upper;
+                break;
+              case Upper:
+              case None:
+              case Both:
+                mFocusControl = Lower;
+                break;
+            }
+          }
+          else
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+              case None:
+              case Both:
+                mFocusControl = Upper;
+                break;
+              case Range:
+                mFocusControl = Lower;
+                break;
+              case Upper:
+                mFocusControl = Range;
+                break;
+            }
+          }
+          update();
+          break;
+      }
+      break;
+    }
+
+    case Qt::Key_Right:
+    {
+      switch ( mStyleOption.orientation )
+      {
+        case Qt::Horizontal:
+          applyStep( mFlipped ? -mSingleStep : mSingleStep );
+          break;
+
+        case Qt::Vertical:
+          if ( mFlipped )
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+              case None:
+              case Both:
+                mFocusControl = Upper;
+                break;
+              case Range:
+                mFocusControl = Lower;
+                break;
+              case Upper:
+                mFocusControl = Range;
+                break;
+            }
+          }
+          else
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+                mFocusControl = Range;
+                break;
+              case Range:
+                mFocusControl = Upper;
+                break;
+              case Upper:
+              case None:
+              case Both:
+                mFocusControl = Lower;
+                break;
+            }
+          }
+          update();
+          break;
+      }
+      break;
+    }
+
+    case Qt::Key_Up:
+    {
+      switch ( mStyleOption.orientation )
+      {
+        case Qt::Horizontal:
+          if ( mFlipped )
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+                mFocusControl = Range;
+                break;
+              case Range:
+                mFocusControl = Upper;
+                break;
+              case Upper:
+              case None:
+              case Both:
+                mFocusControl = Lower;
+                break;
+            }
+          }
+          else
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+                mFocusControl = Upper;
+                break;
+              case Range:
+              case None:
+              case Both:
+                mFocusControl = Lower;
+                break;
+              case Upper:
+                mFocusControl = Range;
+                break;
+            }
+          }
+          update();
+          break;
+
+        case Qt::Vertical:
+          applyStep( mFlipped ? mSingleStep : -mSingleStep );
+          break;
+      }
+      break;
+    }
+
+    case Qt::Key_Down:
+    {
+      switch ( mStyleOption.orientation )
+      {
+        case Qt::Horizontal:
+          if ( mFlipped )
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+                mFocusControl = Upper;
+                break;
+              case Range:
+              case None:
+              case Both:
+                mFocusControl = Lower;
+                break;
+              case Upper:
+                mFocusControl = Range;
+                break;
+            }
+          }
+          else
+          {
+            switch ( mFocusControl )
+            {
+              case Lower:
+                mFocusControl = Range;
+                break;
+              case Range:
+                mFocusControl = Upper;
+                break;
+              case Upper:
+              case None:
+              case Both:
+                mFocusControl = Lower;
+                break;
+            }
+          }
+          update();
+          break;
+
+        case Qt::Vertical:
+          applyStep( mFlipped ? -mSingleStep : mSingleStep );
+          break;
+      }
+      break;
+    }
+
+    case Qt::Key_PageUp:
+    {
+      switch ( mStyleOption.orientation )
+      {
+        case Qt::Horizontal:
+          applyStep( mFlipped ? -mPageStep : mPageStep );
+          break;
+
+        case Qt::Vertical:
+          applyStep( mFlipped ? mPageStep : -mPageStep );
+          break;
+      }
+      break;
+    }
+
+    case Qt::Key_PageDown:
+    {
+      switch ( mStyleOption.orientation )
+      {
+        case Qt::Horizontal:
+          applyStep( mFlipped ? mPageStep : -mPageStep );
+          break;
+
+        case Qt::Vertical:
+          applyStep( mFlipped ? -mPageStep : mPageStep );
+          break;
+      }
+      break;
+    }
+
+#if 0
+    case Qt::Key_Home:
+      action = SliderToMinimum;
+      break;
+    case Qt::Key_End:
+      action = SliderToMaximum;
+      break;
+#endif
+    default:
+      event->ignore();
+      break;
+  }
 }
 
 QSize QgsRangeSlider::sizeHint() const

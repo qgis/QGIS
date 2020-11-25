@@ -145,6 +145,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
@@ -262,6 +263,8 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     bool newHoverControl( const QPoint &pos );
     QRect selectedRangeRect();
     void drawFocusRect();
+
+    void applyStep( int step );
 
     int mLowerValue = 0;
     int mUpperValue = 0;
