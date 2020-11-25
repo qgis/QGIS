@@ -238,6 +238,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     int mStartDragPos = -1;
     int mLowerClickOffset = 0;
     int mUpperClickOffset = 0;
+    int mRangeDragOffset = 0;
     int mPreDragLowerValue = -1;
     int mPreDragUpperValue = -1;
     Control mHoverControl = None;
