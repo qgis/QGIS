@@ -20,6 +20,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis.h"
 
 #include <QDate>
 #include <QDateTime>
@@ -180,7 +181,7 @@ class QgsRange
       return ( ! operator==( other ) );
     }
 
-  private:
+  protected:
 
     T mLower;
     T mUpper;
@@ -258,6 +259,19 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
+
+    bool operator==( const QgsDoubleRange &other ) const
+    {
+      return qgsDoubleNear( mIncludeLower, other.mIncludeLower ) &&
+             qgsDoubleNear( mIncludeUpper, other.mIncludeUpper ) &&
+             mIncludeLower == other.includeLower() &&
+             mIncludeUpper == other.includeUpper();
+    }
+
+    bool operator!=( const QgsDoubleRange &other ) const
+    {
+      return ( ! operator==( other ) );
+    }
 
 };
 
