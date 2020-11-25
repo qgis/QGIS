@@ -288,9 +288,9 @@ QRect QgsRangeSlider::selectedRangeRect()
   switch ( mStyleOption.orientation )
   {
     case Qt::Horizontal:
-      selectionRect = mFlipped ? QRect( upperHandleRect.left(),
+      selectionRect = mFlipped ? QRect( upperHandleRect.right(),
                                         grooveRect.y(),
-                                        lowerHandleRect.right() - upperHandleRect.right(),
+                                        lowerHandleRect.left() - upperHandleRect.right(),
                                         grooveRect.height()
                                       )
                       : QRect( lowerHandleRect.right(),
@@ -302,9 +302,9 @@ QRect QgsRangeSlider::selectedRangeRect()
 
     case Qt::Vertical:
       selectionRect = mFlipped ? QRect( grooveRect.x(),
-                                        lowerHandleRect.bottom(),
+                                        lowerHandleRect.top(),
                                         grooveRect.width(),
-                                        upperHandleRect.top() - lowerHandleRect.top()
+                                        upperHandleRect.bottom() - lowerHandleRect.top()
                                       )
                       : QRect( grooveRect.x(),
                                upperHandleRect.top(),
