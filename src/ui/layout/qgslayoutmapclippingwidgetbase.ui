@@ -77,7 +77,7 @@
       <item row="5" column="0">
        <widget class="QRadioButton" name="mRadioClipSelectedLayers">
         <property name="text">
-         <string>Clip selected layers:</string>
+         <string>Clip selected layers</string>
         </property>
        </widget>
       </item>
@@ -172,6 +172,18 @@
    <header>qgslayoutitemcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mClipToAtlasCheckBox</tabstop>
+  <tabstop>mAtlasClippingTypeComboBox</tabstop>
+  <tabstop>mForceLabelsInsideCheckBox</tabstop>
+  <tabstop>mRadioClipAllLayers</tabstop>
+  <tabstop>mRadioClipSelectedLayers</tabstop>
+  <tabstop>mLayersTreeView</tabstop>
+  <tabstop>mClipToItemCheckBox</tabstop>
+  <tabstop>mClipItemComboBox</tabstop>
+  <tabstop>mItemClippingTypeComboBox</tabstop>
+  <tabstop>mForceLabelsInsideItemCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
