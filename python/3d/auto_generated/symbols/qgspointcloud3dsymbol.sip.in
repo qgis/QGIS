@@ -87,6 +87,9 @@ Returns the rendering style used to render the point cloud
 Returns the byte stride for the geometries used to for the vertex buffer
 %End
     virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0;
+%Docstring
+Used to fill material object with necessary QParameters (and consequently opengl uniforms)
+%End
 
   protected:
     float mPointSize = 2.0f;
