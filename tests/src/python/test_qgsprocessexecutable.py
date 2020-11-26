@@ -203,6 +203,33 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertTrue(os.path.exists(output_file))
         self.assertEqual(rc, 0)
 
+    def testAlgorithmRunListValue(self):
+        """
+        Test an algorithm which requires a list of layers as a parameter value
+        """
+        output_file = self.TMP_DIR + '/package.gpkg'
+        rc, output, err = self.run_process(['run', '--json', 'native:package', '--',
+                                            'LAYERS={}'.format(TEST_DATA_DIR + '/polys.shp'),
+                                            'LAYERS={}'.format(TEST_DATA_DIR + '/points.shp'),
+                                            'LAYERS={}'.format(TEST_DATA_DIR + '/lines.shp'),
+                                            'OUTPUT={}'.format(output_file)])
+        res = json.loads(output)
+
+        self.assertIn('gdal_version', res)
+        self.assertIn('geos_version', res)
+        self.assertIn('proj_version', res)
+        self.assertIn('qt_version', res)
+        self.assertIn('qgis_version', res)
+
+        self.assertEqual(res['algorithm_details']['name'], 'Package layers')
+        self.assertEqual(len(res['inputs']['LAYERS']), 3)
+        self.assertEqual(res['inputs']['OUTPUT'], output_file)
+        self.assertEqual(res['results']['OUTPUT'], output_file)
+        self.assertEqual(len(res['results']['OUTPUT_LAYERS']), 3)
+
+        self.assertTrue(os.path.exists(output_file))
+        self.assertEqual(rc, 0)
+
     def testModelHelp(self):
         rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/test_model.model3'])
         if os.environ.get('TRAVIS', '') != 'true':
