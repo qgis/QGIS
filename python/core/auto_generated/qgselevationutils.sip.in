@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/pointcloud/qgspointcloudlayerelevationproperties.h          *
+ * src/core/qgselevationutils.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,41 +9,34 @@
 
 
 
-
-class QgsPointCloudLayerElevationProperties : QgsMapLayerElevationProperties
+class QgsElevationUtils
 {
 %Docstring
-Point cloud layer specific subclass of QgsMapLayerElevationProperties.
+Contains utility methods for working with elevation from layers and projects.
 
 .. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
-#include "qgspointcloudlayerelevationproperties.h"
+#include "qgselevationutils.h"
 %End
   public:
 
-    QgsPointCloudLayerElevationProperties( QObject *parent /TransferThis/ );
+    static QgsDoubleRange calculateZRangeForProject( QgsProject *project );
 %Docstring
-Constructor for QgsPointCloudLayerElevationProperties, with the specified ``parent`` object.
+Calculates the elevation range for a ``project``.
+
+This method considers the elevation (or z) range available from layers contained within the project and
+returns the maximal combined elevation range of these layers.
 %End
 
-    virtual bool hasElevation() const;
-
-    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
-
-    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
-
-    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
-
-    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
-
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/pointcloud/qgspointcloudlayerelevationproperties.h          *
+ * src/core/qgselevationutils.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

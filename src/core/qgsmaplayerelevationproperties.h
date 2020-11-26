@@ -103,6 +103,14 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      */
     virtual QgsMapLayerElevationProperties::Flags flags() const { return QgsMapLayerElevationProperties::Flags(); }
 
+    /**
+     * Attempts to calculate the overall elevation or z range for the specified \a layer, using
+     * the settings defined by this elevation properties object.
+     *
+     * May return an infinite range if the extent could not be calculated.
+     */
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
   signals:
 
     /**

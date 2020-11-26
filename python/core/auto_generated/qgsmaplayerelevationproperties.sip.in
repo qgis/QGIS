@@ -79,6 +79,14 @@ Returns ``True`` if the layer should be visible and rendered for the specified z
 Returns flags associated to the elevation properties.
 %End
 
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+%Docstring
+Attempts to calculate the overall elevation or z range for the specified ``layer``, using
+the settings defined by this elevation properties object.
+
+May return an infinite range if the extent could not be calculated.
+%End
+
   signals:
 
     void changed();
