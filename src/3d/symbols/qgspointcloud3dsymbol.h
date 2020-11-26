@@ -22,6 +22,11 @@
 #include "qgscolorrampshader.h"
 #include "qgspointcloudlayer.h"
 
+namespace Qt3DRender
+{
+  class QMaterial;
+};
+
 /**
  * \ingroup 3d
  * 3D symbol that draws point cloud geometries as 3D objects.
@@ -55,11 +60,6 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY { return nullptr; }
-
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override { Q_UNUSED( elem ); Q_UNUSED( context ); }
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override { Q_UNUSED( elem ); Q_UNUSED( context ); }
-
     QString type() const override { return "pointcloud"; }
 
     /**
@@ -88,6 +88,10 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
     //! Returns the rendering style used to render the point cloud
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const { return mRenderingStyle; }
+
+    //! Returns the byte stride for the geometries used to for the vertex buffer
+    virtual unsigned int byteStride() = 0;
+    virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0;
 
   protected:
     QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::NoRendering;
@@ -126,6 +130,10 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     * \see singleColor()
     */
     void setSingleColor( QColor color );
+
+    unsigned int byteStride() override { return 4 * sizeof( float ); }
+    void fillMaterial( Qt3DRender::QMaterial *material ) override;
+
 
   private:
     QColor mSingleColor = Qt::blue;
@@ -193,6 +201,9 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
      */
     void setColorRampShaderMinMax( double min, double max );
 
+    unsigned int byteStride() override { return 4 * sizeof( float ); }
+    void fillMaterial( Qt3DRender::QMaterial *material ) override;
+
   private:
     QString mRenderingParameter;
     QgsColorRampShader mColorRampShader;
@@ -219,6 +230,9 @@ class _3D_EXPORT QgsRGBPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    unsigned int byteStride() override { return 7 * sizeof( float ); }
+    void fillMaterial( Qt3DRender::QMaterial *material ) override;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H
