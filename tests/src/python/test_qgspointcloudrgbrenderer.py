@@ -26,7 +26,8 @@ from qgis.core import (
     QgsContrastEnhancement,
     QgsUnitTypes,
     QgsMapUnitScale,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
+    QgsDoubleRange
 )
 
 from qgis.PyQt.QtCore import QDir, QSize
@@ -147,6 +148,11 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
 
         self.assertEqual(renderer.usedAttributes(prc), {'r', 'g', 'b'})
+
+        # if context is filtering by z, we also need the z attribute
+        rc.setZRange(QgsDoubleRange(1, 10))
+        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
+        self.assertEqual(renderer.usedAttributes(prc), {'r', 'g', 'b', 'Z'})
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRender(self):
