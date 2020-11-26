@@ -451,10 +451,16 @@ class BatchPanel(BASE, WIDGET):
                 value = wrapper.parameterValue()
 
                 if not param.checkValueIsAcceptable(value, context):
+<<<<<<< HEAD
                     self.parent.messageBar().pushMessage("", self.tr(
                         'Wrong or missing parameter value: {0} (row {1})').format(
                         param.description(), row + 1),
                         level=Qgis.Warning, duration=5)
+=======
+                    msg = self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                        param.description(), row + 2)
+                    self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
+>>>>>>> 5c87f705da (Merge pull request #40293 from alexbruy/fix-39326)
                     return
                 algParams[param.name()] = param.valueAsPythonString(value, context)
                 col += 1
@@ -469,7 +475,7 @@ class BatchPanel(BASE, WIDGET):
                 else:
                     self.parent.messageBar().pushMessage("",
                                                          self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                                             out.description(), row + 1),
+                                                             out.description(), row + 2),
                                                          level=Qgis.Warning, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
@@ -595,7 +601,7 @@ class BatchPanel(BASE, WIDGET):
             if warnOnInvalid and not param.checkValueIsAcceptable(wrapper.parameterValue()):
                 self.parent.messageBar().pushMessage("",
                                                      self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                                                         param.description(), row + 1),
+                                                         param.description(), row + 2),
                                                      level=Qgis.Warning, duration=5)
                 return {}, False
             col += 1
@@ -617,8 +623,13 @@ class BatchPanel(BASE, WIDGET):
                     parameters[out.name()] = text
                 col += 1
             else:
+<<<<<<< HEAD
                 self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
                     out.description(), row + 1),
                     level=Qgis.Warning, duration=5)
+=======
+                msg = self.tr('Wrong or missing output value: {0} (row {1})').format(out.description(), row + 2)
+                self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
+>>>>>>> 5c87f705da (Merge pull request #40293 from alexbruy/fix-39326)
                 return {}, False
         return parameters, True
