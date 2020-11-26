@@ -281,6 +281,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     };
 
     void applyStep( int step );
+    int unFlippedSliderPosition( int value ) const;
 
     Control mActiveControl = None;
     int mStartDragPos = -1;
