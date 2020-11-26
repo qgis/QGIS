@@ -28,6 +28,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
 #include "qgsmesh3dsymbolwidget.h"
 #include "qgssettings.h"
 #include "qgsskyboxrenderingsettingswidget.h"
@@ -219,7 +220,7 @@ void Qgs3DMapConfigWidget::apply()
     {
       QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
       flatTerrainGen->setCrs( mMap->crs() );
-      flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
+      flatTerrainGen->setExtent( QgsProject::instance()->viewSettings()->fullExtent() );
       mMap->setTerrainGenerator( flatTerrainGen );
       needsUpdateOrigin = true;
     }
@@ -266,7 +267,7 @@ void Qgs3DMapConfigWidget::apply()
       {
         QgsOnlineTerrainGenerator *onlineTerrainGen = new QgsOnlineTerrainGenerator;
         onlineTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
-        onlineTerrainGen->setExtent( mMainCanvas->fullExtent() );
+        onlineTerrainGen->setExtent( QgsProject::instance()->viewSettings()->fullExtent() );
         onlineTerrainGen->setResolution( spinTerrainResolution->value() );
         onlineTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
         mMap->setTerrainGenerator( onlineTerrainGen );
