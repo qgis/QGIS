@@ -291,21 +291,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   Qt3DRender::QPointSize *pointSize = new Qt3DRender::QPointSize( renderPass );
   pointSize->setSizeMode( Qt3DRender::QPointSize::Programmable );  // supported since OpenGL 3.2
-  switch ( mSymbol->renderingStyle() )
-  {
-    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      // Do Nothing since there is no rendering
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      pointSize->setValue( dynamic_cast<QgsSingleColorPointCloud3DSymbol *>( mSymbol.get() )->pointSize() );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      pointSize->setValue( dynamic_cast<QgsColorRampPointCloud3DSymbol *>( mSymbol.get() )->pointSize() );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
-      pointSize->setValue( dynamic_cast<QgsRGBPointCloud3DSymbol *>( mSymbol.get() )->pointSize() );
-      break;
-  }
+  pointSize->setValue( mSymbol ? mSymbol->pointSize() : 1.0f );
   renderPass->addRenderState( pointSize );
 
   // without this filter the default forward renderer would not render this
