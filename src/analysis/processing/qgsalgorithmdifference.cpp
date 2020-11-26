@@ -31,6 +31,11 @@ QString QgsDifferenceAlgorithm::displayName() const
   return QObject::tr( "Difference" );
 }
 
+QStringList QgsDifferenceAlgorithm::tags() const
+{
+  return QObject::tr( "difference,erase,not overlap" ).split( ',' );
+}
+
 QString QgsDifferenceAlgorithm::group() const
 {
   return QObject::tr( "Vector overlay" );
