@@ -31,6 +31,7 @@ class QgsDifferenceAlgorithm : public QgsProcessingAlgorithm
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmDifference.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
