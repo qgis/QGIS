@@ -56,6 +56,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     enum Relkind
     {
+      NotSet,
       Unknown,
       OrdinaryTable, // r
       Index, // i
@@ -244,7 +245,16 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     void setListening( bool isListening ) override;
 
   private:
+
+    /**
+     * \returns relation kind
+     */
     Relkind relkind() const;
+
+    /**
+     * Change internal query with \a query
+     */
+    void setQuery( const QString &query );
 
     bool declareCursor( const QString &cursorName,
                         const QgsAttributeList &fetchAttributes,
@@ -376,6 +386,11 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * SQL statement used to limit the features retrieved
      */
     QString mSqlWhereClause;
+
+    /**
+     * Kind of relation
+     */
+    mutable Relkind mKind = Relkind::NotSet;
 
     /**
      * Data type for the primary key
