@@ -310,6 +310,16 @@ bool QgsLineString::isEmpty() const
   return mX.isEmpty();
 }
 
+bool QgsLineString::isValid( QString &error SIP_OUT, int flags ) const
+{
+  if ( !isEmpty() && ( numPoints() < 2 ) )
+  {
+    error = QString( "Geometry have less than 2 points and is not empty." );
+    return false;
+  }
+  return QgsCurve::isValid( error, flags );
+}
+
 QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
 {
   // prepare result

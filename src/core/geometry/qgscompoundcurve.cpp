@@ -388,6 +388,22 @@ bool QgsCompoundCurve::isEmpty() const
   return true;
 }
 
+bool QgsCompoundCurve::isValid( QString &error SIP_OUT, int flags ) const
+{
+  if ( mCurves.isEmpty() )
+    return true;
+
+  for ( QgsCurve *curve : mCurves )
+  {
+    if ( !curve->isValid( error, flags ) )
+    {
+      error = QString( "At least one curve is not valid." );
+      return false;
+    }
+  }
+  return QgsCurve::isValid( error, flags );
+}
+
 QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsLineString *line = new QgsLineString();
