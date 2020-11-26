@@ -64,12 +64,27 @@ Sets the point cloud layer object used by the symbol
 see :py:func:`~QgsPointCloud3DSymbol.layer`
 %End
 
+    float pointSize() const;
+%Docstring
+Returns the point size of the point cloud
+
+.. seealso:: :py:func:`setPointSize`
+%End
+
+    void setPointSize( float size );
+%Docstring
+Sets the point size
+
+.. seealso:: :py:func:`pointSize`
+%End
+
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
 %Docstring
 Returns the rendering style used to render the point cloud
 %End
 
   protected:
+    float mPointSize = 2.0f;
 };
 
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
@@ -101,20 +116,6 @@ Constructor for QgsSingleColorPointCloud3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-
-    float pointSize() const;
-%Docstring
-Returns the point size of the point cloud
-
-.. seealso:: :py:func:`setPointSize`
-%End
-
-    void setPointSize( float size );
-%Docstring
-Sets the point size
-
-.. seealso:: :py:func:`pointSize`
-%End
 
     QColor singleColor() const;
 %Docstring
@@ -161,20 +162,6 @@ Constructor for QgsColorRampPointCloud3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-
-    float pointSize() const;
-%Docstring
-Returns the point size of the point cloud
-
-.. seealso:: :py:func:`setPointSize`
-%End
-
-    void setPointSize( float size );
-%Docstring
-Sets the point size
-
-.. seealso:: :py:func:`pointSize`
-%End
 
     QString renderingParameter() const;
 %Docstring
@@ -256,20 +243,6 @@ Constructor for QgsRGBPointCloud3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-
-    float pointSize() const;
-%Docstring
-Returns the point size of the point cloud
-
-.. seealso:: :py:func:`setPointSize`
-%End
-
-    void setPointSize( float size );
-%Docstring
-Sets the point size
-
-.. seealso:: :py:func:`pointSize`
-%End
 };
 
 /************************************************************************
