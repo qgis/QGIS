@@ -269,7 +269,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   switch ( mSymbol->renderingStyle() )
   {
     case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      mat = constructMaterial( dynamic_cast<QgsNoRenderingPointCloud3DSymbol *>( mSymbol.get() ) );
+      mat = new Qt3DRender::QMaterial;
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
       mat = constructMaterial( dynamic_cast<QgsSingleColorPointCloud3DSymbol *>( mSymbol.get() ) );
@@ -335,13 +335,6 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // cppcheck-suppress memleak
 }
 
-Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsNoRenderingPointCloud3DSymbol *symbol )
-{
-  Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", symbol->renderingStyle() );
-  mat->addParameter( renderingStyle );
-  return mat;
-}
 
 Qt3DRender::QMaterial *QgsPointCloud3DSymbolHandler::constructMaterial( QgsSingleColorPointCloud3DSymbol *symbol )
 {

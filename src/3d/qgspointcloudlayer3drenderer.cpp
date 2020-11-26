@@ -81,7 +81,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   QgsPointCloudLayer *pcl = layer();
   if ( !pcl || !pcl->dataProvider() || !pcl->dataProvider()->index() )
     return nullptr;
-  if ( mSymbol->renderingStyle() == QgsPointCloud3DSymbol::NoRendering )
+  if ( !mSymbol )
     return nullptr;
 
   return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ) );
@@ -119,7 +119,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   switch ( renderingStyle )
   {
     case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      mSymbol.reset( new QgsNoRenderingPointCloud3DSymbol( layer() ) );
+      mSymbol.reset( nullptr );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
       mSymbol.reset( new QgsSingleColorPointCloud3DSymbol( layer() ) );
@@ -131,11 +131,13 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
       mSymbol.reset( new QgsRGBPointCloud3DSymbol( layer() ) );
       break;
   }
-  mSymbol->readXml( elemSymbol, context );
+  if ( mSymbol )
+    mSymbol->readXml( elemSymbol, context );
 }
 
 void QgsPointCloudLayer3DRenderer::resolveReferences( const QgsProject &project )
 {
   mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
-  mSymbol->setLayer( layer() );
+  if ( mSymbol )
+    mSymbol->setLayer( layer() );
 }

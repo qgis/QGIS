@@ -84,27 +84,6 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
 /**
  * \ingroup 3d
- * 3D symbol that is used to indicate that the point cloud won't be rendered
- *
- * \warning This is not considered stable API, and may change in future QGIS releases. It is
- * exposed to the Python bindings as a tech preview only.
- *
- * \since QGIS 3.18
- */
-class _3D_EXPORT QgsNoRenderingPointCloud3DSymbol : public QgsPointCloud3DSymbol
-{
-  public:
-    //! Constructor for QgsNoRenderingPointCloud3DSymbol
-    QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer );
-
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
-
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-};
-
-/**
- * \ingroup 3d
  * 3D symbol that draws point cloud geometries as 3D objects.using one color
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

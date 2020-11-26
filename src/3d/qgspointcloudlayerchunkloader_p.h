@@ -79,7 +79,6 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     //static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol );
 
   private:
-    Qt3DRender::QMaterial *constructMaterial( QgsNoRenderingPointCloud3DSymbol *symbol );
     Qt3DRender::QMaterial *constructMaterial( QgsSingleColorPointCloud3DSymbol *symbol );
     Qt3DRender::QMaterial *constructMaterial( QgsColorRampPointCloud3DSymbol *symbol );
     Qt3DRender::QMaterial *constructMaterial( QgsRGBPointCloud3DSymbol *symbol );

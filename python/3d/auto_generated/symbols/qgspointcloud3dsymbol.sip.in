@@ -72,37 +72,6 @@ Returns the rendering style used to render the point cloud
   protected:
 };
 
-class QgsNoRenderingPointCloud3DSymbol : QgsPointCloud3DSymbol
-{
-%Docstring
-3D symbol that is used to indicate that the point cloud won't be rendered
-
-.. warning::
-
-   This is not considered stable API, and may change in future QGIS releases. It is
-   exposed to the Python bindings as a tech preview only.
-
-.. versionadded:: 3.18
-%End
-
-%TypeHeaderCode
-#include "qgspointcloud3dsymbol.h"
-%End
-  public:
-    QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer );
-%Docstring
-Constructor for QgsNoRenderingPointCloud3DSymbol
-%End
-
-    virtual QgsAbstract3DSymbol *clone() const /Factory/;
-
-
-    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
-
-    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
-
-};
-
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 {
 %Docstring

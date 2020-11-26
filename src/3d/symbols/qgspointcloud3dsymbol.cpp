@@ -31,32 +31,6 @@ void QgsPointCloud3DSymbol::setLayer( QgsPointCloudLayer *layer )
   mLayer = layer;
 }
 
-// QgsNoRenderingPointCloud3DSymbol
-
-QgsNoRenderingPointCloud3DSymbol::QgsNoRenderingPointCloud3DSymbol( QgsPointCloudLayer *layer )
-  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::NoRendering )
-{
-}
-
-QgsAbstract3DSymbol *QgsNoRenderingPointCloud3DSymbol::clone() const
-{
-  QgsNoRenderingPointCloud3DSymbol *result = new QgsNoRenderingPointCloud3DSymbol( mLayer );
-  copyBaseSettings( result );
-  return result;
-}
-
-void QgsNoRenderingPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
-{
-  Q_UNUSED( context )
-  elem.setAttribute( QStringLiteral( "rendering-style" ), mRenderingStyle );
-}
-
-void QgsNoRenderingPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
-{
-  Q_UNUSED( context )
-  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "0" ) ).toInt() );
-}
-
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer )
