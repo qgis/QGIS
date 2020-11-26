@@ -38,6 +38,12 @@ void QgsQuickAttributeModel::setFeatureLayerPair( const QgsQuickFeatureLayerPair
   setFeature( pair.feature() );
 }
 
+void QgsQuickAttributeModel::forceClean()
+{
+  mRememberedAttributes.clear();
+  mFeatureLayerPair = QgsQuickFeatureLayerPair();
+}
+
 
 void QgsQuickAttributeModel::setVectorLayer( QgsVectorLayer *layer )
 {
@@ -48,7 +54,7 @@ void QgsQuickAttributeModel::setVectorLayer( QgsVectorLayer *layer )
   mFeatureLayerPair = QgsQuickFeatureLayerPair( mFeatureLayerPair.feature(), layer );
 
 
-  if ( auto *lLayer = mFeatureLayerPair.layer() )
+  if ( const QgsVectorLayer *lLayer = mFeatureLayerPair.layer() )
   {
     mRememberedAttributes.resize( lLayer->fields().size() );
     mRememberedAttributes.fill( false );

@@ -118,11 +118,14 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
     //! Gets remembered attributes
     QVector<bool> rememberedAttributes() const;
 
-    //!\copydoc QgsQuickAttributeModel::featureLayerPair
+    //! Gets current featureLayerPair
     QgsQuickFeatureLayerPair featureLayerPair() const;
 
-    //!\copydoc QgsQuickAttributeModel::featureLayerPair
+    //! Sets current featureLayerPair
     void setFeatureLayerPair( const QgsQuickFeatureLayerPair &pair );
+
+    //! Resets the model
+    Q_INVOKABLE void forceClean();
 
   public slots:
 
