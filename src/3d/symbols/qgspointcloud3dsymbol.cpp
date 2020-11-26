@@ -31,6 +31,11 @@ void QgsPointCloud3DSymbol::setLayer( QgsPointCloudLayer *layer )
   mLayer = layer;
 }
 
+void QgsPointCloud3DSymbol::setPointSize( float size )
+{
+  mPointSize = size;
+}
+
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer )
@@ -68,11 +73,6 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
   mSingleColor.setRedF( elem.attribute( "single-color-red", QStringLiteral( "0.0" ) ).toFloat() );
   mSingleColor.setGreenF( elem.attribute( "single-color-green", QStringLiteral( "0.0" ) ).toFloat() );
   mSingleColor.setBlueF( elem.attribute( "single-color-blue", QStringLiteral( "1.0" ) ).toFloat() );
-}
-
-void QgsSingleColorPointCloud3DSymbol::setPointSize( float size )
-{
-  mPointSize = size;
 }
 
 void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
@@ -136,11 +136,6 @@ void QgsColorRampPointCloud3DSymbol::setRenderingParameter( const QString &param
   mRenderingParameter = parameter;
 }
 
-void QgsColorRampPointCloud3DSymbol::setPointSize( float size )
-{
-  mPointSize = size;
-}
-
 QgsColorRampShader QgsColorRampPointCloud3DSymbol::colorRampShader() const
 {
   return mColorRampShader;
@@ -185,10 +180,5 @@ void QgsRGBPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   Q_UNUSED( context )
   mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "3" ) ).toInt() );
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
-}
-
-void QgsRGBPointCloud3DSymbol::setPointSize( float size )
-{
-  mPointSize = size;
 }
 

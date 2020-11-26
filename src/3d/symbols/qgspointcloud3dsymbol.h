@@ -74,12 +74,25 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
      */
     void setLayer( QgsPointCloudLayer *layer );
 
+    /**
+     * Returns the point size of the point cloud
+     * \see setPointSize( float size )
+     */
+    float pointSize() const { return mPointSize; }
+
+    /**
+     * Sets the point size
+     * \see pointSize()
+     */
+    void setPointSize( float size );
+
     //! Returns the rendering style used to render the point cloud
     QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const { return mRenderingStyle; }
 
   protected:
     QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::NoRendering;
     QgsPointCloudLayer *mLayer = nullptr;
+    float mPointSize = 2.0f;
 };
 
 /**
@@ -103,18 +116,6 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     /**
-     * Returns the point size of the point cloud
-     * \see setPointSize( float size )
-     */
-    float pointSize() const { return mPointSize; }
-
-    /**
-     * Sets the point size
-     * \see pointSize()
-     */
-    void setPointSize( float size );
-
-    /**
     * Returns the color used by the renderer when using SingleColor rendering mode
     * \see setSingleColor( QColor color )
     */
@@ -127,7 +128,6 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void setSingleColor( QColor color );
 
   private:
-    float mPointSize = 2.0f;
     QColor mSingleColor = Qt::blue;
 };
 
@@ -150,18 +150,6 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-
-    /**
-     * Returns the point size of the point cloud
-     * \see setPointSize( float size )
-     */
-    float pointSize() const { return mPointSize; }
-
-    /**
-     * Sets the point size
-     * \see pointSize()
-     */
-    void setPointSize( float size );
 
     /**
     * Returns the parameter used to select the color of the point cloud
@@ -206,7 +194,6 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void setColorRampShaderMinMax( double min, double max );
 
   private:
-    float mPointSize = 2.0f;
     QString mRenderingParameter;
     QgsColorRampShader mColorRampShader;
     double mColorRampShaderMin = 0.0;
@@ -232,20 +219,6 @@ class _3D_EXPORT QgsRGBPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-
-    /**
-    * Returns the point size of the point cloud
-    * \see setPointSize( float size )
-    */
-    float pointSize() const { return mPointSize; }
-
-    /**
-     * Sets the point size
-     * \see pointSize()
-     */
-    void setPointSize( float size );
-  private:
-    float mPointSize = 2.0f;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H
