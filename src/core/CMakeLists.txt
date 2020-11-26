@@ -279,6 +279,7 @@ set(QGIS_CORE_SRCS
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgseditformconfig.cpp
+  qgselevationutils.cpp
   qgsellipsoidutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
@@ -865,6 +866,7 @@ set(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgseditformconfig.h
   qgseditorwidgetsetup.h
+  qgselevationutils.h
   qgsellipsoidutils.h
   qgserror.h
   qgseventtracing.h

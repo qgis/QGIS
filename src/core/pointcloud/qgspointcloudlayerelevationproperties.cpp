@@ -43,3 +43,9 @@ bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRa
   // TODO -- test actual point cloud z range
   return true;
 }
+
+QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
+{
+  // TODO - retrieve range from point cloud data provider
+  return QgsDoubleRange();
+}

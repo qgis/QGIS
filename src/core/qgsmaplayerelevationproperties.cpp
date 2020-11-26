@@ -31,3 +31,8 @@ bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & )
 {
   return true;
 }
+
+QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
+{
+  return QgsDoubleRange();
+}

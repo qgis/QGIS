@@ -54,6 +54,7 @@
 %Include auto_generated/qgsdistancearea.sip
 %Include auto_generated/qgseditformconfig.sip
 %Include auto_generated/qgseditorwidgetsetup.sip
+%Include auto_generated/qgselevationutils.sip
 %Include auto_generated/qgsellipsoidutils.sip
 %Include auto_generated/qgserror.sip
 %Include auto_generated/qgsexpressioncontext.sip
