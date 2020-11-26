@@ -75,7 +75,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabCustom">
        <attribute name="title">
@@ -141,7 +141,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Grant Flow</string>
+                <string>Grant flow</string>
                </property>
               </widget>
              </item>
@@ -202,9 +202,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>406</width>
-             <height>441</height>
+             <y>-288</y>
+             <width>401</width>
+             <height>568</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout">
@@ -223,6 +223,22 @@
             <property name="spacing">
              <number>6</number>
             </property>
+            <item row="16" column="0">
+             <widget class="QLabel" name="lblAccessMethod">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Access method</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
             <item row="11" column="0">
              <widget class="QLabel" name="lblScope">
               <property name="text">
@@ -230,63 +246,30 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="0">
-             <widget class="QLabel" name="lblClientId">
-              <property name="text">
-               <string>Client ID</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="14" column="0" colspan="4">
-             <widget class="QLabel" name="label">
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <italic>true</italic>
-               </font>
-              </property>
-              <property name="text">
-               <string>Advanced</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1" colspan="3">
-             <widget class="QgsPasswordLineEdit" name="leClientSecret">
+            <item row="3" column="1" colspan="3">
+             <widget class="QLineEdit" name="leRefreshTokenUrl">
               <property name="placeholderText">
-               <string>Required</string>
+               <string>Optional</string>
               </property>
              </widget>
+            </item>
+            <item row="20" column="1">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item row="4" column="0">
              <widget class="QLabel" name="lblRedirectUrl">
               <property name="text">
                <string>Redirect URL</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" colspan="3">
-             <widget class="QPlainTextEdit" name="pteDescription">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>40</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="lblDescription">
-              <property name="text">
-               <string>Description</string>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
@@ -300,165 +283,24 @@
               </property>
              </widget>
             </item>
-            <item row="12" column="1" colspan="3">
-             <widget class="QLineEdit" name="leApiKey">
-              <property name="placeholderText">
-               <string>Optional</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0">
-             <widget class="QLabel" name="lblUsername">
+            <item row="15" column="1" colspan="2">
+             <widget class="QCheckBox" name="chkbxTokenPersist">
               <property name="text">
-               <string>Username</string>
+               <string>Persist between launches</string>
               </property>
              </widget>
             </item>
-            <item row="17" column="0">
-             <widget class="QLabel" name="lblRequestTimeout">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Request Timeout</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="17" column="1">
-             <widget class="QSpinBox" name="spnbxRequestTimeout">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string>Authorization-related timeout</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="suffix">
-               <string> seconds</string>
-              </property>
-              <property name="minimum">
-               <number>5</number>
-              </property>
-              <property name="maximum">
-               <number>3600</number>
-              </property>
-              <property name="value">
-               <number>30</number>
-              </property>
-             </widget>
-            </item>
-            <item row="16" column="0">
-             <widget class="QLabel" name="lblAccessMethod">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Access Method</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="0">
-             <widget class="QLabel" name="lblApiKey">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>API Key</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="lblRefreshTokenUrl">
-              <property name="text">
-               <string>Refresh Token URL</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1" colspan="3">
-             <widget class="QLineEdit" name="leRefreshTokenUrl">
-              <property name="placeholderText">
-               <string>Optional</string>
-              </property>
-             </widget>
-            </item>
-            <item row="15" column="0">
-             <widget class="QLabel" name="lblTokenPersist">
-              <property name="text">
-               <string>Token Session</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="1" colspan="3">
-             <widget class="QgsPasswordLineEdit" name="lePassword">
+            <item row="2" column="1" colspan="3">
+             <widget class="QLineEdit" name="leTokenUrl">
               <property name="placeholderText">
                <string>Required</string>
               </property>
              </widget>
             </item>
-            <item row="7" column="1" colspan="3">
-             <widget class="QLineEdit" name="leClientId">
-              <property name="placeholderText">
-               <string>Required</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1" colspan="3">
-             <widget class="QLineEdit" name="leUsername">
-              <property name="placeholderText">
-               <string>Required</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="lblRequestUrl">
+            <item row="7" column="0">
+             <widget class="QLabel" name="lblClientId">
               <property name="text">
-               <string>Request URL</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="13" column="0" colspan="4">
-             <widget class="Line" name="line">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="lblTokenUrl">
-              <property name="text">
-               <string>Token URL</string>
+               <string>Client ID</string>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
@@ -481,24 +323,93 @@
             <item row="8" column="0">
              <widget class="QLabel" name="lblClientSecret">
               <property name="text">
-               <string>Client Secret</string>
+               <string>Client secret</string>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
               </property>
              </widget>
             </item>
-            <item row="15" column="1" colspan="2">
-             <widget class="QCheckBox" name="chkbxTokenPersist">
-              <property name="text">
-               <string>Persist between launches</string>
+            <item row="0" column="1" colspan="3">
+             <widget class="QPlainTextEdit" name="pteDescription">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>40</height>
+               </size>
               </property>
              </widget>
             </item>
-            <item row="10" column="0">
-             <widget class="QLabel" name="lblPassword">
+            <item row="14" column="0" colspan="4">
+             <widget class="QLabel" name="label">
+              <property name="font">
+               <font>
+                <pointsize>12</pointsize>
+                <italic>true</italic>
+               </font>
+              </property>
               <property name="text">
-               <string>Password</string>
+               <string>Advanced</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="lblRequestUrl">
+              <property name="text">
+               <string>Request URL</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="0">
+             <widget class="QLabel" name="lblRequestTimeout">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Request timeout</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QLabel" name="lblUsername">
+              <property name="text">
+               <string>Username</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1" colspan="3">
+             <widget class="QLineEdit" name="leUsername">
+              <property name="placeholderText">
+               <string>Required</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblDescription">
+              <property name="text">
+               <string>Description</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="0" colspan="4">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
@@ -509,23 +420,13 @@
               </property>
              </widget>
             </item>
-            <item row="18" column="1">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+            <item row="3" column="0">
+             <widget class="QLabel" name="lblRefreshTokenUrl">
+              <property name="text">
+               <string>Refresh token URL</string>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>0</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="2" column="1" colspan="3">
-             <widget class="QLineEdit" name="leTokenUrl">
-              <property name="placeholderText">
-               <string>Required</string>
+              <property name="wordWrap">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -603,6 +504,134 @@
                 </widget>
                </item>
               </layout>
+             </widget>
+            </item>
+            <item row="8" column="1" colspan="3">
+             <widget class="QgsPasswordLineEdit" name="leClientSecret">
+              <property name="placeholderText">
+               <string>Required</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1" colspan="3">
+             <widget class="QLineEdit" name="leClientId">
+              <property name="placeholderText">
+               <string>Required</string>
+              </property>
+             </widget>
+            </item>
+            <item row="19" column="1">
+             <widget class="QSpinBox" name="spnbxRequestTimeout">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Authorization-related timeout</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="suffix">
+               <string> seconds</string>
+              </property>
+              <property name="minimum">
+               <number>5</number>
+              </property>
+              <property name="maximum">
+               <number>3600</number>
+              </property>
+              <property name="value">
+               <number>30</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="lblTokenUrl">
+              <property name="text">
+               <string>Token URL</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="lblPassword">
+              <property name="text">
+               <string>Password</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="1" colspan="3">
+             <widget class="QLineEdit" name="leApiKey">
+              <property name="placeholderText">
+               <string>Optional</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="1" colspan="3">
+             <widget class="QgsPasswordLineEdit" name="lePassword">
+              <property name="placeholderText">
+               <string>Required</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="0">
+             <widget class="QLabel" name="lblApiKey">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>API key</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="0">
+             <widget class="QLabel" name="lblTokenPersist">
+              <property name="text">
+               <string>Token session</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="0">
+             <widget class="QLabel" name="mTokenHeaderLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Token header</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="1" colspan="3">
+             <widget class="QLineEdit" name="mTokenHeaderLineEdit">
+              <property name="toolTip">
+               <string>If set, the specified header key will be used instead of the default HTTP Authorization header when sending authenticated requests</string>
+              </property>
+              <property name="placeholderText">
+               <string>Default</string>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
            </layout>
@@ -736,7 +765,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="lblSoftStatementDir">
             <property name="text">
-             <string>Software Statement</string>
+             <string>Software statement</string>
             </property>
            </widget>
           </item>
@@ -761,7 +790,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="lblConfigUrl">
             <property name="text">
-             <string>Configuration Url</string>
+             <string>Configuration URL</string>
             </property>
            </widget>
           </item>
@@ -840,7 +869,7 @@
             <x>0</x>
             <y>0</y>
             <width>413</width>
-            <height>306</height>
+            <height>275</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -884,10 +913,10 @@
                <property name="wordWrap">
                 <bool>false</bool>
                </property>
-               <attribute name="horizontalHeaderDefaultSectionSize">
+               <attribute name="horizontalHeaderMinimumSectionSize">
                 <number>120</number>
                </attribute>
-               <attribute name="horizontalHeaderMinimumSectionSize">
+               <attribute name="horizontalHeaderDefaultSectionSize">
                 <number>120</number>
                </attribute>
                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">

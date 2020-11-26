@@ -55,6 +55,7 @@ class QgsAuthOAuth2Config : public QObject
     Q_PROPERTY( AccessMethod accessMethod READ accessMethod WRITE setAccessMethod NOTIFY accessMethodChanged )
     Q_PROPERTY( int requestTimeout READ requestTimeout WRITE setRequestTimeout NOTIFY requestTimeoutChanged )
     Q_PROPERTY( QVariantMap queryPairs READ queryPairs WRITE setQueryPairs NOTIFY queryPairsChanged )
+    Q_PROPERTY( QString customHeader READ customHeader WRITE setCustomHeader NOTIFY customHeaderChanged )
 
   public:
 
@@ -146,6 +147,15 @@ class QgsAuthOAuth2Config : public QObject
 
     //! Access method
     AccessMethod accessMethod() const { return mAccessMethod; }
+
+    /**
+     * Custom header for header access methods.
+     *
+     * If not set, the default HTTP Authorization header will be used.
+     *
+     * \since QGIS 3.18
+     */
+    QString customHeader() const { return mCustomHeader; }
 
     //! Request timeout
     int requestTimeout() const { return mRequestTimeout; }
@@ -292,6 +302,16 @@ class QgsAuthOAuth2Config : public QObject
     void setPersistToken( bool persist );
     //! Set access method to \a value
     void setAccessMethod( QgsAuthOAuth2Config::AccessMethod value );
+
+    /**
+     * Sets the custom \a header for header access methods.
+     *
+     * If \a header is empty, the default HTTP Authorization header will be used.
+     *
+     * \since QGIS 3.18
+     */
+    void setCustomHeader( const QString &header );
+
     //! Set request timeout to \a value
     void setRequestTimeout( int value );
     //! Set query pairs to \a pairs
@@ -344,6 +364,14 @@ class QgsAuthOAuth2Config : public QObject
     void persistTokenChanged( bool );
     //! Emitted when configuration access method has changed
     void accessMethodChanged( QgsAuthOAuth2Config::AccessMethod );
+
+    /**
+     * Emitted when custom authorization header has changed.
+     *
+     * \since QGIS 3.18
+     */
+    void customHeaderChanged( const QString & );
+
     //! Emitted when configuration request timeout has changed
     void requestTimeoutChanged( int );
     //! Emitted when configuration query pair has changed
@@ -371,6 +399,7 @@ class QgsAuthOAuth2Config : public QObject
     QString mApiKey;
     bool mPersistToken = false;
     AccessMethod mAccessMethod = AccessMethod::Header;
+    QString mCustomHeader;
     int mRequestTimeout = 30 ; // in seconds
     QVariantMap mQueryPairs;
     bool mValid = false;

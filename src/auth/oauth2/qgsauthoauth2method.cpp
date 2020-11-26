@@ -253,12 +253,15 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   switch ( accessmethod )
   {
     case QgsAuthOAuth2Config::Header:
-      request.setRawHeader( O2_HTTP_AUTHORIZATION_HEADER, QStringLiteral( "Bearer %1" ).arg( o2->token() ).toLatin1() );
+    {
+      const QString header = o2->oauth2config()->customHeader().isEmpty() ? QString( O2_HTTP_AUTHORIZATION_HEADER ) : o2->oauth2config()->customHeader();
+      request.setRawHeader( header.toLatin1(), QStringLiteral( "Bearer %1" ).arg( o2->token() ).toLatin1() );
 #ifdef QGISDEBUG
       msg = QStringLiteral( "Updated request HEADER with access token for authcfg: %1" ).arg( authcfg );
       QgsDebugMsgLevel( msg, 2 );
 #endif
       break;
+    }
     case QgsAuthOAuth2Config::Form:
       // FIXME: what to do here if the parent request is not POST?
       //        probably have to skip this until auth system support is moved into QgsNetworkAccessManager
