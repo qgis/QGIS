@@ -600,7 +600,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
 
                 if not param.checkValueIsAcceptable(value, context):
                     msg = self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                        param.description(), row + 1)
+                        param.description(), row + 2)
                     self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
                     return
                 algParams[param.name()] = param.valueAsPythonString(value, context)
@@ -616,7 +616,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 else:
                     self.parent.messageBar().pushMessage("",
                                                          self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                                             out.description(), row + 1),
+                                                             out.description(), row + 2),
                                                          level=Qgis.Warning, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
@@ -743,7 +743,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             if warnOnInvalid and not param.checkValueIsAcceptable(wrapper.parameterValue()):
                 self.parent.messageBar().pushMessage("",
                                                      self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                                                         param.description(), row + 1),
+                                                         param.description(), row + 2),
                                                      level=Qgis.Warning, duration=5)
                 return {}, False
 
@@ -766,7 +766,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 else:
                     parameters[out.name()] = text
             else:
-                msg = self.tr('Wrong or missing output value: {0} (row {1})').format(out.description(), row + 1)
+                msg = self.tr('Wrong or missing output value: {0} (row {1})').format(out.description(), row + 2)
                 self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
                 return {}, False
         return parameters, True
