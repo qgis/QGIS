@@ -264,8 +264,6 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     QRect selectedRangeRect();
     void drawFocusRect();
 
-    void applyStep( int step );
-
     int mLowerValue = 0;
     int mUpperValue = 0;
 
@@ -281,6 +279,9 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
       Both,
       Range
     };
+
+    void applyStep( int step );
+
     Control mActiveControl = None;
     int mStartDragPos = -1;
     int mLowerClickOffset = 0;

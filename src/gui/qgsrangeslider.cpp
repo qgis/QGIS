@@ -708,6 +708,10 @@ void QgsRangeSlider::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
 {
+  Control destControl = mFocusControl;
+  if ( ( destControl == Lower || destControl == Upper ) && mLowerValue == mUpperValue )
+    destControl = Both; //ambiguous destination, because both sliders are on top of each other
+
   switch ( event->key() )
   {
     case Qt::Key_Left:
@@ -715,6 +719,9 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
       switch ( mStyleOption.orientation )
       {
         case Qt::Horizontal:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Upper : Lower;
+
           applyStep( mFlipped ? mSingleStep : -mSingleStep );
           break;
 
@@ -764,6 +771,8 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
       switch ( mStyleOption.orientation )
       {
         case Qt::Horizontal:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Lower : Upper;
           applyStep( mFlipped ? -mSingleStep : mSingleStep );
           break;
 
@@ -851,6 +860,9 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
           break;
 
         case Qt::Vertical:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Upper : Lower;
+
           applyStep( mFlipped ? mSingleStep : -mSingleStep );
           break;
       }
@@ -900,6 +912,9 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
           break;
 
         case Qt::Vertical:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Lower : Upper;
+
           applyStep( mFlipped ? -mSingleStep : mSingleStep );
           break;
       }
@@ -911,10 +926,16 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
       switch ( mStyleOption.orientation )
       {
         case Qt::Horizontal:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Lower : Upper;
+
           applyStep( mFlipped ? -mPageStep : mPageStep );
           break;
 
         case Qt::Vertical:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Upper : Lower;
+
           applyStep( mFlipped ? mPageStep : -mPageStep );
           break;
       }
@@ -926,10 +947,16 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
       switch ( mStyleOption.orientation )
       {
         case Qt::Horizontal:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Upper : Lower;
+
           applyStep( mFlipped ? mPageStep : -mPageStep );
           break;
 
         case Qt::Vertical:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Lower : Upper;
+
           applyStep( mFlipped ? -mPageStep : mPageStep );
           break;
       }
@@ -937,7 +964,7 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
     }
 
     case Qt::Key_Home:
-      switch ( mFocusControl )
+      switch ( destControl )
       {
         case Lower:
           applyStep( mFlipped ? mUpperValue - mLowerValue : mStyleOption.minimum - mLowerValue );
@@ -951,15 +978,21 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
           applyStep( mFlipped ? mStyleOption.maximum - mUpperValue : mStyleOption.minimum  - mLowerValue );
           break;
 
-        case None:
         case Both:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Upper : Lower;
+
+          applyStep( mFlipped ? mStyleOption.maximum - mUpperValue : mStyleOption.minimum - mLowerValue );
+          break;
+
+        case None:
           break;
       }
 
       break;
 
     case Qt::Key_End:
-      switch ( mFocusControl )
+      switch ( destControl )
       {
         case Lower:
           applyStep( mFlipped ? mStyleOption.minimum - mLowerValue : mUpperValue - mLowerValue );
@@ -973,8 +1006,14 @@ void QgsRangeSlider::keyPressEvent( QKeyEvent *event )
           applyStep( mFlipped ? mStyleOption.minimum  - mLowerValue : mStyleOption.maximum - mUpperValue );
           break;
 
-        case None:
         case Both:
+          if ( destControl == Both )
+            mFocusControl = mFlipped ? Lower : Upper;
+
+          applyStep( mFlipped ? mStyleOption.minimum - mLowerValue : mStyleOption.maximum - mUpperValue );
+          break;
+
+        case None:
           break;
       }
       break;
