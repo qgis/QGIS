@@ -98,8 +98,13 @@ void QgsOnlineTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs,
 
 void QgsOnlineTerrainGenerator::setExtent( const QgsRectangle &extent )
 {
+  if ( mExtent == extent )
+    return;
+
   mExtent = extent;
   updateGenerator();
+
+  emit extentChanged();
 }
 
 void QgsOnlineTerrainGenerator::updateGenerator()

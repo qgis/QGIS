@@ -284,7 +284,7 @@ void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
 
 void Qgs3DMapCanvasDockWidget::resetView()
 {
-  mCanvas->resetView();
+  mCanvas->resetView( true );
 }
 
 void Qgs3DMapCanvasDockWidget::configure()
