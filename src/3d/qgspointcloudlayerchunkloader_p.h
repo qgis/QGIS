@@ -78,11 +78,6 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     //static void addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
     //static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol );
 
-  private:
-    Qt3DRender::QMaterial *constructMaterial( QgsSingleColorPointCloud3DSymbol *symbol );
-    Qt3DRender::QMaterial *constructMaterial( QgsColorRampPointCloud3DSymbol *symbol );
-    Qt3DRender::QMaterial *constructMaterial( QgsRGBPointCloud3DSymbol *symbol );
-
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
@@ -111,6 +106,7 @@ class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
     int mVertexCount = 0;
 
+    unsigned int mByteStride = 16;
     QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle;
 };
 
