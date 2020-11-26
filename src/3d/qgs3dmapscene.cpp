@@ -394,6 +394,29 @@ void Qgs3DMapScene::updateScene()
   updateSceneState();
 }
 
+static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar )
+{
+  for ( QgsChunkNode *node : activeNodes )
+  {
+    // project each corner of bbox to camera coordinates
+    // and determine closest and farthest point.
+    QgsAABB bbox = node->bbox();
+    for ( int i = 0; i < 8; ++i )
+    {
+      QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
+                   ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
+                   ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+      QVector4D pc = viewMatrix * p;
+
+      float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
+      if ( dst < fnear )
+        fnear = dst;
+      if ( dst > ffar )
+        ffar = dst;
+    }
+  }
+}
+
 bool Qgs3DMapScene::updateCameraNearFarPlanes()
 {
   // Update near and far plane from the terrain.
@@ -423,25 +446,16 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     if ( activeNodes.isEmpty() )
       activeNodes << mTerrain->rootNode();
 
-    Q_FOREACH ( QgsChunkNode *node, activeNodes )
-    {
-      // project each corner of bbox to camera coordinates
-      // and determine closest and farthest point.
-      QgsAABB bbox = node->bbox();
-      for ( int i = 0; i < 8; ++i )
-      {
-        QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
-                     ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
-                     ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
-        QVector4D pc = viewMatrix * p;
+    _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
 
-        float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
-        if ( dst < fnear )
-          fnear = dst;
-        if ( dst > ffar )
-          ffar = dst;
-      }
+    // Also involve all the other chunked entities to make sure that they will not get
+    // clipped by the near or far plane
+    for ( QgsChunkedEntity *e : qgis::as_const( mChunkEntities ) )
+    {
+      if ( e != mTerrain )
+        _updateNearFarPlane( e->activeNodes(), viewMatrix, fnear, ffar );
     }
+
     if ( fnear < 1 )
       fnear = 1;  // does not really make sense to use negative far plane (behind camera)
 
