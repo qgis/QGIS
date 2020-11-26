@@ -171,7 +171,7 @@
        </widget>
       </item>
       <item row="0" column="2" colspan="3">
-       <widget class="QComboBox" name="mRenderingParameterComboBox"/>
+       <widget class="QgsPointCloudAttributeComboBox" name="mRenderingParameterComboBox"/>
       </item>
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="label_5">
@@ -205,6 +205,11 @@
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPointCloudAttributeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspointcloudattributecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
