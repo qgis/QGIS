@@ -27,10 +27,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 
   mPointSizeSpinBox->setClearValue( 2.0 );
 
-  for ( QgsPointCloudAttribute attr : layer->attributes().attributes() )
-  {
-    mRenderingParameterComboBox->addItem( attr.name() );
-  }
+  mRenderingParameterComboBox->setLayer( layer );
 
   if ( symbol )
     setSymbol( symbol );
