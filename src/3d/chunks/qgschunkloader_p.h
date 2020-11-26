@@ -63,8 +63,9 @@ class QgsChunkLoader : public QgsChunkQueueJob
  * Factory for chunk loaders for a particular type of entity
  * \since QGIS 3.0
  */
-class QgsChunkLoaderFactory
+class QgsChunkLoaderFactory  : public QObject
 {
+    Q_OBJECT
   public:
     virtual ~QgsChunkLoaderFactory() = default;
 
@@ -89,6 +90,7 @@ class QgsChunkLoaderFactory
  */
 class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
 {
+    Q_OBJECT
   public:
     QgsQuadtreeChunkLoaderFactory();
     virtual ~QgsQuadtreeChunkLoaderFactory();

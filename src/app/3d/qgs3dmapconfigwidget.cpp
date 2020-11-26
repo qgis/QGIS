@@ -212,6 +212,19 @@ void Qgs3DMapConfigWidget::apply()
 {
   bool needsUpdateOrigin = false;
 
+  const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+  QgsCoordinateTransform ct( extent.crs(), mMap->crs(), QgsProject::instance()->transformContext() );
+  ct.setBallparkTransformsAreAppropriate( true );
+  QgsRectangle rect;
+  try
+  {
+    rect = ct.transformBoundingBox( extent );
+  }
+  catch ( QgsCsException & )
+  {
+    rect = extent;
+  }
+
   QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
   switch ( terrainType )
@@ -220,7 +233,7 @@ void Qgs3DMapConfigWidget::apply()
     {
       QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
       flatTerrainGen->setCrs( mMap->crs() );
-      flatTerrainGen->setExtent( QgsProject::instance()->viewSettings()->fullExtent() );
+      flatTerrainGen->setExtent( rect );
       mMap->setTerrainGenerator( flatTerrainGen );
       needsUpdateOrigin = true;
     }
@@ -267,7 +280,7 @@ void Qgs3DMapConfigWidget::apply()
       {
         QgsOnlineTerrainGenerator *onlineTerrainGen = new QgsOnlineTerrainGenerator;
         onlineTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
-        onlineTerrainGen->setExtent( QgsProject::instance()->viewSettings()->fullExtent() );
+        onlineTerrainGen->setExtent( rect );
         onlineTerrainGen->setResolution( spinTerrainResolution->value() );
         onlineTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
         mMap->setTerrainGenerator( onlineTerrainGen );

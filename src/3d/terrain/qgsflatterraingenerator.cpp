@@ -141,8 +141,13 @@ void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 void QgsFlatTerrainGenerator::setExtent( const QgsRectangle &extent )
 {
+  if ( mExtent == extent )
+    return;
+
   mExtent = extent;
   updateTilingScheme();
+
+  emit extentChanged();
 }
 
 void QgsFlatTerrainGenerator::updateTilingScheme()

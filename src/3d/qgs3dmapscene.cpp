@@ -220,7 +220,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   // force initial update of chunked entities
   onCameraChanged();
-  // force initial update of eye dome shadng
+  // force initial update of eye dome shading
   onEyeDomeShadingSettingsChanged();
   // force initial update of debugging setting of preview quads
   onDebugShadowMapSettingsChanged();

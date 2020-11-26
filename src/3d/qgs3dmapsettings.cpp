@@ -601,7 +601,14 @@ float Qgs3DMapSettings::maxTerrainGroundError() const
 
 void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
 {
+  if ( mTerrainGenerator )
+  {
+    disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
+  }
+
   mTerrainGenerator.reset( gen );
+  connect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
+
   emit terrainGeneratorChanged();
 }
 
