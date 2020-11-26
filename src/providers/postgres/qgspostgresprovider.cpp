@@ -143,22 +143,15 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   if ( mSchemaName.isEmpty() && mTableName.startsWith( '(' ) && mTableName.endsWith( ')' ) )
   {
     mIsQuery = true;
-    mQuery = mTableName;
+    setQuery( mTableName );
     mTableName.clear();
   }
   else
   {
     mIsQuery = false;
 
-    if ( !mSchemaName.isEmpty() )
-    {
-      mQuery += quotedIdentifier( mSchemaName ) + '.';
-    }
-
-    if ( !mTableName.isEmpty() )
-    {
-      mQuery += quotedIdentifier( mTableName );
-    }
+    setQuery( ( !mSchemaName.isEmpty() ? quotedIdentifier( mSchemaName ) + '.' : QString() )
+              + ( !mTableName.isEmpty() ? quotedIdentifier( mTableName ) : QString() ) );
   }
 
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
@@ -1459,9 +1452,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     while ( mQuery.contains( regex ) );
 
     // convert the custom query into a subquery
-    mQuery = QStringLiteral( "%1 AS %2" )
-             .arg( mQuery,
-                   quotedIdentifier( alias ) );
+    setQuery( QStringLiteral( "%1 AS %2" )
+              .arg( mQuery,
+                    quotedIdentifier( alias ) ) );
 
     QString sql = QStringLiteral( "SELECT * FROM %1 LIMIT 1" ).arg( mQuery );
 
@@ -5031,55 +5024,69 @@ QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
   return mAttrPalIndexName;
 }
 
+void QgsPostgresProvider::setQuery( const QString &query )
+{
+  mQuery = query;
+
+  mKind = Relkind::NotSet;
+}
+
 QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
 {
+  if ( mKind != Relkind::NotSet )
+    return mKind;
+
   if ( mIsQuery || !connectionRO() )
-    return Relkind::Unknown;
+  {
+    mKind = Relkind::Unknown;
+  }
+  else
+  {
+    QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+    QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+    QString type = res.PQgetvalue( 0, 0 );
 
-  QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
-  QgsPostgresResult res( connectionRO()->PQexec( sql ) );
-  QString type = res.PQgetvalue( 0, 0 );
+    mKind = Relkind::Unknown;
 
-  QgsPostgresProvider::Relkind kind = Relkind::Unknown;
-
-  if ( type == QLatin1String( "r" ) )
-  {
-    kind = Relkind::OrdinaryTable;
-  }
-  else if ( type == QLatin1String( "i" ) )
-  {
-    kind = Relkind::Index;
-  }
-  else if ( type == QLatin1String( "s" ) )
-  {
-    kind = Relkind::Sequence;
-  }
-  else if ( type == QLatin1String( "v" ) )
-  {
-    kind = Relkind::View;
-  }
-  else if ( type == QLatin1String( "m" ) )
-  {
-    kind = Relkind::MaterializedView;
-  }
-  else if ( type == QLatin1String( "c" ) )
-  {
-    kind = Relkind::CompositeType;
-  }
-  else if ( type == QLatin1String( "t" ) )
-  {
-    kind = Relkind::ToastTable;
-  }
-  else if ( type == QLatin1String( "f" ) )
-  {
-    kind = Relkind::ForeignTable;
-  }
-  else if ( type == QLatin1String( "p" ) )
-  {
-    kind = Relkind::PartitionedTable;
+    if ( type == QLatin1String( "r" ) )
+    {
+      mKind = Relkind::OrdinaryTable;
+    }
+    else if ( type == QLatin1String( "i" ) )
+    {
+      mKind = Relkind::Index;
+    }
+    else if ( type == QLatin1String( "s" ) )
+    {
+      mKind = Relkind::Sequence;
+    }
+    else if ( type == QLatin1String( "v" ) )
+    {
+      mKind = Relkind::View;
+    }
+    else if ( type == QLatin1String( "m" ) )
+    {
+      mKind = Relkind::MaterializedView;
+    }
+    else if ( type == QLatin1String( "c" ) )
+    {
+      mKind = Relkind::CompositeType;
+    }
+    else if ( type == QLatin1String( "t" ) )
+    {
+      mKind = Relkind::ToastTable;
+    }
+    else if ( type == QLatin1String( "f" ) )
+    {
+      mKind = Relkind::ForeignTable;
+    }
+    else if ( type == QLatin1String( "p" ) )
+    {
+      mKind = Relkind::PartitionedTable;
+    }
   }
 
-  return kind;
+  return mKind;
 }
 
 bool QgsPostgresProvider::hasMetadata() const
