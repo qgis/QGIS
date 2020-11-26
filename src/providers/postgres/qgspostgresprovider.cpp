@@ -3591,7 +3591,7 @@ long QgsPostgresProvider::featureCount() const
   long num = -1;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    if ( connectionRO()->pgVersion() >= 90000 )
+    if ( relkind() == Relkind::View && connectionRO()->pgVersion() >= 90000 )
     {
       // parse explain output to estimate feature count
       // we don't use pg_class reltuples because it returns 0 for view
@@ -3607,6 +3607,12 @@ long QgsPostgresProvider::featureCount() const
         num = nbRows.toInt();
       else
         QgsLogger::warning( QStringLiteral( "Cannot parse JSON explain result to estimate feature count (%1) : %2" ).arg( sql, json ) );
+    }
+    else
+    {
+      sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+      QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+      num = result.PQgetvalue( 0, 0 ).toLong();
     }
   }
   else
