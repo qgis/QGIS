@@ -57,6 +57,7 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
 #endif
   , mByteStride( symbol->byteStride() )
   , mRenderingStyle( symbol->renderingStyle() )
+  , mSymbol( symbol )
 {
   mPositionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
@@ -65,28 +66,37 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
   mPositionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( mByteStride );
-
-  mParameterAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
-  mParameterAttribute->setBuffer( mVertexBuffer );
-  mParameterAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
-  mParameterAttribute->setVertexSize( 1 );
-  mParameterAttribute->setName( "vertexParameter" );
-  mParameterAttribute->setByteOffset( 12 );
-  mParameterAttribute->setByteStride( mByteStride );
-
   addAttribute( mPositionAttribute );
-  addAttribute( mParameterAttribute );
 
-  if ( mRenderingStyle == QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+  switch ( mRenderingStyle )
   {
-    mColorAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
-    mColorAttribute->setBuffer( mVertexBuffer );
-    mColorAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
-    mColorAttribute->setVertexSize( 3 );
-    mColorAttribute->setName( QStringLiteral( "vertexColor" ) );
-    mColorAttribute->setByteOffset( 16 );
-    mColorAttribute->setByteStride( mByteStride );
-    addAttribute( mColorAttribute );
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
+    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
+      break;
+    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
+    {
+      mParameterAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+      mParameterAttribute->setBuffer( mVertexBuffer );
+      mParameterAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+      mParameterAttribute->setVertexSize( 1 );
+      mParameterAttribute->setName( "vertexParameter" );
+      mParameterAttribute->setByteOffset( 12 );
+      mParameterAttribute->setByteStride( mByteStride );
+      addAttribute( mParameterAttribute );
+      break;
+    }
+    case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
+    {
+      mColorAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+      mColorAttribute->setBuffer( mVertexBuffer );
+      mColorAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+      mColorAttribute->setVertexSize( 3 );
+      mColorAttribute->setName( QStringLiteral( "vertexColor" ) );
+      mColorAttribute->setByteOffset( 12 );
+      mColorAttribute->setByteStride( mByteStride );
+      addAttribute( mColorAttribute );
+      break;
+    }
   }
 
   makeVertexBuffer( data );
@@ -95,24 +105,27 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
 void QgsPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHandler::PointData &data )
 {
   QByteArray vertexBufferData;
-  if ( mRenderingStyle == QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
-    vertexBufferData.resize( data.positions.size() * mByteStride );
-  else
-    vertexBufferData.resize( data.positions.size() * mByteStride );
+  vertexBufferData.resize( data.positions.size() * mByteStride );
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
-  Q_ASSERT( data.positions.count() == data.parameter.count() );
   for ( int i = 0; i < data.positions.size(); ++i )
   {
     rawVertexArray[idx++] = data.positions.at( i ).x();
     rawVertexArray[idx++] = data.positions.at( i ).y();
     rawVertexArray[idx++] = data.positions.at( i ).z();
-    rawVertexArray[idx++] = data.parameter.at( i );
-    if ( mRenderingStyle == QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+    switch ( mRenderingStyle )
     {
-      rawVertexArray[idx++] = data.colors.at( i ).x();
-      rawVertexArray[idx++] = data.colors.at( i ).y();
-      rawVertexArray[idx++] = data.colors.at( i ).z();
+      case QgsPointCloud3DSymbol::NoRendering:
+      case QgsPointCloud3DSymbol::SingleColor:
+        break;
+      case QgsPointCloud3DSymbol::ColorRamp:
+        rawVertexArray[idx++] = data.parameter.at( i );
+        break;
+      case QgsPointCloud3DSymbol::RGBRendering:
+        rawVertexArray[idx++] = data.colors.at( i ).x();
+        rawVertexArray[idx++] = data.colors.at( i ).y();
+        rawVertexArray[idx++] = data.colors.at( i ).z();
+        break;
     }
   }
 

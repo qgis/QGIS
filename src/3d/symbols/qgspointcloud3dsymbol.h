@@ -91,6 +91,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
     //! Returns the byte stride for the geometries used to for the vertex buffer
     virtual unsigned int byteStride() = 0;
+    //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
     virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0;
 
   protected:
@@ -131,7 +132,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     */
     void setSingleColor( QColor color );
 
-    unsigned int byteStride() override { return 4 * sizeof( float ); }
+    unsigned int byteStride() override { return 3 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override;
 
 
@@ -231,7 +232,7 @@ class _3D_EXPORT QgsRGBPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
-    unsigned int byteStride() override { return 7 * sizeof( float ); }
+    unsigned int byteStride() override { return 6 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override;
 };
 
