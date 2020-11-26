@@ -41,10 +41,12 @@ class APP_EXPORT QgsMapToolReverseLine: public QgsMapToolEdit
 
     //! called when map tool is being deactivated
     void deactivate() override;
+    void activate() override;
 
   private:
     QgsVectorLayer *vlayer = nullptr;
 
+    bool reverseLine( const QgsFeatureId fid, const int partNum = 0 );
     QgsGeometry partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
 
     /* Rubberband that shows the part being reversed*/
