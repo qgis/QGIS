@@ -488,7 +488,7 @@ void TestQgsGeometry::isValid()
   QgsPointSequence pts = QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2.5, 2.3 );
   circ.setPoints( pts );
   QVERIFY( !circ.isValid( error ) );
-  QCOMPARE( error, QStringLiteral( "Geometry have less than 3 points and is not empty." ) );
+  QCOMPARE( error, QStringLiteral( "CircularString have less than 3 points and is not empty." ) );
   pts.append( QgsPoint( 5, 5 ) );
   circ.setPoints( pts );
   QVERIFY( circ.isValid( error ) );
