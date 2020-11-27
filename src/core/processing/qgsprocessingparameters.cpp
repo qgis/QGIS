@@ -511,6 +511,100 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   return result;
 }
 
+<<<<<<< HEAD
+=======
+QString QgsProcessingParameters::parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  return parameterAsEnumString( definition, parameters.value( definition->name() ), context );
+}
+
+QString QgsProcessingParameters::parameterAsEnumString( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  QString enumText = parameterAsString( definition, value, context );
+  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  if ( enumText.isEmpty() || !enumDef->options().contains( enumText ) )
+    enumText = definition->defaultValue().toString();
+
+  return enumText;
+}
+
+QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  return parameterAsEnumStrings( definition, parameters.value( definition->name() ), context );
+}
+
+QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QStringList();
+
+  QVariant val = value;
+
+  QStringList enumValues;
+
+  std::function< void( const QVariant &var ) > processVariant;
+  processVariant = [ &enumValues, &context, &definition, &processVariant ]( const QVariant & var )
+  {
+    if ( var.type() == QVariant::List )
+    {
+      const auto constToList = var.toList();
+      for ( const QVariant &listVar : constToList )
+      {
+        processVariant( listVar );
+      }
+    }
+    else if ( var.type() == QVariant::StringList )
+    {
+      const auto constToStringList = var.toStringList();
+      for ( const QString &s : constToStringList )
+      {
+        processVariant( s );
+      }
+    }
+    else if ( var.canConvert<QgsProperty>() )
+      processVariant( var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() ) );
+    else
+    {
+      const QStringList parts = var.toString().split( ',' );
+      for ( const QString &s : parts )
+      {
+        enumValues << s;
+      }
+    }
+  };
+
+  processVariant( val );
+
+  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+  // check that values are valid enum values. The resulting set will be empty
+  // if all values are present in the enumDef->options(), otherwise it will contain
+  // values which are invalid
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QSet<QString> subtraction = enumValues.toSet().subtract( enumDef->options().toSet() );
+#else
+  const QStringList options = enumDef->options();
+  QSet<QString> subtraction = QSet<QString>( enumValues.begin(), enumValues.end() ).subtract( QSet<QString>( options.begin(), options.end() ) );
+#endif
+
+  if ( enumValues.isEmpty() || !subtraction.isEmpty() )
+  {
+    enumValues.clear();
+    processVariant( definition->defaultValue() );
+  }
+
+  return enumValues;
+}
+
+>>>>>>> c0a579c719 (Merge pull request #40223 from nyalldawson/vrt_separate)
 bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
   if ( !definition )
@@ -2362,6 +2456,7 @@ QVariantMap QgsProcessingParameterDefinition::toVariantMap() const
   map.insert( QStringLiteral( "description" ), mDescription );
   map.insert( QStringLiteral( "help" ), mHelp );
   map.insert( QStringLiteral( "default" ), mDefault );
+  map.insert( QStringLiteral( "defaultGui" ), mGuiDefault );
   map.insert( QStringLiteral( "flags" ), static_cast< int >( mFlags ) );
   map.insert( QStringLiteral( "metadata" ), mMetadata );
   return map;
@@ -2373,6 +2468,7 @@ bool QgsProcessingParameterDefinition::fromVariantMap( const QVariantMap &map )
   mDescription = map.value( QStringLiteral( "description" ) ).toString();
   mHelp = map.value( QStringLiteral( "help" ) ).toString();
   mDefault = map.value( QStringLiteral( "default" ) );
+  mGuiDefault = map.value( QStringLiteral( "defaultGui" ) );
   mFlags = static_cast< Flags >( map.value( QStringLiteral( "flags" ) ).toInt() );
   mMetadata = map.value( QStringLiteral( "metadata" ) ).toMap();
   return true;

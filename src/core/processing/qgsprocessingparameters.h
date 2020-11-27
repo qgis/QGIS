@@ -505,6 +505,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * Returns the default value for the parameter.
      * \see setDefaultValue()
+     * \see defaultValueForGui()
+     * \see guiDefaultValueOverride()
      */
     QVariant defaultValue() const { return mDefault; }
 
@@ -512,8 +514,50 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Sets the default \a value for the parameter. Caller takes responsibility
      * to ensure that \a value is a valid input for the parameter subclass.
      * \see defaultValue()
+     * \see setGuiDefaultValueOverride()
      */
     void setDefaultValue( const QVariant &value ) { mDefault = value; }
+
+    /**
+     * Returns the default value to use in the GUI for the parameter.
+     *
+     * Usually this will return an invalid variant, which indicates that the standard defaultValue()
+     * will be used in the GUI.
+     *
+     * \see defaultValue()
+     * \see setGuiDefaultValueOverride()
+     * \see defaultValueForGui()
+     *
+     * \since QGIS 3.18
+     */
+    QVariant guiDefaultValueOverride() const { return mGuiDefault; }
+
+    /**
+     * Sets the default \a value to use for the parameter in GUI widgets. Caller takes responsibility
+     * to ensure that \a value is a valid input for the parameter subclass.
+     *
+     * Usually the guiDefaultValueOverride() is a invalid variant, which indicates that the standard defaultValue()
+     * should be used in the GUI. In cases where it is decided that a previous default value was inappropriate,
+     * setting a non-invalid default GUI value can be used to change the default value for the parameter shown
+     * to users when running algorithms without changing the actual defaultValue() and potentially breaking
+     * third party scripts.
+     *
+     * \see guiDefaultValueOverride()
+     * \see setDefaultValue()
+     *
+     * \since QGIS 3.18
+     */
+    void setGuiDefaultValueOverride( const QVariant &value ) { mGuiDefault = value; }
+
+    /**
+     * Returns the default value to use for the parameter in a GUI.
+     *
+     * This will be the parameter's defaultValue(), unless a guiDefaultValueOverride() is set to
+     * override that.
+     *
+     * \since QGIS 3.18
+     */
+    QVariant defaultValueForGui() const { return mGuiDefault.isValid() ? mGuiDefault : mDefault; }
 
     /**
      * Returns any flags associated with the parameter.
@@ -728,6 +772,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Default value for parameter
     QVariant mDefault;
+
+    //! Default value for parameter in GUI
+    QVariant mGuiDefault;
 
     //! Parameter flags
     Flags mFlags;
