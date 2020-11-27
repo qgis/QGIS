@@ -212,7 +212,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</iconset>
           </property>
          </item>
         </widget>
