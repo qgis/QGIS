@@ -44,6 +44,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgsfieldconditionalformatwidget.h"
 #include "qgsmapcanvasutils.h"
+#include "qgsmessagebar.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -293,6 +294,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowEdited:
     case QgsAttributeTableFilterModel::ShowFilteredList:
       disconnect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
+      disconnect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
       break;
 
     case QgsAttributeTableFilterModel::ShowSelected:
@@ -332,6 +334,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowEdited:
     case QgsAttributeTableFilterModel::ShowFilteredList:
       connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
       break;
 
     case QgsAttributeTableFilterModel::ShowSelected:
@@ -597,6 +600,14 @@ void QgsDualView::flashButtonClicked( bool clicked )
 
   if ( canvas )
     canvas->flashFeatureIds( mLayer, mFeatureListView->currentEditSelection() );
+}
+
+void QgsDualView::filterError( const QString &errorMessage )
+{
+  if ( mEditorContext.mainMessageBar() )
+  {
+    mEditorContext.mainMessageBar()->pushWarning( tr( "An error occurred while filtering features" ), errorMessage );
+  }
 }
 
 void QgsDualView::featureListAboutToChangeEditSelection( bool &ok )
