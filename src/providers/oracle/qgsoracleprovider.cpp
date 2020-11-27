@@ -554,6 +554,7 @@ bool QgsOracleProvider::loadFields()
 {
   mAttributeFields.clear();
   mDefaultValues.clear();
+  mAlwaysGenerated.clear();
 
   QgsOracleConn *conn = connectionRO();
   QSqlQuery qry( *conn );
@@ -1213,6 +1214,12 @@ QVariant QgsOracleProvider::defaultValue( int fieldId ) const
 QString QgsOracleProvider::defaultValueClause( int fieldId ) const
 {
   QString defVal = mDefaultValues.value( fieldId, QString() ).toString();
+  const bool isGenerated = mAlwaysGenerated.value( fieldId, false );
+
+  if ( isGenerated )
+  {
+    return defVal;
+  }
 
   if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
   {
@@ -1667,6 +1674,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
       //delete the attribute from mAttributeFields
       mAttributeFields.remove( id );
       mDefaultValues.removeAt( id );
+      mAlwaysGenerated.removeAt( id );
     }
 
     if ( !conn->commit( db ) )

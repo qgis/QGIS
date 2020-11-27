@@ -30,6 +30,7 @@ from qgis.core import (
     QgsTestUtils,
     QgsFeatureSource,
     QgsFieldConstraints,
+    QgsDataProvider,
     QgsVectorLayerUtils,
     NULL
 )
@@ -1212,5 +1213,23 @@ class ProviderTestCase(FeatureSourceTestCase):
         feature = vl.getFeature(10)
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.attribute(1), "test:10")
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+
+        # Test insertion with default value evaluation on provider side to be sure
+        # it doesn't fail generated columns
+        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+
+        vl.startEditing()
+        feature = QgsVectorLayerUtils.createFeature(vl, QgsGeometry(), {0: 8})
+        vl.addFeature(feature)
+        self.assertTrue(feature.id() < 0)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+        self.assertTrue(vl.commitChanges())
+
+        feature = vl.getFeature(8)
+        self.assertTrue(feature.isValid())
+        self.assertEqual(feature.attribute(1), "test:8")
         self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
         self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
