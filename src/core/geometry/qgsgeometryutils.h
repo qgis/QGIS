@@ -727,6 +727,25 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 
+    /**
+     * Returns the point (\a pointX, \a pointY) forming the bisector from point (\a aX, \a aY) to the segment (\a bX, \a bY) (\a cX, \a cY).
+     * The bisector segment of ABC is (A-point)
+     *
+     * \param aX x-coordinate of first vertex in triangle
+     * \param aY y-coordinate of first vertex in triangle
+     * \param bX x-coordinate of second vertex in triangle
+     * \param bY y-coordinate of second vertex in triangle
+     * \param cX x-coordinate of third vertex in triangle
+     * \param cY y-coordinate of third vertex in triangle
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     * \returns TRUE if the bisector exists (A B and C are not collinear)
+     *
+     * \since QGIS 3.16
+     */
+    static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
+                          double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL;
+
     //! \note not available in Python bindings
     enum ComponentType SIP_SKIP
     {
