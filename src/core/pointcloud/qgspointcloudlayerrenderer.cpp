@@ -83,8 +83,10 @@ bool QgsPointCloudLayerRenderer::render()
 
   QgsPointCloudDataBounds db;
 
+#ifdef QGISDEBUG
   QElapsedTimer t;
   t.start();
+#endif
 
   const IndexedPointCloudNode root = pc->root();
 
@@ -160,6 +162,9 @@ QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Qgs
   }
 
   if ( !context.extent().intersects( pc->nodeMapExtent( n ) ) )
+    return nodes;
+
+  if ( !context.zRange().isInfinite() && !context.zRange().overlaps( pc->nodeZRange( n ) ) )
     return nodes;
 
   nodes.append( n );
