@@ -314,7 +314,7 @@ bool QgsLineString::isValid( QString &error SIP_OUT, int flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 2 ) )
   {
-    error = QString( "Geometry have less than 2 points and is not empty." );
+    error = QString( "LineString have less than 2 points and is not empty." );
     return false;
   }
   return QgsCurve::isValid( error, flags );

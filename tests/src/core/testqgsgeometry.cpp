@@ -478,7 +478,7 @@ void TestQgsGeometry::isValid()
   QVERIFY( line.isValid( error ) );
   line.addVertex( QgsPoint( 0, 0 ) );
   QVERIFY( !line.isValid( error ) );
-  QCOMPARE( error, QStringLiteral( "Geometry have less than 2 points and is not empty." ) );
+  QCOMPARE( error, QStringLiteral( "LineString have less than 2 points and is not empty." ) );
   line.addVertex( QgsPoint( 1, 1 ) );
   QVERIFY( line.isValid( error ) );
 
