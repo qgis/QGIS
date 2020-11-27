@@ -109,9 +109,15 @@ class buildvrt(GdalAlgorithm):
                                                      self.tr('Resolution'),
                                                      options=[i[0] for i in self.RESOLUTION_OPTIONS],
                                                      defaultValue=0))
-        self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
-                                                        self.tr('Place each input file into a separate band'),
-                                                        defaultValue=True))
+
+        separate_param = QgsProcessingParameterBoolean(self.SEPARATE,
+                                                       self.tr('Place each input file into a separate band'),
+                                                       defaultValue=True)
+        # default to not using separate bands is a friendlier option, but we can't change the parameter's actual
+        # defaultValue without breaking API!
+        separate_param.setGuiDefaultValueOverride(False)
+        self.addParameter(separate_param)
+
         self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
                                                         self.tr('Allow projection difference'),
                                                         defaultValue=False))
