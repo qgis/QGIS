@@ -2520,8 +2520,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! QGIS-internal vector feature clipboard
     QgsClipboard *mInternalClipboard = nullptr;
-    //! Flag to indicate how the project properties dialog was summoned
-    bool mShowProjectionTab = false;
 
     /**
      * String containing supporting vector file formats

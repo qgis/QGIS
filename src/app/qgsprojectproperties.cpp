@@ -1596,11 +1596,6 @@ void QgsProjectProperties::apply()
   }
 }
 
-void QgsProjectProperties::showProjectionsTab()
-{
-  mOptionsListWidget->setCurrentRow( 2 );
-}
-
 void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
