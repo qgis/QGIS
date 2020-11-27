@@ -201,6 +201,12 @@ void QgsProviderRegistry::init()
       }
     }
 
+    // Always skip authentication methods
+    if ( fi.fileName().contains( QStringLiteral( "authmethod" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      continue;
+    }
+
     QgsScopedRuntimeProfile profile( QObject::tr( "Load %1" ).arg( fi.fileName() ) );
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
