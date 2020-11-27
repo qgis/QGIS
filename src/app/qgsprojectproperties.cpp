@@ -94,6 +94,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 {
   setupUi( this );
 
+  mExtentGroupBox->setTitleBase( tr( "Set Project Full Extent" ) );
+  mExtentGroupBox->setMapCanvas( mapCanvas, false );
+
   mMetadataWidget = new QgsMetadataWidget();
   mMetadataPage->layout()->addWidget( mMetadataWidget );
 
@@ -395,6 +398,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
 
   grpProjectScales->setChecked( QgsProject::instance()->viewSettings()->useProjectScales() );
+
+  const QgsReferencedRectangle presetExtent = QgsProject::instance()->viewSettings()->presetFullExtent();
+  mExtentGroupBox->setOutputCrs( QgsProject::instance()->crs() );
+  if ( presetExtent.isNull() )
+    mExtentGroupBox->setOutputExtentFromUser( QgsProject::instance()->viewSettings()->fullExtent(), QgsProject::instance()->crs() );
+  else
+    mExtentGroupBox->setOutputExtentFromUser( presetExtent, presetExtent.crs() );
+  mExtentGroupBox->setChecked( !presetExtent.isNull() );
 
   mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
   mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );
@@ -1167,6 +1178,15 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->viewSettings()->setUseProjectScales( false );
   }
 
+  if ( mExtentGroupBox->isChecked() )
+  {
+    QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
+  }
+  else
+  {
+    QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle() );
+  }
+
   bool isDirty = false;
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
@@ -1783,6 +1803,8 @@ void QgsProjectProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
     cmbEllipsoid->setCurrentIndex( 0 );
     cmbEllipsoid->setEnabled( false );
   }
+
+  mExtentGroupBox->setOutputCrs( crs );
 }
 
 void QgsProjectProperties::pbnWMSExtCanvas_clicked()
