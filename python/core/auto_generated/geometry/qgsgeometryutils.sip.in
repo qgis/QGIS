@@ -700,6 +700,26 @@ A Z dimension is added to ``point`` if one of the point in the list
 .. versionadded:: 3.0
 %End
 
+    static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
+                          double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
+%Docstring
+Returns the point (``pointX``, ``pointY``) forming the bisector from point (``aX``, ``aY``) to the segment (``bX``, ``bY``) (``cX``, ``cY``).
+The bisector segment of ABC is (A-point)
+
+:param aX: x-coordinate of first vertex in triangle
+:param aY: y-coordinate of first vertex in triangle
+:param bX: x-coordinate of second vertex in triangle
+:param bY: y-coordinate of second vertex in triangle
+:param cX: x-coordinate of third vertex in triangle
+:param cY: y-coordinate of third vertex in triangle
+
+:return: - ``True`` if the bisector exists (A B and C are not collinear)
+         - pointX: x-coordinate of generated point
+         - pointY: y-coordinate of generated point
+
+.. versionadded:: 3.16
+%End
+
 
 };
 
