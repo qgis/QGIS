@@ -14389,10 +14389,8 @@ void QgisApp::showMapTip()
 
 void QgisApp::projectPropertiesProjections()
 {
-  // Driver to display the project props dialog and switch to the
-  // projections tab
-  mShowProjectionTab = true;
-  projectProperties();
+  // display the project props dialog and switch to the projections tab
+  projectProperties( QStringLiteral( "mProjOptsCRS" ) );
 }
 
 void QgisApp::projectProperties( const QString &currentPage )
@@ -14412,13 +14410,8 @@ void QgisApp::projectProperties( const QString &currentPage )
   }
   QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this, QgsGuiUtils::ModalDialogFlags, factories );
 
-  // if called from the status bar, show the projection tab
-  if ( mShowProjectionTab )
-  {
-    pp->showProjectionsTab();
-    mShowProjectionTab = false;
-  }
   qApp->processEvents();
+
   // Be told if the mouse display precision may have changed by the user
   // changing things in the project properties dialog box
   connect( pp, &QgsProjectProperties::displayPrecisionChanged, this,
