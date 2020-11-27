@@ -656,8 +656,11 @@ void QgsMeshDatasetGroupTreeItem::setDatasetGroup( QgsMeshDatasetGroup *datasetG
     for ( const QString &varName : datasetGroupNames )
     {
       QgsMeshDatasetGroupTreeItem *varItem = searchItemBySourceName( varName );
-      varItem->mDatasetGroupDependencies.append( this->datasetGroupIndex() );
-      mDatasetGroupDependentOn.append( varItem->datasetGroupIndex() );
+      if ( varItem )
+      {
+        varItem->mDatasetGroupDependencies.append( this->datasetGroupIndex() );
+        mDatasetGroupDependentOn.append( varItem->datasetGroupIndex() );
+      }
     }
   }
 }
@@ -726,12 +729,11 @@ QList<int> QgsMeshDatasetGroupTreeItem::groupIndexDependencies() const
 
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::searchItemBySourceName( const QString &sourceName ) const
 {
-
   QgsMeshDatasetGroupTreeItem *baseItem = rootItem();
 
   QList<QgsMeshDatasetGroupTreeItem *> itemToCheck;
   itemToCheck.append( baseItem );
-  while ( baseItem->providerName() != sourceName && !itemToCheck.isEmpty() )
+  while ( baseItem && baseItem->providerName() != sourceName && !itemToCheck.isEmpty() )
   {
     for ( int i = 0; i < baseItem->childCount(); ++i )
       itemToCheck.append( baseItem->child( i ) );
