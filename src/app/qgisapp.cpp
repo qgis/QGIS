@@ -5670,7 +5670,7 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
         askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
         if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->referenceTime().isValid() )
-          qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+          qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, meshLayer->dataProvider()->temporalCapabilities() );
         bool ok;
         newLayer->loadDefaultStyle( ok );
         newLayer->loadDefaultMetadata( ok );
