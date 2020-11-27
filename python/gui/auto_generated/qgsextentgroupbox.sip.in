@@ -149,11 +149,12 @@ Returns the base part of title of the group box (will be appended with extent st
 .. versionadded:: 2.12
 %End
 
-    void setMapCanvas( QgsMapCanvas *canvas );
+    void setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption = true );
 %Docstring
 Sets the map canvas to enable dragging of extent on a canvas.
 
 :param canvas: the map canvas
+:param drawOnCanvasOption: set to false to disable to draw on canvas option
 
 .. versionadded:: 3.0
 %End

@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>846</width>
-                <height>743</height>
+                <width>675</width>
+                <height>1019</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1133,8 +1133,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>846</width>
-                <height>940</height>
+                <width>586</width>
+                <height>1084</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1672,8 +1672,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>340</width>
+                <height>442</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1864,8 +1864,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>599</width>
+                <height>111</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1947,8 +1947,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>628</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2356,8 +2356,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>846</width>
-                <height>844</height>
+                <width>713</width>
+                <height>1198</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -3161,8 +3161,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>509</width>
+                <height>375</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3606,8 +3606,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>614</width>
+                <height>709</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -4123,8 +4123,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>139</width>
+                <height>255</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4303,8 +4303,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>846</width>
-                <height>714</height>
+                <width>843</width>
+                <height>1024</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4977,8 +4977,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>474</width>
+                <height>556</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -5258,8 +5258,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>861</width>
-                <height>691</height>
+                <width>447</width>
+                <height>431</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -5530,8 +5530,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>437</width>
-                <height>513</height>
+                <width>660</width>
+                <height>699</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -6011,7 +6011,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.14286pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Fira Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -6123,23 +6123,6 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -6157,6 +6140,12 @@ p, li { white-space: pre-wrap; }
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
@@ -6166,6 +6155,23 @@ p, li { white-space: pre-wrap; }
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDatumTransformTableWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsdatumtransformtablewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -6183,12 +6189,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>auth/qgsauthsettingswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDatumTransformTableWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsdatumtransformtablewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

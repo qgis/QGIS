@@ -186,9 +186,9 @@ QString QgsExtentGroupBox::titleBase() const
   return mTitleBase;
 }
 
-void QgsExtentGroupBox::setMapCanvas( QgsMapCanvas *canvas )
+void QgsExtentGroupBox::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption )
 {
-  mWidget->setMapCanvas( canvas );
+  mWidget->setMapCanvas( canvas, drawOnCanvasOption );
 }
 
 QSize QgsExtentGroupBox::ratio() const

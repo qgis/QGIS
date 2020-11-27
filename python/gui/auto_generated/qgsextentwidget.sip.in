@@ -135,11 +135,12 @@ Returns the current output CRS, used in the display.
 Returns the currently selected state for the widget's extent.
 %End
 
-    void setMapCanvas( QgsMapCanvas *canvas );
+    void setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption = true );
 %Docstring
 Sets the map canvas to enable dragging of extent on a canvas.
 
 :param canvas: the map canvas
+:param drawOnCanvasOption: set to false to disable to draw on canvas option
 %End
 
     QSize ratio() const;
