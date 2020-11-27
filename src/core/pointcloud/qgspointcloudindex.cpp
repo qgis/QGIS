@@ -218,3 +218,8 @@ void QgsPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &
 {
   mAttributes = attributes;
 }
+
+int QgsPointCloudIndex::span() const
+{
+  return mSpan;
+}

@@ -194,6 +194,11 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns offset
     QgsVector3D offset() const;
 
+    /**
+     * Returns the number of points in one direction in a single node.
+     */
+    int span() const;
+
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
