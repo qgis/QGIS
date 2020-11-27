@@ -58,7 +58,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 {
   const QgsMapToPixel mapToPixel = context.renderContext().mapToPixel();
 
-  QgsRectangle mapExtent = context.renderContext().mapExtent();
+  const QgsRectangle visibleExtent = context.renderContext().extent();
 
   QPen pen;
   pen.setWidth( mPainterPenWidth );
@@ -95,12 +95,26 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   int rendered = 0;
   double x = 0;
   double y = 0;
+  double z = 0;
+  const QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
+  const bool reproject = ct.isValid();
   for ( int i = 0; i < count; ++i )
   {
     pointXY( context, ptr, i, x, y );
-
-    if ( mapExtent.contains( QgsPointXY( x, y ) ) )
+    if ( visibleExtent.contains( QgsPointXY( x, y ) ) )
     {
+      if ( reproject )
+      {
+        try
+        {
+          ct.transformInPlace( x, y, z );
+        }
+        catch ( QgsCsException & )
+        {
+          continue;
+        }
+      }
+
       int red = 0;
       switch ( redType )
       {
