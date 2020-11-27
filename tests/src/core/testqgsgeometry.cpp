@@ -504,7 +504,7 @@ void TestQgsGeometry::isValid()
   invalidLine.addVertex( QgsPoint( 0, 0 ) );
   curve.addCurve( invalidLine.clone() );
   QVERIFY( !curve.isValid( error ) );
-  QCOMPARE( error, QStringLiteral( "At least one curve is not valid." ) );
+  QCOMPARE( error, QStringLiteral( "Curve[2]: LineString have less than 2 points and is not empty." ) );
 }
 
 void TestQgsGeometry::equality()

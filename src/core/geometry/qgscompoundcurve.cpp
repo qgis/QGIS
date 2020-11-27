@@ -393,11 +393,11 @@ bool QgsCompoundCurve::isValid( QString &error SIP_OUT, int flags ) const
   if ( mCurves.isEmpty() )
     return true;
 
-  for ( QgsCurve *curve : mCurves )
+  for ( int i = 0; i < mCurves.size() ; ++i )
   {
-    if ( !curve->isValid( error, flags ) )
+    if ( !mCurves[i]->isValid( error, flags ) )
     {
-      error = QString( "At least one curve is not valid." );
+      error = QStringLiteral("Curve[%1]: %2").arg(i).arg(error);
       return false;
     }
   }
