@@ -273,6 +273,36 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const override;
 
+    /**
+     * Returns a GML2 representation of the geometry.
+     * Since GML2 does not supports curve, it will be converted to a LineString.
+     * \param doc DOM document
+     * \param precision number of decimal places for coordinates
+     * \param ns XML namespace
+     * \param axisOrder Axis order for generated GML
+     * \see asGml3()
+     */
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    /**
+     * Returns a GML3 representation of the geometry.
+     *
+     * From the GML3 description:
+     * A Circle is an arc whose ends coincide to form a simple closed loop.
+     * The three control points shall be distinct non-co-linear points for
+     * the circle to be unambiguously defined. The arc is simply extended
+     * past the third control point until the first control point is encountered.
+     *
+     * Coordinates are taken from quadrant North, East and South.
+     *
+     * \param doc DOM document
+     * \param precision number of decimal places for coordinates
+     * \param ns XML namespace
+     * \param axisOrder Axis order for generated GML
+     * \see asGml2()
+     */
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
