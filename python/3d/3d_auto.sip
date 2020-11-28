@@ -23,3 +23,4 @@
 %Include auto_generated/symbols/qgspolygon3dsymbol.sip
 %Include auto_generated/symbols/qgspointcloud3dsymbol.sip
 %Include auto_generated/qgs3dmapexportsettings.sip
+%Include auto_generated/qgscolorramptexture.sip
