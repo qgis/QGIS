@@ -48,6 +48,10 @@
       "returns": "a string as a comma separated list of names, for the regions contained in the current feature"
     },
     {
+      "expression": "array_length(overlay_contains('regions', name))",
+      "returns": "the count of regions within the current feature"
+    },
+    {
       "expression": "array_sort(overlay_contains(layer:='regions', expression:=\"name\", filter:= population > 10000))",
       "returns": "an ordered array of names, for the regions contained in the current feature and with a population greater than 10000"
     },
