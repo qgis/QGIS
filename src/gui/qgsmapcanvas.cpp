@@ -1079,7 +1079,7 @@ QgsRectangle QgsMapCanvas::extent() const
 QgsRectangle QgsMapCanvas::fullExtent() const
 {
   const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
-  QgsCoordinateTransform ct( extent.crs(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext() );
+  QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
   ct.setBallparkTransformsAreAppropriate( true );
   QgsRectangle rect;
   try
