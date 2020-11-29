@@ -68,6 +68,10 @@
 #include "qgsgeorefmainwindow.h"
 #include "qgsmessagebar.h"
 
+#ifdef Q_OS_MACX
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
 {
@@ -242,7 +246,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
     QString lastUsedFilter = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastusedfilter" ), otherFiles ).toString();
 
     QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
-    filters.prepend( otherFiles + ";;" );
+    filters.prepend( otherFiles + QStringLiteral( ";;" ) );
     filters.chop( otherFiles.size() + 2 );
     mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
 
@@ -260,12 +264,8 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   QString errMsg;
   if ( !QgsRasterLayer::isValidRasterFileName( mRasterFileName, errMsg ) )
   {
-    QString msg = tr( "%1 is not a supported raster data source." ).arg( mRasterFileName );
-
-    if ( !errMsg.isEmpty() )
-      msg += '\n' + errMsg;
-
-    QMessageBox::information( this, tr( "Open Raster" ), msg );
+    mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mRasterFileName,
+                              !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::Critical );
     return;
   }
 
@@ -2269,4 +2269,3 @@ void QgsGeoreferencerMainWindow::clearGCPData()
 
   QgisApp::instance()->mapCanvas()->refresh();
 }
-
