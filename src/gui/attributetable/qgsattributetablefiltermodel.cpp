@@ -503,6 +503,9 @@ void QgsAttributeTableFilterModel::filterFeatures()
 
   QgsFeature f;
 
+  // Record the first evaluation error
+  QString error;
+
   while ( featIt.nextFeature( f ) )
   {
     mFilterExpressionContext.setFeature( f );
@@ -510,8 +513,10 @@ void QgsAttributeTableFilterModel::filterFeatures()
       filteredFeatures << f.id();
 
     // check if there were errors during evaluating
-    if ( mFilterExpression.hasEvalError() )
-      break;
+    if ( mFilterExpression.hasEvalError() && error.isEmpty() )
+    {
+      error = mFilterExpression.evalErrorString( );
+    }
   }
 
   featIt.close();
@@ -521,6 +526,12 @@ void QgsAttributeTableFilterModel::filterFeatures()
   QApplication::restoreOverrideCursor();
 
   emit featuresFiltered();
+
+  if ( ! error.isEmpty() )
+  {
+    emit filterError( error );
+  }
+
 }
 
 
