@@ -85,6 +85,7 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
+  setAcceptDrops( true );
 
   QWidget *centralWidget = this->centralWidget();
   mCentralLayout = new QGridLayout( centralWidget );
@@ -212,7 +213,7 @@ void QgsGeoreferencerMainWindow::reset()
 
 // -------------------------- private slots -------------------------------- //
 // File slots
-void QgsGeoreferencerMainWindow::openRaster()
+void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
 {
   //  clearLog();
   switch ( checkNeedGCPSave() )
@@ -231,21 +232,30 @@ void QgsGeoreferencerMainWindow::openRaster()
   }
 
   QgsSettings s;
-  QString dir = s.value( QStringLiteral( "/Plugin-GeoReferencer/rasterdirectory" ) ).toString();
-  if ( dir.isEmpty() )
-    dir = '.';
+  if ( fileName.isEmpty() )
+  {
+    QString dir = s.value( QStringLiteral( "/Plugin-GeoReferencer/rasterdirectory" ) ).toString();
+    if ( dir.isEmpty() )
+      dir = '.';
 
-  QString otherFiles = tr( "All other files (*)" );
-  QString lastUsedFilter = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastusedfilter" ), otherFiles ).toString();
+    QString otherFiles = tr( "All other files (*)" );
+    QString lastUsedFilter = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastusedfilter" ), otherFiles ).toString();
 
-  QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
-  filters.prepend( otherFiles + ";;" );
-  filters.chop( otherFiles.size() + 2 );
-  mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
+    QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
+    filters.prepend( otherFiles + ";;" );
+    filters.chop( otherFiles.size() + 2 );
+    mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
+
+    if ( mRasterFileName.isEmpty() )
+      return;
+
+    s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastusedfilter" ), lastUsedFilter );
+  }
+  else
+  {
+    mRasterFileName = fileName;
+  }
   mModifiedRasterFileName.clear();
-
-  if ( mRasterFileName.isEmpty() )
-    return;
 
   QString errMsg;
   if ( !QgsRasterLayer::isValidRasterFileName( mRasterFileName, errMsg ) )
@@ -261,7 +271,6 @@ void QgsGeoreferencerMainWindow::openRaster()
 
   QFileInfo fileInfo( mRasterFileName );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/rasterdirectory" ), fileInfo.path() );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastusedfilter" ), lastUsedFilter );
 
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGeorefTransform.setRasterChangeCoords( mRasterFileName );
@@ -294,6 +303,94 @@ void QgsGeoreferencerMainWindow::openRaster()
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mWorldFileName = guessWorldFileName( mRasterFileName );
+}
+
+void QgsGeoreferencerMainWindow::dropEvent( QDropEvent *event )
+{
+  // dragging app is locked for the duration of dropEvent. This causes explorer windows to hang
+  // while large projects/layers are loaded. So instead we return from dropEvent as quickly as possible
+  // and do the actual handling of the drop after a very short timeout
+  QTimer *timer = new QTimer( this );
+  timer->setSingleShot( true );
+  timer->setInterval( 50 );
+
+  // get the file list
+  QList<QUrl>::iterator i;
+  QList<QUrl>urls = event->mimeData()->urls();
+  QString file;
+  for ( i = urls.begin(); i != urls.end(); ++i )
+  {
+    QString fileName = i->toLocalFile();
+#ifdef Q_OS_MAC
+    // Mac OS X 10.10, under Qt4.8 ,changes dropped URL format
+    // https://bugreports.qt.io/browse/QTBUG-40449
+    // [pzion 20150805] Work around
+    if ( fileName.startsWith( "/.file/id=" ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Mac dropped URL with /.file/id= (converting)" ) );
+      CFStringRef relCFStringRef =
+        CFStringCreateWithCString(
+          kCFAllocatorDefault,
+          fileName.toUtf8().constData(),
+          kCFStringEncodingUTF8
+        );
+      CFURLRef relCFURL =
+        CFURLCreateWithFileSystemPath(
+          kCFAllocatorDefault,
+          relCFStringRef,
+          kCFURLPOSIXPathStyle,
+          false // isDirectory
+        );
+      CFErrorRef error = 0;
+      CFURLRef absCFURL =
+        CFURLCreateFilePathURL(
+          kCFAllocatorDefault,
+          relCFURL,
+          &error
+        );
+      if ( !error )
+      {
+        static const CFIndex maxAbsPathCStrBufLen = 4096;
+        char absPathCStr[maxAbsPathCStrBufLen];
+        if ( CFURLGetFileSystemRepresentation(
+               absCFURL,
+               true, // resolveAgainstBase
+               reinterpret_cast<UInt8 *>( &absPathCStr[0] ),
+               maxAbsPathCStrBufLen ) )
+        {
+          fileName = QString( absPathCStr );
+        }
+      }
+      CFRelease( absCFURL );
+      CFRelease( relCFURL );
+      CFRelease( relCFStringRef );
+    }
+#endif
+    // seems that some drag and drop operations include an empty url
+    // so we test for length to make sure we have something
+    if ( !fileName.isEmpty() )
+    {
+      file = fileName;
+      break;
+    }
+  }
+
+  connect( timer, &QTimer::timeout, this, [this, timer, file]
+  {
+    openRaster( file );
+    timer->deleteLater();
+  } );
+
+  event->acceptProposedAction();
+  timer->start();
+}
+
+void QgsGeoreferencerMainWindow::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( event->mimeData()->hasUrls() )
+  {
+    event->acceptProposedAction();
+  }
 }
 
 void QgsGeoreferencerMainWindow::doGeoreference()
@@ -848,7 +945,7 @@ void QgsGeoreferencerMainWindow::createActions()
   connect( mActionReset, &QAction::triggered, this, &QgsGeoreferencerMainWindow::reset );
 
   mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
-  connect( mActionOpenRaster, &QAction::triggered, this, &QgsGeoreferencerMainWindow::openRaster );
+  connect( mActionOpenRaster, &QAction::triggered, this, [ = ] { openRaster(); } );
 
   mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionStart.svg" ) ) );
   connect( mActionStartGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::doGeoreference );
