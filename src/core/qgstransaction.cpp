@@ -92,15 +92,15 @@ QString QgsTransaction::removeLayerIdOrName( const QString &str )
 }
 
 ///@cond PRIVATE
-QString QgsTransaction::connectionString( const QString &layerName )
+QString QgsTransaction::connectionString( const QString &layerUri )
 {
-  QString connString = QgsDataSourceUri( layerName ).connectionInfo( false );
+  QString connString = QgsDataSourceUri( layerUri ).connectionInfo( false );
   // In the case of a OGR datasource, connectionInfo() will return an empty
   // string. In that case, use the layer->source() itself, and strip any
   // reference to layers from it.
   if ( connString.isEmpty() )
   {
-    connString = removeLayerIdOrName( layerName );
+    connString = removeLayerIdOrName( layerUri );
   }
   return connString;
 }
