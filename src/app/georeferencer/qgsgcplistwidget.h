@@ -40,6 +40,8 @@ class QgsGCPListWidget : public QTableView
     void updateGCPList();
     void closeEditors();
 
+    void keyPressEvent( QKeyEvent *e ) override;
+
   public slots:
     // This slot is called by the list view if an item is double-clicked
     void itemDoubleClicked( QModelIndex index );
