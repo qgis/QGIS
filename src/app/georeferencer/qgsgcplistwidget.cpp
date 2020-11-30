@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QKeyEvent>
 #include <QHeaderView>
 #include <QDoubleSpinBox>
 #include <QLineEdit>
@@ -41,7 +42,7 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   setSortingEnabled( true );
 
   setContextMenuPolicy( Qt::CustomContextMenu );
-  setFocusPolicy( Qt::NoFocus );
+  setFocusPolicy( Qt::ClickFocus );
 
   verticalHeader()->hide();
   setAlternatingRowColors( true );
@@ -134,6 +135,76 @@ void QgsGCPListWidget::itemClicked( QModelIndex index )
 
   mPrevRow = index.row();
   mPrevColumn = index.column();
+}
+
+void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Delete )
+  {
+    QModelIndex index = currentIndex();
+    if ( index.isValid() )
+    {
+      removeRow();
+      if ( model()->rowCount() > 0 )
+      {
+        setCurrentIndex( model()->index( index.row() == model()->rowCount() ? index.row() - 1 : index.row(), index.column() ) );
+        return;
+      }
+    }
+  }
+  else if ( e->key() == Qt::Key_Space )
+  {
+    QModelIndex index = currentIndex();
+    if ( index.isValid() )
+    {
+      QModelIndex sourceIndex = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
+      QgsGeorefDataPoint *p = mGCPList->at( sourceIndex.row() );
+      p->setEnabled( !p->isEnabled() );
+
+      mGCPListModel->updateModel();
+      emit pointEnabled( p, sourceIndex.row() );
+      adjustTableContent();
+      setCurrentIndex( model()->index( index.row(), index.column() ) );
+      return;
+    }
+  }
+  else if ( e->key() == Qt::Key_Up )
+  {
+    QModelIndex index = currentIndex();
+    if ( index.isValid() && index.row() > 0 )
+    {
+      setCurrentIndex( model()->index( index.row() - 1, index.column() ) );
+      return;
+    }
+  }
+  else if ( e->key() == Qt::Key_Down )
+  {
+    QModelIndex index = currentIndex();
+    if ( index.isValid() && index.row() < ( model()->rowCount() - 1 ) )
+    {
+      setCurrentIndex( model()->index( index.row() + 1, index.column() ) );
+      return;
+    }
+  }
+  else if ( e->key() == Qt::Key_Left )
+  {
+    QModelIndex index = currentIndex();
+    if ( index.isValid() && index.column() > 0 )
+    {
+      setCurrentIndex( model()->index( index.row(), index.column() - 1 ) );
+      return;
+    }
+  }
+  else if ( e->key() == Qt::Key_Right )
+  {
+    QModelIndex index = currentIndex();
+    if ( index.isValid() && index.column() < ( model()->columnCount() - 1 ) )
+    {
+      setCurrentIndex( model()->index( index.row(), index.column() + 1 ) );
+      return;
+    }
+  }
+  e->ignore();
 }
 
 void QgsGCPListWidget::updateItemCoords( QWidget *editor )
