@@ -119,6 +119,23 @@ size_t MDAL::toSizeT( const char &str )
   return static_cast< size_t >( i );
 }
 
+size_t MDAL::toSizeT( const double value )
+{
+  return static_cast<size_t>( value );
+}
+
+int MDAL::toInt( const size_t value )
+{
+  if ( value > std::numeric_limits<int>::max() )
+    throw std::runtime_error( "Invalid cast" );
+  return static_cast< int >( value );
+}
+
+double MDAL::toDouble( const size_t value )
+{
+  return static_cast< double >( value );
+}
+
 double MDAL::toDouble( const std::string &str )
 {
   return atof( str.c_str() );

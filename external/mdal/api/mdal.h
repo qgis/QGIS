@@ -234,10 +234,10 @@ MDAL_EXPORT void MDAL_CloseMesh( MDAL_MeshH mesh );
 /**
  * Creates a empty mesh in memory
  *
- * \since MDAL 0.7
- *
  * \note the mesh is editable (vertices and faces can be added, see MDAL_M_addVertices() and MDAL_M_addFaces()),
  * and can be saved with MDAL_SaveMesh()
+ *
+ * \since MDAL 0.7
  */
 MDAL_EXPORT MDAL_MeshH MDAL_CreateMesh( MDAL_DriverH driver );
 

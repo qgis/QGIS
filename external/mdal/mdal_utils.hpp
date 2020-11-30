@@ -75,8 +75,11 @@ namespace MDAL
   /** Return 0 if not possible to convert */
   size_t toSizeT( const std::string &str );
   size_t toSizeT( const char &str );
+  size_t toSizeT( const double value );
   int toInt( const std::string &str );
+  int toInt( const size_t value );
   double toDouble( const std::string &str );
+  double toDouble( const size_t value );
   bool toBool( const std::string &str );
 
   //! Returns the string with a adapted format to coordinate
