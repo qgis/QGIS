@@ -220,9 +220,15 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
       mapToPixel.transformInPlace( x, y );
 
+#if 0
       pen.setColor( QColor( red, green, blue ) );
       context.renderContext().painter()->setPen( pen );
       context.renderContext().painter()->drawPoint( QPointF( x, y ) );
+#else
+      context.renderContext().painter()->fillRect( QRectF( x - mPainterPenWidth * 0.5,
+          y - mPainterPenWidth * 0.5,
+          mPainterPenWidth, mPainterPenWidth ), QColor( red, green, blue ) );
+#endif
 
       rendered++;
     }
