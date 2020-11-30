@@ -328,6 +328,8 @@ void QgsVertexTool::activate()
   {
     showVertexEditor();  //#spellok
   }
+  connect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsVertexTool::currentLayerChanged );
+
   QgsMapToolAdvancedDigitizing::activate();
 }
 
@@ -344,7 +346,20 @@ void QgsVertexTool::deactivate()
     it->cleanup();
   mValidations.clear();
 
+  disconnect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsVertexTool::currentLayerChanged );
+
   QgsMapToolAdvancedDigitizing::deactivate();
+}
+
+void QgsVertexTool::currentLayerChanged( QgsMapLayer *layer )
+{
+  if ( mMode == QgsVertexTool::ActiveLayer )
+  {
+    if ( mLockedFeature && mLockedFeature->layer() != layer )
+    {
+      cleanupLockedFeature();
+    }
+  }
 }
 
 void QgsVertexTool::addDragBand( const QgsPointXY &v1, const QgsPointXY &v2 )
