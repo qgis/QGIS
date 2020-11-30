@@ -310,7 +310,7 @@ bool QgsLineString::isEmpty() const
   return mX.isEmpty();
 }
 
-bool QgsLineString::isValid( QString &error SIP_OUT, int flags ) const
+bool QgsLineString::isValid( QString &error, int flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 2 ) )
   {
