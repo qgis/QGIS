@@ -1627,7 +1627,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // After bad layer handling we might still have invalid layers,
   // store them in case the user wanted to handle them later
   // or wanted to pass them through when saving
-  QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
+  if ( !( flags & QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
+  {
+    QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
+  }
 
   mRootGroup->removeCustomProperty( QStringLiteral( "loading" ) );
 
