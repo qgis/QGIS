@@ -397,7 +397,7 @@ bool QgsCompoundCurve::isValid( QString &error SIP_OUT, int flags ) const
   {
     if ( !mCurves[i]->isValid( error, flags ) )
     {
-      error = QObject::tr( "Curve[%1]: %2" ).arg( i ).arg( error );
+      error = QObject::tr( "Curve[%1]: %2" ).arg( i + 1 ).arg( error );
       return false;
     }
   }
@@ -1027,4 +1027,3 @@ void QgsCompoundCurve::swapXy()
   }
   clearCache();
 }
-
