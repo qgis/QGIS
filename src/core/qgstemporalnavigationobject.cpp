@@ -185,15 +185,42 @@ long long QgsTemporalNavigationObject::currentFrameNumber() const
   return mCurrentFrameNumber;
 }
 
+void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
+{
+  if ( mFrameDuration == frameDuration )
+  {
+    return;
+  }
+  QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
+  mFrameDuration = frameDuration;
+  mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
+  emit temporalFrameDurationChanged( mFrameDuration );
+
+  // temporarily disable the updateTemporalRange signal, as we'll emit it ourselves at the end of this function...
+
+  // forcing an update of our views
+  QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
+
+  if ( !mBlockUpdateTemporalRangeSignal && mNavigationMode != NavigationOff )
+    emit updateTemporalRange( range );
+}
+
+QgsInterval QgsTemporalNavigationObject::frameDuration() const
+{
+  return mFrameDuration;
+}
+
 void QgsTemporalNavigationObject::setFrameTimeStep( double timeStep )
 {
-  mFrameTimeStep = timeStep;
-  setCurrentFrameNumber( 0 );
+    mFrameTimeStep = timeStep;
+    setFrameDuration( QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ) );
+    setCurrentFrameNumber( 0 );
 }
 
 void QgsTemporalNavigationObject::setFrameTimeStepUnit( QgsUnitTypes::TemporalUnit timeStepUnit )
 {
   mFrameTimeStepUnit = timeStepUnit;
+  setFrameDuration( QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ) );
   setCurrentFrameNumber( 0 );
 }
 
@@ -290,7 +317,7 @@ void QgsTemporalNavigationObject::skipToEnd()
 long long QgsTemporalNavigationObject::totalFrameCount() const
 {
   QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-  return std::floor( totalAnimationLength.seconds() / QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ).seconds() ) + 1;
+  return std::floor( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
 }
 
 void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )
