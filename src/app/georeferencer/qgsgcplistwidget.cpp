@@ -111,7 +111,7 @@ void QgsGCPListWidget::itemDoubleClicked( QModelIndex index )
     emit jumpToGCP( id );
   }
 }
-#include <QDebug>
+
 void QgsGCPListWidget::itemClicked( QModelIndex index )
 {
   index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
@@ -148,9 +148,9 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
       if ( model()->rowCount() > 0 )
       {
         setCurrentIndex( model()->index( index.row() == model()->rowCount() ? index.row() - 1 : index.row(), index.column() ) );
+        return;
       }
     }
-    e->ignore();
   }
   else if ( e->key() == Qt::Key_Space )
   {
@@ -165,8 +165,8 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
       emit pointEnabled( p, sourceIndex.row() );
       adjustTableContent();
       setCurrentIndex( model()->index( index.row(), index.column() ) );
+      return;
     }
-    e->ignore();
   }
   else if ( e->key() == Qt::Key_Up )
   {
@@ -174,7 +174,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
     if ( index.isValid() && index.row() > 0 )
     {
       setCurrentIndex( model()->index( index.row() - 1, index.column() ) );
-      e->ignore();
+      return;
     }
   }
   else if ( e->key() == Qt::Key_Down )
@@ -183,7 +183,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
     if ( index.isValid() && index.row() < ( model()->rowCount() - 1 ) )
     {
       setCurrentIndex( model()->index( index.row() + 1, index.column() ) );
-      e->ignore();
+      return;
     }
   }
   else if ( e->key() == Qt::Key_Left )
@@ -192,7 +192,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
     if ( index.isValid() && index.column() > 0 )
     {
       setCurrentIndex( model()->index( index.row(), index.column() - 1 ) );
-      e->ignore();
+      return;
     }
   }
   else if ( e->key() == Qt::Key_Right )
@@ -201,9 +201,10 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
     if ( index.isValid() && index.column() < ( model()->columnCount() - 1 ) )
     {
       setCurrentIndex( model()->index( index.row(), index.column() + 1 ) );
-      e->ignore();
+      return;
     }
   }
+  e->ignore();
 }
 
 void QgsGCPListWidget::updateItemCoords( QWidget *editor )
