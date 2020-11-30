@@ -80,6 +80,8 @@ bool QgsPointCloudLayerRenderer::render()
 
   QgsScopedQPainterState painterState( painter );
   context.renderContext().setPainterFlagsUsingContext( painter );
+  // for point clouds we always disable antialiasing -- it's not critical here and we benefit from the performance boost disabling it gives
+  context.renderContext().painter()->setRenderHint( QPainter::Antialiasing, false );
 
   QgsPointCloudDataBounds db;
 
