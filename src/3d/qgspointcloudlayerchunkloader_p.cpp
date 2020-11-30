@@ -57,7 +57,6 @@ QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const
 #endif
   , mByteStride( symbol->byteStride() )
   , mRenderingStyle( symbol->renderingStyle() )
-  , mSymbol( symbol )
 {
   mPositionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );

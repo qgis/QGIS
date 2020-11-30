@@ -108,7 +108,6 @@ class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 
     unsigned int mByteStride = 16;
     QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle;
-    QgsPointCloud3DSymbol *mSymbol = nullptr;
 };
 
 /**
