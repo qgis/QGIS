@@ -478,7 +478,7 @@ void TestQgsGeometry::isValid()
   QVERIFY( line.isValid( error ) );
   line.addVertex( QgsPoint( 0, 0 ) );
   QVERIFY( !line.isValid( error ) );
-  QCOMPARE( error, QStringLiteral( "LineString have less than 2 points and is not empty." ) );
+  QCOMPARE( error, QStringLiteral( "LineString has less than 2 points and is not empty." ) );
   line.addVertex( QgsPoint( 1, 1 ) );
   QVERIFY( line.isValid( error ) );
 
@@ -488,7 +488,7 @@ void TestQgsGeometry::isValid()
   QgsPointSequence pts = QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2.5, 2.3 );
   circ.setPoints( pts );
   QVERIFY( !circ.isValid( error ) );
-  QCOMPARE( error, QStringLiteral( "CircularString have less than 3 points and is not empty." ) );
+  QCOMPARE( error, QStringLiteral( "CircularString has less than 3 points and is not empty." ) );
   pts.append( QgsPoint( 5, 5 ) );
   circ.setPoints( pts );
   QVERIFY( circ.isValid( error ) );
@@ -504,7 +504,7 @@ void TestQgsGeometry::isValid()
   invalidLine.addVertex( QgsPoint( 0, 0 ) );
   curve.addCurve( invalidLine.clone() );
   QVERIFY( !curve.isValid( error ) );
-  QCOMPARE( error, QStringLiteral( "Curve[2]: LineString have less than 2 points and is not empty." ) );
+  QCOMPARE( error, QStringLiteral( "Curve[2]: LineString has less than 2 points and is not empty." ) );
 }
 
 void TestQgsGeometry::equality()
