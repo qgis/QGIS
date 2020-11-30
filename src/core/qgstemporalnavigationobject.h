@@ -127,6 +127,22 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     long long currentFrameNumber() const;
 
     /**
+     * Sets the frame \a duration, which dictates the temporal length of each frame in the animation.
+     *
+     * \note Calling this will reset the currentFrameNumber() to the closest temporal match for the previous temporal range.
+     *
+     * \see frameDuration()
+     */
+    void setFrameDuration( QgsInterval duration );
+
+    /**
+     * Returns the current set frame duration, which dictates the temporal length of each frame in the animation.
+     *
+     * \see setFrameDuration()
+     */
+    QgsInterval frameDuration() const;
+
+    /**
      * Sets the frame \a timestep, which together with the frame timestep unit dictates
      * the temporal length of each frame in the animation.
      *
@@ -324,6 +340,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     long long mCurrentFrameNumber = 0;
 
     //! Frame duration
+    QgsInterval mFrameDuration;
+
     double mFrameTimeStep = 1.0;
     QgsUnitTypes::TemporalUnit mFrameTimeStepUnit = QgsUnitTypes::TemporalUnit::TemporalHours;
 
