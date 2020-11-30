@@ -2041,7 +2041,7 @@ namespace QgsWms
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Broken/corrupted layer tree: check your project!" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QStringLiteral( "Broken/corrupted layer tree, layer '%1' does not exist: check your project!" ).arg( treeLayer->name() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
       }
     }
     return false;
@@ -2049,7 +2049,6 @@ namespace QgsWms
 
 
 } // namespace QgsWms
-
 
 
 
