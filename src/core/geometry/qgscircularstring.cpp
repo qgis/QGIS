@@ -407,7 +407,7 @@ bool QgsCircularString::isValid( QString &error SIP_OUT, int flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 3 ) )
   {
-    error = QObject::tr( "CircularString have less than 3 points and is not empty." );
+    error = QObject::tr( "CircularString has less than 3 points and is not empty." );
     return false;
   }
   return QgsCurve::isValid( error, flags );
