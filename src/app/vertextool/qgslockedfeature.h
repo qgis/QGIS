@@ -140,16 +140,6 @@ class QgsLockedFeature: public QObject
     void geometryChanged( QgsFeatureId, const QgsGeometry & );
 
     /*
-     * the current layer changed - destroy
-     */
-    void currentLayerChanged( QgsMapLayer *layer );
-
-    /*
-     * the current layer changed - destroy
-     */
-    void canvasLayersChanged();
-
-    /*
      * the changes are rolling back - stop monitoring the geometry
      */
     void beforeRollBack();

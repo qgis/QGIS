@@ -39,9 +39,6 @@ QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
   , mLayer( layer )
   , mCanvas( canvas )
 {
-  // signal changing of current layer
-  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsLockedFeature::currentLayerChanged );
-
   replaceVertexMap();
 }
 
@@ -63,12 +60,6 @@ QgsLockedFeature::~QgsLockedFeature()
   }
 
   delete mGeometry;
-}
-
-void QgsLockedFeature::currentLayerChanged( QgsMapLayer *layer )
-{
-  if ( layer == mLayer )
-    deleteLater();
 }
 
 void QgsLockedFeature::updateGeometry( const QgsGeometry *geom )
@@ -110,11 +101,6 @@ void QgsLockedFeature::endGeometryChange()
   mChangingGeometry = false;
 
   connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsLockedFeature::geometryChanged );
-}
-
-void QgsLockedFeature::canvasLayersChanged()
-{
-  currentLayerChanged( mCanvas->currentLayer() );
 }
 
 void QgsLockedFeature::featureDeleted( QgsFeatureId fid )
