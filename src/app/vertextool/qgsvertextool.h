@@ -124,6 +124,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void lockedFeatureSelectionChanged();
 
+    void currentLayerChanged( QgsMapLayer *layer );
+
   private:
 
     void buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPointXY &dragVertexMapPoint );
