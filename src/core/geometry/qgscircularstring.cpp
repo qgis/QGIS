@@ -403,7 +403,7 @@ bool QgsCircularString::isEmpty() const
   return mX.isEmpty();
 }
 
-bool QgsCircularString::isValid( QString &error SIP_OUT, int flags ) const
+bool QgsCircularString::isValid( QString &error, int flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 3 ) )
   {
