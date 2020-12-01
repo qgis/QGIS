@@ -143,8 +143,8 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement
   QDomElement elemShader = element.firstChildElement( QStringLiteral( "colorrampshader" ) );
   r->mColorRampShader.readXml( elemShader );
 
-  r->setMin( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
-  r->setMax( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
+  r->setMinimum( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
+  r->setMaximum( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
 
   r->restoreCommonProperties( element, context );
 
@@ -208,22 +208,22 @@ void QgsPointCloudAttributeByRampRenderer::setColorRampShader( const QgsColorRam
   mColorRampShader = shader;
 }
 
-double QgsPointCloudAttributeByRampRenderer::min() const
+double QgsPointCloudAttributeByRampRenderer::minimum() const
 {
   return mMin;
 }
 
-void QgsPointCloudAttributeByRampRenderer::setMin( double value )
+void QgsPointCloudAttributeByRampRenderer::setMinimum( double minimum )
 {
-  mMin = value;
+  mMin = minimum;
 }
 
-double QgsPointCloudAttributeByRampRenderer::max() const
+double QgsPointCloudAttributeByRampRenderer::maximum() const
 {
   return mMax;
 }
 
-void QgsPointCloudAttributeByRampRenderer::setMax( double value )
+void QgsPointCloudAttributeByRampRenderer::setMaximum( double value )
 {
   mMax = value;
 }
