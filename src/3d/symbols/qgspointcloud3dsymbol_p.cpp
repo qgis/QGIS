@@ -348,6 +348,9 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
         case QgsPointCloudAttribute::DataType::Short:
           iParam = *( short * )( ptr + i * recordSize + 12 );
           break;
+        case QgsPointCloudAttribute::DataType::UShort:
+          iParam = *( unsigned short * )( ptr + i * recordSize + 12 );
+          break;
         case QgsPointCloudAttribute::DataType::Int32:
           iParam = *( qint32 * )( ptr + i * recordSize + 12 );
           break;
