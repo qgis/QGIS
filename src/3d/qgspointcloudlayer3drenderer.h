@@ -27,8 +27,72 @@
 
 class QgsPointCloudLayer;
 #include "qgspointcloud3dsymbol.h"
+#include "qgsfeature3dhandler_p.h"
 
 #ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \class QgsPointCloud3DRenderContext
+ *
+ * Encapsulates the render context for a 3D point cloud rendering operation.
+ *
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
+{
+  public:
+
+    /**
+     * Constructor for QgsPointCloud3DRenderContext.
+     *
+     * The \a scale and \a offset arguments specify the scale and offset of the layer's int32 coordinates
+     * compared to CRS coordinates respectively.
+     */
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol );
+
+    //! QgsPointCloudRenderContext cannot be copied.
+    QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
+
+    //! QgsPointCloudRenderContext cannot be copied.
+    QgsPointCloud3DRenderContext &operator=( const QgsPointCloud3DRenderContext & ) = delete;
+
+    /**
+     * Returns the attributes associated with the rendered block.
+     *
+     * \see setAttributes()
+     */
+    QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
+
+    /**
+     * Sets the \a attributes associated with the rendered block.
+     *
+     * \see attributes()
+     */
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
+
+    /**
+     * Returns the symbol used for rendering the point cloud
+     *
+     * \see setSymbol()
+     */
+    QgsPointCloud3DSymbol *symbol() const { return mSymbol.get(); }
+
+    /**
+     * Sets the \a symbol used for rendering the point cloud
+     *
+     * \see symbol()
+     */
+    void setSymbol( QgsPointCloud3DSymbol *symbol );
+
+  private:
+#ifdef SIP_RUN
+    QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
+#endif
+    QgsPointCloudAttributeCollection mAttributes;
+    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
+};
+
 
 /**
  * \ingroup core
