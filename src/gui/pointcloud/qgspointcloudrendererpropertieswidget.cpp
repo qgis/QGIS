@@ -141,6 +141,13 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mBlockChangedSignal = false;
 }
 
+void QgsPointCloudRendererPropertiesWidget::setDockMode( bool dockMode )
+{
+  if ( mActiveWidget )
+    mActiveWidget->setDockMode( dockMode );
+  QgsMapLayerConfigWidget::setDockMode( dockMode );
+}
+
 void QgsPointCloudRendererPropertiesWidget::apply()
 {
   mLayer->setOpacity( mOpacityWidget->opacity() );

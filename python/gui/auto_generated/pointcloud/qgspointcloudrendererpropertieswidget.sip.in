@@ -35,6 +35,8 @@ Sets the ``context`` in which the widget is shown, e.g., the associated map canv
 
     virtual void syncToLayer( QgsMapLayer *layer );
 
+    virtual void setDockMode( bool dockMode );
+
 
   public slots:
 
