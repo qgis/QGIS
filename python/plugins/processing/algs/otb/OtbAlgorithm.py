@@ -47,7 +47,8 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterBand,
-                       QgsProcessingParameterField)
+                       QgsProcessingParameterField,
+                       QgsProviderRegistry)
 
 from processing.core.parameters import getParameterFromString
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
@@ -283,9 +284,20 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
     def getLayerSource(self, name, layer):
         providerName = layer.dataProvider().name()
+
         # TODO: add other provider support in OTB, eg: memory
-        if providerName in ['ogr', 'gdal']:
+        if providerName == 'gdal':
             return layer.source()
+        elif providerName == 'ogr':
+            # when a file contains several layer we pass only the file path to OTB
+            # TODO make OTB able to take a layer index in this case
+            uriElements = QgsProviderRegistry.instance().decodeUri("ogr", layer.source())
+
+            if 'path' not in uriElements:
+                raise QgsProcessingException(
+                    self.tr("Invalid layer source '{}'. Missing valid 'path' element".format(layer.source())))
+
+            return uriElements['path']
         else:
             raise QgsProcessingException(
                 self.tr("OTB currently support only gdal and ogr provider. Parameter '{}' uses '{}' provider".format(name, providerName)))
