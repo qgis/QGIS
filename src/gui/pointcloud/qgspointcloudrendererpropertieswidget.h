@@ -52,6 +52,7 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     void setContext( const QgsSymbolWidgetContext &context );
 
     void syncToLayer( QgsMapLayer *layer ) override;
+    void setDockMode( bool dockMode ) override;
 
   public slots:
 
