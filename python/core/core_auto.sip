@@ -446,6 +446,7 @@
 %Include auto_generated/mesh/qgsmeshtracerenderer.sip
 %Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/pointcloud/qgspointcloudattribute.sip
+%Include auto_generated/pointcloud/qgspointcloudattributebyramprenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudattributemodel.sip
 %Include auto_generated/pointcloud/qgspointcloudblock.sip
 %Include auto_generated/pointcloud/qgspointcloudlayer.sip

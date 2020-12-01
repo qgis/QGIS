@@ -22,6 +22,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudrgbrendererwidget.h"
+#include "qgspointcloudattributebyramprendererwidget.h"
 
 #include "qgspointcloudrgbrenderer.h"
 #include "qgslogger.h"
@@ -53,6 +54,7 @@ static void _initRendererWidgetFunctions()
     return;
 
   _initRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
+  _initRenderer( QStringLiteral( "ramp" ), QgsPointCloudAttributeByRampRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
 
   sInitialized = true;
 }

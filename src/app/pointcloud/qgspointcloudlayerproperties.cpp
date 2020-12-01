@@ -61,9 +61,6 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
 
-  mAttributeComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
-  mAttributeComboBox->setLayer( mLayer );
-
   // update based on lyr's current state
   syncToLayer();
 
@@ -172,15 +169,6 @@ void QgsPointCloudLayerProperties::syncToLayer()
   mInformationTextBrowser->setHtml( mLayer->htmlMetadata() );
   mInformationTextBrowser->setOpenLinks( false );
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
-
-  // TODO -- move to proper widget classes!
-  if ( QgsDummyPointCloudRenderer *renderer = dynamic_cast< QgsDummyPointCloudRenderer * >( mLayer->renderer() ) )
-  {
-    mAttributeComboBox->setAttribute( renderer->attribute() );
-    mMinZSpin->setValue( renderer->zMin() );
-    mMaxZSpin->setValue( renderer->zMax() );
-    mBtnColorRamp->setColorRamp( renderer->colorRamp() );
-  }
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );
