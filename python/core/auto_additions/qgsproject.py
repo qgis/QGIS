@@ -7,7 +7,7 @@ QgsProject.ReadFlag.FlagDontLoadLayouts.__doc__ = "Don't load print layouts. Imp
 QgsProject.FlagTrustLayerMetadata = QgsProject.ReadFlag.FlagTrustLayerMetadata
 QgsProject.ReadFlag.FlagTrustLayerMetadata.__doc__ = "Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server."
 QgsProject.FlagDontStoreOriginalStyles = QgsProject.ReadFlag.FlagDontStoreOriginalStyles
-QgsProject.ReadFlag.FlagDontStoreOriginalStyles.__doc__ = "Skip the initial XML style storage for layers. Mainly useful in server's context where there is no chance that the user will save the project again."
+QgsProject.ReadFlag.FlagDontStoreOriginalStyles.__doc__ = "Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts."
 QgsProject.ReadFlag.__doc__ = 'Flags which control project read behavior.\n\n.. versionadded:: 3.10\n\n' + '* ``FlagDontResolveLayers``: ' + QgsProject.ReadFlag.FlagDontResolveLayers.__doc__ + '\n' + '* ``FlagDontLoadLayouts``: ' + QgsProject.ReadFlag.FlagDontLoadLayouts.__doc__ + '\n' + '* ``FlagTrustLayerMetadata``: ' + QgsProject.ReadFlag.FlagTrustLayerMetadata.__doc__ + '\n' + '* ``FlagDontStoreOriginalStyles``: ' + QgsProject.ReadFlag.FlagDontStoreOriginalStyles.__doc__
 # --
 # monkey patching scoped based enum

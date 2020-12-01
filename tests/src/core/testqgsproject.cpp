@@ -451,6 +451,12 @@ void TestQgsProject::testReadFlags()
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "points20170310142652246" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "lines20170310142652255" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
+  QVERIFY( ! layers.value( QStringLiteral( "polys20170310142652234" ) )->originalXmlProperties().isEmpty() );
+
+  // do not store styles
+  QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) );
+  layers = p.mapLayers();
+  QVERIFY( layers.value( QStringLiteral( "polys20170310142652234" ) )->originalXmlProperties().isEmpty() );
 
   // project with embedded groups
   QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
