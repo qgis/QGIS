@@ -5345,13 +5345,13 @@ static QVariant fcnArrayLast( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnArrayMinimum( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  return list.isEmpty() ? QVariant() : *std::min_element( list.constBegin(), list.constEnd() );
+  return list.isEmpty() ? QVariant() : *std::min_element( list.constBegin(), list.constEnd(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
 }
 
 static QVariant fcnArrayMaximum( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  return list.isEmpty() ? QVariant() : *std::max_element( list.constBegin(), list.constEnd() );
+  return list.isEmpty() ? QVariant() : *std::max_element( list.constBegin(), list.constEnd(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
 }
 
 static QVariant convertToSameType( const QVariant &value, QVariant::Type type )
