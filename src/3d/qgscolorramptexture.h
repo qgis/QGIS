@@ -35,6 +35,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
+#ifndef SIP_RUN
 
 class QgsColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 {
@@ -67,6 +68,8 @@ class QgsColorRampTexture: public Qt3DRender::QAbstractTextureImage
     QgsColorRampShader mColorRampShader;
     double mVerticalScale = 1;
 };
+
+#endif
 
 /// @endcond
 
