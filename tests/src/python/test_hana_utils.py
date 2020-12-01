@@ -117,3 +117,9 @@ class QgsHanaProviderUtils:
     @staticmethod
     def cleanUp(conn, schema_name):
         QgsHanaProviderUtils.dropSchemaIfExists(conn, schema_name)
+
+    @staticmethod
+    def generateSchemaName(conn, prefix):
+        sql = "SELECT REPLACE(CURRENT_UTCDATE, '-', '') || '_' || BINTOHEX(SYSUUID) FROM DUMMY;"
+        uid = QgsHanaProviderUtils.executeSQL(conn, sql, return_result=True)
+        return '{}_{}'.format(prefix, uid)

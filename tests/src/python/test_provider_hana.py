@@ -40,6 +40,8 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     # HANA connection object
     conn = None
+    # Name of the schema
+    schemaName = ''
 
     @classmethod
     def setUpClass(cls):
@@ -49,22 +51,23 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
         cls.conn = QgsHanaProviderUtils.createConnection(cls.uri)
+        cls.schemaName = QgsHanaProviderUtils.generateSchemaName(cls.conn, 'qgis_test')
 
-        QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn, 'qgis_test')
+        QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn, cls.schemaName)
 
         # Create test layers
         cls.vl = QgsHanaProviderUtils.createVectorLayer(
-            cls.uri + ' key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test')
+            cls.uri + f' key=\'pk\' srid=4326 type=POINT table="{cls.schemaName}"."some_data" (geom) sql=', 'test')
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsHanaProviderUtils.createVectorLayer(
-            cls.uri + ' key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test')
+            cls.uri + f' key=\'pk\' srid=4326 type=POLYGON table="{cls.schemaName}"."some_poly_data" (geom) sql=', 'test')
         cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
 
-        QgsHanaProviderUtils.cleanUp(cls.conn, 'qgis_test')
+        QgsHanaProviderUtils.cleanUp(cls.conn, cls.schemaName)
         cls.conn.close()
 
     def createVectorLayer(self, conn_parameters, layer_name):
@@ -74,26 +77,26 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def prepareTestTable(self, table_name, create_sql, insert_sql, insert_args):
         res = QgsHanaProviderUtils.executeSQLFetchOne(self.conn,
-                                                      f"SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME='qgis_test' "
-                                                      f"AND TABLE_NAME='{table_name}'")
+                                                      f"SELECT COUNT(*) FROM SYS.TABLES WHERE "
+                                                      f"SCHEMA_NAME='{self.schemaName}' AND TABLE_NAME='{table_name}'")
         if res != 0:
-            QgsHanaProviderUtils.executeSQL(self.conn, f'DROP TABLE "qgis_test"."{table_name}" CASCADE')
+            QgsHanaProviderUtils.executeSQL(self.conn, f'DROP TABLE "{self.schemaName}"."{table_name}" CASCADE')
         QgsHanaProviderUtils.createAndFillTable(self.conn, create_sql, insert_sql, insert_args)
 
     def getSource(self):
         # create temporary table for edit tests
-        create_sql = 'CREATE TABLE "qgis_test"."edit_data" ( ' \
-                     '"pk" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"cnt" INTEGER,' \
-                     '"name" NVARCHAR(100), ' \
-                     '"name2" NVARCHAR(100), ' \
-                     '"num_char" NVARCHAR(100),' \
-                     '"dt" TIMESTAMP,' \
-                     '"date" DATE,' \
-                     '"time" TIME,' \
-                     '"geom" ST_POINT(4326))'
-        insert_sql = 'INSERT INTO "qgis_test"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "dt", "date", ' \
-                     '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+        create_sql = f'CREATE TABLE "{self.schemaName}"."edit_data" ( ' \
+            '"pk" INTEGER NOT NULL PRIMARY KEY,' \
+            '"cnt" INTEGER,' \
+            '"name" NVARCHAR(100), ' \
+            '"name2" NVARCHAR(100), ' \
+            '"num_char" NVARCHAR(100),' \
+            '"dt" TIMESTAMP,' \
+            '"date" DATE,' \
+            '"time" TIME,' \
+            '"geom" ST_POINT(4326))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "dt", "date", ' \
+            '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
         insert_args = [
             [5, -200, None, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01',
              bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
@@ -106,7 +109,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
              bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
         self.prepareTestTable('edit_data', create_sql, insert_sql, insert_args)
 
-        return self.createVectorLayer('key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
+        return self.createVectorLayer(f'key=\'pk\' srid=4326 type=POINT table="{self.schemaName}"."edit_data" (geom) sql=',
                                       'test')
 
     def getEditableLayer(self):
@@ -197,14 +200,14 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.source.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
 
     def testBooleanType(self):
-        create_sql = 'CREATE TABLE "qgis_test"."boolean_type" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"fld1" BOOLEAN)'
-        insert_sql = 'INSERT INTO "qgis_test"."boolean_type" ("id", "fld1") VALUES (?, ?)'
+        create_sql = f'CREATE TABLE "{self.schemaName}"."boolean_type" ( ' \
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"fld1" BOOLEAN)'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."boolean_type" ("id", "fld1") VALUES (?, ?)'
         insert_args = [[1, 'TRUE'], [2, 'FALSE'], [3, None]]
         self.prepareTestTable('boolean_type', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer('table="qgis_test"."boolean_type" sql=', 'testbool')
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."boolean_type" sql=', 'testbool')
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.Bool)
@@ -214,17 +217,17 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, expected)
 
     def testDateTimeTypes(self):
-        create_sql = 'CREATE TABLE "qgis_test"."date_time_type" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"date_field" DATE,' \
-                     '"time_field" TIME,' \
-                     '"datetime_field" TIMESTAMP)'
-        insert_sql = 'INSERT INTO "qgis_test"."date_time_type" ("id", "date_field", "time_field", "datetime_field") ' \
-                     'VALUES (?, ?, ?, ?)'
+        create_sql = f'CREATE TABLE "{self.schemaName}"."date_time_type" ( ' \
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"date_field" DATE,' \
+            '"time_field" TIME,' \
+            '"datetime_field" TIMESTAMP)'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."date_time_type" ("id", "date_field", "time_field", "datetime_field") ' \
+            'VALUES (?, ?, ?, ?)'
         insert_args = [[1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52']]
         self.prepareTestTable('date_time_type', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer('table="qgis_test"."date_time_type" sql=', 'testdatetimes')
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."date_time_type" sql=', 'testdatetimes')
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date_field')).type(), QVariant.Date)
@@ -244,14 +247,14 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testBinaryType(self):
-        create_sql = 'CREATE TABLE "qgis_test"."binary_type" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"blob" VARBINARY(114))'
-        insert_sql = 'INSERT INTO "qgis_test"."binary_type" ("id", "blob") VALUES (?, ?)'
+        create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type" ( ' \
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"blob" VARBINARY(114))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmludmFsdWU=')], [2, None]]
         self.prepareTestTable('binary_type', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer('table="qgis_test"."binary_type" sql=', 'testbinary')
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."binary_type" sql=', 'testbinary')
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('blob')).type(), QVariant.ByteArray)
@@ -262,14 +265,14 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, expected)
 
     def testBinaryTypeEdit(self):
-        create_sql = 'CREATE TABLE "qgis_test"."binary_type_edit" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"blob" VARBINARY(1000))'
-        insert_sql = 'INSERT INTO "qgis_test"."binary_type_edit" ("id", "blob") VALUES (?, ?)'
+        create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type_edit" ( ' \
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"blob" VARBINARY(1000))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type_edit" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmJi')]]
         self.prepareTestTable('binary_type_edit', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer('key=\'id\' table="qgis_test"."binary_type_edit" sql=', 'testbinaryedit')
+        vl = self.createVectorLayer(f'key=\'id\' table="{self.schemaName}"."binary_type_edit" sql=', 'testbinaryedit')
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
         expected = {1: QByteArray(b'YmJi')}
         self.assertEqual(values, expected)

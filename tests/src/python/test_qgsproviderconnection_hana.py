@@ -30,6 +30,8 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
     uri = ''
     # HANA connection object
     conn = None
+    # Name of the schema
+    schemaName = ''
 
     @classmethod
     def setUpClass(cls):
@@ -42,17 +44,18 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
         cls.conn = QgsHanaProviderUtils.createConnection(cls.uri)
+        cls.schemaName = QgsHanaProviderUtils.generateSchemaName(cls.conn, 'qgis_test_provider_conn')
 
-        QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn, 'qgis_test_provider_conn')
+        QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn, cls.schemaName)
         # Create test layers
         cls.vl = QgsHanaProviderUtils.createVectorLayer(
-            cls.uri + ' key=\'pk\' srid=4326 type=POINT table="qgis_test_provider_conn"."some_data" (geom) sql=', 'test')
+            cls.uri + f' key=\'pk\' srid=4326 type=POINT table="{cls.schemaName}"."some_data" (geom) sql=', 'test')
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
 
-        QgsHanaProviderUtils.cleanUp(cls.conn, 'qgis_test_provider_conn')
+        QgsHanaProviderUtils.cleanUp(cls.conn, cls.schemaName)
         cls.conn.close()
 
     def createProviderMetadata(self):
@@ -65,7 +68,7 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
         """Create a connection from a layer uri and retrieve it"""
 
         md = self.createProviderMetadata()
-        vl = self.createVectorLayer('key=\'key1\' srid=4326 type=POINT table="qgis_test_provider_conn"."some_data" ('
+        vl = self.createVectorLayer(f'key=\'key1\' srid=4326 type=POINT table="{self.schemaName}"."some_data" ('
                                     'geom) sql=', 'test')
         conn = md.createConnection(vl.dataProvider().uri().uri(), {})
         self.assertEqual(conn.uri(), QgsDataSourceUri(self.uri).uri(False))
@@ -75,7 +78,7 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
 
         md = self.createProviderMetadata()
         conn = md.createConnection(self.uri, {})
-        vl = QgsHanaProviderUtils.createVectorLayer(conn.tableUri('qgis_test_provider_conn', 'some_data'), 'test')
+        vl = QgsHanaProviderUtils.createVectorLayer(conn.tableUri(self.schemaName, 'some_data'), 'test')
 
     def testConnections(self):
         """Create some connections and retrieve them"""
@@ -92,10 +95,10 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
         self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
 
-        table_names = self._table_names(conn.tables('qgis_test_provider_conn', QgsAbstractDatabaseProviderConnection.Vector))
+        table_names = self._table_names(conn.tables(self.schemaName, QgsAbstractDatabaseProviderConnection.Vector))
         self.assertEqual(table_names.sort(), ['some_data', 'some_poly_data'].sort())
 
-        view_names = self._table_names(conn.tables('qgis_test_provider_conn', QgsAbstractDatabaseProviderConnection.View))
+        view_names = self._table_names(conn.tables(self.schemaName, QgsAbstractDatabaseProviderConnection.View))
         self.assertEqual(view_names, ['some_data_view'])
 
     def testTrueFalse(self):
@@ -111,7 +114,7 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
 
         md = self.createProviderMetadata()
         conn = md.createConnection(self.uri, {})
-        self.assertEqual(conn.table('qgis_test_provider_conn', 'some_data').primaryKeyColumns(), ['pk'])
+        self.assertEqual(conn.table(self.schemaName, 'some_data').primaryKeyColumns(), ['pk'])
 
 
 if __name__ == '__main__':
