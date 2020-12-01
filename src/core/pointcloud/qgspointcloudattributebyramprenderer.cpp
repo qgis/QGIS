@@ -23,7 +23,7 @@
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
-  mColorRamp.reset( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
 }
 
 QString QgsPointCloudAttributeByRampRenderer::type() const
@@ -35,7 +35,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::clone() const
 {
   std::unique_ptr< QgsPointCloudAttributeByRampRenderer > res = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
   res->mAttribute = mAttribute;
-  res->mColorRamp.reset( colorRamp() ? colorRamp()->clone() : QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  res->mColorRampShader = mColorRampShader;
   res->mMin = mMin;
   res->mMax = mMax;
 
@@ -77,6 +77,11 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   double z = 0;
   const QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
   const bool reproject = ct.isValid();
+
+  int red = 0;
+  int green = 0;
+  int blue = 0;
+  int alpha = 0;
   for ( int i = 0; i < count; ++i )
   {
     if ( considerZ )
@@ -110,7 +115,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
       mapToPixel.transformInPlace( x, y );
 
-      const QColor color = mColorRamp->color( ( attributeValue - mMin ) / ( mMax - mMin ) );
+      mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
 #if 0
       pen.setColor( QColor( red, green, blue ) );
       context.renderContext().painter()->setPen( pen );
@@ -119,7 +124,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
       context.renderContext().painter()->fillRect( QRectF( x - mPainterPenWidth * 0.5,
           y - mPainterPenWidth * 0.5,
-          mPainterPenWidth, mPainterPenWidth ), color );
+          mPainterPenWidth, mPainterPenWidth ), QColor( red, green, blue, alpha ) );
 #endif
 
       rendered++;
@@ -134,11 +139,10 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement
   std::unique_ptr< QgsPointCloudAttributeByRampRenderer > r = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
 
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Intensity" ) ) );
-  QDomElement sourceColorRampElem = element.firstChildElement( QStringLiteral( "colorramp" ) );
-  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
-  {
-    r->setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
-  }
+
+  QDomElement elemShader = element.firstChildElement( QStringLiteral( "colorrampshader" ) );
+  r->mColorRampShader.readXml( elemShader );
+
   r->setMin( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
   r->setMax( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
 
@@ -156,8 +160,9 @@ QDomElement QgsPointCloudAttributeByRampRenderer::save( QDomDocument &doc, const
   rendererElem.setAttribute( QStringLiteral( "max" ), mMax );
 
   rendererElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
-  QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mColorRamp.get(), doc );
-  rendererElem.appendChild( colorRampElem );
+
+  QDomElement elemShader = mColorRampShader.writeXml( doc );
+  rendererElem.appendChild( elemShader );
 
   saveCommonProperties( rendererElem, context );
 
@@ -193,14 +198,14 @@ void QgsPointCloudAttributeByRampRenderer::setAttribute( const QString &attribut
   mAttribute = attribute;
 }
 
-QgsColorRamp *QgsPointCloudAttributeByRampRenderer::colorRamp() const
+QgsColorRampShader QgsPointCloudAttributeByRampRenderer::colorRampShader() const
 {
-  return mColorRamp.get();
+  return mColorRampShader;
 }
 
-void QgsPointCloudAttributeByRampRenderer::setColorRamp( QgsColorRamp *ramp )
+void QgsPointCloudAttributeByRampRenderer::setColorRampShader( const QgsColorRampShader &shader )
 {
-  mColorRamp.reset( ramp );
+  mColorRampShader = shader;
 }
 
 double QgsPointCloudAttributeByRampRenderer::min() const

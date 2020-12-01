@@ -21,8 +21,7 @@
 #include "qgspointcloudrenderer.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
-class QgsColorRamp;
+#include "qgscolorrampshader.h"
 
 /**
  * \ingroup core
@@ -67,20 +66,18 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     void setAttribute( const QString &attribute );
 
     /**
-     * Returns the color ramp used for rendering the attribute.
+     * Returns the color ramp shader function used to visualize the attribute.
      *
-     * \see setColorRamp()
+     * \see setColorRampShader()
      */
-    QgsColorRamp *colorRamp() const;
+    QgsColorRampShader colorRampShader() const;
 
     /**
-     * Sets the color \a ramp used for rendering the attribute.
+     * Sets the color ramp \a shader function used to visualize the attribute.
      *
-     * Ownership of \a ramp is transferrred to the renderer.
-     *
-     * \see colorRamp()
+     * \see colorRampShader()
      */
-    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
+    void setColorRampShader( const QgsColorRampShader &shader );
 
     //! Returns min
     double min() const;
@@ -101,8 +98,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     double mMax = 100;
 
     QString mAttribute = QStringLiteral( "Intensity" );
-
-    std::unique_ptr<QgsColorRamp> mColorRamp;
+    QgsColorRampShader mColorRampShader;
 
 };
 

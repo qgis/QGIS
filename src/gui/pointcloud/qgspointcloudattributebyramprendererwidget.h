@@ -43,6 +43,7 @@ class GUI_EXPORT QgsPointCloudAttributeByRampRendererWidget: public QgsPointClou
   private slots:
 
     void emitWidgetChanged();
+    void minMaxChanged();
 
   private:
     void setFromRenderer( const QgsPointCloudRenderer *r );
