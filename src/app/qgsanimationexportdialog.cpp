@@ -225,6 +225,11 @@ QgsDateTimeRange QgsAnimationExportDialog::animationRange() const
   return QgsDateTimeRange( mStartDateTime->dateTime(), mEndDateTime->dateTime() );
 }
 
+QgsInterval QgsAnimationExportDialog::frameInterval() const
+{
+  return QgsInterval( mFrameDurationSpinBox->value(), static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
+}
+
 double QgsAnimationExportDialog::frameTimeStep() const
 {
   return mFrameDurationSpinBox->value();
