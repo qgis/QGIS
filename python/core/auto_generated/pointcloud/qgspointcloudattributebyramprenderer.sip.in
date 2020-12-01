@@ -9,7 +9,6 @@
 
 
 
-
 class QgsPointCloudAttributeByRampRenderer : QgsPointCloudRenderer
 {
 %Docstring
@@ -62,20 +61,18 @@ Sets the ``attribute`` to use for the renderer.
 .. seealso:: :py:func:`attribute`
 %End
 
-    QgsColorRamp *colorRamp() const;
+    QgsColorRampShader colorRampShader() const;
 %Docstring
-Returns the color ramp used for rendering the attribute.
+Returns the color ramp shader function used to visualize the attribute.
 
-.. seealso:: :py:func:`setColorRamp`
+.. seealso:: :py:func:`setColorRampShader`
 %End
 
-    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
+    void setColorRampShader( const QgsColorRampShader &shader );
 %Docstring
-Sets the color ``ramp`` used for rendering the attribute.
+Sets the color ramp ``shader`` function used to visualize the attribute.
 
-Ownership of ``ramp`` is transferrred to the renderer.
-
-.. seealso:: :py:func:`colorRamp`
+.. seealso:: :py:func:`colorRampShader`
 %End
 
     double min() const;

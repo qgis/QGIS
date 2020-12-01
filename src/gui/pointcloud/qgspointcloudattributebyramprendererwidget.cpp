@@ -41,10 +41,11 @@ QgsPointCloudAttributeByRampRendererWidget::QgsPointCloudAttributeByRampRenderer
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
            this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
-  connect( mBtnColorRamp, &QgsColorRampButton::colorRampChanged,
-           this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
-  connect( mMinSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
-  connect( mMaxSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
+  connect( mMinSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
+  connect( mMaxSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
+
+  connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
+
 }
 
 QgsPointCloudRendererWidget *QgsPointCloudAttributeByRampRendererWidget::create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * )
@@ -62,9 +63,11 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRendererWidget::renderer()
   std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
 
-  renderer->setColorRamp( mBtnColorRamp->colorRamp() );
   renderer->setMin( mMinSpin->value() );
   renderer->setMax( mMaxSpin->value() );
+
+  renderer->setColorRampShader( mScalarColorRampShaderWidget->shader() );
+
   return renderer.release();
 }
 
@@ -72,6 +75,11 @@ void QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
     emit widgetChanged();
+}
+
+void QgsPointCloudAttributeByRampRendererWidget::minMaxChanged()
+{
+  mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( mMinSpin->value(), mMaxSpin->value() );
 }
 
 void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
@@ -82,10 +90,11 @@ void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPoint
   {
     mAttributeComboBox->setAttribute( mbcr->attribute() );
 
-    mBtnColorRamp->setColorRamp( mbcr->colorRamp() );
-
     mMinSpin->setValue( mbcr->min() );
     mMaxSpin->setValue( mbcr->max() );
+
+    whileBlocking( mScalarColorRampShaderWidget )->setFromShader( mbcr->colorRampShader() );
+    whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( mbcr->min(), mbcr->max() );
   }
   else
   {
@@ -97,8 +106,6 @@ void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPoint
     {
       mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
     }
-
-    mBtnColorRamp->setColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
   }
   mBlockChangedSignal = false;
 }
