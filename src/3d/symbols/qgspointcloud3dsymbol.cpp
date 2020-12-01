@@ -23,19 +23,13 @@
 
 // QgsPointCloud3DSymbol
 
-QgsPointCloud3DSymbol::QgsPointCloud3DSymbol( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol::RenderingStyle style )
+QgsPointCloud3DSymbol::QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style )
   : QgsAbstract3DSymbol()
   , mRenderingStyle( style )
-  , mLayer( layer )
 {
 }
 
 QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol() {  }
-
-void QgsPointCloud3DSymbol::setLayer( QgsPointCloudLayer *layer )
-{
-  mLayer = layer;
-}
 
 void QgsPointCloud3DSymbol::setPointSize( float size )
 {
@@ -44,15 +38,15 @@ void QgsPointCloud3DSymbol::setPointSize( float size )
 
 // QgsSingleColorPointCloud3DSymbol
 
-QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer )
-  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::SingleColor )
+QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::SingleColor )
 {
 
 }
 
 QgsAbstract3DSymbol *QgsSingleColorPointCloud3DSymbol::clone() const
 {
-  QgsSingleColorPointCloud3DSymbol *result = new QgsSingleColorPointCloud3DSymbol( mLayer );
+  QgsSingleColorPointCloud3DSymbol *result = new QgsSingleColorPointCloud3DSymbol;
   result->mPointSize = mPointSize;
   result->mSingleColor = mSingleColor;
   copyBaseSettings( result );
@@ -98,15 +92,15 @@ void QgsSingleColorPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat 
 
 // QgsColorRampPointCloud3DSymbol
 
-QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer )
-  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::ColorRamp )
+QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::ColorRamp )
 {
 
 }
 
 QgsAbstract3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
 {
-  QgsColorRampPointCloud3DSymbol *result = new QgsColorRampPointCloud3DSymbol( mLayer );
+  QgsColorRampPointCloud3DSymbol *result = new QgsColorRampPointCloud3DSymbol;
   result->mPointSize = mPointSize;
   result->mRenderingParameter = mRenderingParameter;
   result->mColorRampShader = mColorRampShader;
@@ -196,15 +190,15 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 
 // QgsRGBPointCloud3DSymbol
 
-QgsRGBPointCloud3DSymbol::QgsRGBPointCloud3DSymbol( QgsPointCloudLayer *layer )
-  : QgsPointCloud3DSymbol( layer, QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+QgsRGBPointCloud3DSymbol::QgsRGBPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
 {
 
 }
 
 QgsAbstract3DSymbol *QgsRGBPointCloud3DSymbol::clone() const
 {
-  QgsRGBPointCloud3DSymbol *result = new QgsRGBPointCloud3DSymbol( mLayer );
+  QgsRGBPointCloud3DSymbol *result = new QgsRGBPointCloud3DSymbol;
   result->mPointSize = mPointSize;
   copyBaseSettings( result );
   return result;

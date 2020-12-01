@@ -53,23 +53,11 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     };
 
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol::RenderingStyle style ) SIP_SKIP;
+    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style ) SIP_SKIP;
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
     QString type() const override { return "pointcloud"; }
-
-    /**
-     * Returns the point cloud layer object used by the symbol
-     * see setLayer( QgsPointCloudLayer *layer )
-     */
-    QgsPointCloudLayer *layer() { return mLayer; }
-
-    /**
-     * Sets the point cloud layer object used by the symbol
-     * see layer()
-     */
-    void setLayer( QgsPointCloudLayer *layer );
 
     /**
      * Returns the point size of the point cloud
@@ -93,7 +81,6 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
 
   protected:
     QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::NoRendering;
-    QgsPointCloudLayer *mLayer = nullptr;
     float mPointSize = 2.0;
 };
 
@@ -110,7 +97,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
     //! Constructor for QgsSingleColorPointCloud3DSymbol
-    QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer );
+    QgsSingleColorPointCloud3DSymbol();
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
@@ -150,7 +137,7 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
     //! Constructor for QgsColorRampPointCloud3DSymbol
-    QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer );
+    QgsColorRampPointCloud3DSymbol();
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
@@ -222,7 +209,7 @@ class _3D_EXPORT QgsRGBPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
     //! Constructor for QgsRGBPointCloud3DSymbol
-    QgsRGBPointCloud3DSymbol( QgsPointCloudLayer *layer );
+    QgsRGBPointCloud3DSymbol();
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 

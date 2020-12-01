@@ -49,9 +49,11 @@
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, QgsPointCloud3DSymbol *symbol )
   : QgsChunkLoader( node )
   , mFactory( factory )
-  , mContext( factory->mMap )
+  , mContext( factory->mMap, dynamic_cast<QgsPointCloud3DSymbol *>( symbol->clone() ) )
 {
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
+  mContext.setAttributes( pc->attributes() );
+
   QgsChunkNodeId nodeId = node->tileId();
   IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
 
@@ -63,13 +65,13 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     case QgsPointCloud3DSymbol::NoRendering:
       break;
     case QgsPointCloud3DSymbol::SingleColor:
-      mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler( symbol ) );
+      mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler() );
       break;
     case QgsPointCloud3DSymbol::ColorRamp:
-      mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler( symbol ) );
+      mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
       break;
     case QgsPointCloud3DSymbol::RGBRendering:
-      mHandler.reset( new QgsRGBPointCloud3DSymbolHandler( symbol ) );
+      mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
       break;
   }
 

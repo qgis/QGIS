@@ -44,18 +44,6 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
 
     virtual QString type() const;
 
-    QgsPointCloudLayer *layer();
-%Docstring
-Returns the point cloud layer object used by the symbol
-see setLayer( :py:class:`QgsPointCloudLayer` *layer )
-%End
-
-    void setLayer( QgsPointCloudLayer *layer );
-%Docstring
-Sets the point cloud layer object used by the symbol
-see :py:func:`~QgsPointCloud3DSymbol.layer`
-%End
-
     float pointSize() const;
 %Docstring
 Returns the point size of the point cloud
@@ -100,7 +88,7 @@ class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
-    QgsSingleColorPointCloud3DSymbol( QgsPointCloudLayer *layer );
+    QgsSingleColorPointCloud3DSymbol();
 %Docstring
 Constructor for QgsSingleColorPointCloud3DSymbol
 %End
@@ -149,7 +137,7 @@ class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
-    QgsColorRampPointCloud3DSymbol( QgsPointCloudLayer *layer );
+    QgsColorRampPointCloud3DSymbol();
 %Docstring
 Constructor for QgsColorRampPointCloud3DSymbol
 %End
@@ -232,7 +220,7 @@ class QgsRGBPointCloud3DSymbol : QgsPointCloud3DSymbol
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
-    QgsRGBPointCloud3DSymbol( QgsPointCloudLayer *layer );
+    QgsRGBPointCloud3DSymbol();
 %Docstring
 Constructor for QgsRGBPointCloud3DSymbol
 %End

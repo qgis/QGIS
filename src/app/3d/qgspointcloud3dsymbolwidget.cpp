@@ -90,7 +90,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     }
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
     {
-      QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol( mLayer );
+      QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
       symb->setPointSize( mPointSizeSpinBox->value() );
       symb->setSingleColor( mSingleColorBtn->color() );
       retSymb = symb;
@@ -98,7 +98,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     }
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
     {
-      QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol( mLayer );
+      QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
       symb->setRenderingParameter( mRenderingParameterComboBox->currentText() );
       symb->setPointSize( mPointSizeSpinBox->value() );
       symb->setColorRampShader( mColorRampShaderWidget->shader() );
@@ -108,7 +108,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     }
     case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
     {
-      QgsRGBPointCloud3DSymbol *symb = new QgsRGBPointCloud3DSymbol( mLayer );
+      QgsRGBPointCloud3DSymbol *symb = new QgsRGBPointCloud3DSymbol;
       symb->setPointSize( mPointSizeSpinBox->value() );
       retSymb = symb;
       break;

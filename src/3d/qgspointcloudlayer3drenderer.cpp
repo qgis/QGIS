@@ -28,6 +28,23 @@
 
 #include "qgis.h"
 
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol )
+  : Qgs3DRenderContext( map )
+  , mSymbol( symbol )
+{
+
+}
+
+void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
+{
+  mAttributes = attributes;
+}
+
+void QgsPointCloud3DRenderContext::setSymbol( QgsPointCloud3DSymbol *symbol )
+{
+  mSymbol.reset( symbol );
+}
+
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "pointcloud" ) )
 {
@@ -51,8 +68,6 @@ QgsPointCloudLayer3DRenderer::QgsPointCloudLayer3DRenderer( )
 void QgsPointCloudLayer3DRenderer::setLayer( QgsPointCloudLayer *layer )
 {
   mLayerRef = QgsMapLayerRef( layer );
-  if ( mSymbol )
-    mSymbol->setLayer( layer );
 }
 
 QgsPointCloudLayer *QgsPointCloudLayer3DRenderer::layer() const
@@ -122,13 +137,13 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
       mSymbol.reset( nullptr );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      mSymbol.reset( new QgsSingleColorPointCloud3DSymbol( layer() ) );
+      mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      mSymbol.reset( new QgsColorRampPointCloud3DSymbol( layer() ) );
+      mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
       break;
     case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
-      mSymbol.reset( new QgsRGBPointCloud3DSymbol( layer() ) );
+      mSymbol.reset( new QgsRGBPointCloud3DSymbol );
       break;
   }
   if ( mSymbol )
@@ -138,6 +153,4 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 void QgsPointCloudLayer3DRenderer::resolveReferences( const QgsProject &project )
 {
   mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
-  if ( mSymbol )
-    mSymbol->setLayer( layer() );
 }

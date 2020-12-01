@@ -32,6 +32,7 @@
 #include "qgschunkedentity_p.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloud3dsymbol_p.h"
+#include "qgspointcloudlayer3drenderer.h"
 
 #include <memory>
 
@@ -94,7 +95,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
   private:
     const QgsPointCloudLayerChunkLoaderFactory *mFactory;
     std::unique_ptr<QgsPointCloud3DSymbolHandler> mHandler;
-    Qgs3DRenderContext mContext;
+    QgsPointCloud3DRenderContext mContext;
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
 };
