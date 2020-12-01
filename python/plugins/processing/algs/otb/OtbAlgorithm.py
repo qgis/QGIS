@@ -252,7 +252,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             elif isinstance(param, QgsProcessingParameterString):
                 value = '"{}"'.format(self.parameterAsString(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterBand):
-                value = '"Channel{}"'.format(self.parameterAsInt(parameters, param.name(), context))
+                value = ' '.join(['"Channel{}"'.format(index) for index in
+                                  self.parameterAsInts(parameters, param.name(), context)])
             else:
                 # Use whatever is given
                 value = '"{}"'.format(parameters[param.name()])
