@@ -149,11 +149,6 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
 
         self.assertEqual(renderer.usedAttributes(prc), {'r', 'g', 'b'})
 
-        # if context is filtering by z, we also need the z attribute
-        rc.setZRange(QgsDoubleRange(1, 10))
-        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
-        self.assertEqual(renderer.usedAttributes(prc), {'r', 'g', 'b', 'Z'})
-
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRender(self):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')

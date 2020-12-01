@@ -79,16 +79,37 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
      */
     void setColorRampShader( const QgsColorRampShader &shader );
 
-    //! Returns min
-    double min() const;
-    //! Sets min
-    void setMin( double value );
+    /**
+     * Returns the minimum value for attributes which will be used by the color ramp shader.
+     *
+     * \see setMinimum()
+     * \see maximum()
+     */
+    double minimum() const;
 
-    //! Returns max
-    double max() const;
+    /**
+     * Sets the \a minimum value for attributes which will be used by the color ramp shader.
+     *
+     * \see minimum()
+     * \see setMaximum()
+     */
+    void setMinimum( double minimum );
 
-    //! Sets max
-    void setMax( double value );
+    /**
+     * Returns the maximum value for attributes which will be used by the color ramp shader.
+     *
+     * \see setMaximum()
+     * \see minimum()
+     */
+    double maximum() const;
+
+    /**
+     * Sets the \a maximum value for attributes which will be used by the color ramp shader.
+     *
+     * \see maximum()
+     * \see setMinimum()
+     */
+    void setMaximum( double maximum );
 
   private:
 

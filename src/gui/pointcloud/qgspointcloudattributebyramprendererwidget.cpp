@@ -63,8 +63,8 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRendererWidget::renderer()
   std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
 
-  renderer->setMin( mMinSpin->value() );
-  renderer->setMax( mMaxSpin->value() );
+  renderer->setMinimum( mMinSpin->value() );
+  renderer->setMaximum( mMaxSpin->value() );
 
   renderer->setColorRampShader( mScalarColorRampShaderWidget->shader() );
 
@@ -90,11 +90,11 @@ void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPoint
   {
     mAttributeComboBox->setAttribute( mbcr->attribute() );
 
-    mMinSpin->setValue( mbcr->min() );
-    mMaxSpin->setValue( mbcr->max() );
+    mMinSpin->setValue( mbcr->minimum() );
+    mMaxSpin->setValue( mbcr->maximum() );
 
     whileBlocking( mScalarColorRampShaderWidget )->setFromShader( mbcr->colorRampShader() );
-    whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( mbcr->min(), mbcr->max() );
+    whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( mbcr->minimum(), mbcr->maximum() );
   }
   else
   {

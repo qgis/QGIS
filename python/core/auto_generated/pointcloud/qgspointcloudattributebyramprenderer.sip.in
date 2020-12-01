@@ -75,23 +75,40 @@ Sets the color ramp ``shader`` function used to visualize the attribute.
 .. seealso:: :py:func:`colorRampShader`
 %End
 
-    double min() const;
+    double minimum() const;
 %Docstring
-Returns min
-%End
-    void setMin( double value );
-%Docstring
-Sets min
+Returns the minimum value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`setMinimum`
+
+.. seealso:: :py:func:`maximum`
 %End
 
-    double max() const;
+    void setMinimum( double minimum );
 %Docstring
-Returns max
+Sets the ``minimum`` value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`minimum`
+
+.. seealso:: :py:func:`setMaximum`
 %End
 
-    void setMax( double value );
+    double maximum() const;
 %Docstring
-Sets max
+Returns the maximum value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`setMaximum`
+
+.. seealso:: :py:func:`minimum`
+%End
+
+    void setMaximum( double maximum );
+%Docstring
+Sets the ``maximum`` value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`maximum`
+
+.. seealso:: :py:func:`setMinimum`
 %End
 
 };
