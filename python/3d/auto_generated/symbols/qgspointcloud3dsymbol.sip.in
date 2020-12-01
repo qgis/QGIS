@@ -10,7 +10,7 @@
 
 
 
-class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
+class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 {
 %Docstring
 3D symbol that draws point cloud geometries as 3D objects.
@@ -40,6 +40,10 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
       RGBRendering
     };
 
+    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
+%Docstring
+Constructor for QgsPointCloud3DSymbol
+%End
     ~QgsPointCloud3DSymbol();
 
     virtual QString type() const;
