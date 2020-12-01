@@ -48,7 +48,8 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
     QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
     prj->setBadLayerHandler( badLayerHandler );
 
-    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag();
+    // Always skip original styles storage
+    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ;
     if ( settings )
     {
       // Activate trust layer metadata flag
