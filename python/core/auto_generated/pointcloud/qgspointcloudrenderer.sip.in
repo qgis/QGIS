@@ -111,6 +111,7 @@ Returns the offset for the y value in a point record.
 .. seealso:: :py:func:`yOffset`
 %End
 
+
   private:
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 };
@@ -335,6 +336,11 @@ Sets the ``unit`` for the maximum screen error allowed when rendering the point 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
 %Docstring
 Retrieves the x and y coordinate for the point at index ``i``.
+%End
+
+    static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i );
+%Docstring
+Retrieves the z value for the point at index ``i``.
 %End
 
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
