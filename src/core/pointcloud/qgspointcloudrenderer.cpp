@@ -214,6 +214,10 @@ void QgsDummyPointCloudRenderer::renderBlock( const QgsPointCloudBlock *block, Q
           atr = *( short * )( ptr + i * recordSize + attributeOffset );
           break;
 
+        case QgsPointCloudAttribute::UShort:
+          atr = *( unsigned short * )( ptr + i * recordSize + attributeOffset );
+          break;
+
         case QgsPointCloudAttribute::Float:
           atr = *( float * )( ptr + i * recordSize + attributeOffset );
           break;

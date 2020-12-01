@@ -227,6 +227,7 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
   switch ( type )
   {
     case QgsPointCloudAttribute::Short:
+    case QgsPointCloudAttribute::UShort:
     case QgsPointCloudAttribute::Int32:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
@@ -281,6 +282,7 @@ bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const Q
 
   if ( ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::Char ) ||
        ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::Short ) ||
+       ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::UShort ) ||
        ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int32 ) ||
        ( mFilters.testFlag( Float ) && type == QgsPointCloudAttribute::Float ) ||
        ( mFilters.testFlag( Double ) && type == QgsPointCloudAttribute::Double ) )

@@ -141,6 +141,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
           red = *( short * )( ptr + i * recordSize + redOffset );
           break;
 
+        case QgsPointCloudAttribute::UShort:
+          red = *( unsigned short * )( ptr + i * recordSize + redOffset );
+          break;
+
         case QgsPointCloudAttribute::Float:
           red = *( float * )( ptr + i * recordSize + redOffset );
           break;
@@ -164,6 +168,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
           green = *( short * )( ptr + i * recordSize + greenOffset );
           break;
 
+        case QgsPointCloudAttribute::UShort:
+          green = *( unsigned short * )( ptr + i * recordSize + greenOffset );
+          break;
+
         case QgsPointCloudAttribute::Float:
           green = *( float * )( ptr + i * recordSize + greenOffset );
           break;
@@ -185,6 +193,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
         case QgsPointCloudAttribute::Short:
           blue = *( short * )( ptr + i * recordSize + blueOffset );
+          break;
+
+        case QgsPointCloudAttribute::UShort:
+          blue = *( unsigned short * )( ptr + i * recordSize + blueOffset );
           break;
 
         case QgsPointCloudAttribute::Float:

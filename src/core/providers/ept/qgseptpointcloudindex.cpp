@@ -96,17 +96,21 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
 
     int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
 
-    if ( type == QStringLiteral( "float" ) && ( size == 4 ) )
+    if ( type == QLatin1String( "float" ) && ( size == 4 ) )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Float ) );
     }
-    else if ( type == QStringLiteral( "float" ) && ( size == 8 ) )
+    else if ( type == QLatin1String( "float" ) && ( size == 8 ) )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
     }
     else if ( size == 1 )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Char ) );
+    }
+    else if ( type == QLatin1String( "unsigned" ) && size == 2 )
+    {
+      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::UShort ) );
     }
     else if ( size == 2 )
     {

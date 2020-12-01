@@ -39,6 +39,7 @@ class CORE_EXPORT QgsPointCloudAttribute
     {
       Char, //!< Char 1 byte
       Short, //!< Short int 2 bytes
+      UShort, //!< Unsigned short int 2 bytes
       Int32, //!< Int32 4 bytes
       Float, //!< Float 4 bytes
       Double, //!< Double 8 bytes
