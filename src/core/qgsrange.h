@@ -20,6 +20,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis.h"
 
 #include <QDate>
 #include <QDateTime>
@@ -167,7 +168,20 @@ class QgsRange
       return false;
     }
 
-  private:
+    bool operator==( const QgsRange<T> &other ) const
+    {
+      return mLower == other.mLower &&
+             mUpper == other.mUpper &&
+             mIncludeLower == other.includeLower() &&
+             mIncludeUpper == other.includeUpper();
+    }
+
+    bool operator!=( const QgsRange<T> &other ) const
+    {
+      return ( ! operator==( other ) );
+    }
+
+  protected:
 
     T mLower;
     T mUpper;
@@ -179,24 +193,159 @@ class QgsRange
 
 /**
  * QgsRange which stores a range of double values.
+ * \ingroup core
  * \see QgsIntRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
  * \since QGIS 3.0
  */
-typedef QgsRange< double > QgsDoubleRange;
+class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
+{
+  public:
 
+#ifndef SIP_RUN
 
+    /**
+     * Constructor for QgsDoubleRange. The \a lower and \a upper bounds are specified,
+     * and optionally whether or not these bounds are included in the range.
+     *
+     * The default values for \a lower and \a upper construct an infinite range (see isInfinite()).
+     *
+     * \since QGIS 3.18
+     */
+    QgsDoubleRange( double lower = std::numeric_limits< double >::lowest(),
+                    double upper = std::numeric_limits< double >::max(),
+                    bool includeLower = true, bool includeUpper = true )
+      : QgsRange( lower, upper, includeLower, includeUpper )
+    {}
+#else
+
+    /**
+     * Constructor for QgsDoubleRange. The \a lower and \a upper bounds are specified,
+     * and optionally whether or not these bounds are included in the range.
+     */
+    QgsDoubleRange( double lower,
+                    double upper,
+                    bool includeLower = true, bool includeUpper = true )
+      : QgsRange( lower, upper, includeLower, includeUpper )
+    {}
+
+    /**
+     * Constructor for QgsDoubleRange containing an infinite range (see isInfinite()).
+     *
+     * \since QGIS 3.18
+     */
+    QgsDoubleRange()
+      : QgsRange( std::numeric_limits< double >::lowest(), std::numeric_limits< double >::max(), true, true )
+    {}
+#endif
+
+    /**
+     * Returns TRUE if the range consists of all possible values.
+     * \since QGIS 3.18
+     */
+    bool isInfinite() const
+    {
+      return lower() == std::numeric_limits< double >::lowest() && upper() == std::numeric_limits< double >::max();
+    }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
+    bool operator==( const QgsDoubleRange &other ) const
+    {
+      return qgsDoubleNear( mLower, other.mLower ) &&
+             qgsDoubleNear( mUpper, other.mUpper ) &&
+             mIncludeLower == other.includeLower() &&
+             mIncludeUpper == other.includeUpper();
+    }
+
+    bool operator!=( const QgsDoubleRange &other ) const
+    {
+      return ( ! operator==( other ) );
+    }
+
+};
 
 
 /**
  * QgsRange which stores a range of integer values.
+ * \ingroup core
  * \see QgsDoubleRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
  * \since QGIS 3.0
  */
-typedef QgsRange< int > QgsIntRange;
+class CORE_EXPORT QgsIntRange : public QgsRange< int >
+{
+  public:
+
+#ifndef SIP_RUN
+
+    /**
+     * Constructor for QgsIntRange. The \a lower and \a upper bounds are specified,
+     * and optionally whether or not these bounds are included in the range.
+     *
+     * The default values for \a lower and \a upper construct an infinite range (see isInfinite()).
+     *
+     * \since QGIS 3.18
+     */
+    QgsIntRange( int lower = std::numeric_limits< int >::lowest(),
+                 int upper = std::numeric_limits< int >::max(),
+                 bool includeLower = true, bool includeUpper = true )
+      : QgsRange( lower, upper, includeLower, includeUpper )
+    {}
+#else
+
+    /**
+     * Constructor for QgsIntRange. The \a lower and \a upper bounds are specified,
+     * and optionally whether or not these bounds are included in the range.
+     */
+    QgsIntRange( int lower,
+                 int upper,
+                 bool includeLower = true, bool includeUpper = true )
+      : QgsRange( lower, upper, includeLower, includeUpper )
+    {}
+
+    /**
+     * Constructor for QgsIntRange containing an infinite range (see isInfinite()).
+     *
+     * \since QGIS 3.18
+     */
+    QgsIntRange()
+      : QgsRange( std::numeric_limits< int >::lowest(), std::numeric_limits< int >::max(), true, true )
+    {}
+#endif
+
+    /**
+     * Returns TRUE if the range consists of all possible values.
+     * \since QGIS 3.18
+     */
+    bool isInfinite() const
+    {
+      return lower() == std::numeric_limits< int >::lowest() && upper() == std::numeric_limits< int >::max();
+    }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
+};
 
 
 /**

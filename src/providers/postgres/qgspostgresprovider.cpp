@@ -5564,19 +5564,19 @@ QgsAbstractProviderConnection *QgsPostgresProviderMetadata::createConnection( co
 }
 
 
-QgsPostgresProjectStorage *gProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+QgsPostgresProjectStorage *gPgProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
 
 void QgsPostgresProviderMetadata::initProvider()
 {
-  Q_ASSERT( !gProjectStorage );
-  gProjectStorage = new QgsPostgresProjectStorage;
-  QgsApplication::projectStorageRegistry()->registerProjectStorage( gProjectStorage );  // takes ownership
+  Q_ASSERT( !gPgProjectStorage );
+  gPgProjectStorage = new QgsPostgresProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gPgProjectStorage );  // takes ownership
 }
 
 void QgsPostgresProviderMetadata::cleanupProvider()
 {
-  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gProjectStorage );  // destroys the object
-  gProjectStorage = nullptr;
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gPgProjectStorage );  // destroys the object
+  gPgProjectStorage = nullptr;
 
   QgsPostgresConnPool::cleanupInstance();
 }

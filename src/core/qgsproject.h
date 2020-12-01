@@ -121,6 +121,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
       FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
       FlagTrustLayerMetadata = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
+      FlagDontStoreOriginalStyles = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 

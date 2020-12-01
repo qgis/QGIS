@@ -100,6 +100,8 @@ QgsPointCloudLayer cannot be copied.
 
     virtual QString htmlMetadata() const;
 
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
 
     QgsPointCloudAttributeCollection attributes() const;
 %Docstring

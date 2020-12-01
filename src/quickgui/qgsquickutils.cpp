@@ -409,6 +409,11 @@ QString QgsQuickUtils::dateTimeFieldFormat( const QString &fieldFormat )
   }
 }
 
+QModelIndex QgsQuickUtils::invalidIndex()
+{
+  return QModelIndex();
+}
+
 qreal QgsQuickUtils::screenDensity() const
 {
   return mScreenDensity;

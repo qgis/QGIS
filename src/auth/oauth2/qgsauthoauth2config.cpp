@@ -50,6 +50,7 @@ QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   connect( this, &QgsAuthOAuth2Config::accessMethodChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::requestTimeoutChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::queryPairsChanged, this, &QgsAuthOAuth2Config::configChanged );
+  connect( this, &QgsAuthOAuth2Config::customHeaderChanged, this, &QgsAuthOAuth2Config::configChanged );
 
   // always recheck validity on any change
   // this, in turn, may emit validityChanged( bool )
@@ -211,6 +212,14 @@ void QgsAuthOAuth2Config::setAccessMethod( QgsAuthOAuth2Config::AccessMethod val
     emit accessMethodChanged( mAccessMethod );
 }
 
+void QgsAuthOAuth2Config::setCustomHeader( const QString &header )
+{
+  QString preval( mCustomHeader );
+  mCustomHeader = header;
+  if ( preval != header )
+    emit customHeaderChanged( mCustomHeader );
+}
+
 void QgsAuthOAuth2Config::setRequestTimeout( int value )
 {
   int preval( mRequestTimeout );
@@ -248,6 +257,7 @@ void QgsAuthOAuth2Config::setToDefaults()
   setApiKey( QString() );
   setPersistToken( false );
   setAccessMethod( QgsAuthOAuth2Config::Header );
+  setCustomHeader( QString() );
   setRequestTimeout( 30 ); // in seconds
   setQueryPairs( QVariantMap() );
 }
@@ -272,6 +282,7 @@ bool QgsAuthOAuth2Config::operator==( const QgsAuthOAuth2Config &other ) const
            && other.apiKey() == this->apiKey()
            && other.persistToken() == this->persistToken()
            && other.accessMethod() == this->accessMethod()
+           && other.customHeader() == this->customHeader()
            && other.requestTimeout() == this->requestTimeout()
            && other.queryPairs() == this->queryPairs() );
 }
@@ -406,6 +417,7 @@ QVariantMap QgsAuthOAuth2Config::mappedProperties() const
   vmap.insert( QStringLiteral( "redirectUrl" ), this->redirectUrl() );
   vmap.insert( QStringLiteral( "refreshTokenUrl" ), this->refreshTokenUrl() );
   vmap.insert( QStringLiteral( "accessMethod" ), static_cast<int>( this->accessMethod() ) );
+  vmap.insert( QStringLiteral( "customHeader" ), this->customHeader() );
   vmap.insert( QStringLiteral( "requestTimeout" ), this->requestTimeout() );
   vmap.insert( QStringLiteral( "requestUrl" ), this->requestUrl() );
   vmap.insert( QStringLiteral( "scope" ), this->scope() );

@@ -30,6 +30,7 @@
 #include "qgsvector3d.h"
 #include "qgis_sip.h"
 #include "qgspointcloudblock.h"
+#include "qgsrange.h"
 
 #define SIP_NO_FILE
 
@@ -122,6 +123,9 @@ class CORE_EXPORT QgsPointCloudDataBounds
     //! Returns 2D rectangle in map coordinates
     QgsRectangle mapExtent( const QgsVector3D &offset, const QgsVector3D &scale ) const;
 
+    //! Returns the z range, applying the specified \a offset and \a scale.
+    QgsDoubleRange zRange( const QgsVector3D &offset, const QgsVector3D &scale ) const;
+
   private:
     qint32 mXMin, mYMin, mZMin, mXMax, mYMax, mZMax;
 };
@@ -179,11 +183,22 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns z max
     double zMax() const { return mZMax; }
 
-    //! Returns bounds of particular node
-    QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &n ) const;
+    //! Returns bounds of particular \a node
+    QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &node ) const;
 
-    //! Returns node extent in map coordinates
-    QgsRectangle nodeMapExtent( const IndexedPointCloudNode &n ) const;
+    /**
+     * Returns the extent of a \a node in map coordinates.
+     *
+     * \see nodeZRange()
+     */
+    QgsRectangle nodeMapExtent( const IndexedPointCloudNode &node ) const;
+
+    /**
+     * Returns the z range of a \a node.
+     *
+     * \see nodeMapExtent()
+     */
+    QgsDoubleRange nodeZRange( const IndexedPointCloudNode &node ) const;
 
     //! Returns node's error in map units (used to determine in whether the node has enough detail for the current view)
     float nodeError( const IndexedPointCloudNode &n ) const;
@@ -193,6 +208,11 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 
     //! Returns offset
     QgsVector3D offset() const;
+
+    /**
+     * Returns the number of points in one direction in a single node.
+     */
+    int span() const;
 
   protected: //TODO private
     //! Sets native attributes of the data

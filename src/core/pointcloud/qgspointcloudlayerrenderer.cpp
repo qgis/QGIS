@@ -75,30 +75,46 @@ bool QgsPointCloudLayerRenderer::render()
     mAttributes.push_back( mLayer->attributes().at( layerIndex ) );
   }
 
-
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
 
   QgsScopedQPainterState painterState( painter );
   context.renderContext().setPainterFlagsUsingContext( painter );
+  // for point clouds we always disable antialiasing -- it's not critical here and we benefit from the performance boost disabling it gives
+  context.renderContext().painter()->setRenderHint( QPainter::Antialiasing, false );
 
   QgsPointCloudDataBounds db;
 
+#ifdef QGISDEBUG
   QElapsedTimer t;
   t.start();
+#endif
 
   const IndexedPointCloudNode root = pc->root();
 
   const float maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
 
-  float rootError = pc->nodeError( root ); // in map coords
-  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
-  if ( ( rootError < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
+  const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
+  QgsRectangle rootNodeExtentMapCoords;
+  try
   {
-    qDebug() << "invalid screen error";
+    rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+    rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+  }
+
+  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
+
+  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
+  if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
+  {
+    QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
     return false;
   }
-  float rootErrorPixels = rootError / mapUnitsPerPixel; // in pixels
+  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
   const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
 
   QgsPointCloudRequest request;
@@ -110,7 +126,7 @@ bool QgsPointCloudLayerRenderer::render()
   {
     if ( context.renderContext().renderingStopped() )
     {
-      qDebug() << "canceled";
+      QgsDebugMsgLevel( "canceled", 2 );
       break;
     }
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
@@ -124,7 +140,9 @@ bool QgsPointCloudLayerRenderer::render()
     ++nodesDrawn;
   }
 
-  qDebug() << "totals:" << nodesDrawn << "nodes | " << context.pointsRendered() << " points | " << t.elapsed() << "ms";
+  QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
+                    .arg( context.pointsRendered() )
+                    .arg( t.elapsed() ), 2 );
 
   mRenderer->stopRender( context );
 
@@ -141,11 +159,14 @@ QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Qgs
 
   if ( context.renderingStopped() )
   {
-    qDebug() << "canceled";
+    QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
     return nodes;
   }
 
-  if ( !context.mapExtent().intersects( pc->nodeMapExtent( n ) ) )
+  if ( !context.extent().intersects( pc->nodeMapExtent( n ) ) )
+    return nodes;
+
+  if ( !context.zRange().isInfinite() && !context.zRange().overlaps( pc->nodeZRange( n ) ) )
     return nodes;
 
   nodes.append( n );

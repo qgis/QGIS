@@ -54,6 +54,7 @@
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmaplayerelevationproperties.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -596,10 +597,16 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
 
   if ( categories.testFlag( Temporal ) )
   {
-    QgsMapLayerTemporalProperties *lTemporalProperties = const_cast< QgsMapLayer * >( this )->temporalProperties();
-    if ( lTemporalProperties )
-      lTemporalProperties->writeXml( layerElement, document, context );
+    if ( QgsMapLayerTemporalProperties *properties = const_cast< QgsMapLayer * >( this )->temporalProperties() )
+      properties->writeXml( layerElement, document, context );
   }
+
+  if ( categories.testFlag( Elevation ) )
+  {
+    if ( QgsMapLayerElevationProperties *properties = const_cast< QgsMapLayer * >( this )->elevationProperties() )
+      properties->writeXml( layerElement, document, context );
+  }
+
 
   // custom properties
   if ( categories.testFlag( CustomProperties ) )
@@ -1698,9 +1705,14 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
 
   if ( categories.testFlag( Temporal ) )
   {
-    QgsMapLayerTemporalProperties *lTemporalProperties = temporalProperties();
-    if ( lTemporalProperties )
-      lTemporalProperties->readXml( layerElement.toElement(), context );
+    if ( QgsMapLayerTemporalProperties *properties = temporalProperties() )
+      properties->readXml( layerElement.toElement(), context );
+  }
+
+  if ( categories.testFlag( Elevation ) )
+  {
+    if ( QgsMapLayerElevationProperties *properties = elevationProperties() )
+      properties->readXml( layerElement.toElement(), context );
   }
 }
 

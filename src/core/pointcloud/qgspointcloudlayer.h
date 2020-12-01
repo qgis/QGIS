@@ -28,6 +28,7 @@ class QgsPointCloudLayerRenderer;
 #include <memory>
 
 class QgsPointCloudRenderer;
+class QgsPointCloudLayerElevationProperties;
 
 /**
  * \ingroup core
@@ -125,6 +126,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
     QString htmlMetadata() const override;
+    QgsMapLayerElevationProperties *elevationProperties() override;
 
     /**
      * Returns the attributes available from the layer.
@@ -166,6 +168,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
 
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
+
+    QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
 
 };
 

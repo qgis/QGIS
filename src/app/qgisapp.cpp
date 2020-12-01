@@ -5708,7 +5708,7 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
         askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
         if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->referenceTime().isValid() )
-          qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+          qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, meshLayer->dataProvider()->temporalCapabilities() );
         bool ok;
         newLayer->loadDefaultStyle( ok );
         newLayer->loadDefaultMetadata( ok );
@@ -12352,6 +12352,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
   {
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "General" ), QStringLiteral( "mProjOptsGeneral" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Metadata" ), QStringLiteral( "mMetadataPage" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "View Settings" ), QStringLiteral( "mViewSettingsPage" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "CRS" ), QStringLiteral( "mProjOptsCRS" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Transformations" ), QStringLiteral( "mProjTransformations" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Default Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
@@ -14388,20 +14389,12 @@ void QgisApp::showMapTip()
 
 void QgisApp::projectPropertiesProjections()
 {
-  // Driver to display the project props dialog and switch to the
-  // projections tab
-  mShowProjectionTab = true;
-  projectProperties();
+  // display the project props dialog and switch to the projections tab
+  projectProperties( QStringLiteral( "mProjOptsCRS" ) );
 }
 
 void QgisApp::projectProperties( const QString &currentPage )
 {
-  /* Display the property sheet for the Project */
-  // set wait cursor since construction of the project properties
-  // dialog results in the construction of the spatial reference
-  // system QMap
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
   QList< QgsOptionsWidgetFactory * > factories;
   const auto constProjectPropertiesWidgetFactories = mProjectPropertiesWidgetFactories;
   for ( const QPointer< QgsOptionsWidgetFactory > &f : constProjectPropertiesWidgetFactories )
@@ -14409,28 +14402,21 @@ void QgisApp::projectProperties( const QString &currentPage )
     if ( f )
       factories << f;
   }
-  QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this, QgsGuiUtils::ModalDialogFlags, factories );
+  QgsProjectProperties pp( mMapCanvas, this, QgsGuiUtils::ModalDialogFlags, factories );
 
-  // if called from the status bar, show the projection tab
-  if ( mShowProjectionTab )
-  {
-    pp->showProjectionsTab();
-    mShowProjectionTab = false;
-  }
   qApp->processEvents();
+
   // Be told if the mouse display precision may have changed by the user
   // changing things in the project properties dialog box
-  connect( pp, &QgsProjectProperties::displayPrecisionChanged, this,
+  connect( &pp, &QgsProjectProperties::displayPrecisionChanged, this,
            &QgisApp::updateMouseCoordinatePrecision );
-
-  QApplication::restoreOverrideCursor();
 
   if ( !currentPage.isEmpty() )
   {
-    pp->setCurrentPage( currentPage );
+    pp.setCurrentPage( currentPage );
   }
   // Display the modal dialog box.
-  pp->exec();
+  pp.exec();
 
   qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureDist )->updateSettings();
   qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureArea )->updateSettings();
@@ -14438,9 +14424,6 @@ void QgisApp::projectProperties( const QString &currentPage )
 
   // Set the window title.
   setTitleBarText_( *this );
-
-  // delete the property sheet object
-  delete pp;
 }
 
 

@@ -107,6 +107,7 @@ This is the base class for all map layer types (vector, raster).
       Relations,
       Temporal,
       Legend,
+      Elevation,
       AllStyleCategories
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
@@ -1360,6 +1361,13 @@ should be canceled.
 Returns the layer's temporal properties. This may be ``None``, depending on the layer type.
 
 .. versionadded:: 3.14
+%End
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+%Docstring
+Returns the layer's elevation properties. This may be ``None``, depending on the layer type.
+
+.. versionadded:: 3.18
 %End
 
   public slots:

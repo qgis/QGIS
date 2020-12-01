@@ -388,6 +388,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void flashButtonClicked( bool clicked );
 
+    void filterError( const QString &errorMessage );
+
   private:
 
     /**

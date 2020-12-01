@@ -117,15 +117,134 @@ Returns ``True`` if this range overlaps another range.
 .. seealso:: :py:func:`contains`
 %End
 
+    bool operator==( const QgsRange<T> &other ) const;
+
+    bool operator!=( const QgsRange<T> &other ) const;
+
+  protected:
+
+
 };
 
 
-typedef QgsRange< double > QgsDoubleRange;
+
+typedef QgsRange<double> QgsRangedoubleBase;
+
+class QgsDoubleRange : QgsRangedoubleBase
+{
+%Docstring
+QgsRange which stores a range of double values.
+
+.. seealso:: :py:class:`QgsIntRange`
+
+.. seealso:: :py:class:`QgsDateRange`
+
+.. seealso:: :py:class:`QgsDateTimeRange`
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsrange.h"
+typedef QgsRange<double> QgsRangedoubleBase;
+%End
+  public:
+
+
+    QgsDoubleRange( double lower,
+                    double upper,
+                    bool includeLower = true, bool includeUpper = true );
+%Docstring
+Constructor for QgsDoubleRange. The ``lower`` and ``upper`` bounds are specified,
+and optionally whether or not these bounds are included in the range.
+%End
+
+    QgsDoubleRange();
+%Docstring
+Constructor for QgsDoubleRange containing an infinite range (see :py:func:`~QgsDoubleRange.isInfinite`).
+
+.. versionadded:: 3.18
+%End
+
+    bool isInfinite() const;
+%Docstring
+Returns ``True`` if the range consists of all possible values.
+
+.. versionadded:: 3.18
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    bool operator==( const QgsDoubleRange &other ) const;
+
+    bool operator!=( const QgsDoubleRange &other ) const;
+
+};
 
 
 
+typedef QgsRange<int> QgsRangeintBase;
 
-typedef QgsRange< int > QgsIntRange;
+class QgsIntRange : QgsRangeintBase
+{
+%Docstring
+QgsRange which stores a range of integer values.
+
+.. seealso:: :py:class:`QgsDoubleRange`
+
+.. seealso:: :py:class:`QgsDateRange`
+
+.. seealso:: :py:class:`QgsDateTimeRange`
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsrange.h"
+typedef QgsRange<int> QgsRangeintBase;
+%End
+  public:
+
+
+    QgsIntRange( int lower,
+                 int upper,
+                 bool includeLower = true, bool includeUpper = true );
+%Docstring
+Constructor for QgsIntRange. The ``lower`` and ``upper`` bounds are specified,
+and optionally whether or not these bounds are included in the range.
+%End
+
+    QgsIntRange();
+%Docstring
+Constructor for QgsIntRange containing an infinite range (see :py:func:`~QgsIntRange.isInfinite`).
+
+.. versionadded:: 3.18
+%End
+
+    bool isInfinite() const;
+%Docstring
+Returns ``True`` if the range consists of all possible values.
+
+.. versionadded:: 3.18
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
 
 
 template <T>

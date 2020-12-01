@@ -747,3 +747,13 @@ QList<QgsRenderedFeatureHandlerInterface *> QgsMapSettings::renderedFeatureHandl
 {
   return mRenderedFeatureHandlers;
 }
+
+QgsDoubleRange QgsMapSettings::zRange() const
+{
+  return mZRange;
+}
+
+void QgsMapSettings::setZRange( const QgsDoubleRange &zRange )
+{
+  mZRange = zRange;
+}

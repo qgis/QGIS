@@ -60,11 +60,13 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
   protected:
     void closeEvent( QCloseEvent * ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
 
   private slots:
     // file
     void reset();
-    void openRaster();
+    void openRaster( const QString &fileName = QString() );
     void doGeoreference();
     void generateGDALScript();
     bool getTransformSettings();

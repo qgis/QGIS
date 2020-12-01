@@ -117,6 +117,10 @@ void TestQgsMapSettings::testGettersSetters()
   simplify.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
   ms.setSimplifyMethod( simplify );
   QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
+
+  QVERIFY( ms.zRange().isInfinite() );
+  ms.setZRange( QgsDoubleRange( 1, 10 ) );
+  QCOMPARE( ms.zRange(), QgsDoubleRange( 1, 10 ) );
 }
 
 void TestQgsMapSettings::testLabelingEngineSettings()

@@ -25,7 +25,8 @@ from qgis.core import (QgsRenderContext,
                        QgsRenderedFeatureHandlerInterface,
                        QgsDateTimeRange,
                        QgsMapClippingRegion,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsDoubleRange)
 from qgis.PyQt.QtCore import QSize, QDateTime
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -58,6 +59,10 @@ class TestQgsRenderContext(unittest.TestCase):
         c.setMapExtent(QgsRectangle(1, 2, 3, 4))
         self.assertEqual(c.mapExtent(), QgsRectangle(1, 2, 3, 4))
 
+        self.assertTrue(c.zRange().isInfinite())
+        c.setZRange(QgsDoubleRange(1, 10))
+        self.assertEqual(c.zRange(), QgsDoubleRange(1, 10))
+
     def testCopyConstructor(self):
         """
         Test the copy constructor
@@ -66,10 +71,12 @@ class TestQgsRenderContext(unittest.TestCase):
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         c1.setMapExtent(QgsRectangle(1, 2, 3, 4))
+        c1.setZRange(QgsDoubleRange(1, 10))
 
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
         self.assertEqual(c2.mapExtent(), QgsRectangle(1, 2, 3, 4))
+        self.assertEqual(c2.zRange(), QgsDoubleRange(1, 10))
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
@@ -129,6 +136,7 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setFlag(QgsMapSettings.Antialiasing, True)
         ms.setFlag(QgsMapSettings.LosslessImageRendering, True)
         ms.setFlag(QgsMapSettings.Render3DMap, True)
+        ms.setZRange(QgsDoubleRange(1, 10))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
@@ -136,10 +144,13 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertTrue(rc.testFlag(QgsRenderContext.Antialiasing))
         self.assertTrue(rc.testFlag(QgsRenderContext.LosslessImageRendering))
         self.assertTrue(rc.testFlag(QgsRenderContext.Render3DMap))
+        self.assertEqual(ms.zRange(), QgsDoubleRange(1, 10))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
+        ms.setZRange(QgsDoubleRange())
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
+        self.assertTrue(ms.zRange().isInfinite())
 
         self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
 

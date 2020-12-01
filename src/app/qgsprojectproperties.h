@@ -80,11 +80,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void apply();
 
     /**
-     * Slot to show the projections tab when the dialog is opened
-     */
-    void showProjectionsTab();
-
-    /**
      * Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones.
     */

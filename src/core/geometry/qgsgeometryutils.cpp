@@ -1717,3 +1717,21 @@ bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsP
 
   return rc;
 }
+
+bool QgsGeometryUtils::bisector( double aX, double aY, double bX, double bY, double cX, double cY,
+                                 double &pointX SIP_OUT, double &pointY SIP_OUT )
+{
+  const QgsPoint pA = QgsPoint( aX, aY );
+  const QgsPoint pB = QgsPoint( bX, bY );
+  const QgsPoint pC = QgsPoint( cX, cY );
+  const double angle = ( pA.azimuth( pB ) + pA.azimuth( pC ) ) / 2.0;
+
+  QgsPoint pOut;
+  bool intersection = false;
+  QgsGeometryUtils::segmentIntersection( pB, pC, pA, pA.project( 1.0, angle ), pOut, intersection );
+
+  pointX = pOut.x();
+  pointY = pOut.y();
+
+  return intersection;
+}

@@ -58,7 +58,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 {
   const QgsMapToPixel mapToPixel = context.renderContext().mapToPixel();
 
-  QgsRectangle mapExtent = context.renderContext().mapExtent();
+  const QgsRectangle visibleExtent = context.renderContext().extent();
 
   QPen pen;
   pen.setWidth( mPainterPenWidth );
@@ -92,15 +92,41 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const bool useBlueContrastEnhancement = mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
   const bool useGreenContrastEnhancement = mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
 
+  const QgsDoubleRange zRange = context.renderContext().zRange();
+  const bool considerZ = !zRange.isInfinite();
+
   int rendered = 0;
   double x = 0;
   double y = 0;
+  double z = 0;
+  const QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
+  const bool reproject = ct.isValid();
   for ( int i = 0; i < count; ++i )
   {
-    pointXY( context, ptr, i, x, y );
-
-    if ( mapExtent.contains( QgsPointXY( x, y ) ) )
+    if ( considerZ )
     {
+      // z value filtering is cheapest, if we're doing it...
+      qint32 iz = *( qint32 * )( ptr + i * context.pointRecordSize() + context.zOffset() );
+      z = context.offset().z() + context.scale().z() * iz;
+      if ( !zRange.contains( z ) )
+        continue;
+    }
+
+    pointXY( context, ptr, i, x, y );
+    if ( visibleExtent.contains( QgsPointXY( x, y ) ) )
+    {
+      if ( reproject )
+      {
+        try
+        {
+          ct.transformInPlace( x, y, z );
+        }
+        catch ( QgsCsException & )
+        {
+          continue;
+        }
+      }
+
       int red = 0;
       switch ( redType )
       {
@@ -113,6 +139,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
         case QgsPointCloudAttribute::Short:
           red = *( short * )( ptr + i * recordSize + redOffset );
+          break;
+
+        case QgsPointCloudAttribute::UShort:
+          red = *( unsigned short * )( ptr + i * recordSize + redOffset );
           break;
 
         case QgsPointCloudAttribute::Float:
@@ -138,6 +168,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
           green = *( short * )( ptr + i * recordSize + greenOffset );
           break;
 
+        case QgsPointCloudAttribute::UShort:
+          green = *( unsigned short * )( ptr + i * recordSize + greenOffset );
+          break;
+
         case QgsPointCloudAttribute::Float:
           green = *( float * )( ptr + i * recordSize + greenOffset );
           break;
@@ -159,6 +193,10 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
         case QgsPointCloudAttribute::Short:
           blue = *( short * )( ptr + i * recordSize + blueOffset );
+          break;
+
+        case QgsPointCloudAttribute::UShort:
+          blue = *( unsigned short * )( ptr + i * recordSize + blueOffset );
           break;
 
         case QgsPointCloudAttribute::Float:
@@ -194,9 +232,15 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
       mapToPixel.transformInPlace( x, y );
 
+#if 0
       pen.setColor( QColor( red, green, blue ) );
       context.renderContext().painter()->setPen( pen );
       context.renderContext().painter()->drawPoint( QPointF( x, y ) );
+#else
+      context.renderContext().painter()->fillRect( QRectF( x - mPainterPenWidth * 0.5,
+          y - mPainterPenWidth * 0.5,
+          mPainterPenWidth, mPainterPenWidth ), QColor( red, green, blue ) );
+#endif
 
       rendered++;
     }
@@ -293,9 +337,15 @@ void QgsPointCloudRgbRenderer::stopRender( QgsPointCloudRenderContext &context )
   QgsPointCloudRenderer::stopRender( context );
 }
 
-QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
 {
-  return QSet<QString>() << mRedAttribute << mGreenAttribute << mBlueAttribute;
+  QSet<QString> res;
+  res << mRedAttribute << mGreenAttribute << mBlueAttribute;
+
+  if ( !context.renderContext().zRange().isInfinite() )
+    res << QStringLiteral( "Z" );
+
+  return res;
 }
 
 QString QgsPointCloudRgbRenderer::redAttribute() const

@@ -879,6 +879,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     const QList<double> &zoomResolutions() const { return mZoomResolutions; }
 
+    /**
+     * Returns the range of z-values which will be visible in the map.
+     *
+     * \see setZRange()
+     * \see zRangeChanged()
+     *
+     * \since QGIS 3.18
+     */
+    QgsDoubleRange zRange() const;
+
+    /**
+     * Sets the \a range of z-values which will be visible in the map.
+     *
+     * \see zRange()
+     * \see zRangeChanged()
+     *
+     * \since QGIS 3.18
+     */
+    void setZRange( const QgsDoubleRange &range );
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -1044,6 +1064,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void temporalRangeChanged();
 
+    /**
+     * Emitted when the map canvas z (elevation) range changes.
+     *
+     * \see zRange()
+     * \see setZRange()
+     *
+     * \since QGIS 3.18
+     */
+    void zRangeChanged();
 
     /**
      * Emitted before the map canvas context menu will be shown.
@@ -1052,7 +1081,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 3.16
      */
     void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
-
 
   protected:
 
@@ -1312,6 +1340,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 3.14
      */
     void clearTemporalCache();
+
+    /**
+     * Removes any rendered images of elevation aware layers from cache
+     */
+    void clearElevationCache();
 
     void showContextMenu( QgsMapMouseEvent *event );
 

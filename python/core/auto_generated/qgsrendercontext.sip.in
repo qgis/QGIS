@@ -866,6 +866,24 @@ rendering using QBrush objects.
 .. versionadded:: 3.16
 %End
 
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the range of z-values which should be rendered.
+
+.. seealso:: :py:func:`setZRange`
+
+.. versionadded:: 3.18
+%End
+
+    void setZRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of z-values which should be rendered.
+
+.. seealso:: :py:func:`zRange`
+
+.. versionadded:: 3.18
+%End
+
 };
 
 QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);

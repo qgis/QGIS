@@ -115,6 +115,18 @@
          </item>
          <item>
           <property name="text">
+           <string>View Settings</string>
+          </property>
+          <property name="toolTip">
+           <string>View Settings</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>CRS</string>
           </property>
           <property name="toolTip">
@@ -206,7 +218,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</iconset>
           </property>
          </item>
          <item>
@@ -257,7 +269,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -285,9 +297,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-16</y>
                 <width>671</width>
-                <height>865</height>
+                <height>695</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -735,106 +747,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpProjectScales">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                   <horstretch>0</horstretch>
-                   <verstretch>3</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Project Predefined Scales</string>
-                 </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">projgeneral</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_7">
-                  <item row="0" column="0">
-                   <widget class="QListWidget" name="lstScales"/>
-                  </item>
-                  <item row="0" column="1">
-                   <layout class="QVBoxLayout" name="verticalLayout_4">
-                    <item>
-                     <widget class="QToolButton" name="pbnAddScale">
-                      <property name="toolTip">
-                       <string>Add predefined scale</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnRemoveScale">
-                      <property name="toolTip">
-                       <string>Remove selected scale</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnImportScales">
-                      <property name="toolTip">
-                       <string>Import from file</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbnExportScales">
-                      <property name="toolTip">
-                       <string>Save to file</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="verticalSpacer">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <widget class="QGroupBox" name="groupBox_6">
                  <property name="title">
                   <string>Generate Project Translation File</string>
@@ -881,6 +793,139 @@
          </widget>
          <widget class="QWidget" name="mMetadataPage">
           <layout class="QVBoxLayout" name="verticalLayout_19"/>
+         </widget>
+         <widget class="QWidget" name="mViewSettingsPage">
+          <layout class="QVBoxLayout" name="verticalLayout_25">
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="grpProjectScales">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>3</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Project Predefined Scales</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string notr="true">projgeneral</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="0">
+               <widget class="QListWidget" name="lstScales"/>
+              </item>
+              <item row="0" column="1">
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <item>
+                 <widget class="QToolButton" name="pbnAddScale">
+                  <property name="toolTip">
+                   <string>Add predefined scale</string>
+                  </property>
+                  <property name="text">
+                   <string>…</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnRemoveScale">
+                  <property name="toolTip">
+                   <string>Remove selected scale</string>
+                  </property>
+                  <property name="text">
+                   <string>…</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnImportScales">
+                  <property name="toolTip">
+                   <string>Import from file</string>
+                  </property>
+                  <property name="text">
+                   <string>…</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnExportScales">
+                  <property name="toolTip">
+                   <string>Save to file</string>
+                  </property>
+                  <property name="text">
+                   <string>…</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+             <property name="toolTip">
+              <string>If checked the preset extent will be used as the full extent of the project. If unchecked, the project's full extent will be calculated using the full extent of all layers in the project.</string>
+             </property>
+             <property name="title">
+              <string>Set Project Full Extent</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </widget>
          <widget class="QWidget" name="mProjOptsCRS">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -3177,6 +3222,12 @@
    <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
@@ -3199,12 +3250,6 @@
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
-  <tabstop>grpProjectScales</tabstop>
-  <tabstop>pbnAddScale</tabstop>
-  <tabstop>pbnRemoveScale</tabstop>
-  <tabstop>pbnImportScales</tabstop>
-  <tabstop>pbnExportScales</tabstop>
-  <tabstop>lstScales</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>cboStyleMarker</tabstop>

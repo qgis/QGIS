@@ -14,13 +14,51 @@ import qgis  # NOQA
 
 from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
-from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
-    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
-    QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
-    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
-    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
-    QgsVertexId, QgsReferencedGeometry, QgsProviderRegistry, QgsRasterLayer, QgsAnnotationLayer, QgsPointCloudLayer,\
-    QgsVectorTileLayer, QgsMeshLayer, QgsDataSourceUri
+from qgis.core import (
+    QgsGeometry,
+    QgsPoint,
+    QgsPointXY,
+    QgsCircle,
+    QgsCircularString,
+    QgsCompoundCurve,
+    QgsCurvePolygon,
+    QgsEllipse,
+    QgsLineString,
+    QgsMultiCurve,
+    QgsRectangle,
+    QgsExpression,
+    QgsField,
+    QgsError,
+    QgsMimeDataUtils,
+    QgsVector,
+    QgsVector3D,
+    QgsVectorLayer,
+    QgsReferencedPointXY,
+    QgsReferencedRectangle,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsProject,
+    QgsClassificationRange,
+    QgsBookmark,
+    QgsLayoutMeasurement,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsUnitTypes,
+    QgsConditionalStyle,
+    QgsTableCell,
+    QgsProperty,
+    QgsVertexId,
+    QgsReferencedGeometry,
+    QgsProviderRegistry,
+    QgsRasterLayer,
+    QgsAnnotationLayer,
+    QgsPointCloudLayer,
+    QgsVectorTileLayer,
+    QgsMeshLayer,
+    QgsDataSourceUri,
+    QgsDoubleRange,
+    QgsIntRange
+)
 
 start_app()
 
@@ -272,6 +310,20 @@ class TestPython__repr__(unittest.TestCase):
         ds = QgsDataSourceUri()
         ds.setConnection(aHost='my_host', aPort='2322', aDatabase='my_db', aUsername='user', aPassword='pw')
         self.assertEqual(ds.__repr__(), "<QgsDataSourceUri: dbname='my_db' host=my_host port=2322 user='user' password='pw'>")
+
+    def testDoubleRange(self):
+        self.assertEqual(QgsDoubleRange(1, 10).__repr__(), "<QgsDoubleRange: [1, 10]>")
+        self.assertEqual(QgsDoubleRange(1, 10, False).__repr__(),
+                         "<QgsDoubleRange: (1, 10]>")
+        self.assertEqual(QgsDoubleRange(1, 10, True, False).__repr__(),
+                         "<QgsDoubleRange: [1, 10)>")
+
+    def testIntRange(self):
+        self.assertEqual(QgsIntRange(1, 10).__repr__(), "<QgsIntRange: [1, 10]>")
+        self.assertEqual(QgsIntRange(1, 10, False).__repr__(),
+                         "<QgsIntRange: (1, 10]>")
+        self.assertEqual(QgsIntRange(1, 10, True, False).__repr__(),
+                         "<QgsIntRange: [1, 10)>")
 
 
 if __name__ == "__main__":

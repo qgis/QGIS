@@ -92,7 +92,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   , mMapCanvas( mapCanvas )
   , mEllipsoidIndex( 0 )
 {
+  // set wait cursor since construction of the project properties
+  // dialog can be slow
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+
   setupUi( this );
+
+  mExtentGroupBox->setTitleBase( tr( "Set Project Full Extent" ) );
+  mExtentGroupBox->setMapCanvas( mapCanvas, false );
 
   mMetadataWidget = new QgsMetadataWidget();
   mMetadataPage->layout()->addWidget( mMetadataWidget );
@@ -395,6 +402,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
 
   grpProjectScales->setChecked( QgsProject::instance()->viewSettings()->useProjectScales() );
+
+  const QgsReferencedRectangle presetExtent = QgsProject::instance()->viewSettings()->presetFullExtent();
+  mExtentGroupBox->setOutputCrs( QgsProject::instance()->crs() );
+  if ( presetExtent.isNull() )
+    mExtentGroupBox->setOutputExtentFromUser( QgsProject::instance()->viewSettings()->fullExtent(), QgsProject::instance()->crs() );
+  else
+    mExtentGroupBox->setOutputExtentFromUser( presetExtent, presetExtent.crs() );
+  mExtentGroupBox->setChecked( !presetExtent.isNull() );
 
   mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
   mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );
@@ -1167,6 +1182,15 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->viewSettings()->setUseProjectScales( false );
   }
 
+  if ( mExtentGroupBox->isChecked() )
+  {
+    QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
+  }
+  else
+  {
+    QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle() );
+  }
+
   bool isDirty = false;
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
@@ -1576,11 +1600,6 @@ void QgsProjectProperties::apply()
   }
 }
 
-void QgsProjectProperties::showProjectionsTab()
-{
-  mOptionsListWidget->setCurrentRow( 2 );
-}
-
 void QgsProjectProperties::lwWmsRowsInserted( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
@@ -1783,6 +1802,8 @@ void QgsProjectProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
     cmbEllipsoid->setCurrentIndex( 0 );
     cmbEllipsoid->setEnabled( false );
   }
+
+  mExtentGroupBox->setOutputCrs( crs );
 }
 
 void QgsProjectProperties::pbnWMSExtCanvas_clicked()

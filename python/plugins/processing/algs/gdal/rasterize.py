@@ -23,6 +23,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 import os
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
@@ -96,11 +97,12 @@ class rasterize(GdalAlgorithm):
                                                        defaultValue=0.0))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Output extent')))
-        self.addParameter(QgsProcessingParameterNumber(self.NODATA,
-                                                       self.tr('Assign a specified nodata value to output bands'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=0.0,
-                                                       optional=True))
+        nodataParam = QgsProcessingParameterNumber(self.NODATA,
+                                                   self.tr('Assign a specified nodata value to output bands'),
+                                                   type=QgsProcessingParameterNumber.Double,
+                                                   optional=True)
+        nodataParam.setGuiDefaultValueOverride(QVariant(QVariant.Double))
+        self.addParameter(nodataParam)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),

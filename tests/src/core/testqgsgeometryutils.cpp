@@ -81,6 +81,7 @@ class TestQgsGeometryUtils: public QObject
     void testWeightedPointInTriangle_data();
     void testWeightedPointInTriangle();
     void testPointContinuesArc();
+    void testBisector();
 };
 
 
@@ -1497,5 +1498,19 @@ void TestQgsGeometryUtils::testPointContinuesArc()
   QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.000000001, 0.05 ) );
 }
 
+void TestQgsGeometryUtils::testBisector()
+{
+  double x, y;
+  QVERIFY( QgsGeometryUtils::bisector( 5, 5, 0, 0, -7, 11, x, y ) );
+  QGSCOMPARENEAR( x, -2.416, 10e-3 );
+  QGSCOMPARENEAR( y, 3.797, 10e-3 );
+
+  QVERIFY( QgsGeometryUtils::bisector( 2.5, 2, 0, 0, 5, 0, x, y ) );
+  QGSCOMPARENEAR( x, 2.5, 10e-3 );
+  QGSCOMPARENEAR( y, 0, 10e-3 );
+
+  // collinear
+  QVERIFY( !QgsGeometryUtils::bisector( 5, 5, 0, 0, 1, 1, x, y ) );
+}
 QGSTEST_MAIN( TestQgsGeometryUtils )
 #include "testqgsgeometryutils.moc"

@@ -279,6 +279,7 @@ set(QGIS_CORE_SRCS
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgseditformconfig.cpp
+  qgselevationutils.cpp
   qgsellipsoidutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
@@ -329,6 +330,7 @@ set(QGIS_CORE_SRCS
   qgsmapdecoration.cpp
   qgsmaphittest.cpp
   qgsmaplayer.cpp
+  qgsmaplayerelevationproperties.cpp
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
@@ -630,6 +632,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrequest.cpp
   pointcloud/qgspointcloudblock.cpp
   pointcloud/qgspointcloudlayer.cpp
+  pointcloud/qgspointcloudlayerelevationproperties.cpp
   pointcloud/qgspointcloudlayerrenderer.cpp
   pointcloud/qgspointcloudindex.cpp
   pointcloud/qgspointclouddataprovider.cpp
@@ -863,6 +866,7 @@ set(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgseditformconfig.h
   qgseditorwidgetsetup.h
+  qgselevationutils.h
   qgsellipsoidutils.h
   qgserror.h
   qgseventtracing.h
@@ -932,6 +936,7 @@ set(QGIS_CORE_HDRS
   qgsmaplayerstore.h
   qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
+  qgsmaplayerelevationproperties.h
   qgsmaplayertemporalproperties.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
@@ -1331,6 +1336,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrequest.h
   pointcloud/qgspointcloudblock.h
   pointcloud/qgspointcloudlayer.h
+  pointcloud/qgspointcloudlayerelevationproperties.h
   pointcloud/qgspointcloudlayerrenderer.h
   pointcloud/qgspointcloudindex.h
   pointcloud/qgspointclouddataprovider.h

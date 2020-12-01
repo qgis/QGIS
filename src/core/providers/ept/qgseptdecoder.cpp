@@ -51,6 +51,14 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
       memcpy( s + position, ( char * )( &val ), sizeof( short ) );
       break;
     }
+
+    case QgsPointCloudAttribute::UShort:
+    {
+      unsigned short val = static_cast< unsigned short>( value );
+      memcpy( s + position, ( char * )( &val ), sizeof( unsigned short ) );
+      break;
+    }
+
     case QgsPointCloudAttribute::Float:
     {
       float val = float( value );
@@ -94,6 +102,11 @@ bool _serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Data
     {
       short val = *( short * )( input + inputPosition );
       return _storeToStream<short>( data, outputPosition, outputType, val );
+    }
+    case QgsPointCloudAttribute::UShort:
+    {
+      unsigned short val = *reinterpret_cast< const unsigned short * >( input + inputPosition );
+      return _storeToStream<unsigned short>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Float:
     {
@@ -162,12 +175,12 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   }
 
   // now loop through points
+  size_t outputOffset = 0;
   for ( int i = 0; i < count; ++i )
   {
-    size_t outputOffset = 0;
     for ( const AttributeData &attribute : attributeData )
     {
-      _serialize( destinationBuffer, i * requestedPointRecordSize + outputOffset,
+      _serialize( destinationBuffer, outputOffset,
                   attribute.requestedType, s,
                   attribute.inputType, attribute.inputSize, i * pointRecordSize + attribute.inputOffset );
 

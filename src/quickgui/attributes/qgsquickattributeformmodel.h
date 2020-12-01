@@ -108,6 +108,9 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     //! Returns attribute value with name
     Q_INVOKABLE QVariant attribute( const QString &name ) const;
 
+    //! Resets the model
+    Q_INVOKABLE void forceClean();
+
   signals:
     //! \copydoc QgsQuickAttributeFormModel::attributeModel
     void attributeModelChanged();

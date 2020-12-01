@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>679</width>
-    <height>525</height>
+    <width>995</width>
+    <height>716</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -248,6 +248,16 @@
      </widget>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QgsCodeEditorSQL" name="errorText">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QTableView" name="viewResult">
          <property name="sizePolicy">

@@ -111,6 +111,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Returns the offset for the x value in a point record.
      *
      * \see yOffset()
+     * \see zOffset()
      */
     int xOffset() const { return mXOffset; }
 
@@ -118,8 +119,17 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Returns the offset for the y value in a point record.
      *
      * \see xOffset()
+     * \see zOffset()
      */
     int yOffset() const { return mYOffset; }
+
+    /**
+     * Returns the offset for the y value in a point record.
+     *
+     * \see xOffset()
+     * \see yOffset()
+     */
+    int zOffset() const { return mZOffset; }
 
   private:
 #ifdef SIP_RUN
@@ -134,6 +144,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mPointRecordSize = 0;
     int mXOffset = 0;
     int mYOffset = 0;
+    int mZOffset = 0;
 };
 
 

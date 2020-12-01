@@ -775,6 +775,24 @@ Returns the list of rendered feature handlers to use while rendering the map set
 .. versionadded:: 3.10
 %End
 
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the range of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`setZRange`
+
+.. versionadded:: 3.18
+%End
+
+    void setZRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`zRange`
+
+.. versionadded:: 3.18
+%End
+
   protected:
 
 

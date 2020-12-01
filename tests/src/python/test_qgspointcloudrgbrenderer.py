@@ -25,7 +25,9 @@ from qgis.core import (
     QgsRectangle,
     QgsContrastEnhancement,
     QgsUnitTypes,
-    QgsMapUnitScale
+    QgsMapUnitScale,
+    QgsCoordinateReferenceSystem,
+    QgsDoubleRange
 )
 
 from qgis.PyQt.QtCore import QDir, QSize
@@ -147,6 +149,11 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
 
         self.assertEqual(renderer.usedAttributes(prc), {'r', 'g', 'b'})
 
+        # if context is filtering by z, we also need the z attribute
+        rc.setZRange(QgsDoubleRange(1, 10))
+        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
+        self.assertEqual(renderer.usedAttributes(prc), {'r', 'g', 'b', 'Z'})
+
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRender(self):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
@@ -167,6 +174,28 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_rgb_render')
         result = renderchecker.runTest('expected_rgb_render')
+        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderCrsTransform(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        mapsettings.setExtent(QgsRectangle(152.977434544, -26.663017454, 152.977424882, -26.663009624))
+        mapsettings.setLayers([layer])
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_rgb_render_crs_transform')
+        result = renderchecker.runTest('expected_rgb_render_crs_transform')
         TestQgsPointCloudRgbRenderer.report += renderchecker.report()
         self.assertTrue(result)
 
@@ -281,6 +310,30 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_pointsize')
         result = renderchecker.runTest('expected_pointsize')
+        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderZRange(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
+        mapsettings.setLayers([layer])
+        mapsettings.setZRange(QgsDoubleRange(1.1, 1.2))
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_zfilter')
+        result = renderchecker.runTest('expected_zfilter')
         TestQgsPointCloudRgbRenderer.report += renderchecker.report()
         self.assertTrue(result)
 

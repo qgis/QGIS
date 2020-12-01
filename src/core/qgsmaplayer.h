@@ -48,6 +48,7 @@ class QgsMapLayerStyleManager;
 class QgsProject;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
+class QgsMapLayerElevationProperties;
 
 class QDomDocument;
 class QKeyEvent;
@@ -179,10 +180,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
       CustomProperties   = 1 << 11, //!< Custom properties (by plugins for instance)
       GeometryOptions    = 1 << 12, //!< Geometry validation configuration
       Relations          = 1 << 13, //!< Relations
-      Temporal           = 1 << 14, //!< Temporal properties
+      Temporal           = 1 << 14, //!< Temporal properties (since QGIS 3.14)
       Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
+      Elevation          = 1 << 16, //!< Elevation settings (since QGIS 3.18)
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -1227,6 +1229,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.14
      */
     virtual QgsMapLayerTemporalProperties *temporalProperties() { return nullptr; }
+
+    /**
+     * Returns the layer's elevation properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
 
   public slots:
 

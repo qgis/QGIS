@@ -104,6 +104,9 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
     void setConstraintsSoftValid( bool constraintsSoftValid );
 
+    //! Resets the model
+    Q_INVOKABLE void forceClean();
+
   signals:
     //! \copydoc QgsQuickAttributeFormModelBase::attributeModel
     void attributeModelChanged();

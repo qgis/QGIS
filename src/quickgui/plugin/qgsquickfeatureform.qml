@@ -262,12 +262,14 @@ Item {
             rightPadding: 8 * QgsQuick.Utils.dp
             anchors.bottom: parent.bottom
 
-            width: contentItem.width + leftPadding + rightPadding
+            width: leftPadding + rightPadding
             height: form.style.tabs.buttonHeight
 
             contentItem: Text {
               // Make sure the width is derived from the text so we can get wider
               // than the parent item and the Flickable is useful
+              Component.onCompleted: tabButton.width = tabButton.width + paintedWidth
+
               width: paintedWidth
               text: tabButton.text
               color: !tabButton.enabled ? form.style.tabs.disabledColor : tabButton.down ||
@@ -360,7 +362,7 @@ Item {
             model: QgsQuick.SubModel {
               id: contentModel
               model: form.model
-              rootIndex: form.model.hasTabs ? form.model.index(currentIndex, 0) : undefined
+              rootIndex: form.model.hasTabs ? form.model.index(currentIndex, 0) : QgsQuick.Utils.invalidIndex()
             }
 
             delegate: fieldItem
@@ -442,7 +444,7 @@ Item {
           active: widget !== 'Hidden'
 
           source: {
-            if ( widget )
+            if ( widget !== undefined )
                return form.loadWidgetFn(widget.toLowerCase())
             else return ''
           }
@@ -479,7 +481,7 @@ Item {
           target: form
           ignoreUnknownSignals: true
           onCanceled: {
-            if (typeof attributeEditorLoader.item.callbackOnCancel === "function") {
+            if (attributeEditorLoader.item && typeof attributeEditorLoader.item.callbackOnCancel === "function") {
               attributeEditorLoader.item.callbackOnCancel()
             }
           }
@@ -595,7 +597,7 @@ Item {
 
       ToolButton {
         id: closeButton
-        anchors.right: parent.right
+        Layout.alignment: Qt.AlignRight
 
         Layout.preferredWidth: form.style.toolbutton.size
         Layout.preferredHeight: form.style.toolbutton.size

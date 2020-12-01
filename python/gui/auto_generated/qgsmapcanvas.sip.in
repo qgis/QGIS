@@ -973,6 +973,28 @@ Set a list of resolutions (map units per pixel) to which to "snap to" when zoomi
 .. versionadded:: 3.12
 %End
 
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the range of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`setZRange`
+
+.. seealso:: :py:func:`zRangeChanged`
+
+.. versionadded:: 3.18
+%End
+
+    void setZRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`zRange`
+
+.. seealso:: :py:func:`zRangeChanged`
+
+.. versionadded:: 3.18
+%End
+
   signals:
 
     void xyCoordinates( const QgsPointXY &p );
@@ -1153,6 +1175,16 @@ Emitted when the map canvas temporal range changes.
 .. versionadded:: 3.14
 %End
 
+    void zRangeChanged();
+%Docstring
+Emitted when the map canvas z (elevation) range changes.
+
+.. seealso:: :py:func:`zRange`
+
+.. seealso:: :py:func:`setZRange`
+
+.. versionadded:: 3.18
+%End
 
     void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
 %Docstring
@@ -1161,7 +1193,6 @@ Can be used to extend the context menu.
 
 .. versionadded:: 3.16
 %End
-
 
   protected:
 

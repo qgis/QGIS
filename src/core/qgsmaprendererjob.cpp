@@ -44,6 +44,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsannotationlayer.h"
 
 ///@cond PRIVATE
@@ -337,6 +338,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mSettings.isTemporal() && ml->temporalProperties() && !ml->temporalProperties()->isVisibleInTemporalRange( mSettings.temporalRange() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not visible within the map's time range" ), 3 );
+      continue;
+    }
+
+    if ( !mSettings.zRange().isInfinite() && ml->elevationProperties() && !ml->elevationProperties()->isVisibleInZRange( mSettings.zRange() ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not visible within the map's z range" ), 3 );
       continue;
     }
 

@@ -139,6 +139,11 @@ QgsRectangle QgsPointCloudDataBounds::mapExtent( const QgsVector3D &offset, cons
          );
 }
 
+QgsDoubleRange QgsPointCloudDataBounds::zRange( const QgsVector3D &offset, const QgsVector3D &scale ) const
+{
+  return QgsDoubleRange( mZMin * scale.z() + offset.z(), mZMax * scale.z() + offset.z() );
+}
+
 ///@endcond
 
 
@@ -193,9 +198,14 @@ QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudN
   return db;
 }
 
-QgsRectangle QgsPointCloudIndex::nodeMapExtent( const IndexedPointCloudNode &n ) const
+QgsRectangle QgsPointCloudIndex::nodeMapExtent( const IndexedPointCloudNode &node ) const
 {
-  return nodeBounds( n ).mapExtent( mOffset, mScale );
+  return nodeBounds( node ).mapExtent( mOffset, mScale );
+}
+
+QgsDoubleRange QgsPointCloudIndex::nodeZRange( const IndexedPointCloudNode &node ) const
+{
+  return nodeBounds( node ).zRange( mOffset, mScale );
 }
 
 float QgsPointCloudIndex::nodeError( const IndexedPointCloudNode &n ) const
@@ -217,4 +227,9 @@ QgsVector3D QgsPointCloudIndex::offset() const
 void QgsPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &attributes )
 {
   mAttributes = attributes;
+}
+
+int QgsPointCloudIndex::span() const
+{
+  return mSpan;
 }
