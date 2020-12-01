@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgspointcloud3dsymbol_p.h
+  ------------------------------
+  Date                 : December 2020
+  Copyright            : (C) 2020 by Nedjima Belgacem
+  Email                : belgacem dot nedjima at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSPOINTCLOUD3DSYMBOL_P_H
 #define QGSPOINTCLOUD3DSYMBOL_P_H
 
@@ -43,8 +58,6 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::lowest();
 
-//  private:
-
     //static void addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
     //static void addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
     //static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol );
@@ -72,7 +85,6 @@ class QgsSingleColorPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHand
     void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
   private:
-//    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
     Qt3DRender::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data ) override;
 };
 
@@ -85,7 +97,6 @@ class QgsColorRampPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandle
     void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
   private:
-//    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
     Qt3DRender::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data ) override;
 };
 
@@ -98,14 +109,12 @@ class QgsRGBPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler
     void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
   private:
-//    void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
     Qt3DRender::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data ) override;
 };
 
 class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 {
   public:
-//    QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, QgsPointCloud3DSymbol *symbol );
     QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, QgsPointCloud3DSymbol *symbol );
 
   protected:

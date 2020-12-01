@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgspointcloud3dsymbol_p.cpp
+  ------------------------------
+  Date                 : December 2020
+  Copyright            : (C) 2020 by Nedjima Belgacem
+  Email                : belgacem dot nedjima at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgspointcloud3dsymbol_p.h"
 
 ///@cond PRIVATE
@@ -93,6 +108,7 @@ void QgsColorRampPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSy
   vertexBufferData.resize( data.positions.size() * mByteStride );
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
+  Q_ASSERT( data.positions.size() == data.parameter.size() );
   for ( int i = 0; i < data.positions.size(); ++i )
   {
     rawVertexArray[idx++] = data.positions.at( i ).x();
@@ -133,6 +149,7 @@ void QgsRGBPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHa
   vertexBufferData.resize( data.positions.size() * mByteStride );
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
+  Q_ASSERT( data.positions.size() == data.colors.size() );
   for ( int i = 0; i < data.positions.size(); ++i )
   {
     rawVertexArray[idx++] = data.positions.at( i ).x();
@@ -160,7 +177,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
     return;
 
   // Geometry
-  Qt3DRender::QGeometry *geom = makeGeometry( parent, out );//new QgsPointCloud3DGeometry( parent, out, mSymbol.get() );
+  Qt3DRender::QGeometry *geom = makeGeometry( parent, out );
   Qt3DRender::QGeometryRenderer *gr = new Qt3DRender::QGeometryRenderer;
   gr->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
   gr->setVertexCount( out.positions.count() );
