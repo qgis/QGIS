@@ -9,9 +9,6 @@
 
 
 
-namespace Qt3DRender
-{
-};
 
 class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
 {
@@ -43,10 +40,6 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol
       RGBRendering
     };
 
-    QgsPointCloud3DSymbol( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol::RenderingStyle style );
-%Docstring
-Constructor for QgsPointCloud3DSymbol
-%End
     ~QgsPointCloud3DSymbol();
 
     virtual QString type() const;
@@ -86,13 +79,8 @@ Returns the rendering style used to render the point cloud
 %Docstring
 Returns the byte stride for the geometries used to for the vertex buffer
 %End
-    virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0;
-%Docstring
-Used to fill material object with necessary QParameters (and consequently opengl uniforms)
-%End
 
   protected:
-    float mPointSize = 2.0f;
 };
 
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
@@ -140,8 +128,6 @@ Sets the color used by the renderer when using SingleColor rendering mode
 %End
 
     virtual unsigned int byteStride();
-    virtual void fillMaterial( Qt3DRender::QMaterial *material );
-
 
 
 };
@@ -226,8 +212,6 @@ Sets the minimum and maximum values used when classifying colors in the color ra
 %End
 
     virtual unsigned int byteStride();
-    virtual void fillMaterial( Qt3DRender::QMaterial *material );
-
 
 };
 
@@ -262,8 +246,6 @@ Constructor for QgsRGBPointCloud3DSymbol
 
 
     virtual unsigned int byteStride();
-    virtual void fillMaterial( Qt3DRender::QMaterial *material );
-
 };
 
 /************************************************************************
