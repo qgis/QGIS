@@ -65,6 +65,8 @@ Compound curve geometry type
 
     virtual bool isEmpty() const /HoldGIL/;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 

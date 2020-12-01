@@ -403,6 +403,16 @@ bool QgsCircularString::isEmpty() const
   return mX.isEmpty();
 }
 
+bool QgsCircularString::isValid( QString &error, int flags ) const
+{
+  if ( !isEmpty() && ( numPoints() < 3 ) )
+  {
+    error = QObject::tr( "CircularString has less than 3 points and is not empty." );
+    return false;
+  }
+  return QgsCurve::isValid( error, flags );
+}
+
 //curve interface
 double QgsCircularString::length() const
 {

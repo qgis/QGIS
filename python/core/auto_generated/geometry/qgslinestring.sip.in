@@ -416,6 +416,8 @@ segment in the line.
 
     virtual bool isEmpty() const /HoldGIL/;
 
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+
     virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );

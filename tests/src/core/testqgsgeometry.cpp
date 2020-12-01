@@ -83,6 +83,7 @@ class TestQgsGeometry : public QObject
     void asVariant(); //test conversion to and from a QVariant
     void referenced();
     void isEmpty();
+    void isValid();
     void equality();
     void vertexIterator();
     void partIterator();
@@ -467,6 +468,43 @@ void TestQgsGeometry::isEmpty()
 
   QgsGeometryCollection collection;
   QVERIFY( collection.isEmpty() );
+}
+
+void TestQgsGeometry::isValid()
+{
+  QString error;
+  // LineString
+  QgsLineString line;
+  QVERIFY( line.isValid( error ) );
+  line.addVertex( QgsPoint( 0, 0 ) );
+  QVERIFY( !line.isValid( error ) );
+  QCOMPARE( error, QStringLiteral( "LineString has less than 2 points and is not empty." ) );
+  line.addVertex( QgsPoint( 1, 1 ) );
+  QVERIFY( line.isValid( error ) );
+
+  // CircularString
+  QgsCircularString circ;
+  QVERIFY( circ.isValid( error ) );
+  QgsPointSequence pts = QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2.5, 2.3 );
+  circ.setPoints( pts );
+  QVERIFY( !circ.isValid( error ) );
+  QCOMPARE( error, QStringLiteral( "CircularString has less than 3 points and is not empty." ) );
+  pts.append( QgsPoint( 5, 5 ) );
+  circ.setPoints( pts );
+  QVERIFY( circ.isValid( error ) );
+
+  // CompoundCurve
+  QgsCompoundCurve curve;
+  QVERIFY( curve.isValid( error ) );
+  curve.addCurve( line.clone() );
+  QVERIFY( curve.isValid( error ) );
+  curve.addCurve( circ.clone() );
+  QVERIFY( curve.isValid( error ) );
+  QgsLineString invalidLine;
+  invalidLine.addVertex( QgsPoint( 0, 0 ) );
+  curve.addCurve( invalidLine.clone() );
+  QVERIFY( !curve.isValid( error ) );
+  QCOMPARE( error, QStringLiteral( "Curve[3]: LineString has less than 2 points and is not empty." ) );
 }
 
 void TestQgsGeometry::equality()

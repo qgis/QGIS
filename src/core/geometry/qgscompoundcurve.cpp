@@ -388,6 +388,22 @@ bool QgsCompoundCurve::isEmpty() const
   return true;
 }
 
+bool QgsCompoundCurve::isValid( QString &error, int flags ) const
+{
+  if ( mCurves.isEmpty() )
+    return true;
+
+  for ( int i = 0; i < mCurves.size() ; ++i )
+  {
+    if ( !mCurves[i]->isValid( error, flags ) )
+    {
+      error = QObject::tr( "Curve[%1]: %2" ).arg( i + 1 ).arg( error );
+      return false;
+    }
+  }
+  return QgsCurve::isValid( error, flags );
+}
+
 QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsLineString *line = new QgsLineString();
@@ -1011,4 +1027,3 @@ void QgsCompoundCurve::swapXy()
   }
   clearCache();
 }
-
