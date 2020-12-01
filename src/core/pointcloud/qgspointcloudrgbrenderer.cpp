@@ -106,8 +106,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
     if ( considerZ )
     {
       // z value filtering is cheapest, if we're doing it...
-      qint32 iz = *( qint32 * )( ptr + i * context.pointRecordSize() + context.zOffset() );
-      z = context.offset().z() + context.scale().z() * iz;
+      z = pointZ( context, ptr, i );
       if ( !zRange.contains( z ) )
         continue;
     }
@@ -128,85 +127,11 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
       }
 
       int red = 0;
-      switch ( redType )
-      {
-        case QgsPointCloudAttribute::Char:
-          continue;
-
-        case QgsPointCloudAttribute::Int32:
-          red = *( qint32 * )( ptr + i * recordSize + redOffset );
-          break;
-
-        case QgsPointCloudAttribute::Short:
-          red = *( short * )( ptr + i * recordSize + redOffset );
-          break;
-
-        case QgsPointCloudAttribute::UShort:
-          red = *( unsigned short * )( ptr + i * recordSize + redOffset );
-          break;
-
-        case QgsPointCloudAttribute::Float:
-          red = *( float * )( ptr + i * recordSize + redOffset );
-          break;
-
-        case QgsPointCloudAttribute::Double:
-          red = *( double * )( ptr + i * recordSize + redOffset );
-          break;
-      }
-
+      context.getAttribute( ptr, i * recordSize + redOffset, redType, red );
       int green = 0;
-      switch ( greenType )
-      {
-        case QgsPointCloudAttribute::Char:
-          continue;
-
-        case QgsPointCloudAttribute::Int32:
-          green = *( qint32 * )( ptr + i * recordSize + greenOffset );
-          break;
-
-        case QgsPointCloudAttribute::Short:
-          green = *( short * )( ptr + i * recordSize + greenOffset );
-          break;
-
-        case QgsPointCloudAttribute::UShort:
-          green = *( unsigned short * )( ptr + i * recordSize + greenOffset );
-          break;
-
-        case QgsPointCloudAttribute::Float:
-          green = *( float * )( ptr + i * recordSize + greenOffset );
-          break;
-
-        case QgsPointCloudAttribute::Double:
-          green = *( double * )( ptr + i * recordSize + greenOffset );
-          break;
-      }
-
+      context.getAttribute( ptr, i * recordSize + greenOffset, greenType, green );
       int blue = 0;
-      switch ( blueType )
-      {
-        case QgsPointCloudAttribute::Char:
-          continue;
-
-        case QgsPointCloudAttribute::Int32:
-          blue = *( qint32 * )( ptr + i * recordSize + blueOffset );
-          break;
-
-        case QgsPointCloudAttribute::Short:
-          blue = *( short * )( ptr + i * recordSize + blueOffset );
-          break;
-
-        case QgsPointCloudAttribute::UShort:
-          blue = *( unsigned short * )( ptr + i * recordSize + blueOffset );
-          break;
-
-        case QgsPointCloudAttribute::Float:
-          blue = *( float * )( ptr + i * recordSize + blueOffset );
-          break;
-
-        case QgsPointCloudAttribute::Double:
-          blue = *( double * )( ptr + i * recordSize + blueOffset );
-          break;
-      }
+      context.getAttribute( ptr, i * recordSize + blueOffset, blueType, blue );
 
       //skip if red, green or blue not in displayable range
       if ( ( useRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( red ) )

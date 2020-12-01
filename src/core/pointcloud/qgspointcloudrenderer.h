@@ -131,6 +131,44 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     int zOffset() const { return mZOffset; }
 
+#ifndef SIP_RUN
+
+    /**
+     * Retrieves the attribute \a value from \a data at the specified \a offset, where
+     * \a type indicates the original data type for the attribute.
+     */
+    template <typename T>
+    void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value ) const
+    {
+      switch ( type )
+      {
+        case QgsPointCloudAttribute::Char:
+          value = *( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Int32:
+          value = *reinterpret_cast< const qint32 * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Short:
+          value = *reinterpret_cast< const short * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::UShort:
+          value = *reinterpret_cast< const unsigned short * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Float:
+          value = *reinterpret_cast< const float * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Double:
+          value = *reinterpret_cast< const double * >( data + offset );
+          return;
+      }
+    }
+#endif
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -348,11 +386,19 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y )
     {
-      qint32 ix = *( qint32 * )( ptr + i * context.pointRecordSize() + context.xOffset() );
-      qint32 iy = *( qint32 * )( ptr + i * context.pointRecordSize() + context.yOffset() );
-
+      const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.xOffset() );
+      const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.yOffset() );
       x = context.offset().x() + context.scale().x() * ix;
       y = context.offset().y() + context.scale().y() * iy;
+    }
+
+    /**
+     * Retrieves the z value for the point at index \a i.
+     */
+    static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i )
+    {
+      const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
+      return context.offset().z() + context.scale().z() * iz;
     }
 
     /**
