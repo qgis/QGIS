@@ -62,20 +62,11 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::lowest();
 
-    //static void addSceneEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
-    //static void addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
-    //static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol );
-
     void makeEntity( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context, PointData &out, bool selected );
     virtual Qt3DRender::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride ) = 0;
-    // input specific for this class
-    //std::unique_ptr< QgsPoint3DSymbol > mSymbol;
-    // inputs - generic
-    //QgsFeatureIds mSelectedIds;
 
     // outputs
     PointData outNormal;  //!< Features that are not selected
-    // PointData outSelected;  //!< Features that are selected
 };
 
 class QgsSingleColorPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler

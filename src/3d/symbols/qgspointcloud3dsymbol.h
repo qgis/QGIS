@@ -49,7 +49,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
       //! Render the point cloud with a color ramp
       ColorRamp,
       //! Render the RGB colors of the point cloud
-      RGBRendering
+      RgbRendering
     };
 
     //! Constructor for QgsPointCloud3DSymbol
@@ -205,11 +205,11 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsRGBPointCloud3DSymbol : public QgsPointCloud3DSymbol
+class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
     //! Constructor for QgsRGBPointCloud3DSymbol
-    QgsRGBPointCloud3DSymbol();
+    QgsRgbPointCloud3DSymbol();
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 

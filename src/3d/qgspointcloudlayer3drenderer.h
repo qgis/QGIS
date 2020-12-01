@@ -39,16 +39,11 @@ class QgsPointCloudLayer;
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
+class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
 
-    /**
-     * Constructor for QgsPointCloud3DRenderContext.
-     *
-     * The \a scale and \a offset arguments specify the scale and offset of the layer's int32 coordinates
-     * compared to CRS coordinates respectively.
-     */
+    //! Constructor for QgsPointCloud3DRenderContext.
     QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol );
 
     //! QgsPointCloudRenderContext cannot be copied.
@@ -80,7 +75,7 @@ class CORE_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 
     /**
      * Sets the \a symbol used for rendering the point cloud
-     *
+     * Takes ownership over the passed symbol
      * \see symbol()
      */
     void setSymbol( QgsPointCloud3DSymbol *symbol );

@@ -16,6 +16,7 @@
 #include "qgspointcloud3dsymbol.h"
 
 #include "qgscolorramptexture.h"
+#include "qgssymbollayerutils.h"
 
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
@@ -59,9 +60,7 @@ void QgsSingleColorPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsRea
 
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
   elem.setAttribute( QStringLiteral( "rendering-style" ), mRenderingStyle );
-  elem.setAttribute( QStringLiteral( "single-color-red" ), mSingleColor.redF() );
-  elem.setAttribute( QStringLiteral( "single-color-green" ), mSingleColor.greenF() );
-  elem.setAttribute( QStringLiteral( "single-color-blue" ), mSingleColor.blueF() );
+  elem.setAttribute( QStringLiteral( "single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
 }
 
 void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -69,10 +68,8 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
   Q_UNUSED( context )
 
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
-  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "1" ) ).toInt() );
-  mSingleColor.setRedF( elem.attribute( "single-color-red", QStringLiteral( "0.0" ) ).toFloat() );
-  mSingleColor.setGreenF( elem.attribute( "single-color-green", QStringLiteral( "0.0" ) ).toFloat() );
-  mSingleColor.setBlueF( elem.attribute( "single-color-blue", QStringLiteral( "1.0" ) ).toFloat() );
+  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( QStringLiteral( "rendering-style" ), QStringLiteral( "1" ) ).toInt() );
+  mSingleColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "single-color" ), QStringLiteral( "0,0,0" ) ) );
 }
 
 void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
@@ -188,37 +185,37 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
   mat->addParameter( colorRampTypeParameter );
 }
 
-// QgsRGBPointCloud3DSymbol
+// QgsRgbPointCloud3DSymbol
 
-QgsRGBPointCloud3DSymbol::QgsRGBPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::RGBRendering )
+QgsRgbPointCloud3DSymbol::QgsRgbPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle::RgbRendering )
 {
 
 }
 
-QgsAbstract3DSymbol *QgsRGBPointCloud3DSymbol::clone() const
+QgsAbstract3DSymbol *QgsRgbPointCloud3DSymbol::clone() const
 {
-  QgsRGBPointCloud3DSymbol *result = new QgsRGBPointCloud3DSymbol;
+  QgsRgbPointCloud3DSymbol *result = new QgsRgbPointCloud3DSymbol;
   result->mPointSize = mPointSize;
   copyBaseSettings( result );
   return result;
 }
 
-void QgsRGBPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
+void QgsRgbPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
   elem.setAttribute( QStringLiteral( "rendering-style" ), mRenderingStyle );
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
 }
 
-void QgsRGBPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
   mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( "rendering-style", QStringLiteral( "3" ) ).toInt() );
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
 }
 
-void QgsRGBPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
+void QgsRgbPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
   Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", mRenderingStyle );
   mat->addParameter( renderingStyle );

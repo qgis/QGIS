@@ -62,15 +62,15 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
   switch ( symbol->renderingStyle() )
   {
-    case QgsPointCloud3DSymbol::NoRendering:
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
       break;
-    case QgsPointCloud3DSymbol::SingleColor:
+    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
       mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler() );
       break;
-    case QgsPointCloud3DSymbol::ColorRamp:
+    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
       mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
       break;
-    case QgsPointCloud3DSymbol::RGBRendering:
+    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
       mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
       break;
   }
