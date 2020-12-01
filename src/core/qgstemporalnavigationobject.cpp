@@ -212,9 +212,9 @@ QgsInterval QgsTemporalNavigationObject::frameDuration() const
 
 void QgsTemporalNavigationObject::setFrameTimeStep( double timeStep )
 {
-    mFrameTimeStep = timeStep;
-    setFrameDuration( QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ) );
-    setCurrentFrameNumber( 0 );
+  mFrameTimeStep = timeStep;
+  setFrameDuration( QgsInterval( mFrameTimeStep, mFrameTimeStepUnit ) );
+  setCurrentFrameNumber( 0 );
 }
 
 void QgsTemporalNavigationObject::setFrameTimeStepUnit( QgsUnitTypes::TemporalUnit timeStepUnit )
