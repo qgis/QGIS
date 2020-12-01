@@ -206,7 +206,7 @@ void TestQgsEptProvider::attributes()
   QCOMPARE( attributes.at( 2 ).name(), QStringLiteral( "Z" ) );
   QCOMPARE( attributes.at( 2 ).type(), QgsPointCloudAttribute::Int32 );
   QCOMPARE( attributes.at( 3 ).name(), QStringLiteral( "Intensity" ) );
-  QCOMPARE( attributes.at( 3 ).type(), QgsPointCloudAttribute::Short );
+  QCOMPARE( attributes.at( 3 ).type(), QgsPointCloudAttribute::UShort );
   QCOMPARE( attributes.at( 4 ).name(), QStringLiteral( "ReturnNumber" ) );
   QCOMPARE( attributes.at( 4 ).type(), QgsPointCloudAttribute::Char );
   QCOMPARE( attributes.at( 5 ).name(), QStringLiteral( "NumberOfReturns" ) );
@@ -222,15 +222,15 @@ void TestQgsEptProvider::attributes()
   QCOMPARE( attributes.at( 10 ).name(), QStringLiteral( "UserData" ) );
   QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::Char );
   QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );
-  QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::Short );
+  QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
   QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "GpsTime" ) );
   QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::Double );
   QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "Red" ) );
-  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::Short );
+  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::UShort );
   QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "Green" ) );
-  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::Short );
+  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::UShort );
   QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Blue" ) );
-  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::Short );
+  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UShort );
 }
 
 

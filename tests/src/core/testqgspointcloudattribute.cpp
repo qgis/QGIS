@@ -86,6 +86,7 @@ void TestQgsPointCloudAttribute::testAttributeDisplayType()
 {
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Char ).displayType(), QStringLiteral( "Character" ) );
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Short ).displayType(), QStringLiteral( "Short" ) );
+  QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::UShort ).displayType(), QStringLiteral( "Unsigned Short" ) );
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Int32 ).displayType(), QStringLiteral( "Integer" ) );
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Float ).displayType(), QStringLiteral( "Float" ) );
   QCOMPARE( QgsPointCloudAttribute( QStringLiteral( "x" ), QgsPointCloudAttribute::DataType::Double ).displayType(), QStringLiteral( "Double" ) );
@@ -95,6 +96,7 @@ void TestQgsPointCloudAttribute::testIsNumeric()
 {
   QVERIFY( !QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Char ) );
   QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Short ) );
+  QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::UShort ) );
   QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Int32 ) );
   QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Float ) );
   QVERIFY( QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType::Double ) );

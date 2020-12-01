@@ -27,6 +27,7 @@ pair of name and size in bytes
     {
       Char,
       Short,
+      UShort,
       Int32,
       Float,
       Double,

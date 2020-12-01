@@ -35,6 +35,8 @@ QString QgsPointCloudAttribute::displayType() const
       return QObject::tr( "Character" );
     case DataType::Short:
       return QObject::tr( "Short" );
+    case DataType::UShort:
+      return QObject::tr( "Unsigned Short" );
     case DataType::Float:
       return QObject::tr( "Float" );
     case DataType::Int32:
@@ -52,6 +54,7 @@ bool QgsPointCloudAttribute::isNumeric( QgsPointCloudAttribute::DataType type )
     case DataType::Char:
       return false;
     case DataType::Short:
+    case DataType::UShort:
     case DataType::Float:
     case DataType::Int32:
     case DataType::Double:
@@ -68,6 +71,7 @@ void QgsPointCloudAttribute::updateSize()
       mSize = 1;
       break;
     case DataType::Short:
+    case DataType::UShort:
       mSize = 2;
       break;
     case DataType::Float:
