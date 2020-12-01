@@ -64,9 +64,9 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
         mColorRampShaderWidget->setFromShader( symb->colorRampShader() );
         break;
       }
-      case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
+      case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
       {
-        QgsRGBPointCloud3DSymbol *symb = dynamic_cast<QgsRGBPointCloud3DSymbol *>( symbol );
+        QgsRgbPointCloud3DSymbol *symb = dynamic_cast<QgsRgbPointCloud3DSymbol *>( symbol );
         mPointSizeSpinBox->setValue( symb->pointSize() );
         break;
       }
@@ -106,9 +106,9 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
       retSymb = symb;
       break;
     }
-    case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
+    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
     {
-      QgsRGBPointCloud3DSymbol *symb = new QgsRGBPointCloud3DSymbol;
+      QgsRgbPointCloud3DSymbol *symb = new QgsRgbPointCloud3DSymbol;
       symb->setPointSize( mPointSizeSpinBox->value() );
       retSymb = symb;
       break;
@@ -151,7 +151,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged( int current )
       mSingleColorFrame->setVisible( false );
       mPointSizeFrame->setVisible( true );
       break;
-    case QgsPointCloud3DSymbol::RenderingStyle::RGBRendering:
+    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
       mColorRampFrame->setVisible( false );
       mSingleColorFrame->setVisible( false );
       mPointSizeFrame->setVisible( true );

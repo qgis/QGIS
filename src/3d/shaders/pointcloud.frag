@@ -8,37 +8,13 @@ out vec4 color;
 // Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering
 uniform int u_renderingStyle;
 // Sets the unique mesh color
-uniform vec3 u_singleColor; //
+uniform vec3 u_singleColor;
 // Sets the color ramp type, 0: linear, 1: discrete, 2: exact
-uniform int u_colorRampType; //
+uniform int u_colorRampType;
 // Sets the texture that stores the color ramp
 uniform sampler1D u_colorRampTexture; //
 // Sets the color ramp value count, used to check the if not void
-uniform int u_colorRampCount; //
-
-//vec4 clsidBasedRendering()
-//{
-//  vec4 color;
-//  if ( abs(clsid-2) < 0.1 )         // ground
-//    color = vec4(1,1,0,1);
-//  else if ( abs( clsid - 3 ) < 0.1 )      // low vegetation
-//    color = vec4(0,0.4,0,1);
-//  else if ( abs( clsid - 4 ) < 0.1 )      // medium vegetation
-//    color = vec4(0,0.6,0,1);
-//  else if ( abs( clsid - 5 ) < 0.1 )     // high vegetation
-//    color = vec4(0,1,0,1);
-//  else if ( abs( clsid - 12 ) < 0.1 )   // overlaps
-//  {
-//    color = vec4(1,0,0,1);
-//    discard;  // skip overlaps
-//  }
-//  else
-//  {
-//    color = vec4(0,1,1,1);
-//    //discard;
-//  }
-//  return color;
-//}
+uniform int u_colorRampCount;
 
 vec3 linearColorRamp()
 {
@@ -75,7 +51,6 @@ vec3 linearColorRamp()
   //last color if no value is found
   vec4 colorRampLine=texelFetch(u_colorRampTexture,colorRampSize-1,0);
   return colorRampLine.yzw;
-  return vec3(0.5,0.5,0.5);
 }
 
 vec3 discreteColorRamp()
