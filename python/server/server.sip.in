@@ -16,28 +16,38 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 
 
 %VirtualErrorHandler serverapi_badrequest_exception_handler
-    PyObject *exception, *value, *traceback;
-    PyErr_Fetch(&exception, &value, &traceback);
+    PyObject *type, *exception, *traceback, *pyStrException;
+
+    PyErr_Fetch(&type, &exception, &traceback);
+    pyStrException = PyObject_Str(exception);
+    Py_DECREF(pyStrException);
+
     SIP_RELEASE_GIL( sipGILState );
-    QString strVal = "API bad request error";
-    if ( value && PyUnicode_Check(value) )
+
+    QString strException = "API bad request error";
+    if ( pyStrException && PyUnicode_Check(pyStrException) )
     {
-      Py_ssize_t size;
-      strVal = QString::fromUtf8( PyUnicode_AsUTF8AndSize(value, &size) );
+       strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
     }
-    throw QgsServerApiBadRequestException( strVal );
+
+    throw QgsServerApiBadRequestException( strException );
 %End
 
 
 %VirtualErrorHandler server_exception_handler
-    PyObject *exception, *value, *traceback;
-    PyErr_Fetch(&exception, &value, &traceback);
+    PyObject *type, *exception, *traceback, *pyStrException;
+
+    PyErr_Fetch(&type, &exception, &traceback);
+    pyStrException = PyObject_Str(exception);
+    Py_DECREF(pyStrException);
+
     SIP_RELEASE_GIL( sipGILState );
-    QString strVal = "Server internal error";
-    if ( value && PyUnicode_Check(value) )
+
+    QString strException = "Server internal error";
+    if ( pyStrException && PyUnicode_Check(pyStrException) )
     {
-      Py_ssize_t size;
-      strVal = QString::fromUtf8( PyUnicode_AsUTF8AndSize(value, &size) );
+       strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
     }
-    throw QgsServerException( strVal );
+
+    throw QgsServerException( strException );
 %End
