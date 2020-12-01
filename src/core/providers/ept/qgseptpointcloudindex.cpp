@@ -149,7 +149,22 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
       mOffset.set( mOffset.x(), mOffset.y(), offset );
       mScale.set( mScale.x(), mScale.y(), scale );
     }
-    // TODO: can parse also stats: "count", "minimum", "maximum", "mean", "stddev", "variance"
+
+    // store any metadata stats which are present for the attribute
+    AttributeStatistics stats;
+    if ( schemaObj.contains( "count" ) )
+      stats.count = schemaObj.value( QLatin1String( "count" ) ).toInt();
+    if ( schemaObj.contains( "minimum" ) )
+      stats.minimum = schemaObj.value( QLatin1String( "minimum" ) ).toDouble();
+    if ( schemaObj.contains( "maximum" ) )
+      stats.maximum = schemaObj.value( QLatin1String( "maximum" ) ).toDouble();
+    if ( schemaObj.contains( "count" ) )
+      stats.mean = schemaObj.value( QLatin1String( "mean" ) ).toDouble();
+    if ( schemaObj.contains( "stddev" ) )
+      stats.stDev = schemaObj.value( QLatin1String( "stddev" ) ).toDouble();
+    if ( schemaObj.contains( "variance" ) )
+      stats.variance = schemaObj.value( QLatin1String( "variance" ) ).toDouble();
+    mMetadataStats.insert( name, stats );
   }
   setAttributes( attributes );
 
@@ -214,6 +229,50 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 {
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );
+}
+
+QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( !mMetadataStats.contains( attribute ) )
+    return QVariant();
+
+  const AttributeStatistics &stats = mMetadataStats[ attribute ];
+  switch ( statistic )
+  {
+    case QgsStatisticalSummary::Count:
+      return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
+
+    case QgsStatisticalSummary::Mean:
+      return std::isnan( stats.mean ) ? QVariant() : QVariant( stats.mean );
+
+    case QgsStatisticalSummary::StDev:
+      return std::isnan( stats.stDev ) ? QVariant() : QVariant( stats.stDev );
+
+    case QgsStatisticalSummary::Min:
+      return stats.minimum;
+
+    case QgsStatisticalSummary::Max:
+      return stats.maximum;
+
+    case QgsStatisticalSummary::Range:
+      return stats.minimum.isValid() && stats.maximum.isValid() ? QVariant( stats.maximum.toDouble() - stats.minimum.toDouble() ) : QVariant();
+
+    case QgsStatisticalSummary::CountMissing:
+    case QgsStatisticalSummary::Sum:
+    case QgsStatisticalSummary::Median:
+    case QgsStatisticalSummary::StDevSample:
+    case QgsStatisticalSummary::Minority:
+    case QgsStatisticalSummary::Majority:
+    case QgsStatisticalSummary::Variety:
+    case QgsStatisticalSummary::FirstQuartile:
+    case QgsStatisticalSummary::ThirdQuartile:
+    case QgsStatisticalSummary::InterQuartileRange:
+    case QgsStatisticalSummary::First:
+    case QgsStatisticalSummary::Last:
+    case QgsStatisticalSummary::All:
+      return QVariant();
+  }
+  return QVariant();
 }
 
 bool QgsEptPointCloudIndex::loadHierarchy()
