@@ -33,7 +33,7 @@
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
+class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 {
   public:
 
@@ -53,7 +53,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol
     };
 
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style ) SIP_SKIP;
+    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
