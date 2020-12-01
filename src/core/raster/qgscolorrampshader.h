@@ -222,7 +222,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Look up table to speed up finding the right color.
      * It is initialized on the first call to shade().
     */
-    mutable QVector<int> mLUT;
+    mutable std::vector<int> mLUT;
     mutable double mLUTOffset = 0.0;
     mutable double mLUTFactor = 1.0;
     mutable bool mLUTInitialized = false;
