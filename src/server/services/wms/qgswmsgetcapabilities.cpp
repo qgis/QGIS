@@ -2035,14 +2035,20 @@ namespace QgsWms
     {
       const auto treeLayer { static_cast<const QgsLayerTreeLayer *>( childNode ) };
       const auto l { treeLayer->layer() };
-      return ! wmsRestrictedLayers.contains( l->name() ) && l->flags().testFlag( QgsMapLayer::Identifiable );
+      if ( l )
+      {
+        return ! wmsRestrictedLayers.contains( l->name() ) && l->flags().testFlag( QgsMapLayer::Identifiable );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Broken/corrupted layer tree, layer '%1' does not exist: check your project!" ).arg( treeLayer->name() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      }
     }
     return false;
   }
 
 
 } // namespace QgsWms
-
 
 
 
