@@ -73,30 +73,7 @@ bool QgsColorRampTextureGenerator::operator==( const Qt3DRender::QTextureImageDa
   if ( !otherFunctor )
     return false;
 
-  QgsColorRampShader otherColorRampShader = otherFunctor->mColorRampShader;
-
-  if ( mColorRampShader.colorRampItemList().count() != otherColorRampShader.colorRampItemList().count() ||
-       mColorRampShader.classificationMode() != otherColorRampShader.classificationMode() ||
-       mColorRampShader.colorRampType() != otherColorRampShader.colorRampType() )
-  {
-    return false;
-  }
-
-  QList<QgsColorRampShader::ColorRampItem> colorItemList = mColorRampShader.colorRampItemList();
-  QList<QgsColorRampShader::ColorRampItem> otherColorItemList = otherColorRampShader.colorRampItemList();
-  for ( int i = 0; i < colorItemList.count(); ++i )
-  {
-    const QColor color = colorItemList.at( i ).color;
-    const QColor otherColor = otherColorItemList.at( i ).color;
-    double value = colorItemList.at( i ).value;
-    double otherValue = otherColorItemList.at( i ).value;
-    if ( color != otherColor ||
-         ( !std::isnan( value ) && !std::isnan( otherValue ) && colorItemList.at( i ).value != otherColorItemList.at( i ).value ) ||
-         ( std::isnan( value ) != std::isnan( otherValue ) ) )
-      return false;
-  }
-
-  return true;
+  return mColorRampShader == otherFunctor->mColorRampShader;
 }
 
 // ColorRampTexture
