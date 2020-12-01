@@ -1721,6 +1721,42 @@ class Handler3(QgsServerOgcApiHandler):
             return self.templatePathOverride
 
 
+class HandlerException(QgsServerOgcApiHandler):
+
+    def __init__(self):
+        super().__init__()
+        self.__exception = None
+
+    def setException(self, exception):
+        self.__exception = exception
+
+    def path(self):
+        return QtCore.QRegularExpression("/handlerexception")
+
+    def operationId(self):
+        return "handlerException"
+
+    def summary(self):
+        return "Trigger an exception"
+
+    def description(self):
+        return "Trigger an exception"
+
+    def linkTitle(self):
+        return "Trigger an exception Title"
+
+    def linkType(self):
+        return QgsServerOgcApi.data
+
+    def handleRequest(self, context):
+        """Triggers an exception"""
+        raise self.__exception
+
+    def parameters(self, context):
+        return [
+            QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value')]
+
+
 class QgsServerOgcAPITest(QgsServerAPITestBase):
     """ QGIS OGC API server tests"""
 
@@ -1899,6 +1935,36 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         req = QgsBufferServerRequest(
             'http://localhost:8000/project/7ecb/wfs3/collections/zg.grundnutzung.html')
         self.assertEqual(h3.contentTypeFromRequest(req), QgsServerOgcApi.HTML)
+
+    def testOgcApiHandlerException(self):
+        """Test OGC API Handler exception"""
+
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        request = QgsBufferServerRequest('')
+        response = QgsBufferServerResponse()
+
+        ctx = QgsServerApiContext(
+            '/services/apiexception', request, response, project, self.server.serverInterface())
+        h = HandlerException()
+
+        api = QgsServerOgcApi(self.server.serverInterface(),
+                              '/apiexception', 'apiexception', 'an api with exception', '1.2')
+        api.registerHandler(h)
+
+        h.setException(Exception("UTF-8 Exception 1 $ù~à^£"))
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/handlerexception'))
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(
+            str(ex.exception), "UTF-8 Exception 1 $ù~à^£")
+
+        h.setException(QgsServerApiBadRequestException("UTF-8 Exception 2 $ù~à^£"))
+        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/handlerexception'))
+        with self.assertRaises(QgsServerApiBadRequestException) as ex:
+            api.executeRequest(ctx)
+        self.assertEqual(
+            str(ex.exception), "UTF-8 Exception 2 $ù~à^£")
 
 
 if __name__ == '__main__':
