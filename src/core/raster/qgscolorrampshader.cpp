@@ -355,7 +355,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
           {
             idx++;
           }
-          mLUT.push_back( idx );
+          mLUT.emplace_back( idx );
         }
       }
     }
@@ -372,7 +372,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   {
     idx = 0;
   }
-  else if ( lutIndex >= mLUT.count() )
+  else if ( static_cast< std::size_t>( lutIndex ) >= mLUT.size() )
   {
     idx = colorRampItemListCount - 1;
     if ( colorRampItems[idx].value + DOUBLE_DIFF_THRESHOLD < value )
@@ -387,7 +387,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   else
   {
     // get initial value from LUT
-    idx = mLUT.at( lutIndex );
+    idx = mLUT[ lutIndex ];
 
     // check if it's correct and if not increase until correct
     // the LUT is made in such a way the index is always correct or too low, never too high
@@ -428,6 +428,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       float currentRampRange = currentColorRampItem.value - previousColorRampItem.value;
       float offsetInRange = value - previousColorRampItem.value;
       float scale = offsetInRange / currentRampRange;
+
       const QRgb c1 = previousColorRampItem.color.rgba();
       const QRgb c2 = currentColorRampItem.color.rgba();
 
