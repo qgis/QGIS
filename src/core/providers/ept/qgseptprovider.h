@@ -52,6 +52,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     QString description() const override;
 
     QgsPointCloudIndex *index() const override;
+    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
 
   private:
     std::unique_ptr<QgsEptPointCloudIndex> mIndex;

@@ -78,6 +78,11 @@ QgsPointCloudIndex *QgsEptProvider::index() const
   return mIndex.get();
 }
 
+QVariant QgsEptProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  return mIndex->metadataStatistic( attribute, statistic );
+}
+
 QgsEptProviderMetadata::QgsEptProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {

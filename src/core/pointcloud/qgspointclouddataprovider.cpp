@@ -38,3 +38,8 @@ QgsPointCloudRenderer *QgsPointCloudDataProvider::createRenderer( const QVariant
 {
   return nullptr;
 }
+
+QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &, QgsStatisticalSummary::Statistic ) const
+{
+  return QVariant();
+}

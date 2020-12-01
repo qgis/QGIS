@@ -27,6 +27,7 @@
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
+#include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
 
 ///@cond PRIVATE
@@ -47,12 +48,26 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
     QgsCoordinateReferenceSystem crs() const;
+    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+
   private:
     bool loadHierarchy();
 
     QString mDataType;
     QString mDirectory;
     QString mWkt;
+
+    struct AttributeStatistics
+    {
+      int count = -1;
+      QVariant minimum;
+      QVariant maximum;
+      double mean = std::numeric_limits< double >::quiet_NaN();
+      double stDev = std::numeric_limits< double >::quiet_NaN();
+      double variance = std::numeric_limits< double >::quiet_NaN();
+    };
+
+    QMap< QString, AttributeStatistics > mMetadataStats;
 };
 
 ///@endcond

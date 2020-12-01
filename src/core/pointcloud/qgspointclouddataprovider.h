@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgsdataprovider.h"
 #include "qgspointcloudattribute.h"
+#include "qgsstatisticalsummary.h"
 #include <memory>
 
 class QgsPointCloudIndex;
@@ -94,6 +95,50 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * providers will return NULLPTR.
      */
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a statistic for the specified \a attribute, taken only from the metadata of the point cloud
+     * data source.
+     *
+     * This method will not perform any statistical calculations, rather it will return only precomputed attribute
+     * statistics which are included in the data source's metadata. Not all data sources include this information
+     * in the metadata, and even for sources with statistical metadata only some \a statistic values may be available.
+     *
+     * If no matching precalculated statistic is available then an invalid variant will be returned.
+     */
+    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+#else
+
+    /**
+     * Returns a statistic for the specified \a attribute, taken only from the metadata of the point cloud
+     * data source.
+     *
+     * This method will not perform any statistical calculations, rather it will return only precomputed attribute
+     * statistics which are included in the data source's metadata. Not all data sources include this information
+     * in the metadata, and even for sources with statistical metadata only some \a statistic values may be available.
+     *
+     * \throws ValueError if no matching precalculated statistic is available for the attribute.
+     */
+    SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    % MethodCode
+    {
+      const QVariant res = sipCpp->metadataStatistic( *a0, a1 );
+      if ( !res.isValid() )
+      {
+        PyErr_SetString( PyExc_ValueError, QStringLiteral( "Statistic is not available" ).toUtf8().constData() );
+        sipIsErr = 1;
+      }
+      else
+      {
+        QVariant *v = new QVariant( res );
+        sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+      }
+    }
+    % End
+#endif
+
 
 };
 
