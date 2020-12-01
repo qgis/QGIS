@@ -262,14 +262,10 @@ void QgsPointCloudRgbRenderer::stopRender( QgsPointCloudRenderContext &context )
   QgsPointCloudRenderer::stopRender( context );
 }
 
-QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
+QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
 {
   QSet<QString> res;
   res << mRedAttribute << mGreenAttribute << mBlueAttribute;
-
-  if ( !context.renderContext().zRange().isInfinite() )
-    res << QStringLiteral( "Z" );
-
   return res;
 }
 

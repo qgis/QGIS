@@ -16,19 +16,19 @@
 #include "qgspointcloudrenderer.h"
 
 // default renderers
+#include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudrgbrenderer.h"
-
 #include "qgspointcloudlayer.h"
 
 QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
 {
   // add default renderers
+  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "ramp" ),
+               QObject::tr( "Attribute by Ramp" ),
+               QgsPointCloudAttributeByRampRenderer::create ) );
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "rgb" ),
                QObject::tr( "RGB" ),
                QgsPointCloudRgbRenderer::create ) );
-  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "dummy" ),
-               QObject::tr( "Dummy" ),
-               QgsDummyPointCloudRenderer::create ) );
 }
 
 QgsPointCloudRendererRegistry::~QgsPointCloudRendererRegistry()
@@ -80,6 +80,6 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   if ( attributes.indexOf( QStringLiteral( "Red" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Green" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Blue" ) ) >= 0 )
     return new QgsPointCloudRgbRenderer();
 
-  return new QgsDummyPointCloudRenderer();
+  return new QgsPointCloudAttributeByRampRenderer();
 }
 

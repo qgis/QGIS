@@ -287,6 +287,7 @@ set(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
+  pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudrendererwidget.cpp
   pointcloud/qgspointcloudrendererpropertieswidget.cpp
   pointcloud/qgspointcloudrgbrendererwidget.cpp
@@ -1062,6 +1063,7 @@ set(QGIS_GUI_HDRS
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
 
+  pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudrendererwidget.h
   pointcloud/qgspointcloudrendererpropertieswidget.h
   pointcloud/qgspointcloudrgbrendererwidget.h
