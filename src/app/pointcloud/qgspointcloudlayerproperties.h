@@ -71,7 +71,8 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     {
       Value,
       Classification,
-      Count
+      Count,
+      Percent
     };
 
     QgsPointCloudClassificationStatisticsModel( QgsPointCloudLayer *layer, const QString &attribute, QObject *parent );
