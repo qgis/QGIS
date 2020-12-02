@@ -66,7 +66,7 @@ class CORE_EXPORT QgsGdalUtils
      * \returns TRUE on success
      * \since QGIS 3.8
      */
-    static bool resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
+    static bool resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation );
 
     /**
      * Resamples a QImage \a image using GDAL resampler.
