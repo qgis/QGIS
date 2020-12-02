@@ -100,6 +100,16 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   mStatisticsTableView->setModel( new QgsPointCloudAttributeStatisticsModel( mLayer, mStatisticsTableView ) );
   mStatisticsTableView->verticalHeader()->hide();
 
+  if ( mLayer->dataProvider() && !mLayer->dataProvider()->metadataClasses( QStringLiteral( "Classification" ) ).isEmpty() )
+  {
+    mClassificationStatisticsTableView->setModel( new QgsPointCloudClassificationStatisticsModel( mLayer, QStringLiteral( "Classification" ), mStatisticsTableView ) );
+    mClassificationStatisticsTableView->verticalHeader()->hide();
+  }
+  else
+  {
+    mClassificationStatsGroupBox->hide();
+  }
+
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
@@ -525,3 +535,103 @@ QVariant QgsPointCloudAttributeStatisticsModel::headerData( int section, Qt::Ori
   }
   return QVariant();
 }
+
+
+//
+// QgsPointCloudClassificationStatisticsModel
+//
+QgsPointCloudClassificationStatisticsModel::QgsPointCloudClassificationStatisticsModel( QgsPointCloudLayer *layer, const QString &attribute, QObject *parent )
+  : QAbstractTableModel( parent )
+  , mLayer( layer )
+  , mAttribute( attribute )
+{
+  mClassifications = layer->dataProvider() ? layer->dataProvider()->metadataClasses( attribute ) : QVariantList();
+  std::sort( mClassifications.begin(), mClassifications.end(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
+}
+
+int QgsPointCloudClassificationStatisticsModel::columnCount( const QModelIndex & ) const
+{
+  return Count + 1;
+}
+
+int QgsPointCloudClassificationStatisticsModel::rowCount( const QModelIndex & ) const
+{
+  return mClassifications.count();
+}
+
+QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &index, int role ) const
+{
+  if ( index.row() < 0 || index.row() >= mClassifications.count() )
+    return QVariant();
+
+  const QVariant classValue = mClassifications.at( index.row() );
+
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
+    {
+      switch ( index.column() )
+      {
+        case Value:
+          return classValue.toString();
+
+        case Classification:
+          return QgsPointCloudDataProvider::translatedLasClassificationCodes().value( classValue.toInt() );
+
+        case Count:
+          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataClassStatistic( mAttribute, classValue, QgsStatisticalSummary::Count ) : QVariant();
+
+      }
+      return QVariant();
+    }
+
+    case Qt::TextAlignmentRole:
+    {
+      switch ( index.column() )
+      {
+        case Classification:
+          return QVariant( Qt::AlignLeft | Qt::AlignVCenter );
+
+        case Value:
+        case Count:
+          return QVariant( Qt::AlignRight | Qt::AlignVCenter );
+
+      }
+      return QVariant();
+    }
+
+    case Qt::FontRole:
+    {
+      if ( index.column() == Classification )
+      {
+        QFont f;
+        f.setBold( true );
+        return f;
+      }
+      return QVariant();
+    }
+
+    default:
+      return QVariant();
+  }
+}
+
+QVariant QgsPointCloudClassificationStatisticsModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
+  {
+    switch ( section )
+    {
+      case Value:
+        return QVariant();
+
+      case Classification:
+        return tr( "Classification" );
+      case Count:
+        return tr( "Count" );
+    }
+  }
+  return QVariant();
+}
+
