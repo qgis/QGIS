@@ -50,7 +50,7 @@ Encodes a distance unit to a DOM element.
 .. seealso:: :py:func:`readMapUnits`
 %End
 
-    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc );
+    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent" ) );
 
     static QDomElement writeVariant( const QVariant &value, QDomDocument &doc );
 %Docstring

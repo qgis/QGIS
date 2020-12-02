@@ -411,6 +411,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   if ( !extent().isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document, QStringLiteral( "geographicExtent" ) ) );
   }
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
@@ -1899,9 +1900,17 @@ void QgsMapLayer::emitStyleChanged()
   emit styleChanged();
 }
 
-void QgsMapLayer::setExtent( const QgsRectangle &r )
+void QgsMapLayer::setExtent( const QgsRectangle &extent )
 {
-  mExtent = r;
+  mExtent = extent;
+  const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext() };
+  mGeographicExtent = transformer.transform( extent );
+}
+
+void QgsMapLayer::setExtents( const QgsRectangle &extent, const QgsRectangle &geographicExtent )
+{
+  mExtent = extent;
+  mGeographicExtent = geographicExtent;
 }
 
 bool QgsMapLayer::isReadOnly() const
@@ -2000,4 +2009,9 @@ void QgsMapLayer::onNotified( const QString &message )
     triggerRepaint();
     emit dataChanged();
   }
+}
+
+QgsRectangle QgsMapLayer::geographicExtent() const
+{
+  return mGeographicExtent;
 }
