@@ -58,6 +58,7 @@ class TestQgsLayerTree : public QObject
     void testUtilsCountMapLayers();
     void testSymbolText();
     void testNodeDepth();
+    void testRasterSymbolNode();
 
   private:
 
@@ -843,6 +844,34 @@ void TestQgsLayerTree::testNodeDepth()
   mRoot->removeChildNode( n );
   mRoot->removeChildNode( g1 );
   delete vl;
+}
+
+void TestQgsLayerTree::testRasterSymbolNode()
+{
+  QCOMPARE( mRoot->depth(), 0 );
+  QgsLayerTreeNode *secondGroup = mRoot->children()[1];
+  QCOMPARE( secondGroup->depth(), 1 );
+
+  std::unique_ptr< QgsRasterLayer > rl = qgis::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
+  QVERIFY( rl->isValid() );
+
+  std::unique_ptr< QgsLayerTreeLayer > n = qgis::make_unique< QgsLayerTreeLayer >( rl.get() );
+
+  // not checkable
+  QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ) );
+  QVERIFY( !rasterNode.isCheckable() );
+  QCOMPARE( rasterNode.ruleKey(), QStringLiteral( "key" ) );
+  QCOMPARE( static_cast< int >( rasterNode.flags() ), static_cast< int >( Qt::ItemIsEnabled ) );
+  QCOMPARE( rasterNode.data( Qt::DisplayRole ).toString(), QStringLiteral( "my node" ) );
+  QCOMPARE( rasterNode.data( QgsLayerTreeModelLegendNode::NodeTypeRole ).toInt(), static_cast< int >( QgsLayerTreeModelLegendNode::RasterSymbolLegend ) );
+  QCOMPARE( rasterNode.data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString(), QStringLiteral( "key" ) );
+  QCOMPARE( rasterNode.data( Qt::CheckStateRole ), QVariant() );
+  QVERIFY( !rasterNode.setData( true, Qt::CheckStateRole ) );
+
+  // checkable
+  QgsRasterSymbolLegendNode rasterNode2( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, true, QStringLiteral( "key" ) );
+  QVERIFY( rasterNode2.isCheckable() );
+  QCOMPARE( static_cast< int >( rasterNode2.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) );
 }
 
 QGSTEST_MAIN( TestQgsLayerTree )

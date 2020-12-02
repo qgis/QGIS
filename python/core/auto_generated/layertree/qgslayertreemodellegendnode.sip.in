@@ -545,7 +545,7 @@ Implementation of legend node interface for displaying raster legend entries
 %End
   public:
 
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0 );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0, bool isCheckable = false, const QString &ruleKey = QString() );
 %Docstring
 Constructor for QgsRasterSymbolLegendNode.
 
@@ -553,16 +553,34 @@ Constructor for QgsRasterSymbolLegendNode.
 :param color: color
 :param label: label
 :param parent: attach a parent QObject to the legend node.
+:param isCheckable: set to ``True`` to enable the check box for the node (since QGIS 3.18)
+:param ruleKey: optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
 %End
+
+    virtual Qt::ItemFlags flags() const;
 
     virtual QVariant data( int role ) const;
 
+    virtual bool setData( const QVariant &value, int role );
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
-
     virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
+
+    QString ruleKey() const;
+%Docstring
+Returns the unique identifier of node for identification of the item within renderer.
+
+.. versionadded:: 3.18
+%End
+
+    bool isCheckable() const;
+%Docstring
+Returns whether the item is user-checkable - whether renderer supports enabling/disabling it.
+
+.. versionadded:: 3.18
+%End
 
 };
 
