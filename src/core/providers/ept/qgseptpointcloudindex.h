@@ -35,7 +35,7 @@
 
 class QgsCoordinateReferenceSystem;
 
-class QgsEptPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 {
     Q_OBJECT
   public:

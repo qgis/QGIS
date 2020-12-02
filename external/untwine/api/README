@@ -1,0 +1,45 @@
+This interface is a process-level API. This means that only a thin set of code is linked to
+yours. Untwine is started as an independent process by this API.  Functions are provided to
+control the Untwine process that is started by this API. Running Untwine as a separate process
+has the advantage that if there are errors or bugs in Untwine or the program fails in any way,
+the user of this API is unaffected.
+
+    QgisUntwine(const std::string& untwinePath)
+
+        Initialize the Untwine API to run the untwine executable at the 'untwinePath'.
+
+    bool start(const StringList& files, const std::string& outputDir, const Options& argOptions)
+
+        Start Untwine to ingest 'files' and write the output to 'outputDir'. Options
+        can be optionally passed to Untwine via the 'argOptions' argument.  Returns
+        true if Untwine is successfully started, false otherwise.
+
+    bool stop()
+
+        Stop the running Untwine process. Returns true if Untwine was running and an attempt
+        to stop was made, false otherwise.
+
+    bool running() 
+
+        Returns true if Untwine is running, false otherwise.
+
+    int progressPercent()
+
+        Returns the approximate percentage (0-100) of completion last reported by the Untwine
+        application.
+
+    std::string progressMessage()
+
+        Returns the most recent progress message reported by the Untwine application.
+
+API Usage Notes
+---------------
+
+On Unix and similar, stop() will properly terminate the Untwine process. If Untwine completes
+successfully, you must call running() or stop() in order for your process to properly clean-up
+after the untwine process.  If your process terminates before Untwine completes, Untwine will
+normally see that the pipe that connects your process and Untwine was close and will exit, though
+it may take some small amount of time for this to occur. If you want to make sure that a failure
+of your process (like a segmentation fault) terminates the Untwine process immediately, you
+must call stop() from the appropriate signal handler, though, again, this is generally unnecessary.
+

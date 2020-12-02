@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
+#include "qgspdaleptgenerationtask.h"
 
 #include <pdal/io/LasReader.hpp>
 #include <pdal/io/LasHeader.hpp>
@@ -37,11 +38,18 @@ QgsPdalProvider::QgsPdalProvider(
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
+  mFile = uri; //<TODO REMOVE
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   mIsValid = load( uri );
+
+  connect( this, &QgsPdalProvider::indexRequested, this, &QgsPdalProvider::generateIndex );
+  connect( this, &QgsPdalProvider::indexGenerationFinished, this, &QgsPdalProvider::loadEptIndex );
+
+  // TODO remove
+  index();
 }
 
 QgsPdalProvider::~QgsPdalProvider() = default;
@@ -58,8 +66,34 @@ QgsRectangle QgsPdalProvider::extent() const
 
 QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
 {
-  // TODO
-  return QgsPointCloudAttributeCollection();
+  if ( mIndex )
+    return mIndex->attributes();
+  else
+    return QgsPointCloudAttributeCollection();
+}
+
+QVariantList QgsPdalProvider::metadataClasses( const QString &attribute ) const
+{
+  if ( mIndex )
+    return mIndex->metadataClasses( attribute );
+  else
+    return QVariantList();
+}
+
+QVariant QgsPdalProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( mIndex )
+    return mIndex->metadataClassStatistic( attribute, value, statistic );
+  else
+    return QVariant();
+}
+
+QVariant QgsPdalProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( mIndex )
+    return mIndex->metadataStatistic( attribute, statistic );
+  else
+    return QVariant();
 }
 
 int QgsPdalProvider::pointCount() const
@@ -87,10 +121,37 @@ QString QgsPdalProvider::description() const
   return QStringLiteral( "Point Clouds PDAL" );
 }
 
-QgsPointCloudIndex *QgsPdalProvider::index() const
+QgsPointCloudIndex *QgsPdalProvider::index()
 {
   // TODO automatically generate EPT index
-  return nullptr;
+  emit indexRequested();
+  return mIndex.get();
+}
+
+void QgsPdalProvider::generateIndex()
+{
+  if ( mIndex.get() || mIndexGenerationRunning )
+    return;
+
+  mIndexGenerationRunning = true;
+  QgsPdalEptGenerationTask task( mFile );
+  //TODO run in background
+  task.run();
+
+  qDebug() << "pdal index generated";
+  emit indexGenerationFinished();
+}
+
+void QgsPdalProvider::loadEptIndex()
+{
+  if ( mIndex.get() || !mIndexGenerationRunning )
+    return;
+
+  mIndex.reset( new QgsEptPointCloudIndex );
+  QString outputDir = "/Users/peter/tmp/ept/ept.json"; //TODO
+  mIndex->load( outputDir );
+  mIndexGenerationRunning = false;
+  qDebug() << "pdal index loaded";
 }
 
 bool QgsPdalProvider::load( const QString &uri )

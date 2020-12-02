@@ -53,6 +53,8 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
       CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
     };
+    //TODO
+    //GenerateIndex = 1 << 3, //!< Provider can generate QgsPointCloudIndex. See QgsPointCloudDataProvider::generateIndex().
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -80,7 +82,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \note Not available in Python bindings
      */
-    virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
+    virtual QgsPointCloudIndex *index() SIP_SKIP {return nullptr;}
 
     /**
      * Returns the total number of points available in the dataset.
@@ -235,7 +237,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     static QMap< int, QString > translatedLasClassificationCodes();
 
-
     /**
      * Returns the map of LAS data format ID to untranslated string value.
      *
@@ -249,7 +250,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \see dataFormatIds()
      */
     static QMap< int, QString > translatedDataFormatIds();
-
 };
 
 #endif // QGSMESHDATAPROVIDER_H

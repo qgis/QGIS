@@ -73,7 +73,7 @@ QString QgsEptProvider::description() const
   return QStringLiteral( "Point Clouds EPT" );
 }
 
-QgsPointCloudIndex *QgsEptProvider::index() const
+QgsPointCloudIndex *QgsEptProvider::index()
 {
   return mIndex.get();
 }

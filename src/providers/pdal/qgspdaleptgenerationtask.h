@@ -1,8 +1,8 @@
 /***************************************************************************
-  qgspostgresprovidergui.h
+  qgspdaleptgenerationtask.h
   ------------------------
-  Date                 : October 2019
-  Copyright            : (C) 2019 by Peter Petrik
+  Date                 : December 2020
+  Copyright            : (C) 2020 by Peter Petrik
   Email                : zilolv at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -13,23 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOSTGRESPROVIDERGUI_H
-#define QGSPOSTGRESPROVIDERGUI_H
+#ifndef QGSPDALEPTGENERATIONTASK_H
+#define QGSPDALEPTGENERATIONTASK_H
 
-#include <QList>
-#include <QMainWindow>
+#include <QObject>
+#include <QSharedPointer>
+#include "qgstaskmanager.h"
 
-#include "qgsproviderguimetadata.h"
+namespace untwine {class QgisUntwine;}
 
-class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsPdalEptGenerationTask: public QgsTask
 {
-  public:
-    QgsPostgresProviderGuiMetadata();
+    Q_OBJECT
 
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
-    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override;
-    void registerGui( QMainWindow *mainWindow ) override;
+  public:
+    QgsPdalEptGenerationTask(const QString& file);
+    bool run() override;
+
+  private:
+    QSharedPointer<untwine::QgisUntwine> mUntwineProcess;
+    QString mUntwineExecutableBinary;
+    QString mOutputDir;
+    QString mFile;
 };
 
-#endif // QGSPOSTGRESPROVIDERGUI_H
+#endif // QGSPDALEPTGENERATIONTASK_H

@@ -182,6 +182,7 @@ Lidar Point Classes.
 
 .. seealso:: :py:func:`lasClassificationCodes`
 %End
+<<<<<<< HEAD
 
 
     static QMap< int, QString > dataFormatIds();
@@ -198,6 +199,8 @@ Returns the map of LAS data format ID to translated string value.
 .. seealso:: :py:func:`dataFormatIds`
 %End
 
+=======
+>>>>>>> f96360de32... untwine pdalprovider integration
 };
 
 /************************************************************************
