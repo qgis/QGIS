@@ -40,12 +40,14 @@ QgsPointCloudAttributeByRampRendererWidget::QgsPointCloudAttributeByRampRenderer
   }
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
-           this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
+           this, &QgsPointCloudAttributeByRampRendererWidget::attributeChanged );
   connect( mMinSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
   connect( mMaxSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
 
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
+  connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloudAttributeByRampRendererWidget::setMinMaxFromLayer );
 
+  attributeChanged();
 }
 
 QgsPointCloudRendererWidget *QgsPointCloudAttributeByRampRendererWidget::create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * )
@@ -79,7 +81,43 @@ void QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged()
 
 void QgsPointCloudAttributeByRampRendererWidget::minMaxChanged()
 {
+  if ( mBlockMinMaxChanged )
+    return;
+
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( mMinSpin->value(), mMaxSpin->value() );
+}
+
+void QgsPointCloudAttributeByRampRendererWidget::attributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant min = mLayer->dataProvider()->metadataStatistic( mAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Min );
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( min.isValid() && max.isValid() )
+    {
+      mProviderMin = min.toDouble();
+      mProviderMax = max.toDouble();
+    }
+    else
+    {
+      mProviderMin = std::numeric_limits< double >::quiet_NaN();
+      mProviderMax = std::numeric_limits< double >::quiet_NaN();
+    }
+  }
+  mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
+}
+
+void QgsPointCloudAttributeByRampRendererWidget::setMinMaxFromLayer()
+{
+  if ( std::isnan( mProviderMin ) || std::isnan( mProviderMax ) )
+    return;
+
+  mBlockMinMaxChanged = true;
+  mMinSpin->setValue( mProviderMin );
+  mMaxSpin->setValue( mProviderMax );
+  mBlockMinMaxChanged = false;
+
+  minMaxChanged();
 }
 
 void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
@@ -107,6 +145,7 @@ void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPoint
       mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
     }
   }
+  attributeChanged();
   mBlockChangedSignal = false;
 }
 
