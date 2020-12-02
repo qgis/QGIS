@@ -1301,9 +1301,18 @@ void TestQgsMeshLayer::test_dataset_group_item_tree_item()
     QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->name(), names.at( i ) );
 
   // Disable some items
+  QList<int> enabledList = rootItem->enabledDatasetGroupIndexes();
+  QCOMPARE( enabledList.count(), 22 );
+  QList<int> newList = enabledList;
+  newList.removeOne( 7 );
   rootItem->childFromDatasetGroupIndex( 7 )->setIsEnabled( false );
+  QCOMPARE( newList, rootItem->enabledDatasetGroupIndexes() );
+  newList.removeOne( 10 );
   rootItem->childFromDatasetGroupIndex( 10 )->setIsEnabled( false );
+  QCOMPARE( newList, rootItem->enabledDatasetGroupIndexes() );
+  newList.removeOne( 15 );
   rootItem->childFromDatasetGroupIndex( 15 )->setIsEnabled( false );
+  QCOMPARE( newList, rootItem->enabledDatasetGroupIndexes() );
 
   QDomDocument doc;
   QgsReadWriteContext context;

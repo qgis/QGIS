@@ -494,17 +494,22 @@ void QgsMeshActiveDatasetGroupTreeView::setActiveGroup()
   setActiveVectorGroup( vectorGroup );
 }
 
+QgsMeshDatasetGroupListModel::QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )
+{}
+
 void QgsMeshDatasetGroupListModel::syncToLayer( QgsMeshLayer *layer )
 {
+  beginResetModel();
   if ( layer )
     mRootItem = layer->datasetGroupTreeRootItem();
+  endResetModel();
 }
 
 int QgsMeshDatasetGroupListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   if ( mRootItem )
-    return mRootItem->totalChildCount();
+    return mRootItem->enabledDatasetGroupIndexes().count();
   else
     return 0;
 }
@@ -517,7 +522,12 @@ QVariant QgsMeshDatasetGroupListModel::data( const QModelIndex &index, int role 
   if ( index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
 
-  QgsMeshDatasetGroupTreeItem *item = mRootItem->childFromDatasetGroupIndex( index.row() );
+  const QList<int> list = mRootItem->enabledDatasetGroupIndexes();
+  if ( index.row() >= list.count() )
+    return QVariant();
+
+  QgsMeshDatasetGroupTreeItem *item = mRootItem->childFromDatasetGroupIndex( list.at( index.row() ) );
+
   if ( !item )
     return QVariant();
 

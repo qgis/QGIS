@@ -260,6 +260,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   int activeScalarGroup = layer->rendererSettings().activeScalarDatasetGroup();
   int activeVectorGroup = layer->rendererSettings().activeVectorDatasetGroup();
 
+  const QList<int> allGroup = layer->enabledDatasetGroupsIndexes();
   if ( isTemporal ) //non active dataset group value are only accesible if temporal is active
   {
     const QgsDateTimeRange &time = identifyContext.temporalRange();
@@ -268,7 +269,6 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
       datasetIndexList.append( layer->activeVectorDatasetAtTime( time ) );
 
-    const QList<int> allGroup = layer->datasetGroupsIndexes();
     for ( int groupIndex : allGroup )
     {
       if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
@@ -277,10 +277,21 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   }
   else
   {
+    // only active dataset group
     if ( activeScalarGroup >= 0 )
       datasetIndexList.append( layer->staticScalarDatasetIndex() );
     if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
       datasetIndexList.append( layer->staticVectorDatasetIndex() );
+
+    // ...and static dataset group
+    for ( int groupIndex : allGroup )
+    {
+      if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
+      {
+        if ( !layer->datasetGroupMetadata( groupIndex ).isTemporal() )
+          datasetIndexList.append( groupIndex );
+      }
+    }
   }
 
   //create results
