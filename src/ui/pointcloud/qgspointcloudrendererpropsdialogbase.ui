@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
+    <width>374</width>
     <height>501</height>
    </rect>
   </property>
@@ -119,7 +119,7 @@
              </widget>
             </item>
             <item row="0" column="3">
-             <widget class="QgsUnitSelectionWidget" name="mPointSizeUnitWidget" native="true">
+             <widget class="QgsUnitSelectionWidget" name="mPointSizeUnitWidget">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -194,7 +194,7 @@
              </widget>
             </item>
             <item row="0" column="3">
-             <widget class="QgsUnitSelectionWidget" name="mMaxErrorUnitWidget" native="true">
+             <widget class="QgsUnitSelectionWidget" name="mMaxErrorUnitWidget">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -246,6 +246,12 @@
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QComboBox</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
@@ -255,12 +261,6 @@
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

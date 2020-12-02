@@ -21,6 +21,9 @@
 #include "ui_qgspointcloudlayerpropertiesbase.h"
 
 #include "qgsmaplayerstylemanager.h"
+#include <QAbstractTableModel>
+
+#include "qgspointcloudlayer.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -29,6 +32,34 @@ class QgsPointCloudLayer;
 class QgsMetadataWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
+
+
+class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
+{
+    Q_OBJECT
+
+  public:
+
+    enum Columns
+    {
+      Name,
+      Min,
+      Max,
+      Mean,
+      StDev
+    };
+
+    QgsPointCloudAttributeStatisticsModel( QgsPointCloudLayer *layer, QObject *parent );
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const override;
+  private:
+
+    QgsPointCloudLayer *mLayer = nullptr;
+    QgsPointCloudAttributeCollection mAttributes;
+};
 
 class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
 {
