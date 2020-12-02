@@ -265,6 +265,19 @@ void QgsServerSettings::initSettings()
                                          };
 
   mSettings[ sProjectsPgConnections.envVar ] = sProjectsPgConnections;
+
+  // log profile
+  const Setting sLogProfile = { QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE,
+                                QgsServerSettingsEnv::DEFAULT_VALUE,
+                                QStringLiteral( "Add detailed profile information to the logs, only effective when QGIS_SERVER_LOG_LEVEL=0" ),
+                                QStringLiteral( "/qgis/server_log_profile" ),
+                                QVariant::Bool,
+                                QVariant( false ),
+                                QVariant()
+                              };
+
+  mSettings[ sLogProfile.envVar ] = sLogProfile;
+
 }
 
 void QgsServerSettings::load()
@@ -512,4 +525,9 @@ bool QgsServerSettings::trustLayerMetadata() const
 bool QgsServerSettings::getPrintDisabled() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
+}
+
+bool QgsServerSettings::logProfile()
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE, false ).toBool();
 }
