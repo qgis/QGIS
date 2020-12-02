@@ -525,7 +525,7 @@ QVariant QgsMeshDatasetGroupListModel::data( const QModelIndex &index, int role 
   if ( index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
 
-  QList<int> list = mRootItem->enabledDatasetGroupIndexes();
+  const QList<int> list = mRootItem->enabledDatasetGroupIndexes();
   if ( index.row() >= list.count() )
     return QVariant();
 
