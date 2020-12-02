@@ -26,7 +26,8 @@
 #include "qgspointcloudattribute.h"
 
 class QgsPointCloudBlock;
-
+class QgsLayerTreeLayer;
+class QgsLayerTreeModelLegendNode;
 
 /**
  * \ingroup core
@@ -380,6 +381,11 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see maximumScreenErrorUnit()
      */
     void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+
+    /**
+     * Creates a set of legend nodes representing the renderer.
+     */
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY;
 
   protected:
 

@@ -23,8 +23,10 @@
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsdiagramrenderer.h"
 #include "qgssymbollayerutils.h"
+#include "qgspointcloudrenderer.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -57,6 +59,11 @@ QgsMapLayerLegend *QgsMapLayerLegend::defaultRasterLegend( QgsRasterLayer *rl )
 QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml )
 {
   return new QgsDefaultMeshLayerLegend( ml );
+}
+
+QgsMapLayerLegend *QgsMapLayerLegend::defaultPointCloudLegend( QgsPointCloudLayer *layer )
+{
+  return new QgsDefaultPointCloudLayerLegend( layer );
 }
 
 // -------------------------------------------------------------------------
@@ -492,4 +499,23 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
   }
 
   return nodes;
+}
+
+//
+// QgsDefaultPointCloudLayerLegend
+//
+
+QgsDefaultPointCloudLayerLegend::QgsDefaultPointCloudLayerLegend( QgsPointCloudLayer *layer )
+  : mLayer( layer )
+{
+  connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsDefaultPointCloudLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QgsPointCloudRenderer *renderer = mLayer->renderer();
+  if ( !renderer )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  return renderer->createLegendNodes( nodeLayer );
 }

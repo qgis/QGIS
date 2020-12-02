@@ -20,6 +20,7 @@
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayertreemodellegendnode.h"
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
@@ -192,6 +193,20 @@ QSet<QString> QgsPointCloudAttributeByRampRenderer::usedAttributes( const QgsPoi
   QSet<QString> res;
   res << mAttribute;
   return res;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> nodes;
+
+  QList< QPair< QString, QColor > > items;
+  mColorRampShader.legendSymbologyItems( items );
+  for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+  {
+    nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+  }
+
+  return nodes;
 }
 
 QString QgsPointCloudAttributeByRampRenderer::attribute() const

@@ -28,10 +28,11 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDoubleRange,
     QgsColorRampShader,
-    QgsStyle
+    QgsStyle,
+    QgsLayerTreeLayer
 )
 
-from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtCore import QDir, QSize, Qt
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -131,6 +132,36 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
 
         self.assertEqual(renderer.usedAttributes(prc), {'attr'})
+
+    def testLegend(self):
+        renderer = QgsPointCloudAttributeByRampRenderer()
+        renderer.setAttribute('Intensity')
+        renderer.setMinimum(200)
+        renderer.setMaximum(1000)
+        ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
+        shader = QgsColorRampShader(200, 1000, ramp.clone())
+        shader.setClassificationMode(QgsColorRampShader.EqualInterval)
+        shader.classifyColorRamp(classes=5)
+        renderer.setColorRampShader(shader)
+
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        layer_tree_layer = QgsLayerTreeLayer(layer)
+        nodes = renderer.createLegendNodes(layer_tree_layer)
+        self.assertEqual(len(nodes), 5)
+        self.assertEqual(nodes[0].data(Qt.DisplayRole), '200')
+        self.assertEqual(nodes[1].data(Qt.DisplayRole), '400')
+        self.assertEqual(nodes[2].data(Qt.DisplayRole), '600')
+        self.assertEqual(nodes[3].data(Qt.DisplayRole), '800')
+        self.assertEqual(nodes[4].data(Qt.DisplayRole), '1e+03')
+
+        shader = QgsColorRampShader(200, 600, ramp.clone())
+        shader.setClassificationMode(QgsColorRampShader.EqualInterval)
+        shader.classifyColorRamp(classes=2)
+        renderer.setColorRampShader(shader)
+        nodes = renderer.createLegendNodes(layer_tree_layer)
+        self.assertEqual(len(nodes), 2)
+        self.assertEqual(nodes[0].data(Qt.DisplayRole), '200')
+        self.assertEqual(nodes[1].data(Qt.DisplayRole), '600')
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRender(self):

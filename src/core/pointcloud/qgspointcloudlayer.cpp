@@ -29,6 +29,7 @@
 #include "qgspainting.h"
 #include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsmaplayerlegend.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -42,6 +43,8 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataSource( path, baseName, providerLib, providerOptions, options.loadDefaultStyle );
   }
+
+  setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer() = default;

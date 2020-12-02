@@ -68,6 +68,13 @@ Create new legend implementation for raster layer
 Create new legend implementation for mesh layer
 %End
 
+    static QgsMapLayerLegend *defaultPointCloudLegend( QgsPointCloudLayer *layer ) /Factory/;
+%Docstring
+Create new legend implementation for a point cloud ``layer``.
+
+.. versionadded:: 3.18
+%End
+
   signals:
     void itemsChanged();
 %Docstring
@@ -298,6 +305,28 @@ Default legend implementation for mesh layers
     explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
 %Docstring
 Creates an instance for the given mesh layer
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+class QgsDefaultPointCloudLayerLegend : QgsMapLayerLegend
+{
+%Docstring
+Default legend implementation for point cloud layers
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultPointCloudLayerLegend( QgsPointCloudLayer *layer );
+%Docstring
+Creates an instance for the given point cloud layer
 %End
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;

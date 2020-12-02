@@ -111,6 +111,11 @@ void QgsPointCloudRenderer::setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit 
   mMaximumScreenErrorUnit = unit;
 }
 
+QList<QgsLayerTreeModelLegendNode *> QgsPointCloudRenderer::createLegendNodes( QgsLayerTreeLayer * )
+{
+  return QList<QgsLayerTreeModelLegendNode *>();
+}
+
 void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destination ) const
 {
   destination->setPointSize( mPointSize );
