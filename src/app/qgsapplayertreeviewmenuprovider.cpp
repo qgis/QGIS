@@ -618,20 +618,20 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
   }
   else if ( QgsLayerTreeModelLegendNode *node = mView->index2legendNode( idx ) )
   {
+    if ( node->flags() & Qt::ItemIsUserCheckable )
+    {
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleAllLayers.svg" ) ), tr( "&Toggle Items" ),
+                       node, &QgsLayerTreeModelLegendNode::toggleAllItems );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ),
+                       node, &QgsLayerTreeModelLegendNode::checkAllItems );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),
+                       node, &QgsLayerTreeModelLegendNode::uncheckAllItems );
+      menu->addSeparator();
+    }
+
     if ( QgsSymbolLegendNode *symbolNode = qobject_cast< QgsSymbolLegendNode * >( node ) )
     {
       // symbology item
-      if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
-      {
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleAllLayers.svg" ) ), tr( "&Toggle Items" ),
-                         symbolNode, &QgsSymbolLegendNode::toggleAllItems );
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ),
-                         symbolNode, &QgsSymbolLegendNode::checkAllItems );
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),
-                         symbolNode, &QgsSymbolLegendNode::uncheckAllItems );
-        menu->addSeparator();
-      }
-
       if ( symbolNode->symbol() )
       {
         QgsColorWheel *colorWheel = new QgsColorWheel( menu );
