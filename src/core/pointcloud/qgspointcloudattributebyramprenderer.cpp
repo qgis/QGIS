@@ -70,6 +70,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   const bool considerZ = !zRange.isInfinite();
 
   const bool applyZOffset = attribute->name() == QLatin1String( "Z" );
+  const bool applyXOffset = attribute->name() == QLatin1String( "X" );
+  const bool applyYOffset = attribute->name() == QLatin1String( "Y" );
 
   int rendered = 0;
   double x = 0;
@@ -110,6 +112,10 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
       double attributeValue = 0;
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
 
+      if ( applyXOffset )
+        attributeValue = context.offset().x() + context.scale().x() * attributeValue;
+      if ( applyYOffset )
+        attributeValue = context.offset().y() + context.scale().y() * attributeValue;
       if ( applyZOffset )
         attributeValue = context.offset().z() + context.scale().z() * attributeValue;
 
