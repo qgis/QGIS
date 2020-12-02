@@ -241,6 +241,22 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="mClassificationStatsGroupBox">
+             <property name="title">
+              <string>Classification Statistics</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <item>
+               <widget class="QTableView" name="mClassificationStatisticsTableView">
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>

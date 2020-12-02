@@ -61,6 +61,32 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     QgsPointCloudAttributeCollection mAttributes;
 };
 
+class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
+{
+    Q_OBJECT
+
+  public:
+
+    enum Columns
+    {
+      Value,
+      Classification,
+      Count
+    };
+
+    QgsPointCloudClassificationStatisticsModel( QgsPointCloudLayer *layer, const QString &attribute, QObject *parent );
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const override;
+  private:
+
+    QgsPointCloudLayer *mLayer = nullptr;
+    QString mAttribute;
+    QVariantList mClassifications;
+};
+
 class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::QgsPointCloudLayerPropertiesBase
 {
     Q_OBJECT
