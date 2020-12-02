@@ -509,10 +509,7 @@ int QgsMeshDatasetGroupListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   if ( mRootItem )
-  {
-    QList<int> list = mRootItem->enabledDatasetGroupIndexes();
     return mRootItem->enabledDatasetGroupIndexes().count();
-  }
   else
     return 0;
 }
