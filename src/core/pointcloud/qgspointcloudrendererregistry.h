@@ -31,6 +31,7 @@ class QgsPointCloudRendererWidget SIP_EXTERNAL;
 #endif
 
 class QgsPointCloudAttributeCollection;
+class QgsPointCloudDataProvider;
 
 /**
  * \ingroup core
@@ -219,11 +220,11 @@ class CORE_EXPORT QgsPointCloudRendererRegistry
     QStringList renderersList() const;
 
     /**
-     * Returns a new default point cloud renderer for a layer with the specified \a attributes.
+     * Returns a new default point cloud renderer for a layer with the specified \a provider.
      *
      * Caller takes ownership of the returned renderer.
      */
-    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudAttributeCollection &attributes ) SIP_FACTORY;
+    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudDataProvider *provider ) SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

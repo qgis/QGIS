@@ -53,6 +53,18 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testSetLayer(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/norgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        # test that a point cloud with no RGB attributes is automatically assigned the ramp renderer
+        self.assertIsInstance(layer.renderer(), QgsPointCloudAttributeByRampRenderer)
+
+        # check default range
+        self.assertAlmostEqual(layer.renderer().minimum(), -1.98, 6)
+        self.assertAlmostEqual(layer.renderer().maximum(), -1.92, 6)
+
     def testBasic(self):
         renderer = QgsPointCloudAttributeByRampRenderer()
         renderer.setAttribute('attr')
