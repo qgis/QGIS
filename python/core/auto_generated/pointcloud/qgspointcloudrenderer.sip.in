@@ -351,6 +351,11 @@ Sets the ``unit`` for the maximum screen error allowed when rendering the point 
 Creates a set of legend nodes representing the renderer.
 %End
 
+    virtual QStringList legendRuleKeys() const;
+%Docstring
+Returns a list of all rule keys for legend nodes created by the renderer.
+%End
+
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );

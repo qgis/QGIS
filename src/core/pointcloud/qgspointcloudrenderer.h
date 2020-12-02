@@ -401,6 +401,11 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY;
 
+    /**
+     * Returns a list of all rule keys for legend nodes created by the renderer.
+     */
+    virtual QStringList legendRuleKeys() const;
+
   protected:
 
     /**

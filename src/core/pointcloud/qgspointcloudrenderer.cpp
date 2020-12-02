@@ -126,6 +126,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudRenderer::createLegendNodes( Q
   return QList<QgsLayerTreeModelLegendNode *>();
 }
 
+QStringList QgsPointCloudRenderer::legendRuleKeys() const
+{
+  return QStringList();
+}
+
 void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destination ) const
 {
   destination->setPointSize( mPointSize );
