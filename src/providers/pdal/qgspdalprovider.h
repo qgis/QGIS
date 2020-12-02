@@ -37,6 +37,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
 
     QgsRectangle extent() const override;
     QgsPointCloudAttributeCollection attributes() const override;
+    int pointCount() const override;
 
     bool isValid() const override;
 
@@ -51,6 +52,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     bool mIsValid = false;
+    int mPointCount = 0;
 };
 
 class QgsPdalProviderMetadata : public QgsProviderMetadata

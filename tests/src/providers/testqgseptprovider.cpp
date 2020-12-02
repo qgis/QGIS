@@ -169,6 +169,7 @@ void TestQgsEptProvider::validLayer()
   QGSCOMPARENEAR( layer->extent().yMinimum(), 7050992.0, 0.1 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), 498068.0, 0.1 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 7050998.0, 0.1 );
+  QCOMPARE( layer->dataProvider()->pointCount(), 253 );
 
   QVERIFY( layer->dataProvider()->index() );
   // all hierarchy is stored in a single node

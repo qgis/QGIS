@@ -82,6 +82,11 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
 
     /**
+     * Returns the total number of points available in the dataset.
+     */
+    virtual int pointCount() const = 0;
+
+    /**
      * Creates a new 2D point cloud renderer, using provider backend specific information.
      *
      * The \a configuration map can be used to pass provider-specific configuration maps to the provider to

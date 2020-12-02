@@ -66,6 +66,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
     return false;
 
   mSpan = result.value( QLatin1String( "span" ) ).toInt();
+  mPointCount = result.value( QLatin1String( "points" ) ).toInt();
 
   // WKT
   QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
@@ -241,6 +242,11 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 {
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );
+}
+
+int QgsEptPointCloudIndex::pointCount() const
+{
+  return mPointCount;
 }
 
 QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const

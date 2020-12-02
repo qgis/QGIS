@@ -78,6 +78,11 @@ QgsPointCloudIndex *QgsEptProvider::index() const
   return mIndex.get();
 }
 
+int QgsEptProvider::pointCount() const
+{
+  return mIndex->pointCount();
+}
+
 QVariantList QgsEptProvider::metadataClasses( const QString &attribute ) const
 {
   return mIndex->metadataClasses( attribute );
