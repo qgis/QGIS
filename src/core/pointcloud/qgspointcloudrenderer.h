@@ -434,7 +434,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     QThread *mThread = nullptr;
 #endif
 
-    double mMaximumScreenError = 5.0;
+    double mMaximumScreenError = 1.0;
     QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
 
     double mPointSize = 1;
