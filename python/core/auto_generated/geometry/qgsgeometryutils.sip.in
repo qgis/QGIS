@@ -717,7 +717,7 @@ The bisector segment of ABC is (A-point)
          - pointX: x-coordinate of generated point
          - pointY: y-coordinate of generated point
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
 

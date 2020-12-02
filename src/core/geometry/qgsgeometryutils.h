@@ -741,7 +741,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param pointY y-coordinate of generated point
      * \returns TRUE if the bisector exists (A B and C are not collinear)
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
                           double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL;
