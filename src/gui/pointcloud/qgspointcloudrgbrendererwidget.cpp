@@ -55,12 +55,20 @@ QgsPointCloudRgbRendererWidget::QgsPointCloudRgbRendererWidget( QgsPointCloudLay
   }
 
   connect( mRedAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
-           this, &QgsPointCloudRgbRendererWidget::emitWidgetChanged );
+           this, &QgsPointCloudRgbRendererWidget::redAttributeChanged );
   connect( mGreenAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
-           this, &QgsPointCloudRgbRendererWidget::emitWidgetChanged );
+           this, &QgsPointCloudRgbRendererWidget::greenAttributeChanged );
   connect( mBlueAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
-           this, &QgsPointCloudRgbRendererWidget::emitWidgetChanged );
+           this, &QgsPointCloudRgbRendererWidget::blueAttributeChanged );
   connect( mContrastEnhancementAlgorithmComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRgbRendererWidget::emitWidgetChanged );
+
+  if ( layer )
+  {
+    // set nice initial values
+    redAttributeChanged();
+    greenAttributeChanged();
+    blueAttributeChanged();
+  }
 }
 
 QgsPointCloudRendererWidget *QgsPointCloudRgbRendererWidget::create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * )
@@ -200,6 +208,66 @@ void QgsPointCloudRgbRendererWidget::emitWidgetChanged()
     emit widgetChanged();
 }
 
+void QgsPointCloudRgbRendererWidget::redAttributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( max.isValid() )
+    {
+      const int maxValue = max.toInt();
+      mDisableMinMaxWidgetRefresh++;
+      mRedMinLineEdit->setText( QLocale().toString( 0 ) );
+
+      // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
+      // likely to be 8 bit or 16 bit color values
+      mRedMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65024 : 255 ) );
+      mDisableMinMaxWidgetRefresh--;
+      emitWidgetChanged();
+    }
+  }
+}
+
+void QgsPointCloudRgbRendererWidget::greenAttributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( max.isValid() )
+    {
+      const int maxValue = max.toInt();
+      mDisableMinMaxWidgetRefresh++;
+      mGreenMinLineEdit->setText( QLocale().toString( 0 ) );
+
+      // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
+      // likely to be 8 bit or 16 bit color values
+      mGreenMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65024 : 255 ) );
+      mDisableMinMaxWidgetRefresh--;
+      emitWidgetChanged();
+    }
+  }
+}
+
+void QgsPointCloudRgbRendererWidget::blueAttributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( max.isValid() )
+    {
+      const int maxValue = max.toInt();
+      mDisableMinMaxWidgetRefresh++;
+      mBlueMinLineEdit->setText( QLocale().toString( 0 ) );
+
+      // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
+      // likely to be 8 bit or 16 bit color values
+      mBlueMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65024 : 255 ) );
+      mDisableMinMaxWidgetRefresh--;
+      emitWidgetChanged();
+    }
+  }
+}
+
 void QgsPointCloudRgbRendererWidget::minMaxModified()
 {
   if ( !mDisableMinMaxWidgetRefresh )
@@ -246,11 +314,11 @@ void QgsPointCloudRgbRendererWidget::setFromRenderer( const QgsPointCloudRendere
     mGreenAttributeComboBox->setAttribute( mbcr->greenAttribute() );
     mBlueAttributeComboBox->setAttribute( mbcr->blueAttribute() );
 
-    mDisableMinMaxWidgetRefresh = true;
+    mDisableMinMaxWidgetRefresh++;
     setMinMaxValue( mbcr->redContrastEnhancement(), mRedMinLineEdit, mRedMaxLineEdit );
     setMinMaxValue( mbcr->greenContrastEnhancement(), mGreenMinLineEdit, mGreenMaxLineEdit );
     setMinMaxValue( mbcr->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
-    mDisableMinMaxWidgetRefresh = false;
+    mDisableMinMaxWidgetRefresh--;
   }
   else
   {
