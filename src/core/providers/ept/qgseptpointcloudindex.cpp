@@ -90,7 +90,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
 
   for ( QJsonValue schemaItem : schemaArray )
   {
-    QJsonObject schemaObj = schemaItem.toObject();
+    const QJsonObject schemaObj = schemaItem.toObject();
     QString name = schemaObj.value( QLatin1String( "name" ) ).toString();
     QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
 
@@ -127,11 +127,11 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
     }
 
     float scale = 1.f;
-    if ( schemaObj.contains( "scale" ) )
+    if ( schemaObj.contains( QLatin1String( "scale" ) ) )
       scale = schemaObj.value( QLatin1String( "scale" ) ).toDouble();
 
     float offset = 0.f;
-    if ( schemaObj.contains( "offset" ) )
+    if ( schemaObj.contains( QLatin1String( "offset" ) ) )
       offset = schemaObj.value( QLatin1String( "offset" ) ).toDouble();
 
     if ( name == QLatin1String( "X" ) )
@@ -152,19 +152,31 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
 
     // store any metadata stats which are present for the attribute
     AttributeStatistics stats;
-    if ( schemaObj.contains( "count" ) )
+    if ( schemaObj.contains( QLatin1String( "count" ) ) )
       stats.count = schemaObj.value( QLatin1String( "count" ) ).toInt();
-    if ( schemaObj.contains( "minimum" ) )
+    if ( schemaObj.contains( QLatin1String( "minimum" ) ) )
       stats.minimum = schemaObj.value( QLatin1String( "minimum" ) ).toDouble();
-    if ( schemaObj.contains( "maximum" ) )
+    if ( schemaObj.contains( QLatin1String( "maximum" ) ) )
       stats.maximum = schemaObj.value( QLatin1String( "maximum" ) ).toDouble();
-    if ( schemaObj.contains( "count" ) )
+    if ( schemaObj.contains( QLatin1String( "count" ) ) )
       stats.mean = schemaObj.value( QLatin1String( "mean" ) ).toDouble();
-    if ( schemaObj.contains( "stddev" ) )
+    if ( schemaObj.contains( QLatin1String( "stddev" ) ) )
       stats.stDev = schemaObj.value( QLatin1String( "stddev" ) ).toDouble();
-    if ( schemaObj.contains( "variance" ) )
+    if ( schemaObj.contains( QLatin1String( "variance" ) ) )
       stats.variance = schemaObj.value( QLatin1String( "variance" ) ).toDouble();
     mMetadataStats.insert( name, stats );
+
+    if ( schemaObj.contains( QLatin1String( "counts" ) ) )
+    {
+      QMap< int, int >  classCounts;
+      const QJsonArray counts = schemaObj.value( QLatin1String( "counts" ) ).toArray();
+      for ( const QJsonValue &count : counts )
+      {
+        const QJsonObject countObj = count.toObject();
+        classCounts.insert( countObj.value( QLatin1String( "value" ) ).toInt(), countObj.value( QLatin1String( "count" ) ).toInt() );
+      }
+      mAttributeClasses.insert( name, classCounts );
+    }
   }
   setAttributes( attributes );
 
@@ -273,6 +285,28 @@ QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgs
       return QVariant();
   }
   return QVariant();
+}
+
+QVariantList QgsEptPointCloudIndex::metadataClasses( const QString &attribute ) const
+{
+  QVariantList classes;
+  const QMap< int, int > values =  mAttributeClasses.value( attribute );
+  for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+  {
+    classes << it.key();
+  }
+  return classes;
+}
+
+QVariant QgsEptPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( statistic != QgsStatisticalSummary::Count )
+    return QVariant();
+
+  const QMap< int, int > values =  mAttributeClasses.value( attribute );
+  if ( !values.contains( value.toInt() ) )
+    return QVariant();
+  return values.value( value.toInt() );
 }
 
 bool QgsEptPointCloudIndex::loadHierarchy()
