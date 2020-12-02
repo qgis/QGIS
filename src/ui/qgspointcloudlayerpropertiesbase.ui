@@ -122,6 +122,18 @@
             <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Statistics</string>
+          </property>
+          <property name="toolTip">
+           <string>Statistics</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/algorithms/mAlgorithmBasicStatistics.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmBasicStatistics.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -164,7 +176,7 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -207,6 +219,26 @@
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptsPage_Statistics">
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="groupBox">
+             <property name="title">
+              <string>Attribute Statistics</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_7">
+              <item>
+               <widget class="QTableView" name="mStatisticsTableView">
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -264,6 +296,12 @@
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

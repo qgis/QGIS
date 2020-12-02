@@ -27,6 +27,7 @@
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgspointcloudattributemodel.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -95,6 +96,9 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
+
+  mStatisticsTableView->setModel( new QgsPointCloudAttributeStatisticsModel( mLayer, mStatisticsTableView ) );
+  mStatisticsTableView->verticalHeader()->hide();
 
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
@@ -407,3 +411,117 @@ void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int inde
   mBtnMetadata->setVisible( isMetadataPanel );
 }
 
+//
+// QgsPointCloudAttributeStatisticsModel
+//
+QgsPointCloudAttributeStatisticsModel::QgsPointCloudAttributeStatisticsModel( QgsPointCloudLayer *layer, QObject *parent )
+  : QAbstractTableModel( parent )
+  , mLayer( layer )
+  , mAttributes( layer->attributes() )
+{
+
+}
+
+int QgsPointCloudAttributeStatisticsModel::columnCount( const QModelIndex & ) const
+{
+  return StDev + 1;
+}
+
+int QgsPointCloudAttributeStatisticsModel::rowCount( const QModelIndex & ) const
+{
+  return mAttributes.count();
+}
+
+QVariant QgsPointCloudAttributeStatisticsModel::data( const QModelIndex &index, int role ) const
+{
+  if ( index.row() < 0 || index.row() >= mAttributes.count() )
+    return QVariant();
+
+  const QgsPointCloudAttribute &attr = mAttributes.at( index.row() );
+
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
+    {
+      switch ( index.column() )
+      {
+        case Name:
+          return attr.name();
+
+        case Min:
+          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Min ) : QVariant();
+
+        case Max:
+          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Max ) : QVariant();
+
+        case Mean:
+          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::Mean ) : QVariant();
+
+        case StDev:
+          return mLayer->dataProvider() ? mLayer->dataProvider()->metadataStatistic( attr.name(), QgsStatisticalSummary::StDev ) : QVariant();
+
+      }
+      return QVariant();
+    }
+
+    case Qt::TextAlignmentRole:
+    {
+      switch ( index.column() )
+      {
+        case Name:
+          return QVariant( Qt::AlignLeft | Qt::AlignVCenter );
+
+        case Min:
+        case Max:
+        case Mean:
+        case StDev:
+          return QVariant( Qt::AlignRight | Qt::AlignVCenter );
+
+      }
+      return QVariant();
+    }
+
+    case Qt::FontRole:
+    {
+      if ( index.column() == Name )
+      {
+        QFont f;
+        f.setBold( true );
+        return f;
+      }
+      return QVariant();
+    }
+
+    case Qt::DecorationRole:
+      if ( index.column() == Name )
+        return QgsPointCloudAttributeModel::iconForAttributeType( attr.type() );
+      else
+        return QVariant();
+
+    default:
+      return QVariant();
+  }
+}
+
+QVariant QgsPointCloudAttributeStatisticsModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
+  {
+    switch ( section )
+    {
+      case Name:
+        return tr( "Attribute" );
+
+      case Min:
+        return tr( "Minimum" );
+      case Max:
+        return tr( "Maximum" );
+      case Mean:
+        return tr( "Mean" );
+      case StDev:
+        return tr( "Standard Deviation" );
+    }
+  }
+  return QVariant();
+}
