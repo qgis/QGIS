@@ -118,3 +118,13 @@ QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &, QgsStati
 {
   return QVariant();
 }
+
+QVariantList QgsPointCloudDataProvider::metadataClasses( const QString & ) const
+{
+  return QVariantList();
+}
+
+QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, const QVariant &, QgsStatisticalSummary::Statistic ) const
+{
+  return QVariant();
+}

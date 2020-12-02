@@ -64,6 +64,36 @@ class TestQgsPointCloudDataProvider(unittest.TestCase):
         self.assertAlmostEqual(layer.dataProvider().metadataStatistic('Intensity', QgsStatisticalSummary.StDev),
                                440.9652417017358, 5)
 
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testMetadataClasses(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        self.assertEqual(layer.dataProvider().metadataClasses('X'), [])
+        self.assertCountEqual(layer.dataProvider().metadataClasses('Classification'), [1, 2, 3, 5])
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testMetadataClassStatistics(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        with self.assertRaises(ValueError):
+            self.assertEqual(layer.dataProvider().metadataClassStatistic('X', 0, QgsStatisticalSummary.Count), [])
+
+        with self.assertRaises(ValueError):
+            self.assertEqual(layer.dataProvider().metadataClassStatistic('Classification', 0, QgsStatisticalSummary.Count), [])
+
+        with self.assertRaises(ValueError):
+            self.assertEqual(layer.dataProvider().metadataClassStatistic('Classification', 1, QgsStatisticalSummary.Sum), [])
+
+        self.assertEqual(layer.dataProvider().metadataClassStatistic('Classification', 1, QgsStatisticalSummary.Count), 1)
+        self.assertEqual(layer.dataProvider().metadataClassStatistic('Classification', 2, QgsStatisticalSummary.Count),
+                         160)
+        self.assertEqual(layer.dataProvider().metadataClassStatistic('Classification', 3, QgsStatisticalSummary.Count),
+                         89)
+        self.assertEqual(layer.dataProvider().metadataClassStatistic('Classification', 5, QgsStatisticalSummary.Count),
+                         3)
+
 
 if __name__ == '__main__':
     unittest.main()
