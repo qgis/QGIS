@@ -156,6 +156,13 @@ class QgsMeshDatasetGroupStore: public QObject
     //! Returns a list of all group indexes
     QList<int> datasetGroupIndexes() const;
 
+    /**
+     * Returns a list of all group indexes that are enabled
+     *
+     * \since QGIS 3.16.3
+    */
+    QList<int> enabledDatasetGroupIndexes() const;
+
     //! Returns the count of dataset groups
     int datasetGroupCount() const;
 

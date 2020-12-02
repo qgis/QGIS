@@ -273,6 +273,18 @@ Returns the list of indexes of dataset groups handled by the layer
 .. versionadded:: 3.16
 %End
 
+    QList<int> enabledDatasetGroupsIndexes() const;
+%Docstring
+Returns the list of indexes of enables dataset groups handled by the layer
+
+.. note::
+
+   indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+   In the layer scope, those indexes can be different from the data provider indexes.
+
+.. versionadded:: 3.16.3
+%End
+
     QgsMeshDatasetGroupMetadata datasetGroupMetadata( const QgsMeshDatasetIndex &index ) const;
 %Docstring
 Returns the dataset groups metadata

@@ -590,6 +590,20 @@ int QgsMeshDatasetGroupTreeItem::totalChildCount() const
   return count;
 }
 
+QList<int> QgsMeshDatasetGroupTreeItem::enabledDatasetGroupIndexes() const
+{
+  QList<int> indexesList;
+
+  for ( int i = 0; i < mChildren.count(); ++i )
+  {
+    if ( mChildren.at( i )->isEnabled() )
+      indexesList.append( mChildren.at( i )->datasetGroupIndex() );
+    indexesList.append( mChildren.at( i )->enabledDatasetGroupIndexes() );
+  }
+
+  return indexesList;
+}
+
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::parentItem() const
 {
   return mParent;

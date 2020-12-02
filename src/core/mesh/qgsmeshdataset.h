@@ -866,10 +866,18 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     int childCount() const;
 
     /**
-     * Returns the total count of children, that is included deeper children
-     * \return
-     */
+    * Returns the total count of children, that is included deeper children and disabled items
+    * \return the total children's count
+    */
     int totalChildCount() const;
+
+    /**
+     * Returns a list of enabled dataset group indexes, included deeper children
+     * \return the list of dataset group indexes
+     *
+     * \since QGIS 3.16.3
+     */
+    QList<int> enabledDatasetGroupIndexes() const;
 
     /**
      * Returns the parent item, nullptr if it is root item
