@@ -274,8 +274,7 @@ class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
 class GUI_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
 {
   public:
-    explicit QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )
-    {}
+    explicit QgsMeshDatasetGroupListModel( QObject *parent );
 
     //! Add groups to the model from mesh layer
     void syncToLayer( QgsMeshLayer *layer );

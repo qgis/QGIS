@@ -359,6 +359,11 @@ QList<int> QgsMeshLayer::datasetGroupsIndexes() const
   return mDatasetGroupStore->datasetGroupIndexes();
 }
 
+QList<int> QgsMeshLayer::enabledDatasetGroupsIndexes() const
+{
+  return mDatasetGroupStore->enabledDatasetGroupIndexes();
+}
+
 QgsMeshDatasetGroupMetadata QgsMeshLayer::datasetGroupMetadata( const QgsMeshDatasetIndex &index ) const
 {
   return mDatasetGroupStore->datasetGroupMetadata( index );

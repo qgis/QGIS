@@ -27,6 +27,11 @@ QList<int> QgsMeshDatasetGroupStore::datasetGroupIndexes() const
   return mRegistery.keys();
 }
 
+QList<int> QgsMeshDatasetGroupStore::enabledDatasetGroupIndexes() const
+{
+  return mDatasetGroupTreeRootItem->enabledDatasetGroupIndexes();
+}
+
 int QgsMeshDatasetGroupStore::datasetGroupCount() const
 {
   return mRegistery.count();

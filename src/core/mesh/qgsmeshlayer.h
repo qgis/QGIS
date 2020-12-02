@@ -345,6 +345,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QList<int> datasetGroupsIndexes() const;
 
     /**
+     * Returns the list of indexes of enables dataset groups handled by the layer
+     *
+     * \note indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+     * In the layer scope, those indexes can be different from the data provider indexes.
+     *
+     * \since QGIS 3.16.3
+     */
+    QList<int> enabledDatasetGroupsIndexes() const;
+
+    /**
      * Returns the dataset groups metadata
      *
      * \note indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)

@@ -883,9 +883,18 @@ Returns the count of children
 
     int totalChildCount() const;
 %Docstring
-Returns the total count of children, that is included deeper children
+Returns the total count of children, that is included deeper children and disabled items
 
-:return:
+:return: the total children's count
+%End
+
+    QList<int> enabledDatasetGroupIndexes() const;
+%Docstring
+Returns a list of enabled dataset group indexes, included deeper children
+
+:return: the list of dataset group indexes
+
+.. versionadded:: 3.16.3
 %End
 
     QgsMeshDatasetGroupTreeItem *parentItem() const;
