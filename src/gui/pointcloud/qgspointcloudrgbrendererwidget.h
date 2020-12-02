@@ -52,6 +52,10 @@ class GUI_EXPORT QgsPointCloudRgbRendererWidget: public QgsPointCloudRendererWid
 
     void emitWidgetChanged();
 
+    void redAttributeChanged();
+    void greenAttributeChanged();
+    void blueAttributeChanged();
+
   private:
     void setFromRenderer( const QgsPointCloudRenderer *r );
 
@@ -63,7 +67,8 @@ class GUI_EXPORT QgsPointCloudRgbRendererWidget: public QgsPointCloudRendererWid
     void minMaxModified();
 
     bool mBlockChangedSignal = false;
-    bool mDisableMinMaxWidgetRefresh = false;
+    int mDisableMinMaxWidgetRefresh = 0;
+
 };
 
 ///@endcond
