@@ -91,6 +91,16 @@ void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
 #endif
 }
 
+bool QgsPointCloudRenderer::legendItemChecked( const QString & )
+{
+  return false;
+}
+
+void QgsPointCloudRenderer::checkLegendItem( const QString &, bool )
+{
+
+}
+
 double QgsPointCloudRenderer::maximumScreenError() const
 {
   return mMaximumScreenError;

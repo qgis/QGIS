@@ -220,6 +220,20 @@ Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by
 .. seealso:: :py:func:`startRender`
 %End
 
+    virtual bool legendItemChecked( const QString &key );
+%Docstring
+Returns ``True`` if the legend item with the specified ``key`` is checked.
+
+.. seealso:: :py:func:`checkLegendItem`
+%End
+
+    virtual void checkLegendItem( const QString &key, bool state = true );
+%Docstring
+Called when the check state of the legend item with the specified ``key`` is changed.
+
+.. seealso:: :py:func:`legendItemChecked`
+%End
+
     void setPointSize( double size );
 %Docstring
 Sets the point ``size``. Point size units are specified via :py:func:`~QgsPointCloudRenderer.setPointSizeUnit`.

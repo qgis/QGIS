@@ -291,6 +291,20 @@ class CORE_EXPORT QgsPointCloudRenderer
     virtual void stopRender( QgsPointCloudRenderContext &context );
 
     /**
+     * Returns TRUE if the legend item with the specified \a key is checked.
+     *
+     * \see checkLegendItem()
+     */
+    virtual bool legendItemChecked( const QString &key );
+
+    /**
+     * Called when the check state of the legend item with the specified \a key is changed.
+     *
+     * \see legendItemChecked()
+     */
+    virtual void checkLegendItem( const QString &key, bool state = true );
+
+    /**
      * Sets the point \a size. Point size units are specified via setPointSizeUnit().
      * \see pointSize()
      * \see setPointSizeUnit()
