@@ -240,6 +240,34 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   return labelSize;
 }
 
+void QgsLayerTreeModelLegendNode::checkAllItems()
+{
+  checkAll( true );
+}
+
+void QgsLayerTreeModelLegendNode::uncheckAllItems()
+{
+  checkAll( false );
+}
+
+void QgsLayerTreeModelLegendNode::toggleAllItems()
+{
+  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
+  {
+    if ( !vlayer->renderer() )
+      return;
+
+    const QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
+    for ( const auto &item : symbolList )
+    {
+      vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), ! vlayer->renderer()->legendSymbolItemChecked( item.ruleKey() ) );
+    }
+
+    emit dataChanged();
+    vlayer->triggerRepaint();
+  }
+}
+
 // -------------------------------------------------------------------------
 
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
@@ -383,32 +411,6 @@ void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
   vlayer->triggerRepaint();
 }
 
-void QgsSymbolLegendNode::checkAllItems()
-{
-  checkAll( true );
-}
-
-void QgsSymbolLegendNode::uncheckAllItems()
-{
-  checkAll( false );
-}
-
-void QgsSymbolLegendNode::toggleAllItems()
-{
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->renderer() )
-    return;
-
-  const QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
-  for ( const auto &item : symbolList )
-  {
-    vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), ! vlayer->renderer()->legendSymbolItemChecked( item.ruleKey() ) );
-  }
-
-  emit dataChanged();
-  vlayer->triggerRepaint();
-}
-
 QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
@@ -430,20 +432,22 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   return context.release();
 }
 
-void QgsSymbolLegendNode::checkAll( bool state )
+void QgsLayerTreeModelLegendNode::checkAll( bool state )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-  if ( !vlayer || !vlayer->renderer() )
-    return;
-
-  const QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
-  for ( const auto &item : symbolList )
+  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
   {
-    vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), state );
-  }
+    if ( !vlayer->renderer() )
+      return;
 
-  emit dataChanged();
-  vlayer->triggerRepaint();
+    const QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
+    for ( const auto &item : symbolList )
+    {
+      vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), state );
+    }
+
+    emit dataChanged();
+    vlayer->triggerRepaint();
+  }
 }
 
 QVariant QgsSymbolLegendNode::data( int role ) const
@@ -497,11 +501,13 @@ QVariant QgsSymbolLegendNode::data( int role ) const
     if ( !mItem.isCheckable() )
       return QVariant();
 
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
-    if ( !vlayer || !vlayer->renderer() )
-      return QVariant();
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() ) )
+    {
+      if ( !vlayer->renderer() )
+        return QVariant();
 
-    return vlayer->renderer()->legendSymbolItemChecked( mItem.ruleKey() ) ? Qt::Checked : Qt::Unchecked;
+      return vlayer->renderer()->legendSymbolItemChecked( mItem.ruleKey() ) ? Qt::Checked : Qt::Unchecked;
+    }
   }
   else if ( role == RuleKeyRole )
   {

@@ -265,6 +265,32 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
+  public slots:
+
+    /**
+     * Checks all checkable items belonging to the same layer as this node.
+     * \see uncheckAllItems()
+     * \see toggleAllItems()
+     * \since QGIS 3.18 (previously was available in QgsSymbolLegendNode subclass only)
+     */
+    void checkAllItems();
+
+    /**
+     * Unchecks all checkable items belonging to the same layer as this node.
+     * \see checkAllItems()
+     * \see toggleAllItems()
+     * \since QGIS 3.18 (previously was available in QgsSymbolLegendNode subclass only)
+     */
+    void uncheckAllItems();
+
+    /**
+     * Toggle all checkable items belonging to the same layer as this node.
+     * \see checkAllItems()
+     * \see uncheckAllItems()
+     * \since QGIS 3.18 (previously was available in QgsSymbolLegendNode subclass only)
+     */
+    void toggleAllItems();
+
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
     void dataChanged();
@@ -290,6 +316,14 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QgsLegendPatchShape mPatchShape;
     QSizeF mUserSize;
     bool mColumnBreakBeforeNode = false;
+
+  private:
+
+    /**
+     * Sets all items belonging to the same layer as this node to the same check state.
+     * \param state check state
+     */
+    void checkAll( bool state );
 };
 Q_DECLARE_METATYPE( QgsLayerTreeModelLegendNode::NodeTypes )
 
@@ -453,32 +487,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
 
-  public slots:
-
-    /**
-     * Checks all items belonging to the same layer as this node.
-     * \see uncheckAllItems()
-     * \see toggleAllItems()
-     * \since QGIS 2.14
-     */
-    void checkAllItems();
-
-    /**
-     * Unchecks all items belonging to the same layer as this node.
-     * \see checkAllItems()
-     * \see toggleAllItems()
-     * \since QGIS 2.14
-     */
-    void uncheckAllItems();
-
-    /**
-     * Toggle all items belonging to the same layer as this node.
-     * \see checkAllItems()
-     * \see uncheckAllItems()
-     * \since QGIS 3.6
-     */
-    void toggleAllItems();
-
   private:
     void updateLabel();
 
@@ -506,11 +514,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsExpressionContextScope *createSymbolScope() const SIP_FACTORY;
 
-    /**
-     * Sets all items belonging to the same layer as this node to the same check state.
-     * \param state check state
-     */
-    void checkAll( bool state );
 };
 
 

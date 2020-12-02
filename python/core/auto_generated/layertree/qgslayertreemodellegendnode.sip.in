@@ -215,6 +215,41 @@ Draws label on the right side of the item
 :return: Size of the label (may span multiple lines)
 %End
 
+  public slots:
+
+    void checkAllItems();
+%Docstring
+Checks all checkable items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`uncheckAllItems`
+
+.. seealso:: :py:func:`toggleAllItems`
+
+.. versionadded:: 3.18
+%End
+
+    void uncheckAllItems();
+%Docstring
+Unchecks all checkable items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`checkAllItems`
+
+.. seealso:: :py:func:`toggleAllItems`
+
+.. versionadded:: 3.18
+%End
+
+    void toggleAllItems();
+%Docstring
+Toggle all checkable items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`checkAllItems`
+
+.. seealso:: :py:func:`uncheckAllItems`
+
+.. versionadded:: 3.18
+%End
+
   signals:
     void dataChanged();
 %Docstring
@@ -240,6 +275,7 @@ Returns a temporary context or ``None`` if legendMapViewData are not valid
 %End
 
   protected:
+
 };
 
 
@@ -428,41 +464,6 @@ Evaluates  and returns the text label of the current node
 :param label: text to evaluate instead of the layer layertree string
 
 .. versionadded:: 3.10
-%End
-
-  public slots:
-
-    void checkAllItems();
-%Docstring
-Checks all items belonging to the same layer as this node.
-
-.. seealso:: :py:func:`uncheckAllItems`
-
-.. seealso:: :py:func:`toggleAllItems`
-
-.. versionadded:: 2.14
-%End
-
-    void uncheckAllItems();
-%Docstring
-Unchecks all items belonging to the same layer as this node.
-
-.. seealso:: :py:func:`checkAllItems`
-
-.. seealso:: :py:func:`toggleAllItems`
-
-.. versionadded:: 2.14
-%End
-
-    void toggleAllItems();
-%Docstring
-Toggle all items belonging to the same layer as this node.
-
-.. seealso:: :py:func:`checkAllItems`
-
-.. seealso:: :py:func:`uncheckAllItems`
-
-.. versionadded:: 3.6
 %End
 
 };
