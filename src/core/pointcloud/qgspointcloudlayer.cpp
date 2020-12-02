@@ -410,6 +410,15 @@ QString QgsPointCloudLayer::htmlMetadata() const
   // unit
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
+  // feature count
+  QLocale locale = QLocale();
+  locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  const int pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Point count" ) + QStringLiteral( "</td><td>" )
+                + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
+                + QStringLiteral( "</td></tr>\n" );
+
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
 

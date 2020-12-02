@@ -48,6 +48,7 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
     QgsCoordinateReferenceSystem crs() const;
+    int pointCount() const;
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
     QVariantList metadataClasses( const QString &attribute ) const;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
@@ -58,6 +59,8 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
     QString mDataType;
     QString mDirectory;
     QString mWkt;
+
+    int mPointCount = 0;
 
     struct AttributeStatistics
     {

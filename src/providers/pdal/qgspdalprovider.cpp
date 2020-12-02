@@ -61,6 +61,11 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
   return QgsPointCloudAttributeCollection();
 }
 
+int QgsPdalProvider::pointCount() const
+{
+  return mPointCount;
+}
+
 bool QgsPdalProvider::isValid() const
 {
   return mIsValid;
@@ -112,7 +117,7 @@ bool QgsPdalProvider::load( const QString &uri )
     double ymax = las_header.maxY();
     mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
 
-    // unsigned int nFeatures = las_header.pointCount();
+    mPointCount = las_header.pointCount();
 
     // projection
     QString wkt = QString::fromStdString( las_reader.getSpatialReference().getWKT() );

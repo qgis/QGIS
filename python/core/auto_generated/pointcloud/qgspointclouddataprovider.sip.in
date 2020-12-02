@@ -60,6 +60,11 @@ Returns the attributes available from this data provider.
 %End
 
 
+    virtual int pointCount() const = 0;
+%Docstring
+Returns the total number of points available in the dataset.
+%End
+
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
 Creates a new 2D point cloud renderer, using provider backend specific information.
