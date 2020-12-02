@@ -139,6 +139,21 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     % End
 #endif
 
+    /**
+     * Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
+     * Lidar Point Classes.
+     *
+     * \see translatedLasClassificationCodes()
+     */
+    static QMap< int, QString > lasClassificationCodes();
+
+    /**
+     * Returns the map of LAS classification code to translated string value, corresponding to the ASPRS Standard
+     * Lidar Point Classes.
+     *
+     * \see lasClassificationCodes()
+     */
+    static QMap< int, QString > translatedLasClassificationCodes();
 
 };
 
