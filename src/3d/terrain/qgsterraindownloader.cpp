@@ -177,8 +177,8 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
   }
 
   // resample to the desired extent + resolution
-
-  QgsGdalUtils::resampleSingleBandRaster( hSrcDS.get(), hDstDS.get(), GRA_Bilinear );
+  QgsGdalUtils::resampleSingleBandRaster( hSrcDS.get(), hDstDS.get(), GRA_Bilinear,
+                                          context.calculateCoordinateOperation( mOnlineDtm->crs(), destCrs ).toUtf8().constData() );
 
   QByteArray heightMapOut;
   heightMapOut.resize( resOrig * resOrig * sizeof( float ) );

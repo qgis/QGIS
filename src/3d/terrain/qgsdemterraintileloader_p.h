@@ -35,6 +35,7 @@
 #include <QMutex>
 
 #include "qgschunknode_p.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader_p.h"
 #include "qgstilingscheme.h"
@@ -138,6 +139,8 @@ class QgsDemHeightMapGenerator : public QObject
     mutable QMutex mLazyLoadDtmCoarseDataMutex;
     //! used for height queries
     QByteArray mDtmCoarseData;
+
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 /// @endcond
