@@ -169,6 +169,8 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
 
   menuActions->populateMenu( menu );
 
+  // cppcheck wrongly believes menuActions will leak
+  // cppcheck-suppress memleak
   return true;
 }
 

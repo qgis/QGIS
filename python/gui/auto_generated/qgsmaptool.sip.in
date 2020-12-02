@@ -225,14 +225,14 @@ A pointer to the map mouse ``event`` can be provided to allow particular behavio
 
 This method can return true to inform the caller that the menu was effectivly populated.
 
-The default implementation does nothing and return false;
+The default implementation does nothing and returns false.
 
 .. note::
 
    The context menu is only shown when the ShowContextMenu flag
    is present in :py:func:`~QgsMapTool.flags`.
 
-.. versionadded:: 3.14
+.. versionadded:: 3.18
 %End
 
   signals:

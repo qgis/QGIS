@@ -226,12 +226,12 @@ class GUI_EXPORT QgsMapTool : public QObject
      *
      * This method can return true to inform the caller that the menu was effectivly populated.
      *
-     * The default implementation does nothing and return false;
+     * The default implementation does nothing and returns false.
      *
      * \note The context menu is only shown when the ShowContextMenu flag
      * is present in flags().
      *
-     * \since QGIS 3.14
+     * \since QGIS 3.18
      */
     virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
 
