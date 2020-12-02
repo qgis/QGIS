@@ -11,7 +11,6 @@
 
 
 
-
 class QgsPointCloudRenderContext
 {
 %Docstring
@@ -331,6 +330,11 @@ Sets the ``unit`` for the maximum screen error allowed when rendering the point 
 .. seealso:: :py:func:`setMaximumScreenError`
 
 .. seealso:: :py:func:`maximumScreenErrorUnit`
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+%Docstring
+Creates a set of legend nodes representing the renderer.
 %End
 
   protected:
