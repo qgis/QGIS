@@ -60,6 +60,30 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         # test that a point cloud with RGB attributes is automatically assigned the RGB renderer by default
         self.assertIsInstance(layer.renderer(), QgsPointCloudRgbRenderer)
 
+        # for this point cloud, we should default to 0-255 ranges (ie. no contrast enhancement)
+        self.assertIsNone(layer.renderer().redContrastEnhancement())
+        self.assertIsNone(layer.renderer().greenContrastEnhancement())
+        self.assertIsNone(layer.renderer().blueContrastEnhancement())
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testSetLayer16(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb16/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        # test that a point cloud with RGB attributes is automatically assigned the RGB renderer by default
+        self.assertIsInstance(layer.renderer(), QgsPointCloudRgbRenderer)
+
+        # for this point cloud, we should default to 0-65024 ranges with contrast enhancement
+        self.assertEqual(layer.renderer().redContrastEnhancement().minimumValue(), 0)
+        self.assertEqual(layer.renderer().redContrastEnhancement().maximumValue(), 65024.0)
+        self.assertEqual(layer.renderer().redContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(layer.renderer().greenContrastEnhancement().minimumValue(), 0)
+        self.assertEqual(layer.renderer().greenContrastEnhancement().maximumValue(), 65024.0)
+        self.assertEqual(layer.renderer().greenContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(layer.renderer().blueContrastEnhancement().minimumValue(), 0)
+        self.assertEqual(layer.renderer().blueContrastEnhancement().maximumValue(), 65024.0)
+        self.assertEqual(layer.renderer().blueContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+
     def testBasic(self):
         renderer = QgsPointCloudRgbRenderer()
         renderer.setBlueAttribute('b')

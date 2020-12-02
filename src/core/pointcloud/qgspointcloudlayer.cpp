@@ -165,7 +165,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     // make sure layer has a renderer - if none exists, fallback to a default renderer
     if ( !mRenderer )
     {
-      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( attributes() ) );
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
     }
   }
 
@@ -334,7 +334,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     if ( !defaultLoadedFlag )
     {
       // all else failed, create default renderer
-      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( attributes() ) );
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
     }
   }
 
