@@ -551,7 +551,7 @@ QgsPointCloudClassificationStatisticsModel::QgsPointCloudClassificationStatistic
 
 int QgsPointCloudClassificationStatisticsModel::columnCount( const QModelIndex & ) const
 {
-  return Count + 1;
+  return Percent + 1;
 }
 
 int QgsPointCloudClassificationStatisticsModel::rowCount( const QModelIndex & ) const
@@ -582,6 +582,12 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
         case Count:
           return mLayer->dataProvider() ? mLayer->dataProvider()->metadataClassStatistic( mAttribute, classValue, QgsStatisticalSummary::Count ) : QVariant();
 
+        case Percent:
+        {
+          const int pointCount = mLayer->dataProvider() ? mLayer->dataProvider()->pointCount() : -1;
+          return pointCount > 0 ? mLayer->dataProvider()->metadataClassStatistic( mAttribute, classValue, QgsStatisticalSummary::Count ).toDouble() / pointCount * 100 : QVariant();
+        }
+
       }
       return QVariant();
     }
@@ -595,6 +601,7 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
 
         case Value:
         case Count:
+        case Percent:
           return QVariant( Qt::AlignRight | Qt::AlignVCenter );
 
       }
@@ -630,6 +637,8 @@ QVariant QgsPointCloudClassificationStatisticsModel::headerData( int section, Qt
         return tr( "Classification" );
       case Count:
         return tr( "Count" );
+      case Percent:
+        return tr( "%" );
     }
   }
   return QVariant();
