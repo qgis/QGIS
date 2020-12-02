@@ -18,6 +18,7 @@
 // default renderers
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudrgbrenderer.h"
+#include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudlayer.h"
 
 QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
@@ -29,6 +30,9 @@ QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "rgb" ),
                QObject::tr( "RGB" ),
                QgsPointCloudRgbRenderer::create ) );
+  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "classified" ),
+               QObject::tr( "Classification" ),
+               QgsPointCloudClassifiedRenderer::create ) );
 }
 
 QgsPointCloudRendererRegistry::~QgsPointCloudRendererRegistry()

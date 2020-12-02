@@ -207,6 +207,8 @@ class CORE_EXPORT QgsPointCloudRenderer
       sipType = sipType_QgsPointCloudRgbRenderer;
     else if ( type == QLatin1String( "ramp" ) )
       sipType = sipType_QgsPointCloudAttributeByRampRenderer;
+    else if ( type == QLatin1String( "classified" ) )
+      sipType = sipType_QgsPointCloudClassifiedRenderer;
     else
       sipType = 0;
     SIP_END
