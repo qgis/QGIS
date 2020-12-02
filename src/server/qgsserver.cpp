@@ -463,7 +463,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     QgsMessageLog::logMessage( "Request finished in " + QString::number( QgsApplication::profiler()->profileTime( QStringLiteral( "handleRequest" ), QStringLiteral( "server" ) ) * 1000.0 ) + " ms", QStringLiteral( "Server" ), Qgis::Info );
     if ( sSettings->logProfile() )
     {
-      auto profileFormatter = []( const QModelIndex & idx, int level )
+      std::function <void( const QModelIndex &, int )> profileFormatter;
+      profileFormatter = [ &profileFormatter ]( const QModelIndex & idx, int level )
       {
         QgsMessageLog::logMessage( QStringLiteral( "Profile [%1] %2, %3 : %4 ms" )
                                    .arg( level )
@@ -471,6 +472,11 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
                                    .arg( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Name ).toString() )
                                    .arg( QString::number( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Elapsed ).toDouble() * 1000.0, 'f', 6 ) ), QStringLiteral( "Server" ), Qgis::Info );
 
+        for ( int subRow = 0; subRow < QgsApplication::profiler()->rowCount( idx ); subRow++ )
+        {
+          const auto subIdx { QgsApplication::profiler()->index( subRow, 0, idx ) };
+          profileFormatter( subIdx, level + 1 );
+        }
 
       };
 
@@ -478,11 +484,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       {
         const auto idx { QgsApplication::profiler()->index( row, 0 ) };
         profileFormatter( idx, 0 );
-        for ( int subRow = 0; subRow < QgsApplication::profiler()->rowCount( idx ); subRow++ )
-        {
-          const auto subIdx { QgsApplication::profiler()->index( subRow, 0, idx ) };
-          profileFormatter( subIdx, 1 );
-        }
       }
     }
   }
