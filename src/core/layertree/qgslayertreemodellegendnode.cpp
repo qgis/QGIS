@@ -27,6 +27,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgsimageoperation.h"
 #include "qgsvectorlayer.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudrenderer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureid.h"
@@ -974,6 +976,14 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
       if ( !mCheckable )
         return QVariant();
 
+      if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
+      {
+        if ( !pclayer->renderer() )
+          return QVariant();
+
+        return pclayer->renderer()->legendItemChecked( mRuleKey ) ? Qt::Checked : Qt::Unchecked;
+      }
+
       return QVariant();
     }
 
@@ -990,7 +1000,23 @@ bool QgsRasterSymbolLegendNode::setData( const QVariant &value, int role )
   if ( !mCheckable )
     return false;
 
-  return false;
+  if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( mLayerNode->layer() ) )
+  {
+    if ( !pclayer->renderer() )
+      return false;
+
+    pclayer->renderer()->checkLegendItem( mRuleKey, value == Qt::Checked );
+
+    emit dataChanged();
+    pclayer->emitStyleChanged();
+
+    pclayer->triggerRepaint();
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 
