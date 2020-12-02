@@ -157,6 +157,7 @@ QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const Q
   , mResolution( resolution )
   , mLastJobId( 0 )
   , mDownloader( dtm ? nullptr : new QgsTerrainDownloader( transformContext ) )
+  , mTransformContext( transformContext )
 {
 }
 
@@ -205,9 +206,9 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   return data;
 }
 
-static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRectangle &extent, int res, const QgsCoordinateReferenceSystem &destCrs )
+static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRectangle &extent, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context )
 {
-  return downloader->getHeightMap( extent, res, destCrs );
+  return downloader->getHeightMap( extent, res, destCrs, context );
 }
 
 int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
@@ -231,7 +232,7 @@ int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
   if ( mDtm )
     jd.future = QtConcurrent::run( _readDtmData, mClonedProvider, extent, mResolution, mTilingScheme.crs() );
   else
-    jd.future = QtConcurrent::run( _readOnlineDtm, mDownloader.get(), extent, mResolution, mTilingScheme.crs() );
+    jd.future = QtConcurrent::run( _readOnlineDtm, mDownloader.get(), extent, mResolution, mTilingScheme.crs(), mTransformContext );
 
   QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>( nullptr );
   fw->setFuture( jd.future );
