@@ -487,8 +487,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     }
   }
 
-  // Clear the profiler after each request
-  QgsApplication::profiler()->clear( "server" );
+  // Clear the profiler server section after each request
+  QgsApplication::profiler()->clear( QStringLiteral( "server" ) );
 
 }
 
