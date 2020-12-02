@@ -930,31 +930,67 @@ QJsonObject QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, c
 
 // -------------------------------------------------------------------------
 
-QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent )
+QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent, bool isCheckable, const QString &ruleKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mColor( color )
   , mLabel( label )
+  , mCheckable( isCheckable )
+  , mRuleKey( ruleKey )
 {
+}
+
+Qt::ItemFlags QgsRasterSymbolLegendNode::flags() const
+{
+  if ( mCheckable )
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+  else
+    return Qt::ItemIsEnabled;
 }
 
 QVariant QgsRasterSymbolLegendNode::data( int role ) const
 {
-  if ( role == Qt::DecorationRole )
+  switch ( role )
   {
-    const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 ); // TODO: configurable?
-    QPixmap pix( iconSize, iconSize );
-    pix.fill( mColor );
-    return QIcon( pix );
+    case Qt::DecorationRole:
+    {
+      const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 ); // TODO: configurable?
+      QPixmap pix( iconSize, iconSize );
+      pix.fill( mColor );
+      return QIcon( pix );
+    }
+
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+      return mUserLabel.isEmpty() ? mLabel : mUserLabel;
+
+    case QgsLayerTreeModelLegendNode::NodeTypeRole:
+      return QgsLayerTreeModelLegendNode::RasterSymbolLegend;
+
+    case QgsLayerTreeModelLegendNode::RuleKeyRole:
+      return mRuleKey;
+
+    case Qt::CheckStateRole:
+    {
+      if ( !mCheckable )
+        return QVariant();
+
+      return QVariant();
+    }
+
+    default:
+      return QVariant();
   }
-  else if ( role == Qt::DisplayRole || role == Qt::EditRole )
-  {
-    return mUserLabel.isEmpty() ? mLabel : mUserLabel;
-  }
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
-  {
-    return QgsLayerTreeModelLegendNode::RasterSymbolLegend;
-  }
-  return QVariant();
+}
+
+bool QgsRasterSymbolLegendNode::setData( const QVariant &value, int role )
+{
+  if ( role != Qt::CheckStateRole )
+    return false;
+
+  if ( !mCheckable )
+    return false;
+
+  return false;
 }
 
 

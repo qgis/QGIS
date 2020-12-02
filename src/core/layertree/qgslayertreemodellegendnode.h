@@ -597,18 +597,36 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param color color
      * \param label label
      * \param parent attach a parent QObject to the legend node.
+     * \param isCheckable set to TRUE to enable the check box for the node (since QGIS 3.18)
+     * \param ruleKey optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
      */
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr, bool isCheckable = false, const QString &ruleKey = QString() );
 
+    Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;
-
+    bool setData( const QVariant &value, int role ) override;
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
-
     QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
+
+    /**
+     * Returns the unique identifier of node for identification of the item within renderer.
+     *
+     * \since QGIS 3.18
+     */
+    QString ruleKey() const { return mRuleKey; }
+
+    /**
+     * Returns whether the item is user-checkable - whether renderer supports enabling/disabling it.
+     *
+     * \since QGIS 3.18
+     */
+    bool isCheckable() const { return mCheckable; }
 
   private:
     QColor mColor;
     QString mLabel;
+    bool mCheckable = false;
+    QString mRuleKey;
 };
 
 class QgsImageFetcher;
