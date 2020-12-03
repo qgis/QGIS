@@ -24,7 +24,7 @@
 #include <QStringList>
 #include <QVector>
 #include <QList>
-#include <QSharedPointer>
+#include <memory>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     explicit QgsEptPointCloudIndex();
     ~QgsEptPointCloudIndex();
 
-    bool load( const QString &fileName ) override;
+    bool load( const QString &fileName, QgsFeedback &feedback ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
@@ -58,6 +58,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QVariantMap originalMetadata() const { return mOriginalMetadata; }
 
   private:
+    bool loadSchema( QFile &f );
     bool loadHierarchy();
 
     QString mDataType;
@@ -91,10 +92,10 @@ class CORE_EXPORT QgsEptPointCloudIndexLoadingTask: public QgsTask
 
     bool run() override;
 
-    QSharedPointer<QgsEptPointCloudIndex> index() const;
+    std::shared_ptr<QgsEptPointCloudIndex> index() const;
   private:
     QString mFilename;
-    QSharedPointer<QgsEptPointCloudIndex> mIndex;
+    std::shared_ptr<QgsEptPointCloudIndex> mIndex;
 };
 
 

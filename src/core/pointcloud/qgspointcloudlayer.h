@@ -162,6 +162,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
 
+  private slots:
+    void onPointCloudIndexLoaded();
+
   private:
 
     bool isReadOnly() const override {return true;}
@@ -176,6 +179,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
 
+    bool mLoadDefaultStyleFlag = false;
 };
 
 

@@ -38,11 +38,7 @@ QgsEptProvider::QgsEptProvider(
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
-
-  // TODO?
   mIsValid = true;
-  // TODO where to call?
-  loadIndex();
 }
 
 QgsEptProvider::~QgsEptProvider() = default;
@@ -73,7 +69,7 @@ QgsPointCloudAttributeCollection QgsEptProvider::attributes() const
 
 bool QgsEptProvider::isValid() const
 {
-  return mIsValid && mIndex;
+  return mIsValid;
 }
 
 QString QgsEptProvider::name() const
@@ -136,7 +132,8 @@ void QgsEptProvider::onLoadIndexFinished()
   {
     mIndex = mRunningIndexingTask->index();
     mRunningIndexingTask = nullptr;
-    emit dataChanged();
+    mIsValid = bool( mIndex.get() );
+    emit pointCloudIndexLoaded();
   }
 }
 

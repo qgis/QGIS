@@ -72,13 +72,22 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     /**
      * Returns the attributes available from this data provider.
+     * May return empty collection until pointCloudIndexLoaded() is emitted
      */
     virtual QgsPointCloudAttributeCollection attributes() const = 0;
 
     /**
-     * Returns the point cloud index associated with the provider.
+     * Triggers generation/loading of the point cloud index
      *
-     * Can be nullptr (e.g. the index is being created)
+     * On finish emits pointCloudIndexLoaded()
+     *
+     * \sa index()
+     */
+    virtual void loadIndex() = 0;
+
+    /**
+     * Returns the point cloud index associated with the provider.
+     * Returns nullptr until pointCloudIndexLoaded() is emitted
      *
      * \note Not available in Python bindings
      */
@@ -86,6 +95,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     /**
      * Returns the total number of points available in the dataset.
+     * May return 0 until pointCloudIndexLoaded() is emitted
      */
     virtual int pointCount() const = 0;
 
@@ -250,6 +260,13 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \see dataFormatIds()
      */
     static QMap< int, QString > translatedDataFormatIds();
+
+  signals:
+
+    /**
+     * Emitted when point cloud is updated
+     */
+    void pointCloudIndexLoaded();
 };
 
 #endif // QGSMESHDATAPROVIDER_H

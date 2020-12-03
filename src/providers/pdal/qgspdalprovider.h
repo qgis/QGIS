@@ -22,7 +22,7 @@
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
 
-#include <QSharedPointer>
+#include <memory>
 
 class QgsEptPointCloudIndex;
 class QgsEptPointCloudIndexLoadingTask;
@@ -48,23 +48,19 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
-
-  signals:
-    void indexRequested();
-    void indexGenerationFinished();
+    void loadIndex() override;
 
   private slots:
     void onLoadIndexFinished();
 
   private:
-    void loadIndex();
     bool load( const QString &uri );
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     bool mIsValid = false;
     int mPointCount = 0;
     QVariantMap mOriginalMetadata;
-    QSharedPointer<QgsEptPointCloudIndex> mIndex;
+    std::shared_ptr<QgsEptPointCloudIndex> mIndex;
     QgsEptPointCloudIndexLoadingTask *mRunningIndexingTask = nullptr;
     QString mFile; //TODO remove
 };

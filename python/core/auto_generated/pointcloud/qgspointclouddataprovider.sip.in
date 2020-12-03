@@ -57,12 +57,23 @@ Returns flags containing the supported capabilities for the data provider.
     virtual QgsPointCloudAttributeCollection attributes() const = 0;
 %Docstring
 Returns the attributes available from this data provider.
+May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
+%End
+
+    virtual void loadIndex() = 0;
+%Docstring
+Triggers generation/loading of the point cloud index
+
+On finish emits :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded`
+
+\sa :py:func:`~QgsPointCloudDataProvider.index`
 %End
 
 
     virtual int pointCount() const = 0;
 %Docstring
 Returns the total number of points available in the dataset.
+May return 0 until :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
 %End
 
     virtual QgsGeometry polygonBounds() const;
@@ -183,6 +194,7 @@ Lidar Point Classes.
 .. seealso:: :py:func:`lasClassificationCodes`
 %End
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
     static QMap< int, QString > dataFormatIds();
@@ -201,6 +213,15 @@ Returns the map of LAS data format ID to translated string value.
 
 =======
 >>>>>>> f96360de32... untwine pdalprovider integration
+=======
+
+  signals:
+
+    void pointCloudIndexLoaded();
+%Docstring
+Emitted when point cloud is updated
+%End
+>>>>>>> cd160135d6... fix loading in bg for EPT
 };
 
 /************************************************************************

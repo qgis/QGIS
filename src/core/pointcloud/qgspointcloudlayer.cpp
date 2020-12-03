@@ -273,10 +273,14 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
     mDataProvider->setTransformContext( transformContext );
 }
 
-void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
+                                        const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
   if ( mDataProvider )
+  {
     disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
+    disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::pointCloudIndexLoaded, this, &QgsPointCloudLayer::onPointCloudIndexLoaded );
+  }
 
   setName( baseName );
   mProviderKey = provider;
@@ -308,9 +312,25 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     return;
   }
 
-  setCrs( mDataProvider->crs() );
+  mLoadDefaultStyleFlag = loadDefaultStyleFlag;
 
-  if ( !mRenderer || loadDefaultStyleFlag )
+  connect( mDataProvider.get(), &QgsPointCloudDataProvider::pointCloudIndexLoaded, this, &QgsPointCloudLayer::onPointCloudIndexLoaded );
+  connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
+
+  // trigger loading of index. this is lenghty operation in
+  // background thread that could take multiple seconds
+  mDataProvider.get()->loadIndex();
+
+  emit dataSourceChanged();
+  triggerRepaint();
+}
+
+void QgsPointCloudLayer::onPointCloudIndexLoaded()
+{
+  setCrs( mDataProvider->crs() );
+  setExtent( mDataProvider->extent() );
+
+  if ( !mRenderer || mLoadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -318,7 +338,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
     bool defaultLoadedFlag = false;
 
-    if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
+    if ( mLoadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
     {
       // first try to create a renderer directly from the data provider
       std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
@@ -329,7 +349,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
       }
     }
 
-    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
+    if ( !defaultLoadedFlag && mLoadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
     }
@@ -341,9 +361,6 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     }
   }
 
-  connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
-
-  emit dataSourceChanged();
   triggerRepaint();
 }
 

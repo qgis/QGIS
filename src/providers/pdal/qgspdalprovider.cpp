@@ -113,7 +113,7 @@ void QgsPdalProvider::onLoadIndexFinished()
   {
     mIndex = mRunningIndexingTask->index();
     mRunningIndexingTask = nullptr;
-    emit dataChanged();
+    emit pointCloudIndexLoaded();
   }
 }
 

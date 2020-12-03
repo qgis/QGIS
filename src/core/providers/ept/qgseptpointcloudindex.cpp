@@ -31,6 +31,7 @@
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
+#include "qgsfeedback.h"
 
 ///@cond PRIVATE
 
@@ -41,8 +42,10 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex() = default;
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-bool QgsEptPointCloudIndex::load( const QString &fileName )
+bool QgsEptPointCloudIndex::load( const QString &fileName, QgsFeedback &feedback )
 {
+  feedback.setProgress( 0 );
+
   // mDirectory = directory;
   QFile f( fileName );
   if ( !f.open( QIODevice::ReadOnly ) )
@@ -50,7 +53,19 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
 
   const QDir directory = QFileInfo( fileName ).absoluteDir();
   mDirectory = directory.absolutePath();
+  feedback.setProgress( 0.2 );
+  bool success = loadSchema( f );
+  feedback.setProgress( 0.5 );
+  if ( success )
+  {
+    success = loadHierarchy();
+    feedback.setProgress( 1 );
+  }
+  return success;
+}
 
+bool QgsEptPointCloudIndex::loadSchema( QFile &f )
+{
   QByteArray dataJson = f.readAll();
   QJsonParseError err;
   QJsonDocument doc = QJsonDocument::fromJson( dataJson, &err );
@@ -243,8 +258,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
 #endif
 
-  // load hierarchy
-  return loadHierarchy();
+  return true;
 }
 
 QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -392,24 +406,30 @@ bool QgsEptPointCloudIndex::loadHierarchy()
 }
 
 
-QgsEptPointCloudIndexLoadingTask::QgsEptPointCloudIndexLoadingTask( const QString &fileName ):
-  mFilename( fileName )
+QgsEptPointCloudIndexLoadingTask::QgsEptPointCloudIndexLoadingTask( const QString &fileName )
+  : QgsTask( QStringLiteral( "Load EPT Index" ) )
+  , mFilename( fileName )
 {
-
 }
 
 bool QgsEptPointCloudIndexLoadingTask::run()
 {
+  QgsFeedback feedback;
+  connect( &feedback, &QgsFeedback::progressChanged, this, &QgsEptPointCloudIndexLoadingTask::setProgress );
+
+  // TODO how to pass cancel to qgsFeedback?
+  // connect( this, &QgsEptPointCloudIndexLoadingTask::cancel, &feedback, &QgsFeedback::cancel );
+
   qDebug() << "EPT: start" << mFilename;
   mIndex.reset( new QgsEptPointCloudIndex() );
   setProgress( 0.1 );
-  mIndex->load( mFilename );
+  bool success = mIndex->load( mFilename, feedback );
   setProgress( 1 );
-  qDebug() << "EPT: done";
-  return true;
+  qDebug() << "EPT: done" << success;
+  return success;
 }
 
-QSharedPointer<QgsEptPointCloudIndex> QgsEptPointCloudIndexLoadingTask::index() const
+std::shared_ptr<QgsEptPointCloudIndex> QgsEptPointCloudIndexLoadingTask::index() const
 {
   return mIndex;
 }

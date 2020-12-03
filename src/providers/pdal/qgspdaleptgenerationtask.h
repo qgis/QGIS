@@ -17,21 +17,24 @@
 #define QGSPDALEPTGENERATIONTASK_H
 
 #include <QObject>
-#include <QSharedPointer>
+#include <memory>
 #include "qgstaskmanager.h"
 
-namespace untwine {class QgisUntwine;}
 
 class QgsPdalEptGenerationTask: public QgsTask
 {
     Q_OBJECT
 
   public:
-    QgsPdalEptGenerationTask(const QString& file);
+    QgsPdalEptGenerationTask( const QString &file );
     bool run() override;
 
+
+    QString untwineExecutableBinary() const;
+    void setUntwineExecutableBinary( const QString &untwineExecutableBinary );
+
   private:
-    QSharedPointer<untwine::QgisUntwine> mUntwineProcess;
+    QString guessUntwineExecutableBinary() const;
     QString mUntwineExecutableBinary;
     QString mOutputDir;
     QString mFile;

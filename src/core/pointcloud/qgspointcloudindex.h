@@ -31,6 +31,7 @@
 #include "qgis_sip.h"
 #include "qgspointcloudblock.h"
 #include "qgsrange.h"
+#include "qgsfeedback.h"
 
 #define SIP_NO_FILE
 
@@ -149,7 +150,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     ~QgsPointCloudIndex();
 
     //! Loads the index from the file
-    virtual bool load( const QString &fileName ) = 0;
+    virtual bool load( const QString &fileName, QgsFeedback &feedback ) = 0;
 
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
