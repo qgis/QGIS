@@ -67,7 +67,8 @@ namespace QgsWms
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
                                    const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList,
-                                   const QStringList &constrainedCrsList, const QgsProject *project );
+                                   const QStringList &constrainedCrsList, const QgsProject *project,
+                                   const QgsRectangle &geoExtent = QgsRectangle() );
 
     void appendCrsElementToLayer( QDomDocument &doc, QDomElement &layerElement, const QDomElement &precedingElement,
                                   const QString &crsText );
@@ -1094,7 +1095,7 @@ namespace QgsWms
               }
             }
 
-            appendLayerBoundingBoxes( doc, layerElem, extent, l->crs(), crsList, outputCrsList, project );
+            appendLayerBoundingBoxes( doc, layerElem, extent, l->crs(), crsList, outputCrsList, project, l->geographicExtent() );
           }
 
           // add details about supported styles of the layer
@@ -1416,7 +1417,8 @@ namespace QgsWms
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
                                    const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList,
-                                   const QStringList &constrainedCrsList, const QgsProject *project )
+                                   const QStringList &constrainedCrsList, const QgsProject *project,
+                                   const QgsRectangle &lGeoExtent )
     {
       if ( layerElem.isNull() )
       {
@@ -1430,29 +1432,31 @@ namespace QgsWms
         layerExtent.grow( 0.000001 );
       }
 
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
-      int wgs84precision = 6;
-
-      QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
-
-      //Ex_GeographicBoundingBox
-      QDomElement ExGeoBBoxElement;
-      //transform the layers native CRS into WGS84
-      QgsRectangle wgs84BoundingRect;
-      if ( !layerExtent.isNull() )
+      QgsRectangle wgs84BoundingRect = lGeoExtent;
+      if ( wgs84BoundingRect.isNull() )
       {
-        QgsCoordinateTransform exGeoTransform( layerCRS, wgs84, project );
-        try
+        QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+
+        //transform the layers native CRS into WGS84
+        if ( !layerExtent.isNull() )
         {
-          wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
-        }
-        catch ( const QgsCsException &cse )
-        {
-          QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
-          wgs84BoundingRect = QgsRectangle();
+          QgsCoordinateTransform exGeoTransform( layerCRS, wgs84, project );
+          try
+          {
+            wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+          }
+          catch ( const QgsCsException &cse )
+          {
+            QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+            wgs84BoundingRect = QgsRectangle();
+          }
         }
       }
 
+      //Ex_GeographicBoundingBox
+      int wgs84precision = 6;
+      QDomElement ExGeoBBoxElement;
+      QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
       if ( version == QLatin1String( "1.1.1" ) ) // WMS Version 1.1.1
       {
         ExGeoBBoxElement = doc.createElement( QStringLiteral( "LatLonBoundingBox" ) );
