@@ -41,7 +41,13 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
     };
 
     static QString renderingStyletoString( RenderingStyle renderingStyle );
+%Docstring
+Converts from ``renderingStyle`` enum to a string
+%End
     static RenderingStyle renderingStylefromString( const QString &str );
+%Docstring
+Converts from a string to rendering style
+%End
 
     QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
 %Docstring
