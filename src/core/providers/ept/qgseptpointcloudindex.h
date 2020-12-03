@@ -24,11 +24,13 @@
 #include <QStringList>
 #include <QVector>
 #include <QList>
+#include <QSharedPointer>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
+#include "qgstaskmanager.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -79,6 +81,22 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QMap< QString, QMap< int, int > > mAttributeClasses;
     QVariantMap mOriginalMetadata;
 };
+
+class CORE_EXPORT QgsEptPointCloudIndexLoadingTask: public QgsTask
+{
+    Q_OBJECT
+
+  public:
+    QgsEptPointCloudIndexLoadingTask( const QString &fileName );
+
+    bool run() override;
+
+    QSharedPointer<QgsEptPointCloudIndex> index() const;
+  private:
+    QString mFilename;
+    QSharedPointer<QgsEptPointCloudIndex> mIndex;
+};
+
 
 ///@endcond
 #endif // QGSEPTPOINTCLOUDINDEX_H

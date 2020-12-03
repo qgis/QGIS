@@ -18,6 +18,7 @@
 #include <vector>
 #include <string>
 #include <QDebug>
+#include <QThread>
 
 QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file ):
   QgsTask( QStringLiteral( "Generate EPT" ) )
@@ -34,22 +35,16 @@ bool QgsPdalEptGenerationTask::run()
   std::vector<std::string> files = {mFile.toStdString()};
   mUntwineProcess->start( files, mOutputDir.toStdString() );
   bool success = false;
-  int lastPercent = 0;
 
-  qDebug() << "UNTWINE: " << mFile;
-
+  qDebug() << "UNTWINE: start" << mFile;
   while ( true )
   {
-    int percent = mUntwineProcess->progressPercent();
-    if ( percent != lastPercent )
-    {
-      lastPercent = percent;
-      setProgress( percent / 100.0 );
-      qDebug() << "UNTWINE: progress " << percent;
-    }
+    QThread::msleep( 100 );
 
-    // std::string s = mUntwineProcess->progressMessage();
-    // std::cerr << "Percent/Msg = " << percent << " / " << s << "!\n";
+    int percent = mUntwineProcess->progressPercent();
+    setProgress( percent / 100.0 );
+    qDebug() << "UNTWINE: progress" << percent;
+
     if ( isCanceled() )
     {
       mUntwineProcess->stop();

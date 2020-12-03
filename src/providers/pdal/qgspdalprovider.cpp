@@ -24,6 +24,7 @@
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
 #include "qgspdaleptgenerationtask.h"
+#include "qgseptpointcloudindex.h"
 
 #include <pdal/io/LasReader.hpp>
 #include <pdal/io/LasHeader.hpp>
@@ -45,11 +46,8 @@ QgsPdalProvider::QgsPdalProvider(
 
   mIsValid = load( uri );
 
-  connect( this, &QgsPdalProvider::indexRequested, this, &QgsPdalProvider::generateIndex );
-  connect( this, &QgsPdalProvider::indexGenerationFinished, this, &QgsPdalProvider::loadEptIndex );
-
-  // TODO remove
-  index();
+  // TODO where to call?
+  loadIndex();
 }
 
 QgsPdalProvider::~QgsPdalProvider() = default;
@@ -88,6 +86,37 @@ QVariant QgsPdalProvider::metadataClassStatistic( const QString &attribute, cons
     return QVariant();
 }
 
+void QgsPdalProvider::loadIndex()
+{
+  if ( mRunningIndexingTask || mIndex )
+    return;
+
+  mRunningIndexingTask = nullptr;
+  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( mFile );
+
+  QString outEptJson = "/Users/peter/tmp/ept/ept.json";
+  QgsEptPointCloudIndexLoadingTask *loadingTask = new QgsEptPointCloudIndexLoadingTask( outEptJson );
+
+  connect( loadingTask, &QgsEptPointCloudIndexLoadingTask::taskTerminated, this, &QgsPdalProvider::onLoadIndexFinished );
+  connect( loadingTask, &QgsEptPointCloudIndexLoadingTask::taskCompleted, this, &QgsPdalProvider::onLoadIndexFinished );
+  loadingTask->addSubTask( generationTask, {}, QgsTask::ParentDependsOnSubTask );
+
+  mRunningIndexingTask = loadingTask;
+  QgsApplication::taskManager()->addTask( loadingTask );
+}
+
+void QgsPdalProvider::onLoadIndexFinished()
+{
+  QgsEptPointCloudIndexLoadingTask *task = qobject_cast<QgsEptPointCloudIndexLoadingTask *>( QObject::sender() );
+  // this may be already canceled task that we don't care anymore...
+  if ( task == mRunningIndexingTask )
+  {
+    mIndex = mRunningIndexingTask->index();
+    mRunningIndexingTask = nullptr;
+    emit dataChanged();
+  }
+}
+
 QVariant QgsPdalProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   if ( mIndex )
@@ -121,37 +150,9 @@ QString QgsPdalProvider::description() const
   return QStringLiteral( "Point Clouds PDAL" );
 }
 
-QgsPointCloudIndex *QgsPdalProvider::index()
+QgsPointCloudIndex *QgsPdalProvider::index() const
 {
-  // TODO automatically generate EPT index
-  emit indexRequested();
   return mIndex.get();
-}
-
-void QgsPdalProvider::generateIndex()
-{
-  if ( mIndex.get() || mIndexGenerationRunning )
-    return;
-
-  mIndexGenerationRunning = true;
-  QgsPdalEptGenerationTask task( mFile );
-  //TODO run in background
-  task.run();
-
-  qDebug() << "pdal index generated";
-  emit indexGenerationFinished();
-}
-
-void QgsPdalProvider::loadEptIndex()
-{
-  if ( mIndex.get() || !mIndexGenerationRunning )
-    return;
-
-  mIndex.reset( new QgsEptPointCloudIndex );
-  QString outputDir = "/Users/peter/tmp/ept/ept.json"; //TODO
-  mIndex->load( outputDir );
-  mIndexGenerationRunning = false;
-  qDebug() << "pdal index loaded";
 }
 
 bool QgsPdalProvider::load( const QString &uri )

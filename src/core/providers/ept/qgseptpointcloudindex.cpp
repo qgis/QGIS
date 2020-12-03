@@ -391,4 +391,27 @@ bool QgsEptPointCloudIndex::loadHierarchy()
   return true;
 }
 
+
+QgsEptPointCloudIndexLoadingTask::QgsEptPointCloudIndexLoadingTask( const QString &fileName ):
+  mFilename( fileName )
+{
+
+}
+
+bool QgsEptPointCloudIndexLoadingTask::run()
+{
+  qDebug() << "EPT: start" << mFilename;
+  mIndex.reset( new QgsEptPointCloudIndex() );
+  setProgress( 0.1 );
+  mIndex->load( mFilename );
+  setProgress( 1 );
+  qDebug() << "EPT: done";
+  return true;
+}
+
+QSharedPointer<QgsEptPointCloudIndex> QgsEptPointCloudIndexLoadingTask::index() const
+{
+  return mIndex;
+}
+
 ///@endcond

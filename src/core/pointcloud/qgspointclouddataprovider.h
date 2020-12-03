@@ -82,7 +82,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \note Not available in Python bindings
      */
-    virtual QgsPointCloudIndex *index() SIP_SKIP {return nullptr;}
+    virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
 
     /**
      * Returns the total number of points available in the dataset.

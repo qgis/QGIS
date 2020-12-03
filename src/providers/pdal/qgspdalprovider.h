@@ -21,9 +21,11 @@
 #include "qgis_core.h"
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-#include "qgseptpointcloudindex.h"
 
-#include <memory>
+#include <QSharedPointer>
+
+class QgsEptPointCloudIndex;
+class QgsEptPointCloudIndexLoadingTask;
 
 class QgsPdalProvider: public QgsPointCloudDataProvider
 {
@@ -42,7 +44,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
-    QgsPointCloudIndex *index() override;
+    QgsPointCloudIndex *index() const override;
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
@@ -52,19 +54,18 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     void indexGenerationFinished();
 
   private slots:
-    void generateIndex();
-    void loadEptIndex();
+    void onLoadIndexFinished();
 
   private:
+    void loadIndex();
     bool load( const QString &uri );
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     bool mIsValid = false;
     int mPointCount = 0;
-
     QVariantMap mOriginalMetadata;
-    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
-    bool mIndexGenerationRunning = false;
+    QSharedPointer<QgsEptPointCloudIndex> mIndex;
+    QgsEptPointCloudIndexLoadingTask *mRunningIndexingTask = nullptr;
     QString mFile; //TODO remove
 };
 

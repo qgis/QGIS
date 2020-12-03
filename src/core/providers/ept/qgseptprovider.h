@@ -22,7 +22,7 @@
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
 
-#include <memory>
+#include <QSharedPointer>
 
 #include "qgis_sip.h"
 
@@ -30,6 +30,7 @@
 #define SIP_NO_FILE
 
 class QgsEptPointCloudIndex;
+class QgsEptPointCloudIndexLoadingTask;
 
 class QgsEptProvider: public QgsPointCloudDataProvider
 {
@@ -47,16 +48,23 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
-    QgsPointCloudIndex *index() override;
+    QgsPointCloudIndex *index() const override;
     int pointCount() const override;
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantMap originalMetadata() const override;
 
+  private slots:
+    void onLoadIndexFinished();
+
   private:
-    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
+    void loadIndex();
+
+    QString mUri;
+    QSharedPointer<QgsEptPointCloudIndex> mIndex;
     bool mIsValid = false;
+    QgsEptPointCloudIndexLoadingTask *mRunningIndexingTask = nullptr;
 };
 
 class QgsEptProviderMetadata : public QgsProviderMetadata
