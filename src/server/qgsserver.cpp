@@ -50,7 +50,6 @@
 #include <cstdlib>
 
 
-
 // Server status static initializers.
 // Default values are for C++, SIP bindings will override their
 // options in in init()
@@ -299,7 +298,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
 {
   const Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   {
-    std::unique_ptr<QgsScopedRuntimeProfile> profile = qgis::make_unique<QgsScopedRuntimeProfile>( QStringLiteral( "handleRequest" ),   QStringLiteral( "server" ) );
+
+    QgsScopedRuntimeProfile profiler { QStringLiteral( "handleRequest" ), QStringLiteral( "server" ) };
 
     qApp->processEvents();
 
@@ -452,7 +452,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
     }
 
-
     // We are done using requestHandler in plugins, make sure we don't access
     // to a deleted request handler from Python bindings
     sServerInterface->clearRequestHandler();
@@ -466,11 +465,11 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       std::function <void( const QModelIndex &, int )> profileFormatter;
       profileFormatter = [ &profileFormatter ]( const QModelIndex & idx, int level )
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Profile [%1] %2, %3 : %4 ms" )
-                                   .arg( level )
+        QgsMessageLog::logMessage( QStringLiteral( "Profile: %1%2, %3 : %4 ms" )
+                                   .arg( level > 0 ? QString().fill( '-', level ) + ' ' : QString() )
                                    .arg( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Group ).toString() )
                                    .arg( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Name ).toString() )
-                                   .arg( QString::number( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Elapsed ).toDouble() * 1000.0, 'f', 6 ) ), QStringLiteral( "Server" ), Qgis::Info );
+                                   .arg( QString::number( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Elapsed ).toDouble() * 1000.0 ) ), QStringLiteral( "Server" ), Qgis::Info );
 
         for ( int subRow = 0; subRow < QgsApplication::profiler()->rowCount( idx ); subRow++ )
         {
@@ -487,6 +486,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       }
     }
   }
+
 
   // Clear the profiler server section after each request
   QgsApplication::profiler()->clear( QStringLiteral( "server" ) );
