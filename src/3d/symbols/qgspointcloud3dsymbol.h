@@ -52,6 +52,9 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
       RgbRendering
     };
 
+    static QString renderingStyletoString( RenderingStyle renderingStyle );
+    static RenderingStyle renderingStylefromString( const QString &str );
+
     //! Constructor for QgsPointCloud3DSymbol
     QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
     //! Destructor for QgsPointCloud3DSymbol
