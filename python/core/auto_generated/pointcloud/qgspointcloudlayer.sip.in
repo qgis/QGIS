@@ -108,6 +108,11 @@ QgsPointCloudLayer cannot be copied.
 Returns the attributes available from the layer.
 %End
 
+    int pointCount() const;
+%Docstring
+Returns the total number of points available in the layer.
+%End
+
     QgsPointCloudRenderer *renderer();
 %Docstring
 Returns the 2D renderer for the point cloud.
