@@ -553,7 +553,7 @@ Constructor for QgsRasterSymbolLegendNode.
 :param color: color
 :param label: label
 :param parent: attach a parent QObject to the legend node.
-:param isCheckable: set to ``True`` to enable the check box for the node (since QGIS 3.18)
+:param isCheckable: set to ``True`` to enable the checkbox for the node (since QGIS 3.18)
 :param ruleKey: optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
 %End
 

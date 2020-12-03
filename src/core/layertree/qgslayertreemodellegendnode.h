@@ -597,7 +597,7 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param color color
      * \param label label
      * \param parent attach a parent QObject to the legend node.
-     * \param isCheckable set to TRUE to enable the check box for the node (since QGIS 3.18)
+     * \param isCheckable set to TRUE to enable the checkbox for the node (since QGIS 3.18)
      * \param ruleKey optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
      */
     QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr, bool isCheckable = false, const QString &ruleKey = QString() );
