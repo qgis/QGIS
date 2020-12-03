@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudlayer.h"
 
 QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
@@ -44,8 +45,21 @@ bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRa
   return true;
 }
 
-QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
+QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLayer *layer ) const
 {
-  // TODO - retrieve range from point cloud data provider
+  if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer ) )
+  {
+    if ( pcLayer->dataProvider() )
+    {
+      // try to fetch z range from provider metadata
+      const QVariant zMin = pcLayer->dataProvider()->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
+      const QVariant zMax = pcLayer->dataProvider()->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
+      if ( zMin.isValid() && zMax.isValid() )
+      {
+        return QgsDoubleRange( zMin.toDouble(), zMax.toDouble() );
+      }
+    }
+  }
+
   return QgsDoubleRange();
 }

@@ -30,6 +30,7 @@
 #include "qgseptprovider.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudlayerelevationproperties.h"
 
 /**
  * \ingroup UnitTests
@@ -55,6 +56,7 @@ class TestQgsEptProvider : public QObject
     void validLayer();
     void validLayerWithEptHierarchy();
     void attributes();
+    void calculateZRange();
 
   private:
     QString mTestDataDir;
@@ -234,6 +236,16 @@ void TestQgsEptProvider::attributes()
   QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::UShort );
   QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Blue" ) );
   QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UShort );
+}
+
+void TestQgsEptProvider::calculateZRange()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
+  QGSCOMPARENEAR( range.lower(), 1, 74.34 );
+  QGSCOMPARENEAR( range.upper(), 2, 80.02 );
 }
 
 
