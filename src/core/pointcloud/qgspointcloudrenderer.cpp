@@ -84,6 +84,16 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
 #endif
 
   mPainterPenWidth = context.renderContext().convertToPainterUnits( pointSize(), pointSizeUnit(), pointSizeMapUnitScale() );
+
+  switch ( mPointSymbol )
+  {
+    case Square:
+      // for square point we always disable antialiasing -- it's not critical here and we benefit from the performance boost disabling it gives
+      context.renderContext().painter()->setRenderHint( QPainter::Antialiasing, false );
+
+    case Circle:
+      break;
+  }
 }
 
 void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
@@ -142,6 +152,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setPointSizeMapUnitScale( mPointSizeMapUnitScale );
   destination->setMaximumScreenError( mMaximumScreenError );
   destination->setMaximumScreenErrorUnit( mMaximumScreenErrorUnit );
+  destination->setPointSymbol( mPointSymbol );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
@@ -152,6 +163,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
 
   mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "1" ) ).toDouble();
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
+  mPointSymbol = static_cast< PointSymbol >( element.attribute( QStringLiteral( "pointSymbol" ), QStringLiteral( "0" ) ).toInt() );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
@@ -162,6 +174,17 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
 
   element.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( mMaximumScreenError ) );
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
+  element.setAttribute( QStringLiteral( "pointSymbol" ), QString::number( mPointSymbol ) );
+}
+
+QgsPointCloudRenderer::PointSymbol QgsPointCloudRenderer::pointSymbol() const
+{
+  return mPointSymbol;
+}
+
+void QgsPointCloudRenderer::setPointSymbol( PointSymbol symbol )
+{
+  mPointSymbol = symbol;
 }
 
 

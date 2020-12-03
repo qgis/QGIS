@@ -143,6 +143,12 @@ Abstract base class for 2d point cloud renderers.
 %End
   public:
 
+    enum PointSymbol
+    {
+      Square,
+      Circle,
+    };
+
     QgsPointCloudRenderer();
 %Docstring
 Constructor for QgsPointCloudRenderer.
@@ -302,6 +308,20 @@ Returns the map unit scale used for the point size.
 .. seealso:: :py:func:`pointSizeUnit`
 
 .. seealso:: :py:func:`pointSize`
+%End
+
+    PointSymbol pointSymbol() const;
+%Docstring
+Returns the symbol used by the renderer for drawing points.
+
+.. seealso:: :py:func:`setPointSymbol`
+%End
+
+    void setPointSymbol( PointSymbol symbol );
+%Docstring
+Sets the ``symbol`` used by the renderer for drawing points.
+
+.. seealso:: :py:func:`pointSymbol`
 %End
 
     double maximumScreenError() const;

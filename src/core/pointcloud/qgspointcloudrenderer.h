@@ -217,6 +217,15 @@ class CORE_EXPORT QgsPointCloudRenderer
   public:
 
     /**
+     * Rendering symbols for points.
+     */
+    enum PointSymbol
+    {
+      Square, //!< Renders points as squares
+      Circle, //!< Renders points as circles
+    };
+
+    /**
      * Constructor for QgsPointCloudRenderer.
      */
     QgsPointCloudRenderer() = default;
@@ -359,6 +368,20 @@ class CORE_EXPORT QgsPointCloudRenderer
     const QgsMapUnitScale &pointSizeMapUnitScale() const { return mPointSizeMapUnitScale; }
 
     /**
+     * Returns the symbol used by the renderer for drawing points.
+     *
+     * \see setPointSymbol()
+     */
+    PointSymbol pointSymbol() const;
+
+    /**
+     * Sets the \a symbol used by the renderer for drawing points.
+     *
+     * \see pointSymbol()
+     */
+    void setPointSymbol( PointSymbol symbol );
+
+    /**
      * Returns the maximum screen error allowed when rendering the point cloud.
      *
      * Larger values result in a faster render with less points rendered.
@@ -436,15 +459,23 @@ class CORE_EXPORT QgsPointCloudRenderer
     void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const
     {
       context.renderContext().mapToPixel().transformInPlace( x, y );
-#if 0
-      pen.setColor( QColor( red, green, blue ) );
-      context.renderContext().painter()->setPen( pen );
-      context.renderContext().painter()->drawPoint( QPointF( x, y ) );
-#else
-      context.renderContext().painter()->fillRect( QRectF( x - mPainterPenWidth * 0.5,
-          y - mPainterPenWidth * 0.5,
-          mPainterPenWidth, mPainterPenWidth ), color );
-#endif
+      QPainter *painter = context.renderContext().painter();
+      switch ( mPointSymbol )
+      {
+        case Square:
+          painter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
+                                     y - mPainterPenWidth * 0.5,
+                                     mPainterPenWidth, mPainterPenWidth ), color );
+          break;
+
+        case Circle:
+          painter->setBrush( QBrush( color ) );
+          painter->setPen( Qt::NoPen );
+          painter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
+                                        y - mPainterPenWidth * 0.5,
+                                        mPainterPenWidth, mPainterPenWidth ) );
+          break;
+      };
     }
 
     /**
@@ -485,6 +516,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mPointSizeMapUnitScale;
 
+    PointSymbol mPointSymbol = Square;
     int mPainterPenWidth = 1;
 };
 

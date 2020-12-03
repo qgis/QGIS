@@ -56,8 +56,6 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
 
 void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context )
 {
-  const QgsMapToPixel mapToPixel = context.renderContext().mapToPixel();
-
   const QgsRectangle visibleExtent = context.renderContext().extent();
 
   const char *ptr = block->data();

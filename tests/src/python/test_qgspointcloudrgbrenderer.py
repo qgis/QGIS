@@ -27,7 +27,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsMapUnitScale,
     QgsCoordinateReferenceSystem,
-    QgsDoubleRange
+    QgsDoubleRange,
+    QgsPointCloudRenderer
 )
 
 from qgis.PyQt.QtCore import QDir, QSize
@@ -193,6 +194,30 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_rgb_render')
         result = renderchecker.runTest('expected_rgb_render')
+        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderCircles(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(3)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSymbol(QgsPointCloudRenderer.Circle)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
+        mapsettings.setLayers([layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_rgb_circle_render')
+        result = renderchecker.runTest('expected_rgb_circle_render')
         TestQgsPointCloudRgbRenderer.report += renderchecker.report()
         self.assertTrue(result)
 

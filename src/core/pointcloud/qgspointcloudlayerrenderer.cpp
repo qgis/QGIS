@@ -53,6 +53,12 @@ bool QgsPointCloudLayerRenderer::render()
 
   QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset );
 
+  // Set up the render configuration options
+  QPainter *painter = context.renderContext().painter();
+
+  QgsScopedQPainterState painterState( painter );
+  context.renderContext().setPainterFlagsUsingContext( painter );
+
   mRenderer->startRender( context );
 
   mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
@@ -78,14 +84,6 @@ bool QgsPointCloudLayerRenderer::render()
 
     mAttributes.push_back( mLayer->attributes().at( layerIndex ) );
   }
-
-  // Set up the render configuration options
-  QPainter *painter = context.renderContext().painter();
-
-  QgsScopedQPainterState painterState( painter );
-  context.renderContext().setPainterFlagsUsingContext( painter );
-  // for point clouds we always disable antialiasing -- it's not critical here and we benefit from the performance boost disabling it gives
-  context.renderContext().painter()->setRenderHint( QPainter::Antialiasing, false );
 
   QgsPointCloudDataBounds db;
 
