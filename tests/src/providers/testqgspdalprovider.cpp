@@ -170,8 +170,10 @@ void TestQgsPdalProvider::validLayer()
   QGSCOMPARENEAR( layer->extent().yMinimum(), 7050992.84, 0.1 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), 498067.39, 0.1 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 7050997.04, 0.1 );
+  QCOMPARE( layer->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((498062 7050993, 498067 7050993, 498067 7050997, 498062 7050997, 498062 7050993))" ) );
 
   QCOMPARE( layer->dataProvider()->pointCount(), 253 );
+  QCOMPARE( layer->pointCount(), 253 );
 }
 
 QGSTEST_MAIN( TestQgsPdalProvider )

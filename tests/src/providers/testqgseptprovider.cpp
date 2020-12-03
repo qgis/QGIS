@@ -169,7 +169,9 @@ void TestQgsEptProvider::validLayer()
   QGSCOMPARENEAR( layer->extent().yMinimum(), 7050992.0, 0.1 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), 498068.0, 0.1 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 7050998.0, 0.1 );
+  QCOMPARE( layer->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((498061 7050992, 498068 7050992, 498068 7050998, 498061 7050998, 498061 7050992))" ) );
   QCOMPARE( layer->dataProvider()->pointCount(), 253 );
+  QCOMPARE( layer->pointCount(), 253 );
 
   QVERIFY( layer->dataProvider()->index() );
   // all hierarchy is stored in a single node
