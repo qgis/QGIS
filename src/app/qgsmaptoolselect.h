@@ -21,6 +21,8 @@
 #include "qgsmaptoolselectionhandler.h"
 
 class QgsMapCanvas;
+class QgsHighlight;
+
 class QMouseEvent;
 
 class APP_EXPORT QgsMapToolSelect : public QgsMapTool
@@ -51,6 +53,8 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     void keyReleaseEvent( QKeyEvent *e ) override;
     void deactivate() override;
     Flags flags() const override;
+
+    bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
 
   signals:
 

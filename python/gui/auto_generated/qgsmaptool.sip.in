@@ -11,6 +11,7 @@
 
 
 
+
 %ModuleHeaderCode
 // fix to allow compilation with sip 4.7 that for some reason
 // doesn't add these includes to the file where the code from
@@ -210,6 +211,28 @@ The default implementation does nothing.
    is present in :py:func:`~QgsMapTool.flags`.
 
 .. versionadded:: 3.14
+%End
+
+    virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
+%Docstring
+Allows the tool to populate and customize the given ``menu``,
+prior to showing it in response to a right-mouse button click.
+
+``menu`` will be initially populated with a set of default, generic actions.
+Any new actions added to the menu should be correctly parented to ``menu``.
+
+A pointer to the map mouse ``event`` can be provided to allow particular behavior depending on the map tool.
+
+This method can return true to inform the caller that the menu was effectively populated.
+
+The default implementation does nothing and returns false.
+
+.. note::
+
+   The context menu is only shown when the ShowContextMenu flag
+   is present in :py:func:`~QgsMapTool.flags`.
+
+.. versionadded:: 3.18
 %End
 
   signals:

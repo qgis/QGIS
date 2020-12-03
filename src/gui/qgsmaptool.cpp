@@ -225,7 +225,14 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
   return searchRadiusMU( context );
 }
 
+
 void QgsMapTool::populateContextMenu( QMenu * )
 {
 
+}
+
+
+bool QgsMapTool::populateContextMenuWithEvent( QMenu *, QgsMapMouseEvent * )
+{
+  return false;
 }
