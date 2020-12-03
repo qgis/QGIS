@@ -129,8 +129,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  int renderingStyleInt = elemSymbol.attribute( QStringLiteral( "rendering-style" ), QStringLiteral( "0" ) ).toInt();
-  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = static_cast<QgsPointCloud3DSymbol::RenderingStyle>( renderingStyleInt );
+  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = QgsPointCloud3DSymbol::renderingStylefromString( elemSymbol.attribute( QStringLiteral( "rendering-style" ) ) );
   switch ( renderingStyle )
   {
     case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:

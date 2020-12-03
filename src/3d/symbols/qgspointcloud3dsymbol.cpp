@@ -24,6 +24,29 @@
 
 // QgsPointCloud3DSymbol
 
+QString QgsPointCloud3DSymbol::renderingStyletoString( QgsPointCloud3DSymbol::RenderingStyle renderingStyle )
+{
+  switch ( renderingStyle )
+  {
+    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering: return QString();
+    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor: return QStringLiteral( "single-color" );
+    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp: return QStringLiteral( "color-ramp" );
+    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering: return QStringLiteral( "rgb" );
+  }
+  return QString();
+}
+
+QgsPointCloud3DSymbol::RenderingStyle QgsPointCloud3DSymbol::renderingStylefromString( const QString &str )
+{
+  if ( str == QStringLiteral( "single-color" ) )
+    return QgsPointCloud3DSymbol::RenderingStyle::SingleColor;
+  if ( str == QStringLiteral( "color-ramp" ) )
+    return QgsPointCloud3DSymbol::RenderingStyle::ColorRamp;
+  if ( str == QStringLiteral( "rgb" ) )
+    return QgsPointCloud3DSymbol::RenderingStyle::RgbRendering;
+  return QgsPointCloud3DSymbol::RenderingStyle::NoRendering;
+}
+
 QgsPointCloud3DSymbol::QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style )
   : QgsAbstract3DSymbol()
   , mRenderingStyle( style )
@@ -59,7 +82,7 @@ void QgsSingleColorPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsRea
   Q_UNUSED( context )
 
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
-  elem.setAttribute( QStringLiteral( "rendering-style" ), mRenderingStyle );
+  elem.setAttribute( QStringLiteral( "rendering-style" ), renderingStyletoString( mRenderingStyle ) );
   elem.setAttribute( QStringLiteral( "single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
 }
 
@@ -67,8 +90,8 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
 {
   Q_UNUSED( context )
 
-  mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
-  mRenderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( elem.attribute( QStringLiteral( "rendering-style" ), QStringLiteral( "1" ) ).toInt() );
+  mPointSize = elem.attribute( QStringLiteral( "point-size" ), QStringLiteral( "2.0" ) ).toFloat();
+  mRenderingStyle = renderingStylefromString( elem.attribute( QStringLiteral( "rendering-style" ), QString() ) ) ;
   mSingleColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "single-color" ), QStringLiteral( "0,0,0" ) ) );
 }
 

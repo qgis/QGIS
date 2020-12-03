@@ -40,6 +40,9 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
       RgbRendering
     };
 
+    static QString renderingStyletoString( RenderingStyle renderingStyle );
+    static RenderingStyle renderingStylefromString( const QString &str );
+
     QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
 %Docstring
 Constructor for QgsPointCloud3DSymbol
