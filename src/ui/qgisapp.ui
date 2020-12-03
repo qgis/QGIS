@@ -1351,7 +1351,7 @@
      <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Zoom to &amp;Layer</string>
+    <string>Zoom to &amp;Layer(s)</string>
    </property>
   </action>
   <action name="mActionZoomToSelected">

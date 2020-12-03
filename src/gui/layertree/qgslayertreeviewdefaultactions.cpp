@@ -91,7 +91,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject *parent
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent )
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
-                            tr( "&Zoom to Layer" ), parent );
+                            tr( "&Zoom to Layer(s)" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayer ) );
   return a;
@@ -283,12 +283,10 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
 
 void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
 {
-  QgsMapLayer *layer = mView->currentLayer();
-  if ( !layer )
+  QList<QgsMapLayer *> layers = mView->selectedLayers();
+  if ( layers.isEmpty() )
     return;
 
-  QList<QgsMapLayer *> layers;
-  layers << layer;
   zoomToLayers( canvas, layers );
 }
 
