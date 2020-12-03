@@ -129,8 +129,6 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    void startRender( QgsPointCloudRenderContext &context ) override;
-    void stopRender( QgsPointCloudRenderContext &context ) override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
     QStringList legendRuleKeys() const override;
@@ -183,8 +181,6 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     void addCategory( const QgsPointCloudCategory &category );
 
   private:
-
-    int mPainterPenWidth = 1;
 
     QString mAttribute = QStringLiteral( "Classification" );
 

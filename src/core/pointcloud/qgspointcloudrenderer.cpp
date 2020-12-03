@@ -70,7 +70,7 @@ QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderCo
   return QSet< QString >();
 }
 
-void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext & )
+void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
 {
 #ifdef QGISDEBUG
   if ( !mThread )
@@ -82,6 +82,8 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext & )
     Q_ASSERT_X( mThread == QThread::currentThread(), "QgsPointCloudRenderer::startRender", "startRender called in a different thread - use a cloned renderer instead" );
   }
 #endif
+
+  mPainterPenWidth = context.renderContext().convertToPainterUnits( pointSize(), pointSizeUnit(), pointSizeMapUnitScale() );
 }
 
 void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
@@ -130,6 +132,8 @@ QStringList QgsPointCloudRenderer::legendRuleKeys() const
 {
   return QStringList();
 }
+
+
 
 void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destination ) const
 {

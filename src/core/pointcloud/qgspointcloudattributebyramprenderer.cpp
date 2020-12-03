@@ -51,11 +51,6 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
   const QgsRectangle visibleExtent = context.renderContext().extent();
 
-  QPen pen;
-  pen.setWidth( mPainterPenWidth );
-  pen.setCapStyle( Qt::FlatCap );
-  //pen.setJoinStyle( Qt::MiterJoin );
-
   const char *ptr = block->data();
   int count = block->pointCount();
   const QgsPointCloudAttributeCollection request = block->attributes();
@@ -120,19 +115,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
       if ( applyZOffset )
         attributeValue = context.offset().z() + context.scale().z() * attributeValue;
 
-      mapToPixel.transformInPlace( x, y );
-
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
-#if 0
-      pen.setColor( QColor( red, green, blue ) );
-      context.renderContext().painter()->setPen( pen );
-      context.renderContext().painter()->drawPoint( QPointF( x, y ) );
-#else
-
-      context.renderContext().painter()->fillRect( QRectF( x - mPainterPenWidth * 0.5,
-          y - mPainterPenWidth * 0.5,
-          mPainterPenWidth, mPainterPenWidth ), QColor( red, green, blue, alpha ) );
-#endif
+      drawPoint( x, y, QColor( red, green, blue, alpha ), context );
 
       rendered++;
     }
@@ -174,18 +158,6 @@ QDomElement QgsPointCloudAttributeByRampRenderer::save( QDomDocument &doc, const
   saveCommonProperties( rendererElem, context );
 
   return rendererElem;
-}
-
-void QgsPointCloudAttributeByRampRenderer::startRender( QgsPointCloudRenderContext &context )
-{
-  QgsPointCloudRenderer::startRender( context );
-
-  mPainterPenWidth = context.renderContext().convertToPainterUnits( pointSize(), pointSizeUnit(), pointSizeMapUnitScale() );
-}
-
-void QgsPointCloudAttributeByRampRenderer::stopRender( QgsPointCloudRenderContext &context )
-{
-  QgsPointCloudRenderer::stopRender( context );
 }
 
 QSet<QString> QgsPointCloudAttributeByRampRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
