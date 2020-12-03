@@ -260,7 +260,9 @@ void QgsColorRampShaderWidget::dumpClasses()
   {
     const auto labelData { mColormapTreeWidget->model()->itemData( mColormapTreeWidget->model()->index( row, LabelColumn ) ) };
     const auto valueData { mColormapTreeWidget->model()->itemData( mColormapTreeWidget->model()->index( row, ValueColumn ) ) };
-    qDebug() << "Class" << row << ":" <<  labelData[ Qt::ItemDataRole::DisplayRole ] << valueData[ Qt::ItemDataRole::DisplayRole ];
+    QgsDebugMsgLevel( QStringLiteral( "Class %1 : %2 %3" ).arg( row )
+                      .arg( labelData[ Qt::ItemDataRole::DisplayRole ].toString(),
+                            valueData[ Qt::ItemDataRole::DisplayRole ].toString() ), 2 );
   }
 }
 #endif
