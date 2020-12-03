@@ -36,10 +36,6 @@ Constructor for QgsPointCloudRgbRenderer.
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual void startRender( QgsPointCloudRenderContext &context );
-
-    virtual void stopRender( QgsPointCloudRenderContext &context );
-
     virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
 
 

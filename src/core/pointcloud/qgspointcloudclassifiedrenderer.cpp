@@ -59,14 +59,7 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 
 void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context )
 {
-  const QgsMapToPixel mapToPixel = context.renderContext().mapToPixel();
-
   const QgsRectangle visibleExtent = context.renderContext().extent();
-
-  QPen pen;
-  pen.setWidth( mPainterPenWidth );
-  pen.setCapStyle( Qt::FlatCap );
-  //pen.setJoinStyle( Qt::MiterJoin );
 
   const char *ptr = block->data();
   int count = block->pointCount();
@@ -129,19 +122,7 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
         }
       }
 
-      mapToPixel.transformInPlace( x, y );
-
-#if 0
-      pen.setColor( QColor( red, green, blue ) );
-      context.renderContext().painter()->setPen( pen );
-      context.renderContext().painter()->drawPoint( QPointF( x, y ) );
-#else
-
-      context.renderContext().painter()->fillRect( QRectF( x - mPainterPenWidth * 0.5,
-          y - mPainterPenWidth * 0.5,
-          mPainterPenWidth, mPainterPenWidth ), color );
-#endif
-
+      drawPoint( x, y, color, context );
       rendered++;
     }
   }
@@ -225,18 +206,6 @@ QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsR
   saveCommonProperties( rendererElem, context );
 
   return rendererElem;
-}
-
-void QgsPointCloudClassifiedRenderer::startRender( QgsPointCloudRenderContext &context )
-{
-  QgsPointCloudRenderer::startRender( context );
-
-  mPainterPenWidth = context.renderContext().convertToPainterUnits( pointSize(), pointSizeUnit(), pointSizeMapUnitScale() );
-}
-
-void QgsPointCloudClassifiedRenderer::stopRender( QgsPointCloudRenderContext &context )
-{
-  QgsPointCloudRenderer::stopRender( context );
 }
 
 QSet<QString> QgsPointCloudClassifiedRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const

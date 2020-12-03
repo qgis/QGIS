@@ -42,8 +42,6 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    void startRender( QgsPointCloudRenderContext &context ) override;
-    void stopRender( QgsPointCloudRenderContext &context ) override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
 
@@ -113,8 +111,6 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     void setMaximum( double maximum );
 
   private:
-
-    int mPainterPenWidth = 1;
 
     double mMin = 0;
     double mMax = 100;

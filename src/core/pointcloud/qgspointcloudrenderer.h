@@ -431,6 +431,23 @@ class CORE_EXPORT QgsPointCloudRenderer
     }
 
     /**
+     * Draws a point using a \a color at the specified \a x and \a y (in map coordinates).
+     */
+    void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const
+    {
+      context.renderContext().mapToPixel().transformInPlace( x, y );
+#if 0
+      pen.setColor( QColor( red, green, blue ) );
+      context.renderContext().painter()->setPen( pen );
+      context.renderContext().painter()->drawPoint( QPointF( x, y ) );
+#else
+      context.renderContext().painter()->fillRect( QRectF( x - mPainterPenWidth * 0.5,
+          y - mPainterPenWidth * 0.5,
+          mPainterPenWidth, mPainterPenWidth ), color );
+#endif
+    }
+
+    /**
      * Copies common point cloud properties (such as point size and screen error) to the \a destination renderer.
      */
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
@@ -468,6 +485,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mPointSizeMapUnitScale;
 
+    int mPainterPenWidth = 1;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H
