@@ -515,6 +515,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
+     * Returns the geographic extent (EPSG:4326) of the layer.
+     *
+     * \see setExtent()
+     * \since QGIS 3.18
+     */
+    QgsRectangle geographicExtent() const;
+
+    /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when initialized.
      * \returns TRUE if the layer is valid and can be accessed
@@ -1516,25 +1524,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the \a extent in layer CRS.
      *
      * If the layer CRS is not EPSG:4326 and the geographic extent is
-     * known, using setExtents() is faster.
-     *
-     * \see setExtents()
+     * known.
      */
     virtual void setExtent( const QgsRectangle &extent );
-
-    /**
-     * Simultaneously sets the \a extent and the \a geographicExtent.
-     *
-     * This call can be used to skip the costly coordinate transformation when setting
-     * the layer extent in case the geographic extent is already known (e.g. when loading
-     * a project).
-     *
-     * \see setExtent()
-     * \see geographicExtent()
-     *
-     * \since QGIS 3.18
-     */
-    virtual void setExtents( const QgsRectangle &extent, const QgsRectangle &geographicExtent );
 
     //! Sets whether layer is valid or not
     void setValid( bool valid );
@@ -1699,14 +1691,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.18
      */
     double mLayerOpacity = 1.0;
-
-    /**
-     * Returns the geographic extent (EPSG:4326) of the layer.
-     *
-     * \see setExtent()
-     * \since QGIS 3.18
-     */
-    QgsRectangle geographicExtent() const;
 
   private:
 

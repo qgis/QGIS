@@ -392,6 +392,16 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
 
+  // geographic extent
+  // if ( mReadExtentFromXml )
+  // {
+  QDomNode geoExtentNode = layerElement.namedItem( QStringLiteral( "geographicExtent" ) );
+  if ( !geoExtentNode.isNull() )
+  {
+    mGeographicExtent = QgsXmlUtils::readRectangle( geoExtentNode.toElement() );
+  }
+  // }
+
   return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
@@ -1905,12 +1915,6 @@ void QgsMapLayer::setExtent( const QgsRectangle &extent )
   mExtent = extent;
   const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext() };
   mGeographicExtent = transformer.transform( extent );
-}
-
-void QgsMapLayer::setExtents( const QgsRectangle &extent, const QgsRectangle &geographicExtent )
-{
-  mExtent = extent;
-  mGeographicExtent = geographicExtent;
 }
 
 bool QgsMapLayer::isReadOnly() const

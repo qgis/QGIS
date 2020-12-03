@@ -505,6 +505,15 @@ Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for re
 Returns the extent of the layer.
 %End
 
+    QgsRectangle geographicExtent() const;
+%Docstring
+Returns the geographic extent (EPSG:4326) of the layer.
+
+.. seealso:: :py:func:`setExtent`
+
+.. versionadded:: 3.18
+%End
+
     bool isValid() const;
 %Docstring
 Returns the status of the layer. An invalid layer is one which has a bad datasource
@@ -1700,24 +1709,7 @@ Copies attributes like name, short name, ... into another layer.
 Sets the ``extent`` in layer CRS.
 
 If the layer CRS is not EPSG:4326 and the geographic extent is
-known, using :py:func:`~QgsMapLayer.setExtents` is faster.
-
-.. seealso:: :py:func:`setExtents`
-%End
-
-    virtual void setExtents( const QgsRectangle &extent, const QgsRectangle &geographicExtent );
-%Docstring
-Simultaneously sets the ``extent`` and the ``geographicExtent``.
-
-This call can be used to skip the costly coordinate transformation when setting
-the layer extent in case the geographic extent is already known (e.g. when loading
-a project).
-
-.. seealso:: :py:func:`setExtent`
-
-.. seealso:: :py:func:`geographicExtent`
-
-.. versionadded:: 3.18
+known.
 %End
 
     void setValid( bool valid );
@@ -1846,15 +1838,6 @@ this method is now deprecated and always return ``False``, because circular depe
 
 
 
-
-    QgsRectangle geographicExtent() const;
-%Docstring
-Returns the geographic extent (EPSG:4326) of the layer.
-
-.. seealso:: :py:func:`setExtent`
-
-.. versionadded:: 3.18
-%End
 
 };
 
