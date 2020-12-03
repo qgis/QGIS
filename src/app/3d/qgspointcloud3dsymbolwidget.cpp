@@ -38,14 +38,15 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   if ( symbol )
     setSymbol( symbol );
 
-  connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::changed );
+  connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mRenderingStyleComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
   connect( mColorRampShaderMinMaxReloadButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax );
-  connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::changed );
+  connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
+  mBlockChangedSignals++;
   mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->renderingStyle() ) );
   if ( symbol )
   {
@@ -80,6 +81,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   }
 
   onRenderingStyleChanged();
+  mBlockChangedSignals--;
 }
 
 QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
@@ -163,4 +165,12 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       mPointSizeFrame->setVisible( true );
       break;
   }
+}
+
+void QgsPointCloud3DSymbolWidget::emitChangedSignal()
+{
+  if ( mBlockChangedSignals )
+    return;
+
+  emit changed();
 }
