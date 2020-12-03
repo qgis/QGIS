@@ -1996,7 +1996,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
       connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 
       // check if we have to update connections for layers with dependencies
-      for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); ++it )
+      for ( QMap<QString, QgsMapLayer *>::const_iterator it = existingMaps.cbegin(); it != existingMaps.cend(); ++it )
       {
         QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
         if ( deps.contains( layer->id() ) )
