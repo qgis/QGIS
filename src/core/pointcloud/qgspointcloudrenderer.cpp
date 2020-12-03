@@ -90,6 +90,7 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
     case Square:
       // for square point we always disable antialiasing -- it's not critical here and we benefit from the performance boost disabling it gives
       context.renderContext().painter()->setRenderHint( QPainter::Antialiasing, false );
+      break;
 
     case Circle:
       break;
