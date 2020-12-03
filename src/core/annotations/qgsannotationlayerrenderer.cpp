@@ -21,6 +21,7 @@
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( qgis::make_unique< QgsFeedback >() )
+  , mLayerOpacity( layer->opacity() )
 {
   // clone items from layer
   const QMap< QString, QgsAnnotationItem * > items = layer->items();
@@ -56,4 +57,9 @@ bool QgsAnnotationLayerRenderer::render()
     item->render( context, mFeedback.get() );
   }
   return true;
+}
+
+bool QgsAnnotationLayerRenderer::forceRasterRender() const
+{
+  return renderContext()->testFlag( QgsRenderContext::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
 }

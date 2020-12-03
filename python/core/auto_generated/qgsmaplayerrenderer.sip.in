@@ -53,6 +53,24 @@ Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render 
 Do the rendering (based on data stored in the class)
 %End
 
+    virtual bool forceRasterRender() const;
+%Docstring
+Returns ``True`` if the renderer must be rendered to a raster paint device (e.g. QImage).
+
+Some layer settings require layers to be effectively "flattened" while rendering maps,
+which is achieved by first rendering the layer onto a raster paint device and then compositing
+the resultant image onto the final map render.
+
+E.g. if a layer contains features with transparency or alternative blending modes, and
+the effects of these opacity or blending modes should be restricted to only affect other
+features within the SAME layer, then a flattened raster based render is required.
+
+Subclasses should return ``True`` whenever their corresponding layer settings require the
+layer to always be rendered using a raster paint device.
+
+.. versionadded:: 3.18
+%End
+
     virtual QgsFeedback *feedback() const;
 %Docstring
 Access to feedback object of the layer renderer (may be ``None``)
@@ -76,6 +94,7 @@ Returns the render context associated with the renderer.
 
 .. versionadded:: 3.10
 %End
+
 
   protected:
 

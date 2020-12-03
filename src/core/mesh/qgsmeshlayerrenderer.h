@@ -97,6 +97,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     ~QgsMeshLayerRenderer() override = default;
     QgsFeedback *feedback() const override;
     bool render() override;
+    bool forceRasterRender() const override;
 
   private:
     void renderMesh();
@@ -151,6 +152,10 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // output screen size
     QSize mOutputSize;
+
+  private:
+
+    double mLayerOpacity = 1.0;
 };
 
 

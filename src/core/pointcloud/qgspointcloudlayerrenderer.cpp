@@ -165,6 +165,13 @@ bool QgsPointCloudLayerRenderer::render()
   return true;
 }
 
+bool QgsPointCloudLayerRenderer::forceRasterRender() const
+{
+  // point cloud layers should always be rasterized -- we don't want to export points as vectors
+  // to formats like PDF!
+  return true;
+}
+
 QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
     const QgsRenderContext &context,
     IndexedPointCloudNode n,

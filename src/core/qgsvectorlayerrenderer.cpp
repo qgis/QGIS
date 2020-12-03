@@ -127,6 +127,20 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   prepareDiagrams( layer, mAttrNames );
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( context, layer );
+
+  if ( mRenderer && mRenderer->forceRasterRender() )
+  {
+    //raster rendering is forced for this layer
+    mForceRasterRender = true;
+  }
+  if ( context.testFlag( QgsRenderContext::UseAdvancedEffects ) &&
+       ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
+         || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+         || ( !qgsDoubleNear( layer->opacity(), 1.0 ) ) ) )
+  {
+    //layer properties require rasterization
+    mForceRasterRender = true;
+  }
 }
 
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
@@ -138,6 +152,11 @@ QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 QgsFeedback *QgsVectorLayerRenderer::feedback() const
 {
   return mInterruptionChecker.get();
+}
+
+bool QgsVectorLayerRenderer::forceRasterRender() const
+{
+  return mForceRasterRender;
 }
 
 bool QgsVectorLayerRenderer::render()

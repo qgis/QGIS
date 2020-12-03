@@ -75,6 +75,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     bool render() override;
     QgsFeedback *feedback() const override;
+    bool forceRasterRender() const override;
 
   private:
 

@@ -55,6 +55,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     ~QgsPointCloudLayerRenderer();
 
     bool render() override;
+    bool forceRasterRender() const override;
 
   private:
 

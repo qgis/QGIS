@@ -19,6 +19,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsFeedback;
 class QgsRenderContext;
@@ -65,6 +66,24 @@ class CORE_EXPORT QgsMapLayerRenderer
     virtual bool render() = 0;
 
     /**
+     * Returns TRUE if the renderer must be rendered to a raster paint device (e.g. QImage).
+     *
+     * Some layer settings require layers to be effectively "flattened" while rendering maps,
+     * which is achieved by first rendering the layer onto a raster paint device and then compositing
+     * the resultant image onto the final map render.
+     *
+     * E.g. if a layer contains features with transparency or alternative blending modes, and
+     * the effects of these opacity or blending modes should be restricted to only affect other
+     * features within the SAME layer, then a flattened raster based render is required.
+     *
+     * Subclasses should return TRUE whenever their corresponding layer settings require the
+     * layer to always be rendered using a raster paint device.
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool forceRasterRender() const { return false; }
+
+    /**
      * Access to feedback object of the layer renderer (may be NULLPTR)
      * \since QGIS 3.0
      */
@@ -82,6 +101,14 @@ class CORE_EXPORT QgsMapLayerRenderer
      * \since QGIS 3.10
      */
     QgsRenderContext *renderContext() { return mContext; }
+
+    /**
+     * Returns the render context associated with the renderer.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.18
+     */
+    const QgsRenderContext *renderContext() const SIP_SKIP { return mContext; }
 
   protected:
     QStringList mErrors;

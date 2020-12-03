@@ -417,8 +417,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 
-    bool needTemporaryImage( QgsMapLayer *ml );
-
     const QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
 
     //! Convenient method to allocate a new image and stack an error if not enough memory is available
