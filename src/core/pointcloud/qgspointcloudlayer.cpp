@@ -493,6 +493,11 @@ QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
   return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
 }
 
+int QgsPointCloudLayer::pointCount() const
+{
+  return mDataProvider ? mDataProvider->pointCount() : 0;
+}
+
 QgsPointCloudRenderer *QgsPointCloudLayer::renderer()
 {
   return mRenderer.get();
