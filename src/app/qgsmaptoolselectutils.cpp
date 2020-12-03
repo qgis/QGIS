@@ -483,7 +483,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::onSearchFinished()
   mAllFeatureIds = mFutureWatcher->result();
   mActionChooseAll->setText( textForChooseAll( mAllFeatureIds.size() ) );
   if ( !mAllFeatureIds.isEmpty() )
-    connect( mActionChooseAll, &QAction::hovered, this, &QgsMapToolSelectMenuActions::highlightFeatures );
+    connect( mActionChooseAll, &QAction::hovered, this, &QgsMapToolSelectMenuActions::highlightAllFeatures );
   else
     mActionChooseAll->setEnabled( false );
   if ( mAllFeatureIds.count() > 1 )
@@ -514,7 +514,7 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
 
   QString featureCountText;
   if ( featureCount < 0 )
-    featureCountText = QStringLiteral( "Searching..." );
+    featureCountText = tr( "Searching…" );
   else
     featureCountText = QString::number( featureCount );
 
@@ -561,41 +561,45 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseOneMenu
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateChooseOneMenu( const QgsFeatureIds &ids )
 {
+  if ( !mVectorLayer )
+    return;
+
   QgsFeatureIds displayedFeatureIds;
 
   QgsFeatureIds::ConstIterator it = ids.constBegin();
   while ( displayedFeatureIds.count() <= 20 && it != ids.constEnd() ) //for now hardcoded, but maybe define a settings for this
     displayedFeatureIds.insert( *( it++ ) );
 
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+  QgsExpression exp = mVectorLayer->displayExpression();
+  exp.prepare( &context );
+
   for ( QgsFeatureId id : qgis::as_const( displayedFeatureIds ) )
   {
-    QAction *featureAction = new QAction( tr( "Feature %1" ).arg( id ), this ) ;
-    featureAction->setData( id );
-    connect( featureAction, &QAction::triggered, this, &QgsMapToolSelectMenuActions::chooseOneCandidateFeature );
-    connect( featureAction, &QAction::hovered, this, &QgsMapToolSelectMenuActions::highlightFeatures );
+    QgsFeature feat = mVectorLayer->getFeature( id );
+    context.setFeature( feat );
+
+    QString featureTitle = exp.evaluate( &context ).toString();
+    if ( featureTitle.isEmpty() )
+      featureTitle = FID_TO_STRING( feat.id() );
+
+    QAction *featureAction = new QAction( tr( "Feature %1" ).arg( featureTitle ), this ) ;
+    connect( featureAction, &QAction::triggered, this, [this, id]() {chooseOneCandidateFeature( id );} );
+    connect( featureAction, &QAction::hovered, this, [this, id]() {this->highlightOneFeature( id );} );
     mMenuChooseOne->addAction( featureAction );
   }
 
   mMenuChooseOne->setEnabled( ids.count() != 0 );
 }
 
-void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::chooseOneCandidateFeature()
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::chooseOneCandidateFeature( QgsFeatureId id )
 {
   if ( !mVectorLayer )
     return;
-  QAction *senderAction = qobject_cast<QAction *>( sender() );
-
-  if ( !senderAction )
-    return;
-
-  QVariant featureVariant = senderAction->data();
 
   QgsFeatureIds ids;
-  if ( featureVariant.type() == QVariant::LongLong )
-    ids.insert( featureVariant.toLongLong() );
-
-  if ( !ids.empty() )
-    mVectorLayer->selectByIds( ids, mBehavior );
+  ids << id;
+  mVectorLayer->selectByIds( ids, mBehavior );
 }
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::chooseAllCandidateFeature()
@@ -615,38 +619,17 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::chooseAllCandidateFeatu
     mVectorLayer->selectByIds( mAllFeatureIds, mBehavior );
 }
 
-void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highlightFeatures()
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highlightAllFeatures()
 {
   removeHighlight();
 
   if ( !mVectorLayer )
     return;
 
-  QAction *senderAction = qobject_cast<QAction *>( sender() );
-  if ( !senderAction )
-    return;
-
-  QgsFeatureIds ids;
-  if ( senderAction == mActionChooseAll )
-    ids = mAllFeatureIds;
-  else
-  {
-    QVariant featureVariant = senderAction->data();
-    if ( featureVariant.type() == QVariant::List )
-    {
-      QVariantList list = featureVariant.toList();
-      for ( const QVariant &var : list )
-        ids.insert( var.toLongLong() );
-    }
-
-    if ( featureVariant.type() == QVariant::LongLong )
-      ids.insert( featureVariant.toLongLong() );
-  }
-
-  if ( !ids.empty() )
+  if ( !mAllFeatureIds.empty() )
   {
     int count = 0;
-    for ( const QgsFeatureId &id : ids )
+    for ( const QgsFeatureId &id : mAllFeatureIds )
     {
       QgsFeature feat = mVectorLayer->getFeature( id );
       QgsGeometry geom = feat.geometry();
@@ -660,6 +643,23 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highlightFeatures()
       if ( count > 1000 ) //for now hardcoded, but maybe define a settings for this
         return;
     }
+  }
+}
+
+void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highlightOneFeature( QgsFeatureId id )
+{
+  removeHighlight();
+
+  if ( !mVectorLayer )
+    return;
+
+  QgsFeature feat = mVectorLayer->getFeature( id );
+  QgsGeometry geom = feat.geometry();
+  if ( !geom.isEmpty() )
+  {
+    QgsHighlight *hl = new QgsHighlight( mCanvas, geom, mVectorLayer );
+    styleHighlight( hl );
+    mHighlight.append( hl );
   }
 }
 

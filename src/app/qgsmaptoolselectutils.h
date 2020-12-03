@@ -152,9 +152,8 @@ namespace QgsMapToolSelectUtils
       void populateMenu( QMenu *menu );
 
     private slots:
-      void chooseOneCandidateFeature();
       void chooseAllCandidateFeature();
-      void highlightFeatures();
+      void highlightAllFeatures();
       void onLayerDestroyed();
       void removeHighlight();
       void onSearchFinished();
@@ -197,6 +196,9 @@ namespace QgsMapToolSelectUtils
       std::shared_ptr<DataForSearchingJob> mJobData;
 
       static QgsFeatureIds search( std::shared_ptr<DataForSearchingJob> data );
+
+      void chooseOneCandidateFeature( QgsFeatureId id );
+      void highlightOneFeature( QgsFeatureId id );
   };
 
 }

@@ -224,7 +224,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      *
      * A pointer to the map mouse \a event can be provided to allow particular behavior depending on the map tool.
      *
-     * This method can return true to inform the caller that the menu was effectivly populated.
+     * This method can return true to inform the caller that the menu was effectively populated.
      *
      * The default implementation does nothing and returns false.
      *
