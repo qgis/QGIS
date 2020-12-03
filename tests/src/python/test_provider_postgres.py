@@ -2296,6 +2296,17 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         for f in vl0.getFeatures():
             self.assertNotEqual(f.attribute(0), NULL)
 
+    def testFeatureCountEstimatedOnTable(self):
+        """
+        Test feature count on table when estimated data is enabled
+        """
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
+            'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount() > 0)
+
     def testFeatureCountEstimatedOnView(self):
         """
         Test feature count on view when estimated data is enabled
@@ -2308,7 +2319,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."somedataview" (geom) sql=',
             'test', 'postgres')
         self.assertTrue(vl.isValid())
-        self.assertTrue(self.source.featureCount() > 0)
+        self.assertTrue(vl.featureCount() > 0)
 
     def testIdentityPk(self):
         """Test a table with identity pk, see GH #29560"""
