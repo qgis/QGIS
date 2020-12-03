@@ -39,6 +39,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mRenderer( layer->renderer()->clone() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
+  , mLayerOpacity( layer->opacity() )
 {
 
   QgsDataSourceUri dsUri;
@@ -191,6 +192,11 @@ bool QgsVectorTileLayerRenderer::render()
   QgsDebugMsgLevel( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ), 2 );
 
   return !ctx.renderingStopped();
+}
+
+bool QgsVectorTileLayerRenderer::forceRasterRender() const
+{
+  return renderContext()->testFlag( QgsRenderContext::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
 }
 
 void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &rawTile )

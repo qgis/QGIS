@@ -44,10 +44,12 @@ class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
     ~QgsAnnotationLayerRenderer() override;
     QgsFeedback *feedback() const override;
     bool render() override;
+    bool forceRasterRender() const override;
 
   private:
     QVector< QgsAnnotationItem *> mItems;
     std::unique_ptr< QgsFeedback > mFeedback;
+    double mLayerOpacity = 1.0;
 
 };
 

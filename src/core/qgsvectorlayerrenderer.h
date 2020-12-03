@@ -78,6 +78,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context );
     ~QgsVectorLayerRenderer() override;
     QgsFeedback *feedback() const override;
+    bool forceRasterRender() const override;
 
     /**
      * Returns the feature renderer.
@@ -167,6 +168,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mApplyClipGeometries = false;
     QgsGeometry mLabelClipFeatureGeom;
     bool mApplyLabelClipGeometries = false;
+    bool mForceRasterRender = false;
 
 };
 

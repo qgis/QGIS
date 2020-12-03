@@ -46,6 +46,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     virtual bool render() override;
     virtual QgsFeedback *feedback() const override { return mFeedback.get(); }
+    bool forceRasterRender() const override;
 
   private:
     void decodeAndDrawTile( const QgsVectorTileRawData &rawTile );
@@ -98,6 +99,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     int mTotalDrawTime = 0;
 
     QList< QgsMapClippingRegion > mClippingRegions;
+    double mLayerOpacity = 1.0;
 };
 
 

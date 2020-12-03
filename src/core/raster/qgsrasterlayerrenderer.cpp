@@ -339,3 +339,9 @@ QgsFeedback *QgsRasterLayerRenderer::feedback() const
   return mFeedback;
 }
 
+bool QgsRasterLayerRenderer::forceRasterRender() const
+{
+  // preview of intermediate raster rendering results requires a temporary output image
+  return renderContext()->testFlag( QgsRenderContext::RenderPartialOutput );
+}
+
