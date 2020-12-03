@@ -17,6 +17,7 @@
 #define QGSPOINTCLOUD3DSYMBOLWIDGET_H
 
 #include "ui_qgspointcloud3dsymbolwidget.h"
+#include "qgspointcloud3dsymbol.h"
 
 class QgsPointCloudLayer;
 class QgsPointCloud3DSymbol;
@@ -34,7 +35,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
   private slots:
     void reloadColorRampShaderMinMax();
-    void onRenderingStyleChanged( int current );
+    void onRenderingStyleChanged();
 
   signals:
     void changed();

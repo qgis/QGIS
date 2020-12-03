@@ -18,6 +18,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgsapplication.h"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -28,6 +29,11 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mPointSizeSpinBox->setClearValue( 2.0 );
 
   mRenderingParameterComboBox->setLayer( layer );
+
+  mRenderingStyleComboBox->addItem( tr( "No Rendering" ), QgsPointCloud3DSymbol::NoRendering );
+  mRenderingStyleComboBox->addItem( tr( "Single Color" ), QgsPointCloud3DSymbol::SingleColor );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QgsPointCloud3DSymbol::ColorRamp );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QgsPointCloud3DSymbol::RgbRendering );
 
   if ( symbol )
     setSymbol( symbol );
@@ -40,7 +46,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
-  mRenderingStyleComboBox->setCurrentIndex( symbol ? symbol->renderingStyle() : 0 );
+  mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->renderingStyle() ) );
   if ( symbol )
   {
     switch ( symbol->renderingStyle() )
@@ -73,13 +79,13 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     }
   }
 
-  onRenderingStyleChanged( mRenderingStyleComboBox->currentIndex() );
+  onRenderingStyleChanged();
 }
 
 QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
 {
   QgsPointCloud3DSymbol *retSymb = nullptr;
-  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( mRenderingStyleComboBox->currentIndex() );
+  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( mRenderingStyleComboBox->currentData().toInt() );
 
   switch ( renderingStyle )
   {
@@ -131,9 +137,9 @@ void QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax()
   mColorRampShaderWidget->classify();
 }
 
-void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged( int current )
+void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
 {
-  QgsPointCloud3DSymbol::RenderingStyle currentStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( current );
+  const QgsPointCloud3DSymbol::RenderingStyle currentStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle>( mRenderingStyleComboBox->currentData().toInt() );
   switch ( currentStyle )
   {
     case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
