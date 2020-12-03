@@ -36,6 +36,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
   private slots:
     void reloadColorRampShaderMinMax();
     void onRenderingStyleChanged();
+    void emitChangedSignal();
 
   signals:
     void changed();
@@ -44,6 +45,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setColorRampMinMax( double min, double max );
 
   private:
+    int mBlockChangedSignals = 0;
     QgsPointCloudLayer *mLayer = nullptr;
 
 };
