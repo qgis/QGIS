@@ -335,6 +335,7 @@
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatguiregistry.sip
+%Include auto_generated/pointcloud/qgspointcloudclassifiedrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererpropertieswidget.sip
 %Include auto_generated/processing/qgsprocessingaggregatewidgets.sip
