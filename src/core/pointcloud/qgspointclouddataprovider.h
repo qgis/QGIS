@@ -26,6 +26,7 @@
 
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
+class QgsGeometry;
 
 /**
  * \ingroup core
@@ -85,6 +86,19 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * Returns the total number of points available in the dataset.
      */
     virtual int pointCount() const = 0;
+
+    /**
+     * Returns the polygon bounds of the layer. The CRS of the returned geometry will match the provider's crs().
+     *
+     * This method will return the best approximation for the actual bounds of points contained in the
+     * dataset available from the provider's metadata. This may match the bounding box rectangle returned
+     * by extent(), or for some datasets a "convex hull" style polygon representing a more precise bounds
+     * will be returned.
+     *
+     * This method will not attempt to calculate the data bounds, rather it will return only whatever precomputed bounds
+     * are included in the data source's metadata.
+     */
+    virtual QgsGeometry polygonBounds() const;
 
     /**
      * Creates a new 2D point cloud renderer, using provider backend specific information.

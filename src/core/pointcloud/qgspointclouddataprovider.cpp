@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgspointclouddataprovider.h"
 #include "qgspointcloudindex.h"
+#include "qgsgeometry.h"
 #include <mutex>
 
 QgsPointCloudDataProvider::QgsPointCloudDataProvider(
@@ -33,6 +34,11 @@ QgsPointCloudDataProvider::~QgsPointCloudDataProvider() = default;
 QgsPointCloudDataProvider::Capabilities QgsPointCloudDataProvider::capabilities() const
 {
   return QgsPointCloudDataProvider::NoCapabilities;
+}
+
+QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
+{
+  return QgsGeometry::fromRect( extent() );
 }
 
 QgsPointCloudRenderer *QgsPointCloudDataProvider::createRenderer( const QVariantMap & ) const

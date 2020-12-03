@@ -65,6 +65,19 @@ Returns the attributes available from this data provider.
 Returns the total number of points available in the dataset.
 %End
 
+    virtual QgsGeometry polygonBounds() const;
+%Docstring
+Returns the polygon bounds of the layer. The CRS of the returned geometry will match the provider's :py:func:`~QgsPointCloudDataProvider.crs`.
+
+This method will return the best approximation for the actual bounds of points contained in the
+dataset available from the provider's metadata. This may match the bounding box rectangle returned
+by :py:func:`~QgsPointCloudDataProvider.extent`, or for some datasets a "convex hull" style polygon representing a more precise bounds
+will be returned.
+
+This method will not attempt to calculate the data bounds, rather it will return only whatever precomputed bounds
+are included in the data source's metadata.
+%End
+
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
 Creates a new 2D point cloud renderer, using provider backend specific information.
