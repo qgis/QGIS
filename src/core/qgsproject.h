@@ -122,6 +122,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
       FlagTrustLayerMetadata = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
       FlagDontStoreOriginalStyles = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
+      FlagSkipSnappingConfiguration = 1 << 4, //! Skip the snapping configuration. Useful for minimising project load times in non-interactive contexts.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -2056,6 +2057,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mDirty = false;                 // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
     bool mTrustLayerMetadata = false;
+
+    /**
+     * Stores the project read flags
+     */
+    ReadFlags mReadFlags;
 
     QgsPropertyCollection mDataDefinedServerProperties;
 

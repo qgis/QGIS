@@ -52,8 +52,8 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
     prj->setBadLayerHandler( badLayerHandler );
 
-    // Always skip original styles storage
-    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ;
+    // Always skip original styles storage and snapping config
+    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles  | QgsProject::ReadFlag::FlagSkipSnappingConfiguration;
     if ( settings )
     {
       // Activate trust layer metadata flag

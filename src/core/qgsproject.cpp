@@ -1285,6 +1285,9 @@ bool QgsProject::read( QgsProject::ReadFlags flags )
 
 bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags flags )
 {
+
+  mReadFlags = flags;
+
   QFile projectFile( filename );
   clearError();
 
@@ -1710,7 +1713,12 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit readProjectWithContext( *doc, context );
 
   profile.switchTask( tr( "Updating interface" ) );
-  emit snappingConfigChanged( mSnappingConfig );
+
+  if ( ! flags.testFlag( QgsProject::ReadFlag::FlagSkipSnappingConfiguration ) )
+  {
+    emit snappingConfigChanged( mSnappingConfig );
+  }
+
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
   emit projectColorsChanged();
@@ -2016,14 +2024,20 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
     }
   }
 
-  if ( mSnappingConfig.addLayers( layers ) )
+  if ( ! mReadFlags.testFlag( QgsProject::ReadFlag::FlagSkipSnappingConfiguration ) &&
+       mSnappingConfig.addLayers( layers ) )
+  {
     emit snappingConfigChanged( mSnappingConfig );
+  }
 }
 
 void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 {
-  if ( mSnappingConfig.removeLayers( layers ) )
+  if ( ! mReadFlags.testFlag( QgsProject::ReadFlag::FlagSkipSnappingConfiguration ) &&
+       mSnappingConfig.removeLayers( layers ) )
+  {
     emit snappingConfigChanged( mSnappingConfig );
+  }
 }
 
 void QgsProject::cleanTransactionGroups( bool force )

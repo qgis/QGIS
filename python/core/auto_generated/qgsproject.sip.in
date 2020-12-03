@@ -41,6 +41,7 @@ open within the main QGIS application.
       FlagDontLoadLayouts,
       FlagTrustLayerMetadata,
       FlagDontStoreOriginalStyles,
+      FlagSkipSnappingConfiguration,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 
