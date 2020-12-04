@@ -38,6 +38,7 @@
 #include "qgsserverapicontext.h"
 #include "qgsserverparameters.h"
 #include "qgsapplication.h"
+#include "qgsruntimeprofiler.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -47,7 +48,6 @@
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>
 #include <cstdlib>
-
 
 
 // Server status static initializers.
@@ -296,143 +296,55 @@ void QgsServer::putenv( const QString &var, const QString &val )
 
 void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
-  Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
-  QElapsedTimer time; //used for measuring request time if loglevel < 1
-
-  qApp->processEvents();
-
-  if ( logLevel == Qgis::Info )
+  const Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   {
-    time.start();
-  }
 
-  response.clear();
+    QgsScopedRuntimeProfile profiler { QStringLiteral( "handleRequest" ), QStringLiteral( "server" ) };
 
-  // Pass the filters to the requestHandler, this is needed for the following reasons:
-  // Allow server request to call sendResponse plugin hook if enabled
-  QgsFilterResponseDecorator responseDecorator( sServerInterface->filters(), response );
+    qApp->processEvents();
 
-  //Request handler
-  QgsRequestHandler requestHandler( request, response );
+    response.clear();
 
-  try
-  {
-    // TODO: split parse input into plain parse and processing from specific services
-    requestHandler.parseInput();
-  }
-  catch ( QgsMapServiceException &e )
-  {
-    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::Critical );
-    requestHandler.setServiceException( e );
-  }
+    // Pass the filters to the requestHandler, this is needed for the following reasons:
+    // Allow server request to call sendResponse plugin hook if enabled
+    QgsFilterResponseDecorator responseDecorator( sServerInterface->filters(), response );
 
-  // Set the request handler into the interface for plugins to manipulate it
-  sServerInterface->setRequestHandler( &requestHandler );
+    //Request handler
+    QgsRequestHandler requestHandler( request, response );
 
-  // Initialize configfilepath so that is is available
-  // before calling plugin methods
-  // Note that plugins may still change that value using
-  // setConfigFilePath() interface method
-  if ( ! project )
-  {
-    QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
-    sServerInterface->setConfigFilePath( configFilePath );
-  }
-  else
-  {
-    sServerInterface->setConfigFilePath( project->fileName() );
-  }
-
-  // Call  requestReady() method (if enabled)
-  // This may also throw exceptions if there are errors in python plugins code
-  try
-  {
-    responseDecorator.start();
-  }
-  catch ( QgsException &ex )
-  {
-    // Internal server error
-    response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
-    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
-  }
-
-  // Plugins may have set exceptions
-  if ( !requestHandler.exceptionRaised() )
-  {
     try
     {
-      const QgsServerParameters params = request.serverParameters();
-      printRequestParameters( params.toMap(), logLevel );
-
-      // Setup project (config file path)
-      if ( ! project )
-      {
-        QString configFilePath = configPath( *sConfigFilePath, params.map() );
-
-        // load the project if needed and not empty
-        if ( ! configFilePath.isEmpty() )
-        {
-          project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
-        }
-      }
-
-      // Set the current project instance
-      QgsProject::setInstance( const_cast<QgsProject *>( project ) );
-
-      if ( project )
-      {
-        sServerInterface->setConfigFilePath( project->fileName() );
-      }
-      else
-      {
-        sServerInterface->setConfigFilePath( QString() );
-      }
-
-      // Note that at this point we still might not have set a valid project.
-      // There are APIs that work without a project (e.g. the landing page catalog API that
-      // lists the available projects metadata).
-
-      // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
-      // TODO: QGIS 4 fix the OWS services and treat them as APIs
-      QgsServerApi *api = nullptr;
-      if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
-      {
-        QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
-        api->executeRequest( context );
-      }
-      else
-      {
-
-        // Project is mandatory for OWS at this point
-        if ( ! project )
-        {
-          throw QgsServerException( QStringLiteral( "Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file" ) );
-        }
-
-        if ( ! params.fileName().isEmpty() )
-        {
-          const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
-          requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
-        }
-
-        // Lookup for service
-        QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
-        if ( service )
-        {
-          service->executeRequest( request, responseDecorator, project );
-        }
-        else
-        {
-          throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                        QStringLiteral( "Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint" ) );
-        }
-      }
+      // TODO: split parse input into plain parse and processing from specific services
+      requestHandler.parseInput();
     }
-    catch ( QgsServerException &ex )
+    catch ( QgsMapServiceException &e )
     {
-      responseDecorator.write( ex );
-      QString format;
-      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Warning );
+      QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::Critical );
+      requestHandler.setServiceException( e );
+    }
+
+    // Set the request handler into the interface for plugins to manipulate it
+    sServerInterface->setRequestHandler( &requestHandler );
+
+    // Initialize configfilepath so that is is available
+    // before calling plugin methods
+    // Note that plugins may still change that value using
+    // setConfigFilePath() interface method
+    if ( ! project )
+    {
+      QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
+      sServerInterface->setConfigFilePath( configFilePath );
+    }
+    else
+    {
+      sServerInterface->setConfigFilePath( project->fileName() );
+    }
+
+    // Call  requestReady() method (if enabled)
+    // This may also throw exceptions if there are errors in python plugins code
+    try
+    {
+      responseDecorator.start();
     }
     catch ( QgsException &ex )
     {
@@ -440,30 +352,145 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
       QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
     }
-  }
 
-  // Terminate the response
-  // This may also throw exceptions if there are errors in python plugins code
-  try
-  {
-    responseDecorator.finish();
-  }
-  catch ( QgsException &ex )
-  {
-    // Internal server error
-    response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
-    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
-  }
+    // Plugins may have set exceptions
+    if ( !requestHandler.exceptionRaised() )
+    {
+      try
+      {
+        const QgsServerParameters params = request.serverParameters();
+        printRequestParameters( params.toMap(), logLevel );
 
+        // Setup project (config file path)
+        if ( ! project )
+        {
+          QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
-  // We are done using requestHandler in plugins, make sure we don't access
-  // to a deleted request handler from Python bindings
-  sServerInterface->clearRequestHandler();
+          // load the project if needed and not empty
+          if ( ! configFilePath.isEmpty() )
+          {
+            project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
+          }
+        }
+
+        // Set the current project instance
+        QgsProject::setInstance( const_cast<QgsProject *>( project ) );
+
+        if ( project )
+        {
+          sServerInterface->setConfigFilePath( project->fileName() );
+        }
+        else
+        {
+          sServerInterface->setConfigFilePath( QString() );
+        }
+
+        // Note that at this point we still might not have set a valid project.
+        // There are APIs that work without a project (e.g. the landing page catalog API that
+        // lists the available projects metadata).
+
+        // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
+        // TODO: QGIS 4 fix the OWS services and treat them as APIs
+        QgsServerApi *api = nullptr;
+        if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
+        {
+          QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
+          api->executeRequest( context );
+        }
+        else
+        {
+
+          // Project is mandatory for OWS at this point
+          if ( ! project )
+          {
+            throw QgsServerException( QStringLiteral( "Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file" ) );
+          }
+
+          if ( ! params.fileName().isEmpty() )
+          {
+            const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
+            requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
+          }
+
+          // Lookup for service
+          QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
+          if ( service )
+          {
+            service->executeRequest( request, responseDecorator, project );
+          }
+          else
+          {
+            throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
+                                          QStringLiteral( "Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint" ) );
+          }
+        }
+      }
+      catch ( QgsServerException &ex )
+      {
+        responseDecorator.write( ex );
+        QString format;
+        QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Warning );
+      }
+      catch ( QgsException &ex )
+      {
+        // Internal server error
+        response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+        QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+      }
+    }
+
+    // Terminate the response
+    // This may also throw exceptions if there are errors in python plugins code
+    try
+    {
+      responseDecorator.finish();
+    }
+    catch ( QgsException &ex )
+    {
+      // Internal server error
+      response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+    }
+
+    // We are done using requestHandler in plugins, make sure we don't access
+    // to a deleted request handler from Python bindings
+    sServerInterface->clearRequestHandler();
+  }
 
   if ( logLevel == Qgis::Info )
   {
-    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( "Request finished in " + QString::number( QgsApplication::profiler()->profileTime( QStringLiteral( "handleRequest" ), QStringLiteral( "server" ) ) * 1000.0 ) + " ms", QStringLiteral( "Server" ), Qgis::Info );
+    if ( sSettings->logProfile() )
+    {
+      std::function <void( const QModelIndex &, int )> profileFormatter;
+      profileFormatter = [ &profileFormatter ]( const QModelIndex & idx, int level )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Profile: %1%2, %3 : %4 ms" )
+                                   .arg( level > 0 ? QString().fill( '-', level ) + ' ' : QString() )
+                                   .arg( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Group ).toString() )
+                                   .arg( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Name ).toString() )
+                                   .arg( QString::number( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Elapsed ).toDouble() * 1000.0 ) ), QStringLiteral( "Server" ), Qgis::Info );
+
+        for ( int subRow = 0; subRow < QgsApplication::profiler()->rowCount( idx ); subRow++ )
+        {
+          const auto subIdx { QgsApplication::profiler()->index( subRow, 0, idx ) };
+          profileFormatter( subIdx, level + 1 );
+        }
+
+      };
+
+      for ( int row = 0; row < QgsApplication::profiler()->rowCount( ); row++ )
+      {
+        const auto idx { QgsApplication::profiler()->index( row, 0 ) };
+        profileFormatter( idx, 0 );
+      }
+    }
   }
+
+
+  // Clear the profiler server section after each request
+  QgsApplication::profiler()->clear( QStringLiteral( "server" ) );
+
 }
 
 
