@@ -41,6 +41,16 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setMinMaxFromLayer();
     void minMaxChanged();
 
+    void mRedMinLineEdit_textChanged( const QString & );
+    void mRedMaxLineEdit_textChanged( const QString & );
+    void mGreenMinLineEdit_textChanged( const QString & );
+    void mGreenMaxLineEdit_textChanged( const QString & );
+    void mBlueMinLineEdit_textChanged( const QString & );
+    void mBlueMaxLineEdit_textChanged( const QString & );
+    void redAttributeChanged();
+    void greenAttributeChanged();
+    void blueAttributeChanged();
+
   signals:
     void changed();
 
@@ -49,12 +59,18 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
   private:
     int mBlockChangedSignals = 0;
+    int mDisableMinMaxWidgetRefresh = 0;
     QgsPointCloudLayer *mLayer = nullptr;
 
     bool mBlockMinMaxChanged = false;
 
     double mProviderMin = std::numeric_limits< double >::quiet_NaN();
     double mProviderMax = std::numeric_limits< double >::quiet_NaN();
+
+    void createValidators();
+    void setCustomMinMaxValues( QgsRgbPointCloud3DSymbol *r ) const;
+    void minMaxModified();
+    void setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit );
 
 };
 

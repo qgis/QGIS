@@ -22,6 +22,7 @@
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudrgbrenderer.h"
+#include "qgsdoublevalidator.h"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -43,6 +44,41 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mRenderingStyleComboBox->addItem( tr( "Single Color" ), QStringLiteral( "single-color" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QStringLiteral( "color-ramp" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QStringLiteral( "rgb" ) );
+
+  connect( mRedMinLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mRedMinLineEdit_textChanged );
+  connect( mRedMaxLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mRedMaxLineEdit_textChanged );
+  connect( mGreenMinLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mGreenMinLineEdit_textChanged );
+  connect( mGreenMaxLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mGreenMaxLineEdit_textChanged );
+  connect( mBlueMinLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mBlueMinLineEdit_textChanged );
+  connect( mBlueMaxLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mBlueMaxLineEdit_textChanged );
+  createValidators();
+
+  mRedAttributeComboBox->setAllowEmptyAttributeName( true );
+  mGreenAttributeComboBox->setAllowEmptyAttributeName( true );
+  mBlueAttributeComboBox->setAllowEmptyAttributeName( true );
+
+  //contrast enhancement algorithms
+  mContrastEnhancementAlgorithmComboBox->addItem( tr( "No Enhancement" ), QgsContrastEnhancement::NoEnhancement );
+  mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch to MinMax" ), QgsContrastEnhancement::StretchToMinimumMaximum );
+  mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch and Clip to MinMax" ), QgsContrastEnhancement::StretchAndClipToMinimumMaximum );
+  mContrastEnhancementAlgorithmComboBox->addItem( tr( "Clip to MinMax" ), QgsContrastEnhancement::ClipToMinimumMaximum );
+
+  mRedAttributeComboBox->setLayer( layer );
+  mGreenAttributeComboBox->setLayer( layer );
+  mBlueAttributeComboBox->setLayer( layer );
+
+  connect( mRedAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
+           this, &QgsPointCloud3DSymbolWidget::redAttributeChanged );
+  connect( mGreenAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
+           this, &QgsPointCloud3DSymbolWidget::greenAttributeChanged );
+  connect( mBlueAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
+           this, &QgsPointCloud3DSymbolWidget::blueAttributeChanged );
+  connect( mContrastEnhancementAlgorithmComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+
+  // set nice initial values
+  redAttributeChanged();
+  greenAttributeChanged();
+  blueAttributeChanged();
 
   mRenderingStyleComboBox->setCurrentIndex( 0 );
   mStackedWidget->setCurrentIndex( 0 );
@@ -99,6 +135,17 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   else if ( symbol->symbolType() == QLatin1String( "rgb" ) )
   {
     mStackedWidget->setCurrentIndex( 3 );
+
+    QgsRgbPointCloud3DSymbol *symb = dynamic_cast<QgsRgbPointCloud3DSymbol *>( symbol );
+    mRedAttributeComboBox->setAttribute( symb->redAttribute() );
+    mGreenAttributeComboBox->setAttribute( symb->greenAttribute() );
+    mBlueAttributeComboBox->setAttribute( symb->blueAttribute() );
+
+    mDisableMinMaxWidgetRefresh++;
+    setMinMaxValue( symb->redContrastEnhancement(), mRedMinLineEdit, mRedMaxLineEdit );
+    setMinMaxValue( symb->greenContrastEnhancement(), mGreenMinLineEdit, mGreenMaxLineEdit );
+    setMinMaxValue( symb->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
+    mDisableMinMaxWidgetRefresh--;
   }
   else
   {
@@ -133,6 +180,12 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   {
     QgsRgbPointCloud3DSymbol *symb = new QgsRgbPointCloud3DSymbol;
     symb->setPointSize( mPointSizeSpinBox->value() );
+
+    symb->setRedAttribute( mRedAttributeComboBox->currentAttribute() );
+    symb->setGreenAttribute( mGreenAttributeComboBox->currentAttribute() );
+    symb->setBlueAttribute( mBlueAttributeComboBox->currentAttribute() );
+
+    setCustomMinMaxValues( symb );
     retSymb = symb;
   }
 
@@ -143,6 +196,122 @@ void QgsPointCloud3DSymbolWidget::setColorRampMinMax( double min, double max )
 {
   whileBlocking( mColorRampShaderMinEdit )->setValue( min );
   whileBlocking( mColorRampShaderMaxEdit )->setValue( max );
+}
+
+void QgsPointCloud3DSymbolWidget::createValidators()
+{
+  mRedMinLineEdit->setValidator( new QgsDoubleValidator( mRedMinLineEdit ) );
+  mRedMaxLineEdit->setValidator( new QgsDoubleValidator( mRedMinLineEdit ) );
+  mGreenMinLineEdit->setValidator( new QgsDoubleValidator( mGreenMinLineEdit ) );
+  mGreenMaxLineEdit->setValidator( new QgsDoubleValidator( mGreenMinLineEdit ) );
+  mBlueMinLineEdit->setValidator( new QgsDoubleValidator( mBlueMinLineEdit ) );
+  mBlueMaxLineEdit->setValidator( new QgsDoubleValidator( mBlueMinLineEdit ) );
+}
+
+void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbol *symbol ) const
+{
+  if ( !symbol )
+  {
+    return;
+  }
+
+  if ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ==
+       QgsContrastEnhancement::NoEnhancement )
+  {
+    symbol->setRedContrastEnhancement( nullptr );
+    symbol->setGreenContrastEnhancement( nullptr );
+    symbol->setBlueContrastEnhancement( nullptr );
+    return;
+  }
+
+  QgsContrastEnhancement *redEnhancement = nullptr;
+  QgsContrastEnhancement *greenEnhancement = nullptr;
+  QgsContrastEnhancement *blueEnhancement = nullptr;
+
+  bool redMinOk, redMaxOk;
+  double redMin = QgsDoubleValidator::toDouble( mRedMinLineEdit->text(), &redMinOk );
+  double redMax = QgsDoubleValidator::toDouble( mRedMaxLineEdit->text(), &redMaxOk );
+  if ( redMinOk && redMaxOk && !mRedAttributeComboBox->currentAttribute().isEmpty() )
+  {
+    redEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    redEnhancement->setMinimumValue( redMin );
+    redEnhancement->setMaximumValue( redMax );
+  }
+
+  bool greenMinOk, greenMaxOk;
+  double greenMin = QgsDoubleValidator::toDouble( mGreenMinLineEdit->text(), &greenMinOk );
+  double greenMax = QgsDoubleValidator::toDouble( mGreenMaxLineEdit->text(), &greenMaxOk );
+  if ( greenMinOk && greenMaxOk && !mGreenAttributeComboBox->currentAttribute().isEmpty() )
+  {
+    greenEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    greenEnhancement->setMinimumValue( greenMin );
+    greenEnhancement->setMaximumValue( greenMax );
+  }
+
+  bool blueMinOk, blueMaxOk;
+  double blueMin = QgsDoubleValidator::toDouble( mBlueMinLineEdit->text(), &blueMinOk );
+  double blueMax = QgsDoubleValidator::toDouble( mBlueMaxLineEdit->text(), &blueMaxOk );
+  if ( blueMinOk && blueMaxOk && !mBlueAttributeComboBox->currentAttribute().isEmpty() )
+  {
+    blueEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    blueEnhancement->setMinimumValue( blueMin );
+    blueEnhancement->setMaximumValue( blueMax );
+  }
+
+  if ( redEnhancement )
+  {
+    redEnhancement->setContrastEnhancementAlgorithm( static_cast< QgsContrastEnhancement::ContrastEnhancementAlgorithm >(
+          ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
+  }
+  if ( greenEnhancement )
+  {
+    greenEnhancement->setContrastEnhancementAlgorithm( static_cast< QgsContrastEnhancement::ContrastEnhancementAlgorithm >(
+          ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
+  }
+  if ( blueEnhancement )
+  {
+    blueEnhancement->setContrastEnhancementAlgorithm( static_cast< QgsContrastEnhancement::ContrastEnhancementAlgorithm >(
+          ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
+  }
+  symbol->setRedContrastEnhancement( redEnhancement );
+  symbol->setGreenContrastEnhancement( greenEnhancement );
+  symbol->setBlueContrastEnhancement( blueEnhancement );
+}
+
+void QgsPointCloud3DSymbolWidget::minMaxModified()
+{
+  if ( !mDisableMinMaxWidgetRefresh )
+  {
+    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
+    {
+      mContrastEnhancementAlgorithmComboBox->setCurrentIndex(
+        mContrastEnhancementAlgorithmComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
+    }
+    emitChangedSignal();
+  }
+}
+
+void QgsPointCloud3DSymbolWidget::setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit )
+{
+  if ( !minEdit || !maxEdit )
+  {
+    return;
+  }
+
+  if ( !ce )
+  {
+    minEdit->clear();
+    maxEdit->clear();
+    return;
+  }
+
+  minEdit->setText( QLocale().toString( ce->minimumValue() ) );
+  maxEdit->setText( QLocale().toString( ce->maximumValue() ) );
+
+  // QgsMultiBandColorRenderer is using individual contrast enhancements for each
+  // band, but this widget GUI has one for all
+  mContrastEnhancementAlgorithmComboBox->setCurrentIndex( mContrastEnhancementAlgorithmComboBox->findData(
+        static_cast< int >( ce->contrastEnhancementAlgorithm() ) ) );
 }
 
 void QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax()
@@ -179,7 +348,38 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     {
       const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast< const QgsPointCloudRgbRenderer * >( mLayer->renderer() );
       mBlockChangedSignals++;
-      // todo
+      if ( renderer2d )
+      {
+        mRedAttributeComboBox->setAttribute( renderer2d->redAttribute() );
+        mGreenAttributeComboBox->setAttribute( renderer2d->greenAttribute() );
+        mBlueAttributeComboBox->setAttribute( renderer2d->blueAttribute() );
+
+        mDisableMinMaxWidgetRefresh++;
+        setMinMaxValue( renderer2d->redContrastEnhancement(), mRedMinLineEdit, mRedMaxLineEdit );
+        setMinMaxValue( renderer2d->greenContrastEnhancement(), mGreenMinLineEdit, mGreenMaxLineEdit );
+        setMinMaxValue( renderer2d->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
+        mDisableMinMaxWidgetRefresh--;
+      }
+      else
+      {
+        if ( mRedAttributeComboBox->findText( QStringLiteral( "Red" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Green" ) ) > -1 &&
+             mRedAttributeComboBox->findText( QStringLiteral( "Blue" ) ) > -1 )
+        {
+          mRedAttributeComboBox->setAttribute( QStringLiteral( "Red" ) );
+          mGreenAttributeComboBox->setAttribute( QStringLiteral( "Green" ) );
+          mBlueAttributeComboBox->setAttribute( QStringLiteral( "Blue" ) );
+        }
+        else
+        {
+          mRedAttributeComboBox->setCurrentIndex( mRedAttributeComboBox->count() > 1 ? 1 : 0 );
+          mGreenAttributeComboBox->setCurrentIndex( mGreenAttributeComboBox->count() > 2 ? 2 : 0 );
+          mBlueAttributeComboBox->setCurrentIndex( mBlueAttributeComboBox->count() > 3 ? 3 : 0 );
+        }
+        redAttributeChanged();
+        greenAttributeChanged();
+        blueAttributeChanged();
+      }
+
       ( void )( renderer2d );
       mBlockChangedSignals--;
     }
@@ -236,4 +436,94 @@ void QgsPointCloud3DSymbolWidget::minMaxChanged()
     return;
 
   mColorRampShaderWidget->setMinimumMaximumAndClassify( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
+}
+
+void QgsPointCloud3DSymbolWidget::mRedMinLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsPointCloud3DSymbolWidget::mRedMaxLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsPointCloud3DSymbolWidget::mGreenMinLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsPointCloud3DSymbolWidget::mGreenMaxLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsPointCloud3DSymbolWidget::mBlueMinLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsPointCloud3DSymbolWidget::mBlueMaxLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsPointCloud3DSymbolWidget::redAttributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( max.isValid() )
+    {
+      const int maxValue = max.toInt();
+      mDisableMinMaxWidgetRefresh++;
+      mRedMinLineEdit->setText( QLocale().toString( 0 ) );
+
+      // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
+      // likely to be 8 bit or 16 bit color values
+      mRedMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mDisableMinMaxWidgetRefresh--;
+      emitChangedSignal();
+    }
+  }
+}
+
+void QgsPointCloud3DSymbolWidget::greenAttributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( max.isValid() )
+    {
+      const int maxValue = max.toInt();
+      mDisableMinMaxWidgetRefresh++;
+      mGreenMinLineEdit->setText( QLocale().toString( 0 ) );
+
+      // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
+      // likely to be 8 bit or 16 bit color values
+      mGreenMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mDisableMinMaxWidgetRefresh--;
+      emitChangedSignal();
+    }
+  }
+}
+
+void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( max.isValid() )
+    {
+      const int maxValue = max.toInt();
+      mDisableMinMaxWidgetRefresh++;
+      mBlueMinLineEdit->setText( QLocale().toString( 0 ) );
+
+      // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
+      // likely to be 8 bit or 16 bit color values
+      mBlueMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mDisableMinMaxWidgetRefresh--;
+      emitChangedSignal();
+    }
+  }
 }

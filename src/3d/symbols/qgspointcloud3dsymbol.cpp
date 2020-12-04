@@ -208,6 +208,22 @@ QgsAbstract3DSymbol *QgsRgbPointCloud3DSymbol::clone() const
 {
   QgsRgbPointCloud3DSymbol *result = new QgsRgbPointCloud3DSymbol;
   result->mPointSize = mPointSize;
+  result->mRedAttribute = mRedAttribute;
+  result->mGreenAttribute = mGreenAttribute;
+  result->mBlueAttribute = mBlueAttribute;
+
+  if ( mRedContrastEnhancement )
+  {
+    result->setRedContrastEnhancement( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
+  }
+  if ( mGreenContrastEnhancement )
+  {
+    result->setGreenContrastEnhancement( new QgsContrastEnhancement( *mGreenContrastEnhancement ) );
+  }
+  if ( mBlueContrastEnhancement )
+  {
+    result->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
+  }
   copyBaseSettings( result );
   return result;
 }
@@ -216,12 +232,70 @@ void QgsRgbPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteCo
 {
   Q_UNUSED( context )
   elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
+
+  elem.setAttribute( QStringLiteral( "red" ), mRedAttribute );
+  elem.setAttribute( QStringLiteral( "green" ), mGreenAttribute );
+  elem.setAttribute( QStringLiteral( "blue" ), mBlueAttribute );
+
+  QDomDocument doc = elem.ownerDocument();
+
+  //contrast enhancement
+  if ( mRedContrastEnhancement )
+  {
+    QDomElement redContrastElem = doc.createElement( QStringLiteral( "redContrastEnhancement" ) );
+    mRedContrastEnhancement->writeXml( doc, redContrastElem );
+    elem.appendChild( redContrastElem );
+  }
+  if ( mGreenContrastEnhancement )
+  {
+    QDomElement greenContrastElem = doc.createElement( QStringLiteral( "greenContrastEnhancement" ) );
+    mGreenContrastEnhancement->writeXml( doc, greenContrastElem );
+    elem.appendChild( greenContrastElem );
+  }
+  if ( mBlueContrastEnhancement )
+  {
+    QDomElement blueContrastElem = doc.createElement( QStringLiteral( "blueContrastEnhancement" ) );
+    mBlueContrastEnhancement->writeXml( doc, blueContrastElem );
+    elem.appendChild( blueContrastElem );
+  }
 }
 
 void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
   mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
+
+  setRedAttribute( elem.attribute( QStringLiteral( "red" ), QStringLiteral( "Red" ) ) );
+  setGreenAttribute( elem.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
+  setBlueAttribute( elem.attribute( QStringLiteral( "blue" ), QStringLiteral( "Blue" ) ) );
+
+  //contrast enhancements
+  QgsContrastEnhancement *redContrastEnhancement = nullptr;
+  QDomElement redContrastElem = elem.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
+  if ( !redContrastElem.isNull() )
+  {
+    redContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    redContrastEnhancement->readXml( redContrastElem );
+    setRedContrastEnhancement( redContrastEnhancement );
+  }
+
+  QgsContrastEnhancement *greenContrastEnhancement = nullptr;
+  QDomElement greenContrastElem = elem.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
+  if ( !greenContrastElem.isNull() )
+  {
+    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    greenContrastEnhancement->readXml( greenContrastElem );
+    setGreenContrastEnhancement( greenContrastEnhancement );
+  }
+
+  QgsContrastEnhancement *blueContrastEnhancement = nullptr;
+  QDomElement blueContrastElem = elem.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
+  if ( !blueContrastElem.isNull() )
+  {
+    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    blueContrastEnhancement->readXml( blueContrastElem );
+    setBlueContrastEnhancement( blueContrastEnhancement );
+  }
 }
 
 void QgsRgbPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
@@ -231,3 +305,65 @@ void QgsRgbPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
 }
+
+
+QString QgsRgbPointCloud3DSymbol::redAttribute() const
+{
+  return mRedAttribute;
+}
+
+void QgsRgbPointCloud3DSymbol::setRedAttribute( const QString &redAttribute )
+{
+  mRedAttribute = redAttribute;
+}
+
+QString QgsRgbPointCloud3DSymbol::greenAttribute() const
+{
+  return mGreenAttribute;
+}
+
+void QgsRgbPointCloud3DSymbol::setGreenAttribute( const QString &greenAttribute )
+{
+  mGreenAttribute = greenAttribute;
+}
+
+QString QgsRgbPointCloud3DSymbol::blueAttribute() const
+{
+  return mBlueAttribute;
+}
+
+void QgsRgbPointCloud3DSymbol::setBlueAttribute( const QString &blueAttribute )
+{
+  mBlueAttribute = blueAttribute;
+}
+
+QgsContrastEnhancement *QgsRgbPointCloud3DSymbol::redContrastEnhancement()
+{
+  return mRedContrastEnhancement.get();
+}
+
+void QgsRgbPointCloud3DSymbol::setRedContrastEnhancement( QgsContrastEnhancement *enhancement )
+{
+  mRedContrastEnhancement.reset( enhancement );
+}
+
+QgsContrastEnhancement *QgsRgbPointCloud3DSymbol::greenContrastEnhancement()
+{
+  return mGreenContrastEnhancement.get();
+}
+
+void QgsRgbPointCloud3DSymbol::setGreenContrastEnhancement( QgsContrastEnhancement *enhancement )
+{
+  mGreenContrastEnhancement.reset( enhancement );
+}
+
+QgsContrastEnhancement *QgsRgbPointCloud3DSymbol::blueContrastEnhancement()
+{
+  return mBlueContrastEnhancement.get();
+}
+
+void QgsRgbPointCloud3DSymbol::setBlueContrastEnhancement( QgsContrastEnhancement *enhancement )
+{
+  mBlueContrastEnhancement.reset( enhancement );
+}
+

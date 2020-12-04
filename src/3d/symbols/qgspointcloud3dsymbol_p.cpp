@@ -419,21 +419,23 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
+  QgsRgbPointCloud3DSymbol *symbol = dynamic_cast<QgsRgbPointCloud3DSymbol *>( context.symbol() );
+
   // we have to get the RGB attributes using their real data types -- they aren't always short! (sometimes unsigned short)
   int attrOffset = 0 ;
 
   const int redOffset = attributes.pointRecordSize();
-  const QgsPointCloudAttribute *colorAttribute = context.attributes().find( QStringLiteral( "Red" ), attrOffset );
+  const QgsPointCloudAttribute *colorAttribute = context.attributes().find( symbol->redAttribute(), attrOffset );
   attributes.push_back( *colorAttribute );
   const QgsPointCloudAttribute::DataType redType = colorAttribute->type();
 
   const int greenOffset = attributes.pointRecordSize();
-  colorAttribute = context.attributes().find( QStringLiteral( "Green" ), attrOffset );
+  colorAttribute = context.attributes().find( symbol->greenAttribute(), attrOffset );
   attributes.push_back( *colorAttribute );
   const QgsPointCloudAttribute::DataType greenType = colorAttribute->type();
 
   const int blueOffset = attributes.pointRecordSize();
-  colorAttribute = context.attributes().find( QStringLiteral( "Blue" ), attrOffset );
+  colorAttribute = context.attributes().find( symbol->blueAttribute(), attrOffset );
   attributes.push_back( *colorAttribute );
   const QgsPointCloudAttribute::DataType blueType = colorAttribute->type();
 
@@ -450,9 +452,17 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();
 
-  float ir = 0;
-  float ig = 0;
-  float ib = 0;
+  QgsContrastEnhancement *redContrastEnhancement = symbol->redContrastEnhancement();
+  QgsContrastEnhancement *greenContrastEnhancement = symbol->greenContrastEnhancement();
+  QgsContrastEnhancement *blueContrastEnhancement = symbol->blueContrastEnhancement();
+
+  const bool useRedContrastEnhancement = redContrastEnhancement && redContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
+  const bool useBlueContrastEnhancement = blueContrastEnhancement && blueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
+  const bool useGreenContrastEnhancement = greenContrastEnhancement && greenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
+
+  int ir = 0;
+  int ig = 0;
+  int ib = 0;
   for ( int i = 0; i < count; ++i )
   {
     qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
@@ -463,17 +473,40 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     double z = offset.z() + scale.z() * iz;
     QVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
-    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
 
     context.getAttribute( ptr, i * recordSize + redOffset, redType, ir );
-    color.setX( ir / 255.0f );
     context.getAttribute( ptr, i * recordSize + greenOffset, greenType, ig );
-    color.setY( ig / 255.0f );
     context.getAttribute( ptr, i * recordSize + blueOffset, blueType, ib );
+
+    //skip if red, green or blue not in displayable range
+    if ( ( useRedContrastEnhancement && !redContrastEnhancement->isValueInDisplayableRange( ir ) )
+         || ( useGreenContrastEnhancement && !greenContrastEnhancement->isValueInDisplayableRange( ig ) )
+         || ( useBlueContrastEnhancement && !blueContrastEnhancement->isValueInDisplayableRange( ib ) ) )
+    {
+      continue;
+    }
+
+    //stretch color values
+    if ( useRedContrastEnhancement )
+    {
+      ir = redContrastEnhancement->enhanceContrast( ir );
+    }
+    if ( useGreenContrastEnhancement )
+    {
+      ig = greenContrastEnhancement->enhanceContrast( ig );
+    }
+    if ( useBlueContrastEnhancement )
+    {
+      ib = blueContrastEnhancement->enhanceContrast( ib );
+    }
+
+    color.setX( ir / 255.0f );
+    color.setY( ig / 255.0f );
     color.setZ( ib / 255.0f );
 
+    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
     outNormal.colors.push_back( color );
   }
 }
