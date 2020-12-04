@@ -66,6 +66,7 @@ void QgsOnlineTerrainGenerator::writeXml( QDomElement &elem ) const
   elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
   elemExtent.setAttribute( QStringLiteral( "ymin" ), QString::number( r.yMinimum() ) );
   elemExtent.setAttribute( QStringLiteral( "ymax" ), QString::number( r.yMaximum() ) );
+  elem.appendChild( elemExtent );
 
   elem.setAttribute( QStringLiteral( "resolution" ), mResolution );
   elem.setAttribute( QStringLiteral( "skirt-height" ), mSkirtHeight );
@@ -75,6 +76,9 @@ void QgsOnlineTerrainGenerator::writeXml( QDomElement &elem ) const
 
 void QgsOnlineTerrainGenerator::readXml( const QDomElement &elem )
 {
+  mResolution = elem.attribute( QStringLiteral( "resolution" ) ).toInt();
+  mSkirtHeight = elem.attribute( QStringLiteral( "skirt-height" ) ).toFloat();
+
   QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
   double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
   double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
@@ -82,9 +86,6 @@ void QgsOnlineTerrainGenerator::readXml( const QDomElement &elem )
   double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
 
   setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
-
-  mResolution = elem.attribute( QStringLiteral( "resolution" ) ).toInt();
-  mSkirtHeight = elem.attribute( QStringLiteral( "skirt-height" ) ).toFloat();
 
   // crs is not read/written - it should be the same as destination crs of the map
 }
