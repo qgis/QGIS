@@ -109,6 +109,10 @@ include_directories(SYSTEM
 )
 
 add_executable(untwine ${UNTWINE_SRCS} ${UNTWINE_HDRS})
+set_target_properties(untwine PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
+)
+
 target_link_libraries (untwine
   ${PDAL_LIBRARIES}
 )
@@ -141,6 +145,7 @@ endif()
 install(TARGETS pdalprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+# override default path where built files are put to allow running qgis without installing
 
 install(TARGETS untwine
   RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}
