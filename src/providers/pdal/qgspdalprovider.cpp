@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsjsonutils.h"
 
 #include <pdal/io/LasReader.hpp>
 #include <pdal/io/LasHeader.hpp>
@@ -66,6 +67,11 @@ int QgsPdalProvider::pointCount() const
   return mPointCount;
 }
 
+QVariantMap QgsPdalProvider::originalMetadata() const
+{
+  return mOriginalMetadata;
+}
+
 bool QgsPdalProvider::isValid() const
 {
   return mIsValid;
@@ -99,6 +105,12 @@ bool QgsPdalProvider::load( const QString &uri )
     pdal::PointTable table;
     las_reader.prepare( table );
     pdal::LasHeader las_header = las_reader.header();
+
+    const std::string tableMetadata = pdal::Utils::toJSON( table.metadata() );
+    const QVariantMap readerMetadata = QgsJsonUtils::parseJson( tableMetadata ).toMap().value( QStringLiteral( "root" ) ).toMap();
+    // source metadata is only value present here!
+    if ( !readerMetadata.empty() )
+      mOriginalMetadata = readerMetadata.constBegin().value().toMap();
 
     // extent
     /*

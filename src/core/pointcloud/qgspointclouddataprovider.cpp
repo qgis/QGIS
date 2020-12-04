@@ -41,6 +41,11 @@ QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
   return QgsGeometry::fromRect( extent() );
 }
 
+QVariantMap QgsPointCloudDataProvider::originalMetadata() const
+{
+  return QVariantMap();
+}
+
 QgsPointCloudRenderer *QgsPointCloudDataProvider::createRenderer( const QVariantMap & ) const
 {
   return nullptr;

@@ -53,6 +53,8 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
     QVariantList metadataClasses( const QString &attribute ) const;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
 
+    QVariantMap originalMetadata() const { return mOriginalMetadata; }
+
   private:
     bool loadHierarchy();
 
@@ -75,6 +77,7 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
     QMap< QString, AttributeStatistics > mMetadataStats;
 
     QMap< QString, QMap< int, int > > mAttributeClasses;
+    QVariantMap mOriginalMetadata;
 };
 
 ///@endcond

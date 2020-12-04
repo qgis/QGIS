@@ -93,6 +93,11 @@ QVariant QgsEptProvider::metadataClassStatistic( const QString &attribute, const
   return mIndex->metadataClassStatistic( attribute, value, statistic );
 }
 
+QVariantMap QgsEptProvider::originalMetadata() const
+{
+  return mIndex->originalMetadata();
+}
+
 QVariant QgsEptProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   return mIndex->metadataStatistic( attribute, statistic );
