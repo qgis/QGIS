@@ -1462,9 +1462,9 @@ namespace QgsWms
       }
 
       //Ex_GeographicBoundingBox
-      int wgs84precision = 6;
       QDomElement ExGeoBBoxElement;
-      QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
+      const int wgs84precision = 6;
+      const QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
       if ( version == QLatin1String( "1.1.1" ) ) // WMS Version 1.1.1
       {
         ExGeoBBoxElement = doc.createElement( QStringLiteral( "LatLonBoundingBox" ) );
