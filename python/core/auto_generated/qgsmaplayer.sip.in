@@ -505,7 +505,7 @@ Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for re
 Returns the extent of the layer.
 %End
 
-    QgsRectangle geographicExtent() const;
+    QgsRectangle geographicExtent( bool actual = false ) const;
 %Docstring
 Returns the geographic extent (EPSG:4326) of the layer.
 

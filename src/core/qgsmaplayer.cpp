@@ -419,7 +419,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   if ( !extent().isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document, QStringLiteral( "geographicExtent" ) ) );
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( geographicExtent( true ), document, QStringLiteral( "geographicExtent" ) ) );
   }
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
@@ -1911,8 +1911,6 @@ void QgsMapLayer::emitStyleChanged()
 void QgsMapLayer::setExtent( const QgsRectangle &extent )
 {
   mExtent = extent;
-  const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext() };
-  mGeographicExtent = transformer.transform( extent );
 }
 
 bool QgsMapLayer::isReadOnly() const
@@ -2013,7 +2011,25 @@ void QgsMapLayer::onNotified( const QString &message )
   }
 }
 
-QgsRectangle QgsMapLayer::geographicExtent() const
+QgsRectangle QgsMapLayer::geographicExtent( bool actual ) const
 {
-  return mGeographicExtent;
+  QgsRectangle geoExtent;
+
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata and not actual )
+  {
+    geoExtent = mGeographicExtent;
+  }
+  else
+  {
+    const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
+    try
+    {
+      geoExtent = transformer.transformBoundingBox( mExtent );
+    }
+    catch ( const QgsCsException &cse )
+    {
+      geoExtent = QgsRectangle();
+    }
+  }
+  return geoExtent;
 }

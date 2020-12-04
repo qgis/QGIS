@@ -520,7 +520,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see setExtent()
      * \since QGIS 3.18
      */
-    QgsRectangle geographicExtent() const;
+    QgsRectangle geographicExtent( bool actual = false ) const;
 
     /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
