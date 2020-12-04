@@ -300,7 +300,9 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   mSymbolMaximumSize = settings.value( "/qgis/legendsymbolMaximumSize", 20.0 ).toDouble();
 
   updateLabel();
-  connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+    connect( vl, &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
+
   connect( nodeLayer, &QObject::destroyed, this, [ = ]() { mLayerNode = nullptr; } );
 
   if ( auto *lSymbol = mItem.symbol() )
