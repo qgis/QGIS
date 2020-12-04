@@ -23,6 +23,7 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
 #include "qgspointcloudlayer.h"
+#include "qgscontrastenhancement.h"
 
 /**
  * \ingroup 3d
@@ -214,6 +215,12 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     //! Constructor for QgsRGBPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol();
 
+    //! QgsRgbPointCloud3DSymbol cannot be copied - use clone() instead
+    QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other ) = delete;
+
+    //! QgsRgbPointCloud3DSymbol cannot be copied - use clone() instead
+    QgsRgbPointCloud3DSymbol &operator=( const QgsRgbPointCloud3DSymbol &other ) = delete;
+
     QString symbolType() const override;
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
@@ -222,6 +229,135 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     unsigned int byteStride() override { return 6 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
+
+    /**
+     * Returns the attribute to use for the red channel.
+     *
+     * \see greenAttribute()
+     * \see blueAttribute()
+     * \see setRedAttribute()
+     */
+    QString redAttribute() const;
+
+    /**
+     * Sets the \a attribute to use for the red channel.
+     *
+     * \see setGreenAttribute()
+     * \see setBlueAttribute()
+     * \see redAttribute()
+     */
+    void setRedAttribute( const QString &attribute );
+
+    /**
+     * Returns the attribute to use for the green channel.
+     *
+     * \see redAttribute()
+     * \see blueAttribute()
+     * \see setGreenAttribute()
+     */
+    QString greenAttribute() const;
+
+    /**
+     * Sets the \a attribute to use for the green channel.
+     *
+     * \see setRedAttribute()
+     * \see setBlueAttribute()
+     * \see greenAttribute()
+     */
+    void setGreenAttribute( const QString &attribute );
+
+    /**
+     * Returns the attribute to use for the blue channel.
+     *
+     * \see greenAttribute()
+     * \see redAttribute()
+     * \see setBlueAttribute()
+     */
+    QString blueAttribute() const;
+
+    /**
+     * Sets the \a attribute to use for the blue channel.
+     *
+     * \see setRedAttribute()
+     * \see setGreenAttribute()
+     * \see blueAttribute()
+     */
+    void setBlueAttribute( const QString &attribute );
+
+    /**
+     * Returns the contrast enhancement to use for the red channel.
+     *
+     * \see setRedContrastEnhancement()
+     * \see greenContrastEnhancement()
+     * \see blueContrastEnhancement()
+     */
+    QgsContrastEnhancement *redContrastEnhancement();
+
+    /**
+     * Sets the contrast \a enhancement to use for the red channel.
+     *
+     * Ownership of \a enhancement is transferred.
+     *
+     * \see redContrastEnhancement()
+     * \see setGreenContrastEnhancement()
+     * \see setBlueContrastEnhancement()
+     */
+    void setRedContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
+
+    /**
+     * Returns the contrast enhancement to use for the green channel.
+     *
+     * \see setGreenContrastEnhancement()
+     * \see redContrastEnhancement()
+     * \see blueContrastEnhancement()
+     */
+    QgsContrastEnhancement *greenContrastEnhancement();
+
+    /**
+     * Sets the contrast \a enhancement to use for the green channel.
+     *
+     * Ownership of \a enhancement is transferred.
+     *
+     * \see greenContrastEnhancement()
+     * \see setRedContrastEnhancement()
+     * \see setBlueContrastEnhancement()
+     */
+    void setGreenContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
+
+    /**
+     * Returns the contrast enhancement to use for the blue channel.
+     *
+     * \see setBlueContrastEnhancement()
+     * \see redContrastEnhancement()
+     * \see greenContrastEnhancement()
+     */
+    QgsContrastEnhancement *blueContrastEnhancement();
+
+    /**
+     * Sets the contrast \a enhancement to use for the blue channel.
+     *
+     * Ownership of \a enhancement is transferred.
+     *
+     * \see blueContrastEnhancement()
+     * \see setRedContrastEnhancement()
+     * \see setGreenContrastEnhancement()
+     */
+    void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
+
+  private:
+
+#ifdef SIP_RUN
+    QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
+#endif
+
+    QString mRedAttribute = QStringLiteral( "Red" );
+    QString mGreenAttribute = QStringLiteral( "Green" );
+    QString mBlueAttribute = QStringLiteral( "Blue" );
+
+    std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
+
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H

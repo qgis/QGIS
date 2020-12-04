@@ -233,8 +233,13 @@ class QgsRgbPointCloud3DSymbol : QgsPointCloud3DSymbol
 Constructor for :py:class:`QgsRGBPointCloud3DSymbol`
 %End
 
+
+
     virtual QString symbolType() const;
 
+%Docstring
+QgsRgbPointCloud3DSymbol cannot be copied - use :py:func:`~QgsRgbPointCloud3DSymbol.clone` instead
+%End
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
 
@@ -244,6 +249,147 @@ Constructor for :py:class:`QgsRGBPointCloud3DSymbol`
 
 
     virtual unsigned int byteStride();
+
+    QString redAttribute() const;
+%Docstring
+Returns the attribute to use for the red channel.
+
+.. seealso:: :py:func:`greenAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+
+.. seealso:: :py:func:`setRedAttribute`
+%End
+
+    void setRedAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the red channel.
+
+.. seealso:: :py:func:`setGreenAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+
+.. seealso:: :py:func:`redAttribute`
+%End
+
+    QString greenAttribute() const;
+%Docstring
+Returns the attribute to use for the green channel.
+
+.. seealso:: :py:func:`redAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+
+.. seealso:: :py:func:`setGreenAttribute`
+%End
+
+    void setGreenAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the green channel.
+
+.. seealso:: :py:func:`setRedAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+
+.. seealso:: :py:func:`greenAttribute`
+%End
+
+    QString blueAttribute() const;
+%Docstring
+Returns the attribute to use for the blue channel.
+
+.. seealso:: :py:func:`greenAttribute`
+
+.. seealso:: :py:func:`redAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+%End
+
+    void setBlueAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the blue channel.
+
+.. seealso:: :py:func:`setRedAttribute`
+
+.. seealso:: :py:func:`setGreenAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+%End
+
+    QgsContrastEnhancement *redContrastEnhancement();
+%Docstring
+Returns the contrast enhancement to use for the red channel.
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setRedContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the red channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    QgsContrastEnhancement *greenContrastEnhancement();
+%Docstring
+Returns the contrast enhancement to use for the green channel.
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setGreenContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the green channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    QgsContrastEnhancement *blueContrastEnhancement();
+%Docstring
+Returns the contrast enhancement to use for the blue channel.
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+%End
+
+    void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the blue channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+%End
+
+  private:
+    QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
 };
 
 /************************************************************************
