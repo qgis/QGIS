@@ -118,7 +118,7 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
   if ( mSymbol )
   {
-    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->type() );
+    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->symbolType() );
     mSymbol->writeXml( elemSymbol, context );
   }
   elem.appendChild( elemSymbol );
@@ -129,22 +129,17 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = QgsPointCloud3DSymbol::renderingStylefromString( elemSymbol.attribute( QStringLiteral( "rendering-style" ) ) );
-  switch ( renderingStyle )
-  {
-    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      mSymbol.reset( nullptr );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
-      mSymbol.reset( new QgsRgbPointCloud3DSymbol );
-      break;
-  }
+
+  const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
+  if ( symbolType == QLatin1String( "single-color" ) )
+    mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
+  else if ( symbolType == QLatin1String( "color-ramp" ) )
+    mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
+  else if ( symbolType == QLatin1String( "rgb" ) )
+    mSymbol.reset( new QgsRgbPointCloud3DSymbol );
+  else
+    mSymbol.reset();
+
   if ( mSymbol )
     mSymbol->readXml( elemSymbol, context );
 }

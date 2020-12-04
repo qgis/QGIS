@@ -40,22 +40,18 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
       RgbRendering
     };
 
-    static QString renderingStyletoString( RenderingStyle renderingStyle );
-%Docstring
-Converts from ``renderingStyle`` enum to a string
-%End
-    static RenderingStyle renderingStylefromString( const QString &str );
-%Docstring
-Converts from a string to rendering style
-%End
-
-    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
+    QgsPointCloud3DSymbol();
 %Docstring
 Constructor for QgsPointCloud3DSymbol
 %End
     ~QgsPointCloud3DSymbol();
 
     virtual QString type() const;
+
+    virtual QString symbolType() const = 0;
+%Docstring
+Returns a unique string identifier of the symbol type.
+%End
 
     float pointSize() const;
 %Docstring
@@ -69,11 +65,6 @@ Returns the point size of the point cloud
 Sets the point size
 
 .. seealso:: :py:func:`pointSize`
-%End
-
-    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
-%Docstring
-Returns the rendering style used to render the point cloud
 %End
 
     virtual unsigned int byteStride() = 0;
@@ -105,6 +96,8 @@ class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 %Docstring
 Constructor for QgsSingleColorPointCloud3DSymbol
 %End
+
+    virtual QString symbolType() const;
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -156,6 +149,8 @@ Constructor for QgsColorRampPointCloud3DSymbol
 %End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+    virtual QString symbolType() const;
 
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -237,6 +232,8 @@ class QgsRgbPointCloud3DSymbol : QgsPointCloud3DSymbol
 %Docstring
 Constructor for :py:class:`QgsRGBPointCloud3DSymbol`
 %End
+
+    virtual QString symbolType() const;
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
