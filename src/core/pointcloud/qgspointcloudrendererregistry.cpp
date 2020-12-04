@@ -20,10 +20,14 @@
 #include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudextentrenderer.h"
 
 QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
 {
   // add default renderers
+  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "extent" ),
+               QObject::tr( "Extent Only" ),
+               QgsPointCloudExtentRenderer::create ) );
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "ramp" ),
                QObject::tr( "Attribute by Ramp" ),
                QgsPointCloudAttributeByRampRenderer::create ) );
@@ -82,6 +86,12 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
 {
   if ( !provider )
     return new QgsPointCloudAttributeByRampRenderer();
+
+  if ( provider->name() == QLatin1String( "pdal" ) )
+  {
+    // for now, default to extent renderer only for las/laz files
+    return new QgsPointCloudExtentRenderer();
+  }
 
   const QgsPointCloudAttributeCollection attributes = provider->attributes();
 

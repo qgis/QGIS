@@ -26,6 +26,7 @@
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrenderer.h"
+#include "qgspointcloudextentrenderer.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
@@ -35,22 +36,21 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 {
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
-  if ( !mLayer || !mLayer->dataProvider() || !mLayer->dataProvider()->index() || !mLayer->renderer() )
+  if ( !mLayer || !mLayer->dataProvider() || !mLayer->renderer() )
     return;
 
   mRenderer.reset( mLayer->renderer()->clone() );
 
-  mScale = mLayer->dataProvider()->index()->scale();
-  mOffset = mLayer->dataProvider()->index()->offset();
+  if ( mLayer->dataProvider()->index() )
+  {
+    mScale = mLayer->dataProvider()->index()->scale();
+    mOffset = mLayer->dataProvider()->index()->offset();
+  }
+  mCloudExtent = mLayer->dataProvider()->polygonBounds();
 }
 
 bool QgsPointCloudLayerRenderer::render()
 {
-  // TODO cache!?
-  QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
-  if ( !pc )
-    return false;
-
   QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset );
 
   // Set up the render configuration options
@@ -58,6 +58,20 @@ bool QgsPointCloudLayerRenderer::render()
 
   QgsScopedQPainterState painterState( painter );
   context.renderContext().setPainterFlagsUsingContext( painter );
+
+  if ( mRenderer->type() == QLatin1String( "extent" ) )
+  {
+    // special case for extent only renderer!
+    mRenderer->startRender( context );
+    static_cast< QgsPointCloudExtentRenderer * >( mRenderer.get() )->renderExtent( mCloudExtent, context );
+    mRenderer->stopRender( context );
+    return true;
+  }
+
+  // TODO cache!?
+  QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
+  if ( !pc )
+    return false;
 
   mRenderer->startRender( context );
 
