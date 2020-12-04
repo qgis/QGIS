@@ -1435,7 +1435,7 @@ namespace QgsWms
       QgsRectangle wgs84BoundingRect = lGeoExtent;
       if ( wgs84BoundingRect.isNull() )
       {
-        QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+        const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
 
         //transform the layers native CRS into WGS84
         if ( !layerExtent.isNull() )
