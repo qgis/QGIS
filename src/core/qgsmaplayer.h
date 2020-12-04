@@ -515,9 +515,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
-     * Returns the geographic extent (EPSG:4326) of the layer.
-     *
-     * \see setExtent()
+     * Returns the geographic extent (EPSG:4326) of the layer according to
+     * ReadFlag::FlagTrustLayerMetadata. If that flag is activated, then the
+     * geographic extent read in the qgs project is returned. Otherwise, the
+     * actual geographic extent is returned.
+     * \param actual True to return the current geographic extent whatever the read flags
      * \since QGIS 3.18
      */
     QgsRectangle geographicExtent( bool actual = false ) const;
@@ -1522,9 +1524,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets the \a extent in layer CRS.
-     *
-     * If the layer CRS is not EPSG:4326 and the geographic extent is
-     * known.
      */
     virtual void setExtent( const QgsRectangle &extent );
 

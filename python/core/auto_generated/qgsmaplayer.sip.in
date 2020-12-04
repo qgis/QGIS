@@ -507,9 +507,12 @@ Returns the extent of the layer.
 
     QgsRectangle geographicExtent( bool actual = false ) const;
 %Docstring
-Returns the geographic extent (EPSG:4326) of the layer.
+Returns the geographic extent (EPSG:4326) of the layer according to
+ReadFlag.FlagTrustLayerMetadata. If that flag is activated, then the
+geographic extent read in the qgs project is returned. Otherwise, the
+actual geographic extent is returned.
 
-.. seealso:: :py:func:`setExtent`
+:param actual: True to return the current geographic extent whatever the read flags
 
 .. versionadded:: 3.18
 %End
@@ -1707,9 +1710,6 @@ Copies attributes like name, short name, ... into another layer.
     virtual void setExtent( const QgsRectangle &extent );
 %Docstring
 Sets the ``extent`` in layer CRS.
-
-If the layer CRS is not EPSG:4326 and the geographic extent is
-known.
 %End
 
     void setValid( bool valid );
