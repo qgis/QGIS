@@ -301,23 +301,52 @@ bool QgsColorRampPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRender
 void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
 {
   QgsPointCloudAttributeCollection attributes;
+  constexpr int xOffset = 0;
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+  const int yOffset = attributes.pointRecordSize();
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+  const int zOffset = attributes.pointRecordSize();
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
-  std::unique_ptr< QgsPointCloudAttribute > parameterAttribute;
+  QString attributeName;
+  bool attrIsX = false;
+  bool attrIsY = false;
+  bool attrIsZ = false;
+  QgsPointCloudAttribute::DataType attributeType = QgsPointCloudAttribute::Float;
+  int attributeOffset = 0;
   QgsColorRampPointCloud3DSymbol *symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( context.symbol() );
   if ( symbol )
   {
     int offset = 0;
     QgsPointCloudAttributeCollection collection = context.attributes();
-    const QgsPointCloudAttribute *attr = collection.find( symbol->renderingParameter(), offset );
-    if ( attr )
+
+    if ( symbol->renderingParameter() == QLatin1String( "X" ) )
     {
-      parameterAttribute.reset( new QgsPointCloudAttribute( attr->name(), attr->type() ) );
-      attributes.push_back( *parameterAttribute.get() );
+      attrIsX = true;
+    }
+    else if ( symbol->renderingParameter() == QLatin1String( "Y" ) )
+    {
+      attrIsY = true;
+    }
+    else if ( symbol->renderingParameter() == QLatin1String( "Z" ) )
+    {
+      attrIsZ = true;
+    }
+    else
+    {
+      const QgsPointCloudAttribute *attr = collection.find( symbol->renderingParameter(), offset );
+      if ( attr )
+      {
+        attributeType = attr->type();
+        attributeName = attr->name();
+        attributeOffset = attributes.pointRecordSize();
+        attributes.push_back( *attr );
+      }
     }
   }
+
+  if ( attributeName.isEmpty() && !attrIsX && !attrIsY && !attrIsZ )
+    return;
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
@@ -334,49 +363,30 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   for ( int i = 0; i < count; ++i )
   {
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
-    qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
-    float iParam = 0.0f;
-    if ( parameterAttribute )
-    {
-      switch ( parameterAttribute->type() )
-      {
-        case QgsPointCloudAttribute::DataType::Char:
-          iParam = *( char * )( ptr + i * recordSize + 12 );
-          break;
-        case QgsPointCloudAttribute::DataType::Short:
-          iParam = *( short * )( ptr + i * recordSize + 12 );
-          break;
-        case QgsPointCloudAttribute::DataType::UShort:
-          iParam = *( unsigned short * )( ptr + i * recordSize + 12 );
-          break;
-        case QgsPointCloudAttribute::DataType::Int32:
-          iParam = *( qint32 * )( ptr + i * recordSize + 12 );
-          break;
-        case QgsPointCloudAttribute::DataType::Float:
-          iParam = *( float * )( ptr + i * recordSize + 12 );
-          break;
-        case QgsPointCloudAttribute::DataType::Double:
-          iParam = *( double * )( ptr + i * recordSize + 12 );
-          break;
-      }
-    }
+    qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
+    qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
+    qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
 
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = offset.z() + scale.z() * iz;
     QVector3D point( x, y, z );
+
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
-    if ( parameterAttribute && parameterAttribute->name() == "X" )
+
+    if ( attrIsX )
       outNormal.parameter.push_back( x );
-    else if ( parameterAttribute && parameterAttribute->name() == "Y" )
+    else if ( attrIsY )
       outNormal.parameter.push_back( y );
-    else if ( parameterAttribute && parameterAttribute->name() == "Z" )
+    else if ( attrIsZ )
       outNormal.parameter.push_back( z );
     else
+    {
+      float iParam = 0.0f;
+      context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
       outNormal.parameter.push_back( iParam );
+    }
   }
 }
 
