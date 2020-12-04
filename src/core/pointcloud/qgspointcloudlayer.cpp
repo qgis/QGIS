@@ -317,18 +317,10 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::pointCloudIndexLoaded, this, &QgsPointCloudLayer::onPointCloudIndexLoaded );
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
-  // trigger loading of index. this is lenghty operation in
-  // background thread that could take multiple seconds
+  // trigger loading of index. this might be lenghty operation
+  // if the provider decide to build the index from source file(s)
+  // in background thread
   mDataProvider.get()->loadIndex();
-
-  emit dataSourceChanged();
-  triggerRepaint();
-}
-
-void QgsPointCloudLayer::onPointCloudIndexLoaded()
-{
-  setCrs( mDataProvider->crs() );
-  setExtent( mDataProvider->extent() );
 
   if ( !mRenderer || mLoadDefaultStyleFlag )
   {
@@ -361,7 +353,21 @@ void QgsPointCloudLayer::onPointCloudIndexLoaded()
     }
   }
 
+  emit dataSourceChanged();
   triggerRepaint();
+}
+
+void QgsPointCloudLayer::onPointCloudIndexLoaded()
+{
+  setCrs( mDataProvider->crs() );
+  setExtent( mDataProvider->extent() );
+
+  if ( mRenderer )
+  {
+    // TODO we need to switch from extent renderer to some other one?
+
+    triggerRepaint();
+  }
 }
 
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )

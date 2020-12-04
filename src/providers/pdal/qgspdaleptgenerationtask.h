@@ -29,9 +29,11 @@ class QgsPdalEptGenerationTask: public QgsTask
     QgsPdalEptGenerationTask( const QString &file );
     bool run() override;
 
-
     QString untwineExecutableBinary() const;
     void setUntwineExecutableBinary( const QString &untwineExecutableBinary );
+
+    QString outputDir() const;
+    void setOutputDir( const QString &outputDir );
 
   private:
     QString guessUntwineExecutableBinary() const;

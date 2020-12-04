@@ -30,7 +30,6 @@
 #define SIP_NO_FILE
 
 class QgsEptPointCloudIndex;
-class QgsEptPointCloudIndexLoadingTask;
 
 class QgsEptProvider: public QgsPointCloudDataProvider
 {
@@ -56,14 +55,9 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     QVariantMap originalMetadata() const override;
     void loadIndex() override;
 
-  private slots:
-    void onLoadIndexFinished();
-
   private:
     QString mUri;
-    std::shared_ptr<QgsEptPointCloudIndex> mIndex;
-    bool mIsValid = false;
-    QgsEptPointCloudIndexLoadingTask *mRunningIndexingTask = nullptr;
+    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
 };
 
 class QgsEptProviderMetadata : public QgsProviderMetadata

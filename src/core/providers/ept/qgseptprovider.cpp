@@ -38,38 +38,28 @@ QgsEptProvider::QgsEptProvider(
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
-  mIsValid = true;
 }
 
 QgsEptProvider::~QgsEptProvider() = default;
 
 QgsCoordinateReferenceSystem QgsEptProvider::crs() const
 {
-  if ( mIndex )
-    return mIndex->crs();
-  else
-    return QgsCoordinateReferenceSystem();
+  return mIndex->crs();
 }
 
 QgsRectangle QgsEptProvider::extent() const
 {
-  if ( mIndex )
-    return mIndex->extent();
-  else
-    return QgsRectangle();
+  return mIndex->extent();
 }
 
 QgsPointCloudAttributeCollection QgsEptProvider::attributes() const
 {
-  if ( mIndex )
-    return mIndex->attributes();
-  else
-    return QgsPointCloudAttributeCollection();
+  return mIndex->attributes();
 }
 
 bool QgsEptProvider::isValid() const
 {
-  return mIsValid;
+  return mIndex->isValid();
 }
 
 QString QgsEptProvider::name() const
@@ -89,52 +79,26 @@ QgsPointCloudIndex *QgsEptProvider::index() const
 
 int QgsEptProvider::pointCount() const
 {
-  if ( mIndex )
-    return mIndex->pointCount();
-  else
-    return 0;
+  return mIndex->pointCount();
 }
 
 QVariantList QgsEptProvider::metadataClasses( const QString &attribute ) const
 {
-  if ( mIndex )
-    return mIndex->metadataClasses( attribute );
-  else
-    return QVariantList();
+  return mIndex->metadataClasses( attribute );
 }
 
 QVariant QgsEptProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
 {
-  if ( mIndex )
-    return mIndex->metadataClassStatistic( attribute, value, statistic );
-  else
-    return QVariant();
+  return mIndex->metadataClassStatistic( attribute, value, statistic );
 }
 
 void QgsEptProvider::loadIndex()
 {
-  if ( mRunningIndexingTask || mIndex )
+  if ( mIndex->isValid() )
     return;
 
-  mRunningIndexingTask = nullptr;
-  QgsEptPointCloudIndexLoadingTask *task = new QgsEptPointCloudIndexLoadingTask( mUri );
-  connect( task, &QgsEptPointCloudIndexLoadingTask::taskTerminated, this, &QgsEptProvider::onLoadIndexFinished );
-  connect( task, &QgsEptPointCloudIndexLoadingTask::taskCompleted, this, &QgsEptProvider::onLoadIndexFinished );
-  mRunningIndexingTask = task;
-  QgsApplication::taskManager()->addTask( task );
-}
-
-void QgsEptProvider::onLoadIndexFinished()
-{
-  QgsEptPointCloudIndexLoadingTask *task = qobject_cast<QgsEptPointCloudIndexLoadingTask *>( QObject::sender() );
-  // this may be already canceled task that we don't care anymore...
-  if ( task == mRunningIndexingTask )
-  {
-    mIndex = mRunningIndexingTask->index();
-    mRunningIndexingTask = nullptr;
-    mIsValid = bool( mIndex.get() );
-    emit pointCloudIndexLoaded();
-  }
+  mIndex->load( mUri );
+  emit pointCloudIndexLoaded();
 }
 
 QVariantMap QgsEptProvider::originalMetadata() const
@@ -144,10 +108,7 @@ QVariantMap QgsEptProvider::originalMetadata() const
 
 QVariant QgsEptProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
-  if ( mIndex )
-    return mIndex->metadataStatistic( attribute, statistic );
-  else
-    return QVariant();
+  return mIndex->metadataStatistic( attribute, statistic );
 }
 
 QgsEptProviderMetadata::QgsEptProviderMetadata():

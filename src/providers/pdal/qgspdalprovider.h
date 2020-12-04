@@ -25,7 +25,7 @@
 #include <memory>
 
 class QgsEptPointCloudIndex;
-class QgsEptPointCloudIndexLoadingTask;
+class QgsPdalEptGenerationTask;
 
 class QgsPdalProvider: public QgsPointCloudDataProvider
 {
@@ -59,9 +59,11 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QgsRectangle mExtent;
     bool mIsValid = false;
     int mPointCount = 0;
+
     QVariantMap mOriginalMetadata;
-    std::shared_ptr<QgsEptPointCloudIndex> mIndex;
-    QgsEptPointCloudIndexLoadingTask *mRunningIndexingTask = nullptr;
+    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
+    QgsPdalEptGenerationTask *mRunningIndexingTask = nullptr;
+
     QString mFile; //TODO remove
 };
 

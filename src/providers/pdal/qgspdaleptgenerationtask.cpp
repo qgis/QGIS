@@ -50,15 +50,26 @@ bool QgsPdalEptGenerationTask::run()
   {
     if ( QDir( mOutputDir ).exists() )
     {
-      qDebug() << "untwine: folder exists but no ept.json inside";
-      return false;
+      if ( QDir( mOutputDir + "/temp" ).exists() )
+      {
+        qDebug() << "untwine: unother indexing process is running (or finished with crash).";
+        return false;
+      }
+      else
+      {
+        qDebug() << "untwine: folder exists but no ept.json inside. maybe some bad folder?";
+        return false;
+      }
     }
     else
     {
       qDebug() << "untwine: creating new dir " << mOutputDir;
       bool success = QDir().mkdir( mOutputDir );
       if ( !success )
+      {
+        qDebug() << "untwine: unable to create output dir " << mOutputDir;
         return false;
+      }
     }
   }
 
@@ -103,6 +114,9 @@ bool QgsPdalEptGenerationTask::run()
 
   qDebug() << "untwine: done " << mOutputDir << success;
   return success;
+
+  // TODO remove mOutputDir/temp dir on success!
+  // TODO use progressMessage output to QGIS log
 }
 
 QString QgsPdalEptGenerationTask::untwineExecutableBinary() const
@@ -132,4 +146,14 @@ QString QgsPdalEptGenerationTask::guessUntwineExecutableBinary() const
     qDebug() << "using untwine executable " << untwineExecutable << " defined from env. QGIS_UNTWINE_EXECUTABLE";
   }
   return QString( "/Users/peter/Projects/pointclouds/build-QGIS-Debug/PlugIns/qgis/untwine" );
+}
+
+QString QgsPdalEptGenerationTask::outputDir() const
+{
+  return mOutputDir;
+}
+
+void QgsPdalEptGenerationTask::setOutputDir( const QString &outputDir )
+{
+  mOutputDir = outputDir;
 }

@@ -42,26 +42,25 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex() = default;
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-bool QgsEptPointCloudIndex::load( const QString &fileName, QgsFeedback &feedback )
+void QgsEptPointCloudIndex::load( const QString &fileName )
 {
-  feedback.setProgress( 0 );
-
-  // mDirectory = directory;
   QFile f( fileName );
   if ( !f.open( QIODevice::ReadOnly ) )
-    return false;
+  {
+    qDebug() << "Unable to open " << fileName << " for reading";
+    mIsValid = false;
+    return;
+  }
 
   const QDir directory = QFileInfo( fileName ).absoluteDir();
   mDirectory = directory.absolutePath();
-  feedback.setProgress( 0.2 );
   bool success = loadSchema( f );
-  feedback.setProgress( 0.5 );
   if ( success )
   {
     success = loadHierarchy();
-    feedback.setProgress( 1 );
   }
-  return success;
+
+  mIsValid = success;
 }
 
 bool QgsEptPointCloudIndex::loadSchema( QFile &f )
@@ -405,33 +404,9 @@ bool QgsEptPointCloudIndex::loadHierarchy()
   return true;
 }
 
-
-QgsEptPointCloudIndexLoadingTask::QgsEptPointCloudIndexLoadingTask( const QString &fileName )
-  : QgsTask( QStringLiteral( "Load EPT Index" ) )
-  , mFilename( fileName )
+bool QgsEptPointCloudIndex::isValid() const
 {
-}
-
-bool QgsEptPointCloudIndexLoadingTask::run()
-{
-  QgsFeedback feedback;
-  connect( &feedback, &QgsFeedback::progressChanged, this, &QgsEptPointCloudIndexLoadingTask::setProgress );
-
-  // TODO how to pass cancel to qgsFeedback?
-  // connect( this, &QgsEptPointCloudIndexLoadingTask::cancel, &feedback, &QgsFeedback::cancel );
-
-  qDebug() << "EPT: start" << mFilename;
-  mIndex.reset( new QgsEptPointCloudIndex() );
-  setProgress( 0.1 );
-  bool success = mIndex->load( mFilename, feedback );
-  setProgress( 1 );
-  qDebug() << "EPT: done" << success;
-  return success;
-}
-
-std::shared_ptr<QgsEptPointCloudIndex> QgsEptPointCloudIndexLoadingTask::index() const
-{
-  return mIndex;
+  return mIsValid;
 }
 
 ///@endcond

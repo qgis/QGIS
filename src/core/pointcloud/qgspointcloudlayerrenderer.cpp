@@ -70,7 +70,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
-  if ( !pc )
+  if ( !pc || !pc->isValid() )
     return false;
 
   mRenderer->startRender( context );

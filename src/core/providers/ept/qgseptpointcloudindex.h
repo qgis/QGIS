@@ -25,12 +25,12 @@
 #include <QVector>
 #include <QList>
 #include <memory>
+#include <QFile>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
-#include "qgstaskmanager.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     explicit QgsEptPointCloudIndex();
     ~QgsEptPointCloudIndex();
 
-    bool load( const QString &fileName, QgsFeedback &feedback ) override;
+    void load( const QString &fileName ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
@@ -56,11 +56,13 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
 
     QVariantMap originalMetadata() const { return mOriginalMetadata; }
+    bool isValid() const override;
 
   private:
     bool loadSchema( QFile &f );
     bool loadHierarchy();
 
+    bool mIsValid = false;
     QString mDataType;
     QString mDirectory;
     QString mWkt;
@@ -82,22 +84,6 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QMap< QString, QMap< int, int > > mAttributeClasses;
     QVariantMap mOriginalMetadata;
 };
-
-class CORE_EXPORT QgsEptPointCloudIndexLoadingTask: public QgsTask
-{
-    Q_OBJECT
-
-  public:
-    QgsEptPointCloudIndexLoadingTask( const QString &fileName );
-
-    bool run() override;
-
-    std::shared_ptr<QgsEptPointCloudIndex> index() const;
-  private:
-    QString mFilename;
-    std::shared_ptr<QgsEptPointCloudIndex> mIndex;
-};
-
 
 ///@endcond
 #endif // QGSEPTPOINTCLOUDINDEX_H
