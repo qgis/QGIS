@@ -162,7 +162,7 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
   QApplication::restoreOverrideCursor();
 }
 
-static bool transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeometry selectGeomTrans, const QgsCoordinateTransform &ct )
+static bool transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeometry &selectGeomTrans, const QgsCoordinateTransform &ct )
 {
   selectGeomTrans = selectGeometry;
   try
@@ -228,9 +228,9 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   // the rubber band.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
-  QgsGeometry selectGeomTrans = selectGeometry;
+  QgsGeometry selectGeomTrans;
   QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
-  if ( !transformSelectGeometry( selectGeometry, selectGeometry, ct ) )
+  if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
     return newSelectedFeatures;
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
