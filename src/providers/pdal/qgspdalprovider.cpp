@@ -79,8 +79,7 @@ void QgsPdalProvider::loadIndex()
   if ( mRunningIndexingTask || mIndex->isValid() )
     return;
 
-  const QString file = uri().uri();
-  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( file );
+  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri() );
 
   connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onLoadIndexFinished );
   connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onLoadIndexFinished );

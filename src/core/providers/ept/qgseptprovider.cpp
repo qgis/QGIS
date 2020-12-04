@@ -96,8 +96,7 @@ void QgsEptProvider::loadIndex()
   if ( mIndex->isValid() )
     return;
 
-  const QString file = uri().uri();
-  mIndex->load( file );
+  mIndex->load( dataSourceUri() );
   emit pointCloudIndexLoaded();
 }
 
