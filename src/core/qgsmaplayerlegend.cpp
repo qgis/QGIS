@@ -27,6 +27,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsrasterrenderer.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -426,28 +427,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  QgsLegendColorList rasterItemList = mLayer->legendSymbologyItems();
-  if ( rasterItemList.isEmpty() )
-    return nodes;
-
-  // Paletted raster may have many colors, for example UInt16 may have 65536 colors
-  // and it is very slow, so we limit max count
-  int count = 0;
-  int max_count = 1000;
-
-  for ( QgsLegendColorList::const_iterator itemIt = rasterItemList.constBegin();
-        itemIt != rasterItemList.constEnd(); ++itemIt, ++count )
-  {
-    nodes << new QgsRasterSymbolLegendNode( nodeLayer, itemIt->second, itemIt->first );
-
-    if ( count == max_count )
-    {
-      QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
-      nodes << new QgsSimpleLegendNode( nodeLayer, label );
-      break;
-    }
-  }
-
+  nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
   return nodes;
 }
 
