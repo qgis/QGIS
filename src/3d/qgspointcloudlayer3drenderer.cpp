@@ -99,7 +99,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ) );
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError() );
 }
 
 void QgsPointCloudLayer3DRenderer::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -147,4 +147,14 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 void QgsPointCloudLayer3DRenderer::resolveReferences( const QgsProject &project )
 {
   mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
+}
+
+double QgsPointCloudLayer3DRenderer::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
+
+void QgsPointCloudLayer3DRenderer::setMaximumScreenError( double error )
+{
+  mMaximumScreenError = error;
 }

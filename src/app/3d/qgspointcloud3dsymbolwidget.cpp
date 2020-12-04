@@ -527,3 +527,8 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
     }
   }
 }
+
+double QgsPointCloud3DSymbolWidget::maximumScreenError() const
+{
+  return mMaxScreenErrorSpinBox->value();
+}

@@ -50,6 +50,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
   QgsPointCloud3DSymbol *sym = mWidgetPointCloudSymbol->symbol();
   renderer->setSymbol( sym );
   renderer->setLayer( qobject_cast<QgsPointCloudLayer *>( mLayer ) );
+  renderer->setMaximumScreenError( mWidgetPointCloudSymbol->maximumScreenError() );
   return renderer;
 }
 
