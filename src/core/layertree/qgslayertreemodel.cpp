@@ -196,48 +196,54 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
       // icons possibly overriding default icon
+      QIcon icon;
+
       switch ( layer->type() )
       {
         case QgsMapLayerType::RasterLayer:
-          return QgsLayerItem::iconRaster();
+          icon = QgsLayerItem::iconRaster();
+          break;
 
         case QgsMapLayerType::MeshLayer:
-          return QgsLayerItem::iconMesh();
+          icon = QgsLayerItem::iconMesh();
+          break;
 
         case QgsMapLayerType::VectorTileLayer:
-          return QgsLayerItem::iconVectorTile();
+          icon = QgsLayerItem::iconVectorTile();
+          break;
 
         case QgsMapLayerType::PointCloudLayer:
-          return QgsLayerItem::iconPointCloudLayer();
+          icon = QgsLayerItem::iconPointCloudLayer();
+          break;
 
         case QgsMapLayerType::VectorLayer:
+        {
+          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+          if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+            icon = QgsLayerItem::iconPoint();
+          else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+            icon = QgsLayerItem::iconLine();
+          else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+            icon = QgsLayerItem::iconPolygon();
+          else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
+            icon = QgsLayerItem::iconTable();
+          else
+            icon = QgsLayerItem::iconDefault();
+          break;
+        }
+
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::AnnotationLayer:
           break;
       }
-
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      QIcon icon;
 
       // if there's just on legend entry that should be embedded in layer - do that!
       if ( testFlag( ShowLegend ) && legendEmbeddedInParent( nodeLayer ) )
       {
         icon = legendIconEmbeddedInParent( nodeLayer );
       }
-      else if ( vlayer && layer->type() == QgsMapLayerType::VectorLayer )
-      {
-        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
-          icon = QgsLayerItem::iconPoint();
-        else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
-          icon = QgsLayerItem::iconLine();
-        else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
-          icon = QgsLayerItem::iconPolygon();
-        else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
-          icon = QgsLayerItem::iconTable();
-        else
-          icon = QgsLayerItem::iconDefault();
-      }
 
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( vlayer && vlayer->isEditable() && testFlag( UseTextFormatting ) )
       {
         const int iconSize = scaleIconSize( 16 );
