@@ -11627,37 +11627,36 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     unSppType.clear();
     layerDupName = selectedLyr->name() + ' ' + tr( "copy" );
 
-    if ( selectedLyr->type() == QgsMapLayerType::PluginLayer )
+    switch ( selectedLyr->type() )
     {
-      unSppType = tr( "Plugin layer" );
-    }
+      case QgsMapLayerType::PluginLayer:
+        unSppType = tr( "Plugin layer" );
+        break;
 
-    // duplicate the layer's basic parameters
-
-    if ( unSppType.isEmpty() )
-    {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( selectedLyr );
-      // TODO: add other layer types that can be duplicated
-      // currently memory and plugin layers are skipped
-      if ( vlayer )
+      case QgsMapLayerType::VectorLayer:
       {
-        if ( vlayer->auxiliaryLayer() )
-          vlayer->auxiliaryLayer()->save();
+        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( selectedLyr ) )
+        {
+          if ( vlayer->auxiliaryLayer() )
+            vlayer->auxiliaryLayer()->save();
 
-        dupLayer = vlayer->clone();
+          dupLayer = vlayer->clone();
+        }
+        break;
       }
-    }
 
-    if ( unSppType.isEmpty() && !dupLayer )
-    {
-      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( selectedLyr );
-      if ( rlayer )
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::AnnotationLayer:
       {
-        dupLayer = rlayer->clone();
+        dupLayer = selectedLyr->clone();
+        break;
       }
+
     }
 
-    if ( unSppType.isEmpty() && dupLayer && !dupLayer->isValid() )
+    if ( dupLayer && !dupLayer->isValid() )
     {
       msgBars.append( new QgsMessageBarItem(
                         tr( "Duplicate layer: " ),
@@ -11667,8 +11666,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
                         mInfoBar ) );
       continue;
     }
-
-    if ( !unSppType.isEmpty() || !dupLayer )
+    else if ( !unSppType.isEmpty() || !dupLayer )
     {
       msgBars.append( new QgsMessageBarItem(
                         tr( "Duplicate layer: " ),
@@ -11718,7 +11716,6 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
     if ( !newSelection )
       newSelection = dupLayer;
-
   }
 
   dupLayer = nullptr;
