@@ -19,6 +19,9 @@
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsapplication.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudrgbrenderer.h"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -102,7 +105,6 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     mStackedWidget->setCurrentIndex( 0 );
   }
 
-  onRenderingStyleChanged();
   mBlockChangedSignals--;
 }
 
@@ -153,7 +155,36 @@ void QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax()
 
 void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
 {
+  if ( mBlockChangedSignals )
+    return;
+
   mStackedWidget->setCurrentIndex( mRenderingStyleComboBox->currentIndex() );
+
+  // copy settings from 2d renderer, if possible!
+  if ( mLayer )
+  {
+    const QString newSymbolType = mRenderingStyleComboBox->currentData().toString();
+    if ( newSymbolType == QLatin1String( "color-ramp" ) && mLayer->renderer()->type() == QLatin1String( "ramp" ) )
+    {
+      const QgsPointCloudAttributeByRampRenderer *renderer2d = dynamic_cast< const QgsPointCloudAttributeByRampRenderer * >( mLayer->renderer() );
+      mBlockChangedSignals++;
+      mRenderingParameterComboBox->setAttribute( renderer2d->attribute() );
+      mColorRampShaderMinEdit->setValue( renderer2d->minimum() );
+      mColorRampShaderMaxEdit->setValue( renderer2d->maximum() );
+      whileBlocking( mColorRampShaderWidget )->setFromShader( renderer2d->colorRampShader() );
+      whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( renderer2d->minimum(), renderer2d->maximum() );
+      mBlockChangedSignals--;
+    }
+    else if ( newSymbolType == QLatin1String( "rgb" ) )
+    {
+      const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast< const QgsPointCloudRgbRenderer * >( mLayer->renderer() );
+      mBlockChangedSignals++;
+      // todo
+      ( void )( renderer2d );
+      mBlockChangedSignals--;
+    }
+  }
+
   emitChangedSignal();
 }
 
