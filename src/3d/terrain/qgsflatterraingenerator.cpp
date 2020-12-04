@@ -116,6 +116,7 @@ void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
   elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
   elemExtent.setAttribute( QStringLiteral( "ymin" ), QString::number( r.yMinimum() ) );
   elemExtent.setAttribute( QStringLiteral( "ymax" ), QString::number( r.yMaximum() ) );
+  elem.appendChild( elemExtent );
 
   // crs is not read/written - it should be the same as destination crs of the map
 }
