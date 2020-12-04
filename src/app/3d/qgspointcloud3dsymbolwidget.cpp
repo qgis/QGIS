@@ -29,23 +29,35 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mPointSizeSpinBox->setClearValue( 2.0 );
 
   mRenderingParameterComboBox->setLayer( layer );
+  mRenderingParameterComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
+  mRenderingParameterComboBox->setAllowEmptyAttributeName( false );
 
   mSingleColorBtn->setAllowOpacity( false );
   mSingleColorBtn->setColorDialogTitle( tr( "Select Point Color" ) );
+  mSingleColorBtn->setColor( QColor( 0, 0, 255 ) ); // default color
 
   mRenderingStyleComboBox->addItem( tr( "No Rendering" ), QString() );
   mRenderingStyleComboBox->addItem( tr( "Single Color" ), QStringLiteral( "single-color" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QStringLiteral( "color-ramp" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QStringLiteral( "rgb" ) );
 
+  mRenderingStyleComboBox->setCurrentIndex( 0 );
+  mStackedWidget->setCurrentIndex( 0 );
+
   if ( symbol )
     setSymbol( symbol );
 
   connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mRenderingStyleComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
-  connect( mColorRampShaderMinMaxReloadButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax );
+  connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::setMinMaxFromLayer );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mSingleColorBtn, &QgsColorButton::colorChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+  connect( mRenderingParameterComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
+           this, &QgsPointCloud3DSymbolWidget::rampAttributeChanged );
+  connect( mColorRampShaderMinEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
+  connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
+
+  rampAttributeChanged();
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -53,7 +65,8 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   mBlockChangedSignals++;
   if ( !symbol )
   {
-    mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( QgsPointCloud3DSymbol::NoRendering ) );
+    mRenderingStyleComboBox->setCurrentIndex( 0 );
+    mStackedWidget->setCurrentIndex( 0 );
     mBlockChangedSignals--;
     return;
   }
@@ -150,4 +163,46 @@ void QgsPointCloud3DSymbolWidget::emitChangedSignal()
     return;
 
   emit changed();
+}
+
+void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
+{
+  if ( mLayer && mLayer->dataProvider() )
+  {
+    const QVariant min = mLayer->dataProvider()->metadataStatistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Min );
+    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Max );
+    if ( min.isValid() && max.isValid() )
+    {
+      mProviderMin = min.toDouble();
+      mProviderMax = max.toDouble();
+    }
+    else
+    {
+      mProviderMin = std::numeric_limits< double >::quiet_NaN();
+      mProviderMax = std::numeric_limits< double >::quiet_NaN();
+    }
+  }
+  mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
+  emitChangedSignal();
+}
+
+void QgsPointCloud3DSymbolWidget::setMinMaxFromLayer()
+{
+  if ( std::isnan( mProviderMin ) || std::isnan( mProviderMax ) )
+    return;
+
+  mBlockMinMaxChanged = true;
+  mColorRampShaderMinEdit->setValue( mProviderMin );
+  mColorRampShaderMaxEdit->setValue( mProviderMax );
+  mBlockMinMaxChanged = false;
+
+  minMaxChanged();
+}
+
+void QgsPointCloud3DSymbolWidget::minMaxChanged()
+{
+  if ( mBlockMinMaxChanged )
+    return;
+
+  mColorRampShaderWidget->setMinimumMaximumAndClassify( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
 }

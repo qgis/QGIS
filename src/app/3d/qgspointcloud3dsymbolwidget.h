@@ -37,6 +37,9 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void reloadColorRampShaderMinMax();
     void onRenderingStyleChanged();
     void emitChangedSignal();
+    void rampAttributeChanged();
+    void setMinMaxFromLayer();
+    void minMaxChanged();
 
   signals:
     void changed();
@@ -47,6 +50,11 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
   private:
     int mBlockChangedSignals = 0;
     QgsPointCloudLayer *mLayer = nullptr;
+
+    bool mBlockMinMaxChanged = false;
+
+    double mProviderMin = std::numeric_limits< double >::quiet_NaN();
+    double mProviderMax = std::numeric_limits< double >::quiet_NaN();
 
 };
 
