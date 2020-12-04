@@ -409,9 +409,23 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
-  attributes.push_back( QgsPointCloudAttribute( "Red", QgsPointCloudAttribute::DataType::Short ) );
-  attributes.push_back( QgsPointCloudAttribute( "Green", QgsPointCloudAttribute::DataType::Short ) );
-  attributes.push_back( QgsPointCloudAttribute( "Blue", QgsPointCloudAttribute::DataType::Short ) );
+  // we have to get the RGB attributes using their real data types -- they aren't always short! (sometimes unsigned short)
+  int attrOffset = 0 ;
+
+  const int redOffset = attributes.pointRecordSize();
+  const QgsPointCloudAttribute *colorAttribute = context.attributes().find( QStringLiteral( "Red" ), attrOffset );
+  attributes.push_back( *colorAttribute );
+  const QgsPointCloudAttribute::DataType redType = colorAttribute->type();
+
+  const int greenOffset = attributes.pointRecordSize();
+  colorAttribute = context.attributes().find( QStringLiteral( "Green" ), attrOffset );
+  attributes.push_back( *colorAttribute );
+  const QgsPointCloudAttribute::DataType greenType = colorAttribute->type();
+
+  const int blueOffset = attributes.pointRecordSize();
+  colorAttribute = context.attributes().find( QStringLiteral( "Blue" ), attrOffset );
+  attributes.push_back( *colorAttribute );
+  const QgsPointCloudAttribute::DataType blueType = colorAttribute->type();
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
@@ -426,6 +440,9 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();
 
+  float ir = 0;
+  float ig = 0;
+  float ib = 0;
   for ( int i = 0; i < count; ++i )
   {
     qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
@@ -439,21 +456,14 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
-    if ( recordSize > 10 )
-    {
-      short ir = *( short * )( ptr + i * recordSize + 12 );
-      color.setX( ( ( float )ir ) / 256.0f );
-    }
-    if ( recordSize > 12 )
-    {
-      short ig = *( short * )( ptr + i * recordSize + 14 );
-      color.setY( ( ( float )ig ) / 256.0f );
-    }
-    if ( recordSize > 14 )
-    {
-      short ib = *( short * )( ptr + i * recordSize + 16 );
-      color.setZ( ( ( float )ib ) / 256.0f );
-    }
+
+    context.getAttribute( ptr, i * recordSize + redOffset, redType, ir );
+    color.setX( ir / 255.0f );
+    context.getAttribute( ptr, i * recordSize + greenOffset, greenType, ig );
+    color.setY( ig / 255.0f );
+    context.getAttribute( ptr, i * recordSize + blueOffset, blueType, ib );
+    color.setZ( ib / 255.0f );
+
     outNormal.colors.push_back( color );
   }
 }

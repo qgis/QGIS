@@ -80,6 +80,42 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      */
     void setSymbol( QgsPointCloud3DSymbol *symbol );
 
+
+    /**
+     * Retrieves the attribute \a value from \a data at the specified \a offset, where
+     * \a type indicates the original data type for the attribute.
+     */
+    template <typename T>
+    void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value ) const
+    {
+      switch ( type )
+      {
+        case QgsPointCloudAttribute::Char:
+          value = *( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Int32:
+          value = *reinterpret_cast< const qint32 * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Short:
+          value = *reinterpret_cast< const short * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::UShort:
+          value = *reinterpret_cast< const unsigned short * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Float:
+          value = *reinterpret_cast< const float * >( data + offset );
+          return;
+
+        case QgsPointCloudAttribute::Double:
+          value = *reinterpret_cast< const double * >( data + offset );
+          return;
+      }
+    }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
