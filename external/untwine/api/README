@@ -35,11 +35,11 @@ the user of this API is unaffected.
 API Usage Notes
 ---------------
 
-On Unix and similar, stop() will properly terminate the Untwine process. If Untwine completes
-successfully, you must call running() or stop() in order for your process to properly clean-up
-after the untwine process.  If your process terminates before Untwine completes, Untwine will
-normally see that the pipe that connects your process and Untwine was close and will exit, though
-it may take some small amount of time for this to occur. If you want to make sure that a failure
-of your process (like a segmentation fault) terminates the Untwine process immediately, you
-must call stop() from the appropriate signal handler, though, again, this is generally unnecessary.
+If Untwine completes successfully, you must call running() or stop() in order for your
+process to properly clean-up after the untwine process.  If your process terminates before
+Untwine completes, Untwine will normally see that the pipe that connects your process and
+Untwine was closed and will exit, though it may take some small amount of time for this to occur.
+If you want to make sure that a failure of your process (like a segmentation fault) terminates
+the Untwine process immediately, you must call stop() from the appropriate signal handler,
+though, again, this is generally unnecessary.
 

@@ -24,9 +24,9 @@ class GridKey
 public:
     GridKey(int i, int j, int k)
     {
-        assert(i < std::numeric_limits<uint8_t>::max());
-        assert(j < std::numeric_limits<uint8_t>::max());
-        assert(k < std::numeric_limits<uint8_t>::max());
+        assert(i < (std::numeric_limits<uint8_t>::max)());
+        assert(j < (std::numeric_limits<uint8_t>::max)());
+        assert(k < (std::numeric_limits<uint8_t>::max)());
         m_key = (i << (2 * CHAR_BIT)) | (j << CHAR_BIT) | k;
     }
 

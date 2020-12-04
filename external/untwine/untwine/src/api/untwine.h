@@ -45,81 +45,79 @@
 /**
  * Log levels
  */
-namespace Untwine
-{
+namespace Untwine {
 
-  /**
-  * Returns untwine version (x.y.z)
-  */
-  UNTWINE_EXPORT std::string version();
+     /**
+     * Returns untwine version (x.y.z)
+     */
+    UNTWINE_EXPORT std::string version();
 
-  enum LogLevel
-  {
-    Error,
-    Warn,
-    Info,
-    Debug
-  };
-
-  typedef std::function<void( LogLevel logLevel, const std::string &message )> LoggerCallbackFunction;
-
-  /**
-   * Sets custom callback for logging output
-   */
-  UNTWINE_EXPORT void SetLoggerCallback( LoggerCallbackFunction callback );
-
-  /**
-   * Sets maximum log level (verbosity)
-   *
-   * By default logger outputs errors only.
-   * Log levels (low to high): Error, Warn, Info, Debug
-   * For example, if LogLevel is set to Warn, logger outputs errors and warnings.
-   */
-  UNTWINE_EXPORT void SetLogVerbosity( LogLevel verbosity );
-
-  UNTWINE_EXPORT struct Feedback
-  {
-    enum Status
+    enum LogLevel
     {
-      Ready = 0, // before start
-      Canceled, // user cancelled, not running
-      Running, // running (cancellation may be already requested)
-      Finished, //Success (finished)
-      Failed // Failed to succeed (all reasons BUT cancellation by user)
+      Error,
+      Warn,
+      Info,
+      Debug
     };
 
-    bool cancellationRequested = false; //!< QGIS sets this, UNTWINE reads it and try to cancel the job when first possible
-    Status status = Ready; //! UNTWINE sets this when the status of job is changed, QGIS reads it
-    float progress = 0.0f; //!< 0-100, UNTWINE sets this periodically as the job progress goes. QGIS reads it.
-  }
+    typedef std::function<void(LogLevel logLevel, const std::string& message)> LoggerCallbackFunction;
 
-  /**
-   * Starts a new preflight step from the folder of files or a single point cloud file
-   * \param uri single point cloud file readable by PDAL
-   * \param outputDir folder to write point cloud buckets
-   * \param options string map defining options/flags, empty for all defaults
-   * \param feedback feedback for reporting progress, result of task and pass user request for cancellation
-   */
-  UNTWINE_EXPORT void PreFlightClustering(
-    const std::string &uri,
-    const std::string &outputDir,
-    const std::map<std::string, std::string> &options,
-    Feedback &feedback
-  );
+    /**
+     * Sets custom callback for logging output
+     */
+    UNTWINE_EXPORT void SetLoggerCallback( LoggerCallbackFunction callback );
 
-  /**
-   * Starts a new bottom-up indexing
-   * \param inputDir input directory from UNTWINE_PreFlight
-   * \param outputDir folder to write EPT files
-   * \param options string map defining options/flags, empty for all defaults
-   * \param feedback feedback for reporting progress, result of task and pass user request for cancellation
-   */
-  UNTWINE_EXPORT void BottomUpIndexing(
-    const std::string &inputDir,
-    const std::string &outputDir,
-    const std::map<std::string, std::string> &options,
-    Feedback &feedback
-  );
+    /**
+     * Sets maximum log level (verbosity)
+     *
+     * By default logger outputs errors only.
+     * Log levels (low to high): Error, Warn, Info, Debug
+     * For example, if LogLevel is set to Warn, logger outputs errors and warnings.
+     */
+    UNTWINE_EXPORT void SetLogVerbosity( LogLevel verbosity );
+
+    UNTWINE_EXPORT struct Feedback
+    {
+        enum Status {
+            Ready = 0, // before start
+            Canceled, // user cancelled, not running
+            Running, // running (cancellation may be already requested)
+            Finished, //Success (finished)
+            Failed // Failed to succeed (all reasons BUT cancellation by user)
+        };
+
+        bool cancellationRequested = false; //!< QGIS sets this, UNTWINE reads it and try to cancel the job when first possible
+        Status status = Ready; //! UNTWINE sets this when the status of job is changed, QGIS reads it
+        float progress = 0.0f; //!< 0-100, UNTWINE sets this periodically as the job progress goes. QGIS reads it.
+    }
+
+    /**
+     * Starts a new preflight step from the folder of files or a single point cloud file
+     * \param uri single point cloud file readable by PDAL
+     * \param outputDir folder to write point cloud buckets
+     * \param options string map defining options/flags, empty for all defaults
+     * \param feedback feedback for reporting progress, result of task and pass user request for cancellation
+     */
+    UNTWINE_EXPORT void PreFlightClustering(
+        const std::string& uri,
+        const std::string& outputDir,
+        const std::map<std::string, std::string>& options,
+        Feedback& feedback
+    );
+
+    /**
+     * Starts a new bottom-up indexing
+     * \param inputDir input directory from UNTWINE_PreFlight
+     * \param outputDir folder to write EPT files
+     * \param options string map defining options/flags, empty for all defaults
+     * \param feedback feedback for reporting progress, result of task and pass user request for cancellation
+     */
+    UNTWINE_EXPORT void BottomUpIndexing(
+        const std::string& inputDir,
+        const std::string& outputDir,
+        const std::map<std::string, std::string>& options,
+        Feedback& feedback
+    );
 
 } // namespace Untwine
 

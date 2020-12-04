@@ -16,63 +16,63 @@
 
 namespace untwine
 {
-  namespace epf
-  {
+namespace epf
+{
 
-    void Cell::initialize()
-    {
-      m_buf = m_writer->bufferCache().fetch();
-      m_pos = m_buf->data();
+void Cell::initialize()
+{
+    m_buf = m_writer->bufferCache().fetch();
+    m_pos = m_buf->data();
 
-      m_endPos = m_pos + m_pointSize * ( BufSize / m_pointSize );
-    }
+    m_endPos = m_pos + m_pointSize * (BufSize / m_pointSize);
+}
 
-    void Cell::write()
-    {
-      // Resize the buffer so the writer knows how much to write.
-      size_t size = m_pos - m_buf->data();
-      if ( size )
+void Cell::write()
+{
+    // Resize the buffer so the writer knows how much to write.
+    size_t size = m_pos - m_buf->data();
+    if (size)
 //    {
 //        m_buf->resize(size);
-        m_writer->enqueue( m_key, std::move( m_buf ), size );
+        m_writer->enqueue(m_key, std::move(m_buf), size);
 //    }
-    }
+}
 
-    void Cell::advance()
+void Cell::advance()
+{
+    m_pos += m_pointSize;
+    if (m_pos >= m_endPos)
     {
-      m_pos += m_pointSize;
-      if ( m_pos >= m_endPos )
-      {
         write();
         initialize();
-      }
     }
+}
 
 ///
 /// CellMgr
 ///
 
-    CellMgr::CellMgr( int pointSize, Writer *writer ) : m_pointSize( pointSize ), m_writer( writer )
-    {}
+CellMgr::CellMgr(int pointSize, Writer *writer) : m_pointSize(pointSize), m_writer(writer)
+{}
 
 
-    Cell *CellMgr::get( const VoxelKey &key )
+Cell *CellMgr::get(const VoxelKey& key)
+{
+    auto it = m_cells.find(key);
+    if (it == m_cells.end())
     {
-      auto it = m_cells.find( key );
-      if ( it == m_cells.end() )
-      {
-        std::unique_ptr<Cell> cell( new Cell( key, m_pointSize, m_writer ) );
-        it = m_cells.insert( {key, std::move( cell )} ).first;
-      }
-      Cell &c = *( it->second );
-      return &c;
+        std::unique_ptr<Cell> cell(new Cell(key, m_pointSize, m_writer));
+        it = m_cells.insert( {key, std::move(cell)} ).first;
     }
+    Cell& c = *(it->second);
+    return &c;
+}
 
-    void CellMgr::flush()
-    {
-      for ( auto &cp : m_cells )
+void CellMgr::flush()
+{
+    for (auto& cp : m_cells)
         cp.second->write();
-    }
+}
 
-  } // namespace epf
+} // namespace epf
 } // namespace untwine

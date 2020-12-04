@@ -42,7 +42,7 @@ public:
         for (int i = 0; i < 8; ++i)
             m_children[i].setKey(key.child(i));
 
-        int cells = std::pow(2, key.level());
+        int cells = (int)std::pow(2, key.level());
         m_xWidth = (fullBounds.maxx - fullBounds.minx) / cells;
         m_yWidth = (fullBounds.maxy - fullBounds.miny) / cells;
         m_zWidth = (fullBounds.maxz - fullBounds.minz) / cells;
@@ -66,9 +66,9 @@ public:
 
         static const double sqrt3 = std::sqrt(3);
         m_gridCellWidth = m_spacing / sqrt3;
-        m_gridXCount = std::ceil((m_bounds.maxx - m_bounds.minx) / m_gridCellWidth);
-        m_gridYCount = std::ceil((m_bounds.maxy - m_bounds.miny) / m_gridCellWidth);
-        m_gridZCount = std::ceil((m_bounds.maxz - m_bounds.minz) / m_gridCellWidth);
+        m_gridXCount = (int)std::ceil((m_bounds.maxx - m_bounds.minx) / m_gridCellWidth);
+        m_gridYCount = (int)std::ceil((m_bounds.maxy - m_bounds.miny) / m_gridCellWidth);
+        m_gridZCount = (int)std::ceil((m_bounds.maxz - m_bounds.minz) / m_gridCellWidth);
     }
 
     VoxelKey key() const
@@ -103,10 +103,10 @@ public:
         { return m_squareSpacing; }
 
     double minWidth() const
-        { return std::min(std::min(m_xWidth, m_yWidth), m_zWidth); }
+        { return (std::min)((std::min)(m_xWidth, m_yWidth), m_zWidth); }
 
     double maxWidth() const
-        { return std::max(std::max(m_xWidth, m_yWidth), m_zWidth); }
+        { return (std::max)((std::max)(m_xWidth, m_yWidth), m_zWidth); }
 
     double xWidth() const
         { return m_xWidth; }
@@ -123,7 +123,7 @@ public:
         double y = p.y() - m_bounds.miny;
         double z = p.z() - m_bounds.minz;
 
-        return GridKey(x / m_gridCellWidth, y / m_gridCellWidth, z / m_gridCellWidth);
+        return GridKey((int)(x / m_gridCellWidth), (int)(y / m_gridCellWidth), (int)(z / m_gridCellWidth));
     }
 
     //ABELL - Really torn WRT making Grid its own thing.

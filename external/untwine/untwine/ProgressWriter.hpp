@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 namespace untwine
 {
 
@@ -23,6 +25,8 @@ private:
     int m_progressFd;
     double m_percent; // Current percent.
     double m_increment; // Current increment.
+
+    void writeMessage(uint32_t percent, const std::string& message);
 };
 
 } //namespace untwine
