@@ -14,15 +14,19 @@
  ***************************************************************************/
 
 #include "qgspdaleptgenerationtask.h"
-#include "QgisUntwine.hpp"
+
 #include <vector>
 #include <string>
 #include <QDebug>
 #include <QThread>
 #include <QFileInfo>
 #include <QDir>
-#include "qgsapplication.h"
 #include <QProcessEnvironment>
+
+#include "qgsapplication.h"
+#include "QgisUntwine.hpp"
+#include "qgsmessagelog.h"
+#include "qgis.h"
 
 QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file ):
   QgsTask( QStringLiteral( "Generate EPT Index" ) )
@@ -39,84 +43,73 @@ QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file ):
 
 bool QgsPdalEptGenerationTask::run()
 {
-  QFileInfo fi( mOutputDir + "/ept.json" );
-  if ( fi.exists() )
-  {
-    qDebug() << "untwine: already indexed";
-    setProgress( 100 );
-    return true;
-  }
-  else
-  {
-    if ( QDir( mOutputDir ).exists() )
-    {
-      if ( QDir( mOutputDir + "/temp" ).exists() )
-      {
-        qDebug() << "untwine: unother indexing process is running (or finished with crash).";
-        return false;
-      }
-      else
-      {
-        qDebug() << "untwine: folder exists but no ept.json inside. maybe some bad folder?";
-        return false;
-      }
-    }
-    else
-    {
-      qDebug() << "untwine: creating new dir " << mOutputDir;
-      bool success = QDir().mkdir( mOutputDir );
-      if ( !success )
-      {
-        qDebug() << "untwine: unable to create output dir " << mOutputDir;
-        return false;
-      }
-    }
-  }
+  if ( isCanceled() || !prepareOutputDir() )
+    return false;
 
+  if ( isCanceled() || !runUntwine() )
+    return false;
+
+  if ( isCanceled() )
+    return false;
+
+  cleanTemp();
+
+  return true;
+}
+
+void QgsPdalEptGenerationTask::cleanTemp()
+{
+  QDir tmpDir = QDir( mOutputDir + "/temp" );
+  if ( tmpDir.exists() )
+  {
+    QgsMessageLog::logMessage( tr( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), QObject::tr( "Untwine" ), Qgis::Info );
+    tmpDir.removeRecursively();
+  }
+}
+
+bool QgsPdalEptGenerationTask::runUntwine()
+{
   QFileInfo executable( mUntwineExecutableBinary );
   if ( !executable.isExecutable() )
   {
-    qDebug() << "untwine: executable not found " << mUntwineExecutableBinary;
+    QgsMessageLog::logMessage( tr( "Unwine executable not found %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Untwine" ), Qgis::Critical );
     return false;
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Using executable %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Untwine" ), Qgis::Info );
   }
 
   untwine::QgisUntwine untwineProcess( mUntwineExecutableBinary.toStdString() );
 
   std::vector<std::string> files = {mFile.toStdString()};
   untwineProcess.start( files, mOutputDir.toStdString() );
-  bool success = false;
   int lastPercent = 0;
-  setProgress( lastPercent );
-  qDebug() << "untwine: start" << mFile;
   while ( true )
   {
     QThread::msleep( 100 );
     int percent = untwineProcess.progressPercent();
     if ( lastPercent != percent )
     {
+      QString message = QString::fromStdString( untwineProcess.progressMessage() );
+      if ( !message.isEmpty() )
+        QgsMessageLog::logMessage( message, QObject::tr( "Untwine" ), Qgis::Info );
+
       setProgress( percent / 100.0 );
-      qDebug() << "untwine: progress" << percent;
     }
 
     if ( isCanceled() )
     {
       untwineProcess.stop();
-      break;
+      return false;
     }
 
     if ( !untwineProcess.running() )
     {
-      success = true;
       setProgress( 1 );
-      break;
+      return true;
     }
   }
-
-  qDebug() << "untwine: done " << mOutputDir << success;
-  return success;
-
-  // TODO remove mOutputDir/temp dir on success!
-  // TODO use progressMessage output to QGIS log
 }
 
 QString QgsPdalEptGenerationTask::untwineExecutableBinary() const
@@ -139,13 +132,8 @@ QString QgsPdalEptGenerationTask::guessUntwineExecutableBinary() const
 #else
     untwineExecutable = QgsApplication::libexecPath() + "untwine";
 #endif
-    qDebug() << "using untwine executable " << untwineExecutable << " defined from libexecPath()";
   }
-  else
-  {
-    qDebug() << "using untwine executable " << untwineExecutable << " defined from env. QGIS_UNTWINE_EXECUTABLE";
-  }
-  return QString( "/Users/peter/Projects/pointclouds/build-QGIS-Debug/PlugIns/qgis/untwine" );
+  return QString( untwineExecutable );
 }
 
 QString QgsPdalEptGenerationTask::outputDir() const
@@ -156,4 +144,48 @@ QString QgsPdalEptGenerationTask::outputDir() const
 void QgsPdalEptGenerationTask::setOutputDir( const QString &outputDir )
 {
   mOutputDir = outputDir;
+}
+
+bool QgsPdalEptGenerationTask::prepareOutputDir()
+{
+  QFileInfo fi( mOutputDir + "/ept.json" );
+  if ( fi.exists() )
+  {
+    QgsMessageLog::logMessage( tr( "File %1 is already indexed" ).arg( mFile ), QObject::tr( "Untwine" ), Qgis::Info );
+    return true;
+  }
+  else
+  {
+    if ( QDir( mOutputDir ).exists() )
+    {
+      if ( !QDir( mOutputDir ).isEmpty() )
+      {
+        if ( QDir( mOutputDir + "/temp" ).exists() )
+        {
+          QgsMessageLog::logMessage( tr( "Another indexing process is running (or finished with crash) in directory %1" ).arg( mOutputDir ), QObject::tr( "Untwine" ), Qgis::Warning );
+          return false;
+        }
+        else
+        {
+          QgsMessageLog::logMessage( tr( "Folder %1 is non-empty, but there isn't ept.json present." ).arg( mOutputDir ), QObject::tr( "Untwine" ), Qgis::Critical );
+          return false;
+        }
+      }
+    }
+    else
+    {
+      bool success = QDir().mkdir( mOutputDir );
+      if ( success )
+      {
+        QgsMessageLog::logMessage( tr( "Created output directory %1" ).arg( mOutputDir ), QObject::tr( "Untwine" ), Qgis::Info );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Unable to create output directory %1" ).arg( mOutputDir ), QObject::tr( "Untwine" ), Qgis::Critical );
+        return false;
+      }
+    }
+  }
+
+  return true;
 }

@@ -364,8 +364,10 @@ void QgsPointCloudLayer::onPointCloudIndexLoaded()
 
   if ( mRenderer )
   {
-    // TODO we need to switch from extent renderer to some other one?
-
+    if ( mRenderer->type() == QLatin1String( "extent" ) )
+    {
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
+    }
     triggerRepaint();
   }
 }

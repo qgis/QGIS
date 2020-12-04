@@ -94,6 +94,11 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
 
     /**
+     * Returns whether providers has index and it is valid
+     */
+    bool hasValidIndex() const;
+
+    /**
      * Returns the total number of points available in the dataset.
      * May return 0 until pointCloudIndexLoaded() is emitted
      */

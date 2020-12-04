@@ -80,7 +80,6 @@ void QgsPdalProvider::loadIndex()
   if ( mRunningIndexingTask || mIndex->isValid() )
     return;
 
-  mRunningIndexingTask = nullptr;
   QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( mFile );
   // TODO generationTask->setDependentLayers();
 
@@ -106,7 +105,7 @@ void QgsPdalProvider::onLoadIndexFinished()
     }
     else
     {
-      qDebug() << "not managed to create index";
+      QgsDebugMsgLevel( QStringLiteral( "Index %1 is not correctly generated" ).arg( outEptJson ), 2 );
     }
     mRunningIndexingTask = nullptr;
   }

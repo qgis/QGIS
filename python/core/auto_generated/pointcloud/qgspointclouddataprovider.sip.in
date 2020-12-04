@@ -70,6 +70,11 @@ On finish emits :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded`
 %End
 
 
+    bool hasValidIndex() const;
+%Docstring
+Returns whether providers has index and it is valid
+%End
+
     virtual int pointCount() const = 0;
 %Docstring
 Returns the total number of points available in the dataset.

@@ -36,6 +36,10 @@ class QgsPdalEptGenerationTask: public QgsTask
     void setOutputDir( const QString &outputDir );
 
   private:
+    bool prepareOutputDir();
+    bool runUntwine();
+    void cleanTemp();
+
     QString guessUntwineExecutableBinary() const;
     QString mUntwineExecutableBinary;
     QString mOutputDir;

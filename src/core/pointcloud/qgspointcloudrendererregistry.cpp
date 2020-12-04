@@ -87,7 +87,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   if ( !provider )
     return new QgsPointCloudAttributeByRampRenderer();
 
-  if ( provider->name() == QLatin1String( "pdal" ) )
+  if ( ( provider->name() == QLatin1String( "pdal" ) ) && ( !provider->hasValidIndex() ) )
   {
     // for now, default to extent renderer only for las/laz files
     return new QgsPointCloudExtentRenderer();
