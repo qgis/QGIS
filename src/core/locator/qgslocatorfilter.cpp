@@ -100,3 +100,8 @@ void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel le
   QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), QStringLiteral( "Locator bar" ), level );
 }
 
+
+QVariant QgsLocatorResult::getUserData() const
+{
+  return userData;
+}
