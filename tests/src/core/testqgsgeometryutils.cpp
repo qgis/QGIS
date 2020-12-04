@@ -82,6 +82,7 @@ class TestQgsGeometryUtils: public QObject
     void testWeightedPointInTriangle();
     void testPointContinuesArc();
     void testBisector();
+    void testAngleBisector();
 };
 
 
@@ -1512,5 +1513,29 @@ void TestQgsGeometryUtils::testBisector()
   // collinear
   QVERIFY( !QgsGeometryUtils::bisector( 5, 5, 0, 0, 1, 1, x, y ) );
 }
+
+void TestQgsGeometryUtils::testAngleBisector()
+{
+  double x, y, angle;
+  QVERIFY( QgsGeometryUtils::angleBisector( 0, 0, 0, 5, 0, 0, 5, 0, x, y, angle ) );
+  QGSCOMPARENEAR( x, 0.0, 10e-3 );
+  QGSCOMPARENEAR( y, 0.0, 10e-3 );
+  QGSCOMPARENEAR( angle, 45.0, 10e-3 );
+
+  QVERIFY( QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 2.5, 0, 7.5, 5, x, y, angle ) );
+  QGSCOMPARENEAR( x, 2.5, 10e-3 );
+  QGSCOMPARENEAR( y, 0.0, 10e-3 );
+  QGSCOMPARENEAR( angle, 67.5, 10e-3 );
+
+  QVERIFY( QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 15, -5, 7.5, 5, x, y, angle ) );
+  QGSCOMPARENEAR( x, 11.25, 10e-3 );
+  QGSCOMPARENEAR( y, 0.0, 10e-3 );
+  QGSCOMPARENEAR( angle, 26.565, 10e-3 );
+
+  // collinear
+  QVERIFY( !QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 5, 5, 10, 5, x, y, angle ) );
+  QVERIFY( !QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 6, 0, 10, 0, x, y, angle ) );
+}
+
 QGSTEST_MAIN( TestQgsGeometryUtils )
 #include "testqgsgeometryutils.moc"
