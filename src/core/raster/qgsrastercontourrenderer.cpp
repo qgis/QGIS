@@ -18,6 +18,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include <gdal_alg.h>
 
@@ -213,6 +214,22 @@ QList<int> QgsRasterContourRenderer::usesBands() const
     bandList << mInputBand;
   }
   return bandList;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsRasterContourRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> nodes;
+
+  QgsLegendSymbolItem contourItem( mContourSymbol.get(), QString::number( mContourInterval ), QStringLiteral( "contour" ) );
+  nodes << new QgsSymbolLegendNode( nodeLayer, contourItem );
+
+  if ( mContourIndexInterval > 0 )
+  {
+    QgsLegendSymbolItem indexItem( mContourIndexSymbol.get(), QString::number( mContourIndexInterval ), QStringLiteral( "index" ) );
+    nodes << new QgsSymbolLegendNode( nodeLayer, indexItem );
+  }
+
+  return nodes;
 }
 
 void QgsRasterContourRenderer::setContourSymbol( QgsLineSymbol *symbol )

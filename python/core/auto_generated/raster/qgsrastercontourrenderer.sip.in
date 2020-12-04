@@ -48,6 +48,8 @@ Creates an instance of the renderer based on definition from XML (used by render
 
     virtual QList<int> usesBands() const;
 
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
 
 
     int inputBand() const;
