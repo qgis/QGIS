@@ -193,7 +193,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     enum FieldNameSource
     {
       Original = 0, //!< Use original field names
-      PreferAlias, //!< Use the original field alias as the exported field name, wherever one is set. Otherwise use the original field names.
+      PreferAlias, //!< Use the field alias as the exported field name, wherever one is set. Otherwise use the original field names.
     };
 
     /**

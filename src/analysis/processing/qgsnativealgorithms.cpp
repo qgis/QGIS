@@ -57,6 +57,7 @@
 #include "qgsalgorithmexecutespatialitequery.h"
 #include "qgsalgorithmexecutespatialitequeryregistered.h"
 #include "qgsalgorithmexportmesh.h"
+#include "qgsalgorithmexporttospreadsheet.h"
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
 #include "qgsalgorithmexportlayersinformation.h"
@@ -294,6 +295,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExportMeshFacesAlgorithm );
   addAlgorithm( new QgsExportMeshEdgesAlgorithm );
   addAlgorithm( new QgsExportMeshOnGridAlgorithm );
+  addAlgorithm( new QgsExportToSpreadsheetAlgorithm() );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentFromLayerAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );

@@ -77,6 +77,9 @@ class TestQgsProcessingAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
     void saveFeaturesAlg();
     void packageAlg();
+    void exportToSpreadsheetXlsx();
+    void exportToSpreadsheetOds();
+    void exportToSpreadsheetOptions();
     void renameLayerAlg();
     void loadLayerAlg();
     void parseGeoTags();
@@ -170,6 +173,7 @@ class TestQgsProcessingAlgs: public QObject
     QgsVectorLayer *mPointsLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 
+    void exportToSpreadsheet( const QString &outputPath );
 };
 
 std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> TestQgsProcessingAlgs::featureBasedAlg( const QString &id )
@@ -416,6 +420,174 @@ void TestQgsProcessingAlgs::packageAlg()
   pointLayer = qgis::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
   QVERIFY( !pointLayer->isValid() ); // It's gone -- the gpkg was recreated with a single layer
 }
+
+void TestQgsProcessingAlgs::exportToSpreadsheetXlsx()
+{
+  QString outputPath = QDir::tempPath() + "/spreadsheet.xlsx";
+  exportToSpreadsheet( outputPath );
+}
+
+void TestQgsProcessingAlgs::exportToSpreadsheetOds()
+{
+  QString outputPath = QDir::tempPath() + "/spreadsheet.ods";
+  exportToSpreadsheet( outputPath );
+}
+
+void TestQgsProcessingAlgs::exportToSpreadsheetOptions()
+{
+  QString outputPath = QDir::tempPath() + "/spreadsheet.ods";
+  if ( QFile::exists( outputPath ) )
+    QFile::remove( outputPath );
+
+  QVariantMap parameters;
+  QStringList layers = QStringList() << mPointsLayer->id();
+  bool ok = false;
+
+  mPointsLayer->setFieldAlias( 1, QStringLiteral( "my heading" ) );
+
+  const QgsProcessingAlgorithm *alg( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:exporttospreadsheet" ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  parameters.insert( QStringLiteral( "LAYERS" ), layers );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  parameters.insert( QStringLiteral( "OVERWRITE" ), true );
+  parameters.insert( QStringLiteral( "USE_ALIAS" ), false );
+  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  std::unique_ptr< QgsVectorLayer > pointLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
+  QCOMPARE( pointLayer->fields().at( 0 ).name(), QStringLiteral( "Class" ) );
+  QCOMPARE( pointLayer->fields().at( 1 ).name(), QStringLiteral( "Heading" ) );
+  QCOMPARE( pointLayer->fields().at( 2 ).name(), QStringLiteral( "Importance" ) );
+  QCOMPARE( pointLayer->fields().at( 3 ).name(), QStringLiteral( "Pilots" ) );
+  QCOMPARE( pointLayer->fields().at( 4 ).name(), QStringLiteral( "Cabin Crew" ) );
+
+  pointLayer.reset();
+
+
+  mPointsLayer->setEditorWidgetSetup( 2, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ),
+  QVariantMap{{"map", QVariantMap{{"High", "1"},
+        {"Medium", "10"},
+        {"Low", "20"},
+        {"VLow", "3"},
+        {"VHigh", "4"}}
+    }} ) );
+
+  parameters.insert( QStringLiteral( "USE_ALIAS" ), true );
+  parameters.insert( QStringLiteral( "FORMATTED_VALUES" ), false );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  pointLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
+  QCOMPARE( pointLayer->fields().at( 0 ).name(), QStringLiteral( "Class" ) );
+  QCOMPARE( pointLayer->fields().at( 1 ).name(), QStringLiteral( "my heading" ) );
+  QCOMPARE( pointLayer->fields().at( 2 ).name(), QStringLiteral( "Importance" ) );
+  QCOMPARE( pointLayer->fields().at( 3 ).name(), QStringLiteral( "Pilots" ) );
+  QCOMPARE( pointLayer->fields().at( 4 ).name(), QStringLiteral( "Cabin Crew" ) );
+
+  QSet< QString > values;
+  QgsFeature f;
+  QgsFeatureIterator it = pointLayer->getFeatures();
+  while ( it.nextFeature( f ) )
+    values.insert( f.attribute( QStringLiteral( "Importance" ) ).toString() );
+
+  QCOMPARE( values.size(), 5 );
+  QVERIFY( values.contains( "1" ) );
+  QVERIFY( values.contains( "3" ) );
+  QVERIFY( values.contains( "4" ) );
+  QVERIFY( values.contains( "10" ) );
+  QVERIFY( values.contains( "20" ) );
+
+  parameters.insert( QStringLiteral( "FORMATTED_VALUES" ), true );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  pointLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
+  values.clear();
+  it = pointLayer->getFeatures();
+  while ( it.nextFeature( f ) )
+    values.insert( f.attribute( QStringLiteral( "Importance" ) ).toString() );
+
+  QCOMPARE( values.size(), 5 );
+  QVERIFY( values.contains( "High" ) );
+  QVERIFY( values.contains( "Medium" ) );
+  QVERIFY( values.contains( "Low" ) );
+  QVERIFY( values.contains( "VLow" ) );
+  QVERIFY( values.contains( "VHigh" ) );
+}
+
+void TestQgsProcessingAlgs::exportToSpreadsheet( const QString &outputPath )
+{
+  if ( QFile::exists( outputPath ) )
+    QFile::remove( outputPath );
+
+  QVariantMap parameters;
+  QStringList layers = QStringList() << mPointsLayer->id() << mPolygonLayer->id();
+  bool ok = false;
+
+  const QgsProcessingAlgorithm *alg( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:exporttospreadsheet" ) ) );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsProcessingFeedback feedback;
+
+  parameters.insert( QStringLiteral( "LAYERS" ), layers );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  parameters.insert( QStringLiteral( "OVERWRITE" ), false );
+  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  std::unique_ptr< QgsVectorLayer > pointLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
+  QVERIFY( pointLayer->isValid() );
+  QCOMPARE( pointLayer->featureCount(), mPointsLayer->featureCount() );
+  pointLayer.reset();
+  std::unique_ptr< QgsVectorLayer > polygonLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=polygons", "polygons", "ogr" );
+  QVERIFY( polygonLayer->isValid() );
+  QCOMPARE( polygonLayer->featureCount(), mPolygonLayer->featureCount() );
+  polygonLayer.reset();
+
+  std::unique_ptr<QgsVectorLayer> rectangles = qgis::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp",
+      QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
+
+  // Test adding an additional layer (overwrite disabled)
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << rectangles->id() );
+  QVariantMap results2 = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  std::unique_ptr< QgsVectorLayer > rectanglesPackagedLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=rectangles", "points", "ogr" );
+  QVERIFY( rectanglesPackagedLayer->isValid() );
+  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
+  rectanglesPackagedLayer.reset();
+
+  pointLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
+  QVERIFY( pointLayer->isValid() );
+  pointLayer.reset();
+
+  // And finally, test with overwrite enabled
+  parameters.insert( QStringLiteral( "OVERWRITE" ), true );
+  QVariantMap results3 = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results3.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  rectanglesPackagedLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=rectangles", "points", "ogr" );
+  QVERIFY( rectanglesPackagedLayer->isValid() );
+  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
+
+  pointLayer = qgis::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
+  QVERIFY( !pointLayer->isValid() ); // It's gone -- the xlsx was recreated with a single layer
+}
+
 
 void TestQgsProcessingAlgs::renameLayerAlg()
 {
