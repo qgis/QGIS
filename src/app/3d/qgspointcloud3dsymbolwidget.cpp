@@ -30,6 +30,9 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 
   mRenderingParameterComboBox->setLayer( layer );
 
+  mSingleColorBtn->setAllowOpacity( false );
+  mSingleColorBtn->setColorDialogTitle( tr( "Select Point Color" ) );
+
   mRenderingStyleComboBox->addItem( tr( "No Rendering" ), QgsPointCloud3DSymbol::NoRendering );
   mRenderingStyleComboBox->addItem( tr( "Single Color" ), QgsPointCloud3DSymbol::SingleColor );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QgsPointCloud3DSymbol::ColorRamp );
@@ -42,12 +45,14 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mRenderingStyleComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
   connect( mColorRampShaderMinMaxReloadButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+  connect( mSingleColorBtn, &QgsColorButton::colorChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
   mBlockChangedSignals++;
   mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->renderingStyle() ) );
+  mStackedWidget->setCurrentIndex( static_cast< int >( symbol->renderingStyle() ) );
   if ( symbol )
   {
     switch ( symbol->renderingStyle() )
