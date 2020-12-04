@@ -181,6 +181,40 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   }
   setAttributes( attributes );
 
+  // try to import the metadata too!
+
+  QFile manifestFile( mDirectory + QStringLiteral( "/ept-sources/manifest.json" ) );
+  if ( manifestFile.open( QIODevice::ReadOnly ) )
+  {
+    const QByteArray manifestJson = manifestFile.readAll();
+    const QJsonDocument manifestDoc = QJsonDocument::fromJson( manifestJson, &err );
+    if ( err.error == QJsonParseError::NoError )
+    {
+      const QJsonArray manifestArray = manifestDoc.array();
+      // TODO how to handle multiple?
+      if ( ! manifestArray.empty() )
+      {
+        const QJsonObject sourceObject = manifestArray.at( 0 ).toObject();
+        const QString metadataPath = sourceObject.value( QStringLiteral( "metadataPath" ) ).toString();
+        QFile metadataFile( mDirectory + QStringLiteral( "/ept-sources/" ) + metadataPath );
+        if ( metadataFile.open( QIODevice::ReadOnly ) )
+        {
+          const QByteArray metadataJson = metadataFile.readAll();
+          const QJsonDocument metadataDoc = QJsonDocument::fromJson( metadataJson, &err );
+          if ( err.error == QJsonParseError::NoError )
+          {
+            const QJsonObject metadataObject = metadataDoc.object().value( QStringLiteral( "metadata" ) ).toObject();
+            if ( !metadataObject.empty() )
+            {
+              const QJsonObject sourceMetadata = metadataObject.constBegin().value().toObject();
+              mOriginalMetadata = sourceMetadata.toVariantMap();
+            }
+          }
+        }
+      }
+    }
+  }
+
   // save mRootBounds
 
   // bounds (cube - octree volume)

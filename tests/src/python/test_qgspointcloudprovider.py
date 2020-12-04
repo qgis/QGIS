@@ -94,6 +94,24 @@ class TestQgsPointCloudDataProvider(unittest.TestCase):
         self.assertEqual(layer.dataProvider().metadataClassStatistic('Classification', 5, QgsStatisticalSummary.Count),
                          3)
 
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testOriginalMetadataEpt(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertEqual(layer.dataProvider().originalMetadata()['major_version'], 1.0)
+        self.assertEqual(layer.dataProvider().originalMetadata()['minor_version'], 2.0)
+        self.assertEqual(layer.dataProvider().originalMetadata()['software_id'], 'PDAL 2.1.0 (Releas)')
+        self.assertEqual(layer.dataProvider().originalMetadata()['creation_year'], 2020.0)
+        self.assertEqual(layer.dataProvider().originalMetadata()['creation_doy'], 309.0)
+
+    @unittest.skipIf('pdal' not in QgsProviderRegistry.instance().providerList(), 'PDAL provider not available')
+    def testOriginalMetadataPdal(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/las/cloud.las', 'test', 'pdal')
+        self.assertEqual(layer.dataProvider().originalMetadata()['major_version'], 1.0)
+        self.assertEqual(layer.dataProvider().originalMetadata()['minor_version'], 2.0)
+        self.assertEqual(layer.dataProvider().originalMetadata()['software_id'], 'PDAL 2.1.0 (Releas)')
+        self.assertEqual(layer.dataProvider().originalMetadata()['creation_year'], 2020.0)
+        self.assertEqual(layer.dataProvider().originalMetadata()['creation_doy'], 309.0)
+
 
 if __name__ == '__main__':
     unittest.main()

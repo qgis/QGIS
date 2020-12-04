@@ -101,6 +101,14 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsGeometry polygonBounds() const;
 
     /**
+     * Returns a representation of the original metadata included in a point cloud dataset.
+     *
+     * This is a free-form dictionary of values, the contents and structure of which will vary by provider and
+     * dataset.
+     */
+    virtual QVariantMap originalMetadata() const;
+
+    /**
      * Creates a new 2D point cloud renderer, using provider backend specific information.
      *
      * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
