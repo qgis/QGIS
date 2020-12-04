@@ -24,7 +24,6 @@
 #include <QStringList>
 #include <QVector>
 #include <QList>
-#include <memory>
 #include <QFile>
 
 #include "qgspointcloudindex.h"

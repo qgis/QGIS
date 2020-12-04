@@ -56,7 +56,6 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     void loadIndex() override;
 
   private:
-    QString mUri;
     std::unique_ptr<QgsEptPointCloudIndex> mIndex;
 };
 

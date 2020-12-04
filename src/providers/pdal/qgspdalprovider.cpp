@@ -40,7 +40,6 @@ QgsPdalProvider::QgsPdalProvider(
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( new QgsEptPointCloudIndex )
 {
-  mFile = uri; //<TODO REMOVE
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
@@ -80,8 +79,8 @@ void QgsPdalProvider::loadIndex()
   if ( mRunningIndexingTask || mIndex->isValid() )
     return;
 
-  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( mFile );
-  // TODO generationTask->setDependentLayers();
+  const QString file = uri().uri();
+  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( file );
 
   connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onLoadIndexFinished );
   connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onLoadIndexFinished );

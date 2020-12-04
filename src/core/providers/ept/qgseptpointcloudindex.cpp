@@ -32,6 +32,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
+#include "qgsmessagelog.h"
 
 ///@cond PRIVATE
 
@@ -47,7 +48,7 @@ void QgsEptPointCloudIndex::load( const QString &fileName )
   QFile f( fileName );
   if ( !f.open( QIODevice::ReadOnly ) )
   {
-    qDebug() << "Unable to open " << fileName << " for reading";
+    QgsMessageLog::logMessage( tr( "Unable to open %1 for reading" ).arg( fileName ) );
     mIsValid = false;
     return;
   }

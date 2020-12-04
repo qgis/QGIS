@@ -28,16 +28,13 @@
 #include "qgsmessagelog.h"
 #include "qgis.h"
 
-QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file ):
-  QgsTask( QStringLiteral( "Generate EPT Index" ) )
+QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file )
+  : QgsTask( tr( "Generate EPT Index" ) )
+  , mFile( file )
 {
-  mFile = file;
-
-  QFileInfo fi( file );
+  const QFileInfo fi( file );
   const QDir directory = fi.absoluteDir();
-
-  // TODO multiplatform
-  mOutputDir = directory.absolutePath() + QString( "/ept_" ) + fi.baseName();
+  mOutputDir = QStringLiteral( "%1/ept_%2" ).arg( directory.absolutePath() ).arg( fi.baseName() );
   mUntwineExecutableBinary = guessUntwineExecutableBinary();
 }
 
@@ -59,7 +56,7 @@ bool QgsPdalEptGenerationTask::run()
 
 void QgsPdalEptGenerationTask::cleanTemp()
 {
-  QDir tmpDir = QDir( mOutputDir + "/temp" );
+  QDir tmpDir( mOutputDir + QStringLiteral( "/temp" ) );
   if ( tmpDir.exists() )
   {
     QgsMessageLog::logMessage( tr( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), QObject::tr( "Untwine" ), Qgis::Info );

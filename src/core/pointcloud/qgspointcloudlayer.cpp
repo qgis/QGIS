@@ -312,17 +312,15 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     return;
   }
 
-  mLoadDefaultStyleFlag = loadDefaultStyleFlag;
-
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::pointCloudIndexLoaded, this, &QgsPointCloudLayer::onPointCloudIndexLoaded );
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
-  // trigger loading of index. this might be lenghty operation
+  // trigger loading of index. this might be slow operation
   // if the provider decide to build the index from source file(s)
   // in background thread
   mDataProvider.get()->loadIndex();
 
-  if ( !mRenderer || mLoadDefaultStyleFlag )
+  if ( !mRenderer || loadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -330,7 +328,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
     bool defaultLoadedFlag = false;
 
-    if ( mLoadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
+    if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
     {
       // first try to create a renderer directly from the data provider
       std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
@@ -341,7 +339,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
       }
     }
 
-    if ( !defaultLoadedFlag && mLoadDefaultStyleFlag )
+    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
     }

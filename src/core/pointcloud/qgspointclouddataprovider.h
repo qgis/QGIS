@@ -53,8 +53,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
       CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
     };
-    //TODO
-    //GenerateIndex = 1 << 3, //!< Provider can generate QgsPointCloudIndex. See QgsPointCloudDataProvider::generateIndex().
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -87,14 +85,15 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     /**
      * Returns the point cloud index associated with the provider.
-     * Returns nullptr until pointCloudIndexLoaded() is emitted
+     *
+     * Can be nullptr (e.g. the index is being created)
      *
      * \note Not available in Python bindings
      */
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
 
     /**
-     * Returns whether providers has index and it is valid
+     * Returns whether provider has index which is valid
      */
     bool hasValidIndex() const;
 
@@ -269,7 +268,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
   signals:
 
     /**
-     * Emitted when point cloud is updated
+     * Emitted when point cloud index is fully loaded
      */
     void pointCloudIndexLoaded();
 };

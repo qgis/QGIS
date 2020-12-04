@@ -34,7 +34,6 @@ QgsEptProvider::QgsEptProvider(
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( new QgsEptPointCloudIndex )
 {
-  mUri = uri; //TODO remove
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
@@ -97,7 +96,8 @@ void QgsEptProvider::loadIndex()
   if ( mIndex->isValid() )
     return;
 
-  mIndex->load( mUri );
+  const QString file = uri().uri();
+  mIndex->load( file );
   emit pointCloudIndexLoaded();
 }
 

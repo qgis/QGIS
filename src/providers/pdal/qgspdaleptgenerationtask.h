@@ -17,7 +17,6 @@
 #define QGSPDALEPTGENERATIONTASK_H
 
 #include <QObject>
-#include <memory>
 #include "qgstaskmanager.h"
 
 

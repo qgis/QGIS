@@ -72,7 +72,7 @@ On finish emits :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded`
 
     bool hasValidIndex() const;
 %Docstring
-Returns whether providers has index and it is valid
+Returns whether provider has index which is valid
 %End
 
     virtual int pointCount() const = 0;
@@ -224,7 +224,7 @@ Returns the map of LAS data format ID to translated string value.
 
     void pointCloudIndexLoaded();
 %Docstring
-Emitted when point cloud is updated
+Emitted when point cloud index is fully loaded
 %End
 >>>>>>> cd160135d6... fix loading in bg for EPT
 };
