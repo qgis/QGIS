@@ -142,30 +142,7 @@ void QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax()
 void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
 {
   const QgsPointCloud3DSymbol::RenderingStyle currentStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle>( mRenderingStyleComboBox->currentData().toInt() );
-  switch ( currentStyle )
-  {
-    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      mColorRampFrame->setVisible( false );
-      mSingleColorFrame->setVisible( false );
-      mPointSizeFrame->setVisible( false );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      mColorRampFrame->setVisible( false );
-      mSingleColorFrame->setVisible( true );
-      mPointSizeFrame->setVisible( true );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      mColorRampFrame->setVisible( true );
-      mSingleColorFrame->setVisible( false );
-      mPointSizeFrame->setVisible( true );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
-      mColorRampFrame->setVisible( false );
-      mSingleColorFrame->setVisible( false );
-      mPointSizeFrame->setVisible( true );
-      break;
-  }
-
+  mStackedWidget->setCurrentIndex( static_cast< int >( currentStyle ) );
   emitChangedSignal();
 }
 
