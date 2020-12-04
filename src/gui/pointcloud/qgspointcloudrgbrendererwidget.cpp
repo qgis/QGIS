@@ -221,7 +221,7 @@ void QgsPointCloudRgbRendererWidget::redAttributeChanged()
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mRedMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65024 : 255 ) );
+      mRedMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitWidgetChanged();
     }
@@ -241,7 +241,7 @@ void QgsPointCloudRgbRendererWidget::greenAttributeChanged()
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mGreenMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65024 : 255 ) );
+      mGreenMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitWidgetChanged();
     }
@@ -261,7 +261,7 @@ void QgsPointCloudRgbRendererWidget::blueAttributeChanged()
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mBlueMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65024 : 255 ) );
+      mBlueMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitWidgetChanged();
     }
