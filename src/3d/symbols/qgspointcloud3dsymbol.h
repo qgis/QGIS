@@ -52,17 +52,17 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
       RgbRendering
     };
 
-    //! Converts from \a renderingStyle enum to a string
-    static QString renderingStyletoString( RenderingStyle renderingStyle );
-    //! Converts from a string to rendering style
-    static RenderingStyle renderingStylefromString( const QString &str );
-
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle style );
+    QgsPointCloud3DSymbol();
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
     QString type() const override { return "pointcloud"; }
+
+    /**
+     * Returns a unique string identifier of the symbol type.
+     */
+    virtual QString symbolType() const = 0;
 
     /**
      * Returns the point size of the point cloud
@@ -76,16 +76,12 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
      */
     void setPointSize( float size );
 
-    //! Returns the rendering style used to render the point cloud
-    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const { return mRenderingStyle; }
-
     //! Returns the byte stride for the geometries used to for the vertex buffer
     virtual unsigned int byteStride() = 0;
     //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
     virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0 SIP_SKIP;
 
   protected:
-    QgsPointCloud3DSymbol::RenderingStyle mRenderingStyle = QgsPointCloud3DSymbol::NoRendering;
     float mPointSize = 2.0;
 };
 
@@ -104,6 +100,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     //! Constructor for QgsSingleColorPointCloud3DSymbol
     QgsSingleColorPointCloud3DSymbol();
 
+    QString symbolType() const override;
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -126,7 +123,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
 
   private:
-    QColor mSingleColor = Qt::blue;
+    QColor mSingleColor = QColor( 0, 0, 255 );
 };
 
 /**
@@ -145,6 +142,7 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QgsColorRampPointCloud3DSymbol();
 
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+    QString symbolType() const override;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -216,6 +214,7 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     //! Constructor for QgsRGBPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol();
 
+    QString symbolType() const override;
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

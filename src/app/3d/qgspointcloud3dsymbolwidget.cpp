@@ -33,10 +33,10 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mSingleColorBtn->setAllowOpacity( false );
   mSingleColorBtn->setColorDialogTitle( tr( "Select Point Color" ) );
 
-  mRenderingStyleComboBox->addItem( tr( "No Rendering" ), QgsPointCloud3DSymbol::NoRendering );
-  mRenderingStyleComboBox->addItem( tr( "Single Color" ), QgsPointCloud3DSymbol::SingleColor );
-  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QgsPointCloud3DSymbol::ColorRamp );
-  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QgsPointCloud3DSymbol::RgbRendering );
+  mRenderingStyleComboBox->addItem( tr( "No Rendering" ), QString() );
+  mRenderingStyleComboBox->addItem( tr( "Single Color" ), QStringLiteral( "single-color" ) );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QStringLiteral( "color-ramp" ) );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QStringLiteral( "rgb" ) );
 
   if ( symbol )
     setSymbol( symbol );
@@ -51,38 +51,42 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
   mBlockChangedSignals++;
-  mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->renderingStyle() ) );
-  mStackedWidget->setCurrentIndex( static_cast< int >( symbol->renderingStyle() ) );
-  if ( symbol )
+  if ( !symbol )
   {
-    switch ( symbol->renderingStyle() )
-    {
-      case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-        break;
-      case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      {
-        QgsSingleColorPointCloud3DSymbol *symb = dynamic_cast<QgsSingleColorPointCloud3DSymbol *>( symbol );
-        mPointSizeSpinBox->setValue( symb->pointSize() );
-        mSingleColorBtn->setColor( symb->singleColor() );
-        break;
-      }
-      case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      {
-        QgsColorRampPointCloud3DSymbol *symb = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
-        mPointSizeSpinBox->setValue( symb->pointSize() );
-        mRenderingParameterComboBox->setCurrentText( symb->renderingParameter() );
-        QgsColorRampShader shader = symb->colorRampShader();
-        setColorRampMinMax( symb->colorRampShaderMin(), symb->colorRampShaderMax() );
-        mColorRampShaderWidget->setFromShader( symb->colorRampShader() );
-        break;
-      }
-      case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
-      {
-        QgsRgbPointCloud3DSymbol *symb = dynamic_cast<QgsRgbPointCloud3DSymbol *>( symbol );
-        mPointSizeSpinBox->setValue( symb->pointSize() );
-        break;
-      }
-    }
+    mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( QgsPointCloud3DSymbol::NoRendering ) );
+    mBlockChangedSignals--;
+    return;
+  }
+
+  mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->symbolType() ) );
+  mPointSizeSpinBox->setValue( symbol->pointSize() );
+
+  if ( symbol->symbolType() == QLatin1String( "single-color" ) )
+  {
+    mStackedWidget->setCurrentIndex( 1 );
+    QgsSingleColorPointCloud3DSymbol *symb = dynamic_cast<QgsSingleColorPointCloud3DSymbol *>( symbol );
+    mSingleColorBtn->setColor( symb->singleColor() );
+  }
+  else if ( symbol->symbolType() == QLatin1String( "color-ramp" ) )
+  {
+    mStackedWidget->setCurrentIndex( 2 );
+    QgsColorRampPointCloud3DSymbol *symb = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
+
+    mRenderingParameterComboBox->setAttribute( symb->renderingParameter() );
+
+    mColorRampShaderMinEdit->setValue( symb->colorRampShaderMin() );
+    mColorRampShaderMaxEdit->setValue( symb->colorRampShaderMax() );
+
+    whileBlocking( mColorRampShaderWidget )->setFromShader( symb->colorRampShader() );
+    whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( symb->colorRampShaderMin(), symb->colorRampShaderMax() );
+  }
+  else if ( symbol->symbolType() == QLatin1String( "rgb" ) )
+  {
+    mStackedWidget->setCurrentIndex( 3 );
+  }
+  else
+  {
+    mStackedWidget->setCurrentIndex( 0 );
   }
 
   onRenderingStyleChanged();
@@ -92,41 +96,31 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
 {
   QgsPointCloud3DSymbol *retSymb = nullptr;
-  QgsPointCloud3DSymbol::RenderingStyle renderingStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle >( mRenderingStyleComboBox->currentData().toInt() );
+  const QString symbolType = mRenderingStyleComboBox->currentData().toString();
 
-  switch ( renderingStyle )
+  if ( symbolType == QLatin1String( "single-color" ) )
   {
-    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-    {
-      retSymb = nullptr;
-      break;
-    }
-    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-    {
-      QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
-      symb->setPointSize( mPointSizeSpinBox->value() );
-      symb->setSingleColor( mSingleColorBtn->color() );
-      retSymb = symb;
-      break;
-    }
-    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-    {
-      QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
-      symb->setRenderingParameter( mRenderingParameterComboBox->currentText() );
-      symb->setPointSize( mPointSizeSpinBox->value() );
-      symb->setColorRampShader( mColorRampShaderWidget->shader() );
-      symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
-      retSymb = symb;
-      break;
-    }
-    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
-    {
-      QgsRgbPointCloud3DSymbol *symb = new QgsRgbPointCloud3DSymbol;
-      symb->setPointSize( mPointSizeSpinBox->value() );
-      retSymb = symb;
-      break;
-    }
+    QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
+    symb->setPointSize( mPointSizeSpinBox->value() );
+    symb->setSingleColor( mSingleColorBtn->color() );
+    retSymb = symb;
   }
+  else if ( symbolType == QLatin1String( "color-ramp" ) )
+  {
+    QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
+    symb->setRenderingParameter( mRenderingParameterComboBox->currentText() );
+    symb->setPointSize( mPointSizeSpinBox->value() );
+    symb->setColorRampShader( mColorRampShaderWidget->shader() );
+    symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
+    retSymb = symb;
+  }
+  else if ( symbolType == QLatin1String( "rgb" ) )
+  {
+    QgsRgbPointCloud3DSymbol *symb = new QgsRgbPointCloud3DSymbol;
+    symb->setPointSize( mPointSizeSpinBox->value() );
+    retSymb = symb;
+  }
+
   return retSymb;
 }
 
@@ -146,8 +140,7 @@ void QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax()
 
 void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
 {
-  const QgsPointCloud3DSymbol::RenderingStyle currentStyle = static_cast< QgsPointCloud3DSymbol::RenderingStyle>( mRenderingStyleComboBox->currentData().toInt() );
-  mStackedWidget->setCurrentIndex( static_cast< int >( currentStyle ) );
+  mStackedWidget->setCurrentIndex( mRenderingStyleComboBox->currentIndex() );
   emitChangedSignal();
 }
 

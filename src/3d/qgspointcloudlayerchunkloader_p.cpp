@@ -60,20 +60,13 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   Q_ASSERT( pc->hasNode( pcNode ) );
 
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
-  switch ( symbol->renderingStyle() )
-  {
-    case QgsPointCloud3DSymbol::RenderingStyle::NoRendering:
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::SingleColor:
-      mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler() );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::ColorRamp:
-      mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
-      break;
-    case QgsPointCloud3DSymbol::RenderingStyle::RgbRendering:
-      mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
-      break;
-  }
+
+  if ( symbol->symbolType() == QLatin1String( "single-color" ) )
+    mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler() );
+  else if ( symbol->symbolType() == QLatin1String( "color-ramp" ) )
+    mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
+  else if ( symbol->symbolType() == QLatin1String( "rgb" ) )
+    mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
 
   //
   // this will be run in a background thread
