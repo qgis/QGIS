@@ -1568,6 +1568,18 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
       mPatchShapeButton->setShape( patchShape );
 
   }
+  else if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) )
+  {
+    if ( symbolLegendNode->symbol() )
+    {
+      mPatchShapeButton->setSymbolType( symbolLegendNode->symbol()->type() );
+    }
+    else
+    {
+      mPatchShapeLabel->hide();
+      mPatchShapeButton->hide();
+    }
+  }
   else
   {
     mPatchShapeLabel->hide();
