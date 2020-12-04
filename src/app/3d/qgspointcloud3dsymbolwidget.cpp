@@ -165,6 +165,8 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       mPointSizeFrame->setVisible( true );
       break;
   }
+
+  emitChangedSignal();
 }
 
 void QgsPointCloud3DSymbolWidget::emitChangedSignal()
