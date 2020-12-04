@@ -54,6 +54,14 @@ class CORE_EXPORT QgsLocatorResult
       , userData( userData )
     {}
 
+
+    /**
+     * Returns the ``userData``.
+     *
+     * \since QGIS 3.16.2
+     */
+    QVariant getUserData() const;
+
     /**
      * Filter from which the result was obtained. This is automatically set.
      */
