@@ -2015,7 +2015,7 @@ QgsRectangle QgsMapLayer::geographicExtent( bool actual ) const
 {
   QgsRectangle geoExtent;
 
-  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata and not actual )
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata && ! actual )
   {
     geoExtent = mGeographicExtent;
   }
