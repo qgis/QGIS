@@ -209,6 +209,8 @@ class CORE_EXPORT QgsPointCloudRenderer
       sipType = sipType_QgsPointCloudAttributeByRampRenderer;
     else if ( type == QLatin1String( "classified" ) )
       sipType = sipType_QgsPointCloudClassifiedRenderer;
+    else if ( type == QLatin1String( "extent" ) )
+      sipType = sipType_QgsPointCloudExtentRenderer;
     else
       sipType = 0;
     SIP_END

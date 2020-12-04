@@ -631,6 +631,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudattributebyramprenderer.cpp
   pointcloud/qgspointcloudattributemodel.cpp
   pointcloud/qgspointcloudclassifiedrenderer.cpp
+  pointcloud/qgspointcloudextentrenderer.cpp
   pointcloud/qgspointcloudrequest.cpp
   pointcloud/qgspointcloudblock.cpp
   pointcloud/qgspointcloudlayer.cpp
@@ -1337,6 +1338,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudattributebyramprenderer.h
   pointcloud/qgspointcloudattributemodel.h
   pointcloud/qgspointcloudclassifiedrenderer.h
+  pointcloud/qgspointcloudextentrenderer.h
   pointcloud/qgspointcloudrequest.h
   pointcloud/qgspointcloudblock.h
   pointcloud/qgspointcloudlayer.h

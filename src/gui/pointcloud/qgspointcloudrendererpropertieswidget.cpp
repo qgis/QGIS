@@ -24,6 +24,7 @@
 #include "qgspointcloudrgbrendererwidget.h"
 #include "qgspointcloudattributebyramprendererwidget.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
+#include "qgspointcloudextentrendererwidget.h"
 
 #include "qgspointcloudrgbrenderer.h"
 #include "qgslogger.h"
@@ -54,6 +55,7 @@ static void _initRendererWidgetFunctions()
   if ( sInitialized )
     return;
 
+  _initRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QString( ) );
   _initRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
   _initRenderer( QStringLiteral( "ramp" ), QgsPointCloudAttributeByRampRendererWidget::create, QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) );
   _initRenderer( QStringLiteral( "classified" ), QgsPointCloudClassifiedRendererWidget::create, QStringLiteral( "styleicons/paletted.svg" ) );
@@ -192,9 +194,13 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
   std::unique_ptr< QgsPointCloudRenderer > oldRenderer;
-  if ( mActiveWidget && mActiveWidget->renderer() )
+  std::unique_ptr< QgsPointCloudRenderer > newRenderer;
+  if ( mActiveWidget )
+    newRenderer.reset( mActiveWidget->renderer() );
+
+  if ( newRenderer )
   {
-    oldRenderer.reset( mActiveWidget->renderer()->clone() );
+    oldRenderer = std::move( newRenderer );
   }
   else
   {
@@ -222,16 +228,15 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
     mActiveWidget = widget;
     stackedWidget->addWidget( mActiveWidget );
     stackedWidget->setCurrentWidget( mActiveWidget );
-    if ( mActiveWidget->renderer() )
+
+    if ( mMapCanvas || mMessageBar )
     {
-      if ( mMapCanvas || mMessageBar )
-      {
-        QgsSymbolWidgetContext context;
-        context.setMapCanvas( mMapCanvas );
-        context.setMessageBar( mMessageBar );
-        mActiveWidget->setContext( context );
-      }
+      QgsSymbolWidgetContext context;
+      context.setMapCanvas( mMapCanvas );
+      context.setMessageBar( mMessageBar );
+      mActiveWidget->setContext( context );
     }
+
     connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
     connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsPointCloudRendererPropertiesWidget::openPanel );
     widget->setDockMode( dockMode() );
