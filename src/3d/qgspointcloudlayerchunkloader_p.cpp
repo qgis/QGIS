@@ -190,8 +190,8 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol )
-  : QgsChunkedEntity( 5, // max. allowed screen error (in pixels)  -- // TODO
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError )
+  : QgsChunkedEntity( maxScreenError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol ), true )
 {
   setUsingAdditiveStrategy( true );

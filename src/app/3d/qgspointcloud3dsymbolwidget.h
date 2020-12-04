@@ -32,6 +32,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setSymbol( QgsPointCloud3DSymbol *symbol );
 
     QgsPointCloud3DSymbol *symbol() const;
+    double maximumScreenError() const;
 
   private slots:
     void reloadColorRampShaderMinMax();
