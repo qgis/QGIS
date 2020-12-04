@@ -632,7 +632,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
     if ( QgsSymbolLegendNode *symbolNode = qobject_cast< QgsSymbolLegendNode * >( node ) )
     {
       // symbology item
-      if ( symbolNode->symbol() )
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node->layerNode() )->layer();
+      if ( layer && layer->type() == QgsMapLayerType::VectorLayer && symbolNode->symbol() )
       {
         QgsColorWheel *colorWheel = new QgsColorWheel( menu );
         colorWheel->setColor( symbolNode->symbol()->color() );
@@ -664,12 +665,15 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       const QString layerId = symbolNode->layerNode()->layerId();
       const QString ruleKey = symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
 
-      QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menu );
-      connect( editSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey ]
+      if ( layer && layer->type() == QgsMapLayerType::VectorLayer )
       {
-        editSymbolLegendNodeSymbol( layerId, ruleKey );
-      } );
-      menu->addAction( editSymbolAction );
+        QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menu );
+        connect( editSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey ]
+        {
+          editSymbolLegendNodeSymbol( layerId, ruleKey );
+        } );
+        menu->addAction( editSymbolAction );
+      }
 
       QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), menu );
       connect( copySymbolAction, &QAction::triggered, this, [this, layerId, ruleKey ]
@@ -678,18 +682,21 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       } );
       menu->addAction( copySymbolAction );
 
-      bool enablePaste = false;
-      std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
-      if ( tempSymbol )
-        enablePaste = true;
-
-      QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), menu );
-      connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey]
+      if ( layer && layer->type() == QgsMapLayerType::VectorLayer )
       {
-        pasteSymbolLegendNodeSymbol( layerId, ruleKey );
-      } );
-      pasteSymbolAction->setEnabled( enablePaste );
-      menu->addAction( pasteSymbolAction );
+        bool enablePaste = false;
+        std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+        if ( tempSymbol )
+          enablePaste = true;
+
+        QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), menu );
+        connect( pasteSymbolAction, &QAction::triggered, this, [this, layerId, ruleKey]
+        {
+          pasteSymbolLegendNodeSymbol( layerId, ruleKey );
+        } );
+        pasteSymbolAction->setEnabled( enablePaste );
+        menu->addAction( pasteSymbolAction );
+      }
     }
   }
 
