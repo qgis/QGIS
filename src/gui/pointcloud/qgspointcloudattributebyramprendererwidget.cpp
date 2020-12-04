@@ -29,7 +29,7 @@ QgsPointCloudAttributeByRampRendererWidget::QgsPointCloudAttributeByRampRenderer
 {
   setupUi( this );
 
-  mAttributeComboBox->setAllowEmptyAttributeName( true );
+  mAttributeComboBox->setAllowEmptyAttributeName( false );
   mAttributeComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
 
   if ( layer )
@@ -105,6 +105,7 @@ void QgsPointCloudAttributeByRampRendererWidget::attributeChanged()
     }
   }
   mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
+  emitWidgetChanged();
 }
 
 void QgsPointCloudAttributeByRampRendererWidget::setMinMaxFromLayer()
