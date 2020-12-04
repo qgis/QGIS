@@ -700,6 +700,31 @@ A Z dimension is added to ``point`` if one of the point in the list
 .. versionadded:: 3.0
 %End
 
+
+    static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
+                               double &pointX /Out/, double &pointY /Out/, double &angle /Out/ ) /HoldGIL/;
+%Docstring
+Returns the point (``pointX``, ``pointY``) forming the bisector from segment (``aX`` ``aY``) (``bX`` ``bY``)
+and segment (``bX``, ``bY``) (``dX``, ``dY``).
+The bisector segment of AB-CD is (point, projection of point by ``angle``)
+
+:param aX: x-coordinate of first vertex of the segment ab
+:param aY: y-coordinate of first vertex of the segment ab
+:param bX: x-coordinate of second vertex of the segment ab
+:param bY: y-coordinate of second vertex of the segment ab
+:param cX: x-coordinate of first vertex of the segment cd
+:param cY: y-coordinate of first vertex of the segment cd
+:param dX: x-coordinate of second vertex of the segment cd
+:param dY: y-coordinate of second vertex of the segment cd
+
+:return: - ``True`` if the bisector exists (A B and C D are not collinear)
+         - pointX: x-coordinate of generated point
+         - pointY: y-coordinate of generated point
+         - angle: angle of the bisector from pointX, pointY origin on [ab-cd]
+
+.. versionadded:: 3.18
+%End
+
     static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
                           double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
 %Docstring

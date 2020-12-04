@@ -728,6 +728,30 @@ class CORE_EXPORT QgsGeometryUtils
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 
     /**
+     * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
+     * and segment (\a bX, \a bY) (\a dX, \a dY).
+     * The bisector segment of AB-CD is (point, projection of point by \a angle)
+     *
+     * \param aX x-coordinate of first vertex of the segment ab
+     * \param aY y-coordinate of first vertex of the segment ab
+     * \param bX x-coordinate of second vertex of the segment ab
+     * \param bY y-coordinate of second vertex of the segment ab
+     * \param cX x-coordinate of first vertex of the segment cd
+     * \param cY y-coordinate of first vertex of the segment cd
+     * \param dX x-coordinate of second vertex of the segment cd
+     * \param dY y-coordinate of second vertex of the segment cd
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     * \param angle angle of the bisector from pointX, pointY origin on [ab-cd]
+     * \returns TRUE if the bisector exists (A B and C D are not collinear)
+     *
+     * \since QGIS 3.18
+     */
+
+    static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
+                               double &pointX SIP_OUT, double &pointY SIP_OUT, double &angle SIP_OUT ) SIP_HOLDGIL;
+
+    /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from point (\a aX, \a aY) to the segment (\a bX, \a bY) (\a cX, \a cY).
      * The bisector segment of ABC is (A-point)
      *
