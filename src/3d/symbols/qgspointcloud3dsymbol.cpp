@@ -450,7 +450,7 @@ void QgsClassificationPointCloud3DSymbol::setRenderingParameter( const QString &
   mRenderingParameter = parameter;
 }
 
-void QgsClassificationPointCloud3DSymbol::setCategoriesList( QgsPointCloudCategoryList categories )
+void QgsClassificationPointCloud3DSymbol::setCategoriesList( const QgsPointCloudCategoryList &categories )
 {
   mCategoriesList = categories;
 }
@@ -463,7 +463,9 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
   QList<QgsColorRampShader::ColorRampItem> colorRampItemList;
   for ( const QgsPointCloudCategory &category : mCategoriesList )
   {
-    QgsColorRampShader::ColorRampItem item( category.value(), category.color(), category.label() );
+    QColor color = category.color();
+    color.setAlphaF( category.renderState() ? 1.0f : 0.0f );
+    QgsColorRampShader::ColorRampItem item( category.value(), color, category.label() );
     colorRampItemList.push_back( item );
   }
   colorRampShader.setColorRampItemList( colorRampItemList );
