@@ -361,6 +361,15 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
 };
 
+/**
+ * \ingroup 3d
+ * 3D symbol that draws point cloud geometries as 3D objects using classification of the dataset
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
+ * \since QGIS 3.18
+ */
 class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
   public:
@@ -385,7 +394,16 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
     */
     void setRenderingParameter( const QString &parameter );
 
+    /**
+     * Returns the list of categories of the classification
+     * \see setCategoriesList()
+     */
     QgsPointCloudCategoryList categoriesList() const { return mCategoriesList; }
+
+    /**
+     * Sets the list of categories of the classification
+     * \see categoriesList()
+     */
     void setCategoriesList( const QgsPointCloudCategoryList &categories );
 
     /**
