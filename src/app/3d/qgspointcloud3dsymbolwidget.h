@@ -32,7 +32,9 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setSymbol( QgsPointCloud3DSymbol *symbol );
 
     QgsPointCloud3DSymbol *symbol() const;
-    double maximumScreenError() const;
+
+    void setMaximumScreenError( double maxScreenError );
+    double maximumScreenError() const { return mMaximumScreenError; }
 
   private slots:
     void reloadColorRampShaderMinMax();
@@ -51,6 +53,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void redAttributeChanged();
     void greenAttributeChanged();
     void blueAttributeChanged();
+    void maximumScreenErrorChanged( double maxScreenError );
 
   signals:
     void changed();
@@ -64,6 +67,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     QgsPointCloudLayer *mLayer = nullptr;
 
     bool mBlockMinMaxChanged = false;
+    double mMaximumScreenError = 5.0f;
 
     double mProviderMin = std::numeric_limits< double >::quiet_NaN();
     double mProviderMax = std::numeric_limits< double >::quiet_NaN();
