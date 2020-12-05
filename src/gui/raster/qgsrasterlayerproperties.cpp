@@ -856,24 +856,6 @@ void QgsRasterLayerProperties::sync()
   mLayerOrigNameLineEd->setText( mRasterLayer->name() );
   leDisplayName->setText( mRasterLayer->name() );
 
-  //get the thumbnail for the layer
-  QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
-  pixmapThumbnail->setPixmap( thumbnail );
-
-  // TODO fix legend + palette pixmap
-
-  //update the legend pixmap on this dialog
-#if 0
-  pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  pixmapLegend->setScaledContents( true );
-  pixmapLegend->repaint();
-
-  //set the palette pixmap
-  pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
-  pixmapPalette->setScaledContents( true );
-  pixmapPalette->repaint();
-#endif
-
   QgsDebugMsgLevel( QStringLiteral( "populate metadata tab" ), 2 );
   /*
    * Metadata Tab
@@ -1112,10 +1094,6 @@ void QgsRasterLayerProperties::apply()
   mTemporalWidget->saveTemporalProperties();
 
   mRasterLayer->setCrs( mCrsSelector->crs() );
-
-  //get the thumbnail for the layer
-  QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
-  pixmapThumbnail->setPixmap( thumbnail );
 
   if ( mRasterLayer->shortName() != mLayerShortNameLineEdit->text() )
     mMetadataFilled = false;
