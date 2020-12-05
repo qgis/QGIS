@@ -94,3 +94,5 @@ If you are not a developer, there are many other possibilities which do not requ
 ### Building from source
 
 The [building guide](INSTALL.md) can be used to get started with building QGIS from source.
+
+Test
