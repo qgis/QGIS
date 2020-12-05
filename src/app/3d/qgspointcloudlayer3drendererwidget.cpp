@@ -41,7 +41,10 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
 void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3DRenderer *renderer )
 {
   if ( renderer != nullptr )
+  {
     mWidgetPointCloudSymbol->setSymbol( const_cast<QgsPointCloud3DSymbol *>( renderer->symbol() ) );
+    mWidgetPointCloudSymbol->setMaximumScreenError( renderer->maximumScreenError() );
+  }
 }
 
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()

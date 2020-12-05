@@ -86,6 +86,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   if ( symbol )
     setSymbol( symbol );
 
+
   connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mRenderingStyleComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::setMinMaxFromLayer );
@@ -95,6 +96,8 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
            this, &QgsPointCloud3DSymbolWidget::rampAttributeChanged );
   connect( mColorRampShaderMinEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
+
+  connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::maximumScreenErrorChanged );
 
   rampAttributeChanged();
 }
@@ -528,7 +531,16 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
   }
 }
 
-double QgsPointCloud3DSymbolWidget::maximumScreenError() const
+void QgsPointCloud3DSymbolWidget::setMaximumScreenError( double maxScreenError )
 {
-  return mMaxScreenErrorSpinBox->value();
+  mMaxScreenErrorSpinBox->setValue( maxScreenError );
+  mMaximumScreenError = maxScreenError;
+}
+
+void QgsPointCloud3DSymbolWidget::maximumScreenErrorChanged( double maxScreenError )
+{
+  if ( maxScreenError == mMaximumScreenError )
+    return;
+  mMaximumScreenError = maxScreenError;
+  emitChangedSignal();
 }
