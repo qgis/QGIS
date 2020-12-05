@@ -521,4 +521,118 @@ Qt3DRender::QGeometry *QgsRGBPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::
   return new QgsRGBPointCloud3DGeometry( parent, data, byteStride );
 }
 
+QgsClassificationPointCloud3DSymbolHandler::QgsClassificationPointCloud3DSymbolHandler()
+  : QgsPointCloud3DSymbolHandler()
+{
+
+}
+
+bool QgsClassificationPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContext &context )
+{
+  Q_UNUSED( context )
+  return true;
+}
+
+void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
+{
+  QgsPointCloudAttributeCollection attributes;
+  constexpr int xOffset = 0;
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+  const int yOffset = attributes.pointRecordSize();
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+  const int zOffset = attributes.pointRecordSize();
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+
+  QString attributeName;
+  bool attrIsX = false;
+  bool attrIsY = false;
+  bool attrIsZ = false;
+  QgsPointCloudAttribute::DataType attributeType = QgsPointCloudAttribute::Float;
+  int attributeOffset = 0;
+  QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( context.symbol() );
+  if ( symbol )
+  {
+    int offset = 0;
+    QgsPointCloudAttributeCollection collection = context.attributes();
+
+    if ( symbol->renderingParameter() == QLatin1String( "X" ) )
+    {
+      attrIsX = true;
+    }
+    else if ( symbol->renderingParameter() == QLatin1String( "Y" ) )
+    {
+      attrIsY = true;
+    }
+    else if ( symbol->renderingParameter() == QLatin1String( "Z" ) )
+    {
+      attrIsZ = true;
+    }
+    else
+    {
+      const QgsPointCloudAttribute *attr = collection.find( symbol->renderingParameter(), offset );
+      if ( attr )
+      {
+        attributeType = attr->type();
+        attributeName = attr->name();
+        attributeOffset = attributes.pointRecordSize();
+        attributes.push_back( *attr );
+      }
+    }
+  }
+
+  if ( attributeName.isEmpty() && !attrIsX && !attrIsY && !attrIsZ )
+    return;
+
+  QgsPointCloudRequest request;
+  request.setAttributes( attributes );
+  std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+  if ( !block )
+    return;
+
+  const char *ptr = block->data();
+  int count = block->pointCount();
+  const std::size_t recordSize = attributes.pointRecordSize();
+
+  const QgsVector3D scale = pc->scale();
+  const QgsVector3D offset = pc->offset();
+
+  for ( int i = 0; i < count; ++i )
+  {
+    qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
+    qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
+    qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
+
+    double x = offset.x() + scale.x() * ix;
+    double y = offset.y() + scale.y() * iy;
+    double z = offset.z() + scale.z() * iz;
+    QVector3D point( x, y, z );
+
+    QgsVector3D p = context.map().mapToWorldCoordinates( point );
+    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+
+    if ( attrIsX )
+      outNormal.parameter.push_back( x );
+    else if ( attrIsY )
+      outNormal.parameter.push_back( y );
+    else if ( attrIsZ )
+      outNormal.parameter.push_back( z );
+    else
+    {
+      float iParam = 0.0f;
+      context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
+      outNormal.parameter.push_back( iParam );
+    }
+  }
+}
+
+void QgsClassificationPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context )
+{
+  makeEntity( parent, context, outNormal, false );
+}
+
+Qt3DRender::QGeometry *QgsClassificationPointCloud3DSymbolHandler::makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
+{
+  return new QgsColorRampPointCloud3DGeometry( parent, data, byteStride );
+}
+
 /// @endcond

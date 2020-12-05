@@ -140,6 +140,8 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
     mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
   else if ( symbolType == QLatin1String( "rgb" ) )
     mSymbol.reset( new QgsRgbPointCloud3DSymbol );
+  else if ( symbolType == QLatin1String( "classification" ) )
+    mSymbol.reset( new QgsClassificationPointCloud3DSymbol );
   else
     mSymbol.reset();
 

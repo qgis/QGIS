@@ -24,6 +24,7 @@
 #include "qgscolorrampshader.h"
 #include "qgspointcloudlayer.h"
 #include "qgscontrastenhancement.h"
+#include "qgspointcloudclassifiedrenderer.h"
 
 /**
  * \ingroup 3d
@@ -358,6 +359,47 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
 
+};
+
+class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSymbol
+{
+  public:
+    //! Constructor for QgsClassificationPointCloud3DSymbol
+    QgsClassificationPointCloud3DSymbol();
+
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+    QString symbolType() const override;
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    /**
+    * Returns the parameter used to select the color of the point cloud
+    * \see setRenderingParameter( const QString &parameter )
+    */
+    QString renderingParameter() const;
+
+    /**
+    * Sets the parameter used to select the color of the point cloud
+    * \see renderingParameter()
+    */
+    void setRenderingParameter( const QString &parameter );
+
+    QgsPointCloudCategoryList categoriesList() const { return mCategoriesList; }
+    void setCategoriesList( QgsPointCloudCategoryList categories );
+
+    /**
+    * Returns the color ramp shader used to render the color
+    * \see setColorRampShader( const QgsColorRampShader &colorRampShader )
+    */
+    QgsColorRampShader colorRampShader() const;
+
+    unsigned int byteStride() override { return 4 * sizeof( float ); }
+    void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
+
+  private:
+    QString mRenderingParameter;
+    QgsPointCloudCategoryList mCategoriesList;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H

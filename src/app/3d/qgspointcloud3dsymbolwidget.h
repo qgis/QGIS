@@ -21,6 +21,7 @@
 
 class QgsPointCloudLayer;
 class QgsPointCloud3DSymbol;
+class QgsPointCloudClassifiedRendererWidget;
 
 class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DSymbolWidget
 {
@@ -64,6 +65,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
   private:
     int mBlockChangedSignals = 0;
     int mDisableMinMaxWidgetRefresh = 0;
+    QgsPointCloudClassifiedRendererWidget *mClassifiedRenderer = nullptr;
     QgsPointCloudLayer *mLayer = nullptr;
 
     bool mBlockMinMaxChanged = false;
