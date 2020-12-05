@@ -429,7 +429,7 @@ Sets the parameter used to select the color of the point cloud
 %End
 
     QgsPointCloudCategoryList categoriesList() const;
-    void setCategoriesList( QgsPointCloudCategoryList categories );
+    void setCategoriesList( const QgsPointCloudCategoryList &categories );
 
     QgsColorRampShader colorRampShader() const;
 %Docstring

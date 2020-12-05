@@ -386,7 +386,7 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
     void setRenderingParameter( const QString &parameter );
 
     QgsPointCloudCategoryList categoriesList() const { return mCategoriesList; }
-    void setCategoriesList( QgsPointCloudCategoryList categories );
+    void setCategoriesList( const QgsPointCloudCategoryList &categories );
 
     /**
     * Returns the color ramp shader used to render the color

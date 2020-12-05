@@ -16,14 +16,14 @@ uniform sampler1D u_colorRampTexture; //
 // Sets the color ramp value count, used to check the if not void
 uniform int u_colorRampCount;
 
-vec3 linearColorRamp()
+vec4 linearColorRamp()
 {
   int colorRampSize=textureSize(u_colorRampTexture,0);
 
   if (colorRampSize==1)
   {
     vec4 colorRampLine=texelFetch(u_colorRampTexture,0,0);
-    return colorRampLine.yzw;
+    return vec4( colorRampLine.yzw, 1.0f );
   }
 
 
@@ -39,21 +39,21 @@ vec3 linearColorRamp()
     float value2=colorRampLine2.x;
 
     if (parameter <= value1 )
-      return color1;
+      return vec4( color1, 1.0f );
 
     if (parameter > value1 && parameter <= value2)
     {
       float mixValue=(parameter - value1)/(value2-value1);
-      return mix(color1,color2,mixValue);
+      return vec4( mix(color1,color2,mixValue), 1.0f );
     }
   }
 
   //last color if no value is found
   vec4 colorRampLine=texelFetch(u_colorRampTexture,colorRampSize-1,0);
-  return colorRampLine.yzw;
+  return vec4( colorRampLine.yzw, 1.0f );
 }
 
-vec3 discreteColorRamp()
+vec4 discreteColorRamp()
 {
   int colorRampSize=textureSize(u_colorRampTexture,0);
 
@@ -65,13 +65,13 @@ vec3 discreteColorRamp()
     color=colorRampLine.yzw;
     float value=colorRampLine.x;
     if ( isinf(value) || parameter < value)
-      return color;
+      return vec4( color, 1.0f );
   }
 
-  return color;
+  return vec4( color, 1.0f );
 }
 
-vec3 exactColorRamp()
+vec4 exactColorRamp()
 {
   int colorRampSize=textureSize(u_colorRampTexture,0);
 
@@ -81,33 +81,33 @@ vec3 exactColorRamp()
     vec3 color=colorRampLine.yzw;
     float value=colorRampLine.x;
     if ( abs( parameter - value ) < 0.01 )
-      return color;
+      return vec4( color, 1.0f );
   }
-
-  return vec3(0.5, 0.5, 0.5);
+// discard has a big performance hit because of the shader code taking different execution paths in the same warp
+  discard;
+  return vec4(0.0, 0.0, 0.0, 0.0f);
 }
 
 vec4 colorRamp()
 {
   if (u_colorRampCount<=0)
-    return vec4(0.5,0.5,0.5,1);
+    return vec4(0.0,0.0,0.0,1);
 
-  vec3 colorRampResult;
-
+  vec4 colorRampResult = vec4(0.0f, 0.0f, 0.0f, 0.0f);
   switch (u_colorRampType)
   {
   case 0:
-    colorRampResult=linearColorRamp();
+    colorRampResult = linearColorRamp();
     break;
   case 1:
-    colorRampResult=discreteColorRamp();
+    colorRampResult = discreteColorRamp();
     break;
   case 2:
-    colorRampResult=exactColorRamp();
+    colorRampResult = exactColorRamp();
     break;
   };
 
-  return vec4(colorRampResult,1);
+  return colorRampResult;
 }
 
 void main(void)
