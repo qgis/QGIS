@@ -392,6 +392,56 @@ Ownership of ``enhancement`` is transferred.
     QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
 };
 
+class QgsClassificationPointCloud3DSymbol : QgsPointCloud3DSymbol
+{
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsClassificationPointCloud3DSymbol();
+%Docstring
+Constructor for QgsClassificationPointCloud3DSymbol
+%End
+
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+    virtual QString symbolType() const;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    QString renderingParameter() const;
+%Docstring
+Returns the parameter used to select the color of the point cloud
+
+.. seealso:: :py:func:`setRenderingParameter`
+%End
+
+    void setRenderingParameter( const QString &parameter );
+%Docstring
+Sets the parameter used to select the color of the point cloud
+
+.. seealso:: :py:func:`renderingParameter`
+%End
+
+    QgsPointCloudCategoryList categoriesList() const;
+    void setCategoriesList( QgsPointCloudCategoryList categories );
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns the color ramp shader used to render the color
+
+.. seealso:: :py:func:`setColorRampShader`
+%End
+
+    virtual unsigned int byteStride();
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

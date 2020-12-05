@@ -23,11 +23,13 @@
 #include "ui_qgspointcloudclassifiedrendererwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgsproxystyle.h"
+#include "qgspointcloudattribute.h"
 
 class QgsPointCloudLayer;
 class QgsStyle;
 class QLineEdit;
 class QgsPointCloudClassifiedRenderer;
+class QgsPointCloud3DLayer3DRenderer;
 
 
 #ifndef SIP_RUN
@@ -94,6 +96,11 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget: public QgsPointCloudRend
     static QgsPointCloudRendererWidget *create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * );
 
     QgsPointCloudRenderer *renderer() override;
+    QgsPointCloudCategoryList categoriesList();
+    QString attribute();
+
+    void setFromCategories( QgsPointCloudCategoryList categories, const QString &attribute );
+
   private slots:
 
     void emitWidgetChanged();

@@ -67,6 +67,8 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
   else if ( symbol->symbolType() == QLatin1String( "rgb" ) )
     mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
+  else if ( symbol->symbolType() == QLatin1String( "classification" ) )
+    mHandler.reset( new QgsClassificationPointCloud3DSymbolHandler() );
 
   //
   // this will be run in a background thread

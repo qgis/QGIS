@@ -105,6 +105,19 @@ class QgsRGBPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler
     Qt3DRender::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride ) override;
 };
 
+class QgsClassificationPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler
+{
+  public:
+    QgsClassificationPointCloud3DSymbolHandler();
+
+    bool prepare( const QgsPointCloud3DRenderContext &context ) override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context ) override;
+    void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) override;
+  private:
+    Qt3DRender::QGeometry *makeGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride ) override;
+};
+
+
 class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 {
   public:

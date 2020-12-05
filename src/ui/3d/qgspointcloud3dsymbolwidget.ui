@@ -64,7 +64,7 @@
    <item row="2" column="0" colspan="3">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="noRendererPage"/>
      <widget class="QWidget" name="singleColorRendererPage">
@@ -143,7 +143,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true"/>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,1,0">
          <item>
           <widget class="QLabel" name="label_3">
@@ -426,6 +426,13 @@ enhancement</string>
           </size>
          </property>
         </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="classifiedrenderingPage">
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="mClassifiedRenderingLayout"/>
        </item>
       </layout>
      </widget>

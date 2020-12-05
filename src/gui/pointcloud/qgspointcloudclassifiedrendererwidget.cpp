@@ -427,6 +427,16 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRendererWidget::renderer()
   return renderer.release();
 }
 
+QgsPointCloudCategoryList QgsPointCloudClassifiedRendererWidget::categoriesList()
+{
+  return mModel->categories();
+}
+
+QString QgsPointCloudClassifiedRendererWidget::attribute()
+{
+  return mAttributeComboBox->currentAttribute();
+}
+
 void QgsPointCloudClassifiedRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
@@ -510,6 +520,14 @@ void QgsPointCloudClassifiedRendererWidget::setFromRenderer( const QgsPointCloud
       mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
     }
   }
+  mBlockChangedSignal = false;
+}
+
+void QgsPointCloudClassifiedRendererWidget::setFromCategories( QgsPointCloudCategoryList categories, const QString &attribute )
+{
+  mBlockChangedSignal = false;
+  mModel->setRendererCategories( categories );
+  mAttributeComboBox->setAttribute( attribute );
   mBlockChangedSignal = false;
 }
 
