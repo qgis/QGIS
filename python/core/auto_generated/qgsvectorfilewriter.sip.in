@@ -143,6 +143,11 @@ Constructor for MetaData
       SymbolLayerSymbology
     };
 
+    enum FieldNameSource
+    {
+      Original,
+      PreferAlias,
+    };
 
     enum VectorFormatOption
     {
@@ -384,6 +389,8 @@ Constructor
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter;
 
         QgsFeedback *feedback;
+
+        FieldNameSource fieldNameSource;
     };
 
 
