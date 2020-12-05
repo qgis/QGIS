@@ -394,6 +394,16 @@ Ownership of ``enhancement`` is transferred.
 
 class QgsClassificationPointCloud3DSymbol : QgsPointCloud3DSymbol
 {
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects using classification of the dataset
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
 
 %TypeHeaderCode
 #include "qgspointcloud3dsymbol.h"
@@ -429,7 +439,18 @@ Sets the parameter used to select the color of the point cloud
 %End
 
     QgsPointCloudCategoryList categoriesList() const;
+%Docstring
+Returns the list of categories of the classification
+
+.. seealso:: :py:func:`setCategoriesList`
+%End
+
     void setCategoriesList( const QgsPointCloudCategoryList &categories );
+%Docstring
+Sets the list of categories of the classification
+
+.. seealso:: :py:func:`categoriesList`
+%End
 
     QgsColorRampShader colorRampShader() const;
 %Docstring
