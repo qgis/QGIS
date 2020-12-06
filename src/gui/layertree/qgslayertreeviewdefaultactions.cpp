@@ -312,11 +312,19 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas )
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
-  if ( !layer )
-    return;
+  QgsVectorLayer *layer;
 
-  canvas->zoomToSelected( layer );
+  if ( mView->currentLayer()->type() == QgsMapLayerType(0) )
+    layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
+
+  QList<QgsMapLayer *> layers = mView->selectedLayers();
+
+  if ( layers.size() > 1 && !layers.isEmpty() )
+    canvas->zoomToAllSelected(&layers);
+
+  else if ( layers.size() <= 1 && layer)
+    canvas->zoomToSelected(layer);
+
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
