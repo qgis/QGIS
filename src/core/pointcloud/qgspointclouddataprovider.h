@@ -235,6 +235,21 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     static QMap< int, QString > translatedLasClassificationCodes();
 
+
+    /**
+     * Returns the map of LAS data format ID to untranslated string value.
+     *
+     * \see translatedDataFormatIds()
+     */
+    static QMap< int, QString > dataFormatIds();
+
+    /**
+     * Returns the map of LAS data format ID to translated string value.
+     *
+     * \see dataFormatIds()
+     */
+    static QMap< int, QString > translatedDataFormatIds();
+
 };
 
 #endif // QGSMESHDATAPROVIDER_H

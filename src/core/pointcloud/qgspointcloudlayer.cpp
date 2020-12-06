@@ -443,6 +443,41 @@ QString QgsPointCloudLayer::htmlMetadata() const
                   + QStringLiteral( "</td></tr>\n" );
   }
 
+  if ( !originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toString().isEmpty() )
+  {
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                  + tr( "Data format" ) + QStringLiteral( "</td><td>" )
+                  + QStringLiteral( "%1 (%2)" ).arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toInt() ),
+                      originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toString() ).trimmed()
+                  + QStringLiteral( "</td></tr>\n" );
+  }
+
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Scale X" ) + QStringLiteral( "</td><td>" )
+                + QString::number( originalMetadata.value( QStringLiteral( "scale_x" ) ).toDouble() )
+                + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Scale Y" ) + QStringLiteral( "</td><td>" )
+                + QString::number( originalMetadata.value( QStringLiteral( "scale_y" ) ).toDouble() )
+                + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Scale Z" ) + QStringLiteral( "</td><td>" )
+                + QString::number( originalMetadata.value( QStringLiteral( "scale_z" ) ).toDouble() )
+                + QStringLiteral( "</td></tr>\n" );
+
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Offset X" ) + QStringLiteral( "</td><td>" )
+                + QString::number( originalMetadata.value( QStringLiteral( "offset_x" ) ).toDouble() )
+                + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Offset Y" ) + QStringLiteral( "</td><td>" )
+                + QString::number( originalMetadata.value( QStringLiteral( "offset_y" ) ).toDouble() )
+                + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Offset Z" ) + QStringLiteral( "</td><td>" )
+                + QString::number( originalMetadata.value( QStringLiteral( "offset_z" ) ).toDouble() )
+                + QStringLiteral( "</td></tr>\n" );
+
   if ( !originalMetadata.value( QStringLiteral( "project_id" ) ).toString().isEmpty() )
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )

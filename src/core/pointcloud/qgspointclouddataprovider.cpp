@@ -125,6 +125,38 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedLasClassificationCodes()
   return sCodes;
 }
 
+QMap<int, QString> QgsPointCloudDataProvider::dataFormatIds()
+{
+  static QMap< int, QString > sCodes
+  {
+    {0, QStringLiteral( "No color or time stored" )},
+    {1, QStringLiteral( "Time is stored" )},
+    {2, QStringLiteral( "Color is stored" )},
+    {3, QStringLiteral( "Color and time are stored" )},
+    {6, QStringLiteral( "Time is stored" )},
+    {7, QStringLiteral( "Time and color are stored)" )},
+    {8, QStringLiteral( "Time, color and near infrared are stored" )},
+  };
+
+  return sCodes;
+}
+
+QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
+{
+  static QMap< int, QString > sCodes
+  {
+    {0, QObject::tr( "No color or time stored" )},
+    {1, QObject::tr( "Time is stored" )},
+    {2, QObject::tr( "Color is stored" )},
+    {3, QObject::tr( "Color and time are stored" )},
+    {6, QObject::tr( "Time is stored" )},
+    {7, QObject::tr( "Time and color are stored)" )},
+    {8, QObject::tr( "Time, color and near infrared are stored" )},
+  };
+
+  return sCodes;
+}
+
 QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &, QgsStatisticalSummary::Statistic ) const
 {
   return QVariant();
