@@ -455,6 +455,17 @@ void QgsClassificationPointCloud3DSymbol::setCategoriesList( const QgsPointCloud
   mCategoriesList = categories;
 }
 
+QgsPointCloudCategoryList QgsClassificationPointCloud3DSymbol::getFilteredOutCategories() const
+{
+  QgsPointCloudCategoryList filteredOut;
+  for ( QgsPointCloudCategory category : mCategoriesList )
+  {
+    if ( !category.renderState() )
+      filteredOut.push_back( category );
+  }
+  return filteredOut;
+}
+
 QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 {
   QgsColorRampShader colorRampShader;

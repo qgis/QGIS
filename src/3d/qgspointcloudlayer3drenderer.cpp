@@ -45,6 +45,21 @@ void QgsPointCloud3DRenderContext::setSymbol( QgsPointCloud3DSymbol *symbol )
   mSymbol.reset( symbol );
 }
 
+void QgsPointCloud3DRenderContext::setFilteredOutCategories( const QgsPointCloudCategoryList &categories )
+{
+  mFilteredOutCategories = categories;
+}
+
+bool QgsPointCloud3DRenderContext::isFilteredOut( int value ) const
+{
+  for ( QgsPointCloudCategory category : mFilteredOutCategories )
+  {
+    if ( category.value() == value )
+      return true;
+  }
+  return false;
+}
+
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "pointcloud" ) )
 {

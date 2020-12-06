@@ -406,6 +406,12 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
      */
     void setCategoriesList( const QgsPointCloudCategoryList &categories );
 
+    /**
+     * Gets the list of categories of the classification that should not be rendered
+     * \see categoriesList() setCategoriesList()
+     */
+    QgsPointCloudCategoryList getFilteredOutCategories() const;
+
     unsigned int byteStride() override { return 4 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
 

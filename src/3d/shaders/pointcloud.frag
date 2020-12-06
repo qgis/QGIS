@@ -83,8 +83,6 @@ vec4 exactColorRamp()
     if ( abs( parameter - value ) < 0.01 )
       return vec4( color, 1.0f );
   }
-// discard has a big performance hit because of the shader code taking different execution paths in the same warp
-  discard;
   return vec4(0.0, 0.0, 0.0, 0.0f);
 }
 
