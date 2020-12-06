@@ -406,18 +406,14 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
      */
     void setCategoriesList( const QgsPointCloudCategoryList &categories );
 
-    /**
-    * Returns the color ramp shader used to render the color
-    * \see setColorRampShader( const QgsColorRampShader &colorRampShader )
-    */
-    QgsColorRampShader colorRampShader() const;
-
     unsigned int byteStride() override { return 4 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
 
   private:
     QString mRenderingParameter;
     QgsPointCloudCategoryList mCategoriesList;
+
+    QgsColorRampShader colorRampShader() const;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOL_H
