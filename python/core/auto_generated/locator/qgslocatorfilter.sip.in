@@ -34,6 +34,14 @@ Constructor for QgsLocatorResult.
 Constructor for QgsLocatorResult.
 %End
 
+
+    QVariant getUserData() const;
+%Docstring
+Returns the ``userData``.
+
+.. versionadded:: 3.18
+%End
+
     QgsLocatorFilter *filter;
 
     QString displayString;
