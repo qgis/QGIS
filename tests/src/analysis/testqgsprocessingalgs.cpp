@@ -85,6 +85,7 @@ class TestQgsProcessingAlgs: public QObject
     void kmeansCluster();
     void categorizeByStyle();
     void extractBinary();
+    void exportLayersInformationAlg();
     void createDirectory();
     void flattenRelations();
 
@@ -316,6 +317,46 @@ void TestQgsProcessingAlgs::saveFeaturesAlg()
   std::unique_ptr< QgsVectorLayer > savedLayer = qgis::make_unique< QgsVectorLayer >( outputs.value( QStringLiteral( "OUTPUT" ) ).toString(), "points", "ogr" );
   QVERIFY( savedLayer->isValid() );
   QCOMPARE( savedLayer->getFeature( 1 ).geometry().asPoint().x(), -83.3 );
+}
+
+void TestQgsProcessingAlgs::exportLayersInformationAlg()
+{
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString gpkgFileName = dataDir + "/humanbeings.gpkg";
+  QFileInfo gpkgFileInfo( gpkgFileName );
+  std::unique_ptr< QgsVectorLayer > gpkgLayer = qgis::make_unique< QgsVectorLayer >( gpkgFileInfo.filePath() + QStringLiteral( "|layername=person" ),
+      QStringLiteral( "person" ), QStringLiteral( "ogr" ) );
+
+  const QgsProcessingAlgorithm *exportLayersInformation( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:exportlayersinformation" ) ) );
+
+  QgsProcessingContext context;;
+  context.setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( gpkgLayer.get() ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  bool ok = false;
+  QVariantMap results = exportLayersInformation->run( parameters, context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( context.getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( vlayer );
+  QCOMPARE( vlayer->featureCount(), 1L );
+  QCOMPARE( vlayer->crs().authid(), QStringLiteral( "EPSG:2056" ) );
+
+  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( gpkgLayer.get() ) << QVariant::fromValue( mPolygonLayer ) );
+  ok = false;
+  results = exportLayersInformation->run( parameters, context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+
+  vlayer = qobject_cast< QgsVectorLayer * >( context.getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( vlayer );
+  QCOMPARE( vlayer->featureCount(), 2L );
+  // when layers have mixed CRSes, the algorithm uses WGS84
+  QCOMPARE( vlayer->crs().authid(), QStringLiteral( "EPSG:4326" ) );
 }
 
 void TestQgsProcessingAlgs::packageAlg()
