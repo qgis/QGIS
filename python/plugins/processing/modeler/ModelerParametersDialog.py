@@ -92,6 +92,9 @@ class ModelerParametersDialog(QDialog):
         mainLayout.addWidget(self.buttonBox)
         self.setLayout(mainLayout)
 
+    def algorithm(self):
+        return self._alg
+
     def setComments(self, text):
         self.widget.setComments(text)
 
