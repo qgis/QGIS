@@ -116,26 +116,16 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRasterizeAlgorithm::shortDescription() const
 {
-  return QObject::tr( R"(This algorithm rasterizes map canvas content.
-                      A map theme can be selected to render a predetermined set of layers with a defined style for each layer.
-                      Alternatively, a set of layers layer can be selected if no map theme is set.
-                      If neither map theme nor layer is set all the current project layers will be
-                      rendered.
-                      The minimum extent entered will internally be extended to be a multiple of the tile size.)" );
+  return QObject::tr( "Renders the map canvas to a raster file." );
 }
 
 QString QgsRasterizeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( R"(This algorithm renders the map canvas to a raster file.
-                      It's possible to choose the following parameters:
-                          - Map theme to render
-                          - Layers to render
-                          - The minimum extent to render
-                          - The tile size
-                          - Map unit per pixel
-                          - The output (can be saved to a file or to a temporary file and
-                            automatically opened as layer in qgis)
-                      )" );
+  return QObject::tr( "This algorithm rasterizes map canvas content.\n\n"
+                      "A map theme can be selected to render a predetermined set of layers with a defined style for each layer. "
+                      "Alternatively, a set of layers can be selected if no map theme is set. "
+                      "If neither map theme nor layer is set, all the visible layers in the set extent will be rendered.\n\n"
+                      "The minimum extent entered will internally be extended to a multiple of the tile size." );
 }
 
 QgsRasterizeAlgorithm *QgsRasterizeAlgorithm::createInstance() const
