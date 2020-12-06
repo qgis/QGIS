@@ -300,17 +300,12 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   }
 
   QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
-} //end of draw method
+}
 
 QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 {
-  QList< QPair< QString, QColor > > symbolList;
   QgsRasterRenderer *renderer = mPipe.renderer();
-  if ( renderer )
-  {
-    renderer->legendSymbologyItems( symbolList );
-  }
-  return symbolList;
+  return renderer ? renderer->legendSymbologyItems() : QList< QPair< QString, QColor > >();;
 }
 
 QString QgsRasterLayer::htmlMetadata() const

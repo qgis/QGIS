@@ -100,7 +100,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     int band() const { return mBand; }
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
+    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<int> usesBands() const override;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;

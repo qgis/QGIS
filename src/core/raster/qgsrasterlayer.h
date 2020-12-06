@@ -344,8 +344,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                QgsRasterViewPort *myRasterViewPort,
                const QgsMapToPixel *qgsMapToPixel = nullptr );
 
-    //! Returns a list with classification items (Text and color)
-    QgsLegendColorList legendSymbologyItems() const;
+    /**
+     * Returns a list with classification items (Text and color).
+     *
+     * \deprecated use QgsRasterRenderer::createLegendNodes() instead.
+     */
+    Q_DECL_DEPRECATED QgsLegendColorList legendSymbologyItems() const SIP_DEPRECATED;
 
     bool isSpatial() const override { return true; }
 

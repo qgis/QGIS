@@ -102,12 +102,16 @@ void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
   mRasterTransparency = t;
 }
 
+QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
+{
+  return QList< QPair< QString, QColor > >();
+}
+
 QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  QList< QPair< QString, QColor > > rasterItemList;
-  legendSymbologyItems( rasterItemList );
+  QList< QPair< QString, QColor > > rasterItemList = legendSymbologyItems();
   if ( rasterItemList.isEmpty() )
     return nodes;
 
