@@ -80,7 +80,6 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      */
     void setSymbol( QgsPointCloud3DSymbol *symbol );
 
-
     /**
      * Retrieves the attribute \a value from \a data at the specified \a offset, where
      * \a type indicates the original data type for the attribute.

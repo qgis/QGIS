@@ -452,13 +452,6 @@ Sets the list of categories of the classification
 .. seealso:: :py:func:`categoriesList`
 %End
 
-    QgsColorRampShader colorRampShader() const;
-%Docstring
-Returns the color ramp shader used to render the color
-
-.. seealso:: :py:func:`setColorRampShader`
-%End
-
     virtual unsigned int byteStride();
 
 };
