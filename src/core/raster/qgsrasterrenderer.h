@@ -118,8 +118,12 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    //! Gets symbology items if provided by renderer
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ) }
+    /**
+     * Returns symbology items if provided by renderer.
+     *
+     * \see createLegendNodes()
+     */
+    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     /**
      * Creates a set of legend nodes representing the renderer.

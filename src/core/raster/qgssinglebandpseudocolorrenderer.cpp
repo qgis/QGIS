@@ -313,8 +313,9 @@ void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument &doc, QDomElement 
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
+QList< QPair< QString, QColor > > QgsSingleBandPseudoColorRenderer::legendSymbologyItems() const
 {
+  QList< QPair< QString, QColor > > symbolItems;
   if ( mShader )
   {
     QgsRasterShaderFunction *shaderFunction = mShader->rasterShaderFunction();
@@ -323,6 +324,7 @@ void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QStri
       shaderFunction->legendSymbologyItems( symbolItems );
     }
   }
+  return symbolItems;
 }
 
 QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const

@@ -105,9 +105,11 @@ nodata values will be used.
     void setAlphaBand( int band );
     int alphaBand() const;
 
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
 %Docstring
-Gets symbology items if provided by renderer
+Returns symbology items if provided by renderer.
+
+.. seealso:: :py:func:`createLegendNodes`
 %End
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;

@@ -54,7 +54,7 @@ Takes ownership
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
 
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
 
     virtual QList<int> usesBands() const;

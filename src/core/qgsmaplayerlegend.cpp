@@ -427,7 +427,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
+  if ( mLayer->renderer() )
+    nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
   return nodes;
 }
 

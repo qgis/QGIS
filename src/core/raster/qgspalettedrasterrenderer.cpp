@@ -317,14 +317,15 @@ bool QgsPalettedRasterRenderer::accept( QgsStyleEntityVisitorInterface *visitor 
   return true;
 }
 
-void QgsPalettedRasterRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
+QList< QPair< QString, QColor > > QgsPalettedRasterRenderer::legendSymbologyItems() const
 {
-  ClassData::const_iterator it = mClassData.constBegin();
-  for ( ; it != mClassData.constEnd(); ++it )
+  QList< QPair< QString, QColor > > symbolItems;
+  for ( const QgsPalettedRasterRenderer::Class &classData : mClassData )
   {
-    QString lab = it->label.isEmpty() ? QString::number( it->value ) : it->label;
-    symbolItems << qMakePair( lab, it->color );
+    const QString lab = classData.label.isEmpty() ? QString::number( classData.value ) : classData.label;
+    symbolItems << qMakePair( lab, classData.color );
   }
+  return symbolItems;
 }
 
 QList<int> QgsPalettedRasterRenderer::usesBands() const
