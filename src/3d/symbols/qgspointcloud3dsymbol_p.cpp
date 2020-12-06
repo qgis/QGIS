@@ -608,20 +608,20 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     QVector3D point( x, y, z );
 
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
-    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
-
+    float iParam = 0.0f;
     if ( attrIsX )
-      outNormal.parameter.push_back( x );
+      iParam = x;
     else if ( attrIsY )
-      outNormal.parameter.push_back( y );
+      iParam = y;
     else if ( attrIsZ )
-      outNormal.parameter.push_back( z );
+      iParam = z;
     else
-    {
-      float iParam = 0.0f;
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
-      outNormal.parameter.push_back( iParam );
-    }
+
+    if ( context.isFilteredOut( ( int ) iParam ) )
+      continue;
+    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+    outNormal.parameter.push_back( iParam );
   }
 }
 
