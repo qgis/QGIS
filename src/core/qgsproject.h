@@ -122,7 +122,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
       FlagTrustLayerMetadata = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
       FlagDontStoreOriginalStyles = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
-      FlagSkipSnappingConfiguration = 1 << 4, //! Skip the snapping configuration. Useful for minimising project load times in non-interactive contexts.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -2058,11 +2057,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int mDirtyBlockCount = 0;
     bool mTrustLayerMetadata = false;
 
-    /**
-     * Stores the project read flags
-     */
-    ReadFlags mReadFlags;
-
     QgsPropertyCollection mDataDefinedServerProperties;
 
     QgsCoordinateTransformContext mTransformContext;
@@ -2074,6 +2068,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mIsBeingDeleted = false;
 
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
+
+    //! Blocks snapping updates
+    int mBlockSnappingUpdates = 0;
+
+    friend class QgsProjectSnappingConfigChangedBlocker;
 
     friend class QgsProjectDirtyBlocker;
 
@@ -2144,6 +2143,51 @@ class CORE_EXPORT QgsProjectDirtyBlocker
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 #endif
 };
+
+
+/**
+ * Temporarily blocks QgsProject emission of snapping config changed signal for the lifetime of the object.
+ *
+ * QgsProjectSnappingConfigChangedBlocker supports "stacked" blocking, so two QgsProjectSnappingConfigChangedBlocker created
+ * for the same project will both need to be destroyed before the project can be dirtied again.
+ *
+ * \ingroup core
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsProjectSnappingConfigChangedBlocker
+{
+  public:
+
+    /**
+     * QgsProjectSnappingConfigChangedBlocker
+     *
+     * This will block emission of snapping config changed signal the specified \a project for the lifetime of this object.
+     */
+    QgsProjectSnappingConfigChangedBlocker( QgsProject *project )
+      : mProject( project )
+    {
+      mProject->mBlockSnappingUpdates++;
+    }
+
+    //! QgsProjectSnappingConfigChangedBlocker cannot be copied
+    QgsProjectSnappingConfigChangedBlocker( const QgsProjectSnappingConfigChangedBlocker &other ) = delete;
+
+    //! QgsProjectSnappingConfigChangedBlocker cannot be copied
+    QgsProjectSnappingConfigChangedBlocker &operator=( const QgsProjectSnappingConfigChangedBlocker &other ) = delete;
+
+    ~QgsProjectSnappingConfigChangedBlocker()
+    {
+      mProject->mBlockSnappingUpdates--;
+    }
+
+  private:
+    QgsProject *mProject = nullptr;
+
+#ifdef SIP_RUN
+    QgsProjectSnappingConfigChangedBlocker( const QgsProjectSnappingConfigChangedBlocker &other );
+#endif
+};
+
 
 /**
  * Returns the version string found in the given DOM document

@@ -41,7 +41,6 @@ open within the main QGIS application.
       FlagDontLoadLayouts,
       FlagTrustLayerMetadata,
       FlagDontStoreOriginalStyles,
-      FlagSkipSnappingConfiguration,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 
@@ -1931,6 +1930,39 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
   private:
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
+
+
+class QgsProjectSnappingConfigChangedBlocker
+{
+%Docstring
+Temporarily blocks QgsProject emission of snapping config changed signal for the lifetime of the object.
+
+QgsProjectSnappingConfigChangedBlocker supports "stacked" blocking, so two QgsProjectSnappingConfigChangedBlocker created
+for the same project will both need to be destroyed before the project can be dirtied again.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsproject.h"
+%End
+  public:
+
+    QgsProjectSnappingConfigChangedBlocker( QgsProject *project );
+%Docstring
+QgsProjectSnappingConfigChangedBlocker
+
+This will block emission of snapping config changed signal the specified ``project`` for the lifetime of this object.
+%End
+
+
+
+    ~QgsProjectSnappingConfigChangedBlocker();
+
+  private:
+    QgsProjectSnappingConfigChangedBlocker( const QgsProjectSnappingConfigChangedBlocker &other );
+};
+
 
 
 

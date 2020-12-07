@@ -46,6 +46,8 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
 
     std::unique_ptr<QgsProject> prj( new QgsProject() );
 
+    QgsProjectSnappingConfigChangedBlocker snappingBlocker{ prj.get() };
+
     // This is required by virtual layers that call QgsProject::instance() inside the constructor :(
     QgsProject::setInstance( prj.get() );
 
@@ -53,7 +55,8 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     prj->setBadLayerHandler( badLayerHandler );
 
     // Always skip original styles storage and snapping config
-    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles  | QgsProject::ReadFlag::FlagSkipSnappingConfiguration;
+    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles;
+
     if ( settings )
     {
       // Activate trust layer metadata flag
