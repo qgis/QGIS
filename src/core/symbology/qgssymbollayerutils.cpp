@@ -874,7 +874,7 @@ QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsColorRamp *ramp, QSize size,
   return QIcon( colorRampPreviewPixmap( ramp, size, padding ) );
 }
 
-QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding )
+QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding, Qt::Orientation direction, bool flipDirection, bool drawTransparentBackground )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -883,16 +883,38 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize s
   painter.begin( &pixmap );
 
   //draw stippled background, for transparent images
-  drawStippledBackground( &painter, QRect( padding, padding, size.width() - padding * 2, size.height() - padding  * 2 ) );
+  if ( drawTransparentBackground )
+    drawStippledBackground( &painter, QRect( padding, padding, size.width() - padding * 2, size.height() - padding  * 2 ) );
 
   // antialiasing makes the colors duller, and no point in antialiasing a color ramp
   // painter.setRenderHint( QPainter::Antialiasing );
-  for ( int i = 0; i < size.width(); i++ )
+  switch ( direction )
   {
-    QPen pen( ramp->color( static_cast< double >( i ) / size.width() ) );
-    painter.setPen( pen );
-    painter.drawLine( i, 0 + padding, i, size.height() - 1 - padding );
+    case Qt::Horizontal:
+    {
+      for ( int i = 0; i < size.width(); i++ )
+      {
+        QPen pen( ramp->color( static_cast< double >( i ) / size.width() ) );
+        painter.setPen( pen );
+        const int x = flipDirection ? size.width() - i - 1 : i;
+        painter.drawLine( x, 0 + padding, x, size.height() - 1 - padding );
+      }
+      break;
+    }
+
+    case Qt::Vertical:
+    {
+      for ( int i = 0; i < size.height(); i++ )
+      {
+        QPen pen( ramp->color( static_cast< double >( i ) / size.height() ) );
+        painter.setPen( pen );
+        const int y = flipDirection ? size.height() - i - 1 : i;
+        painter.drawLine( 0 + padding, y, size.width() - 1 - padding, y );
+      }
+      break;
+    }
   }
+
   painter.end();
   return pixmap;
 }
