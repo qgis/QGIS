@@ -80,6 +80,20 @@ Larger values result in a faster render with less points rendered.
 .. seealso:: :py:func:`maximumScreenError`
 %End
 
+    bool showBoundingBoxes() const;
+%Docstring
+Returns whether bounding boxes will be visible when rendering the point cloud.
+
+.. seealso:: :py:func:`setShowBoundingBoxes`
+%End
+
+    void setShowBoundingBoxes( bool showBoundingBoxes );
+%Docstring
+Sets whether bounding boxes will be visible when rendering the point cloud.
+
+.. seealso:: :py:func:`showBoundingBoxes`
+%End
+
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
     QgsPointCloudLayer3DRenderer &operator=( const QgsPointCloudLayer3DRenderer & );
