@@ -605,7 +605,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = offset.z() + scale.z() * iz;
-    QVector3D point( x, y, z );
+    QgsVector3D point( x, y, z );
 
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     float iParam = 0.0f;
