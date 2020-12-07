@@ -167,6 +167,8 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
     QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   } );
 
+  connect( mCanvas, &Qgs3DMapCanvas::fpsCountChanged, this, &Qgs3DMapCanvasDockWidget::updateFpsCount );
+
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
@@ -174,6 +176,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
+  mLabelFpsCounter = new QLabel( this );
 
   mAnimationWidget = new Qgs3DAnimationWidget( this );
   mAnimationWidget->setVisible( false );
@@ -185,6 +188,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   topLayout->addStretch( 1 );
   topLayout->addWidget( mLabelPendingJobs );
   topLayout->addWidget( mProgressPendingJobs );
+  topLayout->addWidget( mLabelFpsCounter );
 
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -394,6 +398,11 @@ void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
   mLabelPendingJobs->setVisible( count );
   if ( count )
     mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
+}
+
+void Qgs3DMapCanvasDockWidget::updateFpsCount( float fpsCount )
+{
+  mLabelFpsCounter->setText( QString( "%1 fps" ).arg( fpsCount, 10, 'f', 2, QLatin1Char( ' ' ) ) );
 }
 
 void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()

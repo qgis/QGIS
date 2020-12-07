@@ -93,6 +93,9 @@ class Qgs3DMapCanvas : public QWidget
     //! Emitted when the the map setting is changed
     void mapSettingsChanged();
 
+    //! Emmited when the FPS Count changes (at most every frame)
+    void fpsCountChanged( float fpsCount );
+
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
 
