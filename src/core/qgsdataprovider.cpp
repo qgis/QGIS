@@ -13,8 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMutexLocker>
 #include "qgsdataprovider.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 
+#define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
+
+QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
+                                  QgsDataProvider::ReadFlags flags )
+  : mDataSourceURI( uri ),
+    mOptions( providerOptions )
+{
+  mReadFlags = flags;
+}
+
+QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
+{
+  return nullptr;
+}
+
+const QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities() const
+{
+  return nullptr;
+}
+
+void QgsDataProvider::reloadData()
+{
+  reloadProviderData();
+  emit dataChanged();
+}
 
 void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )
 {
@@ -36,3 +63,29 @@ QVariant QgsDataProvider::providerProperty( int property, const QVariant &defaul
   return mProviderProperties.value( property, defaultValue );
 }
 
+void QgsDataProvider::setListening( bool isListening )
+{
+  Q_UNUSED( isListening )
+}
+
+bool QgsDataProvider::renderInPreview( const PreviewContext &context )
+{
+  return context.lastRenderingTimeMs <= context.maxRenderingTimeMs;
+}
+
+QgsCoordinateTransformContext QgsDataProvider::transformContext() const
+{
+  QMutexLocker locker( &mOptionsMutex );
+  return mOptions.transformContext;
+}
+
+void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &value )
+{
+  QMutexLocker locker( &mOptionsMutex );
+  mOptions.transformContext = value;
+}
+
+QString QgsDataProvider::sublayerSeparator()
+{
+  return SUBLAYER_SEPARATOR;
+}

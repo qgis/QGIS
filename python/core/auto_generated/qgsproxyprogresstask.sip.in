@@ -1,0 +1,91 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsproxyprogresstask.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProxyProgressTask : QgsTask
+{
+%Docstring
+
+A QgsTask shell which proxies progress reports.
+
+Simple task shell which runs until finalized and reports progress only.
+This is usually used to expose a blocking operation's progress via
+task manager.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsproxyprogresstask.h"
+%End
+  public:
+
+    QgsProxyProgressTask( const QString &description );
+%Docstring
+Constructor for QgsProxyProgressTask, with the specified ``description``.
+%End
+
+    void finalize( bool result );
+%Docstring
+Finalizes the task, with the specified ``result``.
+
+This should be called when the operation being proxied has completed,
+to remove this proxy task from the task manager.
+%End
+
+    virtual bool run();
+
+
+    void setProxyProgress( double progress );
+%Docstring
+Sets the ``progress`` (from 0 to 100) for the proxied operation.
+
+This method is safe to call from the main thread.
+%End
+
+};
+
+class QgsScopedProxyProgressTask
+{
+%Docstring
+
+Scoped :py:class:`QgsScopedProxyProgressTask`, which automatically adds the proxy task
+to the application task manager on construction and finalizes the task
+when it goes out of scope.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsproxyprogresstask.h"
+%End
+  public:
+
+    QgsScopedProxyProgressTask( const QString &description );
+%Docstring
+Constructor for QgsScopedProxyProgressTask, with the specified ``description``.
+%End
+
+    ~QgsScopedProxyProgressTask();
+
+    void setProgress( double progress );
+%Docstring
+Sets the ``progress`` (from 0 to 100) for the proxied operation.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsproxyprogresstask.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

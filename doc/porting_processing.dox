@@ -1,0 +1,100 @@
+As part of the API refactoring and improvements which landed in QGIS 3.0, the Processing API was substantially reworked from the 2.x version. This was done in order to allow much of the underlying Processing framework to be ported into c++, allowing algorithms to be written in pure c++ (for algorithms where performance is critical, and to allow these algorithms to be used on platforms where Python is not available).
+
+Consequently, substantial changes are required in order to port existing 2.x Processing algorithms for QGIS 3.x. The most significant changes are outlined below:
+
+- Algorithms must be derived from the new base class QgsProcessingAlgorithm (or a subclass of QgsProcessingAlgorithm), not GeoAlgorithm.
+
+- For algorithms which operate on features one-by-one (e.g. a "centroid" algorithm or "buffer" algorithm), consider subclassing the QgsProcessingFeatureBasedAlgorithm class. This class allows much of the boilerplate code for looping over features from a vector layer to be bypassed, and instead requires implementation of a processFeature method.
+
+- Ensure that your algorithm (or algorithm's parent class) implements the new pure virtual createInstance(self) call, to return a new instance of the algorithm class. Note that this should not return a copy of the algorithm (e.g. don't return 'self'), but instead a newly constructed instance of the class. If you use a base class in your plugin for all algorithms, you can usually shortcut the createInstance implementation by placing
+ 
+    def createInstance(self):
+        return type(self)()
+
+  inside your algorithm base class.
+
+- The name(self) method should return your algorithm's name, used for identifying the algorithm. This string should be fixed for the algorithm, and must not be localised. The name should be unique within each provider. Names should contain lowercase alphanumeric characters only and no spaces or other formatting characters. 
+
+- The displayName(self) method returns the translated algorithm name, which should be used for any user-visible display of the algorithm name.
+
+- The group(self) method must return the name of the group the algorithm belongs to. This string should be localised.
+
+- The groupId(self) method should return the unique ID of the group this algorithm belongs to. This string should be fixed for the algorithm, and must not be localised. The group id should be unique within each provider. Group id should contain lowercase alphanumeric characters only and no spaces or other formatting characters.
+
+- All algorithm input parameters and available outputs must be declared in an implementation of the new pure virtual method initAlgorithm(self, configuration={}).
+
+The input parameters and outputs classes have been replaced with new c++ versions, which must be used when calling addParameter and addOutput.
+
+- When constructing parameters, be aware that some argument names have changed. E.g. default has been replaced with 'defaultValue'.
+
+- Parameters are evaluated inside the processAlgorithm(self, parameters, context, feedback) method. In 3.x the parameters argument is a dictionary of parameter name to value. Individual parameters are retrieved from the dictionary by calling methods like self.parameterAsString(parameters, PARAM_NAME, context). You can test whether a parameter has been specified by calling `if PARAM_NAME in parameters:`
+.
+
+- ParameterString has been replaced by QgsProcessingParameterString. String parameters are evaluated inside the processAlgorithm(self, parameters, context, feedback) method by calling self.parameterAsString(parameters, PARAM_NAME, context). This returns a str object.
+
+- ParameterNumber has been replaced with QgsProcessingParameterNumber. Be careful when constructing a QgsProcessingParameterNumber as the arguments are in a different order to ParameterNumber. When constructing a QgsProcessingParameterNumber the number type (integer or double) must be specified explicitly via the type argument (in 2.x API this was automatically determined from the parameter's
+default value). Retrieving the parameter value should be done with either self.parameterAsInt( parameters, PARAM_NAME, context) for integer parameters or self.parameterAsDouble(parameters, PARAM_NAME, context) for double value parameters. These methods return ints or double values respectively.
+
+- ParameterBoolean has been replaced with QgsProcessingParameterBoolean. Retrieving the parameter value should be done with self.parameterAsBool(parameters, PARAM_NAME, context). This will return a True or False value depending on the input parameter's value.
+    
+- ParameterField has been replaced with QgsProcessingParameterField. When constructing, QgsProcessingParameterField uses QgsProcessingParameterField.DataType to specify valid data types. The parent layer for the field should be indicated by passing the parent layer parameter name as the parentLayerParameterName argument in the constructor. Retrieving field parameter values should be done with self.parameterAsString( parameters, PARAM_NAME, context) for single field values or self.parameterAsFields(parameters, PARAM_NAME, context) if allowMultiple was set to True when the parameter was constructed. parameterAsFields will return a list of all selected field names, or an empty list if no fields were selected.
+    
+- ParameterSelection has been replaced with QgsProcessingParameterEnum. Retrieving the parameter value should be done with self.parameterAsEnum( parameters, PARAM_NAME, context). This will return an integer corresponding to the index of the value selected. If allowMultiple was set to True when the parameter was constructed then self.parameterAsEnums(parameters, PARAM_NAME, context) should be used instead. This will return a list of selected indexes, or an empty list if no options were selected.
+      
+- ParameterMultipleInput has been replaced with QgsProcessingParameterMultipleLayers. Retrieving the parameter value should be done with self.parameterAsLayerList( parameters, PARAM_NAME, context). This will return a Python list of all selected map layers.
+
+- ParameterCrs has been replaced with QgsProcessingParameterCrs. Retrieving the parameter value should be done with self.parameterAsCrs( parameters, PARAM_NAME, context). CRS parameters are returned as QgsCoordinateReferenceSystem objects. In 2.x crs parameters were returned as a string, leaving the algorithm responsible for interpreting this string and working out how to convert it to a suitable CRS object. In 3.x this is automatically handled and a QgsCoordinateReferenceSystem object is returned, ready for use. If you require a string version of the CRS, use the QgsCoordinateReferenceSystem methods like authid() to obtain a string representation of the CRS in the desired format. Use crs.isValid() to test whether the returned QgsCoordinateReferenceSystem is null, e.g. as a result of a user setting no CRS for the parameter.
+
+- ParameterExtent has been replaced with QgsProcessingParameterExtent. Retrieving the parameter value should be done with self.parameterAsExtent( parameters, PARAM_NAME, context). Extent parameters are returned as a QgsRectangle. In 2.x extent parameters were returned as a delimited string, leaving the algorithm responsible for parsing the string and validating it. In 3.x this is automatically handled and a QgsRectangle returned, ready for use. In 3.x extent parameters also have an associated CRS, which can be retrieved by calling self.parameterAsExtentCrs( parameters, PARAM_NAME, context ). When retrieving an extent via self.parameterAsExtent, the optional crs argument can be used to automatically reproject the specified extent into a desired destination CRS.
+
+- ParameterPoint has been replaced with QgsProcessingParameterPoint. Retrieving the parameter value should be done with self.parameterAsPoint( parameters, PARAM_NAME, context). Point parameters are returned as a QgsPointXY. In 2.x point parameters were returned as a delimited string, leaving the algorithm responsible for parsing the string and validating it. In 3.x this is automatically handled and a QgsPointXY  returned, ready for use. In 3.x point parameters also have an associated CRS, which can be retrieved by calling self.parameterAsPointCrs( parameters, PARAM_NAME, context ). When retrieving an point via self.parameterAsPoint, the optional crs argument can be used to automatically reproject the specified point into a desired destination CRS.
+
+Input layers
+
+- Instead of ParameterVector, two options exist for declaring vector layer inputs for your algorithm. QgsProcessingParameterVectorLayer is a direct replacement for ParameterVector. The specified layer can be retrieved by calling self.parameterAsVectorLayer( parameters, PARAM_NAME, context ). This directly returns a QgsVectorLayer value, or one if the layer parameter was not specified. However, it is strongly advised that you use the new QgsProcessingParameterFeatureSource parameter type instead. A feature source allows use of ANY object which contains vector features, not just a vector layer, and using this parameter type adds much greater flexibility to your algorithm (e.g. automatically respecting the user's Processing setting regarding invalid geometry handling). QgsProcessingParameterFeatureSource parameters are evaluated using self.parameterAsSource( parameters, PARAM_NAME, context ), which will return a QgsProcessingFeatureSource object (features can be retrieved from a feature source in the same way as a vector layer - by calling getFeatures on the object). In 3.x, QgsProcessingParameterVectorLayer should ONLY be used for algorithms which operate on a whole vector layer (and not on the features inside that layer) - e.g. algorithms which modify the layer's selection or renderer.
+
+- When requesting features from a vector layer or feature source, you can use the new QgsFeatureRequest.setDestinationCrs method to indicate the desired CRS for the returned features. This allows easy reprojection of features, without any extra handling required. Well behaved algorithms in 3.x automatically handle reprojection of input layers to ensure correct operation when mixed CRS inputs are used.
+
+- The replacement for ParameterRaster is QgsProcessingParameterRasterLayer. Raster layer parameters are evaluated by calling self.parameterAsRasterLayer( parameters, PARAM_NAME, context ). This method returns a QgsRasterLayer directly, or None if the parameter was not set.
+
+Outputs
+
+- Outputs are declared for your algorithm within the initAlgorithm method, by calling self.addOutput(...). 
+
+- OutputNumber has been replaced with QgsProcessingOutputNumber. QgsProcessingOutputNumber is a drop-in replacement for OutputNumber.
+
+- OutputString has been replaced with QgsProcessingOutputString. QgsProcessingOutputString is a drop-in replacement for OutputString.
+
+- Output layers (both vector and raster) are handled much differently then in 2.x. If the layer destination should be user-configurable, then your algorithm must declare the associated destination parameter type. For vector layers this is done by adding a QgsProcessingParameterVectorDestination parameter to your algorithm. This both allows the user to set the file path for the created vector layer, and also automatically declares the corresponding algorithm output. Raster layers are done by adding a QgsProcessingParameterRasterDestination to your algorithm, which also adds the associated raster output.
+
+- Best practice in 3.x Processing algorithms is to use "feature sinks" instead of vector layer outputs. Like feature sources, these are more flexible then declaring QgsProcessingParameterVectorDestination parameters, yet they still allow easy creation of new vector layers and adding features to these layers. Feature sinks are declared by adding a QgsProcessingParameterFeatureSink parameter to your algorithm, and retrieving the sink via calling self.parameterAsSink( parameters, PARAM_NAME, context, fields, geometryWkbType, crs ). This returns both a QgsFeatureSink object and a 'destination ID' string. The QgsFeatureSink is ready for adding features by calling sink.addFeature(..). The fields, geometryWkbType and crs arguments specify the layer fields, WKB type and destination CRS for the created layer. The 'destination ID' should be stored and included in the dictionary returned by your processAlgorithm call (see below).
+
+
+Other porting notes
+
+- Your algorithm's processAlgorithm methods should return a dict with output values. In the case of output feature sinks, the sink's ID string should be included in this dictionary.
+
+- Since Processing algorithms can now be run in the background, it's important to implement support for cancellation in your algorithms. Whenever looping (or before/after calling lengthy operations) listen out for user cancellation via the provided feedback object. E.g.
+
+   if feedback.isCanceled():
+       break
+
+- Give feedback via the feedback object, not directly to QgsMessageLog (and avoid print statements - these are dangerous to use for algorithms which may be executed in a background thread!). E.g.
+   
+   feedback.pushInfo('Feature {} was missing geometry, skipping'.format(f.id())
+   feedback.reportError('Input layer CRS is not valid, cannot reproject')
+
+- Use exceptions only for FATAL errors which force a model to terminate. Algorithms should handle common cases such as having no features in an input layer without throwing exceptions (instead, an empty layer should be output). This allows greater flexibility for users creating models. They may have created models which "route" features to different algorithms based on some criteria, and it can be a valid case that no features satisfy this criteria. If your algorithm throws an exception upon encountering an empty layer, it prevents it being used in these flexible models. Instead, use the feedback
+object to pushInfo or reportError so that the lack of features is brought to user's attention (and logged) without breaking the model execution.
+
+- But if you MUST throw exceptions, use QgsProcessingException instead of the removed GeoAlgorithmExecutionException.
+
+- Outputs are good! Declare as many outputs as useful from your algorithm. E.g. most algorithms should have at least a FEATURE_COUNT number output which records the number of features processed by the algorithm. Other algorithms might want to create numeric outputs for values like INTERSECTING_FEATURE_COUNT, NON_INTERSECTING_FEATURE_COUNT, etc. The more outputs like this available from an algorithm aids in user debugging (they are recorded in the log, so users can get a clear picture of what's happening at each step in their models), and also adds more power to models (as these outputs can be used in expressions or custom python code in later steps in a model.
+
+- Don't write outputs using TableWriter or by directly creating a CSV file. Wherever possible use a feature sink instead so that the output is created as a proper vector layer. This allows other algorithms in a multi-step model to easily use the tabular outputs from the algorithm. 
+
+- To run another Processing algorithm as part of your algorithm, you can use  processing.run(...). Make sure you pass the current context and feedback to processing.run to ensure that all temporary layer outputs are available to the executed algorithm, and that the executed algorithm can send feedback reports to the user (and correctly handle cancellation and progress reports!)
+
+- A new API contract exists for Processing. Now, only the c++ base class (e.g. those prefixed with "Qgs"), the gui wrappers, and the methods from processing.tools are considered stable, public API. All other Processing classes and methods are considered private and may change between QGIS versions. These should not be relied on by custom algorithms.
+
+

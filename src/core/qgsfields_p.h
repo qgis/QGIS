@@ -38,7 +38,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-class CORE_EXPORT QgsFieldsPrivate : public QSharedData
+class QgsFieldsPrivate : public QSharedData
 {
   public:
 
@@ -61,6 +61,8 @@ class CORE_EXPORT QgsFieldsPrivate : public QSharedData
     //! map for quick resolution of name to index
     QHash<QString, int> nameToIndex;
 
+  private:
+    QgsFieldsPrivate &operator= ( const QgsFieldsPrivate & ) = delete;
 };
 
 /// @endcond

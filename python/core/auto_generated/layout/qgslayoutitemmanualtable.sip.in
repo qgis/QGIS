@@ -1,0 +1,159 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemmanualtable.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutItemManualTable: QgsLayoutTable
+{
+%Docstring
+A layout table subclass that displays manually entered (and formatted) content.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemmanualtable.h"
+%End
+  public:
+
+    QgsLayoutItemManualTable( QgsLayout *layout /TransferThis/ );
+%Docstring
+Constructor for QgsLayoutItemManualTable, attached to the specified ``layout``.
+
+Ownership is transferred to the layout.
+%End
+
+    ~QgsLayoutItemManualTable();
+
+    virtual int type() const;
+
+    virtual QIcon icon() const;
+
+    virtual QString displayName() const;
+
+
+    static QgsLayoutItemManualTable *create( QgsLayout *layout ) /Factory/;
+%Docstring
+Returns a new QgsLayoutItemManualTable for the specified parent ``layout``.
+%End
+    virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
+
+
+    void setTableContents( const QgsTableContents &contents );
+%Docstring
+Sets the ``contents`` of the table.
+
+.. seealso:: :py:func:`tableContents`
+%End
+
+    QgsTableContents tableContents() const;
+%Docstring
+Returns the contents of the table.
+
+.. seealso:: :py:func:`contents`
+%End
+
+    QList< double > rowHeights() const;
+%Docstring
+Returns the list of row heights (in millimeters) to use when rendering the table.
+
+A height of 0 indicates that the row height should be automatically calculated.
+
+.. seealso:: :py:func:`setRowHeights`
+
+.. seealso:: :py:func:`columnWidths`
+%End
+
+    void setRowHeights( const QList< double > &heights );
+%Docstring
+Sets the list of row ``heights`` (in millimeters) to use when rendering the table.
+
+A height of 0 indicates that the row height should be automatically calculated.
+
+.. seealso:: :py:func:`rowHeights`
+
+.. seealso:: :py:func:`setColumnWidths`
+%End
+
+    QList< double > columnWidths() const;
+%Docstring
+Returns the list of column widths (in millimeters) to use when rendering the table.
+
+A width of 0 indicates that the column width should be automatically calculated.
+
+.. seealso:: :py:func:`setColumnWidths`
+
+.. seealso:: :py:func:`rowHeights`
+%End
+
+    void setColumnWidths( const QList< double > &widths );
+%Docstring
+Sets the list of column ``widths`` (in millimeters) to use when rendering the table.
+
+A width of 0 indicates that the column width should be automatically calculated.
+
+.. seealso:: :py:func:`columnWidths`
+
+.. seealso:: :py:func:`setColumnWidths`
+%End
+
+    bool includeTableHeader() const;
+%Docstring
+Returns ``True`` if the table includes a header row.
+
+.. seealso:: :py:func:`setIncludeTableHeader`
+%End
+
+    void setIncludeTableHeader( bool included );
+%Docstring
+Sets whether the table includes a header row.
+
+.. seealso:: :py:func:`includeTableHeader`
+%End
+
+    QgsLayoutTableColumns &headers();
+%Docstring
+Returns a reference to the list of headers shown in the table
+
+.. seealso:: :py:func:`setHeaders`
+%End
+
+    void setHeaders( const QgsLayoutTableColumns &headers );
+%Docstring
+Replaces the headers in the table with a specified list of :py:class:`QgsLayoutTableColumns`.
+
+.. seealso:: :py:func:`headers`
+%End
+
+  protected:
+
+    virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool calculateMaxRowHeights();
+
+    virtual QgsTextFormat textFormatForHeader( int column ) const;
+
+    virtual QgsTextFormat textFormatForCell( int row, int column ) const;
+
+    virtual Qt::Alignment horizontalAlignmentForCell( int row, int column ) const;
+
+    virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemmanualtable.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

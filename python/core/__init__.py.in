@@ -1,0 +1,81 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    __init__.py
+    ---------------------
+    Date                 : May 2014
+    Copyright            : (C) 2014 by Nathan Woodrow
+    Email                : woodrow dot nathan at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Nathan Woodrow'
+__date__ = 'May 2014'
+__copyright__ = '(C) 2014, Nathan Woodrow'
+
+from qgis.PyQt.QtCore import NULL
+from qgis._core import *
+
+from .additions.edit import edit, QgsEditError
+from .additions.fromfunction import fromFunction
+from .additions.metaenum import metaEnumFromType, metaEnumFromValue
+from .additions.processing import processing_output_layer_repr, processing_source_repr
+from .additions.projectdirtyblocker import ProjectDirtyBlocker
+from .additions.providermetadata import PyProviderMetadata
+from .additions.qgsfeature import mapping_feature
+from .additions.qgsfunction import register_function, qgsfunction
+from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
+from .additions.qgssettings import _qgssettings_enum_value, _qgssettings_set_enum_value, _qgssettings_flag_value
+from .additions.qgstaskwrapper import QgsTaskWrapper
+from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
+from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
+from .additions.validitycheck import check
+
+# Injections into classes
+QgsFeature.__geo_interface__ = property(mapping_feature)
+QgsGeometry.__bool__ = _geometryNonZero
+QgsGeometry.__geo_interface__ = property(mapping_geometry)
+QgsGeometry.__nonzero__ = _geometryNonZero
+QgsProcessingFeatureSourceDefinition.__repr__ = processing_source_repr
+QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
+QgsProject.blockDirtying = ProjectDirtyBlocker
+QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
+QgsRuntimeProfiler.profile = ScopedRuntimeProfileContextManager
+QgsSettings.enumValue = _qgssettings_enum_value
+QgsSettings.setEnumValue = _qgssettings_set_enum_value
+QgsSettings.flagValue = _qgssettings_flag_value
+QgsTask.fromFunction = fromFunction
+
+# Classes patched using a derived class
+QgsProviderMetadata = PyProviderMetadata
+
+# monkey patch deprecated enum values to maintain API
+# TODO - remove for QGIS 4.0
+QgsMarkerLineSymbolLayer.Interval = QgsTemplatedLineSymbolLayerBase.Interval
+QgsMarkerLineSymbolLayer.Vertex = QgsTemplatedLineSymbolLayerBase.Vertex
+QgsMarkerLineSymbolLayer.LastVertex = QgsTemplatedLineSymbolLayerBase.LastVertex
+QgsMarkerLineSymbolLayer.FirstVertex = QgsTemplatedLineSymbolLayerBase.FirstVertex
+QgsMarkerLineSymbolLayer.CentralPoint = QgsTemplatedLineSymbolLayerBase.CentralPoint
+QgsMarkerLineSymbolLayer.CurvePoint = QgsTemplatedLineSymbolLayerBase.CurvePoint
+
+# Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
+QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
+
+# Monkey patch Qgis vars
+Qgis.QGIS_VERSION = Qgis.version()
+Qgis.QGIS_VERSION_INT = Qgis.versionInt()
+Qgis.QGIS_RELEASE_NAME = Qgis.releaseName()
+
+GEOWKT = geoWkt()
+PROJECT_SCALES = Qgis.defaultProjectScales()
+GEOPROJ4 = geoProj4()
+GEO_EPSG_CRS_AUTHID = geoEpsgCrsAuthId()
+GEO_NONE = geoNone()

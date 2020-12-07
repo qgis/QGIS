@@ -1,0 +1,294 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationreferencewidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+%ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsrelationreferencewidget.h>
+%End
+
+class QgsRelationReferenceWidget : QWidget
+{
+
+%TypeHeaderCode
+#include "qgsrelationreferencewidget.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsRelationReferenceWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationReferenceWidget;
+    else
+      sipType = NULL;
+%End
+  public:
+
+    enum CanvasExtent
+    {
+      Fixed,
+      Pan,
+      Scale
+    };
+
+    explicit QgsRelationReferenceWidget( QWidget *parent /TransferThis/ );
+
+    ~QgsRelationReferenceWidget();
+
+    void setRelation( const QgsRelation &relation, bool allowNullValue );
+
+    void setRelationEditable( bool editable );
+
+ void setForeignKey( const QVariant &value ) /Deprecated/;
+%Docstring
+this sets the related feature using from the foreign key
+
+.. deprecated:: QGIS 3.10
+   use setForeignKeys
+%End
+
+    void setForeignKeys( const QVariantList &values );
+%Docstring
+Sets the related feature using the foreign keys
+
+.. versionadded:: 3.10
+%End
+
+ QVariant foreignKey() const /Deprecated/;
+%Docstring
+returns the related feature foreign key
+
+.. deprecated:: QGIS 3.10
+%End
+
+
+    QVariantList foreignKeys() const;
+%Docstring
+Returns the related feature foreign keys
+
+.. versionadded:: 3.10
+%End
+
+    void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referenced feature from this widget
+%End
+
+    bool embedForm();
+%Docstring
+determines if the form of the related feature will be shown
+%End
+    void setEmbedForm( bool display );
+
+    bool readOnlySelector();
+%Docstring
+determines if the foreign key is shown in a combox box or a read-only line edit
+%End
+    void setReadOnlySelector( bool readOnly );
+
+    bool allowMapIdentification();
+%Docstring
+determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
+%End
+    void setAllowMapIdentification( bool allowMapIdentification );
+
+    bool orderByValue();
+%Docstring
+If the widget will order the combobox entries by value
+%End
+    void setOrderByValue( bool orderByValue );
+%Docstring
+Sets if the widget will order the combobox entries by value
+%End
+    void setFilterFields( const QStringList &filterFields );
+%Docstring
+Sets the fields for which filter comboboxes will be created
+%End
+
+    bool openFormButtonVisible();
+%Docstring
+determines the open form button is visible in the widget
+%End
+    void setOpenFormButtonVisible( bool openFormButtonVisible );
+
+    bool chainFilters() const;
+%Docstring
+Determines if the filters are chained
+
+:return: ``True`` if filters are chained
+%End
+
+    void setChainFilters( bool chainFilters );
+%Docstring
+Set if filters are chained.
+Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
+
+:param chainFilters: If chaining should be enabled
+%End
+
+    QString filterExpression() const;
+%Docstring
+Returns the currently set filter expression.
+%End
+    void setFilterExpression( const QString &filterExpression );
+%Docstring
+If not empty, will be used as filter expression.
+Only if this evaluates to ``True``, the value will be shown.
+%End
+
+    QgsFeature referencedFeature() const;
+%Docstring
+Returns the related feature (from the referenced layer)
+if no feature is related, it returns an invalid feature
+%End
+
+    void showIndeterminateState();
+%Docstring
+Sets the widget to display in an indeterminate "mixed value" state.
+
+.. versionadded:: 2.16
+%End
+
+    bool allowAddFeatures() const;
+%Docstring
+Determines if a button for adding new features should be shown.
+
+.. versionadded:: 2.16
+%End
+
+    void setAllowAddFeatures( bool allowAddFeatures );
+%Docstring
+Determines if a button for adding new features should be shown.
+
+.. versionadded:: 2.16
+%End
+
+    QgsRelation relation() const;
+%Docstring
+Returns the current relation, which might be invalid
+
+.. versionadded:: 3.10
+%End
+
+    void setFormFeature( const QgsFeature &formFeature );
+%Docstring
+Set the current form feature (from the referencing layer)
+
+.. versionadded:: 3.10
+%End
+
+    QString referencedLayerDataSource() const;
+%Docstring
+Returns the public data source of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerDataSource( const QString &referencedLayerDataSource );
+%Docstring
+Set the public data source of the referenced layer to ``referencedLayerDataSource``
+
+.. versionadded:: 3.12
+%End
+
+    QString referencedLayerProviderKey() const;
+%Docstring
+Returns the data provider key of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerProviderKey( const QString &referencedLayerProviderKey );
+%Docstring
+Set the data provider key of the referenced layer to ``referencedLayerProviderKey``
+
+.. versionadded:: 3.12
+%End
+
+    QString referencedLayerId() const;
+%Docstring
+Returns the id of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerId( const QString &referencedLayerId );
+%Docstring
+Set the id of the referenced layer to ``referencedLayerId``
+
+.. versionadded:: 3.12
+%End
+
+    QString referencedLayerName() const;
+%Docstring
+Returns the name of the referenced layer
+
+.. versionadded:: 3.12
+%End
+
+    void setReferencedLayerName( const QString &referencedLayerName );
+%Docstring
+Set the name of the referenced layer to ``referencedLayerName``
+
+.. versionadded:: 3.12
+%End
+
+  public slots:
+    void openForm();
+%Docstring
+open the form of the related feature in a new dialog
+%End
+
+    void mapIdentification();
+%Docstring
+activate the map tool to select a new related feature on the map
+%End
+
+    void deleteForeignKeys();
+%Docstring
+unset the currently related feature
+%End
+
+  protected:
+    virtual void showEvent( QShowEvent *e );
+
+
+    void init();
+
+  signals:
+
+ void foreignKeyChanged( const QVariant & ) /Deprecated/;
+%Docstring
+Emitted when the foreign key changed
+
+.. deprecated:: QGIS 3.10
+%End
+
+    void foreignKeysChanged( const QVariantList & );
+%Docstring
+Emitted when the foreign keys changed
+
+.. versionadded:: 3.10
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationreferencewidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

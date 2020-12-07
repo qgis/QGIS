@@ -18,6 +18,7 @@
 #define QGSCUSTOMIZATION_H
 
 #include "ui_qgscustomizationdialogbase.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 #include <QDomNode>
@@ -30,13 +31,13 @@ class QTreeWidgetItem;
 class QEvent;
 class QMouseEvent;
 class QSettings;
+class QgsBrowserDockWidget;
 
 class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationDialogBase
 {
     Q_OBJECT
   public:
     QgsCustomizationDialog( QWidget *parent, QSettings *settings );
-    ~QgsCustomizationDialog();
 
     // get item by path
     QTreeWidgetItem *item( const QString &path, QTreeWidgetItem *widgetItem = nullptr );
@@ -77,28 +78,36 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
 
     void cancel();
 
+    void showHelp();
+
     // Reset values from settings
     void reset();
 
     // Save to settings to file
-    void on_actionSave_triggered( bool checked );
+    void actionSave_triggered( bool checked );
 
     // Load settings from file
-    void on_actionLoad_triggered( bool checked );
+    void actionLoad_triggered( bool checked );
 
-    void on_actionExpandAll_triggered( bool checked );
-    void on_actionCollapseAll_triggered( bool checked );
-    void on_actionSelectAll_triggered( bool checked );
+    void actionExpandAll_triggered( bool checked );
+    void actionCollapseAll_triggered( bool checked );
+    void actionSelectAll_triggered( bool checked );
 
-    void on_mCustomizationEnabledCheckBox_toggled( bool checked );
+    void enableCustomization( bool checked );
+    bool filterItems( const QString &text );
 
   private:
     void init();
     QTreeWidgetItem *createTreeItemWidgets();
     QTreeWidgetItem *readWidgetsXmlNode( const QDomNode &node );
+    QAction *findAction( QToolButton *toolbutton );
 
     QString mLastDirSettingsName;
     QSettings *mSettings = nullptr;
+
+  protected:
+    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand;
+    QMap<QTreeWidgetItem *, bool> mTreeInitialVisible;
 };
 
 class APP_EXPORT QgsCustomization : public QObject
@@ -112,6 +121,7 @@ class APP_EXPORT QgsCustomization : public QObject
       User      = 1, // Set by user
       Default   = 2  // Default customization loaded and set
     };
+    Q_ENUM( Status )
 
     //! Returns the instance pointer, creating the object on the first call
     static QgsCustomization *instance();
@@ -121,6 +131,7 @@ class APP_EXPORT QgsCustomization : public QObject
     static void customizeWidget( const QString &path, QWidget *widget, QSettings *settings );
     static void removeFromLayout( QLayout *layout, QWidget *widget );
 
+    void updateBrowserWidget( QgsBrowserDockWidget *model );
     void updateMainWindow( QMenu *toolBarMenu );
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
@@ -129,26 +140,23 @@ class APP_EXPORT QgsCustomization : public QObject
 
     void setSettings( QSettings *settings ) { mSettings = settings ;}
 
-    // Return the path to the splash screen
-    QString splashPath();
+    // Returns the path to the splash screen
+    QString splashPath() const;
 
-    // Load and set default customization
+    // Loads and sets default customization
     void loadDefault();
 
-    // Internal Qt widget which has to bes kipped in paths
-    static QStringList sInternalWidgets;
-
-    QString statusPath() { return mStatusPath; }
+    QString statusPath() const { return mStatusPath; }
 
   public slots:
     void preNotify( QObject *receiver, QEvent *event, bool *done );
 
   protected:
     QgsCustomization();
-    ~QgsCustomization();
+    ~QgsCustomization() override = default;
     QgsCustomizationDialog *pDialog = nullptr;
 
-    bool mEnabled;
+    bool mEnabled = false;
     QSettings *mSettings = nullptr;
     QString mStatusPath;
 
@@ -157,12 +165,12 @@ class APP_EXPORT QgsCustomization : public QObject
     void createTreeItemToolbars();
     void createTreeItemDocks();
     void createTreeItemStatus();
-    void addTreeItemMenu( QTreeWidgetItem *parentItem, QMenu *menu );
+    void createTreeItemBrowser();
+    void addTreeItemMenu( QTreeWidgetItem *parentItem, const QMenu *menu, const QAction *action = nullptr );
     void addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions );
     QList<QTreeWidgetItem *> mMainWindowItems;
-    friend class QgsCustomizationDialog; // in order to access mMainWindowItems
-
-  private slots:
+    QTreeWidgetItem *mBrowserItem = nullptr;
+    friend class QgsCustomizationDialog; // in order to access mMainWindowItems and mBrowserItem
 
   private:
     static QgsCustomization *sInstance;

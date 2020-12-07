@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
@@ -26,7 +26,7 @@
       <string>Add row</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
@@ -39,7 +39,7 @@
       <string>Toggle advanced mode</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -55,7 +55,7 @@
       <string>Remove row(s)</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
@@ -89,9 +89,6 @@
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
     </widget>
    </item>
    <item row="0" column="3">
@@ -100,7 +97,7 @@
       <string>Open</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
@@ -113,10 +110,17 @@
       <string>Save</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="autoRaise">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="6">
+    <widget class="QCheckBox" name="checkLoadLayersOnCompletion">
+     <property name="text">
+      <string>Load layers on completion</string>
      </property>
     </widget>
    </item>

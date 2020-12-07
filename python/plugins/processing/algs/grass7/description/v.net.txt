@@ -1,0 +1,12 @@
+v.net
+Performs network maintenance
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|True
+QgsProcessingParameterFeatureSource|points|Input vector point layer (nodes)|0|None|True
+QgsProcessingParameterFile|file|Name of input arcs file|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterEnum|operation|Operation to be performed|nodes;connect;arcs|False|0|False
+QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
+QgsProcessingParameterEnum|arc_type|Arc type|line;boundary|True|0,1|True
+*QgsProcessingParameterBoolean|-s|Snap points to network|False
+*QgsProcessingParameterBoolean|-c|Assign unique categories to new points|False
+QgsProcessingParameterVectorDestination|output|Network|QgsProcessing.TypeVectorAnyGeometry|None|False

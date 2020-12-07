@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswkbptr.h"
+#include "qgsapplication.h"
 
 QgsWkbPtr::QgsWkbPtr( QByteArray &wkb )
 {

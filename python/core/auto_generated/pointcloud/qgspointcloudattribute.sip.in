@@ -1,0 +1,150 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudattribute.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointCloudAttribute
+{
+%Docstring
+
+Attribute for point cloud data
+pair of name and size in bytes
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudattribute.h"
+%End
+  public:
+    enum DataType
+    {
+      Char,
+      Short,
+      UShort,
+      Int32,
+      Float,
+      Double,
+    };
+
+    QgsPointCloudAttribute();
+%Docstring
+Ctor
+%End
+    QgsPointCloudAttribute( const QString &name, DataType type );
+%Docstring
+Ctor
+%End
+
+    QString name() const;
+%Docstring
+Returns name of the attribute
+%End
+
+    int size() const;
+%Docstring
+Returns size of the attribute in bytes
+%End
+
+    DataType type() const;
+%Docstring
+Returns the data type
+%End
+
+    QString displayType() const;
+%Docstring
+Returns the type to use when displaying this field.
+
+This will be used when the full datatype with details has to displayed to the user.
+
+.. seealso:: :py:func:`type`
+%End
+
+    static bool isNumeric( DataType type );
+%Docstring
+Returns ``True`` if the specified data ``type`` is numeric.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsPointCloudAttribute: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->displayType() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+class QgsPointCloudAttributeCollection
+{
+%Docstring
+
+Collection of point cloud attributes
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudattribute.h"
+%End
+  public:
+    QgsPointCloudAttributeCollection();
+%Docstring
+Ctor
+%End
+    QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
+%Docstring
+Ctor with given attributes
+%End
+    void push_back( const QgsPointCloudAttribute &attribute );
+%Docstring
+Adds extra attribute
+%End
+
+    QVector<QgsPointCloudAttribute> attributes() const;
+%Docstring
+Returns all attributes
+%End
+
+    int count() const;
+%Docstring
+Returns the number of attributes present in the collection.
+%End
+
+    const QgsPointCloudAttribute &at( int index ) const;
+%Docstring
+Returns the attribute at the specified ``index``.
+%End
+
+    const QgsPointCloudAttribute *find( const QString &attributeName, int &offset ) const;
+%Docstring
+Finds the attribute with the name
+
+Returns ``None`` if not found.
+%End
+
+    int indexOf( const QString &name ) const;
+%Docstring
+Returns the index of the attribute with the specified ``name``.
+
+Returns -1 if a matching attribute was not found.
+%End
+
+    int pointRecordSize() const;
+%Docstring
+Returns total size of record
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudattribute.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

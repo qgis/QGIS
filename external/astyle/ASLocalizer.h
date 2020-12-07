@@ -1,5 +1,5 @@
 // ASLocalizer.h
-// Copyright (c) 2017 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2018 by Jim Pattee <jimp03@email.com>.
 // This code is licensed under the MIT License.
 // License.md describes the conditions under which this software may be distributed.
 
@@ -9,6 +9,13 @@
 
 #include <string>
 #include <vector>
+
+// library builds do not need ASLocalizer
+#ifdef ASTYLE_JNI
+	#ifndef ASTYLE_LIB    // ASTYLE_LIB must be defined for ASTYLE_JNI
+		#define ASTYLE_LIB
+	#endif
+#endif  //  ASTYLE_JNI
 
 namespace astyle {
 
@@ -63,6 +70,7 @@ public:
 	Translation() {}
 	virtual ~Translation() {}
 	string convertToMultiByte(const wstring& wideStr) const;
+	string getTranslationString(size_t i) const;
 	size_t getTranslationVectorSize() const;
 	bool getWideTranslation(const string& stringIn, wstring& wideOut) const;
 	string& translate(const string& stringIn) const;

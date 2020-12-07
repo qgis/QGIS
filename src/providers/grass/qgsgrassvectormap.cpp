@@ -35,15 +35,13 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
+#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+#endif
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
 
 QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
@@ -53,7 +51,6 @@ QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
   , mFrozen( false )
   , mIsEdited( false )
   , mVersion( 0 )
-  , mMap( 0 )
   , mIs3d( false )
   , mOldNumLines( 0 )
 {
@@ -72,7 +69,8 @@ QgsGrassVectorMap::~QgsGrassVectorMap()
 int QgsGrassVectorMap::userCount() const
 {
   int count = 0;
-  Q_FOREACH ( QgsGrassVectorMapLayer *layer, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorMapLayer *layer : constMLayers )
   {
     count += layer->userCount();
   }
@@ -108,7 +106,6 @@ void QgsGrassVectorMap::close()
   closeMap();
   mOpen = false;
   unlockOpenClose();
-  return;
 }
 
 bool QgsGrassVectorMap::openMap()
@@ -119,7 +116,7 @@ bool QgsGrassVectorMap::openMap()
   QgsGrass::setLocation( mGrassObject.gisdbase(), mGrassObject.location() );
 
   // Find the vector
-  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().data(),  mGrassObject.mapset().toUtf8().data() );
+  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().constData(),  mGrassObject.mapset().toUtf8().constData() );
 
   if ( !ms )
   {
@@ -142,7 +139,7 @@ bool QgsGrassVectorMap::openMap()
   G_TRY
   {
     Vect_set_open_level( 2 );
-    level = Vect_open_old_head( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+    level = Vect_open_old_head( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
     Vect_close( mMap );
   }
   G_CATCH( QgsGrass::Exception & e )
@@ -159,7 +156,7 @@ bool QgsGrassVectorMap::openMap()
   }
   else if ( level == 1 )
   {
-    QMessageBox::StandardButton ret = QMessageBox::question( 0, QStringLiteral( "Warning" ),
+    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ),
                                       QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ),
                                       QMessageBox::Ok | QMessageBox::Cancel );
 
@@ -174,7 +171,7 @@ bool QgsGrassVectorMap::openMap()
   G_TRY
   {
     Vect_set_open_level( level );
-    Vect_open_old( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+    Vect_open_old( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
   }
   G_CATCH( QgsGrass::Exception & e )
   {
@@ -187,12 +184,7 @@ bool QgsGrassVectorMap::openMap()
   {
     G_TRY
     {
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
       Vect_build( mMap );
-#else
-      Vect_build( mMap, stderr );
-#endif
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -241,7 +233,7 @@ bool QgsGrassVectorMap::startEdit()
   {
     Vect_close( mMap );
     Vect_set_open_level( 2 );
-    level = Vect_open_update( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+    level = Vect_open_update( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
     if ( level < 2 )
     {
       QgsDebugMsg( "Cannot open GRASS vector for update on level 2." );
@@ -249,7 +241,7 @@ bool QgsGrassVectorMap::startEdit()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    Q_UNUSED( e );
+    Q_UNUSED( e )
     QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( e.what() ) );
   }
 
@@ -259,7 +251,7 @@ bool QgsGrassVectorMap::startEdit()
     G_TRY
     {
       Vect_set_open_level( 2 );
-      level = Vect_open_old( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+      level = Vect_open_old( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
       if ( level < 2 )
       {
         QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::errorMessage() ) );
@@ -267,7 +259,7 @@ bool QgsGrassVectorMap::startEdit()
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      Q_UNUSED( e );
+      Q_UNUSED( e )
       QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
     }
 
@@ -300,7 +292,7 @@ bool QgsGrassVectorMap::startEdit()
 
 bool QgsGrassVectorMap::closeEdit( bool newMap )
 {
-  Q_UNUSED( newMap );
+  Q_UNUSED( newMap )
   QgsDebugMsg( toString() );
   if ( !mValid || !mIsEdited )
   {
@@ -323,14 +315,8 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
   // Mapset must be set before Vect_close()
   QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
 
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
   Vect_build_partial( mMap, GV_BUILD_NONE );
   Vect_build( mMap );
-#else
-  Vect_build_partial( mMap, GV_BUILD_NONE, NULL );
-  Vect_build( mMap, stderr );
-#endif
 
   // TODO?
 #if 0
@@ -366,9 +352,10 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
 
 void QgsGrassVectorMap::clearUndoCommands()
 {
-  Q_FOREACH ( int index, mUndoCommands.keys() )
+  for ( auto it = mUndoCommands.constBegin(); it != mUndoCommands.constEnd(); ++it )
   {
-    Q_FOREACH ( QgsGrassUndoCommand *command, mUndoCommands[index] )
+    const auto constValue = it.value();
+    for ( QgsGrassUndoCommand *command : constValue )
     {
       delete command;
     }
@@ -386,9 +373,10 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
 
   lockOpenCloseLayer();
   lockOpenClose();
-  QgsGrassVectorMapLayer *layer = 0;
+  QgsGrassVectorMapLayer *layer = nullptr;
   // Check if this layer is already open
-  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorMapLayer *l : constMLayers )
   {
     if ( l->field() == field )
     {
@@ -403,7 +391,7 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
 
   if ( !layer )
   {
-    layer = new QgsGrassVectorMapLayer( this, field ) ;
+    layer = new QgsGrassVectorMapLayer( this, field );
     layer->load();
     mLayers << layer;
   }
@@ -416,7 +404,8 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
 
 void QgsGrassVectorMap::reloadLayers()
 {
-  Q_FOREACH ( QgsGrassVectorMapLayer *l, mLayers )
+  const auto constMLayers = mLayers;
+  for ( QgsGrassVectorMapLayer *l : constMLayers )
   {
     l->load();
   }
@@ -476,7 +465,7 @@ void QgsGrassVectorMap::closeMap()
     }
   }
   QgsGrass::vectDestroyMapStruct( mMap );
-  mMap = 0;
+  mMap = nullptr;
   mOldNumLines = 0;
   mValid = false;
   QgsGrass::unlock();
@@ -623,17 +612,17 @@ QgsAbstractGeometry *QgsGrassVectorMap::lineGeometry( int id )
   if ( !Vect_line_alive( mMap, id ) ) // should not happen (update mode!)?
   {
     QgsDebugMsg( QString( "line %1 is dead" ).arg( id ) );
-    return 0;
+    return nullptr;
   }
 
   struct line_pnts *points = Vect_new_line_struct();
 
-  int type = Vect_read_line( mMap, points, 0, id );
+  int type = Vect_read_line( mMap, points, nullptr, id );
   QgsDebugMsgLevel( QString( "type = %1 n_points = %2" ).arg( type ).arg( points->n_points ), 3 );
   if ( points->n_points == 0 )
   {
     Vect_destroy_line_struct( points );
-    return 0;
+    return nullptr;
   }
 
   QgsPointSequence pointList;
@@ -657,7 +646,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::lineGeometry( int id )
   }
   else if ( type & GV_FACE )
   {
-    QgsPolygonV2 *polygon = new QgsPolygonV2();
+    QgsPolygon *polygon = new QgsPolygon();
     QgsLineString *ring = new QgsLineString();
     ring->setPoints( pointList );
     polygon->setExteriorRing( ring );
@@ -665,7 +654,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::lineGeometry( int id )
   }
 
   QgsDebugMsg( QString( "unknown type = %1" ).arg( type ) );
-  return 0;
+  return nullptr;
 }
 
 QgsAbstractGeometry *QgsGrassVectorMap::nodeGeometry( int id )
@@ -679,7 +668,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::nodeGeometry( int id )
 QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
 {
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
-  QgsPolygonV2 *polygon = new QgsPolygonV2();
+  QgsPolygon *polygon = new QgsPolygon();
 
   struct line_pnts *points = Vect_new_line_struct();
   QgsDebugMsgLevel( QString( "points= %1" ).arg( ( quint64 )points ), 3 );
@@ -731,11 +720,7 @@ void QgsGrassVectorMap::closeAllIterators()
 }
 
 //------------------------------------ QgsGrassVectorMapStore ------------------------------------
-QgsGrassVectorMapStore *QgsGrassVectorMapStore::sStore = 0;
-
-QgsGrassVectorMapStore::QgsGrassVectorMapStore()
-{
-}
+QgsGrassVectorMapStore *QgsGrassVectorMapStore::sStore = nullptr;
 
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::instance()
 {
@@ -752,10 +737,11 @@ QgsGrassVectorMap *QgsGrassVectorMapStore::openMap( const QgsGrassObject &grassO
   QgsDebugMsg( "grassObject = " + grassObject.toString() );
 
   mMutex.lock();
-  QgsGrassVectorMap *map = 0;
+  QgsGrassVectorMap *map = nullptr;
 
   // Check if this map is already open
-  Q_FOREACH ( QgsGrassVectorMap *m, mMaps )
+  const auto constMMaps = mMaps;
+  for ( QgsGrassVectorMap *m : constMMaps )
   {
     if ( m->grassObject() == grassObject )
     {
@@ -780,7 +766,7 @@ QgsGrassVectorMap *QgsGrassVectorMapStore::openMap( const QgsGrassObject &grassO
 
 QgsGrassVectorMap::TopoSymbol QgsGrassVectorMap::topoSymbol( int lid )
 {
-  int type = Vect_read_line( mMap, 0, 0, lid );
+  int type = Vect_read_line( mMap, nullptr, nullptr, lid );
 
   TopoSymbol symbol = TopoUndefined;
   if ( type == GV_POINT )

@@ -1,0 +1,74 @@
+/*! \page qgsquick QGIS Quick Documentation
+
+\tableofcontents
+
+\section qgsquick_overview Overview
+
+QGIS Quick is a QT Quick based GUI library primarily for mobile/tablet devices. Covering basic GIS components (e.g. MapCanvas, Scalebar),
+it simplifies creation of a mobile applications for surveys, data gathering or other on-site work. Qt Quick provides tools
+to create a rich application with a fluid and dynamic user interface. Additionally, Qt Quick Controls 2 provides highly
+optimized controls for embedded/mobile devices with limited resources.
+
+QGIS Quick consists of a Qt plugin that provides the QML components and of a shared library that can be used from C++ code.
+
+\subsection qgsquick_overview_widgets QML Classes
+\subsubsection qgsquick_overview_widgets_mapcanvas MapCanvas
+\subsubsection qgsquick_overview_widgets_featureform FeatureForm
+A form listing attributes of a given feature. It supports basic edit field widgets for types such as edit text, map value,
+checkbox,  date/time picker or external resource (photo capture).
+\subsubsection qgsquick_overview_widgets_positionmarker PositionMarker
+The element refers to current position according gps location device connected to it. It holds information about longitude, latitude, altitude,
+direction of the movement and accuracy of the signal. See also QgsQuickPositionKit.
+\subsubsection qgsquick_overview_widgets_scalebar ScaleBar
+A QML component that shows the scale ratio between its length and distance on the MapCanvas. There are predefined rounded values
+for several zooming levels with 'm' or 'km' postfixes. After any zoom in/out event on canvas recalculates its properties and updates
+text. See also QgsQuickScaleBarKit.
+\subsubsection qgsquick_overview_widgets_messagelog MessageLog
+A simple panel which can be used for publishing logs messages to a user such as basic information about the application or its status.
+See also QgsQuickMessageLogModel.
+
+\section qgsquick_styling Styling
+
+Since the QGIS Quick library is meant to be reusable for a wide variety of applications with different styles/themes of the user
+interface, some effort has been done to allow developers customize the colors and layouts of the components. Individual
+components either have attributes for customization (e.g. ScaleBar has "barColor", "barBackgroundColor" properties) or more complex
+components accept a custom styling object (e.g. FeatureForm has "style" property of type FeatureFormStyling with a hierarchy of color
+and layout properties).
+
+\section qgsquick_versioning_api Versioning and API stability
+
+QML engine supports versioning of individual components with libraries - a single component may be available in multiple versions
+with slightly different set of features. This is allows QML libraries to keep API compatibility with older code.
+
+QGIS Quick library is currently in version 0.1 and since it is still a very new library, there are no API stability guarantees:
+the following releases of QGIS may ship updates to components while keeping the same version or even remove some components.
+Over time we expect that as the library will become stable, we will deliver stable API just like with the other QGIS libraries.
+
+\section qgsquick_gui Designing scalable applications
+
+Qt Quick uses pixel sizes for the visual items. When building applications that may run on devices with varying screen DPI,
+this is a problem as the absolute pixel values make the application look different depending on the screen pixel density.
+We recommend to use values device independent pixels ("dp"). It is a concept used on mobile devices, where an item of width of 10dp
+will have always the same physical size (e.g. in millimeters) regardless of the screen density. To set width of an item to 10dp
+in QML, one would write: "width: 10 * QgsQuick.Utils.dp".
+
+\section qgsquick_lib Building the library
+
+The QGIS Quick library is not built by default because QGIS application currently does not use it. In order to build the library
+please make sure that WITH_QUICK variable in CMake configuration is set to ON.
+
+It is recommended to build with CMake variable ENABLE_TESTS set to ON because that will also build a small example application
+that uses Qt Quick components. In the generated project you should see target "qgis_quickapp".
+
+The built QML plugin is installed to a dedicated directory - see QgsApplication::qmlImportPath(). When using QGIS Quick components,
+it is necessary to either use QQmlEngine::addImportPath() to add that directory or to specify QML2_IMPORT_PATH environment variable.
+
+\section qgsquick_demo_app Demo application
+
+A demo application with some basic components and functionality is available on https://github.com/lutraconsulting/qgis-quick-demo-app
+
+The demo application repository contains also instructions on how to build the application, QGIS Quick and other dependencies on Android.
+
+*/
+
+

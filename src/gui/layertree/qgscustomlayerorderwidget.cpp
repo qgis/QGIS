@@ -57,7 +57,7 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   connect( bridge->rootGroup(), &QgsLayerTreeNode::visibilityChanged, this, &QgsCustomLayerOrderWidget::nodeVisibilityChanged );
 
   QVBoxLayout *l = new QVBoxLayout;
-  l->setMargin( 0 );
+  l->setContentsMargins( 0, 0, 0, 0 );
   l->addWidget( mView );
   l->addWidget( mChkOverride );
   setLayout( l );
@@ -132,13 +132,14 @@ QVariant CustomLayerOrderModel::data( const QModelIndex &index, int role ) const
 
 bool CustomLayerOrderModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  Q_UNUSED( value ); // Toggle
   if ( role == Qt::CheckStateRole )
   {
     QString id = mOrder.at( index.row() );
     QgsLayerTreeLayer *nodeLayer = mBridge->rootGroup()->findLayer( id );
     if ( nodeLayer )
     {
-      nodeLayer->setItemVisibilityChecked( static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked );
+      nodeLayer->setItemVisibilityChecked( ! nodeLayer->itemVisibilityChecked() );
       return true;
     }
   }
@@ -167,18 +168,19 @@ QStringList CustomLayerOrderModel::mimeTypes() const
 QMimeData *CustomLayerOrderModel::mimeData( const QModelIndexList &indexes ) const
 {
   QStringList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
     lst << data( index, Qt::UserRole + 1 ).toString();
 
   QMimeData *mimeData = new QMimeData();
-  mimeData->setData( QStringLiteral( "application/qgis.layerorderdata" ), lst.join( QStringLiteral( "\n" ) ).toUtf8() );
+  mimeData->setData( QStringLiteral( "application/qgis.layerorderdata" ), lst.join( QLatin1Char( '\n' ) ).toUtf8() );
   return mimeData;
 }
 
 bool CustomLayerOrderModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( column );
+  Q_UNUSED( parent )
+  Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;
@@ -202,7 +204,7 @@ bool CustomLayerOrderModel::dropMimeData( const QMimeData *data, Qt::DropAction 
 
 bool CustomLayerOrderModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   if ( count <= 0 )
     return false;
 
@@ -216,7 +218,8 @@ bool CustomLayerOrderModel::removeRows( int row, int count, const QModelIndex &p
 void CustomLayerOrderModel::refreshModel( const QList<QgsMapLayer *> &order )
 {
   QStringList orderedIds;
-  Q_FOREACH ( QgsMapLayer *layer, order )
+  const auto constOrder = order;
+  for ( QgsMapLayer *layer : constOrder )
   {
     if ( layer )
       orderedIds.append( layer->id() );

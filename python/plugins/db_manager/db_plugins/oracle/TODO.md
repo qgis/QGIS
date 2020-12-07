@@ -91,7 +91,7 @@
   * Disable move Table to another schema (impossible in Oracle, you have to import/export).
   * Find how to load Unknown WKBGeometryType layers.
   * Spatial index creation.
-  * Edit dialog fully functionnal.
+  * Edit dialog fully functional.
   * Edit Table opens.
   * Remove Vacuum operation in Table menu.
   * Fix: Add SRID when creating table.

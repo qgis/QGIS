@@ -20,112 +20,29 @@
 
 #include "qgsrasterresampler.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QColor>
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
     Cubic Raster Resampler
 */
-class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
+class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
 {
   public:
-    QgsCubicRasterResampler();
+
+    /**
+     * Constructor for QgsCubicRasterResampler.
+     */
+    QgsCubicRasterResampler() = default;
     QgsCubicRasterResampler *clone() const override SIP_FACTORY;
-    void resample( const QImage &srcImage, QImage &dstImage ) override;
-    QString type() const override { return QStringLiteral( "cubic" ); }
 
-  private:
-    static void xDerivativeMatrix( int nCols, int nRows, double *matrix, const int *colorMatrix );
-    static void yDerivativeMatrix( int nCols, int nRows, double *matrix, const int *colorMatrix );
-
-    void calculateControlPoints( int nCols, int nRows, int currentRow, int currentCol, int *redMatrix, int *greenMatrix, int *blueMatrix,
-                                 int *alphaMatrix, double *xDerivativeMatrixRed, double *xDerivativeMatrixGreen, double *xDerivativeMatrixBlue,
-                                 double *xDerivativeMatrixAlpha, double *yDerivativeMatrixRed, double *yDerivativeMatrixGreen, double *yDerivativeMatrixBlue,
-                                 double *yDerivativeMatrixAlpha );
-
-    //! Use cubic curve interpoation at the borders of the raster
-    QRgb curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue, double d1alpha, double d2red, double d2green,
-                             double d2blue, double d2alpha );
-
-    static inline double calcBernsteinPolyN3( int i, double t );
-    static inline int lowerN3( int i );
-
-    //creates a QRgb by applying bounds checks
-    static inline QRgb createPremultipliedColor( const int r, const int g, const int b, const int a );
-
-    //control points
-
-    //red
-    double cRed00;
-    double cRed10;
-    double cRed20;
-    double cRed30;
-    double cRed01;
-    double cRed11;
-    double cRed21;
-    double cRed31;
-    double cRed02;
-    double cRed12;
-    double cRed22;
-    double cRed32;
-    double cRed03;
-    double cRed13;
-    double cRed23;
-    double cRed33;
-    //green
-    double cGreen00;
-    double cGreen10;
-    double cGreen20;
-    double cGreen30;
-    double cGreen01;
-    double cGreen11;
-    double cGreen21;
-    double cGreen31;
-    double cGreen02;
-    double cGreen12;
-    double cGreen22;
-    double cGreen32;
-    double cGreen03;
-    double cGreen13;
-    double cGreen23;
-    double cGreen33;
-    //blue
-    double cBlue00;
-    double cBlue10;
-    double cBlue20;
-    double cBlue30;
-    double cBlue01;
-    double cBlue11;
-    double cBlue21;
-    double cBlue31;
-    double cBlue02;
-    double cBlue12;
-    double cBlue22;
-    double cBlue32;
-    double cBlue03;
-    double cBlue13;
-    double cBlue23;
-    double cBlue33;
-    //alpha
-    double cAlpha00;
-    double cAlpha10;
-    double cAlpha20;
-    double cAlpha30;
-    double cAlpha01;
-    double cAlpha11;
-    double cAlpha21;
-    double cAlpha31;
-    double cAlpha02;
-    double cAlpha12;
-    double cAlpha22;
-    double cAlpha32;
-    double cAlpha03;
-    double cAlpha13;
-    double cAlpha23;
-    double cAlpha33;
-
-
+    QImage resampleV2( const QImage &source, const QSize &size ) override;
+    Q_DECL_DEPRECATED void resample( const QImage &srcImage, QImage &dstImage ) override SIP_DEPRECATED;
+    QString type() const override;
+    int tileBufferPixels() const override;
 };
 
 #endif // QGSCUBICRASTERRESAMPLER_H

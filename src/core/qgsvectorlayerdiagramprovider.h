@@ -16,12 +16,15 @@
 #ifndef QGSVECTORLAYERDIAGRAMPROVIDER_H
 #define QGSVECTORLAYERDIAGRAMPROVIDER_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgslabelfeature.h"
 #include "qgsdiagramrenderer.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class that adds extra information to QgsLabelFeature for labeling of diagrams
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
@@ -31,12 +34,12 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 {
   public:
     //! Create label feature, takes ownership of the geometry instance
-    QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )
-      : QgsLabelFeature( id, geometry, size ) {}
+    QgsDiagramLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
+      : QgsLabelFeature( id, std::move( geometry ), size ) {}
 
     //! Store feature's attributes - used for rendering of diagrams
     void setAttributes( const QgsAttributes &attrs ) { mAttributes = attrs; }
-    //! Get feature's attributes - used for rendering of diagrams
+    //! Gets feature's attributes - used for rendering of diagrams
     const QgsAttributes &attributes() { return mAttributes; }
 
   protected:
@@ -47,13 +50,14 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 
 class QgsAbstractFeatureSource;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsVectorLayerDiagramProvider class implements support for diagrams within
  * the labeling engine. Parameters for the diagrams are taken from the layer settings.
  *
- * \since QGIS 2.12
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvider
 {
@@ -63,11 +67,11 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     explicit QgsVectorLayerDiagramProvider( QgsVectorLayer *layer, bool ownFeatureLoop = true );
 
     //! Clean up
-    ~QgsVectorLayerDiagramProvider();
+    ~QgsVectorLayerDiagramProvider() override;
 
-    virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
+    QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
-    virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     // new virtual methods
 
@@ -93,10 +97,17 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      */
     virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
+    /**
+     * Sets a \a geometry to use to clip features to when registering them as diagrams.
+     *
+     * \since QGIS 3.16
+     */
+    void setClipFeatureGeometry( const QgsGeometry &geometry );
+
   protected:
     //! initialization method - called from constructors
     void init();
-    //! helper method to register one diagram feautre
+    //! helper method to register one diagram feature
     QgsLabelFeature *registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
   protected:
@@ -119,6 +130,8 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
 
     //! List of generated label features (owned by the provider)
     QList<QgsLabelFeature *> mFeatures;
+
+    QgsGeometry mLabelClipFeatureGeom;
 };
 
 #endif // QGSVECTORLAYERDIAGRAMPROVIDER_H

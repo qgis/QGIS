@@ -16,38 +16,34 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Bernhard Ströbl'
 __date__ = 'January 2017'
 __copyright__ = '(C) 2017, Bernhard Ströbl'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
-                       QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingException,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterEnum,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class EliminateSelection(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     MODE = 'MODE'
@@ -57,23 +53,35 @@ class EliminateSelection(QgisAlgorithm):
     MODE_BOUNDARY = 2
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDissolve.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDissolve.svg")
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
-        self.modes = [self.tr('Largest area'),
-                      self.tr('Smallest Area'),
-                      self.tr('Largest common boundary')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterSelection(self.MODE,
-                                             self.tr('Merge selection with the neighbouring polygon with the'),
-                                             self.modes))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Eliminated'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+
+    def initAlgorithm(self, config=None):
+        self.modes = [self.tr('Largest Area'),
+                      self.tr('Smallest Area'),
+                      self.tr('Largest Common Boundary')]
+
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterEnum(self.MODE,
+                                                     self.tr('Merge selection with the neighbouring polygon with the'),
+                                                     options=self.modes))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Eliminated'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'eliminateselectedpolygons'
@@ -82,29 +90,36 @@ class EliminateSelection(QgisAlgorithm):
         return self.tr('Eliminate selected polygons')
 
     def processAlgorithm(self, parameters, context, feedback):
-        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
-        smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
+        inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        boundary = self.parameterAsEnum(parameters, self.MODE, context) == self.MODE_BOUNDARY
+        smallestArea = self.parameterAsEnum(parameters, self.MODE, context) == self.MODE_SMALLEST_AREA
 
         if inLayer.selectedFeatureCount() == 0:
-            QgsMessageLog.logMessage(self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)),
-                                     self.tr('Processing'), QgsMessageLog.WARNING)
+            feedback.reportError(self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), parameters[self.INPUT]))
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()
-        output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(inLayer.fields(), inLayer.wkbType(), inLayer.crs(), context)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               inLayer.fields(), inLayer.wkbType(), inLayer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         for aFeat in inLayer.getFeatures():
+            if feedback.isCanceled():
+                break
+
             if aFeat.id() in selFeatIds:
                 # Keep references to the features to eliminate
                 featToEliminate.append(aFeat)
             else:
                 # write the others to output
-                writer.addFeature(aFeat)
+                sink.addFeature(aFeat, QgsFeatureSink.FastInsert)
+
+        del sink
 
         # Delete all features to eliminate in processLayer
-        processLayer = output.layer
+        processLayer = QgsProcessingUtils.mapLayerFromString(dest_id, context)
         processLayer.startEditing()
 
         # ANALYZE
@@ -126,6 +141,9 @@ class EliminateSelection(QgisAlgorithm):
 
             # Iterate over the polygons to eliminate
             for i in range(len(featToEliminate)):
+                if feedback.isCanceled():
+                    break
+
                 feat = featToEliminate.pop()
                 geom2Eliminate = feat.geometry()
                 bbox = geom2Eliminate.boundingBox()
@@ -138,13 +156,16 @@ class EliminateSelection(QgisAlgorithm):
                 selFeat = QgsFeature()
 
                 # use prepared geometries for faster intersection tests
-                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.geometry())
+                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.constGet())
                 engine.prepareGeometry()
 
                 while fit.nextFeature(selFeat):
+                    if feedback.isCanceled():
+                        break
+
                     selGeom = selFeat.geometry()
 
-                    if engine.intersects(selGeom.geometry()):
+                    if engine.intersects(selGeom.constGet()):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 
@@ -190,7 +211,7 @@ class EliminateSelection(QgisAlgorithm):
                     if processLayer.changeGeometry(mergeWithFid, newGeom):
                         madeProgress = True
                     else:
-                        raise GeoAlgorithmExecutionException(
+                        raise QgsProcessingException(
                             self.tr('Could not replace geometry of feature with id {0}').format(mergeWithFid))
 
                     start = start + add
@@ -204,7 +225,12 @@ class EliminateSelection(QgisAlgorithm):
 
         # End while
         if not processLayer.commitChanges():
-            raise GeoAlgorithmExecutionException(self.tr('Could not commit changes'))
+            raise QgsProcessingException(self.tr('Could not commit changes'))
 
         for feature in featNotEliminated:
-            writer.addFeature(feature)
+            if feedback.isCanceled():
+                break
+
+            processLayer.dataProvider().addFeature(feature, QgsFeatureSink.FastInsert)
+
+        return {self.OUTPUT: dest_id}

@@ -1,0 +1,16 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <Layer name="landsat">
+  <Attribute value="125" name="Band 1"/>
+  <Attribute value="138" name="Band 2"/>
+  <Attribute value="112" name="Band 3"/>
+  <Attribute value="75" name="Band 4"/>
+  <Attribute value="90" name="Band 5"/>
+  <Attribute value="132" name="Band 6"/>
+  <Attribute value="165" name="Band 7"/>
+  <Attribute value="217" name="Band 8"/>
+  <Attribute value="175" name="Band 9"/>
+ </Layer>
+</GetFeatureInfoResponse>

@@ -33,15 +33,16 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     };
 
     QgsPointRotationItem( QgsMapCanvas *canvas );
-    ~QgsPointRotationItem();
 
     void paint( QPainter *painter ) override;
 
     //! Sets the center point of the rotation symbol (in map coordinates)
     void setPointLocation( const QgsPointXY &p );
 
-    /** Sets the rotation of the symbol and displays the new rotation number.
-    Units are degrees, starting from north direction, clockwise direction*/
+    /**
+     * Sets the rotation of the symbol and displays the new rotation number.
+     * Units are degrees, starting from north direction, clockwise direction.
+    */
     void setSymbolRotation( int r ) {mRotation = r;}
 
     //! Sets rotation symbol from image (takes ownership)
@@ -51,7 +52,7 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     Orientation orientation() const { return mOrientation; }
 
   private:
-    QgsPointRotationItem();
+
     //! Converts rotation into QPainter rotation considering mOrientation
     int painterRotation( int rotation ) const;
     //! Clockwise (default) or counterclockwise
@@ -61,6 +62,8 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     //! Symbol pixmap
     QPixmap mPixmap;
     int mRotation;
+    QPainterPath mArrowPath;
+
 };
 
 #endif // QGSPOINTROTATIONITEM_H

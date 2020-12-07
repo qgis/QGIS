@@ -62,7 +62,7 @@ bool QgsDoubleSpinBoxPlugin::isInitialized() const
 
 void QgsDoubleSpinBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

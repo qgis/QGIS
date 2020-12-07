@@ -17,18 +17,20 @@
 #ifndef QGSMESSAGELOGVIEWER_H
 #define QGSMESSAGELOGVIEWER_H
 
-#include <ui_qgsmessagelogviewer.h>
+#include "ui_qgsmessagelogviewer.h"
 #include "qgsguiutils.h"
 #include "qgsmessagelog.h"
 
+#include <QMenu>
 #include <QString>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QStatusBar;
 class QCloseEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog widget for displaying QGIS log messages.
  */
 class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogViewer
@@ -47,14 +49,21 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
     /**
      * Logs a \a message to the viewer.
      */
-    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
   protected:
     void closeEvent( QCloseEvent *e ) override;
     void reject() override;
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private slots:
+    void showContextMenuForTabBar( QPoint point );
     void closeTab( int index );
+
+  private:
+
+    QString mClickedAnchor;
+    QMenu *mTabBarContextMenu = nullptr;
 };
 
 #endif

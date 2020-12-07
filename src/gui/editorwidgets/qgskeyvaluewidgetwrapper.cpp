@@ -17,8 +17,8 @@
 #include "qgskeyvaluewidget.h"
 #include "qgsattributeform.h"
 
-QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ):
-  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
+QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent ):
+  QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 {
 }
 
@@ -67,17 +67,17 @@ bool QgsKeyValueWidgetWrapper::valid() const
   return true;
 }
 
-void QgsKeyValueWidgetWrapper::setValue( const QVariant &value )
+void QgsKeyValueWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   mWidget->setMap( value.toMap() );
 }
 
-void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult /*constraintValid*/ )
+void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus()
 {
   // Nothing
 }
 
 void QgsKeyValueWidgetWrapper::onValueChanged()
 {
-  emit valueChanged( value() );
+  emitValueChanged();
 }

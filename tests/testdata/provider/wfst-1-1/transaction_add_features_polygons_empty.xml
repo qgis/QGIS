@@ -1,0 +1,8 @@
+<Transaction xmlns="http://www.opengis.net_wfs"
+    xmlns:xsi="http://www.w3.org_2001_XMLSchema-instance"
+    xmlns:gml="http://www.opengis.net_gml"
+    xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://localhost:8600_geoserver_ws1_wfs?SERVICE=WFS&amp;REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS">
+    <Insert xmlns="http:__www.opengis.net_wfs">
+        <polygons xmlns="ws1"/>
+    </Insert>
+</Transaction>

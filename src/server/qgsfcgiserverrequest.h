@@ -19,25 +19,25 @@
 #ifndef QGSFCGISERVERREQUEST_H
 #define QGSFCGISERVERREQUEST_H
 
+
 #include "qgsserverrequest.h"
 
-#include <QBuffer>
 
 /**
  * \ingroup server
- * QgsFcgiServerResquest
- * Class defining fcgi request
+ * \class QgsFcgiServerRequest
+ * \brief Class defining fcgi request
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 {
   public:
     QgsFcgiServerRequest();
-    ~QgsFcgiServerRequest();
 
-    virtual QByteArray data() const override;
+    QByteArray data() const override;
 
     /**
-     * Return true if an error occurred during initialization
+     * Returns TRUE if an error occurred during initialization
      */
     bool hasError() const { return mHasError; }
 
@@ -46,11 +46,11 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 
     // Log request info: print debug infos
     // about the request
-    void printRequestInfos();
+    void printRequestInfos( const QUrl &url );
 
 
     QByteArray mData;
-    bool       mHasError;
+    bool       mHasError = false;
 };
 
 #endif

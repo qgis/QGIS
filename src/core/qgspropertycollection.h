@@ -16,12 +16,14 @@
 #define QGSPROPERTYCOLLECTION_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
+#include "qgsexpressioncontext.h"
+#include "qgsproperty.h"
+
 #include <QString>
 #include <QVariant>
 #include <QColor>
-#include "qgsexpressioncontext.h"
-#include "qgsproperty.h"
+#include <QDateTime>
 
 class QDomElement;
 class QDomDocument;
@@ -83,7 +85,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual void clear() = 0;
 
     /**
-     * Returns true if the collection contains a property with the specified key.
+     * Returns TRUE if the collection contains a property with the specified key.
      * \param key integer key for property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \see property()
@@ -101,6 +103,8 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 
     /**
      * Returns the calculated value of the property with the specified key from within the collection.
+     * If you need the validity of the value (like ok provided from the
+     * valueAs* variants) refer to the property() and QgsProperty::value()
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \param context expression context to evaluate property against
@@ -116,20 +120,39 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 
     /**
+     * Calculates the current value of the property with the specified key and interprets it as a datetime.
+     * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultDateTime default datetime to return if the property cannot be calculated as a datetime
+     * \param ok if specified, will be set to TRUE if conversion was successful
+     * \returns value parsed to datetime
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
+     * \since QGIS 3.14
+     */
+    QDateTime valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok SIP_OUT = nullptr ) const;
+
+    /**
      * Calculates the current value of the property with the specified key and interprets it as a string.
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultString default string to return if the property cannot be calculated as a string
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to string
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = 0 ) const;
+    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
@@ -137,15 +160,16 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultColor default color to return if the property cannot be calculated as a color
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to color
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsDouble()
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = 0 ) const;
+    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a double.
@@ -153,15 +177,16 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default double to return if the property cannot be calculated as a double
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to double
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = 0 ) const;
+    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an integer.
@@ -169,15 +194,16 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default integer to return if the property cannot be calculated as a integer
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to integer
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsBool()
      */
-    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = 0 ) const;
+    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an boolean.
@@ -185,45 +211,49 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default boolean to return if the property cannot be calculated as a boolean
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to bool
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsInt()
      */
-    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = 0 ) const;
+    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Prepares the collection against a specified expression context. Calling prepare before evaluating the
      * collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
-     * Returns true if preparation was successful.
+     * Returns TRUE if preparation was successful.
      */
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
     /**
      * Returns the set of any fields referenced by the active properties from the collection.
      * \param context expression context the properties will be evaluated against.
+     * \param ignoreContext This parameter has been added in QGIS 3.14. When set to TRUE, even fields not set
+     *                      in context's fields() will be reported - this is useful e.g. with vector tiles
+     *                      where the actual available field names may not be known beforehand.
      */
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
 
     /**
-     * Returns true if the collection contains an active property with the specified key.
+     * Returns TRUE if the collection contains an active property with the specified key.
      * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      */
     virtual bool isActive( int key ) const = 0;
 
     /**
-     * Returns true if the collection has any active properties, or false if all properties
+     * Returns TRUE if the collection has any active properties, or FALSE if all properties
      * within the collection are deactivated.
      * \see hasDynamicProperties()
      */
     virtual bool hasActiveProperties() const = 0;
 
     /**
-     * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
+     * Returns TRUE if the collection has any active, non-static properties, or FALSE if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
      * \see hasActiveProperties()
      */
@@ -274,6 +304,14 @@ class CORE_EXPORT QgsAbstractPropertyCollection
  * Properties within a collection are referenced by an integer key. This is done to avoid the cost of
  * string creation and comparisons which would be required by a string key. The intended use case is that
  * a context specific enum is cast to int and used for the key value.
+ * Examples of such enums are :
+ * \see QgsLayoutObject::DataDefinedProperty
+ * \see QgsSymbolLayer::Property
+ * \see QgsPalLabeling::Property
+ * \see QgsAbstract3DSymbol::Property
+ * \see QgsDiagramLayerSettings::Property
+ * \see QgsPalLayerSettings::Property
+ * \see QgsWidgetWrapper::Property
  * \since QGIS 3.0
  */
 
@@ -293,6 +331,9 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     QgsPropertyCollection( const QgsPropertyCollection &other );
 
     QgsPropertyCollection &operator=( const QgsPropertyCollection &other );
+
+    bool operator==( const QgsPropertyCollection &other ) const;
+    bool operator!=( const QgsPropertyCollection &other ) const;
 
     /**
      * Returns the number of properties contained within the collection.
@@ -314,8 +355,8 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     virtual QgsProperty &property( int key );
 
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
     bool hasDynamicProperties() const override;
@@ -334,7 +375,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     void setProperty( int key, const QgsProperty &property );
 
     /**
-     * Convience method, creates a QgsStaticProperty and stores it within the collection.
+     * Convenience method, creates a QgsStaticProperty and stores it within the collection.
      * \param key integer key for property. Any existing property with the same key will be deleted
      * and replaced by this property. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
@@ -346,9 +387,9 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     QHash<int, QgsProperty> mProperties;
 
-    mutable bool mDirty;
-    mutable bool mHasActiveProperties;
-    mutable bool mHasDynamicProperties;
+    mutable bool mDirty = false;
+    mutable bool mHasActiveProperties = false;
+    mutable bool mHasDynamicProperties = false;
     mutable int mCount = 0;
 
     //! Scans through properties and updates cached values
@@ -368,9 +409,12 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 {
   public:
 
-    QgsPropertyCollectionStack();
+    /**
+     * Constructor for QgsPropertyCollectionStack.
+     */
+    QgsPropertyCollectionStack() = default;
 
-    ~QgsPropertyCollectionStack();
+    ~QgsPropertyCollectionStack() override;
 
     //! Copy constructor
     QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
@@ -417,7 +461,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     QgsPropertyCollection *collection( const QString &name );
 
     /**
-     * Returns true if the collection has any active properties, or false if all properties
+     * Returns TRUE if the collection has any active properties, or FALSE if all properties
      * within the collection are deactivated.
      * \see isActive()
      * \see hasDynamicProperties()
@@ -425,14 +469,14 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     bool hasActiveProperties() const override;
 
     /**
-     * Returns true if the collection has any active, non-static properties, or false if either all non-static properties
+     * Returns TRUE if the collection has any active, non-static properties, or FALSE if either all non-static properties
      * within the collection are deactivated or if the collection only contains static properties.
      * \see hasActiveProperties()
      */
     bool hasDynamicProperties() const override;
 
     /**
-     * Returns true if the stack contains an active property with the specified key.
+     * Returns TRUE if the stack contains an active property with the specified key.
      * \param key integer key for property to test. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \see hasActiveProperties()
@@ -462,16 +506,19 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Returns the set of any fields referenced by the active properties from the stack.
      * \param context expression context the properties will be evaluated against.
+     * \param ignoreContext This parameter has been added in QGIS 3.14. When set to TRUE, even fields not set
+     *                      in context's fields() will be reported - this is useful e.g. with vector tiles
+     *                      where the actual available field names may not be known beforehand.
      */
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;
 
-    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
 
-    virtual bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
+    bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 
   private:
 

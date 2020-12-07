@@ -22,13 +22,13 @@
 #include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
-class QgsVectorLayer;
+class QgsFeatureSource;
 
 /**
 * \ingroup analysis
 * \class QgsVectorLayerDirector
-* \since QGIS 3.0
 * \brief Determine making the graph from vector line layer
+* \since QGIS 3.0
 */
 class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 {
@@ -36,7 +36,8 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 
   public:
 
-    /** Edge direction
+    /**
+     * Edge direction
      * Edge can be one-way with direct flow (one can move only from the start
      * point to the end point), one-way with reversed flow (one can move only
      * from the end point to the start point) and bidirectional or two-way
@@ -51,7 +52,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 
     /**
      * Default constructor
-     * \param myLayer source vector layer
+     * \param source feature source representing network
      * \param directionFieldId field containing direction value
      * \param directDirectionValue value for direct one-way road
      * \param reverseDirectionValue value for reversed one-way road
@@ -59,32 +60,34 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      * \param defaultDirection default direction. Will be used if corresponding
      * attribute value is not set or does not equal to the given values
      */
-    QgsVectorLayerDirector( QgsVectorLayer *myLayer,
+    QgsVectorLayerDirector( QgsFeatureSource *source,
                             int directionFieldId,
                             const QString &directDirectionValue,
                             const QString &reverseDirectionValue,
                             const QString &bothDirectionValue,
-                            const Direction defaultDirection
+                            Direction defaultDirection
                           );
-
-    virtual ~QgsVectorLayerDirector() = default;
 
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPointXY > &additionalPoints,
-                    QVector< QgsPointXY> &snappedPoints SIP_OUT ) const override;
+                    QVector< QgsPointXY> &snappedPoints SIP_OUT,
+                    QgsFeedback *feedback = nullptr ) const override;
 
     QString name() const override;
 
   private:
-    QgsVectorLayer *mVectorLayer = nullptr;
-    int mDirectionFieldId;
+    QgsFeatureSource *mSource = nullptr;
+    int mDirectionFieldId = -1;
     QString mDirectDirectionValue;
     QString mReverseDirectionValue;
     QString mBothDirectionValue;
-    Direction mDefaultDirection;
+    Direction mDefaultDirection = DirectionBoth;
+
+    QgsAttributeList requiredAttributes() const;
+    Direction directionForFeature( const QgsFeature &feature ) const;
 };
 
 #endif // QGSVECTORLAYERDIRECTOR_H

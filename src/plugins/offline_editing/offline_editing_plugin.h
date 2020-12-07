@@ -20,7 +20,7 @@
 #define QGS_OFFLINE_EDITING_PLUGIN_H
 
 #include "../qgisplugin.h"
-#include <qgsofflineediting.h>
+#include "qgsofflineediting.h"
 #include <QObject>
 
 class QAction;
@@ -33,11 +33,11 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
 
   public:
     explicit QgsOfflineEditingPlugin( QgisInterface *qgisInterface );
-    virtual ~QgsOfflineEditingPlugin();
+    ~QgsOfflineEditingPlugin() override;
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! actions
     void convertProject();
     void synchronize();

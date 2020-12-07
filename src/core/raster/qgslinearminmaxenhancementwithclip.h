@@ -22,7 +22,8 @@ email                : ersts@amnh.org
 #include "qgis_core.h"
 #include "qgscontrastenhancementfunction.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A linear enhanceContrast enhancement that first clips to min max and then enhanceContrastes
  * linearly between min and max.
  */
@@ -35,6 +36,11 @@ class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhance
     int enhance( double ) override;
 
     bool isValueInDisplayableRange( double ) override;
+
+  private:
+#ifdef SIP_RUN
+    QgsLinearMinMaxEnhancementWithClip &operator=( const QgsLinearMinMaxEnhancementWithClip & );
+#endif
 };
 
 #endif

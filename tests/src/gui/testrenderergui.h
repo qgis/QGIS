@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef TESTRENDERERV2GUI_H
-#define TESTRENDERERV2GUI_H
+#ifndef TESTRENDERERGUI_H
+#define TESTRENDERERGUI_H
 
 #include <QMainWindow>
 
@@ -23,7 +23,7 @@ class TestRendererGUI : public QMainWindow
 {
     Q_OBJECT
   public:
-    explicit TestRendererGUI( QWidget *parent = 0 );
+    explicit TestRendererGUI( QWidget *parent = nullptr );
     void loadLayers();
 
   signals:
@@ -35,4 +35,4 @@ class TestRendererGUI : public QMainWindow
     QgsMapCanvas *mMapCanvas = nullptr;
 };
 
-#endif // TESTRENDERERV2GUI_H
+#endif // TESTRENDERERGUI_H

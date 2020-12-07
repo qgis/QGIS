@@ -25,17 +25,18 @@
 #ifndef SIP_RUN
 ///@cond PRIVATE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Table model to edit a QVariantList.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsListModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
 
-    explicit QgsListModel( QVariant::Type subType, QObject *parent = 0 );
+    explicit QgsListModel( QVariant::Type subType, QObject *parent = nullptr );
     void setList( const QVariantList &list );
     QVariantList list() const;
     bool valid() const;
@@ -46,8 +47,8 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool insertRows( int position, int rows, const QModelIndex &parent =  QModelIndex() ) override;
-    bool removeRows( int position, int rows, const QModelIndex &parent =  QModelIndex() ) override;
+    bool insertRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
+    bool removeRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
 
   private:
     QVariantList mLines;
@@ -57,7 +58,8 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
 #endif
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget allowing to edit a QVariantList, using a table.
  * \since QGIS 3.0
  */
@@ -78,14 +80,14 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
     void setList( const QVariantList &list );
 
     /**
-     * Get the edit value.
+     * Gets the edit value.
      * \returns the QVariantList
      */
     QVariantList list() const { return mModel.list(); }
 
     /**
      * Check the content is valid
-     * \returns true if valid
+     * \returns TRUE if valid
      */
     bool valid() const { return mModel.valid(); }
 

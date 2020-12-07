@@ -9,33 +9,31 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '15.4.2016'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
 
 from qgis.testing import unittest, start_app
 from console import console
-from qgis.PyQt.QtCore import QSettings, QCoreApplication
+from qgis.core import QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 
 start_app()
 
 
 class TestConsole(unittest.TestCase):
 
+    def setUp(self):
+        QgsSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)
+
     def test_show_console(self):
         if os.name == 'nt':
             QCoreApplication.setOrganizationName("QGIS")
             QCoreApplication.setOrganizationDomain("qgis.org")
             QCoreApplication.setApplicationName("QGIS-TEST")
-            QSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
         my_console = console.show_console()
         my_console_widget = my_console.console
-
-        for action in my_console_widget.classMenu.actions():
-            action.trigger()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrelationcontext.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRelationContext
+{
+%Docstring
+Context for relations. Used to resolve layers from projects.
+
+.. versionadded:: 3.11
+%End
+
+%TypeHeaderCode
+#include "qgsrelationcontext.h"
+%End
+  public:
+
+    QgsRelationContext( QgsProject *project = 0 );
+%Docstring
+Constructor for QgsRelationContext.
+%End
+
+    const QgsProject *project() const;
+%Docstring
+Gets the associated project
+
+If there is no associated project, then it will return the global
+project instance
+%End
+
+    ~QgsRelationContext();
+
+    QgsRelationContext( const QgsRelationContext &other );
+%Docstring
+Copy constructor
+%End
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrelationcontext.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

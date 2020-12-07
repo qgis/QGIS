@@ -16,14 +16,11 @@
  ***************************************************************************/
 
 #include "qgsobjectcustomproperties.h"
+#include "qgis.h"
 
 #include <QDomNode>
 #include <QStringList>
 
-
-QgsObjectCustomProperties::QgsObjectCustomProperties()
-{
-}
 
 QStringList QgsObjectCustomProperties::keys() const
 {
@@ -45,6 +42,10 @@ void QgsObjectCustomProperties::remove( const QString &key )
   mMap.remove( key );
 }
 
+bool QgsObjectCustomProperties::contains( const QString &key ) const
+{
+  return mMap.contains( key );
+}
 
 void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QString &keyStartsWith )
 {
@@ -122,20 +123,26 @@ void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &do
 
   QDomElement propsElement = doc.createElement( QStringLiteral( "customproperties" ) );
 
-  for ( QMap<QString, QVariant>::const_iterator it = mMap.constBegin(); it != mMap.constEnd(); ++it )
+  auto keys = mMap.keys();
+
+  std::sort( keys.begin(), keys.end() );
+
+  for ( const auto &key : qgis::as_const( keys ) )
   {
     QDomElement propElement = doc.createElement( QStringLiteral( "property" ) );
-    propElement.setAttribute( QStringLiteral( "key" ), it.key() );
-    if ( it.value().canConvert<QString>() )
+    propElement.setAttribute( QStringLiteral( "key" ), key );
+    const QVariant value = mMap.value( key );
+    if ( value.canConvert<QString>() )
     {
-      propElement.setAttribute( QStringLiteral( "value" ), it.value().toString() );
+      propElement.setAttribute( QStringLiteral( "value" ), value.toString() );
     }
-    else if ( it.value().canConvert<QStringList>() )
+    else if ( value.canConvert<QStringList>() )
     {
-      Q_FOREACH ( const QString &value, it.value().toStringList() )
+      const auto constToStringList = value.toStringList();
+      for ( const QString &valueStr : constToStringList )
       {
         QDomElement itemElement = doc.createElement( QStringLiteral( "value" ) );
-        itemElement.appendChild( doc.createTextNode( value ) );
+        itemElement.appendChild( doc.createTextNode( valueStr ) );
         propElement.appendChild( itemElement );
       }
     }

@@ -27,7 +27,7 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn *c )
 
 inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri &uri, QgsOracleConn *&c )
 {
-  c = QgsOracleConn::connectDb( uri );
+  c = QgsOracleConn::connectDb( uri, false );
 }
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsOracleConn *c )
@@ -37,12 +37,12 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsOracleConn *c )
 
 inline void qgsConnectionPool_InvalidateConnection( QgsOracleConn *c )
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
 }
 
 inline bool qgsConnectionPool_ConnectionIsValid( QgsOracleConn *c )
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
   return true;
 }
 
@@ -77,7 +77,7 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn *, QgsOracleCon
 
   private:
     QgsOracleConnPool();
-    ~QgsOracleConnPool();
+    ~QgsOracleConnPool() override;
 
     static QgsOracleConnPool *sInstance;
 };

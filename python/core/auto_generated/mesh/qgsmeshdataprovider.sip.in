@@ -1,0 +1,429 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshdataprovider.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+typedef QgsPoint QgsMeshVertex;
+
+typedef QVector<int> QgsMeshFace;
+
+typedef QPair<int, int> QgsMeshEdge;
+
+struct QgsMesh
+{
+
+  enum ElementType
+  {
+    Vertex,
+    Edge,
+    Face
+  };
+
+  bool contains( const ElementType &type ) const;
+%Docstring
+Returns whether the mesh contains at mesh elements of given type
+
+.. versionadded:: 3.14
+%End
+
+  int vertexCount() const;
+%Docstring
+Returns number of vertices
+%End
+  int faceCount() const;
+%Docstring
+Returns number of faces
+%End
+
+  int edgeCount() const;
+%Docstring
+Returns number of edge
+
+.. versionadded:: 3.14
+%End
+
+  QgsMeshVertex vertex( int index ) const;
+%Docstring
+Returns a vertex at the index
+%End
+  QgsMeshFace face( int index ) const;
+%Docstring
+Returns a face at the index
+%End
+
+  QgsMeshEdge edge( int index ) const;
+%Docstring
+Returns an edge at the index
+
+.. versionadded:: 3.14
+%End
+
+  void clear();
+%Docstring
+Remove all vertices, edges and faces
+
+.. versionadded:: 3.14
+%End
+
+  static bool compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 );
+%Docstring
+Compare two faces, return ``True`` if they are equivalent : same indexes and same clock wise
+
+.. versionadded:: 3.16
+%End
+
+};
+
+class QgsMeshDataSourceInterface /Abstract/
+{
+%Docstring
+
+Interface for mesh data sources
+
+Mesh is a collection of vertices, edges and faces in 2D or 3D space
+
+- vertex - XY(Z) point (in the mesh's coordinate reference system)
+- edge   - two XY(Z) points (in the mesh's coordinate reference system) representing straight seqment
+- faces  - sets of vertices forming a closed shape - typically triangles or quadrilaterals
+
+Base on the underlying data provider/format, whole mesh is either stored in memory or
+read on demand
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    virtual ~QgsMeshDataSourceInterface();
+
+    bool contains( const QgsMesh::ElementType &type ) const;
+%Docstring
+Returns whether the mesh contains at mesh elements of given type
+
+.. versionadded:: 3.14
+%End
+
+    virtual int vertexCount() const = 0;
+%Docstring
+Returns number of vertices in the native mesh
+
+:return: Number of vertices in the mesh
+%End
+
+    virtual int faceCount() const = 0;
+%Docstring
+Returns number of faces in the native mesh
+
+:return: Number of faces in the mesh
+%End
+
+    virtual int edgeCount() const = 0;
+%Docstring
+Returns number of edges in the native mesh
+
+:return: Number of edges in the mesh
+
+.. versionadded:: 3.14
+%End
+
+    virtual void populateMesh( QgsMesh *mesh ) const = 0;
+%Docstring
+Populates the mesh vertices, edges and faces
+
+.. versionadded:: 3.6
+%End
+};
+
+class QgsMeshDatasetSourceInterface /Abstract/
+{
+%Docstring
+Interface for mesh datasets and dataset groups
+
+Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
+Based on the underlying data provider/format, whole dataset is either stored in memory
+or read on demand
+
+Datasets are grouped in the dataset groups. A dataset group represents a measured quantity
+(e.g. depth or wind speed), dataset represents values of the quantity in a particular time.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    QgsMeshDatasetSourceInterface();
+    virtual ~QgsMeshDatasetSourceInterface();
+
+    virtual bool addDataset( const QString &uri ) = 0;
+%Docstring
+Associate dataset with the mesh
+
+emits dataChanged when successful
+%End
+
+    virtual QStringList extraDatasets() const = 0;
+%Docstring
+Returns list of additional dataset file URIs added using :py:func:`~QgsMeshDatasetSourceInterface.addDataset` calls.
+%End
+
+    virtual int datasetGroupCount( ) const = 0;
+%Docstring
+Returns number of datasets groups loaded
+%End
+
+    virtual int datasetCount( int groupIndex ) const = 0;
+%Docstring
+Returns number of datasets loaded in the group
+%End
+
+    int datasetCount( QgsMeshDatasetIndex index ) const;
+%Docstring
+Returns number of datasets loaded in the group
+%End
+
+    virtual QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const = 0;
+%Docstring
+Returns dataset group metadata
+%End
+
+    QgsMeshDatasetGroupMetadata datasetGroupMetadata( QgsMeshDatasetIndex index ) const;
+%Docstring
+Returns dataset group metadata
+%End
+
+    virtual QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const = 0;
+%Docstring
+Returns dataset metadata
+%End
+
+    virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
+%Docstring
+Returns vector/scalar value associated with the index from the dataset
+To read multiple continuous values, use :py:func:`~QgsMeshDatasetSourceInterface.datasetValues`
+
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
+to check if the returned value is vector or scalar
+
+Returns invalid value for DataOnVolumes
+
+.. seealso:: :py:func:`datasetValues`
+%End
+
+    virtual QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const = 0;
+%Docstring
+Returns N vector/scalar values from the index from the dataset
+
+See :py:func:`QgsMeshDatasetMetadata.isVector()` or :py:func:`QgsMeshDataBlock.type()`
+to check if the returned value is vector or scalar
+
+Returns invalid block for DataOnVolumes. Use :py:func:`QgsMeshLayerUtils.datasetValues()` if you
+need block for any type of data type
+
+.. versionadded:: 3.6
+%End
+
+    virtual QgsMesh3dDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+%Docstring
+Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
+
+See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value is vector or scalar
+
+returns invalid block for DataOnFaces and DataOnVertices.
+
+.. seealso:: :py:func:`datasetValues`
+
+.. versionadded:: 3.12
+%End
+
+    virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
+%Docstring
+Returns whether the face is active for particular dataset
+
+For example to represent the situation when F1 and F3 are flooded, but F2 is dry,
+some solvers store water depth on vertices V1-V8 (all non-zero values) and
+set active flag for F2 to ``False``.
+V1 ---- V2 ---- V5-----V7
+|   F1  |   F2   | F3  |
+V3 ---- V4 ---- V6-----V8
+%End
+
+    virtual QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+%Docstring
+Returns whether the faces are active for particular dataset
+
+.. versionadded:: 3.6
+%End
+
+ virtual bool persistDatasetGroup( const QString &path,
+        const QgsMeshDatasetGroupMetadata &meta,
+        const QVector<QgsMeshDataBlock> &datasetValues,
+        const QVector<QgsMeshDataBlock> &datasetActive,
+        const QVector<double> &times
+                                                      ) /Deprecated/;
+%Docstring
+Creates a new dataset group from a data and
+persists it into a destination path
+
+On success, the mesh's dataset group count is changed
+
+:param path: destination path of the stored file in form DRIVER_NAME:path
+:param meta: new group's metadata
+:param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
+:param datasetActive: active flag values for all datasets in the group. Empty array represents can be used
+                      when all faces are active
+:param times: times in hours for all datasets in the group
+
+:return: ``True`` on failure, ``False`` on success
+
+.. note::
+
+   Doesn't work if there is ":" in the path (e.g. Windows system)
+
+
+.. versionadded:: 3.6
+
+.. deprecated::
+   QGIS 3.12.3
+%End
+
+    virtual bool persistDatasetGroup( const QString &outputFilePath,
+                                      const QString &outputDriver,
+                                      const QgsMeshDatasetGroupMetadata &meta,
+                                      const QVector<QgsMeshDataBlock> &datasetValues,
+                                      const QVector<QgsMeshDataBlock> &datasetActive,
+                                      const QVector<double> &times
+                                    ) = 0;
+%Docstring
+Creates a new dataset group from a data and
+persists it into a destination path
+
+On success, the mesh's dataset group count is changed
+
+:param outputFilePath: destination path of the stored file
+:param outputDriver: output driver name
+:param meta: new group's metadata
+:param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
+:param datasetActive: active flag values for all datasets in the group. Empty array represents can be used
+                      when all faces are active
+:param times: times in hours for all datasets in the group
+
+:return: ``True`` on failure, ``False`` on success
+
+.. versionadded:: 3.12.3
+%End
+
+
+    virtual bool persistDatasetGroup( const QString &outputFilePath,
+                                      const QString &outputDriver,
+                                      QgsMeshDatasetSourceInterface *source,
+                                      int datasetGroupIndex
+                                    ) = 0;
+%Docstring
+Saves a an existing dataset group provided by ``source`` to a file with a specified driver
+
+On success, the mesh's dataset group count is changed
+
+:param outputFilePath: destination path of the stored file
+:param outputDriver: output driver name
+:param source: source of the dataset group
+:param datasetGroupIndex: index of the dataset group in the ``source``
+
+:return: ``True`` on failure, ``False`` on success
+
+
+.. versionadded:: 3.16
+%End
+
+    QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
+                                            int groupIndex,
+                                            quint64 time,
+                                            QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
+%Docstring
+Returns the dataset index of the dataset in a specific dataet group at ``time`` from the ``reference`` time
+
+:param referenceTime: the reference time from where to find the dataset
+:param groupIndex: the index of the dataset group
+:param time: the relative time from reference time
+:param method: the method used to check the time
+
+:return: the dataset index
+%End
+
+  protected:
+};
+
+
+class QgsMeshDataProvider: QgsDataProvider, QgsMeshDataSourceInterface, QgsMeshDatasetSourceInterface
+{
+%Docstring
+Base class for providing data for :py:class:`QgsMeshLayer`
+
+Responsible for reading native mesh data
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    QgsMeshDataProvider( const QString &uri,
+                         const QgsDataProvider::ProviderOptions &providerOptions,
+                         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+%Docstring
+Ctor
+%End
+
+    virtual QgsMeshDataProviderTemporalCapabilities *temporalCapabilities();
+
+
+    void setTemporalUnit( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Sets the temporal unit of the provider and reload data if it changes.
+
+:param unit: the temporal unit
+
+.. versionadded:: 3.14
+%End
+
+  signals:
+    void datasetGroupsAdded( int count );
+%Docstring
+Emitted when some new dataset groups have been added
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshdataprovider.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

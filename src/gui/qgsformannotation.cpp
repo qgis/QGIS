@@ -56,13 +56,14 @@ void QgsFormAnnotation::setDesignerForm( const QString &uiFile )
   if ( mDesignerWidget )
   {
     mMinimumSize = mDesignerWidget->minimumSize();
-    if ( fillSymbol() )
+    if ( auto *lFillSymbol = fillSymbol() )
     {
-      QgsFillSymbol *newFill = fillSymbol()->clone();
+      QgsFillSymbol *newFill = lFillSymbol->clone();
       newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
       setFillSymbol( newFill );
     }
-    setFrameSize( preferredFrameSize() );
+    // convert from size in pixels at 96 dpi to mm
+    setFrameSizeMm( preferredFrameSize() / 3.7795275 );
   }
   emit appearanceChanged();
 }
@@ -98,7 +99,14 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
           QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vectorLayer, i, attWidget, widget, context );
           if ( eww )
           {
-            eww->setValue( attrs.at( i ) );
+            const QStringList additionalFields = eww->additionalFields();
+            QVariantList additionalFieldValues;
+            for ( const QString &additionalField : additionalFields )
+            {
+              int index = vectorLayer->fields().indexFromName( additionalField );
+              additionalFieldValues.insert( index, attrs.at( index ) );
+            }
+            eww->setValues( attrs.at( i ), additionalFieldValues );
           }
         }
       }
@@ -111,6 +119,12 @@ void QgsFormAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
 {
   if ( !mDesignerWidget )
     return;
+
+  // scale painter back to 96 dpi, so that forms look good even in layout prints
+  QgsScopedQPainterState painterState( context.painter() );
+  const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
+  context.painter()->scale( scaleFactor, scaleFactor );
+  size /= scaleFactor;
 
   mDesignerWidget->setFixedSize( size.toSize() );
   context.painter()->setBrush( Qt::NoBrush );
@@ -154,7 +168,7 @@ void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 
 void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QLatin1String( "" ) );
+  mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QString() );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {

@@ -1,0 +1,209 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilebasicrenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsVectorTileBasicRendererStyle
+{
+%Docstring
+Definition of map rendering of a subset of vector tile data. The subset of data is defined by:
+
+# sub-layer name
+# geometry type (a single sub-layer may have multiple geometry types)
+# filter expression
+
+Renering is determined by the associated symbol (QgsSymbol). Symbol has to be of the same
+type as the chosen :py:func:`~geometryType` - i.e. QgsMarkerSymbol for points, QgsLineSymbol for linestrings
+and QgsFillSymbol for polygons.
+
+It is possible to further constrain when this style is applied by setting a range of allowed
+zoom levels, or by disabling it.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilebasicrenderer.h"
+%End
+  public:
+    QgsVectorTileBasicRendererStyle( const QString &stName = QString(), const QString &laName = QString(), QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+%Docstring
+Constructs a style object
+%End
+    QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other );
+%Docstring
+Constructs a style object as a copy of another style
+%End
+    ~QgsVectorTileBasicRendererStyle();
+
+    void setStyleName( const QString &name );
+%Docstring
+Sets human readable name of this style
+%End
+    QString styleName() const;
+%Docstring
+Returns human readable name of this style
+%End
+
+    void setLayerName( const QString &name );
+%Docstring
+Sets name of the sub-layer to render (empty layer means that all layers match)
+%End
+    QString layerName() const;
+%Docstring
+Returns name of the sub-layer to render (empty layer means that all layers match)
+%End
+
+    void setGeometryType( QgsWkbTypes::GeometryType geomType );
+%Docstring
+Sets type of the geometry that will be used (point / line / polygon)
+%End
+    QgsWkbTypes::GeometryType geometryType() const;
+%Docstring
+Returns type of the geometry that will be used (point / line / polygon)
+%End
+
+    void setFilterExpression( const QString &expr );
+%Docstring
+Sets filter expression (empty filter means that all features match)
+%End
+    QString filterExpression() const;
+%Docstring
+Returns filter expression (empty filter means that all features match)
+%End
+
+    void setSymbol( QgsSymbol *sym /Transfer/ );
+%Docstring
+Sets symbol for rendering. Takes ownership of the symbol.
+%End
+    QgsSymbol *symbol() const;
+%Docstring
+Returns symbol for rendering
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether this style is enabled (used for rendering)
+%End
+    bool isEnabled() const;
+%Docstring
+Returns whether this style is enabled (used for rendering)
+%End
+
+    void setMinZoomLevel( int minZoom );
+%Docstring
+Sets minimum zoom level index (negative number means no limit)
+%End
+    int minZoomLevel() const;
+%Docstring
+Returns minimum zoom level index (negative number means no limit)
+%End
+
+    void setMaxZoomLevel( int maxZoom );
+%Docstring
+Sets maximum zoom level index (negative number means no limit)
+%End
+    int maxZoomLevel() const;
+%Docstring
+Returns maxnimum zoom level index (negative number means no limit)
+%End
+
+    bool isActive( int zoomLevel ) const;
+%Docstring
+Returns whether the style is active at given zoom level (also checks "enabled" flag)
+%End
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes object content to given DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads object content from given DOM element
+%End
+
+};
+
+
+class QgsVectorTileBasicRenderer : QgsVectorTileRenderer
+{
+%Docstring
+The default vector tile renderer implementation. It has an ordered list of "styles",
+each defines a rendering rule.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilebasicrenderer.h"
+%End
+  public:
+    QgsVectorTileBasicRenderer();
+%Docstring
+Constructs renderer with no styles
+%End
+
+    virtual QString type() const;
+
+    virtual QgsVectorTileBasicRenderer *clone() const /Factory/;
+
+    virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange );
+
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const;
+
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    void setStyles( const QList<QgsVectorTileBasicRendererStyle> &styles );
+%Docstring
+Sets list of styles of the renderer
+%End
+    QList<QgsVectorTileBasicRendererStyle> styles() const;
+%Docstring
+Returns list of styles of the renderer
+%End
+    void setStyle( int index, const QgsVectorTileBasicRendererStyle &style );
+%Docstring
+Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+%End
+    QgsVectorTileBasicRendererStyle style( int index ) const;
+%Docstring
+Returns style definition at the particular index
+%End
+
+    static QList<QgsVectorTileBasicRendererStyle> simpleStyle(
+      const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth,
+      const QColor &lineStrokeColor, double lineStrokeWidth,
+      const QColor &pointFillColor, const QColor &pointStrokeColor, double pointSize );
+%Docstring
+Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
+%End
+
+    static QList<QgsVectorTileBasicRendererStyle> simpleStyleWithRandomColors();
+%Docstring
+Returns a list of styles to render all layers, using random colors
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilebasicrenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

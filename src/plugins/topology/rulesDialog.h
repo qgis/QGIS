@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          date                 : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -20,7 +20,6 @@
 
 #include <QDialog>
 
-#include <qgsvectorlayer.h>
 
 #include "ui_rulesDialog.h"
 #include "topolTest.h"
@@ -41,7 +40,7 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      * \param parent parent widget
      */
     rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent );
-    ~rulesDialog();
+
     /*
      * Returns pointer to the test table
      */
@@ -100,11 +99,12 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      */
     void projectRead();
     /*
-     * Updates Rule combobox to mach first layer
+     * Updates Rule combobox to match first layer
      * \param layerId layer ID
      */
     void updateRuleItems( const QString &layerName );
-
+    //! Open the associated help
+    void showHelp();
 
 
 

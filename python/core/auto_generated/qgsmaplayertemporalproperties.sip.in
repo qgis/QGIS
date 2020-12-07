@@ -1,0 +1,92 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayertemporalproperties.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsMapLayerTemporalProperties : QgsTemporalProperty
+{
+%Docstring
+Base class for storage of map layer temporal properties.
+
+QgsMapLayerTemporalProperties exposes user-configurable settings for controlling
+how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsRasterLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerTemporalProperties;
+    }
+    else if ( qobject_cast<QgsMeshLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshLayerTemporalProperties;
+    }
+    else if ( qobject_cast<QgsVectorLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorLayerTemporalProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    QgsMapLayerTemporalProperties( QObject *parent /TransferThis/, bool enabled = false );
+%Docstring
+Constructor for QgsMapLayerTemporalProperties, with the specified ``parent`` object.
+
+The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see :py:func:`~QgsMapLayerTemporalProperties.isActive`).
+%End
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Writes the properties to a DOM ``element``, to be used later with :py:func:`~QgsMapLayerTemporalProperties.readXml`.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads temporal properties from a DOM ``element`` previously written by :py:func:`~QgsMapLayerTemporalProperties.writeXml`.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
+%Docstring
+Returns ``True`` if the layer should be visible and rendered for the specified time ``range``.
+%End
+
+    virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) = 0;
+%Docstring
+Sets the layers temporal settings to appropriate defaults based on
+a provider's temporal ``capabilities``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayertemporalproperties.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

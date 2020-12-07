@@ -16,14 +16,15 @@
 #define QGSEDITORWIDGETAUTOCONF_H
 
 #include <QList>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include <memory>
 
 class QgsVectorLayer;
 class QgsEditorWidgetSetup;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Base class for plugins allowing to pick automatically a widget type for editing fields.
  *
  * \since QGIS 3.0
@@ -32,11 +33,14 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 {
   public:
 
+    virtual ~QgsEditorWidgetAutoConfPlugin() = default;
+
     /**
      * Typical scores are:
-     *   * 0: no matching type found.
-     *   * 10: a widget has been guessed from the type of field.
-     *   * 20: a widget has been determined from an external configuration (for example a database table)
+     *
+     * - 0: no matching type found.
+     * - 10: a widget has been guessed from the type of field.
+     * - 20: a widget has been determined from an external configuration (for example a database table)
      *
      * \param vl        The vector layer for which this widget will be created
      * \param fieldName The field name on the specified layer for which this widget will be created
@@ -51,13 +55,14 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 
 ///@cond PRIVATE
 
-/** \ingroup gui
- * Class that allows to register plugins to pick automatically a widget type for editing fields.
+/**
+ * \ingroup gui
+ * Class that allows registering plugins to pick automatically a widget type for editing fields.
  * This class has only one instance, owned by the QgsEditorWidgetRegistry singleton
  *
  * The plugins are instances of QgsEditorWidgetAutoConfPlugin.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsEditorWidgetAutoConf SIP_SKIP
 {
@@ -86,7 +91,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConf SIP_SKIP
     void registerPlugin( QgsEditorWidgetAutoConfPlugin *plugin );
 
   private:
-    QList<std::shared_ptr<QgsEditorWidgetAutoConfPlugin> > plugins;
+    QList<std::shared_ptr<QgsEditorWidgetAutoConfPlugin> > mPlugins;
 };
 ///@endcond
 

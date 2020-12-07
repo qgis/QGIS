@@ -9,9 +9,8 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier'
 __date__ = '07/01/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
+import os
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
@@ -53,6 +52,12 @@ class TestQgsLayerDefinition(unittest.TestCase):
         self.assertEqual(nodes[1].firstChildElement("id").text(), "layerB")
         self.assertEqual(nodeIds[0], "layerA")
         self.assertEqual(nodeIds[1], "layerB")
+
+    def testDependencyQgz(self):
+        path = os.path.join(TEST_DATA_DIR, "embedded_groups", "project1.qgz")
+        dep = QgsLayerDefinition.DependencySorter(path)
+        ids = dep.sortedLayerIds()
+        self.assertEqual(len(ids), 3)
 
     def testMissingDependency(self):
         inDoc = """
@@ -108,6 +113,21 @@ class TestQgsLayerDefinition(unittest.TestCase):
 
         layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 2)
+        QgsProject.instance().removeAllMapLayers()
+
+    def testInvalidSource(self):
+        # Load a QLR containing a vector layer with a broken path
+        QgsProject.instance().removeAllMapLayers()
+        layers = QgsProject.instance().mapLayers()
+        self.assertEqual(len(layers), 0)
+
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/invalid_source.qlr', QgsProject.instance(), QgsProject.instance().layerTreeRoot())
+        self.assertTrue(result)
+        self.assertFalse(errMsg)
+
+        layers = QgsProject.instance().mapLayers()
+        self.assertEqual(len(layers), 1)
+        self.assertFalse(list(layers.values())[0].isValid())
         QgsProject.instance().removeAllMapLayers()
 
 

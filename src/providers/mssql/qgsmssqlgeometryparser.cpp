@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 
-/*   SqlGeometry serialization format
+/*   SqlGeometry/SqlGeography serialization format
 
 Simple Point (SerializationProps & IsSinglePoint)
   [SRID][0x01][SerializationProps][Point][z][m]
@@ -29,8 +29,16 @@ Simple Line Segment (SerializationProps & IsSingleLineSegment)
   [SRID][0x01][SerializationProps][Point1][Point2][z1][z2][m1][m2]
 
 Complex Geometries
-  [SRID][0x01][SerializationProps][NumPoints][Point1]..[PointN][z1]..[zN][m1]..[mN]
+  [SRID][VersionAttribute][SerializationProps][NumPoints][Point1]..[PointN][z1]..[zN][m1]..[mN]
   [NumFigures][Figure]..[Figure][NumShapes][Shape]..[Shape]
+
+Complex Geometries (FigureAttribute == Curve)
+  [SRID][VersionAttribute][SerializationProps][NumPoints][Point1]..[PointN][z1]..[zN][m1]..[mN]
+  [NumFigures][Figure]..[Figure][NumShapes][Shape]..[Shape][NumSegments][SegmentType]..[SegmentType]
+
+VersionAttribute (1 byte)
+  0x01 = Katmai (MSSQL2008+)
+  0x02 = Denali (MSSQL2012+)
 
 SRID
   Spatial Reference Id (4 bytes)
@@ -41,7 +49,7 @@ SerializationProps (bitmask) 1 byte
   0x04 = IsValid
   0x08 = IsSinglePoint
   0x10 = IsSingleLineSegment
-  0x20 = IsWholeGlobe
+  0x20 = IsLargerThanAHemisphere
 
 Point (2-4)x8 bytes, size depends on SerializationProps & HasZValues & HasMValues
   [x][y]                  - SqlGeometry
@@ -50,10 +58,16 @@ Point (2-4)x8 bytes, size depends on SerializationProps & HasZValues & HasMValue
 Figure
   [FigureAttribute][PointOffset]
 
-FigureAttribute (1 byte)
+FigureAttribute - Katmai (1 byte)
   0x00 = Interior Ring
   0x01 = Stroke
   0x02 = Exterior Ring
+
+FigureAttribute - Denali (1 byte)
+  0x00 = None
+  0x01 = Line
+  0x02 = Arc
+  0x03 = Curve
 
 Shape
   [ParentFigureOffset][FigureOffset][ShapeType]
@@ -67,6 +81,17 @@ ShapeType (1 byte)
   0x05 = MultiLineString
   0x06 = MultiPolygon
   0x07 = GeometryCollection
+  -- Denali
+  0x08 = CircularString
+  0x09 = CompoundCurve
+  0x0A = CurvePolygon
+  0x0B = FullGlobe
+
+SegmentType (1 byte)
+  0x00 = Line
+  0x01 = Arc
+  0x02 = FirstLine
+  0x03 = FirstArc
 
 */
 
@@ -74,13 +99,16 @@ ShapeType (1 byte)
 /*                         Geometry parser macros                       */
 /************************************************************************/
 
+#define VA_KATMAI 0x01
+#define VA_DENALI 0x02
+
 #define SP_NONE 0
 #define SP_HASZVALUES 1
 #define SP_HASMVALUES 2
 #define SP_ISVALID 4
 #define SP_ISSINGLEPOINT 8
 #define SP_ISSINGLELINESEGMENT 0x10
-#define SP_ISWHOLEGLOBE 0x20
+#define SP_ISLARGERTHANAHEMISPHERE 0x20
 
 #define ST_UNKNOWN 0
 #define ST_POINT 1
@@ -90,48 +118,48 @@ ShapeType (1 byte)
 #define ST_MULTILINESTRING 5
 #define ST_MULTIPOLYGON 6
 #define ST_GEOMETRYCOLLECTION 7
+#define ST_CIRCULARSTRING 8
+#define ST_COMPOUNDCURVE 9
+#define ST_CURVEPOLYGON 10
+#define ST_FULLGLOBE 11
 
-#define ReadInt32(nPos) (*((unsigned int*)(pszData + (nPos))))
+#define FA_INTERIORRING 0x00
+#define FA_STROKE 0x01
+#define FA_EXTERIORRING 0x02
 
-#define ReadByte(nPos) (pszData[nPos])
+#define FA_NONE 0x00
+#define FA_LINE 0x01
+#define FA_ARC 0x02
+#define FA_CURVE 0x03
 
-#define ReadDouble(nPos) (*((double*)(pszData + (nPos))))
+#define SMT_LINE 0
+#define SMT_ARC 1
+#define SMT_FIRSTLINE 2
+#define SMT_FIRSTARC 3
 
-#define ParentOffset(iShape) (ReadInt32(nShapePos + (iShape) * 9 ))
-#define FigureOffset(iShape) (ReadInt32(nShapePos + (iShape) * 9 + 4))
-#define ShapeType(iShape) (ReadByte(nShapePos + (iShape) * 9 + 8))
+#define ReadInt32(nPos) (*((unsigned int*)(mData + (nPos))))
 
-#define NextFigureOffset(iShape) (iShape + 1 < nNumShapes? FigureOffset((iShape) +1) : nNumFigures)
+#define ReadByte(nPos) (mData[nPos])
 
-#define FigureAttribute(iFigure) (ReadByte(nFigurePos + (iFigure) * 5))
-#define PointOffset(iFigure) (ReadInt32(nFigurePos + (iFigure) * 5 + 1))
-#define NextPointOffset(iFigure) (iFigure + 1 < nNumFigures? PointOffset((iFigure) +1) : nNumPoints)
+#define ReadDouble(nPos) (*((double*)(mData + (nPos))))
 
-#define ReadX(iPoint) (ReadDouble(nPointPos + 16 * (iPoint)))
-#define ReadY(iPoint) (ReadDouble(nPointPos + 16 * (iPoint) + 8))
-#define ReadZ(iPoint) (ReadDouble(nPointPos + 16 * nNumPoints + 8 * (iPoint)))
-#define ReadM(iPoint) (ReadDouble(nPointPos + 24 * nNumPoints + 8 * (iPoint)))
+#define ParentOffset(iShape) (ReadInt32(mShapePos + (iShape) * 9 ))
+#define FigureOffset(iShape) (ReadInt32(mShapePos + (iShape) * 9 + 4))
+#define ShapeType(iShape) (ReadByte(mShapePos + (iShape) * 9 + 8))
+#define SegmentType(iSegment) (ReadByte(mSegmentPos + (iSegment)))
 
-/************************************************************************/
-/*                   QgsMssqlGeometryParser()                           */
-/************************************************************************/
+#define NextFigureOffset(iShape) (iShape + 1 < mNumShapes? FigureOffset((iShape) +1) : mNumFigures)
+
+#define FigureAttribute(iFigure) (ReadByte(mFigurePos + (iFigure) * 5))
+#define PointOffset(iFigure) (ReadInt32(mFigurePos + (iFigure) * 5 + 1))
+#define NextPointOffset(iFigure) (iFigure + 1 < mNumFigures? PointOffset((iFigure) +1) : mNumPoints)
+
+#define ReadX(iPoint) (ReadDouble(mPointPos + 16 * (iPoint)))
+#define ReadY(iPoint) (ReadDouble(mPointPos + 16 * (iPoint) + 8))
+#define ReadZ(iPoint) (ReadDouble(mPointPos + 16 * mNumPoints + 8 * (iPoint)))
+#define ReadM(iPoint) (ReadDouble(mPointPos + 24 * mNumPoints + 8 * (iPoint)))
 
 QgsMssqlGeometryParser::QgsMssqlGeometryParser()
-  : pszData( nullptr )
-  , pszWkb( nullptr )
-  , nWkbLen( 0 )
-  , nWkbMaxLen( 100 )
-  , chByteOrder( QgsApplication::endian() )
-  , chProps( 0 )
-  , nPointSize( 0 )
-  , nPointPos( 0 )
-  , nNumPoints( 0 )
-  , nFigurePos( 0 )
-  , nNumFigures( 0 )
-  , nShapePos( 0 )
-  , nNumShapes( 0 )
-  , nSRSId( 0 )
-  , IsGeography( false )
 {
 }
 
@@ -162,461 +190,555 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char 
   file.write( "\n" );
   file.close();
 #else
-  Q_UNUSED( pszMsg );
-  Q_UNUSED( pszInput );
-  Q_UNUSED( nLen );
+  Q_UNUSED( pszMsg )
+  Q_UNUSED( pszInput )
+  Q_UNUSED( nLen )
 #endif
 }
 
-/************************************************************************/
-/*                         CopyBytes()                                  */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::CopyBytes( void *src, int len )
+QgsPoint QgsMssqlGeometryParser::readCoordinates( int iPoint )
 {
-  if ( nWkbLen + len > nWkbMaxLen )
+  if ( mIsGeography )
   {
-    QgsDebugMsg( "CopyBytes wkb buffer realloc" );
-    unsigned char *pszWkbTmp = new unsigned char[nWkbLen + len + 100];
-    memcpy( pszWkbTmp, pszWkb, nWkbLen );
-    delete[] pszWkb;
-    pszWkb = pszWkbTmp;
-    nWkbMaxLen = nWkbLen + len + 100;
-  }
-  memcpy( pszWkb + nWkbLen, src, len );
-  nWkbLen += len;
-}
-
-/************************************************************************/
-/*                         CopyCoordinates()                            */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::CopyCoordinates( int iPoint )
-{
-  if ( IsGeography )
-  {
-    CopyBytes( pszData + nPointPos + 16 * iPoint + 8, 8 ); // longitude
-    CopyBytes( pszData + nPointPos + 16 * iPoint, 8 ); // latitude
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
+      return QgsPoint( QgsWkbTypes::PointZM, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
+    else if ( mProps & SP_HASZVALUES )
+      return QgsPoint( QgsWkbTypes::PointZ, ReadY( iPoint ), ReadX( iPoint ), ReadZ( iPoint ) );
+    else if ( mProps & SP_HASMVALUES )
+      return QgsPoint( QgsWkbTypes::PointM, ReadY( iPoint ), ReadX( iPoint ), 0.0, ReadZ( iPoint ) );
+    else
+      return QgsPoint( QgsWkbTypes::Point, ReadY( iPoint ), ReadX( iPoint ) );
   }
   else
-    // copy geometry coords
-    CopyBytes( pszData + nPointPos + 16 * iPoint, 16 );
-
-  if ( chProps & SP_HASZVALUES )
-    CopyBytes( pszData + nPointPos + 16 * nNumPoints + 8 * iPoint, 8 ); // copy z value
-}
-
-/************************************************************************/
-/*                         CopyPoint()                                  */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::CopyPoint( int iPoint )
-{
-  // copy byte order
-  CopyBytes( &chByteOrder, 1 );
-  // copy type
-  int wkbType;
-  if ( chProps & SP_HASZVALUES )
-    wkbType = QgsWkbTypes::Point25D;
-  else
-    wkbType = QgsWkbTypes::Point;
-  CopyBytes( &wkbType, 4 );
-  // copy coordinates
-  CopyCoordinates( iPoint );
-}
-
-/************************************************************************/
-/*                         ReadPoint()                                  */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::ReadPoint( int iShape )
-{
-  int iFigure = FigureOffset( iShape );
-  if ( iFigure < nNumFigures )
   {
-    int iPoint = PointOffset( iFigure );
-    if ( iPoint < nNumPoints )
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
+      return QgsPoint( QgsWkbTypes::PointZM, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ), ReadM( iPoint ) );
+    else if ( mProps & SP_HASZVALUES )
+      return QgsPoint( QgsWkbTypes::PointZ, ReadX( iPoint ), ReadY( iPoint ), ReadZ( iPoint ) );
+    else if ( mProps & SP_HASMVALUES )
+      return QgsPoint( QgsWkbTypes::PointM, ReadX( iPoint ), ReadY( iPoint ), 0.0, ReadZ( iPoint ) );
+    else
+      return QgsPoint( QgsWkbTypes::Point, ReadX( iPoint ), ReadY( iPoint ) );
+  }
+}
+
+void QgsMssqlGeometryParser::readCoordinates( int iPoint, int iNextPoint, double *x, double *y, double *z, double *m )
+{
+  int i = 0;
+  if ( mIsGeography )
+  {
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
     {
-      CopyPoint( iPoint );
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        z[i] = ReadZ( iPoint );
+        m[i] = ReadM( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASZVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        z[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASMVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        m[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadY( iPoint );
+        y[i] = ReadX( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+  }
+  else
+  {
+    if ( ( mProps & SP_HASZVALUES ) && ( mProps & SP_HASMVALUES ) )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        z[i] = ReadZ( iPoint );
+        m[i] = ReadM( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASZVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        z[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else if ( mProps & SP_HASMVALUES )
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        m[i] = ReadZ( iPoint );
+        ++iPoint;
+        ++i;
+      }
+    }
+    else
+    {
+      while ( iPoint < iNextPoint )
+      {
+        x[i] = ReadX( iPoint );
+        y[i] = ReadY( iPoint );
+        ++iPoint;
+        ++i;
+      }
     }
   }
 }
 
-/************************************************************************/
-/*                         ReadMultiPoint()                             */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::ReadMultiPoint( int iShape )
+const QgsPointSequence QgsMssqlGeometryParser::readPointSequence( int iPoint, int iNextPoint )
 {
-  int i, iCount;
-  iCount = nNumShapes - iShape - 1;
-  if ( iCount <= 0 )
-    return;
-  // copy byte order
-  CopyBytes( &chByteOrder, 1 );
-  // copy type
-  int wkbType;
-  if ( chProps & SP_HASZVALUES )
-    wkbType = QgsWkbTypes::MultiPoint25D;
-  else
-    wkbType = QgsWkbTypes::MultiPoint;
-  CopyBytes( &wkbType, 4 );
-  // copy point count
-  CopyBytes( &iCount, 4 );
-  // copy points
-  for ( i = iShape + 1; i < nNumShapes; i++ )
+  if ( iPoint >= iNextPoint )
+    return QgsPointSequence();
+
+  QgsPointSequence pts;
+
+  while ( iPoint < iNextPoint )
+  {
+    pts << readCoordinates( iPoint );
+    ++iPoint;
+  }
+
+  return pts;
+}
+
+std::unique_ptr< QgsPoint > QgsMssqlGeometryParser::readPoint( int iFigure )
+{
+  if ( iFigure < mNumFigures )
+  {
+    int iPoint = PointOffset( iFigure );
+    if ( iPoint < mNumPoints )
+    {
+      return qgis::make_unique< QgsPoint >( readCoordinates( iPoint ) );
+    }
+  }
+  return nullptr;
+}
+
+std::unique_ptr< QgsMultiPoint > QgsMssqlGeometryParser::readMultiPoint( int iShape )
+{
+  std::unique_ptr< QgsMultiPoint > poMultiPoint = qgis::make_unique< QgsMultiPoint >();
+  poMultiPoint->reserve( mNumShapes );
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
       if ( ShapeType( i ) == ST_POINT )
-        ReadPoint( i );
+        poMultiPoint->addGeometry( readPoint( FigureOffset( i ) ).release() );
     }
   }
+
+  return poMultiPoint;
 }
 
-/************************************************************************/
-/*                         ReadLineString()                             */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::ReadLineString( int iShape )
+std::unique_ptr< QgsLineString > QgsMssqlGeometryParser::readLineString( int iPoint, int iNextPoint )
 {
-  int iFigure, iPoint, iNextPoint, i, iCount;
-  iFigure = FigureOffset( iShape );
+  QVector< double > xOut( iNextPoint - iPoint );
+  QVector< double > yOut( iNextPoint - iPoint );
+  QVector< double > zOut;
+  if ( mProps & SP_HASZVALUES )
+    zOut.resize( iNextPoint - iPoint );
+  QVector< double > mOut;
+  if ( mProps & SP_HASMVALUES )
+    mOut.resize( iNextPoint - iPoint );
+  double *x = xOut.data();
+  double *y = yOut.data();
+  double *z = zOut.data();
+  double *m = mOut.data();
 
-  iPoint = PointOffset( iFigure );
-  iNextPoint = NextPointOffset( iFigure );
-  iCount = iNextPoint - iPoint;
-  if ( iCount <= 0 )
-    return;
-  // copy byte order
-  CopyBytes( &chByteOrder, 1 );
-  // copy type
-  int wkbType;
-  if ( chProps & SP_HASZVALUES )
-    wkbType = QgsWkbTypes::LineString25D;
-  else
-    wkbType = QgsWkbTypes::LineString;
-  CopyBytes( &wkbType, 4 );
-  // copy length
-  CopyBytes( &iCount, 4 );
-  // copy coordinates
-  i = 0;
-  while ( iPoint < iNextPoint )
-  {
-    CopyCoordinates( iPoint );
-    ++iPoint;
-    ++i;
-  }
+  readCoordinates( iPoint, iNextPoint, x, y, z, m );
+
+  return qgis::make_unique< QgsLineString >( xOut, yOut, zOut, mOut );
 }
 
-/************************************************************************/
-/*                         ReadMultiLineString()                        */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::ReadMultiLineString( int iShape )
+std::unique_ptr< QgsLineString > QgsMssqlGeometryParser::readLineString( int iFigure )
 {
-  int i, iCount;
-  iCount = nNumShapes - iShape - 1;
-  if ( iCount <= 0 )
-    return;
-  // copy byte order
-  CopyBytes( &chByteOrder, 1 );
-  // copy type
-  int wkbType;
-  if ( chProps & SP_HASZVALUES )
-    wkbType = QgsWkbTypes::MultiLineString25D;
-  else
-    wkbType = QgsWkbTypes::MultiLineString;
-  CopyBytes( &wkbType, 4 );
-  // copy length
-  CopyBytes( &iCount, 4 );
-  // copy linestrings
-  for ( i = iShape + 1; i < nNumShapes; i++ )
+  return readLineString( PointOffset( iFigure ), NextPointOffset( iFigure ) );
+}
+
+std::unique_ptr< QgsCircularString > QgsMssqlGeometryParser::readCircularString( int iPoint, int iNextPoint )
+{
+  std::unique_ptr< QgsCircularString > poCircularString = qgis::make_unique< QgsCircularString >();
+  poCircularString->setPoints( readPointSequence( iPoint, iNextPoint ) );
+  return poCircularString;
+}
+
+std::unique_ptr< QgsCircularString > QgsMssqlGeometryParser::readCircularString( int iFigure )
+{
+  return readCircularString( PointOffset( iFigure ), NextPointOffset( iFigure ) );
+}
+
+std::unique_ptr< QgsMultiLineString > QgsMssqlGeometryParser::readMultiLineString( int iShape )
+{
+  std::unique_ptr< QgsMultiLineString > poMultiLineString = qgis::make_unique< QgsMultiLineString >();
+  poMultiLineString->reserve( mNumShapes );
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
       if ( ShapeType( i ) == ST_LINESTRING )
-        ReadLineString( i );
+        poMultiLineString->addGeometry( readLineString( FigureOffset( i ) ).release() );
     }
   }
+
+  return poMultiLineString;
 }
 
-/************************************************************************/
-/*                         ReadPolygon()                                */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::ReadPolygon( int iShape )
+std::unique_ptr< QgsPolygon > QgsMssqlGeometryParser::readPolygon( int iShape )
 {
-  int iFigure, iPoint, iNextPoint, iCount, i;
+  int iFigure;
+  int iRingCount = 0;
   int iNextFigure = NextFigureOffset( iShape );
-  iCount = iNextFigure - FigureOffset( iShape );
-  if ( iCount <= 0 )
-    return;
-  // copy byte order
-  CopyBytes( &chByteOrder, 1 );
-  // copy type
-  int wkbType;
-  if ( chProps & SP_HASZVALUES )
-    wkbType = QgsWkbTypes::Polygon25D;
-  else
-    wkbType = QgsWkbTypes::Polygon;
-  CopyBytes( &wkbType, 4 );
-  // copy ring count
-  CopyBytes( &iCount, 4 );
-  // copy rings
+
+  std::unique_ptr< QgsPolygon > poPoly = qgis::make_unique< QgsPolygon >();
   for ( iFigure = FigureOffset( iShape ); iFigure < iNextFigure; iFigure++ )
   {
-    iPoint = PointOffset( iFigure );
-    iNextPoint = NextPointOffset( iFigure );
-    iCount = iNextPoint - iPoint;
-    if ( iCount <= 0 )
-      continue;
-    // copy point count
-    CopyBytes( &iCount, 4 );
-    // copy coordinates
-    i = 0;
-    while ( iPoint < iNextPoint )
-    {
-      CopyCoordinates( iPoint );
-      ++iPoint;
-      ++i;
-    }
+    if ( iRingCount == 0 )
+      poPoly->setExteriorRing( readLineString( iFigure ).release() );
+    else
+      poPoly->addInteriorRing( readLineString( iFigure ).release() );
+
+    ++iRingCount;
   }
+  return poPoly;
 }
 
-/************************************************************************/
-/*                         ReadMultiPolygon()                           */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
+std::unique_ptr< QgsMultiPolygon > QgsMssqlGeometryParser::readMultiPolygon( int iShape )
 {
-  int i;
-  int iCount = nNumShapes - iShape - 1;
-  if ( iCount <= 0 )
-    return;
-  // copy byte order
-  CopyBytes( &chByteOrder, 1 );
-  // copy type
-  int wkbType;
-  if ( chProps & SP_HASZVALUES )
-    wkbType = QgsWkbTypes::MultiPolygon25D;
-  else
-    wkbType = QgsWkbTypes::MultiPolygon;
-  CopyBytes( &wkbType, 4 );
-  // copy poly count
-  CopyBytes( &iCount, 4 );
-  // copy polygons
-  for ( i = iShape + 1; i < nNumShapes; i++ )
+  std::unique_ptr< QgsMultiPolygon > poMultiPolygon = qgis::make_unique< QgsMultiPolygon >();
+  poMultiPolygon->reserve( mNumShapes );
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
       if ( ShapeType( i ) == ST_POLYGON )
-        ReadPolygon( i );
+        poMultiPolygon->addGeometry( readPolygon( i ).release() );
     }
   }
+
+  return poMultiPolygon;
 }
 
-/************************************************************************/
-/*                         ReadGeometryCollection()                     */
-/************************************************************************/
-
-void QgsMssqlGeometryParser::ReadGeometryCollection( int iShape )
+std::unique_ptr< QgsCompoundCurve > QgsMssqlGeometryParser::readCompoundCurve( int iFigure )
 {
-  int i;
-  int iCount = nNumShapes - iShape - 1;
-  if ( iCount <= 0 )
-    return;
-  // copy byte order
-  CopyBytes( &chByteOrder, 1 );
-  // copy type
-  int wkbType = QgsWkbTypes::Unknown;
-  CopyBytes( &wkbType, 4 );
-  // copy geom count
-  CopyBytes( &iCount, 4 );
-  for ( i = iShape + 1; i < nNumShapes; i++ )
+  int iPoint, iNextPoint, nPointsPrepared;
+  std::unique_ptr< QgsCompoundCurve > poCompoundCurve = qgis::make_unique< QgsCompoundCurve >();
+  iPoint = PointOffset( iFigure );
+  iNextPoint = NextPointOffset( iFigure ) - 1;
+
+  std::unique_ptr< QgsCurve > poGeom;
+
+  nPointsPrepared = 0;
+  bool isCurve = false;
+  while ( iPoint < iNextPoint && mSegment < mNumSegments )
+  {
+    switch ( SegmentType( mSegment ) )
+    {
+      case SMT_FIRSTLINE:
+        if ( nPointsPrepared > 0 )
+        {
+          if ( isCurve )
+            poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+          else
+            poCompoundCurve->addCurve( readLineString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+        }
+        isCurve = false;
+        nPointsPrepared = 1;
+        ++iPoint;
+        break;
+      case SMT_LINE:
+        ++nPointsPrepared;
+        ++iPoint;
+        break;
+      case SMT_FIRSTARC:
+        if ( nPointsPrepared > 0 )
+        {
+          if ( isCurve )
+            poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+          else
+            poCompoundCurve->addCurve( readLineString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+        }
+        isCurve = true;
+        nPointsPrepared = 2;
+        iPoint += 2;
+        break;
+      case SMT_ARC:
+        nPointsPrepared += 2;
+        iPoint += 2;
+        break;
+    }
+    ++mSegment;
+  }
+
+  // adding the last curve
+  if ( iPoint == iNextPoint )
+  {
+    if ( isCurve )
+      poCompoundCurve->addCurve( readCircularString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+    else
+      poCompoundCurve->addCurve( readLineString( iPoint - nPointsPrepared, iPoint + 1 ).release() );
+  }
+
+  return poCompoundCurve;
+}
+
+std::unique_ptr< QgsCurvePolygon > QgsMssqlGeometryParser::readCurvePolygon( int iShape )
+{
+  int iFigure;
+  int iRingCount = 0;
+  int iNextFigure = NextFigureOffset( iShape );
+
+  std::unique_ptr< QgsCurvePolygon > poPoly = qgis::make_unique< QgsCurvePolygon >();
+  for ( iFigure = FigureOffset( iShape ); iFigure < iNextFigure; iFigure++ )
+  {
+    switch ( FigureAttribute( iFigure ) )
+    {
+      case FA_LINE:
+        if ( iRingCount == 0 )
+          poPoly->setExteriorRing( readLineString( iFigure ).release() );
+        else
+          poPoly->addInteriorRing( readLineString( iFigure ).release() );
+        break;
+      case FA_ARC:
+        if ( iRingCount == 0 )
+          poPoly->setExteriorRing( readCircularString( iFigure ).release() );
+        else
+          poPoly->addInteriorRing( readCircularString( iFigure ).release() );
+        break;
+      case FA_CURVE:
+        if ( iRingCount == 0 )
+          poPoly->setExteriorRing( readCompoundCurve( iFigure ).release() );
+        else
+          poPoly->addInteriorRing( readCompoundCurve( iFigure ).release() );
+        break;
+    }
+    ++iRingCount;
+  }
+  return poPoly;
+}
+
+std::unique_ptr< QgsGeometryCollection > QgsMssqlGeometryParser::readGeometryCollection( int iShape )
+{
+  std::unique_ptr< QgsGeometryCollection> poGeomColl = qgis::make_unique< QgsGeometryCollection >();
+  poGeomColl->reserve( mNumShapes );
+  for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
     if ( ParentOffset( i ) == ( unsigned int )iShape )
     {
       switch ( ShapeType( i ) )
       {
         case ST_POINT:
-          ReadPoint( i );
+          poGeomColl->addGeometry( readPoint( FigureOffset( i ) ).release() );
           break;
         case ST_LINESTRING:
-          ReadLineString( i );
+          poGeomColl->addGeometry( readLineString( FigureOffset( i ) ).release() );
           break;
         case ST_POLYGON:
-          ReadPolygon( i );
+          poGeomColl->addGeometry( readPolygon( i ).release() );
           break;
         case ST_MULTIPOINT:
-          ReadMultiPoint( i );
+          poGeomColl->addGeometry( readMultiPoint( i ).release() );
           break;
         case ST_MULTILINESTRING:
-          ReadMultiLineString( i );
+          poGeomColl->addGeometry( readMultiLineString( i ).release() );
           break;
         case ST_MULTIPOLYGON:
-          ReadMultiPolygon( i );
+          poGeomColl->addGeometry( readMultiPolygon( i ).release() );
           break;
         case ST_GEOMETRYCOLLECTION:
-          ReadGeometryCollection( i );
+          poGeomColl->addGeometry( readGeometryCollection( i ).release() );
+          break;
+        case ST_CIRCULARSTRING:
+          poGeomColl->addGeometry( readCircularString( FigureOffset( i ) ).release() );
+          break;
+        case ST_COMPOUNDCURVE:
+          poGeomColl->addGeometry( readCompoundCurve( FigureOffset( i ) ).release() );
+          break;
+        case ST_CURVEPOLYGON:
+          poGeomColl->addGeometry( readCurvePolygon( i ).release() );
           break;
       }
     }
   }
+
+  return poGeomColl;
 }
 
-/************************************************************************/
-/*                         ParseSqlGeometry()                           */
-/************************************************************************/
-
-unsigned char *QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char *pszInput, int nLen )
+std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( unsigned char *pszInput, int nLen )
 {
   if ( nLen < 10 )
   {
-    QgsDebugMsg( "ParseSqlGeometry not enough data" );
+    QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
     DumpMemoryToLog( "Not enough data", pszInput, nLen );
     return nullptr;
   }
 
-  pszData = pszInput;
-  nWkbMaxLen = nLen;
+  mData = pszInput;
 
   /* store the SRS id for further use */
-  nSRSId = ReadInt32( 0 );
+  mSRSId = ReadInt32( 0 );
 
-  if ( ReadByte( 4 ) != 1 )
+  mVersion = ReadByte( 4 );
+
+  if ( mVersion == 0 || mVersion > 2 )
   {
-    QgsDebugMsg( "ParseSqlGeometry corrupt data" );
+    QgsDebugMsg( QStringLiteral( "ParseSqlGeometry corrupt data" ) );
     DumpMemoryToLog( "Corrupt data", pszInput, nLen );
     return nullptr;
   }
 
-  chProps = ReadByte( 5 );
+  mProps = ReadByte( 5 );
 
-  if ( chProps & SP_HASZVALUES && chProps & SP_HASMVALUES )
-    nPointSize = 32;
-  else if ( chProps & SP_HASZVALUES || chProps & SP_HASMVALUES )
-    nPointSize = 24;
+  if ( mProps & SP_HASZVALUES && mProps & SP_HASMVALUES )
+    mPointSize = 32;
+  else if ( mProps & SP_HASZVALUES || mProps & SP_HASMVALUES )
+    mPointSize = 24;
   else
-    nPointSize = 16;
+    mPointSize = 16;
 
-  /* store byte order */
-  chByteOrder = QgsApplication::endian();
+  std::unique_ptr< QgsAbstractGeometry> poGeom;
 
-  pszWkb = new unsigned char[nLen]; // wkb should be less or equal in size
-  nWkbLen = 0;
-
-  if ( chProps & SP_ISSINGLEPOINT )
+  if ( mProps & SP_ISSINGLEPOINT )
   {
     // single point geometry
-    nNumPoints = 1;
-    nPointPos = 6;
+    mNumPoints = 1;
+    mPointPos = 6;
 
-    if ( nLen < 6 + nPointSize )
+    if ( nLen < 6 + mPointSize )
     {
-      delete [] pszWkb;
-      QgsDebugMsg( "ParseSqlGeometry not enough data" );
+      QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    CopyPoint( 0 );
+    poGeom = qgis::make_unique< QgsPoint >( readCoordinates( 0 ) );
   }
-  else if ( chProps & SP_ISSINGLELINESEGMENT )
+  else if ( mProps & SP_ISSINGLELINESEGMENT )
   {
     // single line segment with 2 points
-    nNumPoints = 2;
-    nPointPos = 6;
+    mNumPoints = 2;
+    mPointPos = 6;
 
-    if ( nLen < 6 + 2 * nPointSize )
+    if ( nLen < 6 + 2 * mPointSize )
     {
-      delete [] pszWkb;
-      QgsDebugMsg( "ParseSqlGeometry not enough data" );
+      QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    // copy byte order
-    CopyBytes( &chByteOrder, 1 );
-    // copy type
-    int wkbType;
-    if ( chProps & SP_HASZVALUES )
-      wkbType = QgsWkbTypes::LineString25D;
-    else
-      wkbType = QgsWkbTypes::LineString;
-    CopyBytes( &wkbType, 4 );
-    // copy point count
-    int iCount = 2;
-    CopyBytes( &iCount, 4 );
-    // copy points
-    CopyCoordinates( 0 );
-    CopyCoordinates( 1 );
+    poGeom = qgis::make_unique< QgsLineString >( readCoordinates( 0 ), readCoordinates( 1 ) );
   }
   else
   {
     // complex geometries
-    nNumPoints = ReadInt32( 6 );
+    mNumPoints = ReadInt32( 6 );
 
-    if ( nNumPoints <= 0 )
+    if ( mNumPoints <= 0 )
     {
-      delete [] pszWkb;
       return nullptr;
     }
 
     // position of the point array
-    nPointPos = 10;
+    mPointPos = 10;
 
     // position of the figures
-    nFigurePos = nPointPos + nPointSize * nNumPoints + 4;
+    mFigurePos = mPointPos + mPointSize * mNumPoints + 4;
 
-    if ( nLen < nFigurePos )
+    if ( nLen < mFigurePos )
     {
-      delete [] pszWkb;
-      QgsDebugMsg( "ParseSqlGeometry not enough data" );
+      QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    nNumFigures = ReadInt32( nFigurePos - 4 );
+    mNumFigures = ReadInt32( mFigurePos - 4 );
 
-    if ( nNumFigures <= 0 )
+    if ( mNumFigures <= 0 )
     {
-      delete [] pszWkb;
       return nullptr;
     }
 
     // position of the shapes
-    nShapePos = nFigurePos + 5 * nNumFigures + 4;
+    mShapePos = mFigurePos + 5 * mNumFigures + 4;
 
-    if ( nLen < nShapePos )
+    if ( nLen < mShapePos )
     {
-      delete [] pszWkb;
-      QgsDebugMsg( "ParseSqlGeometry not enough data" );
+      QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    nNumShapes = ReadInt32( nShapePos - 4 );
+    mNumShapes = ReadInt32( mShapePos - 4 );
 
-    if ( nLen < nShapePos + 9 * nNumShapes )
+    if ( nLen < mShapePos + 9 * mNumShapes )
     {
-      delete [] pszWkb;
-      QgsDebugMsg( "ParseSqlGeometry not enough data" );
+      QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
 
-    if ( nNumShapes <= 0 )
+    if ( mNumShapes <= 0 )
     {
-      delete [] pszWkb;
       return nullptr;
+    }
+
+    // position of the segments (for complex curve figures)
+    if ( mVersion == 0x02 )
+    {
+      mSegment = 0;
+      mSegmentPos = mShapePos + 9 * mNumShapes + 4;
+      if ( nLen > mSegmentPos )
+      {
+        // segment array is present
+        mNumSegments = ReadInt32( mSegmentPos - 4 );
+        if ( nLen < mSegmentPos + mNumSegments )
+        {
+          QgsDebugMsg( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+          DumpMemoryToLog( "Not enough data", pszInput, nLen );
+          return nullptr;
+        }
+      }
     }
 
     // pick up the root shape
     if ( ParentOffset( 0 ) != 0xFFFFFFFF )
     {
-      delete [] pszWkb;
-      QgsDebugMsg( "ParseSqlGeometry corrupt data" );
+      QgsDebugMsg( QStringLiteral( "ParseSqlGeometry corrupt data" ) );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
@@ -625,34 +747,42 @@ unsigned char *QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char *pszInput
     switch ( ShapeType( 0 ) )
     {
       case ST_POINT:
-        ReadPoint( 0 );
+        poGeom = readPoint( FigureOffset( 0 ) );
         break;
       case ST_LINESTRING:
-        ReadLineString( 0 );
+        poGeom = readLineString( FigureOffset( 0 ) );
         break;
       case ST_POLYGON:
-        ReadPolygon( 0 );
+        poGeom = readPolygon( 0 );
         break;
       case ST_MULTIPOINT:
-        ReadMultiPoint( 0 );
+        poGeom = readMultiPoint( 0 );
         break;
       case ST_MULTILINESTRING:
-        ReadMultiLineString( 0 );
+        poGeom = readMultiLineString( 0 );
         break;
       case ST_MULTIPOLYGON:
-        ReadMultiPolygon( 0 );
+        poGeom = readMultiPolygon( 0 );
         break;
-      //case ST_GEOMETRYCOLLECTION:
-      //ReadGeometryCollection(0);
-      //break;
+      case ST_GEOMETRYCOLLECTION:
+        poGeom = readGeometryCollection( 0 );
+        break;
+      case ST_CIRCULARSTRING:
+        poGeom = readCircularString( FigureOffset( 0 ) );
+        break;
+      case ST_COMPOUNDCURVE:
+        poGeom = readCompoundCurve( FigureOffset( 0 ) );
+        break;
+      case ST_CURVEPOLYGON:
+        poGeom = readCurvePolygon( 0 );
+        break;
       default:
-        delete [] pszWkb;
-        QgsDebugMsg( "ParseSqlGeometry unsupported geometry type" );
+        QgsDebugMsg( QStringLiteral( "ParseSqlGeometry unsupported geometry type" ) );
         DumpMemoryToLog( "Unsupported geometry type", pszInput, nLen );
         return nullptr;
     }
   }
 
-  return pszWkb;
+  return poGeom;
 }
 

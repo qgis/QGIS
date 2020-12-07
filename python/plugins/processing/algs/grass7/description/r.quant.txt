@@ -1,9 +1,10 @@
 r.quant
 Produces the quantization file for a floating-point map.
 Raster (r.*)
-ParameterMultipleInput|input|Raster layer(s) to be quantized|1.0|False
-ParameterRaster|basemap|Base layer to take quant rules from|False
-ParameterRange|fprange|Floating point range: dmin,dmax|0,1
-ParameterRange|range|Integer range: min,max|1,255
-ParameterBoolean|-t|Truncate floating point data|False
-ParameterBoolean|-r|Round floating point data|False
+QgsProcessingParameterMultipleLayers|input|Raster layer(s) to be quantized|1|None|False
+QgsProcessingParameterRasterLayer|basemap|Base layer to take quant rules from|None|True
+QgsProcessingParameterRange|fprange|Floating point range: dmin,dmax|QgsProcessingParameterNumber.Double|None|True
+QgsProcessingParameterRange|range|Integer range: min,max|QgsProcessingParameterNumber.Integer|None|True
+QgsProcessingParameterBoolean|-t|Truncate floating point data|False
+QgsProcessingParameterBoolean|-r|Round floating point data|False
+QgsProcessingParameterFolderDestination|output|Quantized raster(s)|None|False

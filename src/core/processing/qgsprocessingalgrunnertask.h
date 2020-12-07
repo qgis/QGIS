@@ -22,8 +22,8 @@
 #include "qgis.h"
 #include "qgstaskmanager.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingalgorithm.h"
 
-class QgsProcessingAlgorithm;
 class QgsProcessingContext;
 
 /**
@@ -44,22 +44,33 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
      */
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
-                                QgsProcessingContext &context );
+                                QgsProcessingContext &context,
+                                QgsProcessingFeedback *feedback = nullptr );
 
-    virtual void cancel() override;
+    void cancel() override;
+
+  signals:
+
+    /**
+     * Emitted when the algorithm has finished execution. If the algorithm completed
+     * execution without errors then \a successful will be TRUE. The \a results argument
+     * contains the results reported by the algorithm.
+     */
+    void executed( bool successful, const QVariantMap &results );
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 
-    const QgsProcessingAlgorithm *mAlgorithm = nullptr;
     QVariantMap mParameters;
     QVariantMap mResults;
     QgsProcessingContext &mContext;
-    std::unique_ptr< QgsProcessingFeedback > mFeedback;
+    QgsProcessingFeedback *mFeedback = nullptr;
+    std::unique_ptr< QgsProcessingFeedback > mOwnedFeedback;
+    std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
 
 };
 

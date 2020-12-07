@@ -25,6 +25,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
+#include "qgsexpressioncontext.h"
+#include "qgsmaptoolselectionhandler.h"
 
 #include <QWidget>
 #include <QList>
@@ -43,6 +45,7 @@ class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsHighlight;
 class QgsMapCanvas;
+class QgsMeshLayer;
 class QgsDockWidget;
 class QgsMapLayerAction;
 class QgsEditorWidgetSetup;
@@ -121,18 +124,21 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
   public:
 
-    //! Constructor - takes it own copy of the QgsAttributeAction so
-    // that it is independent of whoever created it.
-    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    /**
+     * Constructor -
+     * takes its own copy of the QgsAttributeAction so
+     * that it is independent of whoever created it.
+     */
+    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
-    ~QgsIdentifyResultsDialog();
+    ~QgsIdentifyResultsDialog() override;
 
-    //! Add add feature from vector layer
+    //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer,
                      const QgsFeature &f,
                      const QMap< QString, QString > &derivedAttributes );
 
-    //! Add add feature from other layer
+    //! Adds feature from raster layer
     void addFeature( QgsRasterLayer *layer,
                      const QString &label,
                      const QMap< QString, QString > &attributes,
@@ -141,7 +147,26 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
                      const QgsFeature &feature = QgsFeature(),
                      const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
 
-    //! Add feature from identify results
+    /**
+     * Adds results from mesh layer
+     * \since QGIS 3.6
+     */
+    void addFeature( QgsMeshLayer *layer,
+                     const QString &label,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
+
+    /**
+     * Adds results from vector tile layer
+     * \since QGIS 3.14
+     */
+    void addFeature( QgsVectorTileLayer *layer,
+                     const QString &label,
+                     const QgsFields &fields,
+                     const QgsFeature &feature,
+                     const QMap< QString, QString > &derivedAttributes );
+
+    //! Adds feature from identify results
     void addFeature( const QgsMapToolIdentify::IdentifyResult &result );
 
     //! Map tool was deactivated
@@ -149,6 +174,24 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     //! Map tool was activated
     void activate();
+
+    /**
+     * Sets an expression context scope to consider for resolving underlying
+     * actions.
+     *
+     * \since QGIS 3.0
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used for resolving underlying
+     * actions.
+     *
+     * \since QGIS 3.0
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
+    QgsMapToolSelectionHandler::SelectionMode selectionMode() const;
 
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
@@ -159,6 +202,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void copyToClipboard( QgsFeatureStore &featureStore );
 
     void activateLayer( QgsMapLayer * );
+
+    void selectionModeChanged();
 
   public slots:
     //! Remove results
@@ -190,8 +235,10 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void expandAll();
     void collapseAll();
 
-    /* Called when an item is expanded so that we can ensure that the
-       column width if expanded to show it */
+    /**
+     * Called when an item is expanded so that we can ensure that the
+     * column width if expanded to show it.
+     */
     void itemExpanded( QTreeWidgetItem * );
 
     //! sends signal if current feature id has changed
@@ -201,20 +248,20 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
 
-    void helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#identify" ) ); }
+    void cmbIdentifyMode_currentIndexChanged( int index );
 
-    void on_cmbIdentifyMode_currentIndexChanged( int index );
+    void cmbViewMode_currentIndexChanged( int index );
 
-    void on_cmbViewMode_currentIndexChanged( int index );
+    void mExpandNewAction_triggered( bool checked );
 
-    void on_mExpandNewAction_triggered( bool checked );
+    void mActionAutoFeatureForm_toggled( bool checked );
 
-    void on_cbxAutoFeatureForm_toggled( bool checked );
+    void mActionHideDerivedAttributes_toggled( bool checked );
 
-    void on_mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ); expandAll(); }
-    void on_mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
+    void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
+    void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
 
-    void on_mActionCopy_triggered( bool checked );
+    void mActionCopy_triggered( bool checked );
 
     void formatChanged( int index );
 
@@ -227,21 +274,27 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     enum ItemDataRole
     {
-      GetFeatureInfoUrlRole = Qt::UserRole + 10
+      GetFeatureInfoUrlRole = Qt::UserRole + 10,
+      FeatureRole,
     };
 
     QMenu *mActionPopup = nullptr;
-    QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
+    QHash<QTreeWidgetItem *, QgsHighlight * > mHighlights;
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
+    QgsExpressionContextScope mExpressionContextScope;
+    QToolButton *mSelectModeButton = nullptr;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QgsRasterLayer *rasterLayer( QTreeWidgetItem *item );
+    QgsMeshLayer *meshLayer( QTreeWidgetItem *item );
+    QgsVectorTileLayer *vectorTileLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
+
 
     void highlightLayer( QTreeWidgetItem *object );
     void layerProperties( QTreeWidgetItem *object );
@@ -261,6 +314,15 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsDockWidget *mDock = nullptr;
 
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
+
+    void showHelp();
+
+    QgsMapToolSelectionHandler::SelectionMode mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
+
+    void setSelectionMode();
+
+    void initSelectionModes();
+    QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem );
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

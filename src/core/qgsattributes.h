@@ -19,7 +19,7 @@
 #define QGSATTRIBUTES_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include <QMap>
 #include <QString>
@@ -33,7 +33,6 @@
 #include "qgsfields.h"
 
 
-class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
 class QgsFeaturePrivate;
@@ -49,17 +48,18 @@ typedef QMap<int, QgsField> QgsFieldMap;
 #endif
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A vector of attributes. Mostly equal to QVector<QVariant>.
- \note QgsAttributes is implemented as a Python list of Python objects.
+ * \note QgsAttributes is implemented as a Python list of Python objects.
  */
 #ifndef SIP_RUN
 class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 {
   public:
-    QgsAttributes()
-      : QVector<QVariant>()
-    {}
+
+    //! Constructor for QgsAttributes
+    QgsAttributes() = default;
 
     /**
      * Create a new vector of attributes with the given size
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * handle NULL values for certain types (like int).
      *
      * \param v The attributes to compare
-     * \returns True if v is equal
+     * \returns TRUE if v is equal
      */
     bool operator==( const QgsAttributes &v ) const
     {
@@ -112,20 +112,24 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     /**
      * Returns a QgsAttributeMap of the attribute values. Null values are
      * excluded from the map.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     QgsAttributeMap toMap() const SIP_SKIP;
 
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };
+
+//! Hash for QgsAttributes
+CORE_EXPORT uint qHash( const QgsAttributes &attributes );
+
 #else
 typedef QVector<QVariant> QgsAttributes;
 
 % MappedType QgsAttributes
 {
   % TypeHeaderCode
-#include <qgsfeature.h>
+#include "qgsfeature.h"
   % End
 
   % ConvertFromTypeCode
@@ -170,19 +174,20 @@ typedef QVector<QVariant> QgsAttributes;
   }
 
   QgsAttributes *qv = new QgsAttributes;
+  SIP_SSIZE_T listSize = PyList_GET_SIZE( sipPy );
+  qv->reserve( listSize );
 
-  for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+  for ( SIP_SSIZE_T i = 0; i < listSize; ++i )
   {
-    int state;
     PyObject *obj = PyList_GET_ITEM( sipPy, i );
-    QVariant *t;
     if ( obj == Py_None )
     {
-      t = new QVariant( QVariant::Int );
+      qv->append( QVariant( QVariant::Int ) );
     }
     else
     {
-      t = reinterpret_cast<QVariant *>( sipConvertToType( obj, sipType_QVariant, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
+      int state;
+      QVariant *t = reinterpret_cast<QVariant *>( sipConvertToType( obj, sipType_QVariant, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
 
       if ( *sipIsErr )
       {
@@ -191,11 +196,10 @@ typedef QVector<QVariant> QgsAttributes;
         delete qv;
         return 0;
       }
+
+      qv->append( *t );
+      sipReleaseType( t, sipType_QVariant, state );
     }
-
-    qv->append( *t );
-
-    sipReleaseType( t, sipType_QVariant, state );
   }
 
   *sipCppPtr = qv;

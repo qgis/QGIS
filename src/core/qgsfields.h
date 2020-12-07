@@ -17,7 +17,7 @@
 #define QGSFIELDS_H
 
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsfield.h"
 
@@ -29,16 +29,19 @@ class QgsFieldsPrivate;
  * See details in QEP #17
  ****************************************************************************/
 
-/** \class QgsFields
+/**
+ * \class QgsFields
  * \ingroup core
  * Container of fields for a vector layer.
  *
  * In addition to storing a list of QgsField instances, it also:
+ *
  * - allows quick lookups of field names to index in the list
  * - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ *
  * \note QgsFields objects are implicitly shared.
  */
-class CORE_EXPORT QgsFields
+class CORE_EXPORT  QgsFields
 {
   public:
 
@@ -56,9 +59,8 @@ class CORE_EXPORT QgsFields
     typedef struct Field
     {
       Field()
-        : origin( OriginUnknown )
-        , originIndex( -1 )
       {}
+
       Field( const QgsField &f, FieldOrigin o, int oi )
         : field( f )
         , origin( o )
@@ -71,36 +73,45 @@ class CORE_EXPORT QgsFields
       bool operator!=( const Field &other ) const { return !( *this == other ); }
 
       QgsField field;      //!< Field
-      FieldOrigin origin;  //!< Origin of the field
-      int originIndex;     //!< Index specific to the origin
+      FieldOrigin origin = OriginUnknown ;  //!< Origin of the field
+      int originIndex = -1 ;     //!< Index specific to the origin
     } Field;
 
 #endif
 
-    /** Constructor for an empty field container
+    /**
+     * Constructor for an empty field container
      */
     QgsFields();
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFields( const QgsFields &other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
 
     virtual ~QgsFields();
 
-    //! Remove all fields
+    //! Removes all fields
     void clear();
 
-    //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
+    //! Appends a field. The field must have unique name, otherwise it is rejected (returns FALSE)
     bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
 
-    //! Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
+    /**
+     * Renames a name of field. The field must have unique name, otherwise change is rejected (returns FALSE)
+     * \since QGIS 3.6
+     */
+    bool rename( int fieldIdx, const QString &name );
+
+    //! Appends an expression field. The field must have unique name, otherwise it is rejected (returns FALSE)
     bool appendExpressionField( const QgsField &field, int originIndex );
 
-    //! Remove a field with the given index
+    //! Removes a field with the given index
     void remove( int fieldIdx );
 #ifdef SIP_RUN
     % MethodCode
@@ -116,13 +127,13 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Extend with fields from another QgsFields container
+    //! Extends with fields from another QgsFields container
     void extend( const QgsFields &other );
 
-    //! Check whether the container is empty
+    //! Checks whether the container is empty
     bool isEmpty() const;
 
-    //! Return number of items
+    //! Returns number of items
     int count() const;
 
 #ifdef SIP_RUN
@@ -130,22 +141,36 @@ class CORE_EXPORT QgsFields
     % MethodCode
     sipRes = sipCpp->count();
     % End
+
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
 #endif
 
-    //! Return number of items
+    //! Returns number of items
     int size() const;
 
-    //! Return if a field index is valid
-    //! \param i  Index of the field which needs to be checked
-    //! \returns   True if the field exists
+    /**
+     * Returns a list with field names
+     * \since QGIS 3.0
+     */
+    QStringList names() const;
+
+    /**
+     * Returns if a field index is valid
+     * \param i  Index of the field which needs to be checked
+     * \returns   TRUE if the field exists
+     */
     bool exists( int i ) const;
 
 #ifndef SIP_RUN
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField operator[]( int i ) const;
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField &operator[]( int i ) SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -157,7 +182,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField at( int i ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -173,7 +198,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField field( int fieldIdx ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -189,14 +214,14 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field with matching name
+    //! Gets field with matching name
     QgsField field( const QString &name ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
     int fieldIdx = sipCpp->indexFromName( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -206,7 +231,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field's origin (value from an enumeration)
+    //! Gets field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 #ifdef SIP_RUN
     % MethodCode
@@ -222,7 +247,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field's origin index (its meaning is specific to each type of origin)
+    //! Gets field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const;
 #ifdef SIP_RUN
     % MethodCode
@@ -239,8 +264,8 @@ class CORE_EXPORT QgsFields
 #endif
 
     /**
-     * Get the field index from the field name.
-     * This method takes is case sensitive and only matches the data source
+     * Gets the field index from the field name.
+     * This method is case sensitive and only matches the data source
      * name of the field.
      * Alias for indexOf
      *
@@ -252,8 +277,8 @@ class CORE_EXPORT QgsFields
     int indexFromName( const QString &fieldName ) const;
 
     /**
-     * Get the field index from the field name.
-     * This method takes is case sensitive and only matches the data source
+     * Gets the field index from the field name.
+     * This method is case sensitive and only matches the data source
      * name of the field.
      *
      * \param fieldName The name of the field.
@@ -265,7 +290,7 @@ class CORE_EXPORT QgsFields
     int indexOf( const QString &fieldName ) const;
 
     /**
-     * Look up field's index from the field name.
+     * Looks up field's index from the field name.
      * This method matches in the following order:
      *
      *  1. The exact field name taking case sensitivity into account
@@ -280,8 +305,10 @@ class CORE_EXPORT QgsFields
      */
     int lookupField( const QString &fieldName ) const;
 
-    //! Utility function to get list of attribute indexes
-    //! \since QGIS 2.4
+    /**
+     * Utility function to get list of attribute indexes
+     * \since QGIS 2.4
+     */
     QgsAttributeList allAttributesList() const;
 
     //! Utility function to return a list of QgsField instances
@@ -292,10 +319,13 @@ class CORE_EXPORT QgsFields
     //! \since QGIS 2.6
     bool operator!=( const QgsFields &other ) const { return !( *this == other ); }
 
-    /** Returns an icon corresponding to a field index, based on the field's type and source
+    /**
+     * Returns an icon corresponding to a field index, based on the field's type and source
+     * \param fieldIdx the field index
+     * \param considerOrigin if TRUE the icon will the origin of the field
      * \since QGIS 2.14
      */
-    QIcon iconForField( int fieldIdx ) const SIP_FACTORY;
+    QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -309,6 +339,13 @@ class CORE_EXPORT QgsFields
     }
     % End
 #endif
+
+
+    /**
+     * Returns an icon corresponding to a field \a type
+     * \since QGIS 3.16
+     */
+    static QIcon iconForFieldType( const QVariant::Type &type ) SIP_FACTORY;
 
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const
@@ -343,8 +380,8 @@ class CORE_EXPORT QgsFields
         typedef qptrdiff difference_type;
 
         inline iterator()
-          : d( nullptr )
         {}
+
         inline iterator( QgsFields::Field *n )
           : d( n )
         {}
@@ -380,7 +417,8 @@ class CORE_EXPORT QgsFields
         typedef qptrdiff difference_type;
 
         inline const_iterator()
-          : d( nullptr ) {}
+        {}
+
         inline const_iterator( const QgsFields::Field *f )
           : d( f ) {}
         inline const_iterator( const const_iterator &o )
@@ -405,6 +443,8 @@ class CORE_EXPORT QgsFields
         inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
         inline const_iterator operator-( difference_type j ) const { return const_iterator( d - j ); }
         inline int operator-( const_iterator j ) const { return int( d - j.d ); } // clazy:exclude=function-args-by-ref
+      private:
+        const_iterator &operator= ( const const_iterator & ) = delete;
     };
     friend class const_iterator;
     ///@endcond
@@ -413,40 +453,40 @@ class CORE_EXPORT QgsFields
     /**
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator constBegin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator constEnd() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator begin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator end() const noexcept;
 
     /**
      * Returns an STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     iterator begin();
 
@@ -454,8 +494,8 @@ class CORE_EXPORT QgsFields
     /**
      * Returns an STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     iterator end();
 

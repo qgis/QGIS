@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -124,6 +122,27 @@ class TestQgsMapRendererCache(unittest.TestCase):
         cache.setCacheImage('xxx', im, [layer])
         layer.triggerRepaint(True)
         self.assertFalse(cache.hasCacheImage('xxx'))
+
+    def testInvalidateCacheForLayer(self):
+        """ test invalidating the cache for a layer """
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer", "memory")
+        QgsProject.instance().addMapLayers([layer])
+        self.assertTrue(layer.isValid())
+
+        # add image to cache
+        cache = QgsMapRendererCache()
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('xxx', im, [layer])
+        self.assertFalse(cache.cacheImage('xxx').isNull())
+        self.assertTrue(cache.hasCacheImage('xxx'))
+
+        # invalidate cache for layer
+        cache.invalidateCacheForLayer(layer)
+        # cache image should be cleared
+        self.assertTrue(cache.cacheImage('xxx').isNull())
+        self.assertFalse(cache.hasCacheImage('xxx'))
+        QgsProject.instance().removeMapLayer(layer.id())
 
     def testRequestRepaintMultiple(self):
         """ test requesting repaint with multiple dependent layers """

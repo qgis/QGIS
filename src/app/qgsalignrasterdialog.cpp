@@ -36,9 +36,10 @@
 static QgsMapLayer *_rasterLayer( const QString &filename )
 {
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
+    if ( layer->type() == QgsMapLayerType::RasterLayer && layer->source() == filename )
       return layer;
   }
   return nullptr;
@@ -59,9 +60,9 @@ static QString _rasterLayerName( const QString &filename )
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
     explicit QgsAlignRasterDialogProgress( QProgressBar *pb ) : mPb( pb ) {}
-    virtual bool progress( double complete ) override
+    bool progress( double complete ) override
     {
-      mPb->setValue( ( int ) qRound( complete * 100 ) );
+      mPb->setValue( ( int ) std::round( complete * 100 ) );
       qApp->processEvents(); // to actually show the progress in GUI
       return true;
     }
@@ -77,7 +78,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   setupUi( this );
 
   mBtnAdd->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
-  mBtnEdit->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
+  mBtnEdit->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   mBtnRemove->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   mAlign = new QgsAlignRaster;
@@ -108,6 +109,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   // TODO: auto-detect reference layer
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAlignRasterDialog::runAlign );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAlignRasterDialog::showHelp );
 
   populateLayersView();
 
@@ -122,6 +124,12 @@ QgsAlignRasterDialog::~QgsAlignRasterDialog()
 }
 
 
+void QgsAlignRasterDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-alignment" ) );
+}
+
+
 void QgsAlignRasterDialog::populateLayersView()
 {
   mCboReferenceLayer->clear();
@@ -130,7 +138,8 @@ void QgsAlignRasterDialog::populateLayersView()
 
   QStandardItemModel *model = new QStandardItemModel();
   int i = 0;
-  Q_FOREACH ( QgsAlignRaster::Item item, mAlign->rasters() )
+  const auto constRasters = mAlign->rasters();
+  for ( QgsAlignRaster::Item item : constRasters )
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 
@@ -187,7 +196,7 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   {
     QgsCoordinateReferenceSystem refCRS( refInfo.crs() );
     if ( refCRS != mCrsSelector->crs() )
-      customCRSWkt = mCrsSelector->crs().toWkt();
+      customCRSWkt = mCrsSelector->crs( ).toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
   }
 
   if ( mChkCustomCellSize->isChecked() )
@@ -304,7 +313,7 @@ void QgsAlignRasterDialog::referenceLayerChanged()
 
 void QgsAlignRasterDialog::destinationCrsChanged()
 {
-  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCrs() )
+  if ( mCrsSelector->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) == mAlign->destinationCrs() )
     return;
 
   int index = mCboReferenceLayer->currentIndex();
@@ -358,7 +367,8 @@ void QgsAlignRasterDialog::runAlign()
   {
     if ( mChkAddToCanvas->isChecked() )
     {
-      Q_FOREACH ( const QgsAlignRaster::Item &item, mAlign->rasters() )
+      const auto constRasters = mAlign->rasters();
+      for ( const QgsAlignRaster::Item &item : constRasters )
       {
         QgsRasterLayer *layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
         if ( layer->isValid() )
@@ -387,11 +397,11 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboLayers->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
   cboResample = new QComboBox( this );
-  cboResample->addItem( tr( "Nearest neighbour" ), QgsAlignRaster::RA_NearestNeighbour );
-  cboResample->addItem( tr( "Bilinear (2x2 kernel)" ), QgsAlignRaster::RA_Bilinear );
-  cboResample->addItem( tr( "Cubic (4x4 kernel)" ), QgsAlignRaster::RA_Cubic );
-  cboResample->addItem( tr( "Cubic B-Spline (4x4 kernel)" ), QgsAlignRaster::RA_CubicSpline );
-  cboResample->addItem( tr( "Lanczos (6x6 kernel)" ), QgsAlignRaster::RA_Lanczos );
+  cboResample->addItem( tr( "Nearest Neighbour" ), QgsAlignRaster::RA_NearestNeighbour );
+  cboResample->addItem( tr( "Bilinear (2x2 Kernel)" ), QgsAlignRaster::RA_Bilinear );
+  cboResample->addItem( tr( "Cubic (4x4 Kernel)" ), QgsAlignRaster::RA_Cubic );
+  cboResample->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), QgsAlignRaster::RA_CubicSpline );
+  cboResample->addItem( tr( "Lanczos (6x6 Kernel)" ), QgsAlignRaster::RA_Lanczos );
   cboResample->addItem( tr( "Average" ), QgsAlignRaster::RA_Average );
   cboResample->addItem( tr( "Mode" ), QgsAlignRaster::RA_Mode );
   cboResample->addItem( tr( "Maximum" ), QgsAlignRaster::RA_Max );
@@ -401,7 +411,7 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboResample->addItem( tr( "Third Quartile (Q3)" ), QgsAlignRaster::RA_Q3 );
 
   editOutput = new QLineEdit( this );
-  btnBrowse = new QPushButton( tr( "Browse..." ), this );
+  btnBrowse = new QPushButton( tr( "Browse…" ), this );
   connect( btnBrowse, &QAbstractButton::clicked, this, &QgsAlignRasterLayerConfigDialog::browseOutputFilename );
 
   QHBoxLayout *layoutOutput = new QHBoxLayout();

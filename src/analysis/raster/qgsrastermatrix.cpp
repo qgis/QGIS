@@ -17,15 +17,8 @@
 
 #include "qgsrastermatrix.h"
 #include <cstring>
-#include <qmath.h>
-
-QgsRasterMatrix::QgsRasterMatrix()
-  : mColumns( 0 )
-  , mRows( 0 )
-  , mData( nullptr )
-  , mNodataValue( -1 )
-{
-}
+#include <cmath>
+#include <algorithm>
 
 QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue )
   : mColumns( nCols )
@@ -36,9 +29,6 @@ QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nod
 }
 
 QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix &m )
-  : mColumns( 0 )
-  , mRows( 0 )
-  , mData( nullptr )
 {
   operator=( m );
 }
@@ -50,13 +40,16 @@ QgsRasterMatrix::~QgsRasterMatrix()
 
 QgsRasterMatrix &QgsRasterMatrix::operator=( const QgsRasterMatrix &m )
 {
-  delete[] mData;
-  mColumns = m.nColumns();
-  mRows = m.nRows();
-  int nEntries = mColumns * mRows;
-  mData = new double[nEntries];
-  memcpy( mData, m.mData, sizeof( double ) * nEntries );
-  mNodataValue = m.nodataValue();
+  if ( this != &m )
+  {
+    delete[] mData;
+    mColumns = m.nColumns();
+    mRows = m.nRows();
+    int nEntries = mColumns * mRows;
+    mData = new double[nEntries];
+    memcpy( mData, m.mData, sizeof( double ) * nEntries );
+    mNodataValue = m.nodataValue();
+  }
   return *this;
 }
 
@@ -143,6 +136,16 @@ bool QgsRasterMatrix::logicalOr( const QgsRasterMatrix &other )
   return twoArgumentOperation( opOR, other );
 }
 
+bool QgsRasterMatrix::max( const QgsRasterMatrix &other )
+{
+  return twoArgumentOperation( opMAX, other );
+}
+
+bool QgsRasterMatrix::min( const QgsRasterMatrix &other )
+{
+  return twoArgumentOperation( opMIN, other );
+}
+
 bool QgsRasterMatrix::squareRoot()
 {
   return oneArgumentOperation( opSQRT );
@@ -193,6 +196,11 @@ bool QgsRasterMatrix::log10()
   return oneArgumentOperation( opLOG10 );
 }
 
+bool QgsRasterMatrix::absoluteValue()
+{
+  return oneArgumentOperation( opABS );
+}
+
 bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
 {
   if ( !mData )
@@ -216,26 +224,26 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           }
           else
           {
-            mData[i] = sqrt( value );
+            mData[i] = std::sqrt( value );
           }
           break;
         case opSIN:
-          mData[i] = sin( value );
+          mData[i] = std::sin( value );
           break;
         case opCOS:
-          mData[i] = cos( value );
+          mData[i] = std::cos( value );
           break;
         case opTAN:
-          mData[i] = tan( value );
+          mData[i] = std::tan( value );
           break;
         case opASIN:
-          mData[i] = asin( value );
+          mData[i] = std::asin( value );
           break;
         case opACOS:
-          mData[i] = acos( value );
+          mData[i] = std::acos( value );
           break;
         case opATAN:
-          mData[i] = atan( value );
+          mData[i] = std::atan( value );
           break;
         case opSIGN:
           mData[i] = -value;
@@ -259,6 +267,9 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           {
             mData[i] = ::log10( value );
           }
+          break;
+        case opABS:
+          mData[i] = ::fabs( value );
           break;
       }
     }
@@ -292,7 +303,7 @@ double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, 
       }
       else
       {
-        return qPow( arg1, arg2 );
+        return std::pow( arg1, arg2 );
       }
     case opEQ:
       return ( arg1 == arg2 ? 1.0 : 0.0 );
@@ -310,6 +321,10 @@ double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, 
       return ( arg1 && arg2 ? 1.0 : 0.0 );
     case opOR:
       return ( arg1 || arg2 ? 1.0 : 0.0 );
+    case opMAX:
+      return std::max( arg1, arg2 );
+    case opMIN:
+      return std::min( arg1, arg2 );
   }
   return mNodataValue;
 }
@@ -415,9 +430,5 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power ) const
 {
-  if ( ( base == 0 && power < 0 ) || ( base < 0 && ( power - floor( power ) ) > 0 ) )
-  {
-    return false;
-  }
-  return true;
+  return !( ( base == 0 && power < 0 ) || ( base < 0 && ( power - std::floor( power ) ) > 0 ) );
 }

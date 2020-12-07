@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 
@@ -22,8 +23,10 @@
 #include "qgsrelationreferencefieldformatter.h"
 #include "qgskeyvaluefieldformatter.h"
 #include "qgslistfieldformatter.h"
+#include "qgsrangefieldformatter.h"
+#include "qgscheckboxfieldformatter.h"
 #include "qgsfallbackfieldformatter.h"
-
+#include "qgsreadwritelocker.h"
 
 QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
   : QObject( parent )
@@ -34,19 +37,24 @@ QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
   addFieldFormatter( new QgsKeyValueFieldFormatter() );
   addFieldFormatter( new QgsListFieldFormatter() );
   addFieldFormatter( new QgsDateTimeFieldFormatter() );
+  addFieldFormatter( new QgsRangeFieldFormatter() );
+  addFieldFormatter( new QgsCheckBoxFieldFormatter() );
 
   mFallbackFieldFormatter = new QgsFallbackFieldFormatter();
 }
 
 QgsFieldFormatterRegistry::~QgsFieldFormatterRegistry()
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   qDeleteAll( mFieldFormatters );
   delete mFallbackFieldFormatter;
 }
 
 void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter *formatter )
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   mFieldFormatters.insert( formatter->id(), formatter );
+  locker.unlock();
   emit fieldFormatterAdded( formatter );
 }
 
@@ -57,6 +65,7 @@ void QgsFieldFormatterRegistry::removeFieldFormatter( QgsFieldFormatter *formatt
 
 void QgsFieldFormatterRegistry::removeFieldFormatter( const QString &id )
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   if ( QgsFieldFormatter *formatter = mFieldFormatters.take( id ) )
   {
     emit fieldFormatterRemoved( formatter );
@@ -66,6 +75,7 @@ void QgsFieldFormatterRegistry::removeFieldFormatter( const QString &id )
 
 QgsFieldFormatter *QgsFieldFormatterRegistry::fieldFormatter( const QString &id ) const
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
   return mFieldFormatters.value( id, mFallbackFieldFormatter );
 }
 

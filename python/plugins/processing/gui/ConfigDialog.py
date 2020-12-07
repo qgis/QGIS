@@ -16,18 +16,13 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QEvent
@@ -49,8 +44,10 @@ from qgis.PyQt.QtGui import (QIcon,
 
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,
-                      QgsOptionsPageWidget)
+                      QgsOptionsPageWidget,
+                      QgsOptionsDialogHighlightWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -59,42 +56,57 @@ from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 
-
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 
 class ConfigOptionsPage(QgsOptionsPageWidget):
 
     def __init__(self, parent):
         super(ConfigOptionsPage, self).__init__(parent)
-        self.config_widget = ConfigDialog()
+        self.config_widget = ConfigDialog(False)
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setMargin(0)
         self.setLayout(layout)
         layout.addWidget(self.config_widget)
         self.setObjectName('processingOptions')
+        self.highlightWidget = ProcessingTreeHighlight(self.config_widget)
+        self.registerHighlightWidget(self.highlightWidget)
 
     def apply(self):
         self.config_widget.accept()
 
+    def helpKey(self):
+        return 'processing/index.html'
+
+
+class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
+
+    def __init__(self, config_dialog):
+        super(ProcessingTreeHighlight, self).__init__(config_dialog.tree)
+        self.config_dialog = config_dialog
+
+    def highlightText(self, text):
+        return self.config_dialog.textChanged(text)
+
+    def searchText(self, text):
+        return self.config_dialog.textChanged(text)
+
+    def reset(self):
+        self.config_dialog.textChanged('')
+
 
 class ConfigDialog(BASE, WIDGET):
 
-    def __init__(self):
+    def __init__(self, showSearch=True):
         super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
-
-        if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr('Search...'))
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)
@@ -102,35 +114,54 @@ class ConfigDialog(BASE, WIDGET):
         self.delegate = SettingDelegate()
         self.tree.setItemDelegateForColumn(1, self.delegate)
 
-        self.searchBox.textChanged.connect(self.textChanged)
+        if showSearch:
+            if hasattr(self.searchBox, 'setPlaceholderText'):
+                self.searchBox.setPlaceholderText(QApplication.translate('ConfigDialog', 'Search…'))
+            self.searchBox.textChanged.connect(self.textChanged)
+        else:
+            self.searchBox.hide()
 
         self.fillTree()
 
         self.saveMenus = False
         self.tree.expanded.connect(self.itemExpanded)
+        self.auto_adjust_columns = True
 
-    def textChanged(self):
-        text = str(self.searchBox.text().lower())
-        self._filterItem(self.model.invisibleRootItem(), text)
+    def textChanged(self, text=None):
+        if text is not None:
+            text = str(text.lower())
+        else:
+            text = str(self.searchBox.text().lower())
+        found = self._filterItem(self.model.invisibleRootItem(), text)
+
+        self.auto_adjust_columns = False
         if text:
             self.tree.expandAll()
         else:
             self.tree.collapseAll()
 
-    def _filterItem(self, item, text):
+        self.adjustColumns()
+        self.auto_adjust_columns = True
+
+        if text:
+            return found
+        else:
+            self.tree.collapseAll()
+            return False
+
+    def _filterItem(self, item, text, forceShow=False):
         if item.hasChildren():
-            show = False
+            show = forceShow or isinstance(item, QStandardItem) and bool(text) and (text in item.text().lower())
             for i in range(item.rowCount()):
                 child = item.child(i)
-                showChild = self._filterItem(child, text)
-                show = (showChild or show)
+                show = self._filterItem(child, text, forceShow) or show
             self.tree.setRowHidden(item.row(), item.index().parent(), not show)
             return show
 
         elif isinstance(item, QStandardItem):
-            hide = bool(text) and (text not in item.text().lower())
-            self.tree.setRowHidden(item.row(), item.index().parent(), hide)
-            return not hide
+            show = forceShow or bool(text) and (text in item.text().lower())
+            self.tree.setRowHidden(item.row(), item.index().parent(), not show)
+            return show
 
     def fillTree(self):
         self.fillTreeUsingProviders()
@@ -158,7 +189,7 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             rootItem.insertRow(0, [groupItem, emptyItem])
-            if not group in settings:
+            if group not in settings:
                 continue
 
             # add menu item only if it has any search matches
@@ -293,17 +324,17 @@ class ConfigDialog(BASE, WIDGET):
                         return
                 setting.save(qsettings)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        for p in QgsApplication.processingRegistry().providers():
-            p.refreshAlgorithms()
-        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            for p in QgsApplication.processingRegistry().providers():
+                p.refreshAlgorithms()
 
         settingsWatcher.settingsChanged.emit()
 
     def itemExpanded(self, idx):
         if idx == self.menusItem.index():
             self.saveMenus = True
-        self.adjustColumns()
+        if self.auto_adjust_columns:
+            self.adjustColumns()
 
     def adjustColumns(self):
         self.tree.resizeColumnToContents(0)
@@ -335,15 +366,15 @@ class SettingDelegate(QStyledItemDelegate):
     def createEditor(self, parent, options, index):
         setting = index.model().data(index, Qt.UserRole)
         if setting.valuetype == Setting.FOLDER:
-            return FileDirectorySelector(parent)
+            return FileDirectorySelector(parent, placeholder=setting.placeholder)
         elif setting.valuetype == Setting.FILE:
-            return FileDirectorySelector(parent, True)
+            return FileDirectorySelector(parent, True, setting.placeholder)
         elif setting.valuetype == Setting.SELECTION:
             combo = QComboBox(parent)
             combo.addItems(setting.options)
             return combo
         elif setting.valuetype == Setting.MULTIPLE_FOLDERS:
-            return MultipleDirectorySelector(parent)
+            return MultipleDirectorySelector(parent, setting.placeholder)
         else:
             value = self.convertValue(index.model().data(index, Qt.EditRole))
             if isinstance(value, int):
@@ -356,13 +387,17 @@ class SettingDelegate(QStyledItemDelegate):
                 spnBox.setDecimals(6)
                 return spnBox
             elif isinstance(value, str):
-                return QLineEdit(parent)
+                lineEdit = QLineEdit(parent)
+                lineEdit.setPlaceholderText(setting.placeholder)
+                return lineEdit
 
     def setEditorData(self, editor, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
         setting = index.model().data(index, Qt.UserRole)
         if setting.valuetype == Setting.SELECTION:
             editor.setCurrentIndex(editor.findText(value))
+        elif setting.valuetype in (Setting.FLOAT, Setting.INT):
+            editor.setValue(value)
         else:
             editor.setText(value)
 
@@ -400,13 +435,14 @@ class SettingDelegate(QStyledItemDelegate):
 
 class FileDirectorySelector(QWidget):
 
-    def __init__(self, parent=None, selectFile=False):
+    def __init__(self, parent=None, selectFile=False, placeholder=""):
         QWidget.__init__(self, parent)
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
+        self.lineEdit.setPlaceholderText(placeholder)
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
         self.hbl.setSpacing(0)
@@ -429,7 +465,7 @@ class FileDirectorySelector(QWidget):
                                                             QFileDialog.ShowDirsOnly)
         else:
             selectedPath, selected_filter = QFileDialog.getOpenFileName(None,
-                                                                        self.tr('Select file'), lastDir, self.tr('All files (*.*)')
+                                                                        self.tr('Select file'), lastDir, self.tr('All files (*)')
                                                                         )
 
         if not selectedPath:
@@ -447,13 +483,14 @@ class FileDirectorySelector(QWidget):
 
 class MultipleDirectorySelector(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, placeholder=""):
         QWidget.__init__(self, parent)
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
+        self.lineEdit.setPlaceholderText(placeholder)
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
         self.hbl.setSpacing(0)
@@ -471,6 +508,8 @@ class MultipleDirectorySelector(QWidget):
         text = self.lineEdit.text()
         if text != '':
             items = text.split(';')
+        else:
+            items = []
 
         dlg = DirectorySelectorDialog(None, items)
         if dlg.exec_():

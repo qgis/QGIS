@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    remove_git_confict_files.sh
 #    ---------------------
@@ -35,6 +35,7 @@ find . \
     -o -name "*.rej" \
     -o -name "*.orig" \
     -o -name "*.new" \
+    -o -name "*.temp" \
     -o -name "*~" \
   \) \
   -print \

@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsExtentGroupBoxPlugin : public QObject, public QDes
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsExtentGroupBoxPlugin( QObject *parent = 0 );
+    explicit QgsExtentGroupBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

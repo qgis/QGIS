@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">
@@ -37,13 +37,13 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Roof Color</string>
+         <string>Roof color</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <widget class="QgsColorButton" name="mRoofColorButton">
-        <property name="text">
+        <property name="text" stdset="0">
          <string>…</string>
         </property>
        </widget>
@@ -51,7 +51,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Wall Color</string>
+         <string>Wall color</string>
         </property>
        </widget>
       </item>
@@ -96,7 +96,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="mShadowSizeWidget"/>
+          <widget class="QgsDoubleSpinBox" name="mShadowSizeWidget"/>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_6">
@@ -143,6 +143,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>

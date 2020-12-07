@@ -64,7 +64,7 @@ class QgsFeaturePrivate : public QSharedData
     //! Feature ID
     QgsFeatureId fid;
 
-    ///! Attributes accessed by field index
+    //! Attributes accessed by field index
     QgsAttributes attributes;
 
     //! Geometry, may be empty if feature has no geometry
@@ -75,6 +75,9 @@ class QgsFeaturePrivate : public QSharedData
 
     //! Optional field map for name-based attribute lookups
     QgsFields fields;
+
+  private:
+    QgsFeaturePrivate &operator=( const QgsFeaturePrivate & ) = delete;
 
 };
 

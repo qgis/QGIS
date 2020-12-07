@@ -1,21 +1,16 @@
-SET(AUTH_PKIPATHS_SRCS
+set(AUTH_PKIPATHS_SRCS
   qgsauthpkipathsmethod.cpp
   qgsauthpkipathsedit.cpp
 )
 
-SET(AUTH_PKIPATHS_HDRS
-  qgsauthpkipathsmethod.h
+set(AUTH_PKIPATHS_HDRS
   qgsauthpkipathsedit.h
+  qgsauthpkipathsmethod.h
 )
 
-SET(AUTH_PKIPATHS_MOC_HDRS
-  qgsauthpkipathsmethod.h
-  qgsauthpkipathsedit.h
-)
+set(AUTH_PKIPATHS_UIS qgsauthpkipathsedit.ui)
 
-SET(AUTH_PKIPATHS_UIS qgsauthpkipathsedit.ui)
-
-INCLUDE_DIRECTORIES (
+include_directories (
   ../../core
   ../../core/auth
   ../../core/geometry
@@ -23,11 +18,11 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
-INCLUDE_DIRECTORIES (SYSTEM
+include_directories (SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
-INCLUDE_DIRECTORIES (
+include_directories (
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -35,15 +30,14 @@ INCLUDE_DIRECTORIES (
 
 QT5_WRAP_UI (AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
 
-QT5_WRAP_CPP(AUTH_PKIPATHS_MOC_SRCS ${AUTH_PKIPATHS_MOC_HDRS})
+add_library (pkipathsauthmethod MODULE ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_HDRS} ${AUTH_PKIPATHS_UIS_H})
 
-ADD_LIBRARY (pkipathsauthmethod MODULE ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_HDRS} ${AUTH_PKIPATHS_MOC_SRCS} ${AUTH_PKIPATHS_UIS_H})
-
-TARGET_LINK_LIBRARIES (pkipathsauthmethod
+target_link_libraries (pkipathsauthmethod
   qgis_core
   qgis_gui
 )
+target_compile_definitions(pkipathsauthmethod PRIVATE "-DQT_NO_FOREACH")
 
-INSTALL(TARGETS pkipathsauthmethod
+install(TARGETS pkipathsauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

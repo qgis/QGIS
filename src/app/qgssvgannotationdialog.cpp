@@ -21,17 +21,22 @@
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QPushButton>
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mItem( item )
-  , mEmbeddedWidget( nullptr )
+
 {
   setupUi( this );
-  setWindowTitle( tr( "SVG annotation" ) );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsSvgAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsSvgAnnotationDialog::mButtonBox_clicked );
+  setWindowTitle( tr( "SVG Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
@@ -43,25 +48,15 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   }
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSvgAnnotationDialog::applySettingsToItem );
+  QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsSvgAnnotationDialog::showHelp );
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog()
-  : QDialog()
-  , mItem( nullptr )
-  , mEmbeddedWidget( nullptr )
-{
-
-}
-
-QgsSvgAnnotationDialog::~QgsSvgAnnotationDialog()
-{
-
-}
-
-void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsSvgAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -96,10 +91,15 @@ void QgsSvgAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsSvgAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {
     applySettingsToItem();
   }
+}
+
+void QgsSvgAnnotationDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
 }

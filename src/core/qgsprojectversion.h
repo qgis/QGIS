@@ -22,12 +22,12 @@
 #include <QStringList>
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to describe the version of a project.
  * Used in places where you need to check if the current version
  * of QGIS is greater than the one used to create a project file.
  */
-
 class CORE_EXPORT QgsProjectVersion
 {
 
@@ -36,44 +36,67 @@ class CORE_EXPORT QgsProjectVersion
     /**
      * Creates a new NULL version
      */
-    QgsProjectVersion()
-      : mMajor( 0 )
-      , mMinor( 0 )
-      , mSub( 0 )
-    {}
-
-    QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
-    QgsProjectVersion( const QString &string );
-    int majorVersion() { return mMajor;}
-    int minorVersion() { return mMinor;}
-    int subVersion()   { return mSub;}
-    QString text();
+    QgsProjectVersion() = default;
 
     /**
-     * Returns true if this is a NULL project version.
+     * Constructor for QgsProjectVersion, with the specified \a major, \a minor and \a sub version numbers.
+     */
+    QgsProjectVersion( int major, int minor, int sub, const QString &name = QString() );
+
+    /**
+     * Constructor for QgsProjectVersion, which parses the version number from a \a string.
+     */
+    QgsProjectVersion( const QString &string );
+
+    /**
+     * Returns the major version number.
+     */
+    int majorVersion() const { return mMajor;}
+
+    /**
+     * Returns the minor version number.
+     */
+    int minorVersion() const { return mMinor;}
+
+    /**
+     * Returns the sub version number.
+     */
+    int subVersion() const { return mSub;}
+
+    /**
+     * Returns a string representation of the version.
+     */
+    QString text() const;
+
+    /**
+     * Returns TRUE if this is a NULL project version.
      */
     bool isNull() const;
 
-    /** Boolean equal operator
+    /**
+     * Boolean equal operator
      */
     bool operator==( const QgsProjectVersion &other ) const;
 
-    /** Boolean not equal operator
+    /**
+     * Boolean not equal operator
      */
     bool operator!=( const QgsProjectVersion &other ) const;
 
-    /** Boolean >= operator
+    /**
+     * Boolean >= operator
      */
     bool operator>=( const QgsProjectVersion &other ) const;
 
-    /** Boolean > operator
+    /**
+     * Boolean > operator
      */
     bool operator>( const QgsProjectVersion &other ) const;
 
   private:
-    int mMajor;
-    int mMinor;
-    int mSub;
+    int mMajor = 0;
+    int mMinor = 0;
+    int mSub = 0;
     QString mName;
 };
 

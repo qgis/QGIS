@@ -28,9 +28,9 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     QgsGrassFeatureSource( const QgsGrassProvider *provider );
-    ~QgsGrassFeatureSource();
+    ~QgsGrassFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
 #if 0
@@ -44,7 +44,8 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
                 * Distinction between Selected and Used is used if attribute table exists, in which case
                 * attributes are read from the table and line geometry is attached to attributes and selection
                 * for that line is set to Used. In the end the selection is scanned for Selected (attributes missing)
-                * and the geometry is returned without attributes. */
+                * and the geometry is returned without attributes.
+                */
     };
 #endif
 
@@ -73,36 +74,38 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
   public:
     QgsGrassFeatureIterator( QgsGrassFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsGrassFeatureIterator();
+    ~QgsGrassFeatureIterator() override;
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool fetchFeature( QgsFeature &feature ) override;
+    bool rewind() override;
+    bool close() override;
 
     /**
-     * Get GRASS line id from a QGIS \a fid.
+     * Gets GRASS line id from a QGIS \a fid.
      */
     static int lidFromFid( QgsFeatureId fid );
 
     /**
-     * Get GRASS cat from QGIS \a fid.
+     * Gets GRASS cat from QGIS \a fid.
      */
     static int catFromFid( QgsFeatureId fid );
 
     /**
-     * Get layer number from QGIS \a fid.
+     * Gets layer number from QGIS \a fid.
      */
     static int layerFromFid( QgsFeatureId fid );
 
     /**
-     * Get attribute value to be used in different layer when it is edited.
+     * Gets attribute value to be used in different layer when it is edited.
      */
     static QVariant nonEditableValue( int layerNumber );
 
   public slots:
 
-    /** Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
-     * This function can be called directly from other threads (setting bool is atomic) */
+    /**
+     * Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
+     * This function can be called directly from other threads (setting bool is atomic)
+    */
     void cancel();
 
     void doClose();
@@ -122,13 +125,15 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
 
     void setFeatureGeometry( QgsFeature &feature, int id, int type );
 
-    /** Set feature attributes.
+    /**
+     * Set feature attributes.
      *  \param feature
      *  \param cat category number
      */
     void setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassVectorMap::TopoSymbol symbol );
 
-    /** Set feature attributes.
+    /**
+     * Set feature attributes.
      *  \param feature
      *  \param cat category number
      *  \param attlist a list containing the index number of the fields to set

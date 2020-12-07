@@ -20,7 +20,13 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from ..data_model import TableDataModel, SqlResultModel
+from qgis.core import QgsMessageLog
+from ..plugin import BaseError
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask)
+from .plugin import SLDatabase
 
 
 class SLTableDataModel(TableDataModel):
@@ -58,6 +64,39 @@ class SLTableDataModel(TableDataModel):
 
     def rowCount(self, index=None):
         return self.fetchedCount
+
+
+class SLSqlResultModelTask(SqlResultModelTask):
+
+    def __init__(self, db, sql, parent):
+        super().__init__(db, sql, parent)
+        self.clone = None
+
+    def run(self):
+        try:
+            self.clone = SLDatabase(None, self.db.connector.uri())
+            self.model = SLSqlResultModel(self.clone, self.sql, None)
+        except BaseError as e:
+            self.error = e
+            QgsMessageLog.logMessage(e.msg)
+            return False
+
+        return True
+
+    def cancel(self):
+        if self.clone:
+            self.clone.connector.cancel()
+        SqlResultModelTask.cancel(self)
+
+
+class SLSqlResultModelAsync(SqlResultModelAsync):
+
+    def __init__(self, db, sql, parent):
+        super().__init__()
+
+        self.task = SLSqlResultModelTask(db, sql, parent)
+        self.task.taskCompleted.connect(self.modelDone)
+        self.task.taskTerminated.connect(self.modelDone)
 
 
 class SLSqlResultModel(SqlResultModel):

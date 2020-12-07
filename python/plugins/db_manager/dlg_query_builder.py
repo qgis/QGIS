@@ -56,7 +56,6 @@ def insertWithSelectionOn(parent, objectname, text):
 
 
 class QueryBuilderDlg(QDialog):
-
     # object used to store parameters between invocations
     saveParameter = None
 
@@ -77,19 +76,19 @@ class QueryBuilderDlg(QDialog):
         self.ui.order.installEventFilter(self.evt)
 
         d = self.db.connector.getQueryBuilderDictionary()
-        #Application default parameters
+        # Application default parameters
         self.table = None
         self.col_col = []
         self.col_where = []
         self.coltables = []
         self.ui.extract.setChecked(True)
-        #ComboBox default values
+        # ComboBox default values
         self.ui.functions.insertItems(1, d['function'])
         self.ui.math.insertItems(1, d['math'])
         self.ui.aggregates.insertItems(1, d['aggregate'])
         self.ui.operators.insertItems(1, d['operator'])
         self.ui.stringfct.insertItems(1, d['string'])
-        #self.ui.Rtree.insertItems(1,rtreecommand)
+        # self.ui.Rtree.insertItems(1,rtreecommand)
 
         # restore last query if needed
         if reset:
@@ -97,10 +96,10 @@ class QueryBuilderDlg(QDialog):
         if QueryBuilderDlg.saveParameter is not None:
             self.restoreLastQuery()
 
-        #Show Tables
+        # Show Tables
         self.show_tables()
 
-        #Signal/slot
+        # Signal/slot
         self.ui.aggregates.currentIndexChanged.connect(self.add_aggregate)
         self.ui.stringfct.currentIndexChanged.connect(self.add_stringfct)
         self.ui.operators.currentIndexChanged.connect(self.add_operators)
@@ -195,7 +194,7 @@ class QueryBuilderDlg(QDialog):
         if self.ui.tables.currentIndex() <= 0:
             return
         ag = self.ui.tables.currentText()
-        #Retrieve Table Object from txt
+        # Retrieve Table Object from txt
         tableObj = [table for table in self.tables if table.name.upper() == ag.upper()]
         if len(tableObj) != 1:
             return  # No object with this name
@@ -256,7 +255,7 @@ class QueryBuilderDlg(QDialog):
             return
 
         columns = ['"%s"."%s"' % (table.name, col.name) for col in table.fields()]
-        #add special '*' column:
+        # add special '*' column:
         columns = ['"%s".*' % table.name] + columns
         self.coltables.append(table.name)  # table columns have been listed
         # first and second col combobox
@@ -271,7 +270,7 @@ class QueryBuilderDlg(QDialog):
         if self.ui.columns_2.currentIndex() <= 0:
             return
         item = self.ui.columns_2.currentText()
-        #recover column and table:
+        # recover column and table:
         column = item.split(".")  # "table".'column'
         table = column[0]
         if column[1] == '*':
@@ -322,7 +321,7 @@ class QueryBuilderDlg(QDialog):
         self.ui.where.insertPlainText(sql)
 
     def reset(self):
-        #reset lists:
+        # reset lists:
         self.ui.values.setModel(None)
         self.ui.columns_2.clear()
         self.ui.columns.insertItems(0, ["Columns"])
@@ -373,9 +372,9 @@ class QueryBuilderDlg(QDialog):
         self.ui.where.insertPlainText(saveParameter["where"])
         self.ui.order.setPlainText(saveParameter["order"])
         self.ui.group.setPlainText(saveParameter["group"])
-        #list previous colist:
+        # list previous colist:
         for tablename in self.coltables:
-            #Retrieve table object from table name:
+            # Retrieve table object from table name:
             table = [table for table in self.tables if table.name.upper() == tablename.upper()]
             if len(table) != 1:
                 break

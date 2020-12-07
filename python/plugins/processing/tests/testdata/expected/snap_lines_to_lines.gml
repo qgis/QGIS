@@ -23,7 +23,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:snap_lines_to_lines fid="lines.2">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>2,0 2,2 2,2 3,2</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>2,0 2,2 3,2</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:snap_lines_to_lines>
   </gml:featureMember>
   <gml:featureMember>

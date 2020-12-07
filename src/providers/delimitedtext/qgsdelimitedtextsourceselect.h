@@ -19,28 +19,25 @@
 #include "qgshelp.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
+#include "qgsdelimitedtextfile.h"
 
 class QButtonGroup;
 class QgisInterface;
-class QgsDelimitedTextFile;
 
 /**
  * \class QgsDelimitedTextSourceSelect
  */
-class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTextSourceSelectBase
+class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDelimitedTextSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsDelimitedTextSourceSelect();
-
-    QStringList splitLine( QString line );
+    QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   private:
     bool loadDelimitedFileDefinition();
     void updateFieldLists();
-    void getOpenFileName();
     QString selectedChars();
     void setSelectedChars( const QString &delimiters );
     void loadSettings( const QString &subkey = QString(), bool loadGeomSettings = true );
@@ -50,32 +47,24 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString &xname, const QString &yname );
 
   private:
-    QgsDelimitedTextFile *mFile = nullptr;
-    int mExampleRowCount;
-    int mBadRowCount;
-    QString mPluginKey;
+    std::unique_ptr<QgsDelimitedTextFile> mFile;
+    int mExampleRowCount = 20;
+    int mBadRowCount = 0;
+    static constexpr int DEFAULT_MAX_FIELDS = 10000;
+    int mMaxFields = DEFAULT_MAX_FIELDS; // to avoid Denial Of Service (at least in source select). Configurable through /max_fields settings sub-key.
+    QString mSettingsKey;
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
-
-  private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested()
-    {
-      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#delimited-text-files" ) );
-    }
-    void on_btnBrowseForFile_clicked();
+    void showHelp();
+    void showCrsWidget();
 
   public slots:
+    void addButtonClicked() override;
     void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
     bool validate();
-
-  signals:
-    void addVectorLayer( const QString &, const QString &, const QString & );
 };
 
 #endif // QGSDELIMITEDTEXTSOURCESELECT_H

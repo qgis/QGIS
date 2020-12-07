@@ -21,29 +21,14 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from processing.core.parameters import getParameterFromString
-from .v_net import incorporatePoints
-from copy import deepcopy
+from .v_net import incorporatePoints, variableOutput
+from qgis.core import QgsProcessingParameterDefinition
 
 
-def processCommand(alg, parameters):
-    # We temporary remove the output 'sequence'
-    new_parameters = deepcopy(parameters)
-    sequence = alg.getOutputFromName(u'sequence')
-    sequenceFile = alg.getOutputValue(u'sequence')
-    alg.exportedLayers[sequence.value] = sequence.name + alg.uniqueSuffix
-    alg.removeOutputFromName(u'sequence')
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
 
-    # We create a new parameter with the same name
-    param = getParameterFromString(u"ParameterString|sequence|sequence|None|False|False")
-    new_parameters[param.name()] = sequenceFile
 
-    # Let's do the incorporation and command generation
-    incorporatePoints(alg, new_parameters)
-
-    # then we delete the input parameter and add the old output
-    alg.addOutput(sequence)
+def processOutputs(alg, parameters, context, feedback):
+    outputParameter = {'output': ['output', 'line', 1, True]}
+    variableOutput(alg, outputParameter, parameters, context)

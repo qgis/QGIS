@@ -21,14 +21,10 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
 
-__revision__ = '$Format:%H$'
-
-
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context, feedback):
     # v.in.geonames needs to use WGS84 projection
     alg.commands.append('g.proj -c epsg=4326')
 
     # Launch the algorithm
-    alg.processCommand()
+    alg.processCommand(parameters, context, feedback)

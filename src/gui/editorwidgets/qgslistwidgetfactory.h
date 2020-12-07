@@ -19,17 +19,21 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * Factory for widgets for editing a QVariantList or a QStringList
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsListWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
 
     /**
-     * Constructor.
+     * Constructor for QgsListWidgetFactory, where \a name is a human-readable
+     * name for the factory.
      */
     QgsListWidgetFactory( const QString &name );
 

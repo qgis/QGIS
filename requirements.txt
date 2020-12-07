@@ -1,3 +1,6 @@
+termcolor
+mock
+nose2
 psycopg2
 numpy
 pyyaml

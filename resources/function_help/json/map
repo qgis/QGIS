@@ -1,6 +1,7 @@
 {
   "name": "map",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Returns a map containing all the keys and values passed as pair of parameters.",
   "variableLenArguments": true,
   "arguments": [
@@ -10,6 +11,6 @@
     {"arg":"value2", "syntaxOnly": true},
     {"arg":"key", "descOnly": true, "description":"a key (string)"},
     {"arg":"value", "descOnly": true, "description":"a value"}],
-  "examples": [ { "expression":"map('1','one','2', 'two')", "returns":"map: 1: 'one', 2: 'two'"}
+  "examples": [ { "expression":"map('1','one','2', 'two')", "returns":"{ '1': 'one', '2': 'two' }"}
   ]
 }

@@ -35,30 +35,10 @@
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
-#include <grass/gprojects.h>
-
-#if GRASS_VERSION_MAJOR >= 7
-#define G_allocate_c_raster_buf Rast_allocate_c_buf
-#define G_allocate_d_raster_buf Rast_allocate_d_buf
-#define G_close_cell Rast_close
-#define G_colors_count Rast_colors_count
-#define G_easting_to_col Rast_easting_to_col
-#define G_get_c_raster_row Rast_get_c_row
-#define G_get_cellhd Rast_get_cellhd
-#define G_get_d_raster_row Rast_get_d_row
-#define G_get_f_color_rule Rast_get_fp_color_rule
-#define G_get_fp_range_min_max Rast_get_fp_range_min_max
-#define G_get_raster_map_type Rast_get_map_type
-#define G_is_null_value Rast_is_null_value
-#define G_northing_to_row Rast_northing_to_row
-#define G_open_cell_old Rast_open_old
-#define G_raster_map_type Rast_map_type
-#define G_read_colors Rast_read_colors
-#define G_read_fp_range Rast_read_fp_range
-#define G_window_cols Rast_window_cols
-#define G_window_rows Rast_window_rows
-#define G_suppress_masking Rast_suppress_masking
+#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 #endif
+#include <grass/gprojects.h>
 
 int main( int argc, char **argv )
 {
@@ -136,7 +116,7 @@ int main( int argc, char **argv )
   {
     if ( rast_opt->answer )
     {
-      G_get_cellhd( rast_opt->answer, "", &window );
+      Rast_get_cellhd( rast_opt->answer, "", &window );
       fprintf( stdout, "%f,%f,%f,%f", window.west, window.south, window.east, window.north );
     }
     else if ( vect_opt->answer )
@@ -149,7 +129,7 @@ int main( int argc, char **argv )
   {
     if ( rast_opt->answer )
     {
-      G_get_cellhd( rast_opt->answer, "", &window );
+      Rast_get_cellhd( rast_opt->answer, "", &window );
       fprintf( stdout, "%d,%d", window.cols, window.rows );
     }
     else if ( vect_opt->answer )
@@ -164,15 +144,15 @@ int main( int argc, char **argv )
     double zmin, zmax;
 
     // Data type
-    RASTER_MAP_TYPE raster_type = G_raster_map_type( rast_opt->answer, "" );
+    RASTER_MAP_TYPE raster_type = Rast_map_type( rast_opt->answer, "" );
     fprintf( stdout, "TYPE:%d\n", raster_type );
 
     // Statistics
-    if ( G_read_fp_range( rast_opt->answer, "", &range ) < 0 )
+    if ( Rast_read_fp_range( rast_opt->answer, "", &range ) < 0 )
     {
       G_fatal_error( ( "Unable to read range file" ) );
     }
-    G_get_fp_range_min_max( &range, &zmin, &zmax );
+    Rast_get_fp_range_min_max( &range, &zmin, &zmax );
     fprintf( stdout, "MIN_VALUE:%.17e\n", zmin );
     fprintf( stdout, "MAX_VALUE:%.17e\n", zmax );
   }
@@ -181,19 +161,19 @@ int main( int argc, char **argv )
     // Color table
     struct Colors colors;
     int i, ccount;
-    if ( G_read_colors( rast_opt->answer, "", &colors ) == 1 )
+    if ( Rast_read_colors( rast_opt->answer, "", &colors ) == 1 )
     {
       //int maxcolor;
       //CELL min, max;
 
       //G_get_color_range ( &min, &max, &colors);
-      ccount = G_colors_count( &colors );
+      ccount = Rast_colors_count( &colors );
       for ( i = ccount - 1; i >= 0; i-- )
       {
         DCELL val1, val2;
         unsigned char r1, g1, b1, r2, g2, b2;
 
-        G_get_f_color_rule( &val1, &r1, &g1, &b1, &val2, &r2, &g2, &b2, &colors, i );
+        Rast_get_fp_color_rule( &val1, &r1, &g1, &b1, &val2, &r2, &g2, &b2, &colors, i );
         fprintf( stdout, "%.17e %.17e %d %d %d %d %d %d\n", val1, val2, r1, g1, b1, r2, g2, b2 );
       }
     }
@@ -212,10 +192,10 @@ int main( int argc, char **argv )
       DCELL *dcell = 0;
       CELL *cell = 0;
       char buff[101];
-      G_get_cellhd( rast_opt->answer, "", &window );
+      Rast_get_cellhd( rast_opt->answer, "", &window );
       G_set_window( &window );
-      G_suppress_masking(); // must be after G_set_window()
-      fd = G_open_cell_old( rast_opt->answer, "" );
+      Rast_suppress_masking(); // must be after G_set_window()
+      fd = Rast_open_old( rast_opt->answer, "" );
       // wait for coords from stdin
       while ( fgets( buff, 100, stdin ) != 0 )
       {
@@ -225,8 +205,8 @@ int main( int argc, char **argv )
         }
         else
         {
-          col = ( int ) G_easting_to_col( x, &window );
-          row = ( int ) G_northing_to_row( y, &window );
+          col = ( int ) Rast_easting_to_col( x, &window );
+          row = ( int ) Rast_northing_to_row( y, &window );
           if ( col == window.cols )
             col--;
           if ( row == window.rows )
@@ -242,44 +222,23 @@ int main( int argc, char **argv )
             void *ptr = 0;
             double val;
 
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR > 2 ) || GRASS_VERSION_MAJOR > 6 )
-            rast_type = G_get_raster_map_type( fd );
-#else
-            rast_type = G_raster_map_type( rast_opt->answer, "" );
-#endif
-            cell = G_allocate_c_raster_buf();
-            dcell = G_allocate_d_raster_buf();
+            rast_type = Rast_get_map_type( fd );
+            cell = Rast_allocate_c_buf();
+            dcell = Rast_allocate_d_buf();
 
             if ( rast_type == CELL_TYPE )
             {
-#if GRASS_VERSION_MAJOR < 7
-              if ( G_get_c_raster_row( fd, cell, row ) < 0 )
-              {
-                G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
-                               rast_opt->answer, row );
-              }
-#else
-              G_get_c_raster_row( fd, cell, row );
-#endif
+              Rast_get_c_row( fd, cell, row );
               val = cell[col];
               ptr = &( cell[col] );
             }
             else
             {
-#if GRASS_VERSION_MAJOR < 7
-              if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
-              {
-                G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
-                               rast_opt->answer, row );
-              }
-#else
-              G_get_d_raster_row( fd, dcell, row );
-#endif
+              Rast_get_d_row( fd, dcell, row );
               val = dcell[col];
               ptr = &( dcell[col] );
             }
-            if ( G_is_null_value( ptr, rast_type ) )
+            if ( Rast_is_null_value( ptr, rast_type ) )
             {
               fprintf( stdout, "value:nan\n" );
             }
@@ -291,7 +250,7 @@ int main( int argc, char **argv )
         }
         fflush( stdout );
       }
-      G_close_cell( fd );
+      Rast_close( fd );
     }
     else if ( vect_opt->answer )
     {
@@ -318,7 +277,7 @@ int main( int argc, char **argv )
       double squares_sum = 0; // sum of squares
       double stdev = 0; // standard deviation
 
-      G_get_cellhd( rast_opt->answer, "", &window );
+      Rast_get_cellhd( rast_opt->answer, "", &window );
       window.north = atof( north_opt->answer );
       window.south = atof( south_opt->answer );
       window.east = atof( east_opt->answer );
@@ -327,20 +286,15 @@ int main( int argc, char **argv )
       window.cols = ( int ) atoi( cols_opt->answer );
 
       G_set_window( &window );
-      G_suppress_masking(); // must be after G_set_window()
-      fd = G_open_cell_old( rast_opt->answer, "" );
+      Rast_suppress_masking(); // must be after G_set_window()
+      fd = Rast_open_old( rast_opt->answer, "" );
 
-      ncols = G_window_cols();
-      nrows = G_window_rows();
+      ncols = Rast_window_cols();
+      nrows = Rast_window_rows();
 
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
-    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR > 2 ) || GRASS_VERSION_MAJOR > 6 )
-      rast_type = G_get_raster_map_type( fd );
-#else
-      rast_type = G_raster_map_type( rast_opt->answer, "" );
-#endif
-      cell = G_allocate_c_raster_buf();
-      dcell = G_allocate_d_raster_buf();
+      rast_type = Rast_get_map_type( fd );
+      cell = Rast_allocate_c_buf();
+      dcell = Rast_allocate_d_buf();
 
       // Calc stats is very slow for large rasters -> prefer optimization for speed over
       // code length and readability (which is not currently true)
@@ -348,27 +302,11 @@ int main( int argc, char **argv )
       {
         if ( rast_type == CELL_TYPE )
         {
-#if GRASS_VERSION_MAJOR < 7
-          if ( G_get_c_raster_row( fd, cell, row ) < 0 )
-          {
-            G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
-                           rast_opt->answer, row );
-          }
-#else
-          G_get_c_raster_row( fd, cell, row );
-#endif
+          Rast_get_c_row( fd, cell, row );
         }
         else
         {
-#if GRASS_VERSION_MAJOR < 7
-          if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
-          {
-            G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
-                           rast_opt->answer, row );
-          }
-#else
-          G_get_d_raster_row( fd, dcell, row );
-#endif
+          Rast_get_d_row( fd, dcell, row );
         }
 
         for ( col = 0; col < ncols; col++ )
@@ -383,18 +321,18 @@ int main( int argc, char **argv )
             val = dcell[col];
             ptr = &( dcell[col] );
           }
-          if ( ! G_is_null_value( ptr, rast_type ) )
+          if ( ! Rast_is_null_value( ptr, rast_type ) )
           {
             if ( val < min ) min = val;
             if ( val > max ) max = val;
             sum += val;
             count++;
-            squares_sum += pow( val, 2 );
+            squares_sum += val * val;
           }
         }
       }
       mean = count > 0 ? sum / count : 0;
-      squares_sum -= count * pow( mean, 2 );
+      squares_sum -= count * mean * mean;
       stdev = sqrt( squares_sum / ( count - 1 ) );
 
       fprintf( stdout, "MIN:%.17e\n", min );
@@ -405,7 +343,7 @@ int main( int argc, char **argv )
       fprintf( stdout, "STDEV:%.17e\n", stdev );
       fprintf( stdout, "SQSUM:%.17e\n", squares_sum );
 
-      G_close_cell( fd );
+      Rast_close( fd );
     }
     else if ( vect_opt->answer )
     {

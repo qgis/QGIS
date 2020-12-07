@@ -1,0 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTemporalUtils
+{
+%Docstring
+Contains utility methods for working with temporal layers and projects.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporalutils.h"
+%End
+  public:
+
+    static QgsDateTimeRange calculateTemporalRangeForProject( QgsProject *project );
+%Docstring
+Calculates the temporal range for a ``project``.
+
+This method considers the temporal range available from layers contained within the project and
+returns the maximal combined temporal extent of these layers.
+%End
+
+    struct AnimationExportSettings
+    {
+      QgsDateTimeRange animationRange;
+
+      QgsInterval frameDuration;
+
+      QString outputDirectory;
+
+      QString fileNameTemplate;
+
+      QList<QgsMapDecoration *> decorations;
+
+    };
+
+    static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports animation frames by rendering the map to multiple destination images.
+
+The ``mapSettings`` argument dictates the overall map settings such as extent
+and size, while animation and export specific settings are specified via the ``settings``
+argument.
+
+An optional ``feedback`` argument can be used to provide progress reports and cancellation
+support.
+
+:param mapSettings: settings controlling the map render
+:param settings: animation and export settings
+:param feedback: optional feedback object for progress reports and cancellation checks
+
+:return: - ``True`` if the export was successful.
+         - error: will be set to a descriptive error message if the export fails
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

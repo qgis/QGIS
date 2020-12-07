@@ -20,7 +20,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for classes that handle missing layer files when reading project file.
  */
 class CORE_EXPORT QgsProjectBadLayerHandler
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
     DataType dataType( const QDomNode &layerNode );
 
     /**
-     * Return the data source for the given layer
+     * Returns the data source for the given layer
      *
      * The QDomNode is a QgsProject Dom node corresponding to a map layer state.
      *
@@ -83,7 +84,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
     QString dataSource( const QDomNode &layerNode );
 
     /**
-     * Return the physical storage type associated with the given layer
+     * Returns the physical storage type associated with the given layer
      *
      * The QDomNode is a QgsProject Dom node corresponding to a map layer state.
      *

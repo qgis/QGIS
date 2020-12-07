@@ -1,0 +1,132 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextdocument.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTextDocument
+{
+%Docstring
+
+Represents a document consisting of one or more QgsTextBlock objects.
+
+.. warning::
+
+   This API is not considered stable and may change in future QGIS versions.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstextdocument.h"
+%End
+  public:
+
+    QgsTextDocument();
+    ~QgsTextDocument();
+
+    explicit QgsTextDocument( const QgsTextBlock &block );
+%Docstring
+Constructor for a QgsTextDocument consisting of a single text ``block``.
+%End
+
+    explicit QgsTextDocument( const QgsTextFragment &fragment );
+%Docstring
+Constructor for a QgsTextDocument consisting of a single text ``fragment``.
+%End
+
+    static QgsTextDocument fromPlainText( const QStringList &lines );
+%Docstring
+Constructor for QgsTextDocument consisting of a set of plain text ``lines``.
+%End
+
+    static QgsTextDocument fromHtml( const QStringList &lines );
+%Docstring
+Constructor for QgsTextDocument consisting of a set of HTML formatted ``lines``.
+%End
+
+    void append( const QgsTextBlock &block );
+%Docstring
+Appends a ``block`` to the document.
+%End
+
+
+    void reserve( int count );
+%Docstring
+Reserves the specified ``count`` of blocks for optimised block appending.
+%End
+
+    const QgsTextBlock &at( int index ) const /Factory/;
+%Docstring
+Returns the block at the specified ``index``.
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = new QgsTextBlock( sipCpp->at( a0 ) );
+    }
+%End
+
+    QgsTextBlock &operator[]( int index ) /Factory/;
+%MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    if ( idx < 0 )
+      sipIsErr = 1;
+    else
+      sipRes = new QgsTextBlock( sipCpp->operator[]( idx ) );
+%End
+
+    int size() const;
+%Docstring
+Returns the number of blocks in the document.
+%End
+
+    int __len__() const;
+%MethodCode
+    sipRes = sipCpp->size();
+%End
+
+    QStringList toPlainText() const;
+%Docstring
+Returns a list of plain text lines of text representing the document.
+%End
+
+    void splitLines( const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
+%Docstring
+Splits lines of text in the document to separate lines, using a specified wrap character (``wrapCharacter``) or newline characters.
+
+The ``autoWrapLength`` argument can be used to specify an ideal length of line to automatically
+wrap text to (automatic wrapping is disabled if ``autoWrapLength`` is 0). This automatic wrapping is performed
+after processing wrapping using ``wrapCharacter``. When auto wrapping is enabled, the ``useMaxLineLengthWhenAutoWrapping``
+argument controls whether the lines should be wrapped to an ideal maximum of ``autoWrapLength`` characters, or
+if ``False`` then the lines are wrapped to an ideal minimum length of ``autoWrapLength`` characters.
+%End
+
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+%Docstring
+Applies a ``capitalization`` style to the document's text.
+
+.. versionadded:: 3.16
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextdocument.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

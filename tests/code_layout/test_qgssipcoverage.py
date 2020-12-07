@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '15/10/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 from qgis.testing import unittest
@@ -115,11 +113,11 @@ class TestQgsSipCoverage(unittest.TestCase):
 
         self.assertEqual(missing_class_count, 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
 If these classes are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the CLASS Doxygen comments""")
+"\\note not available in Python bindings" to the CLASS Doxygen comments""")
 
         self.assertEqual(missing_member_count, 0, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
 If these members are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the MEMBER Doxygen comments""")
+"\\note not available in Python bindings" to the MEMBER Doxygen comments""")
 
 
 if __name__ == '__main__':

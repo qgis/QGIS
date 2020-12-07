@@ -1,0 +1,551 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/expression/qgsexpressionnodeimpl.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsExpressionNodeUnaryOperator : QgsExpressionNode
+{
+%Docstring
+A unary node is either negative as in boolean (not) or as in numbers (minus).
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    enum UnaryOperator
+    {
+      uoNot,
+      uoMinus,
+    };
+
+    QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::UnaryOperator op, QgsExpressionNode *operand /Transfer/ );
+%Docstring
+A node unary operator is modifying the value of ``operand`` by negating it with ``op``.
+%End
+    ~QgsExpressionNodeUnaryOperator();
+
+    QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
+%Docstring
+Returns the unary operator.
+%End
+
+    QgsExpressionNode *operand() const;
+%Docstring
+Returns the node the operator will operate upon.
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+    QString text() const;
+%Docstring
+Returns a the name of this operator without the operands.
+I.e. "NOT" or "-"
+%End
+
+};
+
+class QgsExpressionNodeBinaryOperator : QgsExpressionNode
+{
+%Docstring
+A binary expression operator, which operates on two values.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    enum BinaryOperator
+    {
+      // logical
+      boOr,
+      boAnd,
+
+      // comparison
+      boEQ,
+      boNE,
+      boLE,
+      boGE,
+      boLT,
+      boGT,
+      boRegexp,
+      boLike,
+      boNotLike,
+      boILike,
+      boNotILike,
+      boIs,
+      boIsNot,
+
+      // math
+      boPlus,
+      boMinus,
+      boMul,
+      boDiv,
+      boIntDiv,
+      boMod,
+      boPow,
+
+      // strings
+      boConcat,
+    };
+
+    QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::BinaryOperator op, QgsExpressionNode *opLeft /Transfer/, QgsExpressionNode *opRight /Transfer/ );
+%Docstring
+Binary combination of the left and the right with op.
+%End
+    ~QgsExpressionNodeBinaryOperator();
+
+    QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
+%Docstring
+Returns the binary operator.
+%End
+
+    QgsExpressionNode *opLeft() const;
+%Docstring
+Returns the node to the left of the operator.
+
+.. seealso:: :py:func:`opRight`
+%End
+
+    QgsExpressionNode *opRight() const;
+%Docstring
+Returns the node to the right of the operator.
+
+.. seealso:: :py:func:`opLeft`
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual bool needsGeometry() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+    int precedence() const;
+%Docstring
+Returns the precedence index for the operator. Higher values have higher precedence.
+%End
+
+    bool leftAssociative() const;
+%Docstring
+Returns ``True`` if the operator is left-associative.
+%End
+
+    QString text() const;
+%Docstring
+Returns a the name of this operator without the operands.
+I.e. "AND", "OR", ...
+%End
+
+};
+
+class QgsExpressionNodeIndexOperator : QgsExpressionNode
+{
+%Docstring
+A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeIndexOperator( QgsExpressionNode *container /Transfer/, QgsExpressionNode *index /Transfer/ );
+%Docstring
+Constructor for QgsExpressionNodeIndexOperator.
+%End
+    ~QgsExpressionNodeIndexOperator();
+
+    QgsExpressionNode *container() const;
+%Docstring
+Returns the container node, representing an array or map value.
+
+.. seealso:: :py:func:`index`
+%End
+
+    QgsExpressionNode *index() const;
+%Docstring
+Returns the index node, representing an array element index or map key.
+
+.. seealso:: :py:func:`container`
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual bool needsGeometry() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+};
+
+class QgsExpressionNodeInOperator : QgsExpressionNode
+{
+%Docstring
+An expression node for value IN or NOT IN clauses.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeInOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode::NodeList *list /Transfer/, bool notin = false );
+%Docstring
+This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is ``False``.
+%End
+    ~QgsExpressionNodeInOperator();
+
+    QgsExpressionNode *node() const;
+%Docstring
+Returns the expression node.
+%End
+
+    bool isNotIn() const;
+%Docstring
+Returns ``True`` if this node is a "NOT IN" operator, or ``False`` if the node is a normal "IN" operator.
+%End
+
+    QgsExpressionNode::NodeList *list() const;
+%Docstring
+Returns the list of nodes to search for matching values within.
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+};
+
+class QgsExpressionNodeFunction : QgsExpressionNode
+{
+%Docstring
+An expression node for expression functions.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args /Transfer/ );
+%Docstring
+A function node consists of an index of the function in the global function array and
+a list of arguments that will be passed to it.
+%End
+
+    ~QgsExpressionNodeFunction();
+
+    int fnIndex() const;
+%Docstring
+Returns the index of the node's function.
+%End
+
+    QgsExpressionNode::NodeList *args() const;
+%Docstring
+Returns a list of arguments specified for the function.
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+    static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
+%Docstring
+Tests whether the provided argument list is valid for the matching function
+%End
+
+};
+
+class QgsExpressionNodeLiteral : QgsExpressionNode
+{
+%Docstring
+An expression node for literal values.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeLiteral( const QVariant &value );
+%Docstring
+Constructor for QgsExpressionNodeLiteral, with the specified literal ``value``.
+%End
+
+    QVariant value() const;
+%Docstring
+The value of the literal.
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+};
+
+class QgsExpressionNodeColumnRef : QgsExpressionNode
+{
+%Docstring
+An expression node which takes it value from a feature's field.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeColumnRef( const QString &name );
+%Docstring
+Constructor for QgsExpressionNodeColumnRef, referencing the column
+with the specified ``name``.
+%End
+
+    QString name() const;
+%Docstring
+The name of the column.
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual bool needsGeometry() const;
+
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+};
+
+class QgsExpressionNodeCondition : QgsExpressionNode
+{
+%Docstring
+An expression node for CASE WHEN clauses.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    class WhenThen
+{
+%Docstring
+Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+      public:
+
+        WhenThen( QgsExpressionNode *whenExp, QgsExpressionNode *thenExp );
+%Docstring
+A combination of when and then. Simple as that.
+%End
+        ~WhenThen();
+
+
+        QgsExpressionNodeCondition::WhenThen *clone() const /Factory/;
+%Docstring
+Gets a deep copy of this WhenThen combination.
+%End
+
+        QgsExpressionNode *whenExp() const;
+%Docstring
+The expression that makes the WHEN part of the condition.
+
+:return: The expression node that makes the WHEN part of the condition check.
+%End
+
+
+        QgsExpressionNode *thenExp() const;
+%Docstring
+The expression node that makes the THEN result part of the condition.
+
+:return: The expression node that makes the THEN result part of the condition.
+%End
+
+      private:
+        WhenThen( const QgsExpressionNodeCondition::WhenThen &rh );
+    };
+    typedef QList<QgsExpressionNodeCondition::WhenThen *> WhenThenList;
+
+    QgsExpressionNodeCondition( QgsExpressionNodeCondition::WhenThenList *conditions, QgsExpressionNode *elseExp = 0 );
+%Docstring
+Create a new node with the given list of ``conditions`` and an optional ``elseExp`` expression.
+%End
+
+
+    ~QgsExpressionNodeCondition();
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    WhenThenList conditions() const;
+%Docstring
+The list of WHEN THEN expression parts of the expression.
+
+:return: The list of WHEN THEN expression parts of the expression.
+%End
+
+    QgsExpressionNode *elseExp() const;
+%Docstring
+The ELSE expression used for the condition.
+
+:return: The ELSE expression used for the condition.
+%End
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+
+    virtual bool needsGeometry() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/expression/qgsexpressionnodeimpl.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

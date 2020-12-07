@@ -32,85 +32,65 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     QgsPythonUtilsImpl();
 
-    virtual ~QgsPythonUtilsImpl();
+    ~QgsPythonUtilsImpl() override;
 
     /* general purpose functions */
 
-    //! initialize Python and import bindings
-    void initPython( QgisInterface *interface ) override;
-
+    void initPython( QgisInterface *interface, bool installErrorHook ) override;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! initialize Python for server and import bindings
     void initServerPython( QgsServerInterface *interface ) override;
     bool startServerPlugin( QString packageName ) override;
 #endif
-
-    //! close Python interpreter
     void exitPython() override;
-
-    //! returns true if Python support is ready to use (must be inited first)
     bool isEnabled() override;
-
-    //! returns path where QGIS Python stuff is located
-    QString pythonPath();
-
-    //! run a statement (wrapper for PyRun_String)
-    //! this command is more advanced as enables error checking etc.
-    //! when an exception is raised, it shows dialog with exception details
-    //! \returns true if no error occurred
     bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) override;
-
-    //! run a statement, error reporting is not done
-    //! \returns true if no error occurred
-    bool runStringUnsafe( const QString &command, bool single = true ) override;
-
+    QString runStringUnsafe( const QString &command, bool single = true ) override; // returns error traceback on failure, empty QString on success
     bool evalString( const QString &command, QString &result ) override;
-
-    //! \returns object's type name as a string
-    QString getTypeAsString( PyObject *obj );
-
-    //! get information about error to the supplied arguments
-    //! \returns false if there was no Python error
     bool getError( QString &errorClassName, QString &errorText ) override;
+
+    /**
+     * Returns the path where QGIS Python related files are located.
+     */
+    QString pythonPath() const;
+
+    /**
+     * Returns an object's type name as a string
+     */
+    QString getTypeAsString( PyObject *obj );
 
     /* plugins related functions */
 
-    //! return current path for Python plugins
-    QString pluginsPath();
+    /**
+     * Returns the current path for Python plugins
+     */
+    QString pluginsPath() const;
 
-    //! return current path for Python in home directory
-    QString homePythonPath();
+    /**
+     * Returns the current path for Python in home directory.
+     */
+    QString homePythonPath() const;
 
-    //! return current path for home directory Python plugins
-    QString homePluginsPath();
+    /**
+     * Returns the current path for home directory Python plugins.
+     */
+    QString homePluginsPath() const;
 
-    //! return a list of extra plugins paths passed with QGIS_PLUGINPATH environment variable
-    QStringList extraPluginsPaths();
+    /**
+     * Returns a list of extra plugins paths passed with QGIS_PLUGINPATH environment variable.
+     */
+    QStringList extraPluginsPaths() const;
 
-    //! return list of all available Python plugins
     QStringList pluginList() override;
-
-    //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( const QString &packageName ) override;
-
-    //! return a list of active plugins
-    virtual QStringList listActivePlugins() override;
-
-    //! load Python plugin (import)
+    bool isPluginLoaded( const QString &packageName ) override;
+    QStringList listActivePlugins() override;
     bool loadPlugin( const QString &packageName ) override;
-
-    //! start plugin: add to active plugins and call initGui()
     bool startPlugin( const QString &packageName ) override;
-
-    //! helper function to get some information about plugin
-    //! \param function one of these strings: name, tpye, version, description
+    bool startProcessingPlugin( const QString &packageName ) override;
     QString getPluginMetadata( const QString &pluginName, const QString &function ) override;
-
-    //! confirm it is safe to uninstall the plugin
+    bool pluginHasProcessingProvider( const QString &pluginName ) override;
     bool canUninstallPlugin( const QString &packageName ) override;
-
-    //! unload plugin
     bool unloadPlugin( const QString &packageName ) override;
+    bool isPluginEnabled( const QString &packageName ) const override;
 
   protected:
 
@@ -148,7 +128,11 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     PyObject *mMainDict = nullptr;
 
     //! flag determining that Python support is enabled
-    bool mPythonEnabled;
+    bool mPythonEnabled = false;
+
+  private:
+
+    bool mErrorHookInstalled = false;
 };
 
 #endif

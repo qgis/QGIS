@@ -33,11 +33,12 @@
 
 QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent )
   : QWidget( parent )
+  , mManager( manager )
 {
   Q_ASSERT( manager );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->setMargin( 0 );
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
   mTreeView = new QTreeView();
   mModel = new QgsTaskManagerModel( manager, this );
   mTreeView->setModel( mModel );
@@ -45,11 +46,26 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setHeaderHidden( true );
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mTreeView->setColumnWidth( 2, 28 );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  int progressColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
+#else
+  int progressColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
+#endif
+  mTreeView->setColumnWidth( QgsTaskManagerModel::Progress, progressColWidth );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  int statusColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
+#else
+  int statusColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
+#endif
+  mTreeView->setColumnWidth( QgsTaskManagerModel::Status, statusColWidth );
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
   mTreeView->header()->setStretchLastSection( false );
-  mTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
+  mTreeView->header()->setSectionResizeMode( QgsTaskManagerModel::Description, QHeaderView::Stretch );
+
+  connect( mTreeView, &QTreeView::clicked, this, &QgsTaskManagerWidget::clicked );
 
   vLayout->addWidget( mTreeView );
 
@@ -72,13 +88,14 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, in
 
     QProgressBar *progressBar = new QProgressBar();
     progressBar->setAutoFillBackground( true );
+    progressBar->setRange( 0, 0 );
     connect( task, &QgsTask::progressChanged, progressBar, [progressBar]( double progress )
     {
       //until first progress report, we show a progress bar of interderminant length
       if ( progress > 0 )
       {
         progressBar->setMaximum( 100 );
-        progressBar->setValue( progress );
+        progressBar->setValue( static_cast< int >( std::round( progress ) ) );
       }
       else
         progressBar->setMaximum( 0 );
@@ -94,6 +111,15 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, in
   }
 }
 
+void QgsTaskManagerWidget::clicked( const QModelIndex &index )
+{
+  QgsTask *task = mModel->indexToTask( index );
+  if ( !task )
+    return;
+
+  mManager->triggerTask( task );
+}
+
 ///@cond PRIVATE
 //
 // QgsTaskManagerModel
@@ -106,7 +132,8 @@ QgsTaskManagerModel::QgsTaskManagerModel( QgsTaskManager *manager, QObject *pare
   Q_ASSERT( mManager );
 
   //populate row to id map
-  Q_FOREACH ( QgsTask *task, mManager->tasks() )
+  const auto constTasks = mManager->tasks();
+  for ( QgsTask *task : constTasks )
   {
     mRowToTaskIdList << mManager->taskId( task );
   }
@@ -137,7 +164,7 @@ QModelIndex QgsTaskManagerModel::index( int row, int column, const QModelIndex &
 
 QModelIndex QgsTaskManagerModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level
   return QModelIndex();
@@ -158,7 +185,7 @@ int QgsTaskManagerModel::rowCount( const QModelIndex &parent ) const
 
 int QgsTaskManagerModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 3;
 }
 
@@ -194,30 +221,11 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
         switch ( index.column() )
         {
           case Description:
-            return task->description();
+            return createTooltip( task, ToolTipDescription );
           case Progress:
+            return createTooltip( task, ToolTipProgress );
           case Status:
-          {
-            switch ( task->status() )
-            {
-              case QgsTask::Queued:
-                return tr( "Queued" );
-              case QgsTask::OnHold:
-                return tr( "On hold" );
-              case QgsTask::Running:
-              {
-                if ( index.column() == Status && !task->canCancel() )
-                  return tr( "Running (cannot cancel)" );
-                else
-                  return tr( "Running" );
-              }
-              case QgsTask::Complete:
-                return tr( "Complete" );
-              case QgsTask::Terminated:
-                return tr( "Terminated" );
-            }
-            return QVariant();
-          }
+            return createTooltip( task, ToolTipStatus );
           default:
             return QVariant();
         }
@@ -251,7 +259,7 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
 
 bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !index.isValid() )
     return false;
@@ -298,7 +306,7 @@ void QgsTaskManagerModel::taskDeleted( long id )
 
 void QgsTaskManagerModel::progressChanged( long id, double progress )
 {
-  Q_UNUSED( progress );
+  Q_UNUSED( progress )
 
   QModelIndex index = idToIndex( id, Progress );
   if ( !index.isValid() )
@@ -360,6 +368,110 @@ QModelIndex QgsTaskManagerModel::idToIndex( long id, int column ) const
   return index( row, column );
 }
 
+QString QgsTaskManagerModel::createTooltip( QgsTask *task, ToolTipType type )
+{
+  if ( task->status() != QgsTask::Running )
+  {
+    switch ( type )
+    {
+      case ToolTipDescription:
+        return task->description();
+
+      case ToolTipStatus:
+      case ToolTipProgress:
+      {
+        switch ( task->status() )
+        {
+          case QgsTask::Queued:
+            return tr( "Queued" );
+          case QgsTask::OnHold:
+            return tr( "On hold" );
+          case QgsTask::Running:
+          {
+            if ( type == ToolTipStatus && !task->canCancel() )
+              return tr( "Running (cannot cancel)" );
+            else
+              return tr( "Running" );
+          }
+          case QgsTask::Complete:
+            return tr( "Complete" );
+          case QgsTask::Terminated:
+            return tr( "Terminated" );
+        }
+      }
+    }
+  }
+
+  QString formattedTime;
+
+  qint64 elapsed = task->elapsedTime();
+
+  if ( task->progress() > 0 )
+  {
+    // estimate time remaining
+    qint64 msRemain = static_cast< qint64 >( elapsed * 100.0 / task->progress() - elapsed );
+    if ( msRemain > 120 * 1000 )
+    {
+      long long minutes = msRemain / 1000 / 60;
+      int seconds = ( msRemain / 1000 ) % 60;
+      formattedTime = tr( "%1:%2 minutes" ).arg( minutes ).arg( seconds, 2, 10, QChar( '0' ) );
+    }
+    else
+      formattedTime = tr( "%1 seconds" ).arg( msRemain / 1000 );
+
+    formattedTime = tr( "Estimated time remaining: %1" ).arg( formattedTime );
+
+    QTime estimatedEnd = QTime::currentTime().addMSecs( msRemain );
+    formattedTime += tr( " (%1)" ).arg( QLocale::system().toString( estimatedEnd, QLocale::ShortFormat ) );
+  }
+  else
+  {
+    if ( elapsed > 120 * 1000 )
+    {
+      long long minutes = elapsed / 1000 / 60;
+      int seconds = ( elapsed / 1000 ) % 60;
+      formattedTime = tr( "%1:%2 minutes" ).arg( minutes ).arg( seconds, 2, 10, QChar( '0' ) );
+    }
+    else
+      formattedTime = tr( "%1 seconds" ).arg( elapsed / 1000 );
+
+    formattedTime = tr( "Time elapsed: %1" ).arg( formattedTime );
+  }
+
+  switch ( type )
+  {
+    case ToolTipDescription:
+      return tr( "%1<br>%2" ).arg( task->description(), formattedTime );
+
+    case ToolTipStatus:
+    case ToolTipProgress:
+    {
+      switch ( task->status() )
+      {
+        case QgsTask::Queued:
+          return tr( "Queued" );
+        case QgsTask::OnHold:
+          return tr( "On hold" );
+        case QgsTask::Running:
+        {
+          QString statusDesc;
+          if ( type == ToolTipStatus && !task->canCancel() )
+            statusDesc = tr( "Running (cannot cancel)" );
+          else
+            statusDesc = tr( "Running" );
+          return tr( "%1<br>%2" ).arg( statusDesc, formattedTime );
+        }
+        case QgsTask::Complete:
+          return tr( "Complete" );
+        case QgsTask::Terminated:
+          return tr( "Terminated" );
+      }
+    }
+  }
+  // no warnings
+  return QString();
+}
+
 
 //
 // QgsTaskStatusDelegate
@@ -369,7 +481,6 @@ QgsTaskStatusWidget::QgsTaskStatusWidget( QWidget *parent, QgsTask::TaskStatus s
   : QWidget( parent )
   , mCanCancel( canCancel )
   , mStatus( status )
-  , mInside( false )
 {
   setMouseTracking( true );
 }
@@ -392,26 +503,26 @@ void QgsTaskStatusWidget::paintEvent( QPaintEvent *e )
   QIcon icon;
   if ( mInside && ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) ) )
   {
-    icon = QgsApplication::getThemeIcon( "/mTaskCancel.svg" );
+    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) );
   }
   else
   {
     switch ( mStatus )
     {
       case QgsTask::Queued:
-        icon = QgsApplication::getThemeIcon( "/mTaskQueued.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskQueued.svg" ) );
         break;
       case QgsTask::OnHold:
-        icon = QgsApplication::getThemeIcon( "/mTaskOnHold.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskOnHold.svg" ) );
         break;
       case QgsTask::Running:
-        icon = QgsApplication::getThemeIcon( "/mTaskRunning.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskRunning.svg" ) );
         break;
       case QgsTask::Complete:
-        icon = QgsApplication::getThemeIcon( "/mTaskComplete.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskComplete.svg" ) );
         break;
       case QgsTask::Terminated:
-        icon = QgsApplication::getThemeIcon( "/mTaskTerminated.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskTerminated.svg" ) );
         break;
     }
   }
@@ -446,7 +557,7 @@ void QgsTaskStatusWidget::leaveEvent( QEvent * )
 /*
 bool QgsTaskStatusWidget::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
-  Q_UNUSED( option );
+  Q_UNUSED( option )
   if ( event->type() == QEvent::MouseButtonPress )
   {
     QMouseEvent *e = static_cast<QMouseEvent*>( event );
@@ -470,16 +581,22 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
 {
   setLayout( new QVBoxLayout() );
   QgsTaskManagerWidget *w = new QgsTaskManagerWidget( manager );
-  setMinimumSize( 350, 270 );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  int minWidth = static_cast< int >( fontMetrics().width( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
+#else
+  int minWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
+#endif
+  int minHeight = static_cast< int >( fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR );
+  setMinimumSize( minWidth, minHeight );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
-                 "border-top-right-radius: 8px; background-color: rgb(0, 0, 0, 70%); }" );
+                 "border-top-right-radius: 8px; background-color: rgba(0, 0, 0, 70%); }" );
 }
 
 
 QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent )
   : QToolButton( parent )
-  , mProgressBar( nullptr )
   , mManager( manager )
 {
   setAutoRaise( true );
@@ -504,13 +621,31 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
   connect( manager, &QgsTaskManager::allTasksFinished, this, &QgsTaskManagerStatusBarWidget::allFinished );
   connect( manager, &QgsTaskManager::finalTaskProgressChanged, this, &QgsTaskManagerStatusBarWidget::overallProgressChanged );
   connect( manager, &QgsTaskManager::countActiveTasksChanged, this, &QgsTaskManagerStatusBarWidget::countActiveTasksChanged );
+
+  if ( manager->countActiveTasks() )
+    showButton();
 }
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const
 {
-  int width = 100;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  int width = static_cast< int >( fontMetrics().width( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
+#else
+  int width = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
+#endif
   int height = QToolButton::sizeHint().height();
   return QSize( width, height );
+}
+
+void QgsTaskManagerStatusBarWidget::changeEvent( QEvent *event )
+{
+  QToolButton::changeEvent( event );
+
+  if ( event->type() == QEvent::FontChange )
+  {
+    mProgressBar->setFont( font() );
+  }
 }
 
 void QgsTaskManagerStatusBarWidget::toggleDisplay()
@@ -526,12 +661,12 @@ void QgsTaskManagerStatusBarWidget::toggleDisplay()
 
 void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
 {
-  mProgressBar->setValue( progress );
+  mProgressBar->setValue( static_cast< int >( std::round( progress ) ) );
   if ( qgsDoubleNear( progress, 0.0 ) )
     mProgressBar->setMaximum( 0 );
-  else if ( mProgressBar->maximum( ) == 0 )
+  else if ( mProgressBar->maximum() == 0 )
     mProgressBar->setMaximum( 100 );
-  setToolTip( mManager->activeTasks().at( 0 )->description() );
+  setToolTip( QgsTaskManagerModel::createTooltip( mManager->activeTasks().at( 0 ), QgsTaskManagerModel::ToolTipDescription ) );
 }
 
 void QgsTaskManagerStatusBarWidget::countActiveTasksChanged( int count )
@@ -556,7 +691,7 @@ void QgsTaskManagerStatusBarWidget::showButton()
 {
   if ( !isVisible() )
   {
-    mProgressBar->setMaximum( 100 );
+    mProgressBar->setMaximum( 0 );
     mProgressBar->setValue( 0 );
     show();
   }

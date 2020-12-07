@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsconditionalstyle.h
+    ---------------------
+    begin                : August 2015
+    copyright            : (C) 2015 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
@@ -16,52 +30,82 @@ class QgsReadWriteContext;
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsConditionalLayerStyles class holds conditional style information
  * for a layer. This includes field styles and full row styles.
  */
-class CORE_EXPORT QgsConditionalLayerStyles
+class CORE_EXPORT QgsConditionalLayerStyles : public QObject
 {
-  public:
-    QgsConditionalLayerStyles();
+    Q_OBJECT
 
-    QList<QgsConditionalStyle> rowStyles();
+  public:
 
     /**
-     * \brief Set the conditional styles that apply to full rows of data in the attribute table.
+     * Constructor for QgsConditionalLayerStyles, with the specified \a parent object.
+     */
+    QgsConditionalLayerStyles( QObject *parent = nullptr );
+
+    /**
+     * Returns a list of row styles associated with the layer.
+     *
+     * \see setRowStyles()
+     */
+    QgsConditionalStyles rowStyles() const;
+
+    /**
+     * Sets the conditional \a styles that apply to full rows of data in the attribute table.
      * Each row will check be checked against each rule.
-     * \param styles The styles to assign to all the rows
+     *
+     * \see rowStyles()
      * \since QGIS 2.12
      */
-    void setRowStyles( const QList<QgsConditionalStyle> &styles );
+    void setRowStyles( const QgsConditionalStyles &styles );
 
     /**
-     * \brief Set the conditional styles for the field UI properties.
-     * \param fieldName name of field
-     * \param styles
+     * Set the conditional \a styles for a field, with the specified \a fieldName.
+     *
+     * \see fieldStyles()
      */
     void setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles );
 
     /**
-     * \brief Returns the conditional styles set for the field UI properties
-     * \returns A list of conditional styles that have been set.
+     * Returns the conditional styles set for the field with matching \a fieldName.
+     *
+     * \see setFieldStyles()
      */
-    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
+    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName ) const;
 
-    /** Reads field ui properties specific state from Dom node.
+    /**
+     * Reads the condition styles state from a DOM node.
+     *
+     * \see writeXml()
      */
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
-    /** Write field ui properties specific state from Dom node.
+    /**
+     * Writes the condition styles state to a DOM node.
+     *
+     * \see readXml()
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+  signals:
+
+    /**
+     * Emitted when the conditional styles are changed.
+     *
+     * \since QGIS 3.10
+     */
+    void changed();
+
   private:
     QHash<QString, QgsConditionalStyles> mFieldStyles;
-    QList<QgsConditionalStyle> mRowStyles;
+    QgsConditionalStyles mRowStyles;
 };
 
-/** \class QgsConditionalStyle
+/**
+ * \class QgsConditionalStyle
  *  \ingroup core
  * Conditional styling for a rule.
  */
@@ -78,15 +122,18 @@ class CORE_EXPORT QgsConditionalStyle
      * \brief Check if the rule matches using the given value and feature
      * \param value The current value being checked. The "value" variable from the context is replaced with this value.
      * \param context Expression context for evaluating rule expression
-     * \returns True of the rule matches against the given feature
+     * \returns TRUE of the rule matches against the given feature
      */
     bool matches( const QVariant &value, QgsExpressionContext &context ) const;
 
     /**
-     * \brief Render a preview icon of the rule.
+     * \brief Render a preview icon of the rule, at the specified \a size.
+     *
+     * If \a size is not specified, a default size will be used.
+     *
      * \returns QPixmap preview of the style
      */
-    QPixmap renderPreview() const;
+    QPixmap renderPreview( const QSize &size = QSize() ) const;
 
     /**
      * \brief Set the name of the style.  Names are optional but handy for display
@@ -114,7 +161,7 @@ class CORE_EXPORT QgsConditionalStyle
     void setTextColor( const QColor &value ) { mTextColor = value; mValid = true; }
 
     /**
-     * \brief Set the font for the the style
+     * \brief Set the font for the style
      * \param value QFont to be used for text
      */
     void setFont( const QFont &value ) { mFont = value; mValid = true; }
@@ -158,7 +205,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * \brief Check if the text color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * \returns True of the color set for text is valid.
+     * \returns TRUE of the color set for text is valid.
      */
     bool validTextColor() const;
 
@@ -171,7 +218,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * \brief Check if the background color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
-     * \returns True of the color set for background is valid.
+     * \returns TRUE of the color set for background is valid.
      */
     bool validBackgroundColor() const;
 
@@ -191,7 +238,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * \brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
-     * \returns True if the rule is valid.
+     * \returns TRUE if the rule is valid.
      */
     bool isValid() const { return mValid; }
 
@@ -221,18 +268,34 @@ class CORE_EXPORT QgsConditionalStyle
      */
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );
 
-    /** Reads vector conditional style specific state from layer Dom node.
+    /**
+     * Reads vector conditional style specific state from layer Dom node.
      */
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
-    /** Write vector conditional style specific state from layer Dom node.
+    /**
+     * Write vector conditional style specific state from layer Dom node.
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    bool operator==( const QgsConditionalStyle &other ) const;
+    bool operator!=( const QgsConditionalStyle &other ) const;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str;
+    if ( !sipCpp->name().isEmpty() )
+      str = QStringLiteral( "<QgsConditionalStyle: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->rule() );
+    else
+      str = QStringLiteral( "<QgsConditionalStyle: %2>" ).arg( sipCpp->rule() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
 
-    bool mValid;
+    bool mValid = false;
     QString mName;
     QString mRule;
     std::unique_ptr<QgsSymbol> mSymbol;

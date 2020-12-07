@@ -1,8 +1,9 @@
 {
   "name": "translate",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a translated version of a geometry. Calculations are in the Spatial Reference System of this geometry.",
-  "arguments": [ {"arg":"geom","description":"a geometry"},
+  "arguments": [ {"arg":"geometry","description":"a geometry"},
                  {"arg":"dx","description":"delta x"},
                  {"arg":"dy","description":"delta y"}
                ],

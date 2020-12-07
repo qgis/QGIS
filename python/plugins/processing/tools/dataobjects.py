@@ -16,29 +16,20 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import re
 
-from qgis.core import (QgsVectorFileWriter,
-                       QgsMapLayer,
+from qgis.core import (QgsDataProvider,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsCoordinateReferenceSystem,
                        QgsSettings,
-                       QgsProcessingUtils,
                        QgsProcessingContext,
                        QgsFeatureRequest,
                        QgsExpressionContext,
@@ -49,12 +40,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import (getTempFilenameInTempFolder,
-                                     getTempFilename,
-                                     removeInvalidChars,
-                                     isWindows)
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 ALL_TYPES = [-1]
 
@@ -67,31 +52,32 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
-def createContext():
+def createContext(feedback=None):
     """
     Creates a default processing context
+
+    :param feedback: Optional existing QgsProcessingFeedback object, or None to use a default feedback object
+    :type feedback: Optional[QgsProcessingFeedback]
+
+    :returns: New QgsProcessingContext object
+    :rtype: QgsProcessingContext
     """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
+    context.setFeedback(feedback)
 
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
     if invalid_features_method is None:
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
 
-    def raise_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
-
-    context.setInvalidGeometryCallback(raise_error)
-
-    def raise_transform_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
-    context.setTransformErrorCallback(raise_transform_error)
-
     settings = QgsSettings()
     context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
+
+    context.setExpressionContext(createExpressionContext())
+
+    if iface and iface.mapCanvas() and iface.mapCanvas().mapSettings().isTemporal():
+        context.setCurrentTimeRange(iface.mapCanvas().mapSettings().temporalRange())
 
     return context
 
@@ -101,47 +87,43 @@ def createExpressionContext():
     context.appendScope(QgsExpressionContextUtils.globalScope())
     context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
 
-    if iface.mapCanvas():
+    if iface and iface.mapCanvas():
         context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
 
     processingScope = QgsExpressionContextScope()
 
-    extent = iface.mapCanvas().fullExtent()
-    processingScope.setVariable('fullextent_minx', extent.xMinimum())
-    processingScope.setVariable('fullextent_miny', extent.yMinimum())
-    processingScope.setVariable('fullextent_maxx', extent.xMaximum())
-    processingScope.setVariable('fullextent_maxy', extent.yMaximum())
+    if iface and iface.mapCanvas():
+        extent = iface.mapCanvas().fullExtent()
+        processingScope.setVariable('fullextent_minx', extent.xMinimum())
+        processingScope.setVariable('fullextent_miny', extent.yMinimum())
+        processingScope.setVariable('fullextent_maxx', extent.xMaximum())
+        processingScope.setVariable('fullextent_maxy', extent.yMaximum())
+
     context.appendScope(processingScope)
     return context
 
 
-def getSupportedOutputRasterLayerExtensions():
-    allexts = []
-    for exts in list(GdalUtils.getSupportedRasters().values()):
-        for ext in exts:
-            if ext != 'tif' and ext not in allexts:
-                allexts.append(ext)
-    allexts.sort()
-    allexts.insert(0, 'tif')  # tif is the default, should be the first
-    return allexts
-
-
 def load(fileName, name=None, crs=None, style=None, isRaster=False):
-    """Loads a layer/table into the current project, given its file.
     """
+    Loads a layer/table into the current project, given its file.
+
+    .. deprecated:: 3.0
+    Do not use, will be removed in QGIS 4.0
+    """
+
+    from warnings import warn
+    warn("processing.load is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     if fileName is None:
         return
-    prjSetting = None
-    settings = QgsSettings()
-    if crs is not None:
-        prjSetting = settings.value('/Projections/defaultBehavior')
-        settings.setValue('/Projections/defaultBehavior', '')
+
     if name is None:
         name = os.path.split(fileName)[1]
 
     if isRaster:
-        qgslayer = QgsRasterLayer(fileName, name)
+        options = QgsRasterLayer.LayerOptions()
+        options.skipCrsValidation = True
+        qgslayer = QgsRasterLayer(fileName, name, 'gdal', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -150,12 +132,13 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
         else:
-            if prjSetting:
-                settings.setValue('/Projections/defaultBehavior', prjSetting)
-            raise RuntimeError('Could not load layer: ' + str(fileName) +
-                               '\nCheck the processing framework log to look for errors')
+            raise RuntimeError(QCoreApplication.translate('dataobject',
+                                                          'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(
+                fileName))
     else:
-        qgslayer = QgsVectorLayer(fileName, name, 'ogr')
+        options = QgsVectorLayer.LayerOptions()
+        options.skipCrsValidation = True
+        qgslayer = QgsVectorLayer(fileName, name, 'ogr', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -169,121 +152,10 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
 
-    if prjSetting:
-        settings.setValue('/Projections/defaultBehavior', prjSetting)
-
     return qgslayer
 
 
-def exportVectorLayer(layer, supported=None):
-    """Takes a QgsVectorLayer and returns the filename to refer to it,
-    which allows external apps which support only file-based layers to
-    use it. It performs the necessary export in case the input layer
-    is not in a standard format suitable for most applications, it is
-    a remote one or db-based (non-file based) one, or if there is a
-    selection and it should be used, exporting just the selected
-    features.
-
-    Currently, the output is restricted to shapefiles, so anything
-    that is not in a shapefile will get exported. It also export to
-    a new file if the original one contains non-ascii characters.
-    """
-
-    supported = supported or ["shp"]
-    settings = QgsSettings()
-    systemEncoding = settings.value('/UI/encoding', 'System')
-
-    output = getTempFilename('shp')
-    basename = removeInvalidChars(os.path.basename(layer.source()))
-    if basename:
-        if not basename.endswith("shp"):
-            basename = os.path.splitext(basename)[0] + ".shp"
-        output = getTempFilenameInTempFolder(basename)
-    else:
-        output = getTempFilename("shp")
-    useSelection = False # TODO ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-    if useSelection and layer.selectedFeatureCount() != 0:
-        writer = QgsVectorFileWriter(output, systemEncoding,
-                                     layer.fields(),
-                                     layer.wkbType(), layer.crs())
-        selection = layer.selectedFeatures()
-        for feat in selection:
-            writer.addFeature(feat)
-        del writer
-        return output
-    else:
-        if not os.path.splitext(layer.source())[1].lower() in supported:
-            writer = QgsVectorFileWriter(
-                output, systemEncoding,
-                layer.fields(), layer.wkbType(),
-                layer.crs()
-            )
-            for feat in layer.getFeatures():
-                writer.addFeature(feat)
-            del writer
-            return output
-        else:
-            return layer.source()
-
-
-def exportRasterLayer(layer):
-    """Takes a QgsRasterLayer and returns the filename to refer to it,
-    which allows external apps which support only file-based layers to
-    use it. It performs the necessary export in case the input layer
-    is not in a standard format suitable for most applications, it is
-    a remote one or db-based (non-file based) one.
-
-    Currently, the output is restricted to geotiff, but not all other
-    formats are exported. Only those formats not supported by GDAL are
-    exported, so it is assumed that the external app uses GDAL to read
-    the layer.
-    """
-
-    # TODO: Do the conversion here
-    return str(layer.source())
-
-
-def exportTable(table):
-    """Takes a QgsVectorLayer and returns the filename to refer to its
-    attributes table, which allows external apps which support only
-    file-based layers to use it.
-
-    It performs the necessary export in case the input layer is not in
-    a standard format suitable for most applications, it isa remote
-    one or db-based (non-file based) one.
-
-    Currently, the output is restricted to DBF. It also export to a new
-    file if the original one contains non-ascii characters.
-    """
-
-    settings = QgsSettings()
-    systemEncoding = settings.value('/UI/encoding', 'System')
-    output = getTempFilename()
-    isASCII = True
-    try:
-        str(table.source()).decode('ascii')
-    except UnicodeEncodeError:
-        isASCII = False
-    isDbf = str(table.source()).endswith('dbf') \
-        or str(table.source()).endswith('shp')
-    if not isDbf or not isASCII:
-        writer = QgsVectorFileWriter(output, systemEncoding,
-                                     table.fields(), QgsWkbTypes.NullGeometry,
-                                     QgsCoordinateReferenceSystem('4326'))
-        for feat in table.getFeatures():
-            writer.addFeature(feat)
-        del writer
-        return output + '.dbf'
-    else:
-        filename = str(table.source())
-        if str(table.source()).endswith('shp'):
-            return filename[:-3] + 'dbf'
-        else:
-            return filename
-
-
 def getRasterSublayer(path, param):
-
     layer = QgsRasterLayer(path)
 
     try:
@@ -300,7 +172,7 @@ def getRasterSublayer(path, param):
                     subLayer = subLayer[1:]
                 else:
                     # remove driver name and file name
-                    subLayer.replace(subLayer.split(":")[0], "")
+                    subLayer.replace(subLayer.split(QgsDataProvider.SUBLAYER_SEPARATOR)[0], "")
                     subLayer.replace(path, "")
                 # remove any : or " left over
                 if subLayer.startswith(":"):
@@ -334,18 +206,3 @@ def getRasterSublayer(path, param):
     except:
         # If the layer is not a raster layer, then just return the input path
         return path
-
-
-def vectorDataType(obj):
-    types = ''
-    for t in obj.datatype:
-        if t == dataobjects.TYPE_VECTOR_POINT:
-            types += 'point, '
-        elif t == dataobjects.TYPE_VECTOR_LINE:
-            types += 'line, '
-        elif t == dataobjects.TYPE_VECTOR_POLYGON:
-            types += 'polygon, '
-        else:
-            types += 'any, '
-
-    return types[:-2]

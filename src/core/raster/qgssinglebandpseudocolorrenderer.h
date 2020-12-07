@@ -19,7 +19,7 @@
 #define QGSSINGLEBANDPSEUDOCOLORRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
@@ -28,7 +28,8 @@
 class QDomElement;
 class QgsRasterShader;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster renderer pipe for single band pseudocolor.
   */
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
@@ -59,15 +60,16 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! \note available in Python as constShader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
-    /** Creates a color ramp shader
-     * \param colorRamp vector color ramp
+    /**
+     * Creates a color ramp shader
+     * \param colorRamp vector color ramp. Ownership is transferred to the shader.
      * \param colorRampType type of color ramp shader
      * \param classificationMode classification mode
      * \param classes number of classes
      * \param clip clip out of range values
      * \param extent extent used in classification (only used in quantile mode)
      */
-    void createShader( QgsColorRamp *colorRamp = nullptr,
+    void createShader( QgsColorRamp *colorRamp SIP_TRANSFER = nullptr,
                        QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
                        QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
                        int classes = 0,
@@ -75,17 +77,19 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
                        const QgsRectangle &extent = QgsRectangle() );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
-
+    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<int> usesBands() const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
-    /** Returns the band used by the renderer
+    /**
+     * Returns the band used by the renderer
      * \since QGIS 2.7
      */
     int band() const { return mBand; }
 
-    /** Sets the band used by the renderer.
+    /**
+     * Sets the band used by the renderer.
      * \see band
      * \since QGIS 2.10
      */

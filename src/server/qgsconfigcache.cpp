@@ -17,11 +17,9 @@
 
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
-#include "qgsmslayercache.h"
-#include "qgswmsprojectparser.h"
-#include "qgssldconfigparser.h"
-#include "qgsaccesscontrol.h"
-#include "qgsproject.h"
+#include "qgsserverexception.h"
+#include "qgsstorebadlayerinfo.h"
+#include "qgsserverprojectutils.h"
 
 #include <QFile>
 
@@ -40,91 +38,86 @@ QgsConfigCache::QgsConfigCache()
   QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsConfigCache::removeChangedEntry );
 }
 
-const QgsProject *QgsConfigCache::project( const QString &path )
+
+const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerSettings *settings )
 {
   if ( ! mProjectCache[ path ] )
   {
+
     std::unique_ptr<QgsProject> prj( new QgsProject() );
-    if ( prj->read( path ) )
+
+    // This is required by virtual layers that call QgsProject::instance() inside the constructor :(
+    QgsProject::setInstance( prj.get() );
+
+    QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
+    prj->setBadLayerHandler( badLayerHandler );
+
+    // Always skip original styles storage
+    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ;
+    if ( settings )
     {
+      // Activate trust layer metadata flag
+      if ( settings->trustLayerMetadata() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+      }
+      // Activate don't load layouts flag
+      if ( settings->getPrintDisabled() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+      }
+    }
+
+    if ( prj->read( path, readFlags ) )
+    {
+      if ( !badLayerHandler->badLayers().isEmpty() )
+      {
+        // if bad layers are not restricted layers so service failed
+        QStringList unrestrictedBadLayers;
+        // test bad layers through restrictedlayers
+        const QStringList badLayerIds = badLayerHandler->badLayers();
+        const QMap<QString, QString> badLayerNames = badLayerHandler->badLayerNames();
+        const QStringList resctrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *prj );
+        for ( const QString &badLayerId : badLayerIds )
+        {
+          // if this bad layer is in restricted layers
+          // it doesn't need to be added to unrestricted bad layers
+          if ( badLayerNames.contains( badLayerId ) &&
+               resctrictedLayers.contains( badLayerNames.value( badLayerId ) ) )
+          {
+            continue;
+          }
+          unrestrictedBadLayers.append( badLayerId );
+        }
+        if ( !unrestrictedBadLayers.isEmpty() )
+        {
+          // This is a critical error unless QGIS_SERVER_IGNORE_BAD_LAYERS is set to TRUE
+          if ( ! settings || ! settings->ignoreBadLayers() )
+          {
+            QgsMessageLog::logMessage(
+              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
+              QStringLiteral( "Server" ), Qgis::Critical );
+            throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
+          }
+          else
+          {
+            QgsMessageLog::logMessage(
+              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
+              QStringLiteral( "Server" ), Qgis::Warning );
+          }
+        }
+      }
       mProjectCache.insert( path, prj.release() );
-    }
-  }
-
-  return mProjectCache[ path ];
-}
-
-QgsServerProjectParser *QgsConfigCache::serverConfiguration( const QString &filePath )
-{
-  QgsMessageLog::logMessage(
-    QStringLiteral( "Open the project file '%1'." )
-    .arg( filePath ),
-    QStringLiteral( "Server" ), QgsMessageLog::INFO
-  );
-
-  QDomDocument *doc = xmlDocument( filePath );
-  if ( !doc )
-  {
-    return nullptr;
-  }
-
-  QgsProjectVersion fileVersion = getVersion( *doc );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
-
-  if ( thisVersion != fileVersion )
-  {
-    QgsMessageLog::logMessage(
-      QString(
-        "\n========================================================================"
-        "\n= WARNING: This project file was saved by a different version of QGIS. ="
-        "\n========================================================================"
-      ), QStringLiteral( "Server" ), QgsMessageLog::WARNING
-    );
-  }
-  QgsMessageLog::logMessage(
-    QStringLiteral( "QGIS server version %1, project version %2" )
-    .arg( thisVersion.text(), fileVersion.text() ),
-    QStringLiteral( "Server" ), QgsMessageLog::INFO
-  );
-  return new QgsServerProjectParser( doc, filePath );
-}
-
-QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
-  const QString &filePath
-  , const QgsAccessControl *accessControl
-  , const QMap<QString, QString> &parameterMap
-)
-{
-  QgsWmsConfigParser *p = mWMSConfigCache.object( filePath );
-  if ( !p )
-  {
-    QDomDocument *doc = xmlDocument( filePath );
-    if ( !doc )
-    {
-      return nullptr;
-    }
-
-    //sld or QGIS project file?
-    //is it an sld document or a qgis project file?
-    QDomElement documentElem = doc->documentElement();
-    if ( documentElem.tagName() == QLatin1String( "StyledLayerDescriptor" ) )
-    {
-      p = new QgsSLDConfigParser( doc, parameterMap );
+      mFileSystemWatcher.addPath( path );
     }
     else
     {
-      p = new QgsWmsProjectParser(
-        filePath
-        , accessControl
-      );
+      QgsMessageLog::logMessage(
+        QStringLiteral( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
+        QStringLiteral( "Server" ), Qgis::Critical );
     }
-    mWMSConfigCache.insert( filePath, p );
-    p = mWMSConfigCache.object( filePath );
-    Q_ASSERT( p );
   }
-
-  QgsMSLayerCache::instance()->setProjectMaxLayers( p->nLayers() );
-  return p;
+  return mProjectCache[ path ];
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
@@ -133,13 +126,13 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
   QFile configFile( filePath );
   if ( !configFile.exists() )
   {
-    QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( "Error, configuration file '" + filePath + "' does not exist", QStringLiteral( "Server" ), Qgis::Critical );
     return nullptr;
   }
 
   if ( !configFile.open( QIODevice::ReadOnly ) )
   {
-    QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", QStringLiteral( "Server" ), Qgis::Critical );
     return nullptr;
   }
 
@@ -154,7 +147,7 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
     if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
     {
       QgsMessageLog::logMessage( "Error parsing file '" + filePath +
-                                 QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+                                 QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), QStringLiteral( "Server" ), Qgis::Critical );
       delete xmlDoc;
       return nullptr;
     }
@@ -168,7 +161,7 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
 
 void QgsConfigCache::removeChangedEntry( const QString &path )
 {
-  mWMSConfigCache.remove( path );
+  mProjectCache.remove( path );
 
   //xml document must be removed last, as other config cache destructors may require it
   mXmlDocumentCache.remove( path );
@@ -181,4 +174,3 @@ void QgsConfigCache::removeEntry( const QString &path )
 {
   removeChangedEntry( path );
 }
-

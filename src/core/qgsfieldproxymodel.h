@@ -20,18 +20,18 @@
 
 #include "qgis_core.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsFieldModel;
 
-/** \ingroup gui
+/**
+ * \ingroup core
  * \brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
  * \since QGIS 2.3
  */
 class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_FLAGS( Filters )
 
   public:
 
@@ -46,9 +46,11 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
       Date = 16, //!< Date or datetime fields
       Time = 32, //!< Time fields
       HideReadOnly = 64,  //!< Hide read-only fields
+      DateTime = 128, //!< Datetime fieldss
       AllTypes = Numeric | Date | String | Time, //!< All field types
     };
     Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
 
     /**
      * \brief QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.
@@ -66,7 +68,8 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      */
     QgsFieldProxyModel *setFilters( QgsFieldProxyModel::Filters filters );
 
-    /** Returns the filters controlling displayed fields.
+    /**
+     * Returns the filters controlling displayed fields.
      * \see setFilters()
      */
     const Filters &filters() const { return mFilters; }
@@ -75,7 +78,7 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     Filters mFilters;
     QgsFieldModel *mModel = nullptr;
 
-    //! Returns true if the specified index represents a read only field
+    //! Returns TRUE if the specified index represents a read only field
     bool isReadOnly( const QModelIndex &index ) const;
 
     // QSortFilterProxyModel interface

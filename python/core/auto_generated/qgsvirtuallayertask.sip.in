@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvirtuallayertask.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsVirtualLayerTask : QgsTask
+{
+%Docstring
+
+Initializes a virtual layer with postpone mode activated and reloads the
+data in a separated thread.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsvirtuallayertask.h"
+%End
+  public:
+
+    QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition );
+%Docstring
+Constructor.
+
+:param definition: The definition to use for initializing the virtual layer
+%End
+
+    QgsVectorLayer *layer();
+%Docstring
+Returns the underlying virtual layer.
+%End
+
+    QgsVectorLayer *takeLayer();
+%Docstring
+Returns the underlying virtual layer and ownership.
+%End
+
+    QgsVirtualLayerDefinition definition() const;
+%Docstring
+Returns the virtual layer definition.
+%End
+
+    virtual bool run();
+
+%Docstring
+Reloads the data.
+
+:return: ``True`` if the virtual layer is valid, ``False`` otherwise.
+%End
+
+    virtual void cancel();
+
+%Docstring
+Cancels the pending query and the parent task.
+%End
+
+    QString exceptionText() const;
+%Docstring
+Returns the exception text or an empty string if no exceptions were raised
+
+.. versionadded:: 3.4
+%End
+
+    void setExceptionText( const QString &exceptionText );
+%Docstring
+Sets the ``exceptionText``
+
+.. versionadded:: 3.4
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvirtuallayertask.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

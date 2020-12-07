@@ -1,0 +1,100 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsexpressionfieldbuffer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsExpressionFieldBuffer
+{
+%Docstring
+Buffers information about expression fields for a vector layer.
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionfieldbuffer.h"
+%End
+  public:
+    struct ExpressionField
+    {
+      ExpressionField( const QString &exp, const QgsField &fld );
+
+      QgsExpression cachedExpression;
+      QgsField field;
+    };
+
+    QgsExpressionFieldBuffer();
+%Docstring
+Constructor for QgsExpressionFieldBuffer.
+%End
+
+    void addExpression( const QString &exp, const QgsField &fld );
+%Docstring
+Add an expression to the buffer
+
+:param exp: expression to add
+:param fld: field to add
+%End
+
+    void removeExpression( int index );
+%Docstring
+Remove an expression from the buffer
+
+:param index: index of expression to remove
+%End
+
+    void renameExpression( int index, const QString &name );
+%Docstring
+Renames an expression field at a given index
+
+:param index: The index of the expression to change
+:param name: New name for field
+
+.. versionadded:: 3.0
+%End
+
+    void updateExpression( int index, const QString &exp );
+%Docstring
+Changes the expression at a given index
+
+:param index: The index of the expression to change
+:param exp: The new expression to set
+
+.. versionadded:: 2.9
+%End
+
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+%Docstring
+Saves expressions to xml under the layer node
+%End
+
+    void readXml( const QDomNode &layer_node );
+%Docstring
+Reads expressions from project file
+%End
+
+    void updateFields( QgsFields &flds );
+%Docstring
+Adds fields with the expressions buffered in this object to a QgsFields object
+
+:param flds: The fields to be updated
+%End
+
+    QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsexpressionfieldbuffer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

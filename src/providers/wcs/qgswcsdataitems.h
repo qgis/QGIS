@@ -18,25 +18,19 @@
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswcscapabilities.h"
+#include "qgsdataitemprovider.h"
 
 class QgsWCSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
     QgsWCSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
-    ~QgsWCSConnectionItem();
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
-
-    virtual QList<QAction *> actions() override;
+    bool equal( const QgsDataItem *other ) override;
 
     QgsWcsCapabilities mWcsCapabilities;
     QVector<QgsWcsCoverageSummary> mLayerProperties;
-
-  public slots:
-    void editConnection();
-    void deleteConnection();
 
   private:
     QString mUri;
@@ -51,7 +45,6 @@ class QgsWCSLayerItem : public QgsLayerItem
     QgsWCSLayerItem( QgsDataItem *parent, QString name, QString path,
                      const QgsWcsCapabilitiesProperty &capabilitiesProperty,
                      const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary );
-    ~QgsWCSLayerItem();
 
     QString createUri();
 
@@ -60,23 +53,35 @@ class QgsWCSLayerItem : public QgsLayerItem
     QgsWcsCoverageSummary mCoverageSummary;
 };
 
-class QgsWCSRootItem : public QgsDataCollectionItem
+class QgsWCSRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
     QgsWCSRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsWCSRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction *> actions() override;
+    QVariant sortKey() const override { return 9; }
 
-    virtual QWidget *paramWidget() override;
+#ifdef HAVE_GUI
+    QWidget *paramWidget() override;
+#endif
 
   public slots:
-    void connectionsChanged();
+#ifdef HAVE_GUI
+    void onConnectionsChanged();
+#endif
+};
 
-    void newConnection();
+//! Provider for WCS root data item
+class QgsWcsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    QString dataProviderKey() const override;
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSWCSDATAITEMS_H

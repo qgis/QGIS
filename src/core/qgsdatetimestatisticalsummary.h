@@ -17,7 +17,7 @@
 #define QGSDATETIMESTATISTICALSUMMARY_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsinterval.h"
 #include <QSet>
 #include <QDateTime>
@@ -29,7 +29,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDateTimeStatisticalSummary
  * \brief Calculator for summary statistics and aggregates for a list of datetimes.
  *
@@ -54,40 +55,46 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
       Min = 8, //!< Minimum (earliest) datetime value
       Max = 16, //!< Maximum (latest) datetime value
       Range = 32, //!< Interval between earliest and latest datetime value
-      All = Count | CountDistinct | CountMissing | Min | Max | Range, //! All statistics
+      All = Count | CountDistinct | CountMissing | Min | Max | Range, //!< All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
-    /** Constructor for QgsDateTimeStatisticalSummary
+    /**
+     * Constructor for QgsDateTimeStatisticalSummary
      * \param stats flags for statistics to calculate
      */
     QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
 
-    /** Returns flags which specify which statistics will be calculated. Some statistics
+    /**
+     * Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
      * \see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
-    /** Sets flags which specify which statistics will be calculated. Some statistics
+    /**
+     * Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
      * \param stats flags for statistics to calculate
      * \see statistics
      */
     void setStatistics( Statistics stats ) { mStatistics = stats; }
 
-    /** Resets the calculated values
+    /**
+     * Resets the calculated values
      */
     void reset();
 
-    /** Calculates summary statistics for a list of variants. Any non-datetime variants will be
+    /**
+     * Calculates summary statistics for a list of variants. Any non-datetime variants will be
      * ignored.
      * \param values list of variants
      * \see addValue()
      */
     void calculate( const QVariantList &values );
 
-    /** Adds a single datetime to the statistics calculation. Calling this method
+    /**
+     * Adds a single datetime to the statistics calculation. Calling this method
      * allows datetimes to be added to the calculation one at a time. For large
      * quantities of dates this may be more efficient then first adding all the
      * variants to a list and calling calculate().
@@ -101,47 +108,57 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      */
     void addValue( const QVariant &value );
 
-    /** Must be called after adding all datetimes with addValue() and before retrieving
+    /**
+     * Must be called after adding all datetimes with addValue() and before retrieving
      * any calculated datetime statistics.
      * \see addValue()
      */
     void finalize();
 
-    /** Returns the value of a specified statistic
+    /**
+     * Returns the value of a specified statistic
      * \param stat statistic to return
      * \returns calculated value of statistic
      */
     QVariant statistic( QgsDateTimeStatisticalSummary::Statistic stat ) const;
 
-    /** Returns the calculated count of values.
+    /**
+     * Returns the calculated count of values.
      */
     int count() const { return mCount; }
 
-    /** Returns the number of distinct datetime values.
+    /**
+     * Returns the number of distinct datetime values.
      */
     int countDistinct() const { return mValues.count(); }
 
-    /** Returns the set of distinct datetime values.
+    /**
+     * Returns the set of distinct datetime values.
      */
     QSet< QDateTime > distinctValues() const { return mValues; }
 
-    /** Returns the number of missing (null) datetime values.
+    /**
+     * Returns the number of missing (null) datetime values.
      */
     int countMissing() const { return mCountMissing; }
 
-    /** Returns the minimum (earliest) non-null datetime value.
+    /**
+     * Returns the minimum (earliest) non-null datetime value.
      */
     QDateTime min() const { return mMin; }
 
-    /** Returns the maximum (latest) non-null datetime value.
+    /**
+     * Returns the maximum (latest) non-null datetime value.
      */
     QDateTime max() const { return mMax; }
 
-    /** Returns the range (interval between earliest and latest non-null datetime values).
+    /**
+     * Returns the range (interval between earliest and latest non-null datetime values).
      */
     QgsInterval range() const { return mMax - mMin; }
 
-    /** Returns the friendly display name for a statistic
+    /**
+     * Returns the friendly display name for a statistic
      * \param statistic statistic to return name for
      */
     static QString displayName( QgsDateTimeStatisticalSummary::Statistic statistic );

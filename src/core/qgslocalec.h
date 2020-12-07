@@ -18,11 +18,14 @@
 #ifndef QGSLOCALENUMC_H
 #define QGSLOCALENUMC_H
 
+#define SIP_NO_FILE
+
 #include <QMutex>
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsLocaleNumC
 {

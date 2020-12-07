@@ -23,7 +23,8 @@
 #include <QWidget>
 
 class QHBoxLayout;
-class QLabel;
+class QLineEdit;
+class QStatusBar;
 
 /**
  * \class QgsStatusBar
@@ -100,11 +101,27 @@ class GUI_EXPORT QgsStatusBar : public QWidget
      */
     void clearMessage();
 
+    /**
+     * Sets the parent status bar.
+     * Messages that are shown on the parent status bar will be intercepted
+     * and shown on this status bar too.
+     *
+     * \since QGIS 3.8
+     */
+    void setParentStatusBar( QStatusBar *statusBar );
+
+
+  protected:
+
+    void changeEvent( QEvent *event ) override;
+
   private:
 
     QHBoxLayout *mLayout = nullptr;
-    QLabel *mLabel = nullptr;
+    QLineEdit *mLineEdit = nullptr;
     QTimer *mTempMessageTimer = nullptr;
+    QStatusBar *mParentStatusBar = nullptr;
+    QMetaObject::Connection mShowMessageConnection;
 
 };
 

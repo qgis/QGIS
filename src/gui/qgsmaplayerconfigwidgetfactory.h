@@ -24,17 +24,18 @@ class QgsMapLayer;
 class QgsMapLayerConfigWidget;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMapLayerConfigWidgetFactory
- * \since QGIS 2.16
  * Factory class for creating custom map layer property pages
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
 
     //! Constructor
-    QgsMapLayerConfigWidgetFactory();
+    QgsMapLayerConfigWidgetFactory() = default;
 
     //! Constructor
     QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
@@ -55,8 +56,8 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * \brief The title of the panel.
-     * \note This may or may not be shown to the user.
      * \returns Title of the panel
+     * \note This may or may not be shown to the user.
      */
     virtual QString title() const { return mTitle; }
 
@@ -70,50 +71,66 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in style dock.
-     * \returns True if supported
+     * The default implementation returns FALSE.
+     * \returns TRUE if supported
      */
     virtual bool supportsStyleDock() const { return false; }
 
     /**
      * Set support flag for style dock
-     * \param supports True if this widget is supported in the style dock.
+     * \param supports TRUE if this widget is supported in the style dock.
      */
     void setSupportsStyleDock( bool supports ) { mSupportsDock = supports; }
 
     /**
      * Flag if widget is supported for use in layer properties dialog.
-     * \returns True if supported
+     * The default implementation returns FALSE.
+     * \returns TRUE if supported
      */
     virtual bool supportLayerPropertiesDialog() const { return false; }
 
     /**
+     * Returns a tab name hinting at where this page should be inserted into the
+     * layer properties tab list.
+     *
+     * If the returned string is non-empty, the config widget page will be inserted
+     * before the existing page with matching object name.
+     *
+     * The default implementation returns an empty string, which causes the widget
+     * to be placed at the end of the dialog page list.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QString layerPropertiesPagePositionHint() const;
+
+    /**
      * Set support flag for style dock
-     * \param supports True if this widget is supported in the style dock.
+     * \param supports TRUE if this widget is supported in the style dock.
      */
     void setSupportLayerPropertiesDialog( bool supports ) { mSupportsProperties = supports; }
 
     /**
      * \brief Check if the layer is supported for this widget.
-     * \returns True if this layer is supported for this widget
+     * \returns TRUE if this layer is supported for this widget
      */
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 
     /**
      * \brief Factory function to create the widget on demand as needed by the dock.
-     * \note This function is called each time the panel is selected. Keep it light for better UX.
      * \param layer The active layer in the dock.
      * \param canvas The map canvas.
-     * \param dockWidget True of the widget will be shown a dock style widget.
+     * \param dockWidget TRUE of the widget will be shown a dock style widget.
      * \param parent The parent of the widget.
      * \returns A new QgsMapStylePanel which is shown in the map style dock.
+     * \note This function is called each time the panel is selected. Keep it light for better UX.
      */
-    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent SIP_TRANSFERTHIS = 0 ) const = 0 SIP_FACTORY;
+    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = nullptr ) const = 0 SIP_FACTORY;
 
   private:
     QIcon mIcon;
     QString mTitle;
-    bool mSupportsDock;
-    bool mSupportsProperties;
+    bool mSupportsDock = true;
+    bool mSupportsProperties = true;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGETFACTORY_H

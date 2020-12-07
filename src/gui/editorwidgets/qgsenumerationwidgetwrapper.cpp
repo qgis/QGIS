@@ -18,9 +18,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
-  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mComboBox( nullptr )
+QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+
 {
 }
 
@@ -57,12 +57,13 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor )
     QStringList enumValues;
     layer()->dataProvider()->enumValues( fieldIdx(), enumValues );
 
-    Q_FOREACH ( const QString &s, enumValues )
+    const auto constEnumValues = enumValues;
+    for ( const QString &s : constEnumValues )
     {
       mComboBox->addItem( s, s );
     }
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 
@@ -71,7 +72,7 @@ bool QgsEnumerationWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsEnumerationWidgetWrapper::setValue( const QVariant &value )
+void QgsEnumerationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( mComboBox )
   {

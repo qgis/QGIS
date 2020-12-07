@@ -32,6 +32,7 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayerExporter,
                        QgsSettings)
+from qgis.utils import OverrideCursor
 
 from .ui.ui_DlgExportVector import Ui_DbManagerDlgExportVector as Ui_Dialog
 
@@ -66,7 +67,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
     def checkSupports(self):
         """ update options available for the current input layer """
         allowSpatial = self.db.connector.hasSpatialSupport()
-        hasGeomType = self.inLayer and self.inLayer.hasGeometryType()
+        hasGeomType = self.inLayer and self.inLayer.isSpatial()
         self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
         self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
         # self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)
@@ -77,16 +78,16 @@ class DlgExportVector(QDialog, Ui_Dialog):
         lastUsedDir = settings.value(self.lastUsedVectorDirSettingsKey, ".")
 
         # get selected filter
-        selectedFilter = self.cboFileFormat.currentData()
+        selected_driver = self.cboFileFormat.currentData()
+        selected_filter = QgsVectorFileWriter.filterForDriver(selected_driver)
 
         # ask for a filename
         filename, filter = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
-                                                       selectedFilter)
+                                                       selected_filter)
         if filename == "":
             return
 
-        filterString = QgsVectorFileWriter.filterForDriver(selectedFilter)
-        ext = filterString[filterString.find('.'):]
+        ext = selected_filter[selected_filter.find('.'):]
         ext = ext[:ext.find(' ')]
 
         if not filename.lower().endswith(ext):
@@ -111,12 +112,12 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
     def populateFileFilters(self):
         # populate the combo with supported vector file formats
-        for name, filt in list(QgsVectorFileWriter.ogrDriverList().items()):
-            self.cboFileFormat.addItem(name, filt)
+        for driver in QgsVectorFileWriter.ogrDriverList():
+            self.cboFileFormat.addItem(driver.longName, driver.driverName)
 
         # set the last used filter
         settings = QgsSettings()
-        filt = settings.value(self.lastUsedVectorFilterSettingsKey, "ESRI Shapefile")
+        filt = settings.value(self.lastUsedVectorFilterSettingsKey, "GPKG")
 
         idx = self.cboFileFormat.findText(filt)
         if idx < 0:
@@ -145,51 +146,48 @@ class DlgExportVector(QDialog, Ui_Dialog):
                                         self.tr("Invalid target srid: must be an integer"))
                 return
 
-        # override cursor
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        # store current input layer crs, so I can restore it later
-        prevInCrs = self.inLayer.crs()
-        try:
-            uri = self.editOutputFile.text()
-            providerName = "ogr"
+        with OverrideCursor(Qt.WaitCursor):
+            # store current input layer crs, so I can restore it later
+            prevInCrs = self.inLayer.crs()
+            try:
+                uri = self.editOutputFile.text()
+                providerName = "ogr"
 
-            options = {}
+                options = {}
 
-            # set the OGR driver will be used
-            driverName = self.cboFileFormat.currentData()
-            options['driverName'] = driverName
+                # set the OGR driver will be used
+                driverName = self.cboFileFormat.currentData()
+                options['driverName'] = driverName
 
-            # set the output file encoding
-            if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
-                enc = self.cboEncoding.currentText()
-                options['fileEncoding'] = enc
+                # set the output file encoding
+                if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
+                    enc = self.cboEncoding.currentText()
+                    options['fileEncoding'] = enc
 
-            if self.chkDropTable.isChecked():
-                options['overwrite'] = True
+                if self.chkDropTable.isChecked():
+                    options['overwrite'] = True
 
-            outCrs = QgsCoordinateReferenceSystem()
-            if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-                targetSrid = int(self.editTargetSrid.text())
-                outCrs = QgsCoordinateReferenceSystem(targetSrid)
+                outCrs = QgsCoordinateReferenceSystem()
+                if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
+                    targetSrid = int(self.editTargetSrid.text())
+                    outCrs = QgsCoordinateReferenceSystem(targetSrid)
 
-            # update input layer crs
-            if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-                sourceSrid = int(self.editSourceSrid.text())
-                inCrs = QgsCoordinateReferenceSystem(sourceSrid)
-                self.inLayer.setCrs(inCrs)
+                # update input layer crs
+                if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
+                    sourceSrid = int(self.editSourceSrid.text())
+                    inCrs = QgsCoordinateReferenceSystem(sourceSrid)
+                    self.inLayer.setCrs(inCrs)
 
-            # do the export!
-            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs,
-                                                             False, options)
-        except Exception as e:
-            ret = -1
-            errMsg = str(e)
+                # do the export!
+                ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs,
+                                                                 False, options)
+            except Exception as e:
+                ret = -1
+                errMsg = str(e)
 
-        finally:
-            # restore input layer crs and encoding
-            self.inLayer.setCrs(prevInCrs)
-            # restore cursor
-            QApplication.restoreOverrideCursor()
+            finally:
+                # restore input layer crs and encoding
+                self.inLayer.setCrs(prevInCrs)
 
         if ret != 0:
             QMessageBox.warning(self, self.tr("Export to file"), self.tr("Error {0}\n{1}").format(ret, errMsg))
@@ -201,12 +199,3 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
         QMessageBox.information(self, self.tr("Export to file"), self.tr("Export finished."))
         return QDialog.accept(self)
-
-
-if __name__ == '__main__':
-    import sys
-
-    a = QApplication(sys.argv)
-    dlg = DlgExportVector()
-    dlg.show()
-    sys.exit(a.exec_())

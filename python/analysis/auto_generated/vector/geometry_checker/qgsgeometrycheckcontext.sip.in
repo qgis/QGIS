@@ -1,0 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckcontext.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsGeometryCheckContext
+{
+%Docstring
+Base configuration for geometry checks.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckcontext.h"
+%End
+  public:
+
+    QgsGeometryCheckContext( int precision,
+                             const QgsCoordinateReferenceSystem &mapCrs,
+                             const QgsCoordinateTransformContext &transformContext,
+                             const QgsProject *mProject );
+%Docstring
+Creates a new QgsGeometryCheckContext.
+%End
+
+    const double tolerance;
+
+    const double reducedTolerance;
+
+    const QgsCoordinateReferenceSystem mapCrs;
+
+    const QgsCoordinateTransformContext transformContext;
+
+    const QgsProject *project() const;
+%Docstring
+The project can be used to resolve additional layers.
+
+This must only be accessed from the main thread (i.e. do not access from the collectError method)
+
+.. versionadded:: 3.10
+%End
+
+  private:
+    QgsGeometryCheckContext( const QgsGeometryCheckContext &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckcontext.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

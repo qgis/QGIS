@@ -34,9 +34,9 @@ else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "
   FIND_PACKAGE(PythonInterp 3)
 
   if(PYTHONINTERP_FOUND)
-    FIND_FILE(_find_lib_python_py FindLibPython.py PATHS ${CMAKE_MODULE_PATH})
-
+    FIND_FILE(_find_lib_python_py FindLibPython.py PATHS ${CMAKE_MODULE_PATH} NO_CMAKE_FIND_ROOT_PATH)
     EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE}  ${_find_lib_python_py} OUTPUT_VARIABLE python_config)
+
     if(python_config)
       STRING(REGEX REPLACE ".*exec_prefix:([^\n]+).*$" "\\1" PYTHON_PREFIX ${python_config})
       STRING(REGEX REPLACE ".*\nshort_version:([^\n]+).*$" "\\1" PYTHON_SHORT_VERSION ${python_config})
@@ -54,8 +54,11 @@ else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "
       if(WIN32)
           STRING(REPLACE "\\" "/" PYTHON_SITE_PACKAGES_DIR ${PYTHON_SITE_PACKAGES_DIR})
           FIND_LIBRARY(PYTHON_LIBRARY NAMES ${PYTHON_LIBRARY_NAMES} PATHS ${PYTHON_PREFIX}/lib ${PYTHON_PREFIX}/libs)
+      elseif(APPLE AND QGIS_MAC_DEPS_DIR)
+          FIND_LIBRARY(PYTHON_LIBRARY python${PYTHON_SHORT_VERSION}m PATHS $ENV{LIB_DIR}/lib)
+      else(WIN32)
+          FIND_LIBRARY(PYTHON_LIBRARY NAMES ${PYTHON_LIBRARY_NAMES})
       endif(WIN32)
-      FIND_LIBRARY(PYTHON_LIBRARY NAMES ${PYTHON_LIBRARY_NAMES})
       set(PYTHON_INCLUDE_PATH ${PYTHON_INCLUDE_PATH} CACHE FILEPATH "Directory holding the python.h include file" FORCE)
       set(PYTHONLIBRARY_FOUND TRUE)
     endif(python_config)
@@ -100,7 +103,7 @@ else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "
     if(APPLE)
       # keep reference to system or custom python site-packages
       # useful during app-bundling operations
-      set(PYTHON_SITE_PACKAGES_SYS ${PYTHON_SITE_PACKAGES_DIR})
+      set(PYTHON_SITE_PACKAGES_SYS ${PYTHON_SITE_PACKAGES_DIR} CACHE FILEPATH "Directory holding Python site packages")
     endif(APPLE)
     set(PYTHON_LIBRARIES ${PYTHON_LIBRARY})
     if(NOT PYTHONLIBRARY_FIND_QUIETLY)

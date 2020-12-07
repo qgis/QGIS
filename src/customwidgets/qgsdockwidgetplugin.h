@@ -28,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT QgsDockWidgetPlugin : public QObject, public QDesigne
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsDockWidgetPlugin( QObject *parent = 0 );
+    explicit QgsDockWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

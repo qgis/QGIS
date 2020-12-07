@@ -1,10 +1,10 @@
 ---
-Bug-Database: https://issues.qgis.org/projects/qgis/issues
-Bug-Submit: https://issues.qgis.org/projects/qgis/issues/new
+Bug-Database: https://github.com/qgis/QGIS/issues
+Bug-Submit: https://github.com/qgis/QGIS/issues
 Contact: qgis-developer@lists.osgeo.org
 Donation: https://qgis.org/en/site/getinvolved/donations.html
 Name: QGIS
-Registration: https://www2.osgeo.org/cgi-bin/ldap_create_user.py
+Registration: https://id.osgeo.org/ldap/create
 Repository: https://github.com/qgis/QGIS.git
 Repository-Browse: https://github.com/qgis/QGIS
 Screenshots: https://qgis.org/en/site/about/screenshots.html

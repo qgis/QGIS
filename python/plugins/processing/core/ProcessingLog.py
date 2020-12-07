@@ -16,16 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 import os
 import codecs
@@ -34,11 +28,11 @@ from processing.tools.system import userFolder
 from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.PyQt.QtCore import QCoreApplication
 
+LOG_SEPARATOR = '|~|'
 
-class ProcessingLog(object):
 
+class ProcessingLog:
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-    recentAlgs = []
 
     @staticmethod
     def logFilename():
@@ -57,20 +51,12 @@ class ProcessingLog(object):
             # added. To avoid it stopping the normal functioning of the
             # algorithm, we catch all errors, assuming that is better
             # to miss some log info than breaking the algorithm.
-            line = 'ALGORITHM|' + datetime.datetime.now().strftime(
-                ProcessingLog.DATE_FORMAT) + '|' \
+            line = 'ALGORITHM' + LOG_SEPARATOR + datetime.datetime.now().strftime(
+                ProcessingLog.DATE_FORMAT) + LOG_SEPARATOR \
                 + msg + '\n'
             with codecs.open(ProcessingLog.logFilename(), 'a',
                              encoding='utf-8') as logfile:
                 logfile.write(line)
-            algname = msg[len('processing.run("'):]
-            algname = algname[:algname.index('"')]
-            if algname not in ProcessingLog.recentAlgs:
-                ProcessingLog.recentAlgs.append(algname)
-                recentAlgsString = ';'.join(ProcessingLog.recentAlgs[-6:])
-                ProcessingConfig.setSettingValue(
-                    ProcessingConfig.RECENT_ALGORITHMS,
-                    recentAlgsString)
         except:
             pass
 
@@ -82,24 +68,18 @@ class ProcessingLog(object):
             lines = f.readlines()
         for line in lines:
             line = line.strip('\n').strip()
-            tokens = line.split('|')
+            tokens = line.split(LOG_SEPARATOR)
+            if len(tokens) <= 1:
+                # try old format log separator
+                tokens = line.split('|')
+
             text = ''
             for i in range(2, len(tokens)):
-                text += tokens[i] + '|'
+                text += tokens[i] + LOG_SEPARATOR
             if line.startswith('ALGORITHM'):
                 entries.append(LogEntry(tokens[1], tokens[2]))
 
         return entries
-
-    @staticmethod
-    def getRecentAlgorithms():
-        recentAlgsSetting = ProcessingConfig.getSetting(
-            ProcessingConfig.RECENT_ALGORITHMS)
-        try:
-            ProcessingLog.recentAlgs = recentAlgsSetting.split(';')
-        except:
-            pass
-        return ProcessingLog.recentAlgs
 
     @staticmethod
     def clearLog():
@@ -110,7 +90,7 @@ class ProcessingLog(object):
         entries = ProcessingLog.getLogEntries()
         with codecs.open(fileName, 'w', encoding='utf-8') as f:
             for entry in entries:
-                f.write('ALGORITHM|%s|%s\n' % (entry.date, entry.text))
+                f.write('ALGORITHM{}{}{}{}\n'.format(LOG_SEPARATOR, entry.date, LOG_SEPARATOR, entry.text))
 
     @staticmethod
     def tr(string, context=''):
@@ -119,7 +99,7 @@ class ProcessingLog(object):
         return QCoreApplication.translate(context, string)
 
 
-class LogEntry(object):
+class LogEntry:
 
     def __init__(self, date, text):
         self.date = date

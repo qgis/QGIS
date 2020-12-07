@@ -25,9 +25,14 @@ The content of this file is based on
 from builtins import str
 
 from qgis.PyQt.QtCore import QTime
-
-from ..data_model import TableDataModel, SqlResultModel, BaseTableModel
+from qgis.core import QgsMessageLog
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask,
+                          BaseTableModel)
 from ..plugin import DbError
+from ..plugin import BaseError
 
 
 class ORTableDataModel(TableDataModel):
@@ -91,9 +96,9 @@ class ORTableDataModel(TableDataModel):
                 row >= self.fetchedFrom + self.fetchedCount):
             margin = self.fetchedCount / 2
             if row + margin >= self.rowCount():
-                start = self.rowCount() - margin
+                start = int(self.rowCount() - margin)
             else:
-                start = row - margin
+                start = int(row - margin)
             if start < 0:
                 start = 0
             self.fetchMoreData(start)
@@ -112,6 +117,36 @@ class ORTableDataModel(TableDataModel):
 
         self.resdata = self.cursor.fetchmany(self.fetchedCount)
         self.fetchedFrom = row_start
+
+
+class ORSqlResultModelTask(SqlResultModelTask):
+
+    def __init__(self, db, sql, parent):
+        super().__init__(db, sql, parent)
+
+    def run(self):
+        try:
+            self.model = ORSqlResultModel(self.db, self.sql, None)
+        except BaseError as e:
+            self.error = e
+            QgsMessageLog.logMessage(e.msg)
+            return False
+
+        return True
+
+    def cancel(self):
+        self.db.connector.cancel()
+        SqlResultModelTask.cancel(self)
+
+
+class ORSqlResultModelAsync(SqlResultModelAsync):
+
+    def __init__(self, db, sql, parent):
+        super().__init__()
+
+        self.task = ORSqlResultModelTask(db, sql, parent)
+        self.task.taskCompleted.connect(self.modelDone)
+        self.task.taskTerminated.connect(self.modelDone)
 
 
 class ORSqlResultModel(SqlResultModel):

@@ -19,20 +19,25 @@
 #include "qgis_core.h"
 #include "qgsvectorlayertools.h"
 
-/** \ingroup gui
+/**
+ * \ingroup core
  * \class QgsTrackedVectorLayerTools
  */
 class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {
     Q_OBJECT
   public:
-    QgsTrackedVectorLayerTools();
+
+    /**
+     * Constructor for QgsTrackedVectorLayerTools.
+     */
+    QgsTrackedVectorLayerTools() = default;
 
     bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const override;
     bool startEditing( QgsVectorLayer *layer ) const override;
     bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer *layer ) const override;
-    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = nullptr ) const override;
+    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr ) const override;
 
     /**
      * Set the vector layer tools that will be used to interact with the data

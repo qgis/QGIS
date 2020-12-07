@@ -40,7 +40,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
 class TestQgsRasterSubLayer : public QObject
@@ -63,15 +64,10 @@ class TestQgsRasterSubLayer : public QObject
     QString mFileName;
     QgsRasterLayer *mpRasterLayer = nullptr;
     QString mReport;
-    bool mHasNetCDF;
+    bool mHasNetCDF =  false ;
 };
 
-TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-  : mpRasterLayer( nullptr )
-  , mHasNetCDF( false )
-{
-
-}
+TestQgsRasterSubLayer::TestQgsRasterSubLayer() = default;
 
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()
@@ -88,7 +84,7 @@ void TestQgsRasterSubLayer::initTestCase()
   GDALAllRegister();
   QString format = QStringLiteral( "netCDF" );
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
-  mHasNetCDF = myGdalDriver != 0;
+  mHasNetCDF = myGdalDriver != nullptr;
 
   mFileName = mTestDataDir + "landsat2.nc";
 
@@ -100,8 +96,8 @@ void TestQgsRasterSubLayer::initTestCase()
     QFileInfo myRasterFileInfo( mFileName );
     mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                         myRasterFileInfo.completeBaseName() );
-    qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->metadata();
-    mReport += "raster metadata: " + mpRasterLayer->dataProvider()->metadata();
+    qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
+    mReport += "raster metadata: " + mpRasterLayer->dataProvider()->htmlMetadata();
   }
   else
   {
@@ -144,10 +140,10 @@ void TestQgsRasterSubLayer::subLayersList()
       qDebug() << "sublayer: " << s;
       sublayers << s.split( ':' ).last();
     }
-    qDebug() << "sublayers: " << sublayers.join( QStringLiteral( "," ) );
-    mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QStringLiteral( "<br>" ) ) );
-    mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QStringLiteral( "<br>" ) ) );
-    QVERIFY( sublayers == expected );
+    qDebug() << "sublayers: " << sublayers.join( QLatin1Char( ',' ) );
+    mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QLatin1String( "<br>" ) ) );
+    mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QLatin1String( "<br>" ) ) );
+    QCOMPARE( sublayers, expected );
     mReport += QLatin1String( "<p>Passed</p>" );
   }
 }
@@ -175,8 +171,8 @@ void TestQgsRasterSubLayer::checkStats()
 
     QVERIFY( sublayer->width() == width );
     QVERIFY( sublayer->height() == height );
-    QVERIFY( qgsDoubleNear( myStatistics.minimumValue, min ) );
-    QVERIFY( qgsDoubleNear( myStatistics.maximumValue, max ) );
+    QGSCOMPARENEAR( myStatistics.minimumValue, min, 4 * std::numeric_limits<double>::epsilon() );
+    QGSCOMPARENEAR( myStatistics.maximumValue, max, 4 * std::numeric_limits<double>::epsilon() );
     mReport += QLatin1String( "<p>Passed</p>" );
     delete sublayer;
   }

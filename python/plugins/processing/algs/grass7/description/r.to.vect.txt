@@ -1,7 +1,12 @@
 r.to.vect
 Converts a raster into a vector layer.
 Raster (r.*)
-ParameterRaster|input|Input raster layer|False
-ParameterSelection|type|Feature type|line;point;area
-ParameterBoolean|-s|Smooth corners of area features|False
-OutputVector|output|Vectorized
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterEnum|type|Feature type|line;point;area|False|2|False
+QgsProcessingParameterString|column|Name of attribute column to store value|value|False|True
+QgsProcessingParameterBoolean|-s|Smooth corners of area features|False
+QgsProcessingParameterBoolean|-v|Use raster values as categories instead of unique sequence|False
+QgsProcessingParameterBoolean|-z|Write raster values as z coordinate|False
+QgsProcessingParameterBoolean|-b|Do not build vector topology|False
+QgsProcessingParameterBoolean|-t|Do not create attribute table|False
+QgsProcessingParameterVectorDestination|output|Vectorized

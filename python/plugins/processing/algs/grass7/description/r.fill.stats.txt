@@ -1,0 +1,14 @@
+r.fill.stats
+Rapidly fills 'no data' cells (NULLs) of a raster map with interpolated values (IDW).
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer with data gaps to fill|None|False
+QgsProcessingParameterBoolean|-k|Preserve original cell values (By default original values are smoothed)|False
+QgsProcessingParameterEnum|mode|Statistic for interpolated cell values|wmean;mean;median;mode|False|0|False
+QgsProcessingParameterBoolean|-m|Interpret distance as map units, not number of cells (Do not select with geodetic coordinates)|False
+QgsProcessingParameterNumber|distance|Distance threshold (default: in cells) for interpolation|QgsProcessingParameterNumber.Integer|3|True|0|100
+QgsProcessingParameterNumber|minimum|Minimum input data value to include in interpolation|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|maximum|Maximum input data value to include in interpolation|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|power|Power coefficient for IDW interpolation|QgsProcessingParameterNumber.Double|2.0|True|0.0|None
+QgsProcessingParameterNumber|cells|Minimum number of data cells within search radius|QgsProcessingParameterNumber.Integer|8|True|1|100
+QgsProcessingParameterRasterDestination|output|Output Map
+QgsProcessingParameterRasterDestination|uncertainty|Uncertainty Map|None|True

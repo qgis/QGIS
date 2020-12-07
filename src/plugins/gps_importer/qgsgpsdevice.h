@@ -26,12 +26,12 @@
 #include "qgsbabelformat.h"
 
 
-class QgsGPSDevice : public QgsBabelFormat
+class QgsGpsDevice : public QgsBabelFormat
 {
   public:
-    QgsGPSDevice() { }
+    QgsGpsDevice() = default;
 
-    QgsGPSDevice( const QString &wptDlCmd, const QString &wptUlCmd,
+    QgsGpsDevice( const QString &wptDlCmd, const QString &wptUlCmd,
                   const QString &rteDlCmd, const QString &rteUlCmd,
                   const QString &trkDlCmd, const QString &trkUlCmd );
 

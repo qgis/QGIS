@@ -1,6 +1,7 @@
 {
   "name": "if",
   "type": "function",
+  "groups": ["Conditionals"],
   "description": "Tests a condition and returns a different result depending on the conditional check.",
   "arguments": [
     {"arg":"condition","description":"the condition which should be checked"},

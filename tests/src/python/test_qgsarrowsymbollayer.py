@@ -20,14 +20,12 @@
 __author__ = 'Hugo Mercier'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Hugo Mercier'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize, QDir
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
@@ -40,7 +38,9 @@ from qgis.core import (
     QgsArrowSymbolLayer,
     QgsMultiRenderChecker,
     QgsProperty,
-    QgsSymbolLayer
+    QgsSymbolLayer,
+    QgsMapSettings,
+    QgsSymbol
 )
 
 from qgis.testing import start_app, unittest
@@ -56,6 +56,8 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsArrowSymbolLayer(unittest.TestCase):
 
     def setUp(self):
+        self.report = "<h1>Python QgsArrowSymbolLayer Tests</h1>\n"
+
         self.iface = get_iface()
 
         lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -74,6 +76,9 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def test_1(self):
         sym = self.lines_layer.renderer().symbol()
@@ -161,6 +166,78 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         sym_layer.subSymbol().setColor(QColor(250, 150, 200))
         self.assertEqual(sym_layer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(sym_layer.color(), QColor(250, 150, 200))
+
+    def testOpacityWithDataDefinedColor(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        sym = QgsLineSymbol()
+        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '7', 'head_length': '6', 'head_thickness': '8', 'head_type': '0', 'arrow_type': '0', 'is_repeated': '0', 'is_curved': '0'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        fill_sym.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+        fill_sym.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'magenta', 'blue')"))
+
+        sym_layer.setSubSymbol(fill_sym)
+        sym.changeSymbolLayer(0, sym_layer)
+
+        # set opacity on both the symbol and subsymbol, to test that they get combined
+        fill_sym.setOpacity(0.5)
+        sym.setOpacity(0.5)
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(sym))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_arrow')
+        renderchecker.setControlName('expected_arrow_opacityddcolor')
+        res = renderchecker.runTest('expected_arrow_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def testDataDefinedOpacity(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        sym = QgsLineSymbol()
+        sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '7', 'head_length': '6', 'head_thickness': '8', 'head_type': '0', 'arrow_type': '0', 'is_repeated': '0', 'is_curved': '0'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        fill_sym.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+        fill_sym.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'magenta', 'blue')"))
+
+        sym_layer.setSubSymbol(fill_sym)
+        sym.changeSymbolLayer(0, sym_layer)
+
+        sym.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(sym))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_arrow')
+        renderchecker.setControlName('expected_arrow_ddopacity')
+        res = renderchecker.runTest('expected_arrow_ddopacity')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,6 @@
+Content-Length: 422
+Content-Type: text/xml; charset=utf-8
+
+<schema xmlns:gml="http://www.opengis.net/gml" targetNamespace="http://www.qgis.org/gml" xmlns:qgs="http://www.qgis.org/gml" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ogc="http://www.opengis.net/ogc" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+ <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd"/>
+</schema>

@@ -62,7 +62,7 @@ bool QgsFieldComboBoxPlugin::isInitialized() const
 
 void QgsFieldComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;
@@ -76,7 +76,7 @@ QString QgsFieldComboBoxPlugin::toolTip() const
 
 QString QgsFieldComboBoxPlugin::whatsThis() const
 {
-  return tr( "A combo box to list the field of a layer." );
+  return tr( "A combo box to list the fields of a layer." );
 }
 
 QString QgsFieldComboBoxPlugin::domXml() const

@@ -20,7 +20,8 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Namespace with helper functions for layer tree operations.
  *
  * Only generally useful routines should be here. Miscellaneous utility functions for work
@@ -57,8 +58,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Cast node to a group. No type checking is done - use isGroup() to find out whether this operation is legal.
      *
-     * \since QGIS 2.4
      * \note Not available in Python bindings, because cast is automatic.
+     * \since QGIS 2.4
      */
     static inline QgsLayerTreeGroup *toGroup( QgsLayerTreeNode *node ) SIP_SKIP
     {
@@ -68,8 +69,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
      *
-     * \since QGIS 2.4
      * \note Not available in Python bindings, because cast is automatic.
+     * \since QGIS 2.4
      */
     static inline QgsLayerTreeLayer *toLayer( QgsLayerTreeNode *node ) SIP_SKIP
     {
@@ -79,8 +80,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
      *
-     * \since QGIS 2.4
      * \note Not available in Python bindings, because cast is automatic.
+     * \since QGIS 2.4
      */
     static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node ) SIP_SKIP
     {
@@ -94,7 +95,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     /**
      * The order in which layers will be rendered on the canvas.
-     * Will only be used if the property hasCustomLayerOrder is true.
+     * Will only be used if the property hasCustomLayerOrder is TRUE.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
      * \see setCustomLayerOrder
@@ -107,7 +108,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     /**
      * The order in which layers will be rendered on the canvas.
-     * Will only be used if the property hasCustomLayerOrder is true.
+     * Will only be used if the property hasCustomLayerOrder is TRUE.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
      * \see customLayerOrder
@@ -120,7 +121,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     /**
      * The order in which layers will be rendered on the canvas.
-     * Will only be used if the property hasCustomLayerOrder is true.
+     * Will only be used if the property hasCustomLayerOrder is TRUE.
      * If you need the current layer order that is active, prefer using layerOrder().
      *
      * \see customLayerOrder
@@ -171,7 +172,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * \since QGIS 3.0
      */
-    static QgsLayerTree *readXml( QDomElement &element );
+    static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Load the layer order from an XML element.
@@ -181,9 +182,9 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      */
     void readLayerOrderFromXml( const QDomElement &doc );
 
-    virtual void writeXml( QDomElement &parentElement ) override;
+    void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
-    virtual QgsLayerTree *clone() const override SIP_FACTORY;
+    QgsLayerTree *clone() const override SIP_FACTORY;
 
     /**
      * Clear any information from this layer tree.
@@ -227,6 +228,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     void addMissingLayers();
     QgsWeakMapLayerPointerList mCustomLayerOrder;
     bool mHasCustomLayerOrder = false;
+
+    QgsLayerTree &operator= ( const QgsLayerTree & ) = delete;
 };
 
 #endif // QGSLAYERTREE_H

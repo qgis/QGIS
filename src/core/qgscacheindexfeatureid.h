@@ -21,7 +21,8 @@
 
 class QgsVectorLayerCache;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCacheIndexFeatureId
  */
 class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
@@ -29,10 +30,10 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
   public:
     QgsCacheIndexFeatureId( QgsVectorLayerCache * );
 
-    virtual void flushFeature( const QgsFeatureId fid ) override;
-    virtual void flush() override;
-    virtual void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids ) override;
-    virtual bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) override;
+    void flushFeature( QgsFeatureId fid ) override;
+    void flush() override;
+    void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids ) override;
+    bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) override;
 
   private:
     QgsVectorLayerCache *C = nullptr;

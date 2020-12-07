@@ -19,12 +19,15 @@
 
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgsguiutils.h"
-#include "qgis.h"
+#include "qgswkbtypes.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
+class QgsFields;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNewMemoryLayerDialog
  */
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
@@ -33,23 +36,26 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
   public:
 
-    /** Runs the dialog and creates a new memory layer
+    /**
+     * Runs the dialog and creates a new memory layer
      * \param parent parent widget
      * \param defaultCrs default layer CRS to show in dialog
      * \returns new memory layer
      */
     static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 
+    /**
+     * New dialog constructor.
+     */
     QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewMemoryLayerDialog();
 
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
-     * \since QGIS 3.0
      * \see crs()
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -62,9 +68,26 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     //! Returns the layer name
     QString layerName() const;
 
+    /**
+     * Returns attributes for the new layer.
+     * \since QGIS 3.14
+     */
+    QgsFields fields() const;
+
   private:
 
     QString mCrsId;
+    QPushButton *mOkButton = nullptr;
+
+  private slots:
+
+    void geometryTypeChanged( int index );
+    void fieldNameChanged( const QString & );
+    void mTypeBox_currentIndexChanged( int index );
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void selectionChanged();
+    void showHelp();
 };
 
 #endif //QGSNEWMEMORYLAYERDIALOG_H

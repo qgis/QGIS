@@ -24,11 +24,6 @@
 
 QgsFloatingWidget::QgsFloatingWidget( QWidget *parent )
   : QWidget( parent )
-  , mAnchorWidget( nullptr )
-  , mParentEventFilter( nullptr )
-  , mAnchorEventFilter( nullptr )
-  , mFloatAnchorPoint( BottomMiddle )
-  , mAnchorWidgetAnchorPoint( TopMiddle )
 {
   if ( parent )
   {
@@ -90,17 +85,23 @@ void QgsFloatingWidget::setAnchorWidgetPoint( QgsFloatingWidget::AnchorPoint poi
 
 void QgsFloatingWidget::showEvent( QShowEvent *e )
 {
-  onAnchorPointChanged();
   QWidget::showEvent( e );
+  onAnchorPointChanged();
 }
 
 void QgsFloatingWidget::paintEvent( QPaintEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   QStyleOption opt;
   opt.init( this );
   QPainter p( this );
   style()->drawPrimitive( QStyle::PE_Widget, &opt, &p, this );
+}
+
+void QgsFloatingWidget::resizeEvent( QResizeEvent *e )
+{
+  QWidget::resizeEvent( e );
+  onAnchorPointChanged();
 }
 
 void QgsFloatingWidget::onAnchorPointChanged()
@@ -201,7 +202,7 @@ QgsFloatingWidgetEventFilter::QgsFloatingWidgetEventFilter( QWidget *parent )
 
 bool QgsFloatingWidgetEventFilter::eventFilter( QObject *object, QEvent *event )
 {
-  Q_UNUSED( object );
+  Q_UNUSED( object )
   switch ( event->type() )
   {
     case QEvent::Move:

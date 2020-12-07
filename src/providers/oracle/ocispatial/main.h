@@ -52,5 +52,5 @@ class QOCISpatialDriverPlugin : public QSqlDriverPlugin
   public:
     QOCISpatialDriverPlugin();
 
-    QSqlDriver *create( const QString & );
+    QSqlDriver *create( const QString & ) override;
 };

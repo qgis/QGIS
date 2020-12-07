@@ -35,7 +35,7 @@ Shows all features which are currently visible on the map canvas, taking the cur
 <h5>Show Edited and New Features</h5>
 Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
 <h5>Column Filter</h5>
-A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for <b>man</b> will therefore also show records containing <b>woman</b>. After changing the filter text, press <label>Enter</label> or click on <label>Apply</label>. You can also toggle the check-box <label>Case sensitive</label>, so your filter will also match <b>Night</b> when your search text is <b>night</b>.   
+A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for <b>man</b> will therefore also show records containing <b>woman</b>. After changing the filter text, press <label>Enter</label> or click on <label>Apply</label>. You can also toggle the checkbox <label>Case sensitive</label>, so your filter will also match <b>Night</b> when your search text is <b>night</b>.
 <h5>Advanced Filter</h5>
 For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
 

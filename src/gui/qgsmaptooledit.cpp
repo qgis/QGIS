@@ -27,6 +27,11 @@
 QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
+  if ( mCanvas->project() )
+  {
+    connect( mCanvas->project(), &QgsProject::layersAdded, this, &QgsMapToolEdit::connectLayers );
+    connectLayers( mCanvas->project()->mapLayers().values() );  // Connect existing layers
+  }
 }
 
 double QgsMapToolEdit::defaultZValue() const
@@ -59,7 +64,7 @@ QColor QgsMapToolEdit::digitizingFillColor()
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_red" ), 255 ).toInt(),
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_green" ), 0 ).toInt(),
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0;
   fillColor.setAlphaF( myAlpha );
   return fillColor;
 }
@@ -88,15 +93,15 @@ QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
 
 QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 {
-  return qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  return mCanvas ? qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) : nullptr;
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPointXY> &geom )
+QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPoint> &vertices )
 {
   if ( !mCanvas )
   {
-    return 1;
+    return QgsMapToolEdit::InvalidCanvas;
   }
 
   //find out current vector layer
@@ -104,15 +109,41 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPointXY> &geom )
 
   if ( !vlayer )
   {
-    return 2;
+    return QgsMapToolEdit::InvalidLayer;
   }
 
-  QList<QgsPointXY>::const_iterator list_it = geom.constBegin();
-  for ( ; list_it != geom.constEnd(); ++list_it )
+  QVector<QgsPoint>::const_iterator list_it = vertices.constBegin();
+  for ( ; list_it != vertices.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );
   }
-  return 0;
+  return QgsMapToolEdit::Success;
+}
+
+QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &vertices )
+{
+  if ( !mCanvas )
+  {
+    return QgsMapToolEdit::InvalidCanvas;
+  }
+
+  //find out current vector layer
+  QgsVectorLayer *vlayer = currentVectorLayer();
+
+  if ( !vlayer )
+  {
+    return QgsMapToolEdit::InvalidLayer;
+  }
+
+  Q_NOWARN_DEPRECATED_PUSH
+  QVector<QgsPointXY>::const_iterator list_it = vertices.constBegin();
+  for ( ; list_it != vertices.constEnd(); ++list_it )
+  {
+    vlayer->addTopologicalPoints( *list_it );
+  }
+  Q_NOWARN_DEPRECATED_POP
+
+  return QgsMapToolEdit::Success;
 }
 
 QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
@@ -122,7 +153,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   QColor color( settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt(),
                 settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt(),
                 settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0 ;
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
   if ( alternativeBand )
   {
     myAlpha = myAlpha * settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
@@ -131,6 +162,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   color.setAlphaF( myAlpha );
   rb->setStrokeColor( color );
   rb->setFillColor( color );
+  rb->setStrokeWidth( digitizingStrokeWidth() );
   rb->show();
   return rb;
 }
@@ -143,4 +175,40 @@ void QgsMapToolEdit::notifyNotVectorLayer()
 void QgsMapToolEdit::notifyNotEditableLayer()
 {
   emit messageEmitted( tr( "Layer not editable" ) );
+}
+
+void QgsMapToolEdit::connectLayers( const QList<QgsMapLayer *> &layers )
+{
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vlayer )
+    {
+      connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsMapToolEdit::cleanCanvas );
+    }
+  }
+}
+
+void QgsMapToolEdit::cleanCanvas()
+{
+  if ( editableVectorLayers().isEmpty() )
+  {
+    clean();
+  }
+}
+
+QList<QgsVectorLayer *> QgsMapToolEdit::editableVectorLayers()
+{
+  QList<QgsVectorLayer *> editableLayers;
+  if ( mCanvas->project() )
+  {
+    const auto layers = mCanvas->project()->mapLayers().values();
+    for ( QgsMapLayer *layer : layers )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vlayer && vlayer->isEditable() && vlayer->isSpatial() )
+        editableLayers << vlayer;
+    }
+  }
+  return editableLayers;
 }

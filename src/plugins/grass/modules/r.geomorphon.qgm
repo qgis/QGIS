@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculates geomorphons (terrain forms) and associated geometry using machine vision approach" module="r.geomorphon">
+	<option key="elevation" answer="" hidden="no"/>
+	<option key="forms" answer="" hidden="no"/>
+	<option key="search" answer="" hidden="no"/>
+  <option key="skip" answer="" hidden="no"/>
+  <option key="flat" answer="" hidden="no"/>
+  <option key="dist" answer="" hidden="no"/>
+</qgisgrassmodule>

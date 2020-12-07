@@ -24,7 +24,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include "qgis_core.h"
 #include <limits>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsraster.h"
 #include <memory>
 
@@ -33,8 +33,9 @@ class QDomDocument;
 class QDomElement;
 class QString;
 
-/** \ingroup core
- * Manipulates raster pixel values so that they enhanceContrast or clip into a
+/**
+ * \ingroup core
+ * Manipulates raster or point cloud pixel values so that they enhanceContrast or clip into a
  * specified numerical range according to the specified
  * ContrastEnhancementAlgorithm.
  */
@@ -46,8 +47,8 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief This enumerator describes the types of contrast enhancement algorithms that can be used.
     enum ContrastEnhancementAlgorithm
     {
-      NoEnhancement,                  //this should be the default color scaling algorithm
-      StretchToMinimumMaximum,        //linear histogram enhanceContrast
+      NoEnhancement, //!< Default color scaling algorithm, no scaling is applied
+      StretchToMinimumMaximum, //!< Linear histogram
       StretchAndClipToMinimumMaximum,
       ClipToMinimumMaximum,
       UserDefinedEnhancement
@@ -59,62 +60,165 @@ class CORE_EXPORT QgsContrastEnhancement
 
     const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & ) = delete;
 
-    /*
-     *
-     * Static methods
-     *
+    /**
+     * Helper function that returns the maximum possible value for a data type.
      */
-    //! \brief Helper function that returns the maximum possible value for a GDAL data type
-    static double maximumValuePossible( Qgis::DataType );
+    static double maximumValuePossible( Qgis::DataType dataType )
+    {
+      switch ( dataType )
+      {
+        case Qgis::Byte:
+          return std::numeric_limits<unsigned char>::max();
+        case Qgis::UInt16:
+          return std::numeric_limits<unsigned short>::max();
+        case Qgis::Int16:
+          return std::numeric_limits<short>::max();
+        case Qgis::UInt32:
+          return std::numeric_limits<unsigned int>::max();
+        case Qgis::Int32:
+          return std::numeric_limits<int>::max();
+        case Qgis::Float32:
+          return std::numeric_limits<float>::max();
+        case Qgis::Float64:
+          return std::numeric_limits<double>::max();
+        case Qgis::CInt16:
+          return std::numeric_limits<short>::max();
+        case Qgis::CInt32:
+          return std::numeric_limits<int>::max();
+        case Qgis::CFloat32:
+          return std::numeric_limits<float>::max();
+        case Qgis::CFloat64:
+          return std::numeric_limits<double>::max();
+        case Qgis::ARGB32:
+        case Qgis::ARGB32_Premultiplied:
+        case Qgis::UnknownDataType:
+          // XXX - mloskot: not handled?
+          break;
+      }
 
-    //! \brief Helper function that returns the minimum possible value for a GDAL data type
-    static double minimumValuePossible( Qgis::DataType );
+      return std::numeric_limits<double>::max();
+    }
 
-    //! \brief Return a string to serialize ContrastEnhancementAlgorithm
+    /**
+     * Helper function that returns the minimum possible value for a data type.
+     */
+    static double minimumValuePossible( Qgis::DataType dataType )
+    {
+      switch ( dataType )
+      {
+        case Qgis::Byte:
+          return std::numeric_limits<unsigned char>::min();
+        case Qgis::UInt16:
+          return std::numeric_limits<unsigned short>::min();
+        case Qgis::Int16:
+          return std::numeric_limits<short>::min();
+        case Qgis::UInt32:
+          return std::numeric_limits<unsigned int>::min();
+        case Qgis::Int32:
+          return std::numeric_limits<int>::min();
+        case Qgis::Float32:
+          return std::numeric_limits<float>::max() * -1.0;
+        case Qgis::Float64:
+          return std::numeric_limits<double>::max() * -1.0;
+        case Qgis::CInt16:
+          return std::numeric_limits<short>::min();
+        case Qgis::CInt32:
+          return std::numeric_limits<int>::min();
+        case Qgis::CFloat32:
+          return std::numeric_limits<float>::max() * -1.0;
+        case Qgis::CFloat64:
+          return std::numeric_limits<double>::max() * -1.0;
+        case Qgis::ARGB32:
+        case Qgis::ARGB32_Premultiplied:
+        case Qgis::UnknownDataType:
+          // XXX - mloskot: not handled?
+          break;
+      }
+
+      return std::numeric_limits<double>::max() * -1.0;
+    }
+
+    /**
+     * Returns a string to serialize ContrastEnhancementAlgorithm.
+     */
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 
-    //! \brief Deserialize ContrastEnhancementAlgorithm
+    /**
+     * Deserialize ContrastEnhancementAlgorithm.
+     */
     static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 
-    /*
-     *
-     * Non-Static Inline methods
-     *
-     */
-    //! \brief Return the maximum value for the contrast enhancement range.
+    //! Returns the maximum value for the contrast enhancement range.
     double maximumValue() const { return mMaximumValue; }
 
-    //! \brief Return the minimum value for the contrast enhancement range.
+    //! Returns the minimum value for the contrast enhancement range.
     double minimumValue() const { return mMinimumValue; }
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
 
-    /*
-     *
-     * Non-Static methods
-     *
+    /**
+     * Applies the contrast enhancement to a \a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
      */
-    //! \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed
-    int enhanceContrast( double );
+    int enhanceContrast( double value );
 
-    //! \brief Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped)
-    bool isValueInDisplayableRange( double );
+    /**
+     * Returns TRUE if a pixel \a value is in displayable range, FALSE if pixel
+     * is outside of range (i.e. clipped).
+     */
+    bool isValueInDisplayableRange( double value );
 
-    //! \brief Set the contrast enhancement algorithm
-    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
+    /**
+     * Sets the contrast enhancement \a algorithm.
+     *
+     * The \a generateTable parameter is optional and is for performance improvements.
+     * If you know you are immediately going to set the Minimum or Maximum value, you
+     * can elect to not generate the lookup tale. By default it will be generated.
+    */
+    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm algorithm, bool generateTable = true );
 
-    //! \brief A public method that allows the user to set their own custom contrast enhancement function
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction * );
+    /**
+     * Allows the user to set their own custom contrast enhancement \a function. Ownership of
+     * \a function is transferred.
+    */
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction *function SIP_TRANSFER );
 
-    //! \brief Set the maximum value for the contrast enhancement range.
-    void setMaximumValue( double, bool generateTable = true );
+    /**
+     * Sets the maximum \a value for the contrast enhancement range.
+     *
+     * The \a generateTable parameter is optional and is for performance improvements.
+     * If you know you are immediately going to set the minimum value or the contrast
+     * enhancement algorithm, you can elect to not generate the lookup table.
+     * By default it will be generated.
+     *
+     * \see setMinimumValue()
+    */
+    void setMaximumValue( double value, bool generateTable = true );
 
-    //! \brief Return the minimum value for the contrast enhancement range.
-    void setMinimumValue( double, bool generateTable = true );
+    /**
+     * Sets the minimum \a value for the contrast enhancement range.
+     *
+     * The \a generateTable parameter is optional and is for performance improvements.
+     * If you know you are immediately going to set the maximum value or the contrast
+     * enhancement algorithm, you can elect to not generate the lookup table.
+     * By default it will be generated.
+     *
+     * \see setMaximumValue()
+    */
+    void setMinimumValue( double value, bool generateTable = true );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     void readXml( const QDomElement &elem );
+
+    /**
+     * Write ContrastEnhancement tags following SLD v1.0 specs
+     * SLD1.0 is limited to the parameters listed in:
+     * https://docs.geoserver.org/stable/en/user/styling/sld/reference/rastersymbolizer.html#contrastenhancement
+     * Btw only sld:Normalize + vendor options are supported because there is no clear mapping
+     * of ContrastEnhancement parameters to support sld:Histogram or sld:GammaValue
+     * \since QGIS 3.6
+    */
+    void toSld( QDomDocument &doc, QDomElement &element ) const;
 
   private:
 #ifdef SIP_RUN
@@ -122,16 +226,13 @@ class CORE_EXPORT QgsContrastEnhancement
 #endif
 
     //! \brief Current contrast enhancement algorithm
-    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
+    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm = NoEnhancement;
 
     //! \brief Pointer to the contrast enhancement function
     std::unique_ptr< QgsContrastEnhancementFunction > mContrastEnhancementFunction;
 
     //! \brief Flag indicating if the lookup table needs to be regenerated
-    bool mEnhancementDirty;
-
-    //! \brief Scalar so that values can be used as array indices
-    double mLookupTableOffset;
+    bool mEnhancementDirty = false;
 
     //! \brief Pointer to the lookup table
     int *mLookupTable = nullptr;
@@ -148,7 +249,10 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Maximum range of values for a given data type
     double mRasterDataTypeRange;
 
-    //! \brief Method to generate a new lookup table
+    //! \brief Scalar so that values can be used as array indices
+    double mLookupTableOffset;
+
+    //! Generates a new lookup table
     bool generateLookupTable();
 
     //! \brief Method to calculate the actual enhanceContrasted value(s)

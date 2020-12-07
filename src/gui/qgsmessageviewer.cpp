@@ -17,11 +17,15 @@
 
 #include "qgsmessageviewer.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  connect( checkBox, &QCheckBox::toggled, this, &QgsMessageViewer::checkBox_toggled );
   if ( deleteOnClose )
   {
     setAttribute( Qt::WA_DeleteOnClose );
@@ -30,16 +34,8 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool de
   setCheckBoxVisible( false );
   setCheckBoxState( Qt::Unchecked );
 
-  mCheckBoxQgsSettingsLabel = QLatin1String( "" );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/MessageViewer/geometry" ) ).toByteArray() );
-}
-
-QgsMessageViewer::~QgsMessageViewer()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/MessageViewer/geometry" ), saveGeometry() );
+  txtMessage->setTextInteractionFlags( Qt::TextBrowserInteraction );
+  txtMessage->setOpenExternalLinks( true );
 }
 
 void QgsMessageViewer::setMessageAsHtml( const QString &msg )
@@ -70,9 +66,8 @@ void QgsMessageViewer::showMessage( bool blocking )
 {
   if ( blocking )
   {
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
+    QgsTemporaryCursorRestoreOverride override;
     exec();
-    QApplication::restoreOverrideCursor();
   }
   else
   {
@@ -111,9 +106,9 @@ void QgsMessageViewer::setCheckBoxQgsSettingsLabel( const QString &label )
 }
 
 
-void QgsMessageViewer::on_checkBox_toggled( bool toggled )
+void QgsMessageViewer::checkBox_toggled( bool toggled )
 {
-  Q_UNUSED( toggled );
+  Q_UNUSED( toggled )
   if ( !mCheckBoxQgsSettingsLabel.isEmpty() )
   {
     QgsSettings settings;

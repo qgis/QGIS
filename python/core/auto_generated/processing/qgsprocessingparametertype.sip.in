@@ -1,0 +1,128 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametertype.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingParameterType
+{
+%Docstring
+Makes metadata of processing parameters available.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparametertype.h"
+%End
+  public:
+
+    enum ParameterFlag
+    {
+      ExposeToModeler
+    };
+    typedef QFlags<QgsProcessingParameterType::ParameterFlag> ParameterFlags;
+
+
+
+    virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 /Factory/;
+%Docstring
+Creates a new parameter of this type.
+%End
+
+    virtual ~QgsProcessingParameterType();
+
+    virtual QString description() const = 0;
+%Docstring
+A human readable and translatable description for this parameter type.
+This can be a longer description suitable for tooltips and other elements
+that give the user context for a given parameter.
+%End
+
+    virtual QString name() const = 0;
+%Docstring
+A human readable and translatable short name for this parameter type.
+This will be used in comboboxes and list widgets.
+%End
+
+
+    virtual QString pythonImportString() const;
+%Docstring
+Returns a valid Python import string for importing the corresponding parameter type,
+e.g. "from qgis.core import :py:class:`QgsProcessingParameterBoolean`".
+
+.. seealso:: :py:func:`className`
+
+.. versionadded:: 3.6
+%End
+
+
+    virtual QString className() const;
+%Docstring
+Returns the corresponding class name for the parameter type.
+
+.. seealso:: :py:func:`pythonImportString`
+
+.. versionadded:: 3.6
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+A static id for this type which will be used for storing this parameter type.
+%End
+
+    virtual ParameterFlags flags() const;
+%Docstring
+Determines if this parameter is available in the modeler.
+The default implementation returns ``True``.
+%End
+
+    virtual QVariantMap metadata() const;
+%Docstring
+Metadata for this parameter type. Can be used for example to define custom widgets.
+The default implementation returns an empty map.
+%End
+
+    virtual QStringList acceptedPythonTypes() const;
+%Docstring
+Returns a list of the Python data types accepted as values for the parameter.
+E.g. "str", ":py:class:`QgsVectorLayer`", ":py:class:`QgsMapLayer`", etc.
+
+These values should should match the Python types exactly
+(e.g. "str" not "string", "bool" not "boolean"). Extra explanatory help can
+be used (which must be translated), eg "str: as comma delimited list of numbers".
+
+.. seealso:: :py:func:`acceptedStringValues`
+%End
+
+    virtual QStringList acceptedStringValues() const;
+%Docstring
+Returns a descriptive list of the possible string values acceptable for the parameter.
+
+E.g. for a QgsProcessingParameterVectorLayer this may include "Path to a vector layer",
+for :py:class:`QgsProcessingParameterBoolean` "1 for true, 0 for false" etc.
+
+Extra explanatory help can be used (which must be translated), eg "a comma delimited list of numbers".
+
+.. seealso:: :py:func:`acceptedPythonTypes`
+
+.. versionadded:: 3.8
+%End
+};
+
+QFlags<QgsProcessingParameterType::ParameterFlag> operator|(QgsProcessingParameterType::ParameterFlag f1, QFlags<QgsProcessingParameterType::ParameterFlag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparametertype.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

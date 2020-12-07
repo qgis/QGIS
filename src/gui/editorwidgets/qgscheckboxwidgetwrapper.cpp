@@ -15,10 +15,9 @@
 
 #include "qgscheckboxwidgetwrapper.h"
 
-QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
-  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mCheckBox( nullptr )
-  , mGroupBox( nullptr )
+QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+
 {
 }
 
@@ -65,9 +64,21 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, &QAbstractButton::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mCheckBox, &QAbstractButton::toggled, this, [ = ]( bool state )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( state );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( state );
+  } );
   if ( mGroupBox )
-    connect( mGroupBox, &QGroupBox::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( state );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( state );
+  } );
 }
 
 bool QgsCheckboxWidgetWrapper::valid() const
@@ -75,7 +86,7 @@ bool QgsCheckboxWidgetWrapper::valid() const
   return mCheckBox || mGroupBox;
 }
 
-void QgsCheckboxWidgetWrapper::setValue( const QVariant &value )
+void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   bool state = false;
 

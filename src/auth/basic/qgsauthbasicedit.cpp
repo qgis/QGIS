@@ -20,13 +20,10 @@
 
 QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mValid( 0 )
 {
   setupUi( this );
-}
-
-QgsAuthBasicEdit::~QgsAuthBasicEdit()
-{
+  connect( leUsername, &QLineEdit::textChanged, this, &QgsAuthBasicEdit::leUsername_textChanged );
+  connect( chkPasswordShow, &QCheckBox::stateChanged, this, &QgsAuthBasicEdit::chkPasswordShow_stateChanged );
 }
 
 bool QgsAuthBasicEdit::validateConfig()
@@ -75,13 +72,13 @@ void QgsAuthBasicEdit::clearConfig()
   chkPasswordShow->setChecked( false );
 }
 
-void QgsAuthBasicEdit::on_leUsername_textChanged( const QString &txt )
+void QgsAuthBasicEdit::leUsername_textChanged( const QString &txt )
 {
-  Q_UNUSED( txt );
+  Q_UNUSED( txt )
   validateConfig();
 }
 
-void QgsAuthBasicEdit::on_chkPasswordShow_stateChanged( int state )
+void QgsAuthBasicEdit::chkPasswordShow_stateChanged( int state )
 {
   lePassword->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }

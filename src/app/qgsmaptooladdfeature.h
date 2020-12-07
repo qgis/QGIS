@@ -13,25 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolcapture.h"
+#include "qgsmaptooldigitizefeature.h"
 #include "qgis_app.h"
 
 //! This tool adds new point/line/polygon features to already existing vector layers
-class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
 {
     Q_OBJECT
   public:
     //! \since QGIS 2.12
-    QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode = CaptureNone );
-    virtual ~QgsMapToolAddFeature();
-    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
 
-    bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal = true );
-    void activate() override;
+  private:
 
-  protected:
+    bool addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal = true );
 
-    /** Check if CaptureMode match layer type. Default is true.
-     * \since QGIS 2.12 */
+    void digitized( const QgsFeature &f ) override;
+
+    /**
+     * Check if CaptureMode matches layer type. Default is TRUE.
+     * \since QGIS 2.12
+    */
     bool mCheckGeometryType;
 };

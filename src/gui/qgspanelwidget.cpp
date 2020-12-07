@@ -23,14 +23,13 @@
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )
-  , mAutoDelete( true )
-  , mDockMode( false )
 {
 }
 
 void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 {
-  Q_FOREACH ( QgsPanelWidget *widget, panels )
+  const auto constPanels = panels;
+  for ( QgsPanelWidget *widget : constPanels )
   {
     connectChildPanel( widget );
   }
@@ -67,6 +66,16 @@ QgsPanelWidget *QgsPanelWidget::findParentPanel( QWidget *widget )
   return nullptr;
 }
 
+QString QgsPanelWidget::menuButtonTooltip() const
+{
+  return QString();
+}
+
+QMenu *QgsPanelWidget::menuButtonMenu()
+{
+  return nullptr;
+}
+
 void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
 {
   //panel dock mode inherits from this panel
@@ -80,7 +89,7 @@ void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
   {
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );
@@ -105,6 +114,10 @@ void QgsPanelWidget::keyPressEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Escape )
   {
     acceptPanel();
+  }
+  else
+  {
+    QWidget::keyPressEvent( event );
   }
 }
 

@@ -30,11 +30,13 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
+#include "qgsmarkersymbollayer.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for line fill symbol types.
  */
 class TestQgsCentroidFillSymbol : public QObject
@@ -42,13 +44,7 @@ class TestQgsCentroidFillSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsCentroidFillSymbol()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mCentroidFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsCentroidFillSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -57,10 +53,17 @@ class TestQgsCentroidFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void centroidFillSymbol();
+    void centroidFillSymbolPointOnSurface();
     void centroidFillSymbolPartBiggest();
+    void centroidFillClipPoints();
+    void centroidFillClipOnCurrentPartOnly();
+    void centroidFillClipOnCurrentPartOnlyBiggest();
+    void centroidFillClipMultiplayerPoints();
+    void opacityWithDataDefinedColor();
+    void dataDefinedOpacity();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
@@ -99,6 +102,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
 
   //setup gradient fill
   mCentroidFill = new QgsCentroidFillSymbolLayer();
+  static_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mCentroidFill );
   mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
@@ -135,11 +139,96 @@ void TestQgsCentroidFillSymbol::centroidFillSymbol()
   QVERIFY( imageCheck( "symbol_centroidfill" ) );
 }
 
+void TestQgsCentroidFillSymbol::centroidFillSymbolPointOnSurface()
+{
+  mCentroidFill->setPointOnSurface( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_point_on_surface" ) );
+  mCentroidFill->setPointOnSurface( false );
+}
+
 void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 {
   mCentroidFill->setPointOnAllParts( false );
-
   QVERIFY( imageCheck( "symbol_centroidfill_part_biggest" ) );
+  mCentroidFill->setPointOnAllParts( true );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipPoints()
+{
+  mCentroidFill->setClipPoints( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_points" ) );
+  mCentroidFill->setClipPoints( false );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnly()
+{
+  mCentroidFill->setClipPoints( true );
+  mCentroidFill->setClipOnCurrentPartOnly( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_only" ) );
+  mCentroidFill->setClipPoints( false );
+  mCentroidFill->setClipOnCurrentPartOnly( false );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnlyBiggest()
+{
+  mCentroidFill->setClipPoints( true );
+  mCentroidFill->setClipOnCurrentPartOnly( true );
+  mCentroidFill->setPointOnAllParts( false );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_biggest" ) );
+  mCentroidFill->setClipPoints( false );
+  mCentroidFill->setClipOnCurrentPartOnly( false );
+  mCentroidFill->setPointOnAllParts( true );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipMultiplayerPoints()
+{
+  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+
+  mCentroidFill = mCentroidFill->clone();
+  mCentroidFill->setClipPoints( true );
+
+  mFillSymbol->deleteSymbolLayer( 0 );
+  mFillSymbol->appendSymbolLayer( simpleFill.clone() );
+  mFillSymbol->appendSymbolLayer( mCentroidFill->clone() );
+  mFillSymbol->appendSymbolLayer( simpleFill.clone() );
+
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_multilayer" ) );
+
+  mCentroidFill->setClipPoints( false );
+  mFillSymbol->deleteSymbolLayer( 0 );
+  mFillSymbol->deleteSymbolLayer( 1 );
+  mFillSymbol->deleteSymbolLayer( 2 );
+  mFillSymbol->changeSymbolLayer( 0, mCentroidFill );
+}
+
+
+void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
+{
+  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
+  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
+  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
+  mCentroidFill->subSymbol()->setOpacity( 0.5 );
+  mFillSymbol->setOpacity( 0.5 );
+
+  QVERIFY( imageCheck( "symbol_centroidfill_opacityddcolor" ) );
+}
+
+void TestQgsCentroidFillSymbol::dataDefinedOpacity()
+{
+  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
+  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
+  dynamic_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
+  mCentroidFill->subSymbol()->setOpacity( 0.5 );
+  mFillSymbol->setOpacity( 1.0 );
+  mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+
+  QVERIFY( imageCheck( "symbol_centroidfill_ddopacity" ) );
 }
 
 //

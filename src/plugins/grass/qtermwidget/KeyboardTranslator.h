@@ -413,6 +413,9 @@ private:
     QString _description;
     KeyboardTranslator::Entry _nextEntry;
     bool _hasNext;
+
+    KeyboardTranslatorReader(const KeyboardTranslatorReader&) = delete;
+    KeyboardTranslatorReader& operator=(const KeyboardTranslatorReader&) = delete;
 };
 
 /** Writes a keyboard translation to disk. */
@@ -437,6 +440,9 @@ public:
 private:
     QIODevice* _destination;
     QTextStream* _writer;
+
+    KeyboardTranslatorWriter(const KeyboardTranslatorWriter&) = delete;
+    KeyboardTranslatorWriter& operator=(const KeyboardTranslatorWriter&) = delete;
 };
 
 /**

@@ -1,0 +1,22 @@
+*****
+Content-Type: application/vnd.ogc.gml; charset=utf-8
+
+<wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows" xmlns:qgs="http://qgis.org/gml" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://qgis.org/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <gml:featureMember>
+  <qgs:testlayerèé fid="testlayer èé.2">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:3857">
+     <gml:coordinates cs="," ts=" ">913204.9128,5606011.4565 913204.9128,5606011.4565</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <gml:Point srsName="EPSG:3857">
+     <gml:coordinates cs="," ts=" ">913204.9128,5606011.4565</gml:coordinates>
+    </gml:Point>
+   </qgs:geometry>
+   <qgs:id>3</qgs:id>
+   <qgs:name>three</qgs:name>
+   <qgs:utf8nameè>three èé↓</qgs:utf8nameè>
+  </qgs:testlayerèé>
+ </gml:featureMember>
+</wfs:FeatureCollection>

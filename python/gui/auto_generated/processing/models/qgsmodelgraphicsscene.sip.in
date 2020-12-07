@@ -1,0 +1,220 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsscene.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsModelGraphicsScene : QGraphicsScene
+{
+%Docstring
+QGraphicsScene subclass representing the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicsscene.h"
+%End
+  public:
+
+    enum ZValues
+    {
+      GroupBox,
+      ArrowLink,
+      ModelComponent,
+      MouseHandles,
+      RubberBand,
+      ZSnapIndicator,
+
+    };
+
+    enum Flag
+    {
+      FlagHideControls,
+      FlagHideComments,
+    };
+    typedef QFlags<QgsModelGraphicsScene::Flag> Flags;
+
+
+    QgsModelGraphicsScene( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsModelGraphicsScene with the specified ``parent`` object.
+%End
+
+    QgsProcessingModelAlgorithm *model();
+
+    void setModel( QgsProcessingModelAlgorithm *model );
+
+    void setFlags( QgsModelGraphicsScene::Flags flags );
+%Docstring
+Sets the combination of ``flags`` controlling how the scene is rendered and behaves.
+
+.. seealso:: :py:func:`setFlag`
+
+.. seealso:: :py:func:`flags`
+%End
+
+    void setFlag( QgsModelGraphicsScene::Flag flag, bool on = true );
+%Docstring
+Enables or disables a particular ``flag`` for the scene. Other existing
+flags are not affected.
+
+.. seealso:: :py:func:`setFlags`
+
+.. seealso:: :py:func:`flags`
+%End
+
+    QgsModelGraphicsScene::Flags flags() const;
+%Docstring
+Returns the current combination of flags set for the scene.
+
+.. seealso:: :py:func:`setFlags`
+
+.. seealso:: :py:func:`setFlag`
+%End
+
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
+
+    void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
+%Docstring
+Populates the scene by creating items representing the specified ``model``.
+%End
+
+    QList<QgsModelComponentGraphicItem *> selectedComponentItems();
+%Docstring
+Returns list of selected component items.
+%End
+
+    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
+%Docstring
+Returns the topmost component item at a specified ``position``.
+%End
+
+    QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
+%Docstring
+Returns the graphic item corresponding to the specified group box ``uuid``.
+%End
+
+    void selectAll();
+%Docstring
+Selects all the components in the scene.
+%End
+
+    void deselectAll();
+%Docstring
+Clears any selected items in the scene.
+
+Call this method rather than QGraphicsScene.clearSelection, as the latter does
+not correctly emit signals to allow the scene's model to update.
+%End
+
+    void setSelectedItem( QgsModelComponentGraphicItem *item );
+%Docstring
+Clears any selected items and sets ``item`` as the current selection.
+%End
+
+    void setChildAlgorithmResults( const QVariantMap &results );
+%Docstring
+Sets the results for child algorithms for the last model execution.
+%End
+
+    void setChildAlgorithmInputs( const QVariantMap &inputs );
+%Docstring
+Sets the inputs for child algorithms for the last model execution.
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the scene.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the scene.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning );
+%Docstring
+Shows a warning message, allowing users to click a button to see the full details (``longMessage``).
+%End
+
+  signals:
+
+    void rebuildRequired();
+%Docstring
+Emitted when a change in the model requires a full rebuild of the scene.
+%End
+
+    void componentAboutToChange( const QString &text, int id = 0 );
+%Docstring
+Emitted whenever a component of the model is about to be changed.
+
+The ``text`` argument gives the translated text describing the change about to occur, and the
+optional ``id`` can be used to group the associated undo commands.
+%End
+
+    void componentChanged();
+%Docstring
+Emitted whenever a component of the model is changed.
+%End
+
+    void selectedItemChanged( QgsModelComponentGraphicItem *selected );
+%Docstring
+Emitted whenever the selected item changes.
+If ``None``, no item is selected.
+%End
+
+  protected:
+
+    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model parameter.
+%End
+
+    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
+%Docstring
+Creates a new graphic item for a model child algorithm.
+%End
+
+    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model output.
+%End
+
+    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
+        QgsModelComponentGraphicItem *parentItem ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model comment.
+%End
+
+    QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model group box.
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsscene.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

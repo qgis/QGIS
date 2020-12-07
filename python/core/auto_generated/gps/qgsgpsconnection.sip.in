@@ -1,0 +1,202 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsconnection.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+%ModuleHeaderCode
+#include "qgsgpsconnection.h"
+%End
+
+class QgsSatelliteInfo
+{
+%Docstring
+Encapsulates information relating to a GPS satellite.
+%End
+
+%TypeHeaderCode
+#include "qgsgpsconnection.h"
+%End
+  public:
+
+    int id;
+
+    bool inUse;
+
+
+    double elevation;
+
+
+    double azimuth;
+
+    int signal;
+};
+
+class QgsGpsInformation
+{
+%Docstring
+Encapsulates information relating to a GPS position fix.
+%End
+
+%TypeHeaderCode
+#include "qgsgpsconnection.h"
+%End
+  public:
+
+    enum FixStatus
+    {
+      NoData,
+      NoFix,
+      Fix2D,
+      Fix3D
+    };
+
+    double latitude;
+
+    double longitude;
+
+    double elevation;
+
+    double speed;
+
+
+    double direction;
+
+    QList<QgsSatelliteInfo> satellitesInView;
+
+    double pdop;
+
+    double hdop;
+
+    double vdop;
+
+    //! Horizontal accuracy in meters
+    double hacc;
+    //! Vertical accuracy in meters
+    double vacc;
+
+    QDateTime utcDateTime;
+
+    QChar fixMode;
+
+    int fixType;
+
+    int quality;
+
+    int satellitesUsed;
+
+    QChar status;
+
+    QList<int> satPrn;
+
+    bool satInfoComplete;
+
+    bool isValid() const;
+%Docstring
+Returns whether the connection information is valid
+
+.. versionadded:: 3.10
+%End
+
+    FixStatus fixStatus() const;
+%Docstring
+Returns the fix status
+
+.. versionadded:: 3.10
+%End
+
+    QString qualityDescription() const;
+%Docstring
+Returns a descriptive string for the signal quality.
+
+.. versionadded:: 3.16
+%End
+};
+
+class QgsGpsConnection : QObject
+{
+%Docstring
+Abstract base class for connection to a GPS device
+%End
+
+%TypeHeaderCode
+#include "qgsgpsconnection.h"
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->inherits( "QgsGpsdConnection" ) )
+      sipType = sipType_QgsGpsdConnection;
+    else if ( sipCpp->inherits( "QgsNmeaConnection" ) )
+      sipType = sipType_QgsNmeaConnection;
+    else
+      sipType = NULL;
+%End
+  public:
+
+    enum Status
+    {
+      NotConnected,
+      Connected,
+      DataReceived,
+      GPSDataReceived
+    };
+
+    QgsGpsConnection( QIODevice *dev /Transfer/ );
+%Docstring
+Constructor
+
+:param dev: input device for the connection (e.g. serial device). The class takes ownership of the object
+%End
+    ~QgsGpsConnection();
+    bool connect();
+%Docstring
+Opens connection to device
+%End
+    bool close();
+%Docstring
+Closes connection to device
+%End
+
+    void setSource( QIODevice *source /Transfer/ );
+%Docstring
+Sets the GPS source. The class takes ownership of the device class
+%End
+
+    Status status() const;
+%Docstring
+Returns the status. Possible state are not connected, connected, data received
+%End
+
+    QgsGpsInformation currentGPSInformation() const;
+%Docstring
+Returns the current gps information (lat, lon, etc.)
+%End
+
+  signals:
+    void stateChanged( const QgsGpsInformation &info );
+    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
+
+  protected:
+
+  protected slots:
+    virtual void parseData() = 0;
+%Docstring
+Parse available data source content
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsconnection.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,28 @@
+name: flake8
+
+on:
+  push:
+    paths:
+      - '**.py'
+  pull_request:
+    paths:
+      - '**.py'
+
+jobs:
+  flake8_py3:
+    name: Python Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+          architecture: x64
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run flake8
+        uses: julianwachholz/flake8-action@v1.0.0
+        with:
+          checkName: 'Python Lint'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

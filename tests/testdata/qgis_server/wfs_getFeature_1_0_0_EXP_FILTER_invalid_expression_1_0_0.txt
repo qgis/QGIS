@@ -1,0 +1,7 @@
+Content-Length: 229
+Content-Type: text/xml; charset=utf-8
+
+<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.2.0">
+ <ServiceException code="RequestNotWellFormed">The EXP_FILTER expression has errors: 
+Function is not known</ServiceException>
+</ServiceExceptionReport>

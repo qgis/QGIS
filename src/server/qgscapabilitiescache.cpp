@@ -16,12 +16,24 @@
  ***************************************************************************/
 
 #include "qgscapabilitiescache.h"
-#include "qgslogger.h"
+
 #include <QCoreApplication>
+#include <QFileInfo>
+
+#if defined(Q_OS_LINUX)
+#include <sys/vfs.h>
+#endif
+
+#include "qgslogger.h"
+
 
 QgsCapabilitiesCache::QgsCapabilitiesCache()
 {
   QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsCapabilitiesCache::removeChangedEntry );
+
+#if defined(Q_OS_LINUX)
+  QObject::connect( &mTimer, &QTimer::timeout, this, &QgsCapabilitiesCache::removeOutdatedEntries );
+#endif
 }
 
 const QDomDocument *QgsCapabilitiesCache::searchCapabilitiesDocument( const QString &configFilePath, const QString &key )
@@ -55,17 +67,47 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFile
   }
 
   mCachedCapabilities[ configFilePath ].insert( key, doc->cloneNode().toDocument() );
+
+#if defined(Q_OS_LINUX)
+  struct statfs sStatFS;
+  if ( statfs( configFilePath.toUtf8().constData(), &sStatFS ) == 0 &&
+       ( sStatFS.f_type == 0x6969 /* NFS */ ||
+         sStatFS.f_type == 0x517b /* SMB */ ||
+         sStatFS.f_type == 0xff534d42 /* CIFS */ ||
+         sStatFS.f_type == 0xfe534d42 /* CIFS */ ) )
+  {
+    QFileInfo fi( configFilePath );
+    mCachedCapabilitiesTimestamps[ configFilePath ] = fi.lastModified();
+    mTimer.start( 1000 );
+  }
+#endif
 }
 
 void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &path )
 {
   mCachedCapabilities.remove( path );
+  mCachedCapabilitiesTimestamps.remove( path );
   mFileSystemWatcher.removePath( path );
 }
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
 {
-  QgsDebugMsg( "Remove capabilities cache entry because file changed" );
-  mCachedCapabilities.remove( path );
-  mFileSystemWatcher.removePath( path );
+  QgsDebugMsg( QStringLiteral( "Remove capabilities cache entry because file changed" ) );
+  removeCapabilitiesDocument( path );
+}
+
+void QgsCapabilitiesCache::removeOutdatedEntries()
+{
+  QgsDebugMsg( QStringLiteral( "Checking for outdated entries" ) );
+  for ( const QString &configFilePath : mCachedCapabilitiesTimestamps.keys() )
+  {
+    QFileInfo fi( configFilePath );
+    if ( !fi.exists() || mCachedCapabilitiesTimestamps[ configFilePath ] < fi.lastModified() )
+      removeChangedEntry( configFilePath );
+  }
+
+  if ( !mCachedCapabilitiesTimestamps.isEmpty() )
+  {
+    mTimer.start( 1000 );
+  }
 }

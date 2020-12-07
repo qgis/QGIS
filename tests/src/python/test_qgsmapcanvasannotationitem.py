@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -38,8 +36,8 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
     def testPosition(self):
         """ test that map canvas annotation item syncs position correctly """
         a = QgsTextAnnotation()
-        a.setFrameSize(QSizeF(300, 200))
-        a.setFrameOffsetFromReferencePoint(QPointF(40, 50))
+        a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
+        a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         a.setMapPosition(QgsPointXY(12, 34))
         a.setMapPositionCrs(QgsCoordinateReferenceSystem(4326))
 
@@ -81,7 +79,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
     def testSize(self):
         """ test that map canvas annotation item size is correct """
         a = QgsTextAnnotation()
-        a.setFrameSize(QSizeF(300, 200))
+        a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
         a.setHasFixedMapPosition(False)
         a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'blue', 'width_border': '0'}))
 
@@ -94,16 +92,29 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         canvas.setExtent(QgsRectangle(10, 30, 20, 35))
 
         i = QgsMapCanvasAnnotationItem(a, canvas)
-        self.assertAlmostEqual(i.boundingRect().width(), 300, 1)
-        self.assertAlmostEqual(i.boundingRect().height(), 200, 1)
+        # ugly, but Travis has different default DPI:
+        if 299 < i.boundingRect().width() < 301:
+            self.assertAlmostEqual(i.boundingRect().width(), 300, 1)
+            self.assertAlmostEqual(i.boundingRect().height(), 200, 1)
 
-        a.setHasFixedMapPosition(True)
-        a.setFrameOffsetFromReferencePoint(QPointF(0, 0))
-        self.assertAlmostEqual(i.boundingRect().width(), 300, -1)
-        self.assertAlmostEqual(i.boundingRect().height(), 200, -1)
-        a.setFrameOffsetFromReferencePoint(QPointF(10, 20))
-        self.assertAlmostEqual(i.boundingRect().width(), 310, -1)
-        self.assertAlmostEqual(i.boundingRect().height(), 220, -1)
+            a.setHasFixedMapPosition(True)
+            a.setFrameOffsetFromReferencePoint(QPointF(0, 0))
+            self.assertAlmostEqual(i.boundingRect().width(), 300, -1)
+            self.assertAlmostEqual(i.boundingRect().height(), 200, -1)
+            a.setFrameOffsetFromReferencePoint(QPointF(10, 20))
+            self.assertAlmostEqual(i.boundingRect().width(), 310, -1)
+            self.assertAlmostEqual(i.boundingRect().height(), 220, -1)
+        else:
+            self.assertAlmostEqual(i.boundingRect().width(), 312.5, 1)
+            self.assertAlmostEqual(i.boundingRect().height(), 208.33, 1)
+
+            a.setHasFixedMapPosition(True)
+            a.setFrameOffsetFromReferencePoint(QPointF(0, 0))
+            self.assertAlmostEqual(i.boundingRect().width(), 312.5, -1)
+            self.assertAlmostEqual(i.boundingRect().height(), 208.33, -1)
+            a.setFrameOffsetFromReferencePoint(QPointF(10, 20))
+            self.assertAlmostEqual(i.boundingRect().width(), 322.91, -1)
+            self.assertAlmostEqual(i.boundingRect().height(), 229.166, -1)
 
     def testVisibility(self):
         """ test that map canvas annotation item visibility follows layer"""
@@ -123,8 +134,8 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
     def testSettingFeature(self):
         """ test that feature is set when item moves """
         a = QgsTextAnnotation()
-        a.setFrameSize(QSizeF(300, 200))
-        a.setFrameOffsetFromReferencePoint(QPointF(40, 50))
+        a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
+        a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         a.setHasFixedMapPosition(True)
         a.setMapPosition(QgsPointXY(12, 34))
         a.setMapPositionCrs(QgsCoordinateReferenceSystem(4326))
@@ -142,7 +153,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
                                'test', "memory")
         canvas.setLayers([layer])
         f = QgsFeature(layer.fields())
-        f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(14, 31)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(14, 31)))
         f.setValid(True)
         f.setAttributes(['hurstbridge', 'somewhere'])
         self.assertTrue(layer.dataProvider().addFeatures([f]))

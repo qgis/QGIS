@@ -19,7 +19,6 @@
 
 #include <QDialog>
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "ui_qgsauthimportidentitydialog.h"
 
 #include <QSslCertificate>
@@ -28,7 +27,8 @@
 #include "qgsauthconfig.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing an identity certificate/key bundle into the authentication database
  */
 class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAuthImportIdentityDialog
@@ -63,17 +63,18 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
      * \param parent Parent widget
      */
     explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent SIP_TRANSFERTHIS = 0 );
+                                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Get identity type
+    //! Gets identity type
     QgsAuthImportIdentityDialog::IdentityType identityType();
 
-    /** Get certificate/key bundle to be imported.
+    /**
+     * Gets certificate/key bundle to be imported.
      * \note not available in Python bindings
      */
     const QPair<QSslCertificate, QSslKey> certBundleToImport() SIP_SKIP;
 
-    //! Get certificate/key bundle to be imported as a PKI bundle object
+    //! Gets certificate/key bundle to be imported as a PKI bundle object
     const QgsPkiBundle pkiBundleToImport() { return mPkiBundle; }
 
   private slots:
@@ -89,17 +90,17 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
                           bool append = false );
 
     // Cert Identity - PkiPaths
-    void on_lePkiPathsKeyPass_textChanged( const QString &pass );
-    void on_chkPkiPathsPassShow_stateChanged( int state );
+    void lePkiPathsKeyPass_textChanged( const QString &pass );
+    void chkPkiPathsPassShow_stateChanged( int state );
 
-    void on_btnPkiPathsCert_clicked();
-    void on_btnPkiPathsKey_clicked();
+    void btnPkiPathsCert_clicked();
+    void btnPkiPathsKey_clicked();
 
     // Cert Identity - PkiPkcs#12
-    void on_lePkiPkcs12KeyPass_textChanged( const QString &pass );
-    void on_chkPkiPkcs12PassShow_stateChanged( int state );
+    void lePkiPkcs12KeyPass_textChanged( const QString &pass );
+    void chkPkiPkcs12PassShow_stateChanged( int state );
 
-    void on_btnPkiPkcs12Bundle_clicked();
+    void btnPkiPkcs12Bundle_clicked();
 
   private:
     bool validateBundle();

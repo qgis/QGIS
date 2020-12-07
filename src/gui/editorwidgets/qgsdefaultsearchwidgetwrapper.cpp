@@ -20,19 +20,17 @@
 #include "qgsexpression.h"
 #include "qgsfieldvalueslineedit.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QHBoxLayout>
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mLineEdit( nullptr )
-  , mCheckbox( nullptr )
-  , mContainer( nullptr )
   , mCaseString( QStringLiteral( "LIKE" ) )
 {
 }
 
-QString QgsDefaultSearchWidgetWrapper::expression()
+QString QgsDefaultSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -54,12 +52,12 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
     emit expressionChanged( mExpression );
 }
 
-void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
+void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
-  QgsSettings settings;
+  QString exp = expression;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
@@ -109,7 +107,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
       break;
 
     case QVariant::String:
-      flags |= Contains | DoesNotContain;
+      flags |= Contains | DoesNotContain | StartsWith | EndsWith;
       break;
 
     default:
@@ -151,7 +149,7 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
   flags &= supportedFlags();
 
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   if ( flags & IsNull )
     return fieldName + " IS NULL";
@@ -206,22 +204,28 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
       if ( flags & EqualTo || flags & NotEqualTo )
       {
         if ( mCheckbox && mCheckbox->isChecked() )
-          return fieldName + ( flags & EqualTo ? "=" : "<>" )
+          return fieldName + ( ( flags & EqualTo ) ? "=" : "<>" )
                  + QgsExpression::quotedString( mLineEdit->text() );
         else
           return QStringLiteral( "lower(%1)" ).arg( fieldName )
-                 + ( flags & EqualTo ? "=" : "<>" ) +
+                 + ( ( flags & EqualTo ) ? "=" : "<>" ) +
                  QStringLiteral( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
       }
-      else if ( flags & Contains || flags & DoesNotContain )
+      else if ( flags & Contains || flags & DoesNotContain || flags & StartsWith || flags & EndsWith )
       {
         QString exp = fieldName + ( mCheckbox && mCheckbox->isChecked() ? " LIKE " : " ILIKE " );
         QString value = QgsExpression::quotedString( mLineEdit->text() );
         value.chop( 1 );
         value = value.remove( 0, 1 );
-        exp += "'%" + value + "%'";
+        exp += '\'';
+        if ( !flags.testFlag( StartsWith ) )
+          exp += '%';
+        exp += value;
+        if ( !flags.testFlag( EndsWith ) )
+          exp += '%';
+        exp += '\'';
         if ( flags & DoesNotContain )
-          exp.prepend( "NOT (" ).append( ")" );
+          exp.prepend( "NOT (" ).append( ')' );
         return exp;
       }
 
@@ -251,7 +255,6 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
 {
   mContainer = widget;
   mContainer->setLayout( new QHBoxLayout() );
-  mContainer->layout()->setMargin( 0 );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
 

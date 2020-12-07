@@ -18,12 +18,13 @@
 #define QGSPGTABLEMODEL_H
 #include <QStandardItemModel>
 
-#include "qgis.h"
+#include "qgswkbtypes.h"
 #include "qgspostgresconn.h"
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsPgTableModel : public QStandardItemModel
@@ -52,6 +53,7 @@ class QgsPgTableModel : public QStandardItemModel
       DbtmSrid,
       DbtmPkCol,
       DbtmSelectAtId,
+      DbtmCheckPkUnicity,
       DbtmSql,
       DbtmColumns
     };
@@ -60,11 +62,13 @@ class QgsPgTableModel : public QStandardItemModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
-    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+    void setConnectionName( const QString &connName ) { mConnName = connName;  }
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
+    //! connection name
+    QString mConnName;
 };
 
 #endif // QGSPGTABLEMODEL_H

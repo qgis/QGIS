@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>529</height>
+    <height>637</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create a New Oracle connection</string>
+   <string>Create a New Oracle Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -54,43 +54,41 @@
       <string>Connection Information</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
-      <item row="9" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkStorePassword">
-        <property name="text">
-         <string>Save Password</string>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtDatabase">
+        <property name="toolTip">
+         <string>Database name, or service name (described in tnsnames.ora) if no host and port has been set</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_useEstimatedMetadata">
-        <property name="toolTip">
-         <string>Use estimated table statistics for the layer metadata.</string>
-        </property>
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtPort">
         <property name="text">
-         <string>Use estimated table metadata</string>
+         <string>1521</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtName">
+        <property name="toolTip">
+         <string>Name of the new connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtOptions">
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtHost"/>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="TextLabel3_2">
+       <widget class="QLabel" name="TextLabel3_4">
         <property name="text">
-         <string>Password</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtPassword</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="TextLabel3">
-        <property name="text">
-         <string>Username</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtUsername</cstring>
+         <string>Workspace</string>
         </property>
        </widget>
       </item>
@@ -104,30 +102,20 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="TextLabel1_2">
-        <property name="text">
-         <string>Name</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtName</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
+      <item row="15" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_onlyExistingTypes">
         <property name="toolTip">
-         <string>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</string>
+         <string>Only list the existing geometry types and don't offer to add others.</string>
         </property>
         <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
-         <string>Only look in meta data table</string>
+         <string>Only existing geometry types</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="0" colspan="3">
+      <item row="12" column="0" colspan="3">
        <widget class="QCheckBox" name="cb_userTablesOnly">
         <property name="toolTip">
          <string>When searching for spatial tables restrict the search to tables that are owned by the user.</string>
@@ -140,13 +128,30 @@
         </property>
        </widget>
       </item>
-      <item row="12" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_allowGeometrylessTables">
-        <property name="text">
-         <string>Also list tables with no geometry</string>
+      <item row="5" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtWorkspace">
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
         </property>
-        <property name="checked">
-         <bool>false</bool>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="TextLabel3_3">
+        <property name="text">
+         <string>Options</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_useEstimatedMetadata">
+        <property name="toolTip">
+         <string>Use estimated table statistics for the layer metadata.</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Use estimated table metadata</string>
         </property>
        </widget>
       </item>
@@ -160,6 +165,39 @@
         </property>
        </widget>
       </item>
+      <item row="16" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_includeGeoAttributes">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="text">
+         <string>Include additional geometry attributes</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_allowGeometrylessTables">
+        <property name="text">
+         <string>Also list tables with no geometry</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="TextLabel1_2">
+        <property name="text">
+         <string>Name</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtName</cstring>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="TextLabel1">
         <property name="text">
@@ -170,107 +208,64 @@
         </property>
        </widget>
       </item>
-      <item row="14" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_onlyExistingTypes">
-        <property name="toolTip">
-         <string>Only list the existing geometry types and don't offer to add others.</string>
-        </property>
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Only existing geometry types</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="2" rowspan="2">
-       <widget class="QPushButton" name="btnConnect">
-        <property name="text">
-         <string>&amp;Test Connect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtUsername"/>
-      </item>
-      <item row="8" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkStoreUsername">
-        <property name="text">
-         <string>Save Username</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtDatabase"/>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtName">
-        <property name="toolTip">
-         <string>Name of the new connection</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtHost"/>
-      </item>
-      <item row="5" column="1" colspan="2">
-       <widget class="QgsPasswordLineEdit" name="txtPassword">
-        <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtPort">
-        <property name="text">
-         <string>1521</string>
-        </property>
-       </widget>
-      </item>
       <item row="6" column="0">
-       <widget class="QLabel" name="TextLabel3_3">
+       <widget class="QLabel" name="TextLabel3_5">
         <property name="text">
-         <string>Options</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtPassword</cstring>
+         <string>Schema</string>
         </property>
        </widget>
       </item>
       <item row="6" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtOptions">
-        <property name="echoMode">
-         <enum>QLineEdit::Normal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtWorkspace">
-        <property name="echoMode">
-         <enum>QLineEdit::Normal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="TextLabel3_4">
-        <property name="text">
-         <string>Workspace</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtPassword</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="15" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_includeGeoAttributes">
+       <widget class="QgsFilterLineEdit" name="txtSchema">
         <property name="toolTip">
-         <string/>
+         <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="3">
+       <widget class="QGroupBox" name="mAuthGroupBox">
+        <property name="title">
+         <string>Authentication</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="2">
+       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
+        <property name="toolTip">
+         <string>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</string>
         </property>
         <property name="whatsThis">
-         <string/>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
-         <string>Include additional geometry attributes</string>
+         <string>Only look in metadata table</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QPushButton" name="btnConnect">
+        <property name="text">
+         <string>&amp;Test Connect</string>
         </property>
        </widget>
       </item>
@@ -285,14 +280,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
+   <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>
    <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>auth/qgsauthsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -301,12 +302,9 @@
   <tabstop>txtDatabase</tabstop>
   <tabstop>txtHost</tabstop>
   <tabstop>txtPort</tabstop>
-  <tabstop>txtUsername</tabstop>
-  <tabstop>txtPassword</tabstop>
   <tabstop>txtOptions</tabstop>
   <tabstop>txtWorkspace</tabstop>
-  <tabstop>chkStoreUsername</tabstop>
-  <tabstop>chkStorePassword</tabstop>
+  <tabstop>txtSchema</tabstop>
   <tabstop>btnConnect</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
   <tabstop>cb_userTablesOnly</tabstop>
@@ -314,7 +312,6 @@
   <tabstop>cb_useEstimatedMetadata</tabstop>
   <tabstop>cb_onlyExistingTypes</tabstop>
   <tabstop>cb_includeGeoAttributes</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

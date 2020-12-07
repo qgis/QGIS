@@ -15,6 +15,9 @@
 
 #include "qgsexpressionutils.h"
 #include "qgsexpressionnode.h"
+#include "qgsvectorlayer.h"
+
+///@cond PRIVATE
 
 QgsExpressionUtils::TVL QgsExpressionUtils::AND[3][3] =
 {
@@ -31,3 +34,7 @@ QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
 };
 
 QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
+
+///@endcond
+
+

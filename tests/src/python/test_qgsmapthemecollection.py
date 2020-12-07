@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '8/03/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -60,7 +58,8 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         self.assertEqual(len(themes_changed_spy), 3)
 
         # remove invalid
-        collection.removeMapTheme('i wish i was a slave to an age old trade... like riding around on rail cars and working long days')
+        collection.removeMapTheme(
+            'i wish i was a slave to an age old trade... like riding around on rail cars and working long days')
         self.assertEqual(len(theme_changed_spy), 3)
         self.assertEqual(len(themes_changed_spy), 3)
         # remove valid
@@ -134,14 +133,15 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         prj.mapThemeCollection().insert('theme2', theme2)
         prj.mapThemeCollection().insert('theme3', theme3)
 
-        #order of layers in theme should respect master order
+        # order of layers in theme should respect master order
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer, layer3])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer, layer2, layer3])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer, layer2])
 
         # also check ids!
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer.id(), layer3.id()])
-        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'), [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'),
+                         [layer.id(), layer2.id(), layer3.id()])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer.id(), layer2.id()])
 
         # reset master order
@@ -150,7 +150,8 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer2, layer3, layer])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer2, layer])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer3.id(), layer.id()])
-        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'), [layer2.id(), layer3.id(), layer.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'),
+                         [layer2.id(), layer3.id(), layer.id()])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer2.id(), layer.id()])
 
         # check that layers include those hidden in the layer tree
@@ -190,7 +191,7 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer3, layer, layer2])
 
-        #hide some layers
+        # hide some layers
         root = prj.layerTreeRoot()
         layer_node = root.findLayer(layer2)
         layer_node.setItemVisibilityChecked(False)

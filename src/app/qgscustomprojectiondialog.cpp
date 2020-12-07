@@ -24,8 +24,9 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgscrscache.h"
 #include "qgssettings.h"
+#include "qgssqliteutils.h"
+#include "qgsgui.h"
 
 //qt includes
 #include <QFileInfo>
@@ -37,95 +38,118 @@
 #include <sqlite3.h>
 
 //proj4 includes
-extern "C"
-{
+#if PROJ_VERSION_MAJOR>=6
+#include "qgsprojutils.h"
+#include <proj.h>
+#else
 #include <proj_api.h>
-}
+#endif
 
+#include "qgsogrutils.h"
+#include <ogr_srs_api.h>
 
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/CustomProjection/geometry" ) ).toByteArray() );
+  connect( pbnCalculate, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnCalculate_clicked );
+  connect( pbnAdd, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnAdd_clicked );
+  connect( pbnRemove, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnRemove_clicked );
+  connect( pbnCopyCRS, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnCopyCRS_clicked );
+  connect( leNameList, &QTreeWidget::currentItemChanged, this, &QgsCustomProjectionDialog::leNameList_currentItemChanged );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsCustomProjectionDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
+  connect( mButtonValidate, &QPushButton::clicked, this, &QgsCustomProjectionDialog::validateCurrent );
+
+  leNameList->setSelectionMode( QAbstractItemView::ExtendedSelection );
+
+  mFormatComboBox->addItem( tr( "WKT (Recommended)" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) );
+  mFormatComboBox->addItem( tr( "Proj String (Legacy — Not Recommended)" ), static_cast< int >( QgsCoordinateReferenceSystem::FormatProj ) );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
-  QFileInfo myFileInfo;
-  myFileInfo.setFile( QgsApplication::qgisSettingsDirPath() );
-  if ( !myFileInfo.exists() )
+  QFileInfo fileInfo;
+  fileInfo.setFile( QgsApplication::qgisSettingsDirPath() );
+  if ( !fileInfo.exists() )
   {
-    QgsDebugMsg( "The qgis.db does not exist" );
+    QgsDebugMsg( QStringLiteral( "The qgis.db does not exist" ) );
   }
 
   populateList();
-  if ( !customCRSnames.empty() )
+  if ( mDefinitions.empty() )
   {
-    leName->setText( customCRSnames[0] );
-    teParameters->setPlainText( customCRSparameters[0] );
-    leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
+    // create an empty definition which corresponds to the initial state of the dialog
+    mDefinitions << Definition();
+    QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
+    newItem->setText( QgisCrsNameColumn, QString() );
+    newItem->setText( QgisCrsParametersColumn, QString() );
   }
+  whileBlocking( leName )->setText( mDefinitions[0].name );
+  whileBlocking( teParameters )->setPlainText( mDefinitions[0].wkt.isEmpty() ? mDefinitions[0].proj : mDefinitions[0].wkt );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[0].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
+  leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
 
   leNameList->hideColumn( QgisCrsIdColumn );
 
+  connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
+  connect( teParameters, &QPlainTextEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
+  connect( mFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
 }
-
-QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/CustomProjection/geometry" ), saveGeometry() );
-}
-
 
 void QgsCustomProjectionDialog::populateList()
 {
   //Setup connection to the existing custom CRS database:
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr preparedStatement;
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
-  if ( myResult != SQLITE_OK )
+  int result = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
+  if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
+    Q_ASSERT( result == SQLITE_OK );
   }
-  QString mySql = QStringLiteral( "select srs_id,description,parameters from tbl_srs" );
-  QgsDebugMsg( QString( "Query to populate existing list:%1" ).arg( mySql ) );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
+  QString sql = QStringLiteral( "select srs_id,description,parameters, wkt from tbl_srs" );
+  QgsDebugMsgLevel( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ), 4 );
+  preparedStatement = database.prepare( sql, result );
+  if ( result == SQLITE_OK )
   {
-    QTreeWidgetItem *newItem = nullptr;
-    QString id, name, parameters;
     QgsCoordinateReferenceSystem crs;
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    while ( preparedStatement.step() == SQLITE_ROW )
     {
-      id = QString::fromUtf8( ( char * ) sqlite3_column_text( myPreparedStatement, 0 ) );
-      name = QString::fromUtf8( ( char * ) sqlite3_column_text( myPreparedStatement, 1 ) );
-      parameters = QString::fromUtf8( ( char * ) sqlite3_column_text( myPreparedStatement, 2 ) );
+      const QString id = preparedStatement.columnAsText( 0 );
+      const QString name = preparedStatement.columnAsText( 1 );
+      const QString parameters = preparedStatement.columnAsText( 2 );
+      const QString wkt = preparedStatement.columnAsText( 3 );
 
-      crs.createFromProj4( parameters );
-      existingCRSnames[id] = name;
-      existingCRSparameters[id] = crs.toProj4();
+      if ( !wkt.isEmpty() )
+        crs.createFromWkt( wkt );
+      else
+        crs.createFromProj( parameters );
 
-      newItem = new QTreeWidgetItem( leNameList, QStringList() );
+      mExistingCRSnames[id] = name;
+      const QString actualWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
+      const QString actualWktFormatted = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true );
+      const QString actualProj = crs.toProj();
+      mExistingCRSwkt[id] = wkt.isEmpty() ? QString() : actualWkt;
+      mExistingCRSproj[id] = wkt.isEmpty() ? actualProj : QString();
+
+      QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
       newItem->setText( QgisCrsNameColumn, name );
       newItem->setText( QgisCrsIdColumn, id );
-      newItem->setText( QgisCrsParametersColumn, crs.toProj4() );
+      newItem->setText( QgisCrsParametersColumn, wkt.isEmpty() ? actualProj : actualWkt );
+      newItem->setData( 0, FormattedWktRole, actualWktFormatted );
     }
   }
   else
   {
-    QgsDebugMsg( QString( "Populate list query failed: %1" ).arg( mySql ) );
+    QgsDebugMsg( QStringLiteral( "Populate list query failed: %1" ).arg( sql ) );
   }
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
+  preparedStatement.reset();
 
   leNameList->sortByColumn( QgisCrsNameColumn, Qt::AscendingOrder );
 
@@ -133,401 +157,748 @@ void QgsCustomProjectionDialog::populateList()
   while ( *it )
   {
     QString id = ( *it )->text( QgisCrsIdColumn );
-    customCRSids.push_back( id );
-    customCRSnames.push_back( existingCRSnames[id] );
-    customCRSparameters.push_back( existingCRSparameters[id] );
+    Definition def;
+    def.id = id;
+    def.name = mExistingCRSnames[id];
+    def.wkt = mExistingCRSwkt[id];
+    def.proj = mExistingCRSproj[id];
+    mDefinitions.push_back( def );
     it++;
   }
 }
 
 bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
 {
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
+  sqlite3_database_unique_ptr database;
 
-  QString mySql = "delete from tbl_srs where srs_id=" + quotedValue( id );
-  QgsDebugMsg( mySql );
+  QString sql = "delete from tbl_srs where srs_id=" + QgsSqliteUtils::quotedString( id );
+  QgsDebugMsgLevel( sql, 4 );
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
-  if ( myResult != SQLITE_OK )
+  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+  if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+                 QgsApplication::qgisUserDatabaseFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
+    Q_ASSERT( result == SQLITE_OK );
   }
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult != SQLITE_OK || sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
   {
-    QgsDebugMsg( QString( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( mySql, sqlite3_errmsg( myDatabase ) ) );
+    sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+    if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
+    {
+      QgsDebugMsg( QStringLiteral( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+    }
   }
-  sqlite3_close( myDatabase );
 
   QgsCoordinateReferenceSystem::invalidateCache();
-  QgsCoordinateTransformCache::instance()->invalidateCrs( QStringLiteral( "USER:%1" ).arg( id ) );
+  QgsCoordinateTransform::invalidateCache();
 
-  return myResult == SQLITE_OK;
+  return result == SQLITE_OK;
 }
 
-void  QgsCustomProjectionDialog::insertProjection( const QString &myProjectionAcronym )
+void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcronym )
 {
-  sqlite3      *myDatabase = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  sqlite3      *srsDatabase = nullptr;
-  QString mySql;
-  const char   *myTail = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_database_unique_ptr srsDatabase;
+  QString sql;
   //check the db is available
-  int           myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
-  if ( myResult != SQLITE_OK )
+  int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+  if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+                 QgsApplication::qgisUserDatabaseFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
+    Q_ASSERT( result == SQLITE_OK );
   }
-  int srsResult = sqlite3_open( QgsApplication::srsDatabaseFilePath().toUtf8(), &srsDatabase );
-  if ( myResult != SQLITE_OK )
+  int srsResult = srsDatabase.open( QgsApplication::srsDatabaseFilePath() );
+  if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(), sqlite3_errmsg( srsDatabase ) ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
+                 srsDatabase.errorMessage() ) );
   }
   else
   {
     // Set up the query to retrieve the projection information needed to populate the PROJECTION list
-    QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + quotedValue( myProjectionAcronym );
+    QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + QgsSqliteUtils::quotedString( projectionAcronym );
 
-    const char   *srsTail = nullptr;
-    sqlite3_stmt *srsPreparedStatement = nullptr;
-    srsResult = sqlite3_prepare( srsDatabase, srsSql.toUtf8(), srsSql.length(), &srsPreparedStatement, &srsTail );
-    // XXX Need to free memory from the error msg if one is set
+    sqlite3_statement_unique_ptr srsPreparedStatement = srsDatabase.prepare( srsSql, srsResult );
     if ( srsResult == SQLITE_OK )
     {
-      if ( sqlite3_step( srsPreparedStatement ) == SQLITE_ROW )
+      if ( srsPreparedStatement.step() == SQLITE_ROW )
       {
-        QgsDebugMsg( "Trying to insert projection" );
+        QgsDebugMsgLevel( QStringLiteral( "Trying to insert projection" ), 4 );
         // We have the result from system srs.db. Now insert into user db.
-        mySql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
-                + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 0 ) ) )
-                + ',' + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 1 ) ) )
-                + ',' + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 2 ) ) )
-                + ',' + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 3 ) ) )
-                + ')'
-                ;
-        myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
-        if ( myResult != SQLITE_OK || sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+        sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
+              + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
+              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 1 ) )
+              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 2 ) )
+              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 3 ) )
+              + ')';
+        sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+        if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
         {
-          QgsDebugMsg( QString( "Update or insert failed in custom projection dialog: %1 [%2]" ).arg( mySql, sqlite3_errmsg( myDatabase ) ) );
+          QgsDebugMsg( QStringLiteral( "Update or insert failed in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
         }
-
-        sqlite3_finalize( myPreparedStatement );
       }
-
-      sqlite3_finalize( srsPreparedStatement );
     }
     else
     {
-      QgsDebugMsg( QString( "prepare failed: %1 [%2]" ).arg( srsSql, sqlite3_errmsg( srsDatabase ) ) );
+      QgsDebugMsg( QStringLiteral( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
     }
-
-    sqlite3_close( srsDatabase );
   }
-  // close sqlite3 db
-  sqlite3_close( myDatabase );
 }
 
-bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, const QString &myName, QString myId, bool newEntry )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &existingId, bool newEntry, QgsCoordinateReferenceSystem::Format format )
 {
-  QString mySql;
-  int return_id;
-  QString myProjectionAcronym  = myCRS.projectionAcronym();
-  QString myEllipsoidAcronym   =  myCRS.ellipsoidAcronym();
-  QgsDebugMsg( QString( "Saving a CRS:%1, %2, %3" ).arg( myName, myCRS.toProj4() ).arg( newEntry ) );
+  QString id = existingId;
+  QString sql;
+  long returnId = -1;
+  QString projectionAcronym = crs.projectionAcronym();
+  QString ellipsoidAcronym = crs.ellipsoidAcronym();
   if ( newEntry )
   {
-    return_id = myCRS.saveAsUserCrs( myName );
-    if ( return_id == -1 )
+    returnId = crs.saveAsUserCrs( name, format );
+    if ( returnId == -1 )
       return false;
     else
-      myId = QString::number( return_id );
+      id = QString::number( returnId );
   }
   else
   {
-    mySql = "update tbl_srs set description="
-            + quotedValue( myName )
-            + ",projection_acronym=" + quotedValue( myProjectionAcronym )
-            + ",ellipsoid_acronym=" + quotedValue( myEllipsoidAcronym )
-            + ",parameters=" + quotedValue( myCRS.toProj4() )
-            + ",is_geo=0" // <--shamelessly hard coded for now
-            + " where srs_id=" + quotedValue( myId )
-            ;
-    QgsDebugMsg( mySql );
-    sqlite3      *myDatabase = nullptr;
-    const char   *myTail = nullptr;
-    sqlite3_stmt *myPreparedStatement = nullptr;
-    int           myResult;
+    sql = "update tbl_srs set description="
+          + QgsSqliteUtils::quotedString( name )
+          + ",projection_acronym=" + ( !projectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( projectionAcronym ) : QStringLiteral( "''" ) )
+          + ",ellipsoid_acronym=" + ( !ellipsoidAcronym.isEmpty() ? QgsSqliteUtils::quotedString( ellipsoidAcronym ) : QStringLiteral( "''" ) )
+          + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : QStringLiteral( "''" ) )
+          + ",is_geo=0" // <--shamelessly hard coded for now
+          + ",wkt=" + ( format == QgsCoordinateReferenceSystem::FormatWkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) ) : QStringLiteral( "''" ) )
+          + " where srs_id=" + QgsSqliteUtils::quotedString( id )
+          ;
+    QgsDebugMsgLevel( sql, 4 );
+    sqlite3_database_unique_ptr database;
     //check if the db is available
-    myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
-    if ( myResult != SQLITE_OK )
+    int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
+    if ( result != SQLITE_OK )
     {
-      QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
+      QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+                   QgsApplication::qgisUserDatabaseFilePath() ) );
       // XXX This will likely never happen since on open, sqlite creates the
       //     database if it does not exist.
-      Q_ASSERT( myResult == SQLITE_OK );
+      Q_ASSERT( result == SQLITE_OK );
     }
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-    // XXX Need to free memory from the error msg if one is set
-    if ( myResult != SQLITE_OK || sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+    sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+    if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
     {
-      QgsDebugMsg( QString( "failed to write to database in custom projection dialog: %1 [%2]" ).arg( mySql, sqlite3_errmsg( myDatabase ) ) );
+      QgsDebugMsg( QStringLiteral( "failed to write to database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
     }
 
-    sqlite3_finalize( myPreparedStatement );
-    // close sqlite3 db
-    sqlite3_close( myDatabase );
-    if ( myResult != SQLITE_OK )
+    preparedStatement.reset();
+    if ( result != SQLITE_OK )
       return false;
   }
-  existingCRSparameters[myId] = myCRS.toProj4();
-  existingCRSnames[myId] = myName;
+  mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
+  mExistingCRSproj[id] = format == QgsCoordinateReferenceSystem::FormatProj ? crs.toProj() : QString();
+  mExistingCRSnames[id] = name;
 
   QgsCoordinateReferenceSystem::invalidateCache();
-  QgsCoordinateTransformCache::instance()->invalidateCrs( QStringLiteral( "USER:%1" ).arg( myId ) );
+  QgsCoordinateTransform::invalidateCache();
 
   // If we have a projection acronym not in the user db previously, add it.
   // This is a must, or else we can't select it from the vw_srs table.
   // Actually, add it always and let the SQL PRIMARY KEY remove duplicates.
-  insertProjection( myProjectionAcronym );
+  insertProjection( projectionAcronym );
 
   return true;
 }
 
 
-void QgsCustomProjectionDialog::on_pbnAdd_clicked()
+void QgsCustomProjectionDialog::pbnAdd_clicked()
 {
   QString name = tr( "new CRS" );
-  QString id = QLatin1String( "" );
-  QgsCoordinateReferenceSystem parameters;
 
   QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
   newItem->setText( QgisCrsNameColumn, name );
-  newItem->setText( QgisCrsIdColumn, id );
-  newItem->setText( QgisCrsParametersColumn, parameters.toProj4() );
-  customCRSnames.push_back( name );
-  customCRSids.push_back( id );
-  customCRSparameters.push_back( parameters.toProj4() );
+  newItem->setText( QgisCrsIdColumn, QString() );
+  newItem->setText( QgisCrsParametersColumn, QString() );
+  newItem->setData( 0, FormattedWktRole, QString() );
+
+  Definition def;
+  def.name = name;
+  mDefinitions.push_back( def );
   leNameList->setCurrentItem( newItem );
+  leName->selectAll();
+  leName->setFocus();
+
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( QgsCoordinateReferenceSystem::FormatWkt ) );
 }
 
-void QgsCustomProjectionDialog::on_pbnRemove_clicked()
+void QgsCustomProjectionDialog::pbnRemove_clicked()
 {
-  int i = leNameList->currentIndex().row();
-  if ( i == -1 )
-  {
+  const QModelIndexList selection = leNameList->selectionModel()->selectedRows();
+  if ( selection.empty() )
     return;
-  }
-  QTreeWidgetItem *item = leNameList->takeTopLevelItem( i );
-  delete item;
-  if ( customCRSids[i] != QLatin1String( "" ) )
+
+  // make sure the user really wants to delete these definitions
+  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Projections" ),
+       tr( "Are you sure you want to delete %n projections(s)?", "number of rows", selection.size() ),
+       QMessageBox::Yes | QMessageBox::No ) )
+    return;
+
+  std::vector< int > selectedRows;
+  selectedRows.reserve( selection.size() );
+  for ( const QModelIndex &index : selection )
+    selectedRows.emplace_back( index.row() );
+
+  //sort rows in reverse order
+  std::sort( selectedRows.begin(), selectedRows.end(), std::greater< int >() );
+  for ( const int row : selectedRows )
   {
-    deletedCRSs.push_back( customCRSids[i] );
+    if ( row < 0 )
+    {
+      // shouldn't happen?
+      continue;
+    }
+    delete leNameList->takeTopLevelItem( row );
+    if ( !mDefinitions[row].id.isEmpty() )
+    {
+      mDeletedCRSs.push_back( mDefinitions[row].id );
+    }
+    mDefinitions.erase( mDefinitions.begin() + row );
   }
-  customCRSids.erase( customCRSids.begin() + i );
-  customCRSnames.erase( customCRSnames.begin() + i );
-  customCRSparameters.erase( customCRSparameters.begin() + i );
 }
 
-void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
   //Store the modifications made to the current element before moving on
   int currentIndex, previousIndex;
   if ( previous )
   {
     previousIndex = leNameList->indexOfTopLevelItem( previous );
-    customCRSnames[previousIndex] = leName->text();
-    customCRSparameters[previousIndex] = teParameters->toPlainText();
+
+    mDefinitions[previousIndex].name = leName->text();
+    switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
+    {
+      case QgsCoordinateReferenceSystem::FormatWkt:
+        mDefinitions[previousIndex].wkt = teParameters->toPlainText();
+        mDefinitions[previousIndex].proj.clear();
+        break;
+
+      case QgsCoordinateReferenceSystem::FormatProj:
+        mDefinitions[previousIndex].proj = teParameters->toPlainText();
+        mDefinitions[previousIndex].wkt.clear();
+        break;
+    }
+
     previous->setText( QgisCrsNameColumn, leName->text() );
-    previous->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
+    previous->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( teParameters->toPlainText() ) );
+    previous->setData( 0, FormattedWktRole, teParameters->toPlainText() );
   }
+
   if ( current )
   {
     currentIndex = leNameList->indexOfTopLevelItem( current );
-    leName->setText( customCRSnames[currentIndex] );
-    teParameters->setPlainText( current->text( QgisCrsParametersColumn ) );
+    whileBlocking( leName )->setText( mDefinitions[currentIndex].name );
+    whileBlocking( teParameters )->setPlainText( !mDefinitions[currentIndex].wkt.isEmpty() ? current->data( 0, FormattedWktRole ).toString() : mDefinitions[currentIndex].proj );
+    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[currentIndex].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
   }
   else
   {
     //Can happen that current is null, for example if we just deleted the last element
-    leName->setText( QLatin1String( "" ) );
-    teParameters->setPlainText( QLatin1String( "" ) );
+    leName->clear();
+    teParameters->clear();
+    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
     return;
   }
-  return;
 }
 
-void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
+void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
 {
-  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  if ( mySelector->exec() )
+  std::unique_ptr< QgsProjectionSelectionDialog > selector = qgis::make_unique< QgsProjectionSelectionDialog >( this );
+  if ( selector->exec() )
   {
-    QgsCoordinateReferenceSystem srs = mySelector->crs();
+    QgsCoordinateReferenceSystem srs = selector->crs();
     if ( leNameList->topLevelItemCount() == 0 )
     {
-      on_pbnAdd_clicked();
+      pbnAdd_clicked();
     }
-    teParameters->setPlainText( srs.toProj4() );
-    customCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
-    leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toProj4() );
 
+    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
+    teParameters->setPlainText( srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
+    mDefinitions[leNameList->currentIndex().row()].wkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
+    mDefinitions[leNameList->currentIndex().row()].proj.clear();
+
+    leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) );
+    leNameList->currentItem()->setData( 0, FormattedWktRole, srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
   }
-  delete mySelector;
 }
 
-void QgsCustomProjectionDialog::on_buttonBox_accepted()
+void QgsCustomProjectionDialog::buttonBox_accepted()
 {
-  //Update the current CRS:
-  int i = leNameList->currentIndex().row();
-  if ( i != -1 )
-  {
-    customCRSnames[i] = leName->text();
-    customCRSparameters[i] = teParameters->toPlainText();
-  }
+  updateListFromCurrentItem();
 
-  QgsDebugMsg( "We save the modified CRS." );
+  QgsDebugMsgLevel( QStringLiteral( "We save the modified CRS." ), 4 );
 
   //Check if all CRS are valid:
-  QgsCoordinateReferenceSystem CRS;
-  for ( int i = 0; i < customCRSids.size(); ++i )
+  QgsCoordinateReferenceSystem crs;
+  for ( const Definition &def : qgis::as_const( mDefinitions ) )
   {
-    CRS.createFromProj4( customCRSparameters[i] );
-    if ( !CRS.isValid() )
+    if ( !def.wkt.isEmpty() )
+      crs.createFromWkt( def.wkt );
+    else
+      crs.createFromProj( def.proj );
+
+    if ( !crs.isValid() )
     {
-      QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                                tr( "The proj4 definition of '%1' is not valid." ).arg( customCRSnames[i] ) );
+      // auto select the invalid CRS row
+      for ( int row = 0; row < leNameList->model()->rowCount(); ++row )
+      {
+        if ( leNameList->model()->data( leNameList->model()->index( row, QgisCrsNameColumn ) ).toString() == def.name )
+        {
+          leNameList->setCurrentItem( leNameList->invisibleRootItem()->child( row ) );
+          break;
+        }
+      }
+
+      QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                            tr( "The definition of '%1' is not valid." ).arg( def.name ) );
+      return;
+    }
+    else if ( !crs.authid().isEmpty() && !crs.authid().startsWith( QLatin1String( "USER" ), Qt::CaseInsensitive ) )
+    {
+      // auto select the invalid CRS row
+      for ( int row = 0; row < leNameList->model()->rowCount(); ++row )
+      {
+        if ( leNameList->model()->data( leNameList->model()->index( row, QgisCrsNameColumn ) ).toString() == def.name )
+        {
+          leNameList->setCurrentItem( leNameList->invisibleRootItem()->child( row ) );
+          break;
+        }
+      }
+
+      if ( def.wkt.isEmpty() )
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "Cannot save '%1' — this Proj string definition is equivalent to %2.\n\nTry changing the CRS definition to a WKT format instead." ).arg( def.name, crs.authid() ) );
+      }
+      else
+      {
+        const QStringList authparts = crs.authid().split( ':' );
+        QString ref;
+        if ( authparts.size() == 2 )
+        {
+          ref = QStringLiteral( "ID[\"%1\",%2]" ).arg( authparts.at( 0 ), authparts.at( 1 ) );
+        }
+        if ( !ref.isEmpty() && crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ).contains( ref ) )
+        {
+          QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                                tr( "Cannot save '%1' — the definition is equivalent to %2.\n\n(Try removing \"%3\" from the WKT definition.)" ).arg( def.name, crs.authid(), ref ) );
+        }
+        else
+        {
+          QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                                tr( "Cannot save '%1' — the definition is equivalent to %2." ).arg( def.name, crs.authid() ) );
+        }
+      }
       return;
     }
   }
+
   //Modify the CRS changed:
-  bool save_success = true;
-  for ( int i = 0; i < customCRSids.size(); ++i )
+  bool saveSuccess = true;
+  for ( const Definition &def : qgis::as_const( mDefinitions ) )
   {
-    CRS.createFromProj4( customCRSparameters[i] );
+    if ( !def.wkt.isEmpty() )
+      crs.createFromWkt( def.wkt );
+    else
+      crs.createFromProj( def.proj );
+
     //Test if we just added this CRS (if it has no existing ID)
-    if ( customCRSids[i] == QLatin1String( "" ) )
+    if ( def.id.isEmpty() )
     {
-      save_success &= saveCrs( CRS, customCRSnames[i], QLatin1String( "" ), true );
+      saveSuccess &= saveCrs( crs, def.name, QString(), true, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
     }
     else
     {
-      if ( existingCRSnames[customCRSids[i]] != customCRSnames[i] || existingCRSparameters[customCRSids[i]] != customCRSparameters[i] )
+      if ( mExistingCRSnames[def.id] != def.name
+           || ( !def.wkt.isEmpty() && mExistingCRSwkt[def.id] != def.wkt )
+           || ( !def.proj.isEmpty() && mExistingCRSproj[def.id] != def.proj )
+         )
       {
-        save_success &= saveCrs( CRS, customCRSnames[i], customCRSids[i], false );
+        saveSuccess &= saveCrs( crs, def.name, def.id, false, !def.wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatWkt : QgsCoordinateReferenceSystem::FormatProj );
       }
     }
-    if ( ! save_success )
+    if ( ! saveSuccess )
     {
-      QgsDebugMsg( QString( "Error when saving CRS '%1'" ).arg( customCRSnames[i] ) );
+      QgsDebugMsg( QStringLiteral( "Error when saving CRS '%1'" ).arg( def.name ) );
     }
   }
-  QgsDebugMsg( "We remove the deleted CRS." );
-  for ( int i = 0; i < deletedCRSs.size(); ++i )
+  QgsDebugMsgLevel( QStringLiteral( "We remove the deleted CRS." ), 4 );
+  for ( int i = 0; i < mDeletedCRSs.size(); ++i )
   {
-    save_success &= deleteCrs( deletedCRSs[i] );
-    if ( ! save_success )
+    saveSuccess &= deleteCrs( mDeletedCRSs[i] );
+    if ( ! saveSuccess )
     {
-      QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( customCRSparameters[i] ) );
+      QgsDebugMsg( QStringLiteral( "Error deleting CRS for '%1'" ).arg( mDefinitions[i].name ) );
     }
   }
-  if ( save_success )
+  if ( saveSuccess )
   {
     accept();
   }
 }
 
-void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
+void QgsCustomProjectionDialog::updateListFromCurrentItem()
 {
+  QTreeWidgetItem *item = leNameList->currentItem();
+  if ( !item )
+    return;
 
+  int currentIndex = leNameList->indexOfTopLevelItem( item );
+  if ( currentIndex < 0 )
+    return;
 
-  //
-  // We must check the prj def is valid!
-  //
-  projCtx pContext = pj_ctx_alloc();
-  projPJ myProj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
-
-  QgsDebugMsg( QString( "My proj: %1" ).arg( teParameters->toPlainText() ) );
-
-  if ( !myProj )
+  mDefinitions[currentIndex].name = leName->text();
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
   {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid." ) );
-    projectedX->setText( QLatin1String( "" ) );
-    projectedY->setText( QLatin1String( "" ) );
-    pj_free( myProj );
+    case QgsCoordinateReferenceSystem::FormatWkt:
+      mDefinitions[currentIndex].wkt = teParameters->toPlainText();
+      mDefinitions[currentIndex].proj.clear();
+      break;
+
+    case QgsCoordinateReferenceSystem::FormatProj:
+      mDefinitions[currentIndex].proj = teParameters->toPlainText();
+      mDefinitions[currentIndex].wkt.clear();
+      break;
+  }
+
+  item->setText( QgisCrsNameColumn, leName->text() );
+  item->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( teParameters->toPlainText() ) );
+  item->setData( 0, FormattedWktRole, teParameters->toPlainText() );
+}
+
+#if PROJ_VERSION_MAJOR>=6
+static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
+{
+  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
+  QString messageString( message );
+  messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
+  dest->append( messageString );
+}
+
+#endif
+
+void QgsCustomProjectionDialog::validateCurrent()
+{
+  const QString projDef = teParameters->toPlainText();
+
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *context = proj_context_create();
+
+  QStringList projErrors;
+  proj_log_func( context, &projErrors, proj_collecting_logger );
+  QgsProjUtils::proj_pj_unique_ptr crs;
+
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
+  {
+    case QgsCoordinateReferenceSystem::FormatWkt:
+    {
+      PROJ_STRING_LIST warnings = nullptr;
+      PROJ_STRING_LIST grammerErrors = nullptr;
+      crs.reset( proj_create_from_wkt( context, projDef.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+      QStringList warningStrings;
+      QStringList grammerStrings;
+      for ( auto iter = warnings; iter && *iter; ++iter )
+        warningStrings << QString( *iter );
+      for ( auto iter = grammerErrors; iter && *iter; ++iter )
+        grammerStrings << QString( *iter );
+      proj_string_list_destroy( warnings );
+      proj_string_list_destroy( grammerErrors );
+
+      if ( crs )
+      {
+        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                                  tr( "This WKT projection definition is valid." ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This WKT projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + warningStrings.join( '\n' ) + grammerStrings.join( '\n' ) );
+      }
+      break;
+    }
+
+    case QgsCoordinateReferenceSystem::FormatProj:
+    {
+      const QString projCrsString = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+      crs.reset( proj_create( context, projCrsString.toLatin1().constData() ) );
+      if ( crs )
+      {
+        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                                  tr( "This proj projection definition is valid." ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This proj projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + projErrors.join( '\n' ) );
+      }
+      break;
+    }
+  }
+
+  // reset logger to terminal output
+  proj_log_func( context, nullptr, nullptr );
+  proj_context_destroy( context );
+  context = nullptr;
+#else
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
+  {
+    case QgsCoordinateReferenceSystem::FormatWkt:
+    {
+      QByteArray ba = projDef.toLatin1();
+      const char *pWkt = ba.data();
+      OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
+
+      OGRErr myInputResult = OSRImportFromWkt( crs, const_cast< char ** >( & pWkt ) );
+      if ( myInputResult == OGRERR_NONE )
+      {
+        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                                  tr( "This WKT projection definition is valid." ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This WKT projection definition is not valid." ) );
+      }
+
+      OSRDestroySpatialReference( crs );
+      break;
+    }
+    case QgsCoordinateReferenceSystem::FormatProj:
+    {
+      projCtx pContext = pj_ctx_alloc();
+      projPJ proj = pj_init_plus_ctx( pContext, projDef.toLocal8Bit().data() );
+
+      if ( proj )
+      {
+        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
+                                  tr( "This proj projection definition is valid." ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                              tr( "This proj projection definition is not valid" ) );
+      }
+      pj_free( proj );
+      pj_ctx_free( pContext );
+      break;
+    }
+  }
+
+#endif
+}
+
+void QgsCustomProjectionDialog::formatChanged()
+{
+  QgsCoordinateReferenceSystem crs;
+  QString newFormatString;
+  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
+  {
+    case QgsCoordinateReferenceSystem::FormatProj:
+    {
+      crs.createFromWkt( multiLineWktToSingleLine( teParameters->toPlainText() ) );
+      if ( crs.isValid() )
+        newFormatString = crs.toProj();
+      break;
+    }
+
+    case QgsCoordinateReferenceSystem::FormatWkt:
+    {
+#if PROJ_VERSION_MAJOR>=6
+      {
+        PJ_CONTEXT *pjContext = QgsProjContext::get();
+        QString proj = teParameters->toPlainText();
+        proj.replace( QLatin1String( "+type=crs" ), QString() );
+        proj += QLatin1String( " +type=crs" );
+        QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
+        if ( crs )
+        {
+          const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
+          const char *const options[] = {multiLineOption.constData(), nullptr};
+          newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2019, options ) );
+        }
+      }
+#else
+      crs.createFromProj( teParameters->toPlainText() );
+      if ( crs.isValid() )
+        newFormatString = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
+#endif
+      break;
+    }
+  }
+  if ( !newFormatString.isEmpty() )
+    teParameters->setPlainText( newFormatString );
+}
+
+void QgsCustomProjectionDialog::pbnCalculate_clicked()
+{
+  // We must check the prj def is valid!
+#if PROJ_VERSION_MAJOR>=6
+  PJ_CONTEXT *pContext = QgsProjContext::get();
+  QString projDef = teParameters->toPlainText();
+  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
+#else
+  if ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) == QgsCoordinateReferenceSystem::FormatWkt )
+  {
+    // it's not trivial to implement, and we've gotta draw the line somewhere...
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          tr( "Testing WKT based CRS definitions requires Proj version 6 or later." ) );
+    return;
+  }
+
+  projCtx pContext = pj_ctx_alloc();
+  projPJ proj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
+  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ), 3 );
+
+  if ( !proj )
+  {
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          tr( "This proj projection definition is not valid." ) );
+    projectedX->clear();
+    projectedY->clear();
+    pj_free( proj );
     pj_ctx_free( pContext );
     return;
 
   }
+#endif
   // Get the WGS84 coordinates
   bool okN, okE;
-  double northing = northWGS84->text().toDouble( &okN ) * DEG_TO_RAD;
-  double easthing = eastWGS84->text().toDouble( &okE )  * DEG_TO_RAD;
+  double latitude = northWGS84->text().toDouble( &okN );
+  double longitude = eastWGS84->text().toDouble( &okE );
+
+#if PROJ_VERSION_MAJOR<6
+  latitude *= DEG_TO_RAD;
+  longitude *= DEG_TO_RAD;
+#endif
 
   if ( !okN || !okE )
   {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "Northing and Easthing must be in decimal form." ) );
-    projectedX->setText( QLatin1String( "" ) );
-    projectedY->setText( QLatin1String( "" ) );
-    pj_free( myProj );
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          tr( "Northing and Easting must be in decimal form." ) );
+    projectedX->clear();
+    projectedY->clear();
+#if PROJ_VERSION_MAJOR<6
+    pj_free( proj );
     pj_ctx_free( pContext );
+#endif
     return;
   }
 
-  projPJ wgs84Proj = pj_init_plus_ctx( pContext, GEOPROJ4.toLocal8Bit().data() ); //defined in qgis.h
+#if PROJ_VERSION_MAJOR < 6
+  projPJ wgs84Proj = pj_init_plus_ctx( pContext, geoProj4().data() ); //defined in qgis.h
 
   if ( !wgs84Proj )
   {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "Internal Error (source projection invalid?)" ) );
-    projectedX->setText( QLatin1String( "" ) );
-    projectedY->setText( QLatin1String( "" ) );
+    QMessageBox::critical( this, tr( "Custom Coordinate Reference System" ),
+                           tr( "Internal Error (source projection invalid?)" ) );
+    projectedX->clear();
+    projectedY->clear();
     pj_free( wgs84Proj );
     pj_ctx_free( pContext );
     return;
   }
+#endif
 
+#if PROJ_VERSION_MAJOR>=6
+  if ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) == QgsCoordinateReferenceSystem::FormatProj )
+    projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+  QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
+  if ( !res )
+  {
+    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                          tr( "This CRS projection definition is not valid." ) );
+    projectedX->clear();
+    projectedY->clear();
+    return;
+  }
+
+  // careful -- proj 6 respects CRS axis, so we've got latitude/longitude flowing in, and ....?? coming out?
+  proj_trans_generic( res.get(), PJ_FWD,
+                      &latitude, sizeof( double ), 1,
+                      &longitude, sizeof( double ), 1,
+                      nullptr, sizeof( double ), 0,
+                      nullptr, sizeof( double ), 0 );
+  int projResult = proj_errno( res.get() );
+#else
   double z = 0.0;
-
-  int projResult = pj_transform( wgs84Proj, myProj, 1, 0, &easthing, &northing, &z );
+  int projResult = pj_transform( wgs84Proj, proj, 1, 0, &longitude, &latitude, &z );
+#endif
   if ( projResult != 0 )
   {
     projectedX->setText( tr( "Error" ) );
     projectedY->setText( tr( "Error" ) );
+#if PROJ_VERSION_MAJOR>=6
+    QgsDebugMsg( proj_errno_string( projResult ) );
+#else
     QgsDebugMsg( pj_strerrno( projResult ) );
+#endif
   }
   else
   {
     QString tmp;
 
-    tmp = QLocale::system().toString( northing, 'f', 4 );
+    int precision = 4;
+    bool isLatLong = false;
+
+#if PROJ_VERSION_MAJOR>= 6
+    isLatLong = QgsProjUtils::usesAngularUnit( projDef );
+#else
+    isLatLong = pj_is_latlong( proj );
+    if ( isLatLong )
+    {
+      latitude *= RAD_TO_DEG;
+      longitude *= RAD_TO_DEG;
+    }
+#endif
+    if ( isLatLong )
+    {
+      precision = 7;
+    }
+
+#if PROJ_VERSION_MAJOR>= 6
+    tmp = QLocale().toString( longitude, 'f', precision );
     projectedX->setText( tmp );
-    tmp = QLocale::system().toString( easthing, 'f', 4 );
+    tmp = QLocale().toString( latitude, 'f', precision );
     projectedY->setText( tmp );
+#else
+    tmp = QLocale().toString( latitude, 'f', precision );
+    projectedX->setText( tmp );
+    tmp = QLocale().toString( longitude, 'f', precision );
+    projectedY->setText( tmp );
+#endif
   }
 
-  //
-  pj_free( myProj );
+#if PROJ_VERSION_MAJOR<6
+  pj_free( proj );
   pj_free( wgs84Proj );
   pj_ctx_free( pContext );
-
+#endif
 }
 
-
-QString QgsCustomProjectionDialog::quotedValue( QString value )
+void QgsCustomProjectionDialog::showHelp()
 {
-  value.replace( '\'', QLatin1String( "''" ) );
-  return value.prepend( '\'' ).append( '\'' );
+  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+}
+
+QString QgsCustomProjectionDialog::multiLineWktToSingleLine( const QString &wkt )
+{
+  QString res = wkt;
+  QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ) );
+  re.setPatternOptions( QRegularExpression::MultilineOption );
+  res.replace( re, QString() );
+  return res;
 }
 

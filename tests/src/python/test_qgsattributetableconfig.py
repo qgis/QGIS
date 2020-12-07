@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '07/06/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -108,6 +106,39 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
         config.setColumns([c1, c2])
         self.assertFalse(config.columnHidden(0))
         self.assertTrue(config.columnHidden(1))
+
+    def testSameColumns(self):
+        """ test hasSameColumns() check """
+
+        config = QgsAttributeTableConfig()
+        c1 = QgsAttributeTableConfig.ColumnConfig()
+        c1.name = 'test'
+        c1.hidden = False
+        c1.width = 100
+        c2 = QgsAttributeTableConfig.ColumnConfig()
+        c2.name = 'test2'
+        c2.hidden = False
+        c2.width = 120
+        config.setColumns([c1, c2])
+        config2 = QgsAttributeTableConfig()
+
+        config2.setColumns([c1, c2])
+        self.assertTrue(config.hasSameColumns(config2))
+
+        c1.width = 200
+        config2.setColumns([c1, c2])
+        self.assertTrue(config.hasSameColumns(config2))
+
+        c1.hidden = True
+        config2.setColumns([c1, c2])
+        self.assertFalse(config.hasSameColumns(config2))
+
+        config2.setColumns([c2, c1])
+        self.assertFalse(config.hasSameColumns(config2))
+
+        c2.name = 'test3'
+        config2.setColumns([c1, c2])
+        self.assertFalse(config.hasSameColumns(config2))
 
     def testMapVisibleColumn(self):
         pass

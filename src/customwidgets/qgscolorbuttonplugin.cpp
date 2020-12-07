@@ -62,7 +62,7 @@ bool QgsColorButtonPlugin::isInitialized() const
 
 void QgsColorButtonPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

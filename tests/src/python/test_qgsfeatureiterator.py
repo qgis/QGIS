@@ -9,25 +9,27 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '18/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
 import os
 
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (QgsAuxiliaryStorage,
+                       QgsAuxiliaryLayer,
+                       QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsField,
                        NULL,
                        QgsProject,
+                       QgsPropertyDefinition,
                        QgsVectorLayerJoinInfo,
                        QgsGeometry)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QVariant
 
 from utilities import unitTestDataPath
+
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -103,13 +105,13 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
     def addFeatures(self, vl):
         feat = QgsFeature()
-        fields = vl.pendingFields()
+        fields = vl.fields()
         feat.setFields(fields)
         feat['Staff'] = 4
         vl.addFeature(feat)
 
         feat = QgsFeature()
-        fields = vl.pendingFields()
+        fields = vl.fields()
         feat.setFields(fields)
         feat['Staff'] = 2
         vl.addFeature(feat)
@@ -137,10 +139,23 @@ class TestQgsFeatureIterator(unittest.TestCase):
         idx = layer.addExpressionField('$x*2', QgsField('exp1', QVariant.LongLong))  # NOQA
         idx = layer.addExpressionField('"exp1"/1.5', QgsField('exp2', QVariant.LongLong))  # NOQA
 
-        fet = next(layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(['exp2'], layer.fields())))
+        fet = next(layer.getFeatures(
+            QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(['exp2'], layer.fields())))
         # nested virtual fields should have made geometry be fetched
         self.assertEqual(fet['exp2'], -156)
         self.assertEqual(fet['exp1'], -234)
+
+    def test_ExpressionFieldDependingOnOtherFields(self):
+        myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
+        layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
+        self.assertTrue(layer.isValid())
+
+        idx = layer.addExpressionField("eval('Class')", QgsField('exp1', QVariant.String))  # NOQA
+
+        fet = next(layer.getFeatures(
+            QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(['exp1'], layer.fields())))
+
+        self.assertEqual(fet['exp1'], 'Jet')
 
     def test_ExpressionFieldNestedCircular(self):
         """ test circular virtual field definitions """
@@ -149,7 +164,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.assertTrue(layer.isValid())
 
-        cnt = layer.pendingFields().count()  # NOQA
+        cnt = layer.fields().count()  # NOQA
         idx = layer.addExpressionField('"exp3"*2', QgsField('exp1', QVariant.LongLong))  # NOQA
         idx = layer.addExpressionField('"exp1"-1', QgsField('exp2', QVariant.LongLong))  # NOQA
         idx = layer.addExpressionField('"exp2"*3', QgsField('exp3', QVariant.LongLong))  # NOQA
@@ -273,12 +288,136 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer.addJoin(join)
 
         f = QgsFeature()
-        fi = layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.SubsetOfAttributes).setFilterExpression('joinlayer_z=654'))
+        fi = layer.getFeatures(
+            QgsFeatureRequest().setFlags(QgsFeatureRequest.SubsetOfAttributes).setFilterExpression('joinlayer_z=654'))
         self.assertTrue(fi.nextFeature(f))
         self.assertEqual(f['fldint'], 124)
         self.assertEqual(f['joinlayer_z'], 654)
 
         QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
+
+    def test_FeatureRequestSortByVirtualField(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["test", 123])
+        f2 = QgsFeature()
+        f2.setAttributes(["test", 124])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        idx = layer.addExpressionField('if("fldint"=123,3,2)', QgsField('exp1', QVariant.LongLong))  # NOQA
+
+        QgsProject.instance().addMapLayers([layer])
+
+        request = QgsFeatureRequest()
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('exp1', True)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [2, 1])
+
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('exp1', False)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [1, 2])
+
+        QgsProject.instance().removeMapLayers([layer.id()])
+
+    def test_FeatureRequestSortByJoinField(self):
+        """ test sorting requested features using a joined columns """
+        joinLayer = QgsVectorLayer(
+            "Point?field=x:string&field=y:integer&field=z:integer",
+            "joinlayer", "memory")
+        pr = joinLayer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["foo", 123, 321])
+        f2 = QgsFeature()
+        f2.setAttributes(["bar", 124, 654])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["test", 123])
+        f2 = QgsFeature()
+        f2.setAttributes(["test", 124])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        QgsProject.instance().addMapLayers([layer, joinLayer])
+
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
+        layer.addJoin(join)
+
+        request = QgsFeatureRequest()
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('joinlayer_z', True)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [1, 2])
+
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('joinlayer_z', False)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [2, 1])
+
+        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
+
+    def test_ZFeatureRequestSortByAuxiliaryField(self):
+        s = QgsAuxiliaryStorage()
+        self.assertTrue(s.isValid())
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes(["test", 123])
+        f2 = QgsFeature()
+        f2.setAttributes(["test", 124])
+        self.assertTrue(pr.addFeatures([f1, f2]))
+
+        # Create a new auxiliary layer with 'pk' as key
+        pkf = layer.fields().field(layer.fields().indexOf('fldint'))
+        al = s.createAuxiliaryLayer(pkf, layer)
+        self.assertTrue(al.isValid())
+        layer.setAuxiliaryLayer(al)
+
+        prop = QgsPropertyDefinition()
+        prop.setComment('test_field')
+        prop.setDataType(QgsPropertyDefinition.DataTypeNumeric)
+        prop.setOrigin('user')
+        prop.setName('custom')
+        self.assertTrue(al.addAuxiliaryField(prop))
+
+        layer.startEditing()
+        i = 2
+        for feat in layer.getFeatures():
+            feat.setAttribute(2, i)
+            layer.updateFeature(feat)
+            i -= 1
+        layer.commitChanges()
+
+        request = QgsFeatureRequest()
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause(layer.fields()[2].name(), True)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [2, 1])
+
+        request.setOrderBy(QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause(layer.fields()[2].name(), False)]))
+        ids = []
+        for feat in layer.getFeatures(request):
+            ids.append(feat.id())
+        self.assertEqual(ids, [1, 2])
+
+        QgsProject.instance().removeMapLayers([layer.id()])
 
     def test_invalidGeometryFilter(self):
         layer = QgsVectorLayer(
@@ -289,7 +428,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         pr = layer.dataProvider()
         f1 = QgsFeature(1)
         f1.setAttributes(["a"])
-        f1.setGeometry(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))')) # valid
+        f1.setGeometry(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))  # valid
         f2 = QgsFeature(2)
         f2.setAttributes(["b"])
         f2.setGeometry(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 0 1, 1 1, 0 0))'))  # invalid
@@ -327,13 +466,16 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         # check with filter fids
         res = [f['x'] for f in
-               layer.getFeatures(QgsFeatureRequest().setFilterFid(f2.id()).setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck))]
+               layer.getFeatures(QgsFeatureRequest().setFilterFid(f2.id()).setInvalidGeometryCheck(
+                   QgsFeatureRequest.GeometryNoCheck))]
         self.assertEqual(res, ['b'])
         res = [f['x'] for f in
-               layer.getFeatures(QgsFeatureRequest().setFilterFid(f2.id()).setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid))]
+               layer.getFeatures(QgsFeatureRequest().setFilterFid(f2.id()).setInvalidGeometryCheck(
+                   QgsFeatureRequest.GeometrySkipInvalid))]
         self.assertEqual(res, [])
         res = [f['x'] for f in
-               layer.getFeatures(QgsFeatureRequest().setFilterFid(f2.id()).setInvalidGeometryCheck(QgsFeatureRequest.GeometryAbortOnInvalid))]
+               layer.getFeatures(QgsFeatureRequest().setFilterFid(f2.id()).setInvalidGeometryCheck(
+                   QgsFeatureRequest.GeometryAbortOnInvalid))]
         self.assertEqual(res, [])
 
         f4 = QgsFeature(4)
@@ -357,7 +499,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer.rollBack()
         layer.startEditing()
         layer.changeGeometry(2, QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))  # valid
-        layer.changeGeometry(3, QgsGeometry.fromWkt('Polygon((0 0, 1 0, 0 1, 1 1, 0 0))'))# invalid
+        layer.changeGeometry(3, QgsGeometry.fromWkt('Polygon((0 0, 1 0, 0 1, 1 1, 0 0))'))  # invalid
         res = [f['x'] for f in
                layer.getFeatures(QgsFeatureRequest().setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck))]
         self.assertEqual(set(res), {'a', 'b', 'c'})

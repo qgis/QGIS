@@ -18,6 +18,9 @@
 
 #include "qgsmaptooledit.h"
 #include "qgis_app.h"
+#include "qgsgeometry.h"
+#include "qgsfeatureid.h"
+
 
 class QgsVertexMarker;
 //! Map tool to delete vertices from line/polygon features
@@ -28,7 +31,7 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
 
   public:
     QgsMapToolDeleteRing( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolDeleteRing();
+    ~QgsMapToolDeleteRing() override;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
@@ -45,13 +48,14 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     //! delete inner ring from the geometry
     void deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer *vlayer );
 
-    //! return ring number in polygon
+    //! Returns the ring number in polygon
     int ringNumInPolygon( const QgsGeometry &g, int vertexNr );
 
-    //! return ring number in multipolygon and set parNum to index of the part
+    //! Returns the ring number in multipolygon and set parNum to index of the part
     int ringNumInMultiPolygon( const QgsGeometry &g, int vertexNr, int &partNum );
 
-    /** Return the geometry of the ring under the point p and sets fid to the feature id,
+    /**
+     * Returns the geometry of the ring under the point p and sets fid to the feature id,
      * partNum to the part number in the feature and ringNum to the ring number in the part
      */
     QgsGeometry ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid, int &partNum, int &ringNum );

@@ -31,16 +31,21 @@
 // moreover from Qt 4.6, Qt clips also when the width/height of a painter path
 // is more than 32767. Since we want to avoid clipping by Qt (because it is slow)
 // we set coordinate limit to less than 32767 / 2
-const double QgsClipper::MAX_X =  16000;
+const double QgsClipper::MAX_X = 16000;
 const double QgsClipper::MIN_X = -16000;
-const double QgsClipper::MAX_Y =  16000;
+const double QgsClipper::MAX_Y = 16000;
 const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
 QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent )
 {
-  const int nPoints = curve.numPoints();
+  return clippedLine( curve.asQPolygonF(), clipExtent );
+}
+
+QPolygonF QgsClipper::clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent )
+{
+  const int nPoints = curve.size();
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
@@ -49,21 +54,22 @@ QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &cl
   QPolygonF line;
   line.reserve( nPoints + 1 );
 
+  const QPointF *curveData = curve.data();
+
   for ( int i = 0; i < nPoints; ++i )
   {
     if ( i == 0 )
     {
-      p1x = curve.xAt( i );
-      p1y = curve.yAt( i );
-      continue;
+      p1x = curveData->x();
+      p1y = curveData->y();
     }
     else
     {
       p0x = p1x;
       p0y = p1y;
 
-      p1x = curve.xAt( i );
-      p1y = curve.yAt( i );
+      p1x = curveData->x();
+      p1y = curveData->y();
 
       p1x_c = p1x;
       p1y_c = p1y;
@@ -76,7 +82,7 @@ QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &cl
           //add edge points to connect old and new line
           connectSeparatedLines( lastClipX, lastClipY, p0x, p0y, clipExtent, line );
         }
-        if ( line.size() < 1 || newLine )
+        if ( line.empty() || newLine )
         {
           //add first point
           line << QPointF( p0x, p0y );
@@ -88,6 +94,7 @@ QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &cl
         line << QPointF( p1x_c,  p1y_c );
       }
     }
+    curveData++;
   }
   return line;
 }

@@ -1,10 +1,11 @@
 v.drape
-Converts vector map to 3D by sampling of elevation raster map.
+Converts 2D vector features to 3D by sampling of elevation raster map.
 Vector (v.*)
-ParameterVector|input|Iput vector layer|-1|False
-ParameterRaster|elevation|Elevation raster map for height extraction|False
-ParameterSelection|method|Sampling method|nearest;bilinear;bicubic
-ParameterString|scale|Scale factor for sampled raster values|1.0
-ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
-ParameterString|null_value|Vector Z value for unknown height|
-OutputVector|output|3D vector
+QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid|True|0,1,3,4|True
+QgsProcessingParameterRasterLayer|elevation|Elevation raster map for height extraction|None|False
+QgsProcessingParameterEnum|method|Sampling method|nearest;bilinear;bicubic|False|0|True
+QgsProcessingParameterNumber|scale|Scale factor sampled raster values|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|null_value|Height for sampled raster NULL values|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterVectorDestination|output|3D vector

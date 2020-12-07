@@ -21,15 +21,11 @@ __author__ = 'Alexander Bruy'
 __date__ = 'December 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtWidgets import QLineEdit, QComboBox
 from qgis.gui import QgsRasterFormatSaveOptionsWidget
 
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputString
+from qgis.core import (QgsProcessingParameterString,
+                       QgsProcessingOutputString)
 from processing.gui.wrappers import WidgetWrapper, DIALOG_MODELER, DIALOG_BATCH
 
 
@@ -39,16 +35,17 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_MODELER:
             widget = QComboBox()
             widget.setEditable(True)
-            strings = self.dialog.getAvailableValuesOfType(ParameterString, OutputString)
+            strings = self.dialog.getAvailableValuesOfType(QgsProcessingParameterString, QgsProcessingOutputString)
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             for desc, val in options:
                 widget.addItem(desc, val)
-            widget.setEditText(self.param.default or '')
+            widget.setEditText(self.parameterDefinition().defaultValue() or '')
             return widget
         elif self.dialogType == DIALOG_BATCH:
             widget = QLineEdit()
-            if self.param.default:
-                widget.setText(self.param.default)
+            if self.parameterDefinition().defaultValue():
+                widget.setText(self.parameterDefinition().defaultValue())
+            return widget
         else:
             return QgsRasterFormatSaveOptionsWidget()
 
@@ -61,7 +58,7 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
         else:
-            self.widget.setValue(value)
+            self.widget.setOptions(value)
 
     def value(self):
         if self.dialogType == DIALOG_MODELER:
@@ -69,4 +66,4 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
         else:
-            return ' '.join(self.widget.options())
+            return '|'.join(self.widget.options())

@@ -12,13 +12,23 @@
       <ExtentYMax>5.00000</ExtentYMax>
     </DatasetSpecificInfo>
     <PropertyDefn>
-      <Name>node_pos</Name>
-      <ElementPath>node_pos</ElementPath>
+      <Name>vertex_pos</Name>
+      <ElementPath>vertex_pos</ElementPath>
       <Type>Integer</Type>
     </PropertyDefn>
     <PropertyDefn>
-      <Name>node_index</Name>
-      <ElementPath>node_index</ElementPath>
+      <Name>vertex_index</Name>
+      <ElementPath>vertex_index</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>vertex_part</Name>
+      <ElementPath>vertex_part</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>vertex_part_index</Name>
+      <ElementPath>vertex_part_index</ElementPath>
       <Type>Integer</Type>
     </PropertyDefn>
     <PropertyDefn>

@@ -1,0 +1,138 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsgoochmaterialsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGoochMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring
+Basic shading material used for rendering based on the Phong shading model
+with three color components: ambient, diffuse and specular.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsgoochmaterialsettings.h"
+%End
+  public:
+
+    QgsGoochMaterialSettings();
+%Docstring
+Constructor for QgsGoochMaterialSettings.
+%End
+
+    virtual QString type() const;
+
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsGoochMaterialSettings.
+%End
+
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the Gooch material.
+%End
+
+    virtual QgsGoochMaterialSettings *clone() const /Factory/;
+
+
+    QColor warm() const;
+%Docstring
+Returns warm color component
+%End
+
+    QColor cool() const;
+%Docstring
+Returns cool color component
+%End
+
+    QColor diffuse() const;
+%Docstring
+Returns diffuse color component
+%End
+    QColor specular() const;
+%Docstring
+Returns specular color component
+%End
+    float shininess() const;
+%Docstring
+Returns shininess of the surface
+%End
+
+    float alpha() const;
+%Docstring
+Returns the alpha value
+%End
+
+    float beta() const;
+%Docstring
+Returns the beta value
+%End
+
+    void setWarm( const QColor &warm );
+%Docstring
+Sets warm color component
+%End
+
+    void setCool( const QColor &cool );
+%Docstring
+Sets cool color component
+%End
+
+    void setDiffuse( const QColor &diffuse );
+%Docstring
+Sets diffuse color component
+%End
+    void setSpecular( const QColor &specular );
+%Docstring
+Sets specular color component
+%End
+    void setShininess( float shininess );
+%Docstring
+Sets shininess of the surface
+%End
+
+    void setAlpha( float alpha );
+%Docstring
+Sets alpha value
+%End
+
+    void setBeta( float beta );
+%Docstring
+Sets beta value
+%End
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual QMap<QString, QString> toExportParameters() const;
+
+
+
+    bool operator==( const QgsGoochMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsgoochmaterialsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

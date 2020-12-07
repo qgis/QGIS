@@ -21,15 +21,11 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import shutil
-from processing.tools.system import isWindows, mkdir
-from processing.core.parameters import getParameterFromString
+from qgis.core import QgsProcessingParameterString
+from processing.tools.system import (isWindows, mkdir,
+                                     getTempFilename)
 import os
-from copy import deepcopy
 
 # for MS-Windows users who have MBCS chars in their name:
 if os.name == 'nt':
@@ -45,9 +41,9 @@ def rliPath():
         return os.path.join(os.path.expanduser("~"), '.grass7', 'r.li')
 
 
-def removeConfigFile(alg):
+def removeConfigFile(alg, parameters, context):
     """ Remove the r.li user dir config file """
-    configPath = alg.getParameterValue('config')
+    configPath = alg.parameterAsString(parameters, 'config', context)
     if isWindows():
         command = "DEL {}".format(os.path.join(rliPath(), configPath))
     else:
@@ -55,12 +51,12 @@ def removeConfigFile(alg):
     alg.commands.append(command)
 
 
-def checkMovingWindow(alg, outputTxt=False):
+def checkMovingWindow(alg, parameters, context, outputTxt=False):
     """ Verify if we have the right parameters """
-    configTxt = alg.getParameterValue('config_txt')
-    config = alg.getParameterValue('config')
+    configTxt = alg.parameterAsString(parameters, 'config_txt', context)
+    config = alg.parameterAsString(parameters, 'config', context)
     if configTxt and config:
-        return alg.tr("You need to set either inline configuration or a configuration file!")
+        return False, alg.tr("You need to set either inline configuration or a configuration file!")
 
     # Verify that configuration is in moving window
     movingWindow = False
@@ -76,78 +72,71 @@ def checkMovingWindow(alg, outputTxt=False):
                     movingWindow = True
 
     if not movingWindow and not outputTxt:
-        return alg.tr('Your configuration needs to be a "moving window" configuration!')
+        return False, alg.tr('Your configuration needs to be a "moving window" configuration!')
 
     if movingWindow and outputTxt:
-        return alg.tr('Your configuration needs to be a non "moving window" configuration!')
+        return False, alg.tr('Your configuration needs to be a non "moving window" configuration!')
 
-    return None
+    return True, None
 
 
-def configFile(alg, parameters, outputTxt=False):
-    """ Handle inline configuration
+def configFile(alg, parameters, context, feedback, outputTxt=False):
+    """Handle inline configuration
     :param parameters:
     """
     # Where is the GRASS7 user directory ?
-
-    new_parameters = deepcopy(parameters)
-
     userGrass7Path = rliPath()
     if not os.path.isdir(userGrass7Path):
         mkdir(userGrass7Path)
     if not os.path.isdir(os.path.join(userGrass7Path, 'output')):
         mkdir(os.path.join(userGrass7Path, 'output'))
-    origConfigFile = new_parameters['config']
 
+    # If we have a configuration file, we need to copy it into user dir
+    if parameters['config']:
+        fileName = alg.parameterAsString(parameters, 'config', context)
+        configFilePath = os.path.join(userGrass7Path, os.path.basename(fileName))
+        # Copy the file
+        shutil.copy(parameters['config'], configFilePath)
+        # Change the parameter value
+        parameters['config'] = os.path.basename(configFilePath)
     # Handle inline configuration
-    if new_parameters['config_txt']:
+    elif parameters['config_txt']:
         # Creates a temporary txt file in user r.li directory
-        tempConfig = alg.getTempFilename()
+        tempConfig = os.path.basename(getTempFilename())
         configFilePath = os.path.join(userGrass7Path, tempConfig)
         # Inject rules into temporary txt file
         with open(configFilePath, "w") as f:
-            f.write(new_parameters['config_txt'])
+            f.write(alg.parameterAsString(parameters, 'config_txt', context))
+            f.write("\n")
 
         # Use temporary file as rules file
-        new_parameters['config'] = os.path.basename(configFilePath)
-        del new_parameters['config_txt']
+        parameters['config'] = os.path.basename(configFilePath)
+        alg.removeParameter('config_txt')
 
-    # If we have a configuration file, we need to copy it into user dir
-    if origConfigFile:
-        configFilePath = os.path.join(userGrass7Path, os.path.basename(origConfigFile))
-        # Copy the file
-        shutil.copy(origConfigFile, configFilePath)
+    # For ascii output, we need a virtual output
+    if outputTxt:
+        param = QgsProcessingParameterString(
+            'output', 'virtual output',
+            'a' + os.path.basename(getTempFilename()),
+            False, False)
+        alg.addParameter(param)
 
-        # Change the parameter value
-        new_parameters['config'] = os.path.basename(configFilePath)
-
-    origOutput = alg.getOutputFromName('output')
-    if new_parameters['output']:
-        param = getParameterFromString("ParameterString|output|txt output|None|False|True")
-        new_parameters[param.name()] = origOutput.value
-        alg.removeOutputFromName('output')
-
-    alg.processCommand(new_parameters)
+    alg.processCommand(parameters, context, feedback, outputTxt)
 
     # Remove Config file:
-    removeConfigFile(alg)
-
-    # re-add configTxt
-    if outputTxt:
-        alg.addOutput(origOutput)
+    removeConfigFile(alg, parameters, context)
 
 
-def moveOutputTxtFile(alg):
+def moveOutputTxtFile(alg, parameters, context):
     # Find output file name:
-    origOutput = alg.getOutputValue('output')
+    txtPath = alg.parameterAsString(parameters, 'output_txt', context)
     userGrass7Path = rliPath()
 
-    outputDir = os.path.join(userGrass7Path, 'output')
-    output = os.path.join(outputDir, os.path.basename(origOutput))
-
+    output = os.path.join(userGrass7Path, 'output',
+                          alg.parameterAsString(parameters, 'output', context))
     # move the file
     if isWindows():
-        command = "MOVE /Y {} {}".format(output, origOutput)
+        command = "MOVE /Y {} {}".format(output, txtPath)
     else:
-        command = "mv -f {} {}".format(output, origOutput)
+        command = "mv -f {} {}".format(output, txtPath)
     alg.commands.append(command)

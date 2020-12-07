@@ -18,11 +18,14 @@
 #include "qgssnappingutils.h"
 #include "qgis_gui.h"
 
+#include "qgsmaptool.h"
+
 class QgsMapCanvas;
 
 class QProgressDialog;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Snapping utils instance that is connected to a canvas and updates the configuration
  *  (map settings + current layer) whenever that is changed in the canvas.
  *  \since QGIS 2.8
@@ -31,15 +34,25 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
+
+    /**
+     * Construct map canvas snapping utils object
+     *
+     * \param canvas map canvas
+     * \param parent parent object
+     * if FALSE it will block until indexing is done
+     */
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
   protected:
-    virtual void prepareIndexStarting( int count ) override;
-    virtual void prepareIndexProgress( int index ) override;
+    void prepareIndexStarting( int count ) override;
+    void prepareIndexProgress( int index ) override;
 
   private slots:
     void canvasMapSettingsChanged();
+    void canvasTransformContextChanged();
     void canvasCurrentLayerChanged();
+    void canvasMapToolChanged();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;

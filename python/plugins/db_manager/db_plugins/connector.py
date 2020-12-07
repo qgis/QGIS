@@ -30,6 +30,9 @@ from .plugin import DbError, ConnectionError
 class DBConnector(object):
 
     def __init__(self, uri):
+        """Creates a new DB connector
+        """
+
         self.connection = None
         self._uri = uri
 
@@ -41,6 +44,9 @@ class DBConnector(object):
 
     def uri(self):
         return QgsDataSourceUri(self._uri.uri(False))
+
+    def cancel(self):
+        pass
 
     def publicUri(self):
         publicUri = QgsDataSourceUri.removePassword(self._uri.uri(False))
@@ -80,7 +86,7 @@ class DBConnector(object):
         if cursor is None:
             cursor = self._get_cursor()
         try:
-            cursor.execute(str(sql))
+            cursor.execute(sql)
 
         except self.connection_error_types() as e:
             raise ConnectionError(e)
@@ -169,8 +175,6 @@ class DBConnector(object):
             raise ConnectionError(e)
 
         except self.execution_error_types() as e:
-            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-            self._rollback()
             raise DbError(e)
 
     def _get_cursor_columns(self, c):
@@ -230,5 +234,14 @@ class DBConnector(object):
         except ImportError:
             return []
 
+    def getComment(self, tablename, field):
+        """Returns the comment for a field"""
+        return ''
+
+    def commentTable(self, schema, tablename, comment=None):
+        """Comment the table"""
+        pass
+
     def getQueryBuilderDictionary(self):
+
         return {}

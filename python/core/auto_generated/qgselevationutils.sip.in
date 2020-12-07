@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgselevationutils.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsElevationUtils
+{
+%Docstring
+Contains utility methods for working with elevation from layers and projects.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgselevationutils.h"
+%End
+  public:
+
+    static QgsDoubleRange calculateZRangeForProject( QgsProject *project );
+%Docstring
+Calculates the elevation range for a ``project``.
+
+This method considers the elevation (or z) range available from layers contained within the project and
+returns the maximal combined elevation range of these layers.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgselevationutils.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -21,7 +21,7 @@ QgsVectorLayerSelectionManager::QgsVectorLayerSelectionManager( QgsVectorLayer *
   : QgsIFeatureSelectionManager( parent )
   , mLayer( layer )
 {
-  connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayerSelectionManager::selectionChanged );
+  connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayerSelectionManager::onSelectionChanged );
 }
 
 int QgsVectorLayerSelectionManager::selectedFeatureCount()
@@ -47,4 +47,14 @@ void QgsVectorLayerSelectionManager::setSelectedFeatures( const QgsFeatureIds &i
 const QgsFeatureIds &QgsVectorLayerSelectionManager::selectedFeatureIds() const
 {
   return mLayer->selectedFeatureIds();
+}
+
+QgsVectorLayer *QgsVectorLayerSelectionManager::layer() const
+{
+  return mLayer;
+}
+
+void QgsVectorLayerSelectionManager::onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect )
+{
+  emit selectionChanged( selected, deselected, clearAndSelect );
 }

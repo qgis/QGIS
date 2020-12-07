@@ -45,19 +45,21 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     //! Snapping modes
     enum SnapMode
     {
-      PreferNodes = 0, //!< Prefer to snap to nodes, even when a segment may be closer than a node
-      PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment
+      PreferNodes = 0, //!< Prefer to snap to nodes, even when a segment may be closer than a node. New nodes will be inserted to make geometries follow each other exactly when inside allowable tolerance.
+      PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment. New nodes will be inserted to make geometries follow each other exactly when inside allowable tolerance.
+      PreferNodesNoExtraVertices, //!< Prefer to snap to nodes, even when a segment may be closer than a node. No new nodes will be inserted.
+      PreferClosestNoExtraVertices, //!< Snap to closest point, regardless of it is a node or a segment. No new nodes will be inserted.
       EndPointPreferNodes, //!< Only snap start/end points of lines (point features will also be snapped, polygon features will not be modified), prefer to snap to nodes
       EndPointPreferClosest, //!< Only snap start/end points of lines (point features will also be snapped, polygon features will not be modified), snap to closest point
       EndPointToEndPoint, //!< Only snap the start/end points of lines to other start/end points of lines
     };
 
     /**
-     * Constructor for QgsGeometrySnapper. A reference layer which contains geometries to snap to must be
+     * Constructor for QgsGeometrySnapper. A reference feature source which contains geometries to snap to must be
      * set. It is assumed that all geometries snapped using this object will have the
-     * same CRS as the reference layer (ie, no reprojection is performed).
+     * same CRS as the reference source (ie, no reprojection is performed).
      */
-    QgsGeometrySnapper( QgsVectorLayer *referenceLayer );
+    QgsGeometrySnapper( QgsFeatureSource *referenceSource );
 
     /**
      * Snaps a geometry to the reference layer and returns the result. The geometry must be in the same
@@ -94,12 +96,12 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
         , snapTolerance( snapTolerance )
         , mode( mode )
       {}
-      void operator()( QgsFeature &feature ) { return instance->processFeature( feature, snapTolerance, mode ); }
+      void operator()( QgsFeature &feature ) { instance->processFeature( feature, snapTolerance, mode ); }
     };
 
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
 
-    QgsVectorLayer *mReferenceLayer = nullptr;
+    QgsFeatureSource *mReferenceSource = nullptr;
     QgsFeatureList mInputFeatures;
 
     QgsSpatialIndex mIndex;
@@ -157,7 +159,10 @@ class ANALYSIS_EXPORT QgsInternalGeometrySnapper
     QgsGeometrySnapper::SnapMode mMode = QgsGeometrySnapper::PreferNodes;
     QgsSpatialIndex mProcessedIndex;
     QgsGeometryMap mProcessedGeometries;
+
 };
+
+#ifndef SIP_RUN
 
 ///@cond PRIVATE
 class QgsSnapIndex
@@ -209,6 +214,10 @@ class QgsSnapIndex
 
     QgsSnapIndex( const QgsPoint &origin, double cellSize );
     ~QgsSnapIndex();
+
+    QgsSnapIndex( const QgsSnapIndex &rh ) = delete;
+    QgsSnapIndex &operator=( const QgsSnapIndex &rh ) = delete;
+
     void addGeometry( const QgsAbstractGeometry *geom );
     QgsPoint getClosestSnapToPoint( const QgsPoint &p, const QgsPoint &q );
     SnapItem *getSnapItem( const QgsPoint &pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr, bool endPointOnly = false ) const;
@@ -220,7 +229,7 @@ class QgsSnapIndex
     class GridRow
     {
       public:
-        GridRow() : mColStartIdx( 0 ) {}
+        GridRow() = default;
         ~GridRow();
         const Cell *getCell( int col ) const;
         Cell &getCreateCell( int col );
@@ -228,7 +237,7 @@ class QgsSnapIndex
 
       private:
         QList<QgsSnapIndex::Cell> mCells;
-        int mColStartIdx;
+        int mColStartIdx = 0;
     };
 
     QgsPoint mOrigin;
@@ -243,10 +252,10 @@ class QgsSnapIndex
     const Cell *getCell( int col, int row ) const;
     Cell &getCreateCell( int col, int row );
 
-    QgsSnapIndex( const QgsSnapIndex &rh );
-    QgsSnapIndex &operator=( const QgsSnapIndex &rh );
 };
 
 ///@endcond
+
+#endif
 
 #endif // QGS_GEOMETRY_SNAPPER_H

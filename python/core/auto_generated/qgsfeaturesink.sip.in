@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturesink.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFeatureSink
+{
+%Docstring
+An interface for objects which accept features via addFeature(s) methods.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfeaturesink.h"
+%End
+  public:
+
+    enum SinkFlag
+    {
+
+      RegeneratePrimaryKey,
+    };
+    typedef QFlags<QgsFeatureSink::SinkFlag> SinkFlags;
+
+
+    enum Flag
+    {
+
+      FastInsert,
+
+      RollBackOnErrors,
+    };
+    typedef QFlags<QgsFeatureSink::Flag> Flags;
+
+
+    virtual ~QgsFeatureSink();
+
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+%Docstring
+Adds a single ``feature`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
+
+.. seealso:: :py:func:`addFeatures`
+
+:return: ``True`` in case of success and ``False`` in case of failure
+%End
+
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) = 0;
+%Docstring
+Adds a list of ``features`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
+
+.. seealso:: :py:func:`addFeature`
+
+:return: ``True`` in case of success and ``False`` in case of failure
+%End
+
+    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+%Docstring
+Adds all features from the specified ``iterator`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
+
+:return: ``True`` if all features were added successfully, or ``False`` if any feature could not be added
+%End
+
+    virtual bool flushBuffer();
+%Docstring
+Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
+
+:return: ``False`` if any buffered features could not be added to the sink.
+%End
+
+    virtual QString lastError() const;
+%Docstring
+Returns the most recent error encountered by the sink, e.g. when a call to :py:func:`~QgsFeatureSink.addFeatures` returns ``False``.
+
+.. versionadded:: 3.16
+%End
+};
+
+QFlags<QgsFeatureSink::Flag> operator|(QgsFeatureSink::Flag f1, QFlags<QgsFeatureSink::Flag> f2);
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturesink.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

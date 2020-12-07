@@ -1,11 +1,14 @@
 Seed Generation
 imagery_segmentation
-ParameterMultipleInput|GRIDS|Features|3|False
-ParameterNumber|FACTOR|Bandwidth (Cells)|0.0|None|2
-ParameterSelection|TYPE_SURFACE|Type of Surface|[0] smoothed surface;[1] variance (a);[2] variance (b)
-ParameterSelection|TYPE_SEEDS|Extraction of...|[0] minima;[1] maxima;[2] minima and maxima
-ParameterSelection|TYPE_MERGE|Feature Aggregation|[0] additive;[1] multiplicative
-ParameterBoolean|NORMALIZE         |Normalized|True
-OutputRaster|SURFACE|Surface
-OutputRaster|SEEDS_GRID|Seeds Grid
-OutputVector|SEEDS|Seeds
+QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
+QgsProcessingParameterEnum|SEED_TYPE|Seed Type|[0] minima;[1] maxima
+QgsProcessingParameterEnum|METHOD|Method|[0] band width smoothing;[1] band width search
+QgsProcessingParameterNumber|BAND_WIDTH|Bandwidth (Cells)|QgsProcessingParameterNumber.Double|10|False|0.0|None
+QgsProcessingParameterBoolean|NORMALIZE|Normalize Features|True
+QgsProcessingParameterEnum|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
+QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Double|1|False|0.0|None
+QgsProcessingParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
+QgsProcessingParameterNumber|DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|QgsProcessingParameterNumber.Double|5|False|0.0|None
+QgsProcessingParameterRasterDestination|SEED_GRID|Seeds Grid
+QgsProcessingParameterRasterDestination|VARIANCE|Variance
+QgsProcessingParameterVectorDestination|SEED_POINTS|Seeds Points

@@ -16,9 +16,7 @@
 #ifndef QGSCRASHHANDLER_H
 #define QGSCRASHHANDLER_H
 
-#include "qgis.h"
 #include "qgis_app.h"
-#include "qgscrashreport.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -32,29 +30,16 @@ class APP_EXPORT QgsCrashHandler
 {
 
   public:
-#ifdef Q_OS_WIN
-    static LONG WINAPI handle( struct _EXCEPTION_POINTERS *ExceptionInfo );
-#endif
-
-    /**
-     * Show the crash dialog.
-     * @param stack The current stack of the crash point.
-     */
-    static void showCrashDialog( const QgsStackLines &stack );
-
-    /**
-     * Restart the application.
-     * Restores project and arguments used when application was loaded.
-     */
-    static void restartApplication();
-
-  private:
 
     /**
      * This class doesn't need to be created by anyone as is only used to handle
      * crashes in the application.
      */
-    QgsCrashHandler() {}
+    QgsCrashHandler() = delete;
+
+#ifdef _MSC_VER
+    static LONG WINAPI handle( LPEXCEPTION_POINTERS ExceptionInfo );
+#endif
 };
 
 

@@ -21,19 +21,19 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QFileInfo
 
+from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -41,21 +41,39 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class polygonize(GdalAlgorithm):
-
     INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    BAND = 'BAND'
     FIELD = 'FIELD'
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
+    EIGHT_CONNECTEDNESS = 'EIGHT_CONNECTEDNESS'
+    EXTRA = 'EXTRA'
+    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(polygonize.INPUT,
-                                          self.tr('Input layer'), False))
-        self.addParameter(ParameterString(polygonize.FIELD,
-                                          self.tr('Output field name'), 'DN'))
-        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     1,
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterString(self.FIELD,
+                                                       self.tr('Name of the field to create'),
+                                                       defaultValue='DN'))
+        self.addParameter(QgsProcessingParameterBoolean(self.EIGHT_CONNECTEDNESS,
+                                                        self.tr('Use 8-connectedness'),
+                                                        defaultValue=False))
+
+        extra_param = QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional command-line parameters'),
+                                                   defaultValue=None,
+                                                   optional=True)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(extra_param)
+
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
+                                                                  self.tr('Vectorized'),
+                                                                  QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'polygonize'
@@ -66,23 +84,51 @@ class polygonize(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self, parameters):
-        output = self.getOutputValue(polygonize.OUTPUT)
+    def groupId(self):
+        return 'rasterconversion'
 
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
+
+    def commandName(self):
+        return 'gdal_polygonize'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
-        arguments.append(self.getParameterValue(polygonize.INPUT))
-        arguments.append('-f')
-        arguments.append(GdalUtils.getVectorDriverFromFileName(output))
-        arguments.append(output)
-        arguments.append(QFileInfo(output).baseName())
-        arguments.append(self.getParameterValue(polygonize.FIELD))
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        commands = []
+        arguments.append(inLayer.source())
+
+        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
+        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        arguments.append(output)
+
+        if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
+            arguments.append('-8')
+
+        arguments.append('-b')
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        layerName = GdalUtils.ogrOutputLayerName(output)
+        if layerName:
+            arguments.append(layerName)
+        arguments.append(self.parameterAsString(parameters, self.FIELD, context))
+
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_polygonize.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = ["python3", "-m", self.commandName()]
         else:
-            commands = ['gdal_polygonize.py',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         return commands

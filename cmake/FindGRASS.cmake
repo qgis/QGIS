@@ -76,9 +76,9 @@ MACRO (CHECK_GRASS G_PREFIX)
           # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
           # and then again with no specified paths to search the default
           # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-          # searching for the same item do nothing. 
-          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} PATHS ${G_PREFIX}/lib NO_DEFAULT_PATH)
-          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} PATHS ${G_PREFIX}/lib)
+          # searching for the same item do nothing.
+          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} grass_${LIB}.${GRASS_MAJOR_VERSION${GRASS_FIND_VERSION}}.${GRASS_MINOR_VERSION${GRASS_FIND_VERSION}} PATHS ${G_PREFIX}/lib NO_DEFAULT_PATH)
+          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} grass_${LIB}.${GRASS_MAJOR_VERSION${GRASS_FIND_VERSION}}.${GRASS_MINOR_VERSION${GRASS_FIND_VERSION}} PATHS ${G_PREFIX}/lib)
 
           IF(LIB_PATH)
             SET(GRASS_LIBRARY${GRASS_FIND_VERSION}_${LIB} ${LIB_PATH})
@@ -90,18 +90,18 @@ MACRO (CHECK_GRASS G_PREFIX)
 
         # LIB_PATH is only temporary variable, so hide it (is it possible to delete a variable?)
         UNSET(LIB_PATH CACHE)
-    
+
         # Find off_t size
         IF( (GRASS_MAJOR_VERSION${GRASS_FIND_VERSION} EQUAL 7) AND (GRASS_MINOR_VERSION${GRASS_FIND_VERSION} GREATER 0) )
           SET(GRASS_TEST_MAPSET ${CMAKE_BINARY_DIR}/grass-location/PERMANENT)
-          FILE(MAKE_DIRECTORY ${GRASS_TEST_MAPSET}) 
-          FILE(WRITE ${GRASS_TEST_MAPSET}/DEFAULT_WIND "") 
+          FILE(MAKE_DIRECTORY ${GRASS_TEST_MAPSET})
+          FILE(WRITE ${GRASS_TEST_MAPSET}/DEFAULT_WIND "")
           FILE(WRITE ${GRASS_TEST_MAPSET}/WIND "")
           # grass command is not in G_PREFIX but in some bin dir, so it must be in PATH
           SET(GRASS_EXE grass7${GRASS_MINOR_VERSION${GRASS_FIND_VERSION}})
           #MESSAGE(STATUS "GRASS_EXE = ${GRASS_EXE}")
           EXECUTE_PROCESS(COMMAND ${GRASS_EXE} ${GRASS_TEST_MAPSET} --exec g.version -g
-            COMMAND grep build_off_t_size 
+            COMMAND grep build_off_t_size
             COMMAND sed "s/.*\\([0-9]\\).*/\\1/"
             ERROR_VARIABLE GRASS_TMP_ERROR
             OUTPUT_VARIABLE GRASS_OFF_T_SIZE${GRASS_FIND_VERSION}
@@ -126,9 +126,9 @@ MACRO (CHECK_GRASS G_PREFIX)
                   SET( GRASS_OFF_T_SIZE${GRASS_FIND_VERSION} 4 )
                 ELSEIF( "${FILE_OFFSET_BITS}" STREQUAL "64" )
                   SET( GRASS_OFF_T_SIZE${GRASS_FIND_VERSION} 8 )
-                ENDIF()        
-              ENDIF()        
-            ENDIF()        
+                ENDIF()
+              ENDIF()
+            ENDIF()
           ENDIF()
         ENDIF()
 
@@ -137,12 +137,6 @@ MACRO (CHECK_GRASS G_PREFIX)
           SET(GRASS_FOUND TRUE) # GRASS_FOUND is true if at least one version was found
           SET(GRASS_PREFIX${GRASS_CACHE_VERSION} ${G_PREFIX})
           CHECK_GRASS_EXTRA_INCLUDE_DIRS(${GRASS_FIND_VERSION})
-          IF(GRASS_FIND_VERSION EQUAL 6)
-            # Set also normal variable with number
-            SET(GRASS_INCLUDE_DIR${GRASS_FIND_VERSION} ${GRASS_INCLUDE_DIR${GRASS_CACHE_VERSION}})
-            SET(GRASS_PREFIX${GRASS_FIND_VERSION} ${G_PREFIX})
-            CHECK_GRASS_EXTRA_INCLUDE_DIRS(${GRASS_FIND_VERSION})
-          ENDIF(GRASS_FIND_VERSION EQUAL 6)
         ENDIF(GRASS_LIBRARIES_FOUND${GRASS_FIND_VERSION})
     ENDIF(GRASS_MAJOR_VERSION${GRASS_FIND_VERSION} EQUAL GRASS_FIND_VERSION)
   ENDIF(GRASS_INCLUDE_DIR${GRASS_CACHE_VERSION} AND EXISTS ${GRASS_INCLUDE_DIR${GRASS_CACHE_VERSION}}/grass/version.h)
@@ -164,27 +158,37 @@ IF (WIN32)
 ENDIF (WIN32)
 
 IF (UNIX)
-  IF (GRASS_FIND_VERSION EQUAL 6)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass64 /usr/lib/grass64)
-  ELSEIF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71 /usr/lib64/grass72 /usr/lib/grass72)
-  ENDIF ()
+  IF (GRASS_FIND_VERSION EQUAL 7)
+    IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+        FOREACH (VERSION_MINOR 9 8 7 6 5 4 3 2 1 0)
+            LIST (APPEND GRASS_PATHS /usr/local/grass${GRASS_FIND_VERSION}${VERSION_MINOR})
+        ENDFOREACH(VERSION_MINOR)
+    ELSE (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+        FOREACH (PATH /usr/lib64 /usr/lib)
+            FOREACH (VERSION grass76, grass74, grass72, grass70)
+                LIST(APPEND GRASS_PATHS "${PATH}/${VERSION}")
+            ENDFOREACH (VERSION)
+        ENDFOREACH (PATH)
+    ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+   ENDIF (GRASS_FIND_VERSION EQUAL 7)
 ENDIF (UNIX)
 
 IF (APPLE)
-  IF (GRASS_FIND_VERSION EQUAL 6)
-    LIST(APPEND GRASS_PATHS
-      /Applications/GRASS-6.3.app/Contents/MacOS
-      /Applications/GRASS-6.4.app/Contents/MacOS
-    )
-  ELSEIF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS
-      /Applications/GRASS-7.0.app/Contents/MacOS
-      /Applications/GRASS-7.1.app/Contents/MacOS
-      /Applications/GRASS-7.2.app/Contents/MacOS
-    )
-  ENDIF ()
-  LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)
+  IF (QGIS_MAC_DEPS_DIR)
+    FOREACH (VERSION_MINOR 9 8 7 6 5 4 3 2 1 0)
+      LIST (APPEND GRASS_PATHS $ENV{LIB_DIR}/grass${GRASS_FIND_VERSION}${VERSION_MINOR})
+    ENDFOREACH(VERSION_MINOR)
+  ELSE (QGIS_MAC_DEPS_DIR)
+    IF (GRASS_FIND_VERSION EQUAL 7)
+      LIST(APPEND GRASS_PATHS
+        /Applications/GRASS-7.6.app/Contents/MacOS
+        /Applications/GRASS-7.4.app/Contents/MacOS
+        /Applications/GRASS-7.2.app/Contents/MacOS
+        /Applications/GRASS-7.0.app/Contents/MacOS
+      )
+    ENDIF ()
+    LIST(APPEND GRASS_PATHS /Applications/GRASS.app/Contents/Resources)
+  ENDIF (QGIS_MAC_DEPS_DIR)
 ENDIF (APPLE)
 
 IF (WITH_GRASS${GRASS_CACHE_VERSION})

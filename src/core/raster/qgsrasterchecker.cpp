@@ -18,7 +18,6 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 
-#include <qmath.h>
 #include <QColor>
 #include <QPainter>
 #include <QImage>
@@ -29,7 +28,6 @@
 #include <QBuffer>
 
 QgsRasterChecker::QgsRasterChecker()
-  : mReport( QLatin1String( "" ) )
 {
   mTabStyle = QStringLiteral( "border-spacing: 0px; border-width: 1px 1px 0 0; border-style: solid;" );
   mCellStyle = QStringLiteral( "border-width: 0 0 1px 1px; border-style: solid; font-size: smaller; text-align: center;" );
@@ -45,22 +43,21 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
   mReport += QLatin1String( "\n\n" );
 
   //QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( verifiedKey, verifiedUri );
-  QgsRasterDataProvider *verifiedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( verifiedKey, verifiedUri ) );
+  QgsDataProvider::ProviderOptions options;
+  QgsRasterDataProvider *verifiedProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( verifiedKey, verifiedUri, options ) );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( verifiedKey, verifiedUri ), mReport );
-    ok = false;
+    return false;
   }
 
   //QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( expectedKey, expectedUri );
-  QgsRasterDataProvider *expectedProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( expectedKey, expectedUri ) );
+  QgsRasterDataProvider *expectedProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( expectedKey, expectedUri, options ) );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( expectedKey, expectedUri ), mReport );
-    ok = false;
+    return false;
   }
-
-  if ( !ok ) return false;
 
   mReport += QStringLiteral( "Verified URI: %1<br>" ).arg( verifiedUri.replace( '&', QLatin1String( "&amp;" ) ) );
   mReport += QStringLiteral( "Expected URI: %1<br>" ).arg( expectedUri.replace( '&', QLatin1String( "&amp;" ) ) );
@@ -104,8 +101,8 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
     }
 
     bool statsOk = true;
-    QgsRasterBandStats verifiedStats =  verifiedProvider->bandStatistics( band );
-    QgsRasterBandStats expectedStats =  expectedProvider->bandStatistics( band );
+    QgsRasterBandStats verifiedStats = verifiedProvider->bandStatistics( band );
+    QgsRasterBandStats expectedStats = expectedProvider->bandStatistics( band );
 
     // Min/max may 'slightly' differ, for big numbers however, the difference may
     // be quite big, for example for Float32 with max -3.332e+38, the difference is 1.47338e+24
@@ -143,8 +140,8 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
     int width = expectedProvider->xSize();
     int height = expectedProvider->ySize();
-    QgsRasterBlock *expectedBlock = expectedProvider->block( band, expectedProvider->extent(), width, height );
-    QgsRasterBlock *verifiedBlock = verifiedProvider->block( band, expectedProvider->extent(), width, height );
+    std::unique_ptr< QgsRasterBlock > expectedBlock( expectedProvider->block( band, expectedProvider->extent(), width, height ) );
+    std::unique_ptr< QgsRasterBlock > verifiedBlock( verifiedProvider->block( band, expectedProvider->extent(), width, height ) );
 
     if ( !expectedBlock || !expectedBlock->isValid() ||
          !verifiedBlock || !verifiedBlock->isValid() )
@@ -168,7 +165,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
         QString valStr;
         if ( compare( verifiedVal, expectedVal, 0 ) )
         {
-          valStr = QStringLiteral( "%1" ).arg( verifiedVal );
+          valStr = QString::number( verifiedVal );
         }
         else
         {
@@ -183,9 +180,6 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
     htmlTable += QLatin1String( "</table>" );
 
     mReport += htmlTable;
-
-    delete expectedBlock;
-    delete verifiedBlock;
   }
   delete verifiedProvider;
   delete expectedProvider;
@@ -203,7 +197,7 @@ double QgsRasterChecker::tolerance( double val, int places )
 {
   // float precision is about 7 decimal digits, double about 16
   // default places = 6
-  return 1. * qPow( 10, qRound( log10( qAbs( val ) ) - places ) );
+  return 1. * std::pow( 10, std::round( std::log10( std::fabs( val ) ) - places ) );
 }
 
 QString QgsRasterChecker::compareHead()
@@ -224,7 +218,7 @@ void QgsRasterChecker::compare( const QString &paramName, int verifiedVal, int e
 bool QgsRasterChecker::compare( double verifiedVal, double expectedVal, double tolerance )
 {
   // values may be nan
-  return ( qIsNaN( verifiedVal ) && qIsNaN( expectedVal ) ) || ( qAbs( verifiedVal - expectedVal ) <= tolerance );
+  return ( std::isnan( verifiedVal ) && std::isnan( expectedVal ) ) || ( std::fabs( verifiedVal - expectedVal ) <= tolerance );
 }
 
 void QgsRasterChecker::compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance )

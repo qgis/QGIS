@@ -15,7 +15,7 @@
 #ifndef QGSMAPCANVASDOCKWIDGET_H
 #define QGSMAPCANVASDOCKWIDGET_H
 
-#include <ui_qgsmapcanvasdockwidgetbase.h>
+#include "ui_qgsmapcanvasdockwidgetbase.h"
 
 #include "qgsdockwidget.h"
 #include "qgspointxy.h"
@@ -32,6 +32,7 @@ class QgsMapToolPan;
 class QgsVertexMarker;
 class QgsRubberBand;
 class QCheckBox;
+class QRadioButton;
 
 /**
  * \class QgsMapCanvasDockWidget
@@ -61,10 +62,22 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setViewCenterSynchronized( bool enabled );
 
     /**
-     * Returns true if the view extent is synchronized with the main canvas extent.
+     * Returns TRUE if the view extent is synchronized with the main canvas extent.
      * \see setViewCenterSynchronized()
      */
     bool isViewCenterSynchronized() const;
+
+    /**
+     * Returns TRUE if the view is synchronized with the selection on the main canvas.
+     * \see setAutoZoomToSelected()
+     */
+    bool isAutoZoomToSelected() const;
+
+    /**
+     * Sets whether the view is synchronized with the selection on the main canvas.
+     * \see isAutoZoomToSelected()
+     */
+    void setAutoZoomToSelected( bool autoZoom );
 
     /**
      * Sets whether the cursor position marker is visible.
@@ -73,7 +86,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setCursorMarkerVisible( bool visible );
 
     /**
-     * Returns true if the cursor position marker is visible.
+     * Returns TRUE if the cursor position marker is visible.
      * \see setCursorMarkerVisible()
      */
     bool isCursorMarkerVisible() const;
@@ -85,7 +98,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setMainCanvasExtentVisible( bool visible );
 
     /**
-     * Returns true if the main canvas extent is visible.
+     * Returns TRUE if the main canvas extent is visible.
      * \see setMainCanvasExtentVisible()
      */
     bool isMainCanvasExtentVisible() const;
@@ -112,7 +125,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setViewScaleSynchronized( bool enabled );
 
     /**
-     * Returns true if the view scale is synchronized with the main canvas extent.
+     * Returns TRUE if the view scale is synchronized with the main canvas extent.
      * \see setViewScaleSynchronized()
      * \see scaleFactor()
      */
@@ -144,11 +157,14 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void mapExtentChanged();
     void mapCrsChanged();
     void menuAboutToShow();
+    //! Renames the active map theme called \a theme to \a newTheme
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
     void settingsMenuAboutToShow();
     void syncMarker( const QgsPointXY &p );
     void mapScaleChanged();
     void updateExtentRect();
     void showLabels( bool show );
+    void autoZoomToSelection( bool autoZoom );
 
 
   private:
@@ -157,6 +173,8 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapCanvas *mMainCanvas = nullptr;
     QMenu *mMenu = nullptr;
     QList<QAction *> mMenuPresetActions;
+    QRadioButton *mSyncExtentRadio = nullptr;
+    QRadioButton *mSyncSelectionRadio = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     QgsDoubleSpinBox *mMagnificationEdit = nullptr;
@@ -171,6 +189,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsVertexMarker *mXyMarker = nullptr;
     QgsRubberBand *mExtentRubberBand = nullptr;
     void syncViewCenter( QgsMapCanvas *sourceCanvas );
+    void syncSelection();
 };
 
 /**
@@ -187,6 +206,8 @@ class QgsMapSettingsAction: public QWidgetAction
 
     QgsMapSettingsAction( QWidget *parent = nullptr );
 
+    QRadioButton *syncExtentRadio() { return mSyncExtentRadio; }
+    QRadioButton *syncSelectionRadio() { return mSyncSelectionRadio; }
     QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
     QgsDoubleSpinBox *rotationSpinBox() { return mRotationWidget; }
     QgsDoubleSpinBox *magnifierSpinBox() { return mMagnifierWidget; }
@@ -194,6 +215,8 @@ class QgsMapSettingsAction: public QWidgetAction
     QCheckBox *syncScaleCheckBox() { return mSyncScaleCheckBox; }
 
   private:
+    QRadioButton *mSyncSelectionRadio = nullptr;
+    QRadioButton *mSyncExtentRadio = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationWidget = nullptr;
     QgsDoubleSpinBox *mMagnifierWidget = nullptr;

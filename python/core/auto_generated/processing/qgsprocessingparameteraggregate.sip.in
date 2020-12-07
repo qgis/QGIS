@@ -1,0 +1,76 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameteraggregate.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProcessingParameterAggregate : QgsProcessingParameterDefinition
+{
+%Docstring
+A parameter for "aggregate" configurations, which consist of a definition
+of desired output fields, types, and aggregate used to populate then.
+
+Designed for use with the "Aggregate" algorithm.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameteraggregate.h"
+%End
+  public:
+    QgsProcessingParameterAggregate( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterAggregate.
+%End
+
+    virtual QgsProcessingParameterDefinition *clone() const;
+
+    virtual QString type() const;
+
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    QString parentLayerParameterName() const;
+%Docstring
+Returns the name of the parent layer parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentLayerParameterName`
+%End
+
+    void setParentLayerParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent layer parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentLayerParameterName`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameteraggregate.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

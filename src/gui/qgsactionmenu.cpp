@@ -44,6 +44,10 @@ void QgsActionMenu::init()
   setTitle( tr( "&Actions" ) );
 
   connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsMapLayer::willBeDeleted, this, &QgsActionMenu::layerWillBeDeleted );
 
   reloadActions();
 }
@@ -61,6 +65,12 @@ QgsFeature QgsActionMenu::feature()
 void QgsActionMenu::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
+}
+
+void QgsActionMenu::setMode( const QgsAttributeEditorContext::Mode mode )
+{
+  mMode = mode;
+  reloadActions();
 }
 
 void QgsActionMenu::triggerAction()
@@ -83,12 +93,13 @@ void QgsActionMenu::triggerAction()
   if ( data.actionType == MapLayerAction )
   {
     QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
-    mapLayerAction->triggerForFeature( data.mapLayer, &mFeature );
+    mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
   }
   else if ( data.actionType == AttributeAction )
   {
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context = mLayer->createExpressionContext();
+    context.setFeature( mFeature );
 
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
@@ -104,10 +115,20 @@ void QgsActionMenu::reloadActions()
 
   mActions = mLayer->actions()->actions( mActionScope );
 
-  Q_FOREACH ( const QgsAction &action, mActions )
+  const auto constMActions = mActions;
+  for ( const QgsAction &action : constMActions )
   {
+    if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
+      continue;
+
+    if ( action.isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::IdentifyMode ) )
+      continue;
+
+    QgsAction act( action );
+    act.setExpressionContextScope( mExpressionContextScope );
+
     QAction *qAction = new QAction( action.icon(), action.name(), this );
-    qAction->setData( QVariant::fromValue<ActionData>( ActionData( action, mFeatureId, mLayer ) ) );
+    qAction->setData( QVariant::fromValue<ActionData>( ActionData( act, mFeatureId, mLayer ) ) );
     qAction->setIcon( action.icon() );
 
     // Only enable items on supported platforms
@@ -134,6 +155,10 @@ void QgsActionMenu::reloadActions()
     for ( int i = 0; i < mapLayerActions.size(); ++i )
     {
       QgsMapLayerAction *qaction = mapLayerActions.at( i );
+
+      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::IdentifyMode ) )
+        continue;
+
       QAction *qAction = new QAction( qaction->icon(), qaction->text(), this );
       qAction->setData( QVariant::fromValue<ActionData>( ActionData( qaction, mFeatureId, mLayer ) ) );
       addAction( qAction );
@@ -142,6 +167,15 @@ void QgsActionMenu::reloadActions()
   }
 
   emit reinit();
+}
+
+void QgsActionMenu::layerWillBeDeleted()
+{
+  // here we are just making sure that we are not going to have reloadActions() called again
+  // with a dangling pointer to a layer when actions get removed on QGIS exit
+  clear();
+  mLayer = nullptr;
+  disconnect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
 }
 
 
@@ -160,8 +194,19 @@ QgsActionMenu::ActionData::ActionData( const QgsAction &action, QgsFeatureId fea
   , mapLayer( mapLayer )
 {}
 
-QgsActionMenu::ActionData::ActionData()
-  : actionType( Invalid )
-  , featureId( 0 )
-  , mapLayer( nullptr )
-{}
+
+void QgsActionMenu::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+  reloadActions();
+}
+
+QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
+{
+  return mExpressionContextScope;
+}
+
+QList<QgsAction> QgsActionMenu::menuActions()
+{
+  return mActions;
+}

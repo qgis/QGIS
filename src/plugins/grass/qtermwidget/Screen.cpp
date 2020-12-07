@@ -107,8 +107,8 @@ void Screen::cursorUp(int n)
 {
     if (n == 0) n = 1; // Default
     int stop = cuY < _topMargin ? 0 : _topMargin;
-    cuX = qMin(columns-1,cuX); // nowrap!
-    cuY = qMax(stop,cuY-n);
+    cuX = std::min(columns-1,cuX); // nowrap!
+    cuY = std::max(stop,cuY-n);
 }
 
 void Screen::cursorDown(int n)
@@ -116,23 +116,23 @@ void Screen::cursorDown(int n)
 {
     if (n == 0) n = 1; // Default
     int stop = cuY > _bottomMargin ? lines-1 : _bottomMargin;
-    cuX = qMin(columns-1,cuX); // nowrap!
-    cuY = qMin(stop,cuY+n);
+    cuX = std::min(columns-1,cuX); // nowrap!
+    cuY = std::min(stop,cuY+n);
 }
 
 void Screen::cursorLeft(int n)
     //=CUB
 {
     if (n == 0) n = 1; // Default
-    cuX = qMin(columns-1,cuX); // nowrap!
-    cuX = qMax(0,cuX-n);
+    cuX = std::min(columns-1,cuX); // nowrap!
+    cuX = std::max(0,cuX-n);
 }
 
 void Screen::cursorRight(int n)
     //=CUF
 {
     if (n == 0) n = 1; // Default
-    cuX = qMin(columns-1,cuX+n);
+    cuX = std::min(columns-1,cuX+n);
 }
 
 void Screen::setMargins(int top, int bot)
@@ -189,7 +189,7 @@ void Screen::nextLine()
 void Screen::eraseChars(int n)
 {
     if (n == 0) n = 1; // Default
-    int p = qMax(0,qMin(cuX+n-1,columns-1));
+    int p = std::max(0,std::min(cuX+n-1,columns-1));
     clearImage(loc(cuX,cuY),loc(p,cuY),' ');
 }
 
@@ -283,8 +283,8 @@ void Screen::saveCursor()
 
 void Screen::restoreCursor()
 {
-    cuX     = qMin(savedState.cursorColumn,columns-1);
-    cuY     = qMin(savedState.cursorLine,lines-1);
+    cuX     = std::min(savedState.cursorColumn,columns-1);
+    cuY     = std::min(savedState.cursorLine,lines-1);
     currentRendition   = savedState.rendition;
     currentForeground   = savedState.foreground;
     currentBackground   = savedState.background;
@@ -307,7 +307,7 @@ void Screen::resizeImage(int new_lines, int new_columns)
     // create new screen lines and copy from old to new
 
     ImageLine* newScreenLines = new ImageLine[new_lines+1];
-    for (int i=0; i < qMin(lines,new_lines+1) ;i++)
+    for (int i=0; i < std::min(lines,new_lines+1) ;i++)
         newScreenLines[i]=screenLines[i];
     for (int i=lines;(i > 0) && (i<new_lines+1);i++)
         newScreenLines[i].resize( new_columns );
@@ -323,8 +323,8 @@ void Screen::resizeImage(int new_lines, int new_columns)
 
     lines = new_lines;
     columns = new_columns;
-    cuX = qMin(cuX,columns-1);
-    cuY = qMin(cuY,lines-1);
+    cuX = std::min(cuX,columns-1);
+    cuY = std::min(cuY,lines-1);
 
     // FIXME: try to keep values, evtl.
     _topMargin=0;
@@ -403,11 +403,12 @@ void Screen::updateEffectiveRendition()
 
 void Screen::copyFromHistory(Character* dest, int startLine, int count) const
 {
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( startLine >= 0 && count > 0 && startLine + count <= history->getLines() );
 
     for (int line = startLine; line < startLine + count; line++)
     {
-        const int length = qMin(columns,history->getLineLen(line));
+        const int length = std::min(columns,history->getLineLen(line));
         const int destLineOffset  = (line-startLine)*columns;
 
         history->getCells(line,0,length,dest + destLineOffset);
@@ -456,12 +457,13 @@ void Screen::copyFromScreen(Character* dest , int startLine , int count) const
 void Screen::getImage( Character* dest, int size, int startLine, int endLine ) const
 {
     Q_ASSERT( startLine >= 0 );
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( endLine >= startLine && endLine < history->getLines() + lines );
 
     const int mergedLines = endLine - startLine + 1;
 
     Q_ASSERT( size >= mergedLines * columns );
-    Q_UNUSED( size );
+    Q_UNUSED( size )
 
     const int linesInHistoryBuffer = qBound(0,history->getLines()-startLine,mergedLines);
     const int linesInScreenBuffer = mergedLines - linesInHistoryBuffer;
@@ -492,6 +494,7 @@ void Screen::getImage( Character* dest, int size, int startLine, int endLine ) c
 QVector<LineProperty> Screen::getLineProperties( int startLine , int endLine ) const
 {
     Q_ASSERT( startLine >= 0 );
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( endLine >= startLine && endLine < history->getLines() + lines );
 
     const int mergedLines = endLine-startLine+1;
@@ -526,7 +529,7 @@ QVector<LineProperty> Screen::getLineProperties( int startLine , int endLine ) c
 void Screen::reset(bool clearScreen)
 {
     setMode(MODE_Wrap  ); saveMode(MODE_Wrap  );  // wrap at end of margin
-    resetMode(MODE_Origin); saveMode(MODE_Origin);  // position refere to [1,1]
+    resetMode(MODE_Origin); saveMode(MODE_Origin);  // position refers to [1,1]
     resetMode(MODE_Insert); saveMode(MODE_Insert);  // overstroke
     setMode(MODE_Cursor);                         // cursor visible
     resetMode(MODE_Screen);                         // screen not inverse
@@ -550,8 +553,8 @@ void Screen::clear()
 
 void Screen::backspace()
 {
-    cuX = qMin(columns-1,cuX); // nowrap!
-    cuX = qMax(0,cuX-1);
+    cuX = std::min(columns-1,cuX); // nowrap!
+    cuX = std::max(0,cuX-1);
 
     if (screenLines[cuY].size() < cuX+1)
         screenLines[cuY].resize(cuX+1);
@@ -768,14 +771,14 @@ void Screen::setCursorX(int x)
 {
     if (x == 0) x = 1; // Default
     x -= 1; // Adjust
-    cuX = qMax(0,qMin(columns-1, x));
+    cuX = std::max(0,std::min(columns-1, x));
 }
 
 void Screen::setCursorY(int y)
 {
     if (y == 0) y = 1; // Default
     y -= 1; // Adjust
-    cuY = qMax(0,qMin(lines  -1, y + (getMode(MODE_Origin) ? _topMargin : 0) ));
+    cuY = std::max(0,std::min(lines  -1, y + (getMode(MODE_Origin) ? _topMargin : 0) ));
 }
 
 void Screen::home()
@@ -1077,8 +1080,8 @@ void Screen::setSelectionEnd( const int x, const int y)
         int bottomRow = selBottomRight / columns;
         int bottomColumn = selBottomRight % columns;
 
-        selTopLeft = loc(qMin(topColumn,bottomColumn),topRow);
-        selBottomRight = loc(qMax(topColumn,bottomColumn),bottomRow);
+        selTopLeft = loc(std::min(topColumn,bottomColumn),topRow);
+        selBottomRight = loc(std::max(topColumn,bottomColumn),bottomRow);
     }
 }
 
@@ -1187,7 +1190,7 @@ int Screen::copyLineToStream(int line ,
         const int lineLength = history->getLineLen(line);
 
         // ensure that start position is before end of line
-        start = qMin(start,qMax(0,lineLength-1));
+        start = std::min(start,std::max(0,lineLength-1));
 
         // retrieve line from history buffer.  It is assumed
         // that the history buffer does not store trailing white space
@@ -1198,12 +1201,13 @@ int Screen::copyLineToStream(int line ,
         }
         else
         {
-            count = qMin(start+count,lineLength)-start;
+            count = std::min(start+count,lineLength)-start;
         }
 
         // safety checks
         assert( start >= 0 );
         assert( count >= 0 );
+        // cppcheck-suppress assertWithSideEffect
         assert( (start+count) <= history->getLineLen(line) );
 
         history->getCells(line,start,count,characterBuffer);
@@ -1224,7 +1228,7 @@ int Screen::copyLineToStream(int line ,
         int length = screenLines[screenLine].count();
 
         //retrieve line from screen image
-        for (int i=start;i < qMin(start+count,length);i++)
+        for (int i=start;i < std::min(start+count,length);i++)
         {
             characterBuffer[i-start] = data[i];
         }

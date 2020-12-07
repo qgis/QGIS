@@ -15,15 +15,12 @@
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
 
+#include <QFontMetrics>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
 #include <QTimer>
-
-#include "qgsrasterlayer.h"
-#include "qgsrasterrenderer.h"
-#include "qgsvectorlayer.h"
-
+#include "qgsmaplayer.h"
 
 ///@cond PRIVATE
 
@@ -31,12 +28,21 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   : mLayer( layer )
 {
   setAutoFillBackground( true ); // override the content from model
-  QLabel *l = new QLabel( QStringLiteral( "Opacity" ), this );
+  QLabel *l = new QLabel( tr( "Opacity" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 1000 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  int sliderW = static_cast< int >( QFontMetricsF( font() ).width( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
+#else
+  int sliderW = static_cast< int >( QFontMetricsF( font() ).horizontalAdvance( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
+#endif
+  mSlider->setMinimumWidth( sliderW / 2 );
+  mSlider->setMaximumWidth( sliderW );
   QHBoxLayout *lay = new QHBoxLayout();
+  QSpacerItem *spacerItem = new QSpacerItem( 1, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   lay->addWidget( l );
   lay->addWidget( mSlider );
+  lay->addItem( spacerItem );
   setLayout( lay );
 
   // timer for delayed transparency update - for more responsive GUI
@@ -48,17 +54,8 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   connect( mSlider, &QAbstractSlider::valueChanged, this, &QgsLayerTreeOpacityWidget::sliderValueChanged );
 
   // init from layer
-  if ( mLayer->type() == QgsMapLayer::VectorLayer )
-  {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
-    mSlider->setValue( vl->opacity() * 1000.0 );
-    connect( vl, &QgsVectorLayer::opacityChanged, this, &QgsLayerTreeOpacityWidget::layerTrChanged );
-  }
-  else if ( mLayer->type() == QgsMapLayer::RasterLayer )
-  {
-    mSlider->setValue( 1000 - qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 1000 );
-    // TODO: there is no signal for raster layers
-  }
+  mSlider->setValue( mLayer->opacity() * 1000.0 );
+  connect( mLayer, &QgsMapLayer::opacityChanged, this, &QgsLayerTreeOpacityWidget::layerTrChanged );
 }
 
 QSize QgsLayerTreeOpacityWidget::sizeHint() const
@@ -69,7 +66,7 @@ QSize QgsLayerTreeOpacityWidget::sizeHint() const
 
 void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
 
   if ( mTimer->isActive() )
     return;
@@ -79,23 +76,14 @@ void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 {
   int value = mSlider->value();
-
-  if ( mLayer->type() == QgsMapLayer::VectorLayer )
-  {
-    qobject_cast<QgsVectorLayer *>( mLayer )->setOpacity( value / 1000.0 );
-  }
-  else if ( mLayer->type() == QgsMapLayer::RasterLayer )
-  {
-    qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( 1 - value / 1000.0 );
-  }
-
+  mLayer->setOpacity( value / 1000.0 );
   mLayer->triggerRepaint();
 }
 
 void QgsLayerTreeOpacityWidget::layerTrChanged()
 {
   mSlider->blockSignals( true );
-  mSlider->setValue( qobject_cast<QgsVectorLayer *>( mLayer )->opacity() * 1000.0 );
+  mSlider->setValue( mLayer->opacity() * 1000.0 );
   mSlider->blockSignals( false );
 }
 
@@ -113,13 +101,13 @@ QString QgsLayerTreeOpacityWidget::Provider::name() const
 
 QgsLayerTreeOpacityWidget *QgsLayerTreeOpacityWidget::Provider::createWidget( QgsMapLayer *layer, int widgetIndex )
 {
-  Q_UNUSED( widgetIndex );
+  Q_UNUSED( widgetIndex )
   return new QgsLayerTreeOpacityWidget( layer );
 }
 
-bool QgsLayerTreeOpacityWidget::Provider::supportsLayer( QgsMapLayer *layer )
+bool QgsLayerTreeOpacityWidget::Provider::supportsLayer( QgsMapLayer * )
 {
-  return layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer;
+  return true;
 }
 
 ///@endcond

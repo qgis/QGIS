@@ -22,7 +22,6 @@
 #ifndef QGSWFSDESCRIBEFEATURETYPE_H
 #define QGSWFSDESCRIBEFEATURETYPE_H
 
-#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -37,7 +36,8 @@ namespace QgsWfs
   QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request );
 
-  /** Output WFS  GetCapabilities response
+  /**
+   * Output WFS  GetCapabilities response
    */
   void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                  const QgsServerRequest &request, QgsServerResponse &response );

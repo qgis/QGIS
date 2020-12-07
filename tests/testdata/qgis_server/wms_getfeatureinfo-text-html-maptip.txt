@@ -1,0 +1,21 @@
+Content-Length: 512
+Content-Type: text/html; charset=utf-8
+
+<HEAD>
+<TITLE> GetFeatureInfo results </TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+</HEAD>
+<BODY>
+<TABLE border=1 width=100%>
+<TR><TH width=25%>Layer</TH><TD>testlayer èé</TD></TR>
+</BR><TABLE border=1 width=100%>
+<TR><TH>Feature</TH><TD>2</TD></TR>
+<TR><TH>id</TH><TD>3</TD></TR>
+<TR><TH>name</TH><TD>three</TD></TR>
+<TR><TH>utf8nameè</TH><TD>three èé↓</TD></TR>
+<TR><TH>maptip</TH><TD>Name: three</TD></TR>
+</TABLE>
+</BR>
+</TABLE>
+<BR></BR>
+</BODY>

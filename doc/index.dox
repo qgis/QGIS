@@ -6,7 +6,7 @@
 
 \section index_intro Introduction
 \htmlonly<img src="qgis-icon-60x60.png" alt="QGIS"
-align="left"><a href="http://qgis.org">QGIS</a>\endhtmlonly\latexonly
+align="left"><a href="https://qgis.org">QGIS</a>\endhtmlonly\latexonly
 QGIS \endlatexonly  is a user friendly Open Source Geographic
 Information System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS
 supports vector, raster, and database formats. QGIS is licensed under the GNU
@@ -19,9 +19,12 @@ fixes, bug reports, contributed documentation, advocacy and supporting other
 users on our mailing lists and forums. Financial contributions are also
 welcome.
 
-You can also <a href="http://qgis.org/downloads/qgis-api-doc.zip">download</a>
+You can also <a href="https://qgis.org/downloads/qgis-api-doc.7z">download</a>
 this documentation or a <a href="qgis.qch">Qt help file</a>
 for offline use.
+
+There is also a <a href="https://qgis.org/pyqgis/master">Python version of
+the documentation</a> available.
 
 \section index_APIStability Earlier versions of the API
 
@@ -29,30 +32,41 @@ See \ref api_break for information about incompatible changes to API between rel
 
 Earlier versions of the documentation are also available on the QGIS
 website:
-<a href="http://qgis.org/api/2.18">2.18</a>,
-<a href="http://qgis.org/api/2.14">2.14 (LTR)</a>,
-<a href="http://qgis.org/api/2.12">2.12</a>,
-<a href="http://qgis.org/api/2.10">2.10</a>,
-<a href="http://qgis.org/api/2.8">2.8 (LTR)</a>,
-<a href="http://qgis.org/api/2.6">2.6</a>,
-<a href="http://qgis.org/api/2.4">2.4</a>,
-<a href="http://qgis.org/api/2.2">2.2</a>,
-<a href="http://qgis.org/api/2.0">2.0</a>,
-<a href="http://qgis.org/api/1.8">1.8</a>,
-<a href="http://qgis.org/api/1.7">1.7</a> and
-<a href="http://qgis.org/api/1.6">1.6</a>
+<a href="https://qgis.org/api/3.14">3.14</a>,
+<a href="https://qgis.org/api/3.12">3.12</a>,
+<a href="https://qgis.org/api/3.10">3.10 (LTR)</a>,
+<a href="https://qgis.org/api/3.8">3.8</a>,
+<a href="https://qgis.org/api/3.6">3.6</a>,
+<a href="https://qgis.org/api/3.4">3.4 (LTR)</a>,
+<a href="https://qgis.org/api/3.2">3.2</a>,
+<a href="https://qgis.org/api/3.0">3.0</a>,
+<a href="https://qgis.org/api/2.18">2.18 (LTR)</a>,
+<a href="https://qgis.org/api/2.14">2.14 (LTR)</a>,
+<a href="https://qgis.org/api/2.12">2.12</a>,
+<a href="https://qgis.org/api/2.10">2.10</a>,
+<a href="https://qgis.org/api/2.8">2.8 (LTR)</a>,
+<a href="https://qgis.org/api/2.6">2.6</a>,
+<a href="https://qgis.org/api/2.4">2.4</a>,
+<a href="https://qgis.org/api/2.2">2.2</a>,
+<a href="https://qgis.org/api/2.0">2.0</a>,
+<a href="https://qgis.org/api/1.8">1.8</a>,
+<a href="https://qgis.org/api/1.7">1.7</a> and
+<a href="https://qgis.org/api/1.6">1.6</a>
+
+\section qgsquick_docs QgsQuick library documentation
+ 
+See \ref qgsquick for information about QGIS Quick (QML) components library
 
 \section index_maillist Mailing Lists
 
 For support we encourage you to join our <a
-href="http://qgis.org/en/site/forusers/support.html#mailing-lists">mailing lists</a> for
+href="https://qgis.org/en/site/forusers/support.html#mailing-lists">mailing lists</a> for
 users and developers.
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a
-href="https://issues.qgis.org/projects/qgis">bug tracker</a>. When reporting bugs,
-please include some contact information in case we need help with replicating
-your issue.
+href="https://github.com/qgis/QGIS/issues">bug tracker</a>. When reporting bugs,
+please be available to follow up on your initial report.
 
 \section index_ircchannel IRC channel
 Some QGIS users and developers can also often be found in the 

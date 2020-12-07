@@ -13,13 +13,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from future import standard_library
-standard_library.install_aliases()
 __author__ = 'Larry Shaffer'
 __date__ = '2014/02/16'
 __copyright__ = 'Copyright 2014, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import sys
@@ -121,7 +117,7 @@ class TestQgisLocalServer(unittest.TestCase):
         chk.setControlName('expected_' + test_name)
         # chk.setMapRenderer(None)
         res = chk.compareImages(test_name, 0, img_path)
-        if QGIS_TEST_REPORT and not res:  # don't report ok checks
+        if QGIS_TEST_REPORT and not res:  # don't report OK checks
             TESTREPORTS[test_name] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(test_name)
         assert res, msg

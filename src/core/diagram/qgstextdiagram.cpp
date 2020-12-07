@@ -19,7 +19,7 @@
 
 #include <QPainter>
 
-QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
+QgsTextDiagram::QgsTextDiagram()
 {
   mPen.setWidthF( 2.0 );
   mPen.setColor( QColor( 0, 0, 0 ) );
@@ -63,13 +63,18 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCo
 double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
 {
   QSizeF size = sizeForValue( value, s, is );
-  return qMax( size.width(), size.height() );
+  return std::max( size.width(), size.height() );
+}
+
+QString QgsTextDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_TEXT;
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c );
-  Q_UNUSED( attributes );
+  Q_UNUSED( c )
+  Q_UNUSED( attributes )
 
   return s.size;
 }
@@ -169,19 +174,32 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
         QLineF verticalLine( baseX + w / nCategories * i, baseY + h, baseX + w / nCategories * i, baseY );
         if ( baseX + w / nCategories * i < baseX + w / 2.0 )
         {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
           verticalLine.intersect( triangleEdgeLeft, &intersectionPoint1 );
+#else
+          verticalLine.intersects( triangleEdgeLeft, &intersectionPoint1 );
+#endif
         }
         else
         {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
           verticalLine.intersect( triangleEdgeRight, &intersectionPoint1 );
+#else
+          verticalLine.intersects( triangleEdgeRight, &intersectionPoint1 );
+#endif
         }
         p->drawLine( QPointF( baseX + w / nCategories * i, baseY + h ), intersectionPoint1 );
       }
       else //vertical
       {
         QLineF horizontalLine( baseX, baseY + h / nCategories * i, baseX + w, baseY + h / nCategories * i );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         horizontalLine.intersect( triangleEdgeLeft, &intersectionPoint1 );
         horizontalLine.intersect( triangleEdgeRight, &intersectionPoint2 );
+#else
+        horizontalLine.intersects( triangleEdgeLeft, &intersectionPoint1 );
+        horizontalLine.intersects( triangleEdgeRight, &intersectionPoint2 );
+#endif
         p->drawLine( intersectionPoint1, intersectionPoint2 );
       }
     }
@@ -202,8 +220,12 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
     QgsExpression *expression = getExpression( s.categoryAttributes.at( i ), expressionContext );
     QString val = expression->evaluate( &expressionContext ).toString();
 
-    //find out dimesions
+    //find out dimensions
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     double textWidth = fontMetrics.width( val );
+#else
+    double textWidth = fontMetrics.horizontalAdvance( val );
+#endif
     double textHeight = fontMetrics.height();
 
     mPen.setColor( s.categoryColors.at( i ) );
@@ -243,7 +265,7 @@ void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd
   double d = b * b - a * ( c - 1 );
   if ( d > 0 )
   {
-    double e = sqrt( d );
+    double e = std::sqrt( d );
     double u1 = ( -b - e ) / a;
     double u2 = ( -b + e ) / a;
     //work with a tolerance of 0.00001 because of limited numerical precision

@@ -38,14 +38,14 @@ namespace QgsWcs
 {
 
   /**
-   * Return the highest version supported by this implementation
+   * Returns the highest version supported by this implementation
    */
   QString implementationVersion();
 
   /**
    * CoverageOffering or CoverageOfferingBrief element
    */
-  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, bool brief = false );
+  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, const QgsProject *project, bool brief = false );
 
   /**
    * Service URL string
@@ -58,7 +58,7 @@ namespace QgsWcs
   //XXX At some point, should be moved to common library
   QgsRectangle parseBbox( const QString &bboxStr );
 
-  // Define namespaces used in WFS documents
+  // Define namespaces used in WCS documents
   const QString WCS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wcs" );
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc" );

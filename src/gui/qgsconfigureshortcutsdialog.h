@@ -17,15 +17,17 @@
 #define QGSCONFIGURESHORTCUTSDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsconfigureshortcutsdialog.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QShortcut;
 class QgsShortcutsManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsConfigureShortcutsDialog
  * Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
  * \since QGIS 2.16
@@ -37,14 +39,13 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
   public:
 
-    /** Constructor for QgsConfigureShortcutsDialog.
+    /**
+     * Constructor for QgsConfigureShortcutsDialog.
      * \param parent parent widget
-     * \param manager associated QgsShortcutsManager, or leave as null to use the default
+     * \param manager associated QgsShortcutsManager, or leave as NULLPTR to use the default
      * singleton QgsShortcutsManager instance.
      */
-    QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = 0, QgsShortcutsManager *manager = nullptr );
-
-    ~QgsConfigureShortcutsDialog();
+    QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsShortcutsManager *manager = nullptr );
 
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
@@ -56,17 +57,14 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void setNoShortcut();
     void saveShortcuts();
     void loadShortcuts();
-    void on_mLeFilter_textChanged( const QString &text );
+    void mLeFilter_textChanged( const QString &text );
 
     void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
+    //! Open the associated help
+    void showHelp();
+
   private:
-
-    //! Saves the dialog window state
-    void saveState();
-
-    //! Restores the dialog window state
-    void restoreState();
 
     //! Populates the dialog with all actions from the manager
     void populateActions();
@@ -74,10 +72,10 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     //! Returns the currently selected shortcut object (QAction or QShortcut)
     QObject *currentObject();
 
-    //! Returns the currently selected action, or null if no action selected
+    //! Returns the currently selected action, or NULLPTR if no action selected
     QAction *currentAction();
 
-    //! Returns the currently selected QShortcut, or null if no shortcut selected
+    //! Returns the currently selected QShortcut, or NULLPTR if no shortcut selected
     QShortcut *currentShortcut();
 
     void setGettingShortcut( bool getting );
@@ -86,8 +84,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
     QgsShortcutsManager *mManager = nullptr;
 
-    bool mGettingShortcut;
-    int mModifiers, mKey;
+    bool mGettingShortcut = false;
+    int mModifiers = 0, mKey = 0;
 
 };
 

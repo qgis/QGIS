@@ -21,11 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-
 import os
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsApplication)
@@ -59,7 +54,7 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
 
     def execute(self, parameters, context=None, feedback=None, model=None):
         new_parameters = deepcopy(parameters)
-        self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"])
+        self.alg = QgsApplication.processingRegistry().createAlgorithmById(self.description["algname"])
         for name, value in list(self.description["parameters"].items()):
             new_parameters[name] = value
         for name, value in list(self.description["outputs"].items()):

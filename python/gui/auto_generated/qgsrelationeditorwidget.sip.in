@@ -1,0 +1,256 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationeditorwidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+%ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsrelationeditorwidget.h>
+%End
+
+
+
+
+class QgsRelationEditorWidget : QgsCollapsibleGroupBox
+{
+
+%TypeHeaderCode
+#include "qgsrelationeditorwidget.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
+      sipType = sipType_QgsRelationEditorWidget;
+    else
+      sipType = NULL;
+%End
+  public:
+
+
+    QgsRelationEditorWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+
+:param parent: parent widget
+%End
+
+    void setViewMode( QgsDualView::ViewMode mode );
+%Docstring
+Define the view mode for the dual view
+%End
+
+    QgsDualView::ViewMode viewMode();
+%Docstring
+Gets the view mode for the dual view
+%End
+
+    void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
+%Docstring
+Sets the ``relation`` and the ``feature``
+%End
+
+    void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
+%Docstring
+Set the relation(s) for this widget
+If only one relation is set, it will act as a simple 1:N relation widget
+If both relations are set, it will act as an N:M relation widget
+inserting and deleting entries on the intermediate table as required.
+
+:param relation: Relation referencing the edited table
+:param nmrelation: Optional reference from the referencing table to a 3rd N:M table
+%End
+
+    void setFeature( const QgsFeature &feature, bool update = true );
+%Docstring
+Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``
+%End
+
+    void setEditorContext( const QgsAttributeEditorContext &context );
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referencing feature from this widget
+%End
+
+    QgsAttributeEditorContext editorContext( ) const;
+%Docstring
+Returns the attribute editor context.
+
+.. versionadded:: 3.14
+%End
+
+    QgsIFeatureSelectionManager *featureSelectionManager();
+%Docstring
+The feature selection manager is responsible for the selected features
+which are currently being edited.
+%End
+
+    bool showLabel() const;
+%Docstring
+Defines if a title label should be shown for this widget.
+
+.. versionadded:: 2.18
+%End
+
+    void setShowLabel( bool showLabel );
+%Docstring
+Defines if a title label should be shown for this widget.
+
+.. versionadded:: 2.18
+%End
+
+ bool showLinkButton() const /Deprecated/;
+%Docstring
+Determines if the "link feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+ void setShowLinkButton( bool showLinkButton ) /Deprecated/;
+%Docstring
+Determines if the "link feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ bool showUnlinkButton() const /Deprecated/;
+%Docstring
+Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
+%Docstring
+Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ bool showSaveChildEditsButton() const /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    bool forceSuppressFormPopup() const;
+%Docstring
+Determines the force suppress form popup status that is configured for this widget
+
+.. versionadded:: 3.16
+%End
+
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Sets force suppress form popup status with ``forceSuppressFormPopup``
+configured for this widget
+
+.. versionadded:: 3.16
+%End
+
+    QVariant nmRelationId() const;
+%Docstring
+Determines the relation id of the second relation involved in an N:M relation.
+
+.. versionadded:: 3.16
+%End
+
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+%Docstring
+Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
+If it's empty, then it's considered as a 1:M relationship.
+
+.. versionadded:: 3.16
+%End
+
+    QString label() const;
+%Docstring
+Determines the label of this element
+
+.. versionadded:: 3.16
+%End
+
+    void setLabel( const QString &label = QString() );
+%Docstring
+Sets ``label`` for this element
+If it's empty it takes the relation id as label
+
+.. versionadded:: 3.16
+%End
+
+    QgsFeature feature() const;
+%Docstring
+Returns the widget's current feature
+
+.. versionadded:: 3.14
+%End
+
+  public slots:
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+%Docstring
+Called when an ``attribute`` value in the parent widget has changed to ``newValue``
+
+.. versionadded:: 3.14
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationeditorwidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

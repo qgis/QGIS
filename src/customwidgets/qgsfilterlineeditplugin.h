@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsFilterLineEditPlugin : public QObject, public QDes
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsFilterLineEditPlugin( QObject *parent = 0 );
+    explicit QgsFilterLineEditPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

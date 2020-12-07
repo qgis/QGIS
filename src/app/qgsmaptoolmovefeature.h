@@ -18,6 +18,10 @@
 
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgis_app.h"
+#include "qgspointxy.h"
+#include "qgsfeatureid.h"
+
+class QgsSnapIndicator;
 
 //! Map tool for translating feature position by mouse drag
 class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
@@ -32,13 +36,16 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
     };
 
     QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode = Move );
-    virtual ~QgsMapToolMoveFeature();
+    ~QgsMapToolMoveFeature() override;
 
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     void deactivate() override;
+
+    //! catch escape when active to action
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
   private:
     //! Start point of the move in map coordinates
@@ -46,6 +53,9 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 
     //! Rubberband that shows the feature being moved
     QgsRubberBand *mRubberBand = nullptr;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     //! Id of moved feature
     QgsFeatureIds mMovedFeatures;

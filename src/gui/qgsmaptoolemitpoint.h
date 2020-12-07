@@ -21,7 +21,8 @@
 class QgsMapCanvas;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A map tool that simply emits a point when clicking on the map.
  * Connecting a slot to its canvasClicked() signal will
  * let you implement custom behavior for the passed in point.
@@ -34,10 +35,10 @@ class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
     //! constructor
     QgsMapToolEmitPoint( QgsMapCanvas *canvas );
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   signals:
     //! signal emitted on canvas click

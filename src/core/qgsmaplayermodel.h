@@ -21,12 +21,13 @@
 #include <QStringList>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsMapLayer;
+class QgsProject;
 
-
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsMapLayerModel class is a model to display layers in widgets.
  * \see QgsMapLayerProxyModel to sort and/filter the layers
  * \see QgsFieldModel to combine in with a field selector.
@@ -51,21 +52,44 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
       EmptyRole, //!< True if index corresponds to the empty (not set) value
       AdditionalRole, //!< True if index corresponds to an additional (non map layer) item
     };
+    Q_ENUM( ItemDataRole )
 
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
+     *
+     * If a specific \a project is not specified then the QgsProject::instance() project will be used to
+     * populate the model.
      */
-    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr );
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
+     *
+     * If a specific \a project is not specified then the QgsProject::instance() project will be used to
+     * populate the model.
      */
-    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr );
+    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr, QgsProject *project = nullptr );
 
     /**
      * \brief setItemsCheckable defines if layers should be selectable in the widget
      */
     void setItemsCheckable( bool checkable );
+
+    /**
+     * Sets whether items in the model can be reordered via drag and drop.
+     *
+     * \see itemsCanBeReordered()
+     * \since QGIS 3.14
+     */
+    void setItemsCanBeReordered( bool allow );
+
+    /**
+     * Returns TRUE if items in the model can be reordered via drag and drop.
+     *
+     * \see setItemsCanBeReordered()
+     * \since QGIS 3.14
+     */
+    bool itemsCanBeReordered() const;
 
     /**
      * \brief checkAll changes the checkstate for all the layers
@@ -80,7 +104,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setAllowEmptyLayer( bool allowEmpty );
 
     /**
-     * Returns true if the model allows the empty layer ("not set") choice.
+     * Returns TRUE if the model allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
      * \since QGIS 3.0
      */
@@ -94,7 +118,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setShowCrs( bool showCrs );
 
     /**
-     * Returns true if the model includes layer's CRS in the display role.
+     * Returns TRUE if the model includes layer's CRS in the display role.
      * \see setShowCrs()
      * \since QGIS 3.0
      */
@@ -104,13 +128,27 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
+
+    /**
+     * Sets which layers are checked in the model.
+     */
+    void setLayersChecked( const QList< QgsMapLayer * > &layers );
+
     //! returns if the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
 
     /**
      * \brief indexFromLayer returns the model index for a given layer
+     * \see layerFromIndex()
      */
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
+
+    /**
+     * Returns the map layer corresponding to the specified \a index.
+     * \see indexFromLayer()
+     * \since QGIS 3.0
+     */
+    QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the model.
@@ -122,7 +160,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setAdditionalItems( const QStringList &items );
 
     /**
-     * Return the list of additional (non map layer) items included at the end of the model.
+     * Returns the list of additional (non map layer) items included at the end of the model.
      * \see setAdditionalItems()
      * \since QGIS 3.0
      */
@@ -134,6 +172,15 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    QStringList mimeTypes() const override;
+    bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    Qt::DropActions supportedDropActions() const override;
 
     /**
      * Returns strings for all roles supported by this model.
@@ -141,9 +188,6 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \note Available only with Qt5 (Python and c++)
      */
     QHash<int, QByteArray> roleNames() const override SIP_SKIP;
-
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns the icon corresponding to a specified map \a layer.
@@ -158,12 +202,15 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
   protected:
     QList<QgsMapLayer *> mLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
-    bool mItemCheckable;
+    bool mItemCheckable = false;
+    bool mCanReorder = false;
+
+    QgsProject *mProject = nullptr;
 
   private:
 
-    bool mAllowEmpty;
-    bool mShowCrs;
+    bool mAllowEmpty = false;
+    bool mShowCrs = false;
     QStringList mAdditionalItems;
 };
 

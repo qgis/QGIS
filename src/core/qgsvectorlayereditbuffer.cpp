@@ -19,6 +19,9 @@
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+#include "qgsmessagelog.h"
+
 
 //! populate two lists (ks, vs) from map - in reverse order
 template <class Key, class T> void mapToReversedLists( const QMap< Key, T > &map, QList<Key> &ks, QList<T> &vs )
@@ -48,8 +51,8 @@ bool QgsVectorLayerEditBuffer::isModified() const
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
-  QgsDebugMsgLevel( QString( "undo index changed %1" ).arg( index ), 4 );
-  Q_UNUSED( index );
+  QgsDebugMsgLevel( QStringLiteral( "undo index changed %1" ).arg( index ), 4 );
+  Q_UNUSED( index )
   emit layerModified();
 }
 
@@ -61,16 +64,18 @@ void QgsVectorLayerEditBuffer::updateFields( QgsFields &fields )
   {
     fields.remove( mDeletedAttributeIds.at( i ) );
   }
-  // add new fields
-  for ( int i = 0; i < mAddedAttributes.count(); ++i )
-  {
-    fields.append( mAddedAttributes.at( i ), QgsFields::OriginEdit, i );
-  }
+
   // rename fields
   QgsFieldNameMap::const_iterator renameIt = mRenamedAttributes.constBegin();
   for ( ; renameIt != mRenamedAttributes.constEnd(); ++renameIt )
   {
-    fields[ renameIt.key()].setName( renameIt.value() );
+    fields.rename( renameIt.key(), renameIt.value() );
+  }
+
+  // add new fields
+  for ( int i = 0; i < mAddedAttributes.count(); ++i )
+  {
+    fields.append( mAddedAttributes.at( i ), QgsFields::OriginEdit, i );
   }
 }
 
@@ -116,7 +121,10 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature &f )
     return false;
   }
   if ( L->mFields.count() != f.attributes().count() )
+  {
+    QgsMessageLog::logMessage( tr( "cannot add feature, wrong field count: layer: %1 feature: %2:" ).arg( L->mFields.count() ).arg( f.attributes().count() ) );
     return false;
+  }
 
   // TODO: check correct geometry type
 
@@ -146,7 +154,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QgsDebugMsg( "Cannot delete features (missing DeleteFeature capability)" );
+    QgsDebugMsg( QStringLiteral( "Cannot delete features (missing DeleteFeature capability)" ) );
     return false;
   }
 
@@ -154,7 +162,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( !mAddedFeatures.contains( fid ) )
     {
-      QgsDebugMsg( "Cannot delete features (in the list of added features)" );
+      QgsDebugMsg( QStringLiteral( "Cannot delete features (in the list of added features)" ) );
       return false;
     }
   }
@@ -162,7 +170,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( mDeletedFeatureIds.contains( fid ) )
     {
-      QgsDebugMsg( "Cannot delete features (in the list of deleted features)" );
+      QgsDebugMsg( QStringLiteral( "Cannot delete features (in the list of deleted features)" ) );
       return false;
     }
   }
@@ -175,12 +183,13 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QgsDebugMsg( "Cannot delete features (missing DeleteFeatures capability)" );
+    QgsDebugMsg( QStringLiteral( "Cannot delete features (missing DeleteFeatures capability)" ) );
     return false;
   }
 
   bool ok = true;
-  Q_FOREACH ( QgsFeatureId fid, fids )
+  const auto constFids = fids;
+  for ( QgsFeatureId fid : constFids )
     ok = deleteFeature( fid ) && ok;
 
   return ok;
@@ -189,7 +198,7 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
 
 bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
   {
     return false;
   }
@@ -208,6 +217,23 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, const QgsGeomet
   return true;
 }
 
+bool QgsVectorLayerEditBuffer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  bool success = true;
+  for ( auto it = newValues.constBegin() ; it != newValues.constEnd(); ++it )
+  {
+    const int field = it.key();
+    const QVariant newValue = it.value();
+    QVariant oldValue;
+
+    if ( oldValues.contains( field ) )
+      oldValue = oldValues[field];
+
+    success &= changeAttributeValue( fid, field, newValue, oldValue );
+  }
+
+  return success;
+}
 
 bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
@@ -239,7 +265,8 @@ bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
   if ( field.name().isEmpty() )
     return false;
 
-  Q_FOREACH ( const QgsField &updatedField, L->fields() )
+  const QgsFields fields = L->fields();
+  for ( const QgsField &updatedField : fields )
   {
     if ( updatedField.name() == field.name() )
       return false;
@@ -286,7 +313,8 @@ bool QgsVectorLayerEditBuffer::renameAttribute( int index, const QString &newNam
   if ( index < 0 || index >= L->fields().count() )
     return false;
 
-  Q_FOREACH ( const QgsField &updatedField, L->fields() )
+  const QgsFields fields = L->fields();
+  for ( const QgsField &updatedField : fields )
   {
     if ( updatedField.name() == newName )
       return false;
@@ -310,7 +338,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // no                 yes                   => changeAttributeValues
   // yes                yes                   => changeFeatures
 
-  // to fix https://issues.qgis.org/issues/15741
+  // to fix https://github.com/qgis/QGIS/issues/23663
   // first of all check if feature to add is compatible with provider type
   // this check have to be done before all checks to avoid to clear internal
   // buffer if some of next steps success.
@@ -318,17 +346,20 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   {
     if ( cap & QgsVectorDataProvider::AddFeatures )
     {
-      for ( QgsFeature f : mAddedFeatures )
+      if ( provider->doesStrictFeatureTypeCheck() )
       {
-        if ( ( ! f.hasGeometry() ) ||
-             ( f.geometry().wkbType() == provider->wkbType() ) )
-          continue;
-
-        if ( provider->convertToProviderType( f.geometry() ).isNull() )
+        for ( const QgsFeature &f : qgis::as_const( mAddedFeatures ) )
         {
-          commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
-          success = false;
-          break;
+          if ( ( ! f.hasGeometry() ) ||
+               ( f.geometry().wkbType() == provider->wkbType() ) )
+            continue;
+
+          if ( provider->convertToProviderType( f.geometry() ).isNull() )
+          {
+            commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
+            success = false;
+            break;
+          }
         }
       }
     }
@@ -366,7 +397,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   bool attributesChanged = false;
   if ( !mDeletedAttributeIds.isEmpty() )
   {
-    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( mDeletedAttributeIds.toSet() ) )
+    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( qgis::listToSet( mDeletedAttributeIds ) ) )
     {
       commitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
 
@@ -380,38 +411,10 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       commitErrors << tr( "ERROR: %n attribute(s) not deleted.", "not deleted attributes count", mDeletedAttributeIds.size() );
 #if 0
       QString list = "ERROR: Pending attribute deletes:";
-      Q_FOREACH ( int idx, mDeletedAttributeIds )
+      const auto constMDeletedAttributeIds = mDeletedAttributeIds;
+      for ( int idx : constMDeletedAttributeIds )
       {
-        list.append( ' ' + L->pendingFields().at( idx ).name() );
-      }
-      commitErrors << list;
-#endif
-      success = false;
-    }
-  }
-
-  //
-  // add attributes
-  //
-  if ( !mAddedAttributes.isEmpty() )
-  {
-    if ( ( cap & QgsVectorDataProvider::AddAttributes ) && provider->addAttributes( mAddedAttributes ) )
-    {
-      commitErrors << tr( "SUCCESS: %n attribute(s) added.", "added attributes count", mAddedAttributes.size() );
-
-      emit committedAttributesAdded( L->id(), mAddedAttributes );
-
-      mAddedAttributes.clear();
-      attributesChanged = true;
-    }
-    else
-    {
-      commitErrors << tr( "ERROR: %n new attribute(s) not added", "not added attributes count", mAddedAttributes.size() );
-#if 0
-      QString list = "ERROR: Pending adds:";
-      Q_FOREACH ( QgsField f, mAddedAttributes )
-      {
-        list.append( ' ' + f.name() );
+        list.append( ' ' + L->fields().at( idx ).name() );
       }
       commitErrors << list;
 #endif
@@ -439,6 +442,36 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   }
 
   //
+  // add attributes
+  //
+  if ( !mAddedAttributes.isEmpty() )
+  {
+    if ( ( cap & QgsVectorDataProvider::AddAttributes ) && provider->addAttributes( mAddedAttributes ) )
+    {
+      commitErrors << tr( "SUCCESS: %n attribute(s) added.", "added attributes count", mAddedAttributes.size() );
+
+      emit committedAttributesAdded( L->id(), mAddedAttributes );
+
+      mAddedAttributes.clear();
+      attributesChanged = true;
+    }
+    else
+    {
+      commitErrors << tr( "ERROR: %n new attribute(s) not added", "not added attributes count", mAddedAttributes.size() );
+#if 0
+      QString list = "ERROR: Pending adds:";
+      const auto constMAddedAttributes = mAddedAttributes;
+      for ( QgsField f : constMAddedAttributes )
+      {
+        list.append( ' ' + f.name() );
+      }
+      commitErrors << list;
+#endif
+      success = false;
+    }
+  }
+
+  //
   // check that addition/removal went as expected
   //
   bool attributeChangesOk = true;
@@ -453,7 +486,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       attributeChangesOk = false;   // don't try attribute updates - they'll fail.
     }
 
-    for ( int i = 0; i < qMin( oldFields.count(), newFields.count() ); ++i )
+    for ( int i = 0; i < std::min( oldFields.count(), newFields.count() ); ++i )
     {
       QgsField oldField = oldFields.at( i );
       QgsField newField = newFields.at( i );
@@ -521,12 +554,14 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
           commitErrors << tr( "ERROR: %n attribute value change(s) not applied.", "not changed attribute values count", mChangedAttributeValues.size() );
 #if 0
           QString list = "ERROR: pending changes:";
-          Q_FOREACH ( QgsFeatureId id, mChangedAttributeValues.keys() )
+          const auto constKeys = mChangedAttributeValues.keys();
+          for ( QgsFeatureId id : constKeys )
           {
             list.append( "\n  " + FID_TO_STRING( id ) + '[' );
-            Q_FOREACH ( int idx, mChangedAttributeValues[ id ].keys() )
+            const auto constKeys = mChangedAttributeValues[ id ].keys();
+            for ( int idx : constKeys )
             {
-              list.append( QString( " %1:%2" ).arg( L->pendingFields().at( idx ).name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
+              list.append( QString( " %1:%2" ).arg( L->fields().at( idx ).name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
             }
             list.append( " ]" );
           }
@@ -546,7 +581,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       {
         commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
         // TODO[MD]: we should not need this here
-        Q_FOREACH ( QgsFeatureId id, mDeletedFeatureIds )
+        for ( QgsFeatureId id : qgis::as_const( mDeletedFeatureIds ) )
         {
           mChangedAttributeValues.remove( id );
           mChangedGeometries.remove( id );
@@ -561,7 +596,8 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
         commitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
 #if 0
         QString list = "ERROR: pending deletes:";
-        Q_FOREACH ( QgsFeatureId id, mDeletedFeatureIds )
+        const auto constMDeletedFeatureIds = mDeletedFeatureIds;
+        for ( QgsFeatureId id : constMDeletedFeatureIds )
         {
           list.append( ' ' + FID_TO_STRING( id ) );
         }
@@ -584,7 +620,14 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
         // this will preserve the order how they have been added e.g. (-1, -2, -3) while in the map they are ordered (-3, -2, -1)
         mapToReversedLists( mAddedFeatures, ids, featuresToAdd );
 
-        if ( provider->addFeatures( featuresToAdd ) )
+        // we need to strip any extra attributes here -- e.g. virtual fields, which should
+        // not be sent to the data provider. Refs #18784
+        for ( int i = 0; i < featuresToAdd.count(); ++i )
+        {
+          QgsVectorLayerUtils::matchAttributesToFields( featuresToAdd[i], provider->fields() );
+        }
+
+        if ( provider->addFeatures( featuresToAdd, QgsFeatureSink::Flag::RollBackOnErrors ) )
         {
           commitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", featuresToAdd.size() );
 
@@ -613,12 +656,13 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
           commitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
 #if 0
           QString list = "ERROR: pending adds:";
-          Q_FOREACH ( QgsFeature f, mAddedFeatures )
+          const auto constMAddedFeatures = mAddedFeatures;
+          for ( QgsFeature f : constMAddedFeatures )
           {
             list.append( ' ' + FID_TO_STRING( f.id() ) + '[' );
-            for ( int i = 0; i < L->pendingFields().size(); i++ )
+            for ( int i = 0; i < L->fields().size(); i++ )
             {
-              list.append( QString( " %1:%2" ).arg( L->pendingFields().at( i ).name() ).arg( f.attributes()[i].toString() ) );
+              list.append( QString( " %1:%2" ).arg( L->fields().at( i ).name() ).arg( f.attributes()[i].toString() ) );
             }
             list.append( " ]" );
           }
@@ -642,7 +686,8 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   if ( !success && provider->hasErrors() )
   {
     commitErrors << tr( "\n  Provider errors:" );
-    Q_FOREACH ( QString e, provider->errors() )
+    const auto constErrors = provider->errors();
+    for ( QString e : constErrors )
     {
       commitErrors << "    " + e.replace( '\n', QLatin1String( "\n    " ) );
     }
@@ -708,7 +753,8 @@ void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
   QList< int > sortedRenamedIndices = mRenamedAttributes.keys();
   //sort keys
   std::sort( sortedRenamedIndices.begin(), sortedRenamedIndices.end(), std::greater< int >() );
-  Q_FOREACH ( int renameIndex, sortedRenamedIndices )
+  const auto constSortedRenamedIndices = sortedRenamedIndices;
+  for ( int renameIndex : constSortedRenamedIndices )
   {
     if ( renameIndex >= index )
     {
@@ -749,7 +795,8 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
   std::sort( sortedRenamedIndices.begin(), sortedRenamedIndices.end() );
   int last = -1;
   mRenamedAttributes.remove( index );
-  Q_FOREACH ( int renameIndex, sortedRenamedIndices )
+  const auto constSortedRenamedIndices = sortedRenamedIndices;
+  for ( int renameIndex : constSortedRenamedIndices )
   {
     if ( renameIndex > index )
     {
@@ -767,7 +814,7 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
 void QgsVectorLayerEditBuffer::updateAttributeMapIndex( QgsAttributeMap &map, int index, int offset ) const
 {
   QgsAttributeMap updatedMap;
-  for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
+  for ( QgsAttributeMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
   {
     int attrIndex = it.key();
     updatedMap.insert( attrIndex < index ? attrIndex : attrIndex + offset, it.value() );

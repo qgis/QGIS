@@ -1,0 +1,248 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsextentwidget.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsExtentWidget : QWidget
+{
+%Docstring
+A widget for configuration of a map extent.
+
+Besides allowing the user to enter the extent manually, it comes with options to use
+original extent or extent defined by the current view in map canvas.
+
+When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func:`~setCurrentExtent` and :py:func:`~setOutputCrs` during initialization.
+
+.. seealso:: :py:class:`QgsExtentGroupBox`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsextentwidget.h"
+%End
+  public:
+
+    enum ExtentState
+    {
+      OriginalExtent,
+      CurrentExtent,
+      UserExtent,
+      ProjectLayerExtent,
+      DrawOnCanvas,
+    };
+
+    enum WidgetStyle
+    {
+      CondensedStyle,
+      ExpandedStyle,
+    };
+
+    explicit QgsExtentWidget( QWidget *parent /TransferThis/ = 0, WidgetStyle style = CondensedStyle );
+%Docstring
+Constructor for QgsExtentWidget.
+%End
+
+    void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
+%Docstring
+Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
+
+.. seealso:: :py:func:`originalExtent`
+
+.. seealso:: :py:func:`originalCrs`
+%End
+
+    QgsRectangle originalExtent() const;
+%Docstring
+Returns the original extent set for the widget.
+
+.. seealso:: :py:func:`setOriginalExtent`
+
+.. seealso:: :py:func:`originalCrs`
+%End
+
+    QgsCoordinateReferenceSystem originalCrs() const;
+%Docstring
+Returns the original coordinate reference system set for the widget.
+
+.. seealso:: :py:func:`originalExtent`
+
+.. seealso:: :py:func:`setOriginalExtent`
+%End
+
+    void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
+%Docstring
+Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
+The current extent is usually set to match the current map canvas extent.
+
+.. seealso:: :py:func:`currentExtent`
+
+.. seealso:: :py:func:`currentCrs`
+%End
+
+    QgsRectangle currentExtent() const;
+%Docstring
+Returns the current extent set for the widget. The current extent is usually set to match the
+current map canvas extent.
+
+.. seealso:: :py:func:`setCurrentExtent`
+
+.. seealso:: :py:func:`currentCrs`
+%End
+
+    QgsCoordinateReferenceSystem currentCrs() const;
+%Docstring
+Returns the coordinate reference system for the current extent set for the widget. The current
+extent and CRS usually reflects the map canvas extent and CRS.
+
+.. seealso:: :py:func:`setCurrentExtent`
+
+.. seealso:: :py:func:`currentExtent`
+%End
+
+    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
+%Docstring
+Sets the output CRS - may need to be used for transformation from original/current extent.
+Should be called as part of initialization and whenever the the output CRS is changed.
+The current extent will be reprojected into the new output CRS.
+%End
+
+    QgsRectangle outputExtent() const;
+%Docstring
+Returns the extent shown in the widget - in output CRS coordinates.
+
+.. seealso:: :py:func:`outputCrs`
+%End
+
+    QgsCoordinateReferenceSystem outputCrs() const;
+%Docstring
+Returns the current output CRS, used in the display.
+
+.. seealso:: :py:func:`outputExtent`
+%End
+
+    QgsExtentWidget::ExtentState extentState() const;
+%Docstring
+Returns the currently selected state for the widget's extent.
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption = true );
+%Docstring
+Sets the map canvas to enable dragging of extent on a canvas.
+
+:param canvas: the map canvas
+:param drawOnCanvasOption: set to false to disable to draw on canvas option
+%End
+
+    QSize ratio() const;
+%Docstring
+Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+If the aspect ratio isn't fixed, the width and height will be set to zero.
+%End
+
+    QString extentLayerName() const;
+%Docstring
+Returns the name of the extent layer.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the widget is in a valid state, i.e. has an extent set.
+%End
+
+    void setNullValueAllowed( bool allowed, const QString &notSetText = QString() );
+%Docstring
+Sets whether the widget can be set to a "not set" (null) state.
+
+The specified ``notSetText`` will be used for showing null values.
+
+.. note::
+
+   This mode only applies to widgets in the condensed state!
+%End
+
+  public slots:
+
+    void setOutputExtentFromOriginal();
+%Docstring
+Sets the output extent to be the same as original extent (may be transformed to output CRS).
+%End
+
+    void setOutputExtentFromCurrent();
+%Docstring
+Sets the output extent to be the same as current extent (may be transformed to output CRS).
+%End
+
+    void setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the output extent to a custom extent (may be transformed to output CRS).
+%End
+
+    void setOutputExtentFromLayer( const QgsMapLayer *layer );
+%Docstring
+Sets the output extent to match a ``layer``'s extent (may be transformed to output CRS).
+%End
+
+    void setOutputExtentFromDrawOnCanvas();
+%Docstring
+Sets the output extent by dragging on the canvas.
+%End
+
+    void setRatio( QSize ratio );
+%Docstring
+Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+To unset a fixed aspect ratio, set the width and height to zero.
+
+:param ratio: aspect ratio's width and height
+%End
+
+    void clear();
+%Docstring
+Clears the widget, setting it to a null value.
+%End
+
+  signals:
+
+    void extentChanged( const QgsRectangle &r );
+%Docstring
+Emitted when the widget's extent is changed.
+%End
+
+    void validationChanged( bool valid );
+%Docstring
+Emitted when the widget's validation state changes.
+%End
+
+    void toggleDialogVisibility( bool visible );
+%Docstring
+Emitted when the parent dialog visibility must be changed (e.g.
+to permit access to the map canvas)
+%End
+
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsextentwidget.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -26,48 +26,65 @@
 class QDir;
 
 /**
-The custom projection widget is used to define the projection family, ellipsoid and paremters needed by proj4 to assemble a customised projection definition. The resulting projection will be store in an sqlite backend.
+The custom projection widget is used to define the projection family, ellipsoid and parameters needed by proj4 to assemble a customized projection definition. The resulting projection will be store in an sqlite backend.
 */
 class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectionDialogBase
 {
     Q_OBJECT
   public:
-    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
-    ~QgsCustomProjectionDialog();
+    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
   public slots:
-    void on_pbnCalculate_clicked();
-    void on_pbnAdd_clicked();
-    void on_pbnRemove_clicked();
-    void on_pbnCopyCRS_clicked();
-    void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void pbnCalculate_clicked();
+    void pbnAdd_clicked();
+    void pbnRemove_clicked();
+    void pbnCopyCRS_clicked();
+    void leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void buttonBox_accepted();
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html#custom-coordinate-reference-system" ) ); }
-    void on_buttonBox_accepted();
+  private slots:
+
+    void updateListFromCurrentItem();
+    void validateCurrent();
+    void formatChanged();
 
   private:
 
     //helper functions
     void populateList();
-    QString quotedValue( QString value );
     bool deleteCrs( const QString &id );
-    bool saveCrs( QgsCoordinateReferenceSystem myParameters, const QString &myName, QString myId, bool newEntry );
-    void insertProjection( const QString &myProjectionAcronym );
+    bool saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &id, bool newEntry, QgsCoordinateReferenceSystem::Format format );
+    void insertProjection( const QString &projectionAcronym );
+    void showHelp();
+    QString multiLineWktToSingleLine( const QString &wkt );
 
     //These two QMap store the values as they are on the database when loading
-    QMap <QString, QString> existingCRSparameters;
-    QMap <QString, QString> existingCRSnames;
+    QMap <QString, QString> mExistingCRSproj;
+    QMap <QString, QString> mExistingCRSwkt;
+    QMap <QString, QString> mExistingCRSnames;
 
-    //These three list store the value updated with the current modifications
-    QStringList customCRSnames;
-    QStringList customCRSids;
-    QStringList customCRSparameters;
+    struct Definition
+    {
+      QString name;
+      QString id;
+      QString wkt;
+      QString proj;
+    };
+
+    enum Roles
+    {
+      FormattedWktRole = Qt::UserRole + 1,
+    };
+
+    QList< Definition > mDefinitions;
 
     //vector saving the CRS to be deleted
-    QStringList deletedCRSs;
+    QStringList mDeletedCRSs;
 
     //Columns in the tree widget
     enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };
+
+
 };
 
 

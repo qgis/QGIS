@@ -1,0 +1,19 @@
+v.decimate
+Decimates a point cloud
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector|1|None|False
+QgsProcessingParameterRange|zrange|Filter range for z data (min,max)|QgsProcessingParameterNumber.Double|None|True
+QgsProcessingParameterString|cats|Category values|None|False|True
+QgsProcessingParameterNumber|skip|Throw away every n-th point|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterNumber|preserve|Preserve only every n-th point|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterNumber|offset|Skip first n points|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterNumber|limit|Copy only n points|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterNumber|zdiff|Minimal difference of z values|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|cell_limit|Preserve only n points per grid cell|QgsProcessingParameterNumber.Integer|None|True|0|None
+*QgsProcessingParameterBoolean|-g|Apply grid-based decimation|False|True
+*QgsProcessingParameterBoolean|-f|Use only first point in grid cell during grid-based decimation|False|True
+*QgsProcessingParameterBoolean|-c|Only one point per cat in grid cell|False|True
+*QgsProcessingParameterBoolean|-z|Use z in grid decimation|False|True
+*QgsProcessingParameterBoolean|-x|Store only the coordinates, throw away categories|False|True
+*QgsProcessingParameterBoolean|-b|Do not build topology|False|True
+QgsProcessingParameterVectorDestination|output|Output vector map

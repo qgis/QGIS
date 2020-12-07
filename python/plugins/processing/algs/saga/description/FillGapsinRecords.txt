@@ -1,6 +1,6 @@
 Fill Gaps in Records
 table_calculus
-ParameterTable|TABLE|Table|False
-ParameterTableField|ORDER|Order|TABLE|-1|False
-ParameterSelection|METHOD|Interpolation|[0] Nearest Neighbour;[1] Linear;[2] Spline
-OutputTable|NOGAPS|Table without Gaps
+QgsProcessingParameterFeatureSource|TABLE|Table|5|None|False
+QgsProcessingParameterField|ORDER|Order|None|TABLE|-1|False|False
+QgsProcessingParameterEnum|METHOD|Interpolation|[0] Nearest Neighbour;[1] Linear;[2] Spline
+QgsProcessingParameterVectorDestination|NOGAPS|Table without Gaps

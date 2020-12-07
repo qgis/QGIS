@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstemporalcontrollerwidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsTemporalControllerWidget : QgsPanelWidget
+{
+%Docstring
+A widget for controlling playback properties of a QgsTemporalController.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporalcontrollerwidget.h"
+%End
+  public:
+
+    QgsTemporalControllerWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTemporalControllerWidget, with the specified ``parent`` widget.
+%End
+
+    QgsTemporalController *temporalController();
+%Docstring
+Returns the temporal controller object used by this object in navigation.
+
+The dock widget retains ownership of the returned object.
+%End
+
+
+  protected:
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstemporalcontrollerwidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

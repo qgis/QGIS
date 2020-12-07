@@ -22,19 +22,11 @@
 #include "qgsserverexception.h"
 
 
-//! constructor
-QgsServerResponse::QgsServerResponse()
-{
-}
-
-
 void QgsServerResponse::write( const QString &data )
 {
   QIODevice *iodev = io();
   if ( iodev )
   {
-    //QTextStream stream( iodev );
-    //stream << data;
     iodev->write( data.toUtf8() );
   }
   else
@@ -42,7 +34,6 @@ void QgsServerResponse::write( const QString &data )
     QgsMessageLog::logMessage( "Error: No IODevice in QgsServerResponse !!!" );
   }
 }
-
 
 qint64 QgsServerResponse::write( const QByteArray &byteArray )
 {
@@ -53,7 +44,6 @@ qint64 QgsServerResponse::write( const QByteArray &byteArray )
   }
   return 0;
 }
-
 
 qint64 QgsServerResponse::write( const char *data, qint64 maxsize )
 {
@@ -75,6 +65,21 @@ qint64 QgsServerResponse::write( const char *data )
   return 0;
 }
 
+void QgsServerResponse::finish()
+{
+
+}
+
+void QgsServerResponse::flush()
+{
+
+}
+
+qint64 QgsServerResponse::write( const std::string data )
+{
+  return write( data.c_str() );
+}
+
 void QgsServerResponse::write( const QgsServerException &ex )
 {
   QString responseFormat;
@@ -91,4 +96,3 @@ void QgsServerResponse::write( const QgsServerException &ex )
   setHeader( "Content-Type", responseFormat );
   write( ba );
 }
-

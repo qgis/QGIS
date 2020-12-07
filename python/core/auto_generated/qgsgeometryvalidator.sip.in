@@ -1,0 +1,66 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgeometryvalidator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsGeometryValidator : QThread
+{
+
+%TypeHeaderCode
+#include "qgsgeometryvalidator.h"
+%End
+  public:
+
+    QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors = 0, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+%Docstring
+Constructor for QgsGeometryValidator.
+%End
+    ~QgsGeometryValidator();
+
+    virtual void run();
+
+    void stop();
+
+    static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors /Out/, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+%Docstring
+Validate geometry and produce a list of geometry errors.
+This method blocks the thread until the validation is finished.
+%End
+
+  signals:
+
+    void errorFound( const QgsGeometry::Error &error );
+%Docstring
+Sent when an error has been found during the validation process.
+
+The ``error`` contains details about the error.
+%End
+
+    void validationFinished( const QString &summary );
+%Docstring
+Sent when the validation is finished.
+
+The result is in a human readable ``summary``, mentioning
+if the validation has been aborted, successfully been validated
+or how many errors have been found.
+
+.. versionadded:: 3.6
+%End
+
+  public slots:
+    void addError( const QgsGeometry::Error & );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgeometryvalidator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,6 +18,9 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrastertransparency.h"
 
+#include "qgssymbollayerutils.h"
+#include "qgslayertreemodellegendnode.h"
+
 #include <QCoreApplication>
 #include <QDomDocument>
 #include <QDomElement>
@@ -30,8 +33,6 @@ const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &type )
   : QgsRasterInterface( input )
   , mType( type )
-  , mRasterTransparency( nullptr )
-  , mAlphaBand( -1 ) //, mInvertColor( false )
 {
 }
 
@@ -51,7 +52,7 @@ int QgsRasterRenderer::bandCount() const
 
 Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   if ( mOn ) return Qgis::ARGB32_Premultiplied;
 
@@ -74,7 +75,10 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 
   for ( int i = 1; i <= input->bandCount(); i++ )
   {
-    if ( !QgsRasterBlock::typeIsNumeric( input->dataType( i ) ) )
+    const Qgis::DataType bandType = input->dataType( i );
+    // we always allow unknown data types to connect - otherwise invalid layers cannot setup
+    // their original rendering pipe and this information is lost
+    if ( bandType != Qgis::UnknownDataType && !QgsRasterBlock::typeIsNumeric( bandType ) )
     {
       return false;
     }
@@ -98,6 +102,39 @@ void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
   mRasterTransparency = t;
 }
 
+QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
+{
+  return QList< QPair< QString, QColor > >();
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> nodes;
+
+  QList< QPair< QString, QColor > > rasterItemList = legendSymbologyItems();
+  if ( rasterItemList.isEmpty() )
+    return nodes;
+
+  // Paletted raster may have many colors, for example UInt16 may have 65536 colors
+  // and it is very slow, so we limit max count
+  int count = 0;
+  int max_count = 1000;
+
+  for ( auto itemIt = rasterItemList.constBegin(); itemIt != rasterItemList.constEnd(); ++itemIt, ++count )
+  {
+    nodes << new QgsRasterSymbolLegendNode( nodeLayer, itemIt->second, itemIt->first );
+
+    if ( count == max_count )
+    {
+      QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
+      nodes << new QgsSimpleLegendNode( nodeLayer, label );
+      break;
+    }
+  }
+
+  return nodes;
+}
+
 void QgsRasterRenderer::_writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const
 {
   if ( rasterRendererElem.isNull() )
@@ -108,6 +145,7 @@ void QgsRasterRenderer::_writeXml( QDomDocument &doc, QDomElement &rasterRendere
   rasterRendererElem.setAttribute( QStringLiteral( "type" ), mType );
   rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   rasterRendererElem.setAttribute( QStringLiteral( "alphaBand" ), mAlphaBand );
+  rasterRendererElem.setAttribute( QStringLiteral( "nodataColor" ), mNodataColor.isValid() ? QgsSymbolLayerUtils::encodeColor( mNodataColor ) : QString() );
 
   if ( mRasterTransparency )
   {
@@ -117,6 +155,14 @@ void QgsRasterRenderer::_writeXml( QDomDocument &doc, QDomElement &rasterRendere
   QDomElement minMaxOriginElem = doc.createElement( QStringLiteral( "minMaxOrigin" ) );
   mMinMaxOrigin.writeXml( doc, minMaxOriginElem );
   rasterRendererElem.appendChild( minMaxOriginElem );
+}
+
+QRgb QgsRasterRenderer::renderColorForNodataPixel() const
+{
+  if ( !mNodataColor.isValid() )
+    return NODATA_COLOR;
+  else
+    return mNodataColor.rgba();
 }
 
 void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
@@ -129,6 +175,8 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   mType = rendererElem.attribute( QStringLiteral( "type" ) );
   mOpacity = rendererElem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
   mAlphaBand = rendererElem.attribute( QStringLiteral( "alphaBand" ), QStringLiteral( "-1" ) ).toInt();
+  const QString colorEncoded = rendererElem.attribute( QStringLiteral( "nodataColor" ) );
+  mNodataColor = !colorEncoded.isEmpty() ? QgsSymbolLayerUtils::decodeColor( colorEncoded ) : QColor();
 
   QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
@@ -153,6 +201,26 @@ void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bo
   setOpacity( other->opacity() );
   setAlphaBand( other->alphaBand() );
   setRasterTransparency( other->rasterTransparency() ? new QgsRasterTransparency( *other->rasterTransparency() ) : nullptr );
+  setNodataColor( other->nodataColor() );
   if ( copyMinMaxOrigin )
     setMinMaxOrigin( other->minMaxOrigin() );
+}
+
+void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap & ) const
+{
+  QDomElement rasterSymbolizerElem = doc.createElement( QStringLiteral( "sld:RasterSymbolizer" ) );
+  element.appendChild( rasterSymbolizerElem );
+
+  // add opacity only is different from default
+  if ( !qgsDoubleNear( opacity(), 1.0 ) )
+  {
+    QDomElement opacityElem = doc.createElement( QStringLiteral( "sld:Opacity" ) );
+    opacityElem.appendChild( doc.createTextNode( QString::number( opacity() ) ) );
+    rasterSymbolizerElem.appendChild( opacityElem );
+  }
+}
+
+bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
 }

@@ -1,0 +1,8 @@
+v.out.svg
+Exports a vector map to SVG file.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|type|Output type|poly;line;point|False|0|False
+QgsProcessingParameterNumber|precision|Coordinate precision|QgsProcessingParameterNumber.Integer|6|True|0|None
+QgsProcessingParameterField|attribute|Attribute(s) to include in output SVG|None|input|-1|True|True
+QgsProcessingParameterFileDestination|output|SVG File|SVG files (*.svg)|None|False

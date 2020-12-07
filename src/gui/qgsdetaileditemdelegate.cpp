@@ -18,6 +18,7 @@
 #include "qgsdetaileditemdelegate.h"
 #include "qgsdetaileditemwidget.h"
 #include "qgsdetaileditemdata.h"
+#include "qgsrendercontext.h"
 #include <QPainter>
 #include <QFont>
 #include <QFontMetrics>
@@ -48,7 +49,7 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
                                      const QModelIndex &index ) const
 {
   // After painting we need to restore the painter to its original state
-  thepPainter->save();
+  QgsScopedQPainterState painterState( thepPainter );
   if ( index.data( Qt::UserRole ).canConvert<QgsDetailedItemData>() )
   {
     QgsDetailedItemData myData =
@@ -62,7 +63,6 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
       paintManually( thepPainter, option, myData );
     }
   } //can convert item data
-  thepPainter->restore();
 }
 
 
@@ -97,7 +97,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
     const QgsDetailedItemData &data ) const
 {
   //
-  // Get the strings and check box properties
+  // Get the strings and checkbox properties
   //
   //bool myCheckState = index.model()->data(theIndex, Qt::CheckStateRole).toBool();
   mpCheckBox->setChecked( data.isChecked() );
@@ -188,7 +188,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   }
   else
   {
-    myTextStartY +=  myDetailMetrics.height() + verticalSpacing();
+    myTextStartY += myDetailMetrics.height() + verticalSpacing();
   }
   QStringList myList =
     wordWrap( data.detail(), myDetailMetrics, option.rect.width() - myTextStartX );
@@ -221,7 +221,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   }
   else
   {
-    myTextStartY +=  myCategoryMetrics.height() + verticalSpacing();
+    myTextStartY += myCategoryMetrics.height() + verticalSpacing();
   }
   myList =
     wordWrap( data.category(), myCategoryMetrics, option.rect.width() - myTextStartX );
@@ -253,7 +253,7 @@ void QgsDetailedItemDelegate::paintAsWidget( QPainter *thepPainter,
   {
     drawHighlight( option, thepPainter, height( option, data ) );
   }
-  QPixmap myPixmap = QPixmap::grabWidget( mpWidget );
+  QPixmap myPixmap = mpWidget->grab();
   thepPainter->drawPixmap( option.rect.x(),
                            option.rect.y(),
                            myPixmap );
@@ -336,8 +336,8 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
   //qDebug(myDebug.toLocal8Bit());
   //iterate the string
   QStringList myList;
-  QString myCumulativeLine = QLatin1String( "" );
-  QString myStringToPreviousSpace = QLatin1String( "" );
+  QString myCumulativeLine;
+  QString myStringToPreviousSpace;
   int myPreviousSpacePos = 0;
   for ( int i = 0; i < string.count(); ++i )
   {
@@ -348,15 +348,15 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
       myPreviousSpacePos = i;
     }
     myCumulativeLine += myChar;
-    if ( metrics.width( myCumulativeLine ) >= width )
+    if ( metrics.boundingRect( myCumulativeLine ).width() >= width )
     {
       //time to wrap
-      //@todo deal with long strings that have no spaces
+      //TODO deal with long strings that have no spaces
       //forcing a break at current pos...
       myList << myStringToPreviousSpace.trimmed();
       i = myPreviousSpacePos;
-      myStringToPreviousSpace = QLatin1String( "" );
-      myCumulativeLine = QLatin1String( "" );
+      myStringToPreviousSpace.clear();
+      myCumulativeLine.clear();
     }
   }//end of i loop
   //add whatever is left in the string to the list

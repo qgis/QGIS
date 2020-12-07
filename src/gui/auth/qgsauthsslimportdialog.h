@@ -63,7 +63,7 @@
 #define QGSAUTHSSLIMPORTDIALOG_H
 
 #include "ui_qgsauthsslimportdialog.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include <QDialog>
 #include <QAbstractSocket>
@@ -75,7 +75,8 @@ class QSslSocket;
 class QTimer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing an SSL server certificate exception into the authentication database
  */
 class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSslTestDialog
@@ -87,7 +88,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
      * Construct dialog for importing certificates
      * \param parent
      */
-    QgsAuthSslImportDialog( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsAuthSslImportDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   public slots:
     void accept() override;
@@ -111,7 +112,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     void radioServerImportToggled( bool checked );
     void radioFileImportToggled( bool checked );
 
-    void on_btnCertPath_clicked();
+    void btnCertPath_clicked();
     void clearCertificateConfig();
     void clearStatusCertificateConfig();
 
@@ -125,7 +126,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     QString getOpenFileName( const QString &title, const QString &extfilter );
 
     QSslSocket *mSocket = nullptr;
-    bool mExecErrorsDialog;
+    bool mExecErrorsDialog = false;
     QTimer *mTimer = nullptr;
     QList<QSslError> mSslErrors;
     QList<QSslCertificate> mTrustedCAs;

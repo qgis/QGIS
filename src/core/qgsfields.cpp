@@ -69,6 +69,24 @@ bool QgsFields::append( const QgsField &field, FieldOrigin origin, int originInd
   return true;
 }
 
+bool QgsFields::rename( int fieldIdx, const QString &name )
+{
+  if ( !exists( fieldIdx ) )
+    return false;
+
+  if ( name.isEmpty() )
+    return false;
+
+  if ( d->nameToIndex.contains( name ) )
+    return false;
+
+  const QString oldName = d->fields[ fieldIdx ].field.name();
+  d->fields[ fieldIdx ].field.setName( name );
+  d->nameToIndex.remove( oldName );
+  d->nameToIndex.insert( name, fieldIdx );
+  return true;
+}
+
 bool QgsFields::appendExpressionField( const QgsField &field, int originIndex )
 {
   if ( d->nameToIndex.contains( field.name() ) )
@@ -120,6 +138,16 @@ int QgsFields::count() const
 int QgsFields::size() const
 {
   return d->fields.count();
+}
+
+QStringList QgsFields::names() const
+{
+  QStringList lst;
+  for ( int i = 0; i < d->fields.count(); ++i )
+  {
+    lst.append( d->fields[i].field.name() );
+  }
+  return lst;
 }
 
 bool QgsFields::exists( int i ) const
@@ -244,10 +272,33 @@ QgsFields::iterator QgsFields::end()
   return iterator( &d->fields.last() + 1 );
 }
 
-QIcon QgsFields::iconForField( int fieldIdx ) const
+QIcon QgsFields::iconForField( int fieldIdx, bool considerOrigin ) const
 {
-  switch ( d->fields.at( fieldIdx ).field.type() )
+  if ( considerOrigin )
   {
+    switch ( fieldOrigin( fieldIdx ) )
+    {
+      case QgsFields::OriginExpression:
+        return QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) );
+        break;
+
+      case QgsFields::OriginJoin:
+        return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) );
+
+      default:
+        return iconForFieldType( d->fields.at( fieldIdx ).field.type() );
+    }
+  }
+  return iconForFieldType( d->fields.at( fieldIdx ).field.type() );
+}
+
+QIcon QgsFields::iconForFieldType( const QVariant::Type &type )
+{
+  switch ( type )
+  {
+    case QVariant::Bool:
+      return QgsApplication::getThemeIcon( "/mIconFieldBool.svg" );
+
     case QVariant::Int:
     case QVariant::UInt:
     case QVariant::LongLong:
@@ -274,6 +325,10 @@ QIcon QgsFields::iconForField( int fieldIdx ) const
     case QVariant::Time:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
+    }
+    case QVariant::ByteArray:
+    {
+      return QgsApplication::getThemeIcon( "/mIconFieldBinary.svg" );
     }
     default:
       return QIcon();
@@ -315,8 +370,10 @@ int QgsFields::lookupField( const QString &fieldName ) const
 
 QgsAttributeList QgsFields::allAttributesList() const
 {
+  const int count = d->fields.count();
   QgsAttributeList lst;
-  for ( int i = 0; i < d->fields.count(); ++i )
+  lst.reserve( count );
+  for ( int i = 0; i < count; ++i )
     lst.append( i );
   return lst;
 }

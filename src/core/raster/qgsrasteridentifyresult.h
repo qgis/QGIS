@@ -19,66 +19,76 @@
 #define QGSRASTERIDENTIFYRESULT_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsraster.h"
 #include "qgserror.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Raster identify results container.
  */
 class CORE_EXPORT QgsRasterIdentifyResult
 {
   public:
-    QgsRasterIdentifyResult();
 
-    /** \brief Constructor. Creates valid result.
+    /**
+     * Constructor for QgsRasterIdentifyResult.
+     */
+    QgsRasterIdentifyResult() = default;
+
+    /**
+     * \brief Constructor. Creates valid result.
      *  \param format the result format
      *  \param results the results
      */
     QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
 
-    /** \brief Constructor. Creates invalid result with error.
+    /**
+     * \brief Constructor. Creates invalid result with error.
      *  \param error the error
      */
     QgsRasterIdentifyResult( const QgsError &error );
 
     virtual ~QgsRasterIdentifyResult() = default;
 
-    //! \brief Returns true if valid
+    //! \brief Returns TRUE if valid
     bool isValid() const { return mValid; }
 
-    //! \brief Get results format
+    //! Returns the results format.
     QgsRaster::IdentifyFormat format() const { return mFormat; }
 
-    /** \brief Get results. Results are different for each format:
-     * QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
-     * QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
-     * QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+    /**
+     * Returns the identify results. Results are different for each format:
+     *
+     * - QgsRaster::IdentifyFormatValue: a map of values for each band, where keys are band numbers (from 1).
+     * - QgsRaster::IdentifyFormatFeature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
+     * - QgsRaster::IdentifyFormatHtml: a map of WMS sublayer keys and HTML strings.
      */
     QMap<int, QVariant> results() const { return mResults; }
 
-    //! Set map of optional parameters
+    //! Sets map of optional parameters
     void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
 
-    //! Get map of optional parameters
+    //! Gets map of optional parameters
     QMap<QString, QVariant> params() const { return mParams; }
 
-    //! \brief Get error
+    //! Returns the last error
     QgsError error() const { return mError; }
 
-    //! \brief Set error
+    //! Sets the last error
     void setError( const QgsError &error ) { mError = error;}
 
   private:
     //! \brief Is valid
-    bool mValid;
+    bool mValid = false;
 
     //! \brief Results format
-    QgsRaster::IdentifyFormat mFormat;
+    QgsRaster::IdentifyFormat mFormat = QgsRaster::IdentifyFormatUndefined;
 
-    //! \brief Results
     // TODO: better hierarchy (sublayer multiple feature sets)?
     // TODO?: results are not consistent for different formats (per band x per sublayer)
+
+    //! \brief Results
     QMap<int, QVariant> mResults;
 
     //! \brief Additional params (e.g. request url used by WMS)

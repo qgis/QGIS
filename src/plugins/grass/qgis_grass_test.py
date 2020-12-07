@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------
 #
@@ -38,7 +38,6 @@
 __author__ = 'Radim Blazek'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Radim Blazek'
-__revision__ = '$Format:%H$'
 
 import os
 import sys
@@ -73,7 +72,7 @@ class Test:
         print("GRASS Direct test")
 
         tmp_dir = os.path.abspath("qgis-grass-test-%s" % time.strftime('%y%m%d-%H%M%S'))
-        tmp_dir = os.path.abspath("qgis-grass-test-debug") # debug
+        tmp_dir = os.path.abspath("qgis-grass-test-debug")  # debug
         print("Output will be written to %s" % tmp_dir)
 
         files_dir = "%s/tif" % tmp_dir
@@ -134,9 +133,9 @@ class Test:
                 reg_dict = dict(item.split("=") for item in reg.splitlines())
                 reg_var = {'n': 'north', 's': 'south', 'e': 'east', 'w': 'west', 'nsres': 'n-s resol', 'ewres': 'e-w resol'}
                 if longlat:
-                    region = "proj:3;zone:-1" # longlat
+                    region = "proj:3;zone:-1"  # longlat
                 else:
-                    region = "proj:99;zone:-1" # other projection
+                    region = "proj:99;zone:-1"  # other projection
                 for k, v in reg_dict.iteritems():
                     if k == 'cells':
                         continue
@@ -166,7 +165,7 @@ class Test:
             msg = "Failed:\n" + str(com[0]) + "\n" + str(com[1])
             raise Exception(msg)
 
-        return (p.returncode, com[0], com[1]) # return stdout
+        return (p.returncode, com[0], com[1])  # return stdout
 
     # simple run
     def srun(self, args):

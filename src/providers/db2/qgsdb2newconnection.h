@@ -20,9 +20,9 @@
 #include "ui_qgsdb2newconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsauthconfigselect.h"
 
-/** \class QgsDb2NewConnection
+/**
+ * \class QgsDb2NewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for an DB2 database
  */
@@ -31,10 +31,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsDb2NewConnection( QWidget *parent = 0, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-
-
-    ~QgsDb2NewConnection();
+    QgsDb2NewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Tests the connection using the parameters supplied
     bool testConnection();
@@ -45,13 +42,15 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void listDatabases();
   public slots:
     void accept() override;
-    void on_btnListDatabase_clicked();
-    void on_btnConnect_clicked();
+    void btnListDatabase_clicked();
+    void btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#db2-spatial-layers" ) ); }
+  private slots:
+    //! Updates state of the OK button depending of the filled fields
+    void updateOkButtonState();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
+    void showHelp();
 };
 
 #endif //  QGSDB2NEWCONNECTION_H

@@ -20,34 +20,15 @@
 #include "ui_qgssimplifytolerancedialog.h"
 
 #include <QVector>
-#include "qgsfeature.h"
 #include "qgstolerance.h"
+#include "qgsgeometry.h"
 #include "qgis_app.h"
+#include "qgsfeature.h"
 
 class QgsRubberBand;
 class QgsMapToolSimplify;
 class QgsCoordinateTransform;
-
-class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
-{
-    Q_OBJECT
-
-  public:
-
-    QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent = nullptr );
-
-    void updateStatusText();
-    void enableOkButton( bool enabled );
-
-  protected:
-
-    //! Also cancels pending simplification
-    virtual void closeEvent( QCloseEvent *e ) override;
-
-  private:
-    QgsMapToolSimplify *mTool = nullptr;
-
-};
+class QgsSimplifyUserInputWidget;
 
 
 //! Map tool to simplify line/polygon features
@@ -55,12 +36,22 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 {
     Q_OBJECT
   public:
+
+    enum Method
+    {
+      SimplifyDistance    = 0,
+      SimplifySnapToGrid  = 1,
+      SimplifyVisvalingam = 2,
+      Smooth = 3
+    };
+
     QgsMapToolSimplify( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolSimplify();
+    ~QgsMapToolSimplify() override;
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -71,16 +62,26 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     QString statusText() const;
 
+    Method method() const;
+
+    int smoothIterations() const;
+    void setSmoothIterations( int smoothIterations );
+
+    double smoothOffset() const;
+    void setSmoothOffset( double smoothOffset );
+
   public slots:
     //! Slot to change display when slidebar is moved
     void setTolerance( double tolerance );
 
-    void setToleranceUnits( int units );
+    void setToleranceUnits( QgsTolerance::UnitType units );
 
     //! Slot to store feature after simplification
     void storeSimplified();
 
     void clearSelection();
+
+    void setMethod( QgsMapToolSimplify::Method method );
 
   private:
 
@@ -89,11 +90,17 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     void updateSimplificationPreview();
 
-    int vertexCount( const QgsGeometry &g ) const;
+    void createUserInputWidget();
+
+    /**
+     * Simplifies a \a geometry to the specified \a tolerance, respecting the preset
+     * simplification method.
+     */
+    QgsGeometry processGeometry( const QgsGeometry &geometry, double tolerance ) const;
 
     // data
     //! Dialog with slider to set correct tolerance value
-    QgsSimplifyDialog *mSimplifyDialog = nullptr;
+    QgsSimplifyUserInputWidget *mSimplifyUserWidget = nullptr;
 
     //! Rubber bands to draw current state of simplification
     QList<QgsRubberBand *> mRubberBands;
@@ -101,20 +108,55 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QList<QgsFeature> mSelectedFeatures;
 
     //! Real value of tolerance
-    double mTolerance;
+    double mTolerance = 1.0;
 
-    QgsTolerance::UnitType mToleranceUnits;
+    QgsTolerance::UnitType mToleranceUnits = QgsTolerance::LayerUnits;
 
     //! stores actual selection rect
     QRect mSelectionRect;
     //! shows actual selection rect
     QgsRubberBand *mSelectionRubberBand = nullptr;
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
 
-    int mOriginalVertexCount;
-    int mReducedVertexCount;
-    bool mReducedHasErrors;
+    int mOriginalVertexCount = 0;
+    int mReducedVertexCount = 0;
+    bool mReducedHasErrors = false;
+
+    Method mMethod = SimplifyDistance;
+
+    int mSmoothIterations = 1;
+    double mSmoothOffset = 0.25;
+};
+
+
+class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::SimplifyUserInputWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsSimplifyUserInputWidget( QWidget *parent = nullptr );
+
+    void updateStatusText( const QString &text );
+    void enableOkButton( bool enabled );
+
+    void setConfig( QgsMapToolSimplify::Method method, double tolerance,
+                    QgsTolerance::UnitType units, double smoothOffset,
+                    int smoothIterations );
+
+  signals:
+    void accepted();
+    void rejected();
+    void toleranceChanged( double tolerance );
+    void toleranceUnitsChanged( QgsTolerance::UnitType units );
+    void methodChanged( QgsMapToolSimplify::Method method );
+    void smoothOffsetChanged( double offset );
+    void smoothIterationsChanged( int iterations );
+
+  protected:
+    bool eventFilter( QObject *object, QEvent *ev ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
 };
 
 #endif

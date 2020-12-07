@@ -25,7 +25,8 @@
 #include <QString>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic message view for displaying QGIS messages.
  */
 class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, private Ui::QgsMessageViewer
@@ -33,15 +34,14 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     Q_OBJECT
   public:
     QgsMessageViewer( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
-    ~QgsMessageViewer();
 
-    virtual void setMessage( const QString &message, MessageType msgType ) override;
+    void setMessage( const QString &message, MessageType msgType ) override;
 
-    virtual void appendMessage( const QString &message ) override;
+    void appendMessage( const QString &message ) override;
 
-    virtual void showMessage( bool blocking = true ) override;
+    void showMessage( bool blocking = true ) override;
 
-    virtual void setTitle( const QString &title ) override;
+    void setTitle( const QString &title ) override;
 
     // Call one of the setMessage...() functions first.
     // Subsequent calls to appendMessage use the format as determined
@@ -54,7 +54,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     // A checkbox that can be used for something like
     // "don't show this message again"
     void setCheckBoxText( const QString &text );
-    // Make the check box visible/invisible
+    // Make the checkbox visible/invisible
     void setCheckBoxVisible( bool visible );
     // Sets the check state
     void setCheckBoxState( Qt::CheckState state );
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     void setCheckBoxQgsSettingsLabel( const QString &label );
 
   private slots:
-    void on_checkBox_toggled( bool );
+    void checkBox_toggled( bool );
 
 
   private:

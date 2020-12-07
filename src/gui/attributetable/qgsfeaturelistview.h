@@ -18,8 +18,8 @@
 
 #include <QListView>
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <qdebug.h>
+#include "qgsactionmenu.h"
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
@@ -34,7 +34,8 @@ class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
 class QRect;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Shows a list of features and renders a edit button next to each feature.
  *
  * Accepts a display expression to define the way, features are rendered.
@@ -52,7 +53,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \param parent   owner
      */
-    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the layer cache
@@ -68,7 +69,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     virtual void setModel( QgsFeatureListModel *featureListModel );
 
     /**
-     * Get the featureListModel used by this view
+     * Gets the featureListModel used by this view
      *
      * \returns The model in use
      */
@@ -101,7 +102,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QString parserErrorString();
 
     /**
-     * Get the currentEditSelection
+     * Gets the currentEditSelection
      *
      * \returns A list of edited feature ids
      */
@@ -116,34 +117,48 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
     /**
      * \brief setFeatureSelectionManager
-     * \param featureSelectionManager We will take ownership
+     * \param featureSelectionManager
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
   protected:
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseReleaseEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent *event ) override;
-    virtual void contextMenuEvent( QContextMenuEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
   signals:
 
     /**
-     * Is emitted, whenever the current edit selection has been changed.
-     *
+     * Emitted whenever the current edit selection has been changed.
      * \param feat the feature, which will be edited.
      */
     void currentEditSelectionChanged( QgsFeature &feat );
 
     /**
-     * Is emitted, whenever the display expression is successfully changed
+     * Emitted whenever the current edit selection has been changed.
+     * \param progress the position of the feature in the list
+     * \param count the number of features in the list
+     * \since QGIS 3.8
+     */
+    void currentEditSelectionProgressChanged( int progress, int count );
+
+    /**
+     * Emitted whenever the display expression is successfully changed
      * \param expression The expression that was applied
      */
     void displayExpressionChanged( const QString &expression );
 
     //! \note not available in Python bindings
     void aboutToChangeEditSelection( bool &ok ) SIP_SKIP;
+
+    /**
+     * Emitted when the context menu is created to add the specific actions to it
+     * \param menu is the already created context menu
+     * \param atIndex is the position of the current feature in the model
+     */
+    void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 
   public slots:
 
@@ -165,25 +180,75 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Select all currently visible features
      */
-    virtual void selectAll() override;
+    void selectAll() override;
 
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
 
+    /**
+     * editFirstFeature will try to edit the first feature of the list
+     * \since QGIS 3.8
+     */
+    void editFirstFeature() {editOtherFeature( First );}
+
+    /**
+     * editNextFeature will try to edit next feature of the list
+     * \since QGIS 3.8
+     */
+    void editNextFeature() {editOtherFeature( Next );}
+
+    /**
+     * editPreviousFeature will try to edit previous feature of the list
+     * \since QGIS 3.8
+     */
+    void editPreviousFeature() {editOtherFeature( Previous );}
+
+    /**
+     * editLastFeature will try to edit the last feature of the list
+     * \since QGIS 3.8
+     */
+    void editLastFeature() {editOtherFeature( Last );}
+
+
+
   private slots:
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
+
+    /**
+     * Make sure, there is an edit selection. If there is none, choose the first item.
+     * If \a inSelection is set to TRUE, the edit selection is done in selected entries if
+     * there is a selected entry visible.
+     *
+     */
+    void ensureEditSelection( bool inSelection = false );
 
   private:
     void selectRow( const QModelIndex &index, bool anchor );
 
+    enum PositionInList
+    {
+      First,
+      Next,
+      Previous,
+      Last
+    };
+
+    void editOtherFeature( PositionInList positionInList );
+
+
     QgsFeatureListModel *mModel = nullptr;
     QItemSelectionModel *mCurrentEditSelectionModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsFeatureListViewDelegate *mItemDelegate = nullptr;
-    bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
-    int mRowAnchor;
+    bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
+    int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
+
+    QTimer mUpdateEditSelectionTimer;
+
+    friend class QgsDualView;
 };
 
 #endif

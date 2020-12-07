@@ -25,9 +25,22 @@ components to QGIS.
 
 */
 
+/** @defgroup 3d 3D library
+
+The 3D library is build on top of the CORE library and Qt 3D framework. It adds support for display of GIS data in 3D scenes.
+
+*/
+
 /** @defgroup plugins plugin classes
 
 Contains classes related to implementation of QGIS plugins.
 
 */
+
+/** @defgroup quick QgsQuick library
+
+The QgsQuick library is built on top of the CORE library and Qt Quick/QML framework. It adds reusable GUI Quick Components, mainly for mobile devices.
+
+*/
+
 

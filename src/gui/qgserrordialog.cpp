@@ -24,6 +24,8 @@ QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWi
   , mError( error )
 {
   setupUi( this );
+  connect( mDetailPushButton, &QPushButton::clicked, this, &QgsErrorDialog::mDetailPushButton_clicked );
+  connect( mDetailCheckBox, &QCheckBox::stateChanged, this, &QgsErrorDialog::mDetailCheckBox_stateChanged );
 
   if ( title.isEmpty() )
     setWindowTitle( tr( "Error" ) );
@@ -31,7 +33,7 @@ QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWi
     setWindowTitle( title );
 
   // QMessageBox has static standardIcon( Icon icon ), but it is marked as obsolete
-  QMessageBox messageBox( QMessageBox::Critical, QLatin1String( "" ), QLatin1String( "" ) );
+  QMessageBox messageBox( QMessageBox::Critical, QString(), QString() );
   mIconLabel->setPixmap( messageBox.iconPixmap() );
   mSummaryTextBrowser->setOpenExternalLinks( true );
   mDetailTextBrowser->setOpenExternalLinks( true );
@@ -51,7 +53,8 @@ QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWi
   QgsSettings settings;
   Qt::CheckState state = ( Qt::CheckState ) settings.value( QStringLiteral( "Error/dialog/detail" ), 0 ).toInt();
   mDetailCheckBox->setCheckState( state );
-  if ( state == Qt::Checked ) on_mDetailPushButton_clicked();
+  if ( state == Qt::Checked )
+    mDetailPushButton_clicked();
 }
 
 void QgsErrorDialog::show( const QgsError &error, const QString &title, QWidget *parent, Qt::WindowFlags fl )
@@ -60,7 +63,7 @@ void QgsErrorDialog::show( const QgsError &error, const QString &title, QWidget 
   d.exec();
 }
 
-void QgsErrorDialog::on_mDetailPushButton_clicked()
+void QgsErrorDialog::mDetailPushButton_clicked()
 {
   mSummaryTextBrowser->hide();
   mDetailTextBrowser->show();
@@ -69,7 +72,7 @@ void QgsErrorDialog::on_mDetailPushButton_clicked()
   resize( width(), 400 );
 }
 
-void QgsErrorDialog::on_mDetailCheckBox_stateChanged( int state )
+void QgsErrorDialog::mDetailCheckBox_stateChanged( int state )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Error/dialog/detail" ), state );

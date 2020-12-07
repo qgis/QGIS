@@ -18,11 +18,12 @@
 #include <QDial>
 #include <QVariant>
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QPaintEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDial
  */
 class GUI_EXPORT QgsDial : public QDial
@@ -31,8 +32,8 @@ class GUI_EXPORT QgsDial : public QDial
   public:
 
     /**
-     * @brief QgsDial constructor for QgsDial
-     * @param parent parent object
+     * Constructor for QgsDial
+     * \param parent parent object
      */
     QgsDial( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -49,7 +50,7 @@ class GUI_EXPORT QgsDial : public QDial
     void onValueChanged( int );
 
   protected:
-    virtual void paintEvent( QPaintEvent *event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   private:
     void update();

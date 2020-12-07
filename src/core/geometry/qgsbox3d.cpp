@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbox3d.h"
+#include "qgspoint.h"
 
 
 QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax )
@@ -26,11 +27,15 @@ QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double y
 
 QgsBox3d::QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 )
   : mBounds2d( p1.x(), p1.y(), p2.x(), p2.y() )
-  , mZmin( qMin( p1.z(), p2.z() ) )
-  , mZmax( qMax( p1.z(), p2.z() ) )
+  , mZmin( std::min( p1.z(), p2.z() ) )
+  , mZmax( std::max( p1.z(), p2.z() ) )
 {
   mBounds2d.normalize();
 }
+
+QgsBox3d::QgsBox3d( const QgsRectangle &rect )
+  : mBounds2d( rect )
+{}
 
 void QgsBox3d::setXMinimum( double x )
 {
@@ -65,17 +70,17 @@ void QgsBox3d::setZMaximum( double z )
 void QgsBox3d::normalize()
 {
   mBounds2d.normalize();
-  double z1 = qMin( mZmin, mZmax );
-  double z2 = qMax( mZmin, mZmax );
+  double z1 = std::min( mZmin, mZmax );
+  double z2 = std::max( mZmin, mZmax );
   mZmin = z1;
   mZmax = z2;
 }
 
 QgsBox3d QgsBox3d::intersect( const QgsBox3d &other ) const
 {
-  QgsRectangle intersect2d = mBounds2d.intersect( &( other.mBounds2d ) );
-  double zMin = qMax( mZmin, other.mZmin );
-  double zMax = qMin( mZmax, other.mZmax );
+  QgsRectangle intersect2d = mBounds2d.intersect( other.mBounds2d );
+  double zMin = std::max( mZmin, other.mZmin );
+  double zMax = std::min( mZmax, other.mZmax );
   return QgsBox3d( intersect2d.xMinimum(), intersect2d.yMinimum(), zMin,
                    intersect2d.xMaximum(), intersect2d.yMaximum(), zMax );
 }
@@ -92,10 +97,7 @@ bool QgsBox3d::intersects( const QgsBox3d &other ) const
 
   double z1 = ( mZmin > other.mZmin ? mZmin : other.mZmin );
   double z2 = ( mZmax < other.mZmax ? mZmax : other.mZmax );
-  if ( z1 > z2 )
-    return false;
-
-  return true;
+  return z1 <= z2;
 }
 
 bool QgsBox3d::contains( const QgsBox3d &other ) const
@@ -115,4 +117,11 @@ bool QgsBox3d::contains( const QgsPoint &p ) const
     return mZmin <= p.z() && p.z() <= mZmax;
   else
     return true;
+}
+
+bool QgsBox3d::operator==( const QgsBox3d &other ) const
+{
+  return mBounds2d == other.mBounds2d &&
+         qgsDoubleNear( mZmin, other.mZmin ) &&
+         qgsDoubleNear( mZmax, other.mZmax );
 }

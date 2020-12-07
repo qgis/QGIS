@@ -1,0 +1,98 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderconnectioncombobox.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProviderConnectionComboBox : QComboBox
+{
+%Docstring
+The QgsProviderConnectionComboBox class is a combo box which displays the list of connections registered for a given provider.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsproviderconnectioncombobox.h"
+%End
+  public:
+
+    explicit QgsProviderConnectionComboBox( const QString &provider, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProviderConnectionComboBox, for the specified ``provider``.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly.
+%End
+
+
+    void setProvider( const QString &provider );
+%Docstring
+Sets the provider to be used.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly.
+%End
+
+    void setAllowEmptyConnection( bool allowEmpty );
+%Docstring
+Sets whether an optional empty connection ("not set") option is present in the combobox.
+
+.. seealso:: :py:func:`allowEmptyConnection`
+%End
+
+    bool allowEmptyConnection() const;
+%Docstring
+Returns ``True`` if the combobox allows the empty connection ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyConnection`
+%End
+
+    QString currentConnection() const;
+%Docstring
+Returns the name of the current connection selected in the combo box.
+%End
+
+    QString currentConnectionUri() const;
+%Docstring
+Returns the uri of the current connection selected in the combo box.
+%End
+
+  public slots:
+
+    void setConnection( const QString &connection );
+%Docstring
+Sets the current connection selected in the combo box.
+%End
+
+  signals:
+    void connectionChanged( const QString &connection );
+%Docstring
+Emitted whenever the currently selected connection changes.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproviderconnectioncombobox.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

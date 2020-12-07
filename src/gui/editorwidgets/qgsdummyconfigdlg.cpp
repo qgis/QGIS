@@ -31,5 +31,5 @@ QVariantMap QgsDummyConfigDlg::config()
 
 void QgsDummyConfigDlg::setConfig( const QVariantMap &config )
 {
-  Q_UNUSED( config );
+  Q_UNUSED( config )
 }

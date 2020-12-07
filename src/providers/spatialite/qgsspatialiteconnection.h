@@ -17,6 +17,10 @@
 
 #include <QStringList>
 #include <QObject>
+#include <QMutex>
+
+#include "qgsspatialiteutils.h"
+#include "qgsvectordataprovider.h"
 
 extern "C"
 {
@@ -68,14 +72,23 @@ class QgsSpatiaLiteConnection : public QObject
 
     Error fetchTables( bool loadGeometrylessTables );
 
-    //! Return list of tables. fetchTables() function has to be called before
+    //! Returns list of tables. fetchTables() function has to be called before
     QList<TableEntry> tables() { return mTables; }
 
-    //! Return additional error message (if an error occurred before)
+    //! Returns additional error message (if an error occurred before)
     QString errorMessage() { return mErrorMsg; }
 
     //! Updates the Internal Statistics
     bool updateStatistics();
+
+    /**
+     * Returns a list of supported nativeTypes for this connection.
+     * \since QGIS 3.16
+     */
+    static QList<QgsVectorDataProvider::NativeType> nativeTypes();
+
+    static const QString SPATIALITE_ARRAY_PREFIX;
+    static const QString SPATIALITE_ARRAY_SUFFIX;
 
   protected:
     // SpatiaLite DB open / close
@@ -85,12 +98,11 @@ class QgsSpatiaLiteConnection : public QObject
     //! Checks if geometry_columns and spatial_ref_sys exist and have expected layout
     int checkHasMetadataTables( sqlite3 *handle );
 
-    /** Inserts information about the spatial tables into mTables
-      \returns true if querying of tables was successful, false on error */
+    /**
+     * Inserts information about the spatial tables into mTables
+     * \returns true if querying of tables was successful, false on error
+    */
     bool getTableInfo( sqlite3 *handle, bool loadGeometrylessTables );
-
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-    // only if libspatialite version is >= 4.0.0
 
     /**
      * Inserts information about the spatial tables into mTables
@@ -102,10 +114,6 @@ class QgsSpatiaLiteConnection : public QObject
      * thus completely freeing the client application to take care of them.
      */
     bool getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables );
-#endif
-
-    //! Cleaning well-formatted SQL strings
-    QString quotedValue( QString value ) const;
 
     //! Checks if geometry_columns_auth table exists
     bool checkGeometryColumnsAuth( sqlite3 *handle );
@@ -134,17 +142,17 @@ class QgsSqliteHandle
     // a class allowing to reuse the same sqlite handle for more layers
     //
   public:
-    QgsSqliteHandle( sqlite3 *handle, const QString &dbPath, bool shared )
+    QgsSqliteHandle( spatialite_database_unique_ptr &&database, const QString &dbPath, bool shared )
       : ref( shared ? 1 : -1 )
-      , sqlite_handle( handle )
       , mDbPath( dbPath )
       , mIsValid( true )
     {
+      mDatabase = std::move( database );
     }
 
     sqlite3 *handle()
     {
-      return sqlite_handle;
+      return mDatabase.get();
     }
 
     QString dbPath() const
@@ -162,12 +170,12 @@ class QgsSqliteHandle
       mIsValid = false;
     }
 
-    //
-    // libsqlite3 wrapper
-    //
-    void sqliteClose();
-
+    /**
+     * Returns a possibly cached SQLite DB object from \a path, if \a shared is FALSE
+     * the DB will not be searched in the cache and a new READ ONLY connection will be returned.
+     */
     static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true );
+
     static bool checkMetadata( sqlite3 *handle );
     static void closeDb( QgsSqliteHandle *&handle );
 
@@ -180,11 +188,12 @@ class QgsSqliteHandle
 
   private:
     int ref;
-    sqlite3 *sqlite_handle = nullptr;
+    spatialite_database_unique_ptr mDatabase;
     QString mDbPath;
     bool mIsValid;
 
     static QMap < QString, QgsSqliteHandle * > sHandles;
+    static QMutex sHandleMutex;
 };
 
 

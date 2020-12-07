@@ -19,6 +19,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \class QgsUniqueValueWidgetFactory
@@ -28,6 +30,11 @@
 class GUI_EXPORT QgsUniqueValueWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
+    /**
+     * Constructor for QgsUniqueValueWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
     QgsUniqueValueWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '28/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA switch sip api
 
@@ -154,6 +152,7 @@ class TestQgsActionManager(unittest.TestCase):
         return output
 
     @unittest.expectedFailure(platform.system() != 'Linux')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is flaky on Travis environment')
     def testDoAction(self):
         """ test running action """
 

@@ -20,22 +20,26 @@
 #define QGSDATASOURCEURI_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
+#include "qgswkbtypes.h"
 
 #include <QMap>
 
-/** \ingroup core
- * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
- * This structure stores the database connection information, including host, database,
- * user name, password, schema, password, and sql where clause
+/**
+ * \ingroup core
+ * Class for storing the component parts of a RDBMS data source URI (e.g. a Postgres data source).
  *
- * Extended to support generic params so that it may be used by any provider.
- * The 2 modes (the old - RDMS specific and the new generic) may not yet be mixed.
+ * This structure stores the database connection information, including host, database,
+ * user name, password, schema, password, and SQL where clause.
  */
-// (Radim Blazek 4/2012)
 class CORE_EXPORT QgsDataSourceUri
 {
+    Q_GADGET
   public:
+
+    /**
+     * Available SSL connection modes.
+     */
     enum SslMode
     {
       SslPrefer,
@@ -45,60 +49,90 @@ class CORE_EXPORT QgsDataSourceUri
       SslVerifyCa,
       SslVerifyFull
     };
+    Q_ENUM( SslMode )
 
-    //! default constructor
     QgsDataSourceUri();
 
-    //! constructor which parses input URI
-    QgsDataSourceUri( QString uri );
+    /**
+     * Constructor for QgsDataSourceUri which parses an input \a uri string.
+     */
+    QgsDataSourceUri( const QString &uri );
 
     /**
-     * \brief constructor which parses input encoded URI (generic mode)
+     * Constructor for QgsDataSourceUri which parses an input encoded \a uri).
      * \note not available in Python bindings
      */
     QgsDataSourceUri( const QByteArray &uri ) SIP_SKIP;
 
-    //! return connection part of URI
+    /**
+     * Returns the connection part of the URI.
+     */
     QString connectionInfo( bool expandAuthConfig = true ) const;
 
-    //! return complete uri
+    /**
+     * Returns the complete URI as a string.
+     */
     QString uri( bool expandAuthConfig = true ) const;
 
-    //! return complete encoded uri (generic mode)
+    /**
+     * Returns the complete encoded URI as a byte array.
+     */
     QByteArray encodedUri() const;
 
     /**
-     * \brief set complete encoded uri (generic mode)
+     * Sets the complete encoded \a uri.
+     *
      * \note not available in Python bindings
      */
     void setEncodedUri( const QByteArray &uri ) SIP_SKIP;
 
-    //! set complete encoded uri (generic mode)
+    /**
+     * Sets the complete encoded \a uri from a string value.
+     */
     void setEncodedUri( const QString &uri );
 
-    //! quoted table name
+    /**
+     * Returns the URI's table name, escaped and quoted.
+     */
     QString quotedTablename() const;
 
-    //! Set generic param (generic mode)
-    //! \note if key exists, another is inserted
+    /**
+     * Sets a generic parameter \a value on the URI.
+     * \note If a parameter with the specified \a key already exists, another is inserted
+     * and the existing value is left unchanged.
+     */
     void setParam( const QString &key, const QString &value );
-    //! \note available in Python as setParamList
+
+    /**
+     * Sets a generic parameter list \a value on the URI.
+     * \note available in Python as setParamList
+     */
     void setParam( const QString &key, const QStringList &value ) SIP_PYNAME( setParamList );
 
-    //! Remove generic param (generic mode)
-    //! \note remove all occurrences of key, returns number of params removed
+    /**
+     * Removes a generic parameter by \a key.
+     * \note Calling this method removes all the occurrences of key, and returns the number of parameters removed.
+     */
     int removeParam( const QString &key );
 
-    //! Get generic param (generic mode)
+    /**
+     * Returns a generic parameter value corresponding to the specified \a key.
+     */
     QString param( const QString &key ) const;
 
-    //! Get multiple generic param (generic mode)
+    /**
+     * Returns multiple generic parameter values corresponding to the specified \a key.
+     */
     QStringList params( const QString &key ) const;
 
-    //! Test if param exists (generic mode)
+    /**
+     * Returns TRUE if a parameter with the specified \a key exists.
+     */
     bool hasParam( const QString &key ) const;
 
-    //! Set all connection related members at once
+    /**
+     * Sets all connection related members at once.
+     */
     void setConnection( const QString &aHost,
                         const QString &aPort,
                         const QString &aDatabase,
@@ -107,7 +141,9 @@ class CORE_EXPORT QgsDataSourceUri
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 
-    //! Set all connection related members at once (for the service case)
+    /**
+     * Sets all connection related members at once (for a service case).
+     */
     void setConnection( const QString &aService,
                         const QString &aDatabase,
                         const QString &aUsername,
@@ -115,103 +151,180 @@ class CORE_EXPORT QgsDataSourceUri
                         SslMode sslmode = SslPrefer,
                         const QString &authConfigId = QString() );
 
-    //! Set database
+    /**
+     * Sets the URI database name.
+     */
     void setDatabase( const QString &database );
 
-    //! Set all data source related members at once
+    /**
+     * Sets all data source related members at once.
+     *
+     * The \a aSql argument represents a subset filter string to be applied to the source, and should take the
+     * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+     */
     void setDataSource( const QString &aSchema,
                         const QString &aTable,
                         const QString &aGeometryColumn,
                         const QString &aSql = QString(),
                         const QString &aKeyColumn = QString() );
 
-    //! Set authentication configuration ID
+    /**
+     * Sets the authentication configuration ID for the URI.
+     */
     void setAuthConfigId( const QString &authcfg );
 
-    //! set username
+    /**
+     * Sets the \a username for the URI.
+     */
     void setUsername( const QString &username );
 
-    //! set password
+    /**
+     * Sets the \a password for the URI.
+     */
     void setPassword( const QString &password );
 
-    //! Removes password element from uris
+    /**
+     * Removes the password element from a URI.
+     */
     static QString removePassword( const QString &aUri );
 
-    //! Any associated authentication configuration ID
+    /**
+     * Returns any associated authentication configuration ID stored in the URI.
+     */
     QString authConfigId() const;
 
-    //! Returns the username
+    //! Returns the username stored in the URI.
     QString username() const;
 
-    //! Returns the schema
+    //! Returns the schema stored in the URI.
     QString schema() const;
 
-    //! Returns the table
+    //! Returns the table name stored in the URI.
     QString table() const;
 
-    //! Returns the SQL query
+    /**
+     * Returns the SQL filter stored in the URI, if set.
+     *
+     * This represents a subset filter string to be applied to the source, and takes the
+     * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+     *
+     * \see setSql()
+     */
     QString sql() const;
 
-    //! Return the name of the geometry column
+    //! Returns the name of the geometry column stored in the URI, if set.
     QString geometryColumn() const;
 
-    //! set use Estimated Metadata
+    //! Sets whether estimated metadata should be used for the connection.
     void setUseEstimatedMetadata( bool flag );
 
-    //! Returns true if estimated metadata are used
+    //! Returns TRUE if estimated metadata should be used for the connection.
     bool useEstimatedMetadata() const;
 
-    //! Set to true to disable selection by id
+    //! Set to TRUE to disable selection by feature ID.
     void disableSelectAtId( bool flag );
-    //! Returns whether the selection by id is disabled
+
+    //! Returns whether the selection by feature ID is disabled.
     bool selectAtIdDisabled() const;
 
-    //! Clears the schema
+    //! Clears the schema stored in the URI.
     void clearSchema();
 
-    //! set the table schema
-    // \since QGIS 2.11
+    /**
+     * Sets the \a scheme for the URI.
+     * \since QGIS 2.12
+     */
     void setSchema( const QString &schema );
 
-    //! Sets the SQL query
+    /**
+     * Sets the \a sql filter for the URI.
+     *
+     * The \a sql represents a subset filter string to be applied to the source, and should take the
+     * form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+     *
+     * \see sql()
+     */
     void setSql( const QString &sql );
 
-    //! Returns the host
+    //! Returns the host name stored in the URI.
     QString host() const;
-    //! Returns the database
+    //! Returns the database name stored in the URI.
     QString database() const;
-    //! Returns the port
+    //! Returns the port stored in the URI.
     QString port() const;
-    //! Returns the driver
-    // \since QGIS 2.16
+
+    /**
+     * Returns the driver name stored in the URI
+     * \since QGIS 2.16
+     */
     QString driver() const;
-    //! Sets the driver name
-    // \since QGIS 2.16
+
+    /**
+     * Sets the \a driver name stored in the URI.
+     * \since QGIS 2.16
+     */
     void setDriver( const QString &driver );
-    //! Returns the password
+
+    //! Returns the password stored in the URI.
     QString password() const;
-    //! Returns the SSL mode
+
+    //! Returns the SSL mode associated with the URI.
     SslMode sslMode() const;
 
-    //! Returns the service name
+    //! Returns the service name associated with the URI.
     QString service() const;
 
-    //! Returns the name of the (primary) key column
+    //! Returns the name of the (primary) key column for the referenced table.
     QString keyColumn() const;
-    //! Sets the name of the (primary) key column
+
+    //! Sets the name of the (primary) key \a column.
     void setKeyColumn( const QString &column );
 
-    /** The wkb type.
+    /**
+     * Returns the WKB type associated with the URI.
      */
     QgsWkbTypes::Type wkbType() const;
 
-    //! Sets the wkb type
+    //! Sets the WKB \a type associated with the URI.
     void setWkbType( QgsWkbTypes::Type type );
 
-    //! Returns the srid
+    //! Returns the spatial reference ID associated with the URI.
     QString srid() const;
-    //! Sets the srid
+
+    //! Sets the spatial reference ID associated with the URI.
     void setSrid( const QString &srid );
+
+    /**
+     * Decodes SSL mode string into enum value. If the string is not recognized, SslPrefer is returned.
+     * \since QGIS 3.2
+     */
+    static SslMode decodeSslMode( const QString &sslMode );
+
+    /**
+     * Encodes SSL mode enum value into a string.
+     * \since QGIS 3.2
+     */
+    static QString encodeSslMode( SslMode sslMode );
+
+    /**
+     * Sets table to \a table
+     * \since QGIS 3.10
+     */
+    void setTable( const QString &table );
+
+    /**
+     * Sets geometry column name to \a geometryColumn
+     * \since QGIS 3.10
+     */
+    void setGeometryColumn( const QString &geometryColumn );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     void skipBlanks( const QString &uri, int &i );
@@ -245,19 +358,19 @@ class CORE_EXPORT QgsDataSourceUri
     //! password
     QString mPassword;
     //! ssl mode
-    SslMode mSSLmode;
+    SslMode mSSLmode = SslPrefer;
     //! key column
     QString mKeyColumn;
     //! Use estimated metadata flag
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
     //! Disable SelectAtId capability (e.g., to trigger the attribute table memory model for expensive views)
-    bool mSelectAtIdDisabled;
+    bool mSelectAtIdDisabled = false;
     //! geometry type (or QgsWkbTypes::Unknown if not specified)
-    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     //! SRID or a null string if not specified
     QString mSrid;
     //! Generic params store
-    QMap<QString, QString> mParams;
+    QMultiMap<QString, QString> mParams;
 };
 
 #endif //QGSDATASOURCEURI_H

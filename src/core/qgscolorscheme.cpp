@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscolorscheme.h"
+#include "qgscolorschemeregistry.h"
 
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
@@ -27,9 +28,9 @@
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
   //base implementation does nothing
-  Q_UNUSED( colors );
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( colors )
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
   return false;
 }
 
@@ -38,15 +39,10 @@ bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &
 // QgsRecentColorScheme
 //
 
-QgsRecentColorScheme::QgsRecentColorScheme() : QgsColorScheme()
-{
-
-}
-
 QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   //fetch recent colors
   QgsSettings settings;
@@ -54,7 +50,8 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
 
   //generate list from recent colors
   QgsNamedColorList colorList;
-  Q_FOREACH ( const QVariant &color, recentColorVariants )
+  const auto constRecentColorVariants = recentColorVariants;
+  for ( const QVariant &color : constRecentColorVariants )
   {
     colorList.append( qMakePair( color.value<QColor>(), QgsSymbolLayerUtils::colorToName( color.value<QColor>() ) ) );
   }
@@ -114,16 +111,10 @@ QColor QgsRecentColorScheme::lastUsedColor()
   return recentColorVariants.at( 0 ).value<QColor>();
 }
 
-
-QgsCustomColorScheme::QgsCustomColorScheme() : QgsColorScheme()
-{
-
-}
-
 QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   //fetch predefined custom colors
   QgsNamedColorList colorList;
@@ -133,16 +124,16 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
   if ( !settings.contains( QStringLiteral( "/colors/palettecolors" ) ) )
   {
     //no custom palette, return default colors
-    colorList.append( qMakePair( QColor( "#000000" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#ffffff" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#a6cee3" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#1f78b4" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#b2df8a" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#33a02c" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#fb9a99" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#e31a1c" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#fdbf6f" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#ff7f00" ), QString() ) );
+    colorList.append( qMakePair( QColor( 0, 0, 0 ), QString() ) );
+    colorList.append( qMakePair( QColor( 255, 255, 255 ), QString() ) );
+    colorList.append( qMakePair( QColor( 166, 206, 227 ), QString() ) );
+    colorList.append( qMakePair( QColor( 31, 120, 180 ), QString() ) );
+    colorList.append( qMakePair( QColor( 178, 223, 138 ), QString() ) );
+    colorList.append( qMakePair( QColor( 51, 160, 44 ), QString() ) );
+    colorList.append( qMakePair( QColor( 251, 154, 153 ), QString() ) );
+    colorList.append( qMakePair( QColor( 227, 26, 28 ), QString() ) );
+    colorList.append( qMakePair( QColor( 253, 191, 111 ), QString() ) );
+    colorList.append( qMakePair( QColor( 255, 127, 0 ), QString() ) );
 
     return colorList;
   }
@@ -171,8 +162,8 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
 
 bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   // save colors to settings
   QgsSettings settings;
@@ -198,15 +189,10 @@ QgsCustomColorScheme *QgsCustomColorScheme::clone() const
 }
 
 
-QgsProjectColorScheme::QgsProjectColorScheme()
-{
-
-}
-
 QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   QgsNamedColorList colorList;
 
@@ -234,23 +220,9 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
 
 bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
-
-  // save colors to project
-  QStringList customColors;
-  QStringList customColorLabels;
-
-  QgsNamedColorList::const_iterator colorIt = colors.constBegin();
-  for ( ; colorIt != colors.constEnd(); ++colorIt )
-  {
-    QString color = QgsSymbolLayerUtils::encodeColor( ( *colorIt ).first );
-    QString label = ( *colorIt ).second;
-    customColors.append( color );
-    customColorLabels.append( label );
-  }
-  QgsProject::instance()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ), customColors );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
+  QgsProject::instance()->setProjectColors( colors );
   return true;
 }
 
@@ -264,16 +236,10 @@ QgsProjectColorScheme *QgsProjectColorScheme::clone() const
 // QgsGplColorScheme
 //
 
-QgsGplColorScheme::QgsGplColorScheme()
-  : QgsColorScheme()
-{
-
-}
-
 QgsNamedColorList QgsGplColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   QString sourceFilePath = gplFilePath();
   if ( sourceFilePath.isEmpty() )
@@ -290,8 +256,8 @@ QgsNamedColorList QgsGplColorScheme::fetchColors( const QString &context, const 
 
 bool QgsGplColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( baseColor );
+  Q_UNUSED( context )
+  Q_UNUSED( baseColor )
 
   QString destFilePath = gplFilePath();
   if ( destFilePath.isEmpty() )
@@ -300,7 +266,19 @@ bool QgsGplColorScheme::setColors( const QgsNamedColorList &colors, const QStrin
   }
 
   QFile destFile( destFilePath );
-  return QgsSymbolLayerUtils::saveColorsToGpl( destFile, schemeName(), colors );
+  if ( QgsSymbolLayerUtils::saveColorsToGpl( destFile, schemeName(), colors ) )
+  {
+    if ( QgsApplication::colorSchemeRegistry()->randomStyleColorScheme() == this )
+    {
+      // force a re-generation of the random style color list, since the color list has changed
+      QgsApplication::colorSchemeRegistry()->setRandomStyleColorScheme( this );
+    }
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 
@@ -309,8 +287,7 @@ bool QgsGplColorScheme::setColors( const QgsNamedColorList &colors, const QStrin
 //
 
 QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
-  : QgsGplColorScheme()
-  , mFilename( filename )
+  : mFilename( filename )
 {
   QFile sourceFile( gplFilePath() );
 
@@ -338,6 +315,12 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
   {
     mName = mFilename;
   }
+
+  // we consider this scheme writable if the user has permission, OR
+  // if it DOESN'T already exist (since new schemes are only created when
+  // first written to)
+  QFileInfo sourceFileInfo( gplFilePath() );
+  mEditable = !sourceFileInfo.exists() || sourceFileInfo.isWritable();
 }
 
 QString QgsUserColorScheme::schemeName() const
@@ -373,6 +356,12 @@ bool QgsUserColorScheme::erase()
     return false;
   }
 
+  // if file does not exist, nothing to do on the disk, so we can consider erasing done
+  if ( ! QFile::exists( filePath ) )
+  {
+    return true;
+  }
+
   //try to erase gpl file
   return QFile::remove( filePath );
 }
@@ -396,7 +385,7 @@ void QgsUserColorScheme::setShowSchemeInMenu( bool show )
 
 QString QgsUserColorScheme::gplFilePath()
 {
-  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
+  QString palettesDir = QgsApplication::qgisSettingsDirPath() + "palettes";
 
   QDir localDir;
   if ( !localDir.mkpath( palettesDir ) )

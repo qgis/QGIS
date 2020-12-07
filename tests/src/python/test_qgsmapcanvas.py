@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -24,7 +22,11 @@ from qgis.core import (QgsMapSettings,
                        QgsFillSymbol,
                        QgsSingleSymbolRenderer,
                        QgsMapThemeCollection,
-                       QgsProject,
+                       QgsProject, QgsAnnotationPolygonItem,
+                       QgsPolygon,
+                       QgsLineString,
+                       QgsPoint,
+                       QgsPointXY,
                        QgsApplication)
 from qgis.gui import (QgsMapCanvas)
 
@@ -46,6 +48,14 @@ class TestQgsMapCanvas(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def testGettersSetters(self):
+        canvas = QgsMapCanvas()
+
+        # should be disabled by default
+        self.assertFalse(canvas.previewJobsEnabled())
+        canvas.setPreviewJobsEnabled(True)
+        self.assertTrue(canvas.previewJobsEnabled())
 
     def testDeferredUpdate(self):
         """ test that map canvas doesn't auto refresh on deferred layer update """
@@ -225,7 +235,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.waitWhileRendering()
         self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
 
-        # ok, so all good with setting/rendering map styles
+        # OK, so all good with setting/rendering map styles
         # try setting canvas to a particular theme
 
         # make some themes...
@@ -325,6 +335,75 @@ class TestQgsMapCanvas(unittest.TestCase):
         # should be different - we should now render project layers
         self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas))
 
+        # set canvas to theme1
+        canvas.setTheme('theme1')
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        self.assertEqual(canvas.theme(), 'theme1')
+        themeLayers = theme1.layerRecords()
+        # rename the active theme
+        QgsProject.instance().mapThemeCollection().renameMapTheme('theme1', 'theme5')
+        # canvas theme should now be set to theme5
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        self.assertEqual(canvas.theme(), 'theme5')
+        # theme5 should render as theme1
+        theme5 = QgsProject.instance().mapThemeCollection().mapThemeState('theme5')
+        theme5Layers = theme5.layerRecords()
+        self.assertEqual(themeLayers, theme5Layers, 'themes are different')
+        # self.assertTrue(self.canvasImageCheck('theme5', 'theme5', canvas))
+
+    def testMainAnnotationLayerRendered(self):
+        """ test that main annotation layer is rendered above all other layers """
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                               "layer", "memory")
+        sym3 = QgsFillSymbol.createSimple({'color': '#b200b2'})
+        layer.renderer().setSymbol(sym3)
+
+        canvas.setLayers([layer])
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+        canvas.show()
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+        self.assertTrue(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+
+        # add polygon to layer
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+
+        # refresh canvas
+        canvas.refresh()
+        canvas.waitWhileRendering()
+
+        # no annotation yet...
+        self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
+
+        annotation_layer = QgsProject.instance().mainAnnotationLayer()
+        annotation_layer.setCrs(QgsCoordinateReferenceSystem(4326))
+        annotation_geom = QgsGeometry.fromRect(QgsRectangle(12, 30, 18, 33))
+        annotation = QgsAnnotationPolygonItem(annotation_geom.constGet().clone())
+        sym3 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no'})
+        annotation.setSymbol(sym3)
+        annotation_layer.addItem(annotation)
+
+        # refresh canvas
+        canvas.refresh()
+        canvas.waitWhileRendering()
+
+        # annotation must be rendered over other layers
+        self.assertTrue(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
+        annotation_layer.clear()
+
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
@@ -341,16 +420,47 @@ class TestQgsMapCanvas(unittest.TestCase):
         print((self.report))
         return result
 
+    def testSaveCanvasVariablesToProject(self):
+        """
+        Ensure that temporary canvas atlas variables are not written to project
+        """
+        c1 = QgsMapCanvas()
+        c1.setObjectName('c1')
+        c1.expressionContextScope().setVariable('atlas_featurenumber', 1111)
+        c1.expressionContextScope().setVariable('atlas_pagename', 'bb')
+        c1.expressionContextScope().setVariable('atlas_feature', QgsFeature(1))
+        c1.expressionContextScope().setVariable('atlas_featureid', 22)
+        c1.expressionContextScope().setVariable('atlas_geometry', QgsGeometry.fromWkt('Point( 1 2 )'))
+        c1.expressionContextScope().setVariable('vara', 1111)
+        c1.expressionContextScope().setVariable('varb', 'bb')
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("qgis")
+        doc.appendChild(elem)
+        c1.writeProject(doc)
+
+        c2 = QgsMapCanvas()
+        c2.setObjectName('c1')
+        c2.readProject(doc)
+
+        self.assertCountEqual(c2.expressionContextScope().variableNames(), ['vara', 'varb'])
+        self.assertEqual(c2.expressionContextScope().variable('vara'), 1111)
+        self.assertEqual(c2.expressionContextScope().variable('varb'), 'bb')
+
     def testSaveMultipleCanvasesToProject(self):
         # test saving/restoring canvas state to project with multiple canvases
         c1 = QgsMapCanvas()
         c1.setObjectName('c1')
         c1.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         c1.setRotation(45)
+        c1.expressionContextScope().setVariable('vara', 1111)
+        c1.expressionContextScope().setVariable('varb', 'bb')
         c2 = QgsMapCanvas()
         c2.setObjectName('c2')
         c2.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         c2.setRotation(65)
+        c2.expressionContextScope().setVariable('vara', 2222)
+        c2.expressionContextScope().setVariable('varc', 'cc')
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("qgis")
@@ -367,8 +477,93 @@ class TestQgsMapCanvas(unittest.TestCase):
 
         self.assertEqual(c3.mapSettings().destinationCrs().authid(), 'EPSG:3111')
         self.assertEqual(c3.rotation(), 45)
+        self.assertEqual(set(c3.expressionContextScope().variableNames()), {'vara', 'varb'})
+        self.assertEqual(c3.expressionContextScope().variable('vara'), 1111)
+        self.assertEqual(c3.expressionContextScope().variable('varb'), 'bb')
         self.assertEqual(c4.mapSettings().destinationCrs().authid(), 'EPSG:4326')
         self.assertEqual(c4.rotation(), 65)
+        self.assertEqual(set(c4.expressionContextScope().variableNames()), {'vara', 'varc'})
+        self.assertEqual(c4.expressionContextScope().variable('vara'), 2222)
+        self.assertEqual(c4.expressionContextScope().variable('varc'), 'cc')
+
+    def testLockedScale(self):
+        """Test zoom/pan/center operations when scale lock is on"""
+
+        c = QgsMapCanvas()
+        dpr = c.mapSettings().devicePixelRatio()
+        self.assertEqual(c.size().width(), 640)
+        self.assertEqual(c.size().height(), 480)
+
+        c.setExtent(QgsRectangle(5, 45, 9, 47))
+        self.assertEqual(round(c.scale() / 100000), 13 * dpr)
+        c.zoomScale(2500000)
+        c.setScaleLocked(True)
+        self.assertEqual(round(c.magnificationFactor(), 1), 1)
+
+        # Test setExtent
+        c.setExtent(QgsRectangle(6, 45.5, 8, 46), True)
+        self.assertEqual(round(c.scale()), 2500000)
+        self.assertEqual(c.center().x(), 7.0)
+        self.assertEqual(c.center().y(), 45.75)
+        self.assertEqual(round(c.magnificationFactor()), 4 / dpr)
+
+        # Test setCenter
+        c.setCenter(QgsPointXY(6, 46))
+        self.assertEqual(c.center().x(), 6)
+        self.assertEqual(c.center().y(), 46)
+        self.assertEqual(round(c.scale()), 2500000)
+
+        # Test zoom
+        c.zoomByFactor(0.5, QgsPointXY(6.5, 46.5), False)
+        self.assertEqual(c.center().x(), 6.5)
+        self.assertEqual(c.center().y(), 46.5)
+        self.assertTrue(c.magnificationFactor() > 7 / dpr)
+        self.assertEqual(round(c.scale()), 2500000)
+
+        # Test zoom with center
+        # default zoom factor is 2, x and y are pixel coordinates, default size is 640x480
+        c.zoomWithCenter(300, 200, True)
+        self.assertEqual(round(c.center().x(), 1), 6.5)
+        self.assertEqual(round(c.center().y(), 1), 46.6)
+        self.assertEqual(round(c.scale()), 2500000)
+        self.assertTrue(c.magnificationFactor() > (14 / dpr) and c.magnificationFactor() < (16 / dpr))
+        # out ...
+        c.zoomWithCenter(300, 200, False)
+        self.assertEqual(round(c.center().x(), 1), 6.5)
+        self.assertEqual(round(c.center().y(), 1), 46.6)
+        self.assertEqual(round(c.scale()), 2500000)
+        self.assertTrue(c.magnificationFactor() > 7 / dpr)
+
+        # Test setExtent with different ratio
+        c2 = QgsMapCanvas()
+        c2.setExtent(QgsRectangle(5, 45, 9, 47))
+        c2.zoomScale(2500000)
+        c2.setScaleLocked(True)
+
+        c2.setExtent(QgsRectangle(3, 45, 11, 45.5), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 7.0)
+        self.assertEqual(c2.center().y(), 45.25)
+        self.assertAlmostEqual(c2.magnificationFactor(), 1 / dpr, 0)
+
+        # Restore original
+        c2.setExtent(QgsRectangle(5, 45, 9, 47), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 7.0)
+        self.assertEqual(c2.center().y(), 46.0)
+        self.assertAlmostEqual(c2.magnificationFactor(), 2 / dpr, 0)
+
+        c2.setExtent(QgsRectangle(7, 46, 11, 46.5), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 9.0)
+        self.assertEqual(c2.center().y(), 46.25)
+        self.assertAlmostEqual(c2.magnificationFactor(), 2 / dpr, 0)
+
+        c2.setExtent(QgsRectangle(7, 46, 9, 46.5), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 8.0)
+        self.assertEqual(c2.center().y(), 46.25)
+        self.assertAlmostEqual(c2.magnificationFactor(), 4 / dpr, 0)
 
 
 if __name__ == '__main__':

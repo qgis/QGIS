@@ -15,6 +15,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include <QString>
+#include <QVariant>
 
 #include <stdexcept>
 
@@ -66,6 +67,17 @@ QgsScopedSqlite::~QgsScopedSqlite()
 
 sqlite3 *QgsScopedSqlite::get() const { return db_; }
 
+bool QgsScopedSqlite::interrupt()
+{
+  bool rc = false;
+  if ( db_ )
+  {
+    sqlite3_interrupt( db_ );
+    rc = true;
+  }
+  return rc;
+}
+
 sqlite3 *QgsScopedSqlite::release()
 {
   sqlite3 *pp = db_;
@@ -89,14 +101,13 @@ namespace Sqlite
 {
   Query::Query( sqlite3 *db, const QString &q )
     : db_( db )
-    , stmt_( nullptr )
     , nBind_( 1 )
   {
     QByteArray ba( q.toUtf8() );
     int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
-      QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
+      QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q, sqlite3_errmsg( db ) );
       throw std::runtime_error( err.toUtf8().constData() );
     }
   }
@@ -108,20 +119,44 @@ namespace Sqlite
 
   int Query::step() { return sqlite3_step( stmt_ ); }
 
-  Query &Query::bind( const QString &str, int idx )
+  Query &Query::bind( const QVariant &value, int idx )
   {
-    QByteArray ba( str.toUtf8() );
-    int r = sqlite3_bind_text( stmt_, idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
-    if ( r )
+    switch ( value.type() )
     {
-      throw std::runtime_error( sqlite3_errmsg( db_ ) );
+      case QVariant::String:
+      {
+        QByteArray ba( value.toString().toUtf8() );
+        int r = sqlite3_bind_text( stmt_, idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+        if ( r )
+        {
+          throw std::runtime_error( sqlite3_errmsg( db_ ) );
+        }
+        return *this;
+      }
+
+      case QVariant::Double:
+      {
+        bool ok; // no reason to fail double conversion
+        double dbl = value.toDouble( &ok );
+        int r = sqlite3_bind_double( stmt_, idx, dbl );
+        if ( r )
+        {
+          throw std::runtime_error( sqlite3_errmsg( db_ ) );
+        }
+        return *this;
+      }
+
+      default:
+        // Unsupported type
+        Q_ASSERT( false );
     }
+
     return *this;
   }
 
-  Query &Query::bind( const QString &str )
+  Query &Query::bind( const QVariant &value )
   {
-    return bind( str, nBind_++ );
+    return bind( value, nBind_++ );
   }
 
   void Query::exec( sqlite3 *db, const QString &sql )

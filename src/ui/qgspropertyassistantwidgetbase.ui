@@ -132,7 +132,7 @@
         </property>
         <property name="icon">
          <iconset>
-          <normalon>:/images/themes/default/mActionDraw.svg</normalon>
+          <normalon>:/images/themes/default/mActionRefresh.svg</normalon>
          </iconset>
         </property>
        </widget>

@@ -19,6 +19,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
+#include "qgsgeonodeconnection.h"
 
 class QgsWmsCapabilitiesDownload;
 
@@ -27,26 +28,90 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
-    ~QgsWMSConnectionItem();
+    ~QgsWMSConnectionItem() override;
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
-
-    virtual QList<QAction *> actions() override;
+    bool equal( const QgsDataItem *other ) override;
 
   public slots:
-    void editConnection();
-    void deleteConnection();
-    virtual void deleteLater() override;
+    void deleteLater() override;
 
   private:
     QString mUri;
     QgsWmsCapabilitiesDownload *mCapabilitiesDownload = nullptr;
 };
 
+/**
+ * Base class which contains similar basic attributes and functions needed by the
+ * wms collection layers and child layers.
+ *
+ */
+class QgsWMSItemBase
+{
+  public:
+    QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                    const QgsDataSourceUri &dataSourceUri,
+                    const QgsWmsLayerProperty &layerProperty );
+
+    /**
+     * Returns the uri for the wms dataitem.
+     *
+     * The WMS temporal layers can contain the following parameters uri.
+     *
+     * - "type": the type of the wms provider e.g WMS-T
+     * - "timeDimensionExtent": the layer's time dimension extent it is available
+     * - "referencetimeDimensionExtent": reference time extent for the bi-temporal dimension layers
+     * - "time": time value of the current layer data from the provider
+     * - "referenceTime": reference time value of the current of the layer data, this is applicable for the
+     *   bi-temporal dimension layers
+     * - "allowTemporalUpdates": whether to allow updates on temporal parameters on this uri
+     * - "temporalSource": the source of the layer's temporal range, can be either "provider" or "project"
+     * - "enableTime": if the provider using time part in the temporal range datetime instances
+     */
+    QString createUri();
+
+    //! Stores GetCapabilities response
+    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
+
+    //! Stores WMS connection information
+    QgsDataSourceUri mDataSourceUri;
+
+    //! WMS Layer properties, can be inherited by subsidiary layers
+    QgsWmsLayerProperty mLayerProperty;
+};
+
+/**
+ * \brief WMS Layer Collection.
+ *
+ *  This collection contains a WMS Layer element that can enclose other layers.
+ */
+class QgsWMSLayerCollectionItem : public QgsDataCollectionItem, public QgsWMSItemBase
+{
+    Q_OBJECT
+  public:
+    QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path,
+                               const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                               const QgsDataSourceUri &dataSourceUri,
+                               const QgsWmsLayerProperty &layerProperty );
+
+    bool equal( const QgsDataItem *other ) override;
+
+    bool hasDragEnabled() const override;
+
+    QgsMimeDataUtils::Uri mimeUri() const override;
+
+  protected:
+    //! The URI
+    QString mUri;
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
+};
+
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
 // We have to use QgsDataCollectionItem and support layer methods if necessary
-class QgsWMSLayerItem : public QgsLayerItem
+class QgsWMSLayerItem : public QgsLayerItem, public QgsWMSItemBase
 {
     Q_OBJECT
   public:
@@ -54,13 +119,9 @@ class QgsWMSLayerItem : public QgsLayerItem
                      const QgsWmsCapabilitiesProperty &capabilitiesProperty,
                      const QgsDataSourceUri &dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
-    ~QgsWMSLayerItem();
 
-    QString createUri();
+    bool equal( const QgsDataItem *other ) override;
 
-    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QgsDataSourceUri mDataSourceUri;
-    QgsWmsLayerProperty mLayerProperty;
 };
 
 class QgsWMTSLayerItem : public QgsLayerItem
@@ -77,7 +138,6 @@ class QgsWMTSLayerItem : public QgsLayerItem
                       const QString &tileMatrixSet,
                       const QString &crs,
                       const QString &title );
-    ~QgsWMTSLayerItem();
 
     QString createUri();
     QString layerName() const override { return mTitle; }
@@ -87,23 +147,26 @@ class QgsWMTSLayerItem : public QgsLayerItem
     QString mId, mFormat, mStyle, mTileMatrixSet, mCrs, mTitle;
 };
 
-class QgsWMSRootItem : public QgsDataCollectionItem
+class QgsWMSRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
     QgsWMSRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsWMSRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction *> actions() override;
-
-    virtual QWidget *paramWidget() override;
+    QVariant sortKey() const override { return 7; }
 
   public slots:
-    void connectionsChanged();
+};
 
-    void newConnection();
+class QgsWMTSRootItem : public QgsConnectionsRootItem
+{
+    Q_OBJECT
+  public:
+    QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path );
+
+  public slots:
 };
 
 
@@ -111,16 +174,18 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return QStringLiteral( "WMS" ); }
+    QString name() override { return QStringLiteral( "WMS" ); }
+    QString dataProviderKey() const override;
+    int capabilities() const override { return QgsDataProvider::Net; }
 
-    virtual int capabilities() override { return QgsDataProvider::Net; }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 
-    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 
 //! Root item for XYZ tile layers
-class QgsXyzTileRootItem : public QgsDataCollectionItem
+class QgsXyzTileRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
@@ -128,10 +193,8 @@ class QgsXyzTileRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction *> actions() override;
+    QVariant sortKey() const override { return 8; }
 
-  private slots:
-    void newConnection();
 };
 
 //! Item implementation for XYZ tile layers
@@ -141,11 +204,6 @@ class QgsXyzLayerItem : public QgsLayerItem
   public:
     QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri );
 
-    virtual QList<QAction *> actions() override;
-
-  public slots:
-    void editConnection();
-    void deleteConnection();
 };
 
 
@@ -153,16 +211,13 @@ class QgsXyzLayerItem : public QgsLayerItem
 class QgsXyzTileDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return QStringLiteral( "XYZ Tiles" ); }
+    QString name() override;
+    QString dataProviderKey() const override;
+    int capabilities() const override;
 
-    virtual int capabilities() override { return QgsDataProvider::Net; }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 
-    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
-    {
-      if ( path.isEmpty() )
-        return new QgsXyzTileRootItem( parentItem, QStringLiteral( "XYZ Tiles" ), QStringLiteral( "xyz:" ) );
-      return nullptr;
-    }
+    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 

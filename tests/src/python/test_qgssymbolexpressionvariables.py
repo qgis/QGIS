@@ -20,8 +20,6 @@
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthiasd Kuhn'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -69,7 +67,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def testPartNum(self):
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
 
         renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('color_rgb( (@geometry_part_num - 1) * 200, 0, 0 )'))
@@ -85,7 +83,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def testPartCount(self):
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
 
         renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )'))
@@ -101,7 +99,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def testSymbolColor(self):
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#ff0000'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_color': 'black'})
 
         renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('set_color_part( @symbol_color, \'value\', "Value" * 4)'))

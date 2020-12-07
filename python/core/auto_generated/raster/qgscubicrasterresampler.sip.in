@@ -1,0 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscubicrasterresampler.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsCubicRasterResampler: QgsRasterResamplerV2
+{
+%Docstring
+Cubic Raster Resampler
+%End
+
+%TypeHeaderCode
+#include "qgscubicrasterresampler.h"
+%End
+  public:
+
+    QgsCubicRasterResampler();
+%Docstring
+Constructor for QgsCubicRasterResampler.
+%End
+    virtual QgsCubicRasterResampler *clone() const /Factory/;
+
+
+    virtual QImage resampleV2( const QImage &source, const QSize &size );
+
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
+
+    virtual QString type() const;
+
+    virtual int tileBufferPixels() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscubicrasterresampler.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

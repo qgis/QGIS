@@ -24,9 +24,10 @@
 #include "qgis_app.h"
 
 class QgsVectorLayer;
+class QgsFeature;
 
 /**
-  \brief Map tool for running feature actions on the current layer
+ * \brief Map tool for running feature actions on the current layer
 */
 class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
 {
@@ -35,25 +36,24 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
   public:
     QgsMapToolFeatureAction( QgsMapCanvas *canvas );
 
-    ~QgsMapToolFeatureAction();
-
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void activate() override;
+    void activate() override;
 
-    virtual void deactivate() override;
+    void deactivate() override;
 
   private:
     bool doAction( QgsVectorLayer *layer, int x, int y );
+    void doActionForFeature( QgsVectorLayer *layer, const QgsFeature &feature, const QgsPointXY &point );
 };
 
 #endif

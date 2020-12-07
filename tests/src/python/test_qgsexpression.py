@@ -9,14 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nathan Woodrow'
 __date__ = '4/11/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import QgsExpression, QgsFeatureRequest, QgsFields, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -42,6 +41,18 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def sqrt(values, feature, parent):
         pass
 
+    @qgsfunction(1, 'testing', register=False)
+    def help_with_docstring(values, feature, parent):
+        """The help comes from the python docstring."""
+        pass
+
+    help_text = 'The help comes from a variable.'
+
+    @qgsfunction(1, 'testing', register=False, helpText=help_text)
+    def help_with_variable(values, feature, parent):
+        """This docstring is not used for the help."""
+        pass
+
     @qgsfunction(1, 'testing', register=False, usesgeometry=True)
     def geomtest(values, feature, parent):
         pass
@@ -53,6 +64,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     @qgsfunction(args=0, group='testing', register=False, referenced_columns=['a', 'b'])
     def referenced_columns_set(values, feature, parent):
         return 2
+
+    @qgsfunction(args=-1, group='testing', register=False, handlesnull=True)
+    def null_mean(values, feature, parent):
+        vals = [val for val in values if val != NULL]
+        return sum(vals) / len(vals)
 
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
@@ -67,13 +83,24 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         args = function.params()
         self.assertEqual(args, 3)
 
+    def testHelp(self):
+        QgsExpression.registerFunction(self.help_with_variable)
+        html = ('<h3>help_with_variable function</h3><br>'
+                'The help comes from a variable.')
+        self.assertEqual(self.help_with_variable.helpText(), html)
+
+        QgsExpression.registerFunction(self.help_with_docstring)
+        html = ('<h3>help_with_docstring function</h3><br>'
+                'The help comes from the python docstring.')
+        self.assertEqual(self.help_with_docstring.helpText(), html)
+
     def testAutoArgsAreExpanded(self):
         function = self.expandargs
         args = function.params()
         self.assertEqual(args, 3)
         values = [1, 2, 3]
         exp = QgsExpression("")
-        result = function.func(values, None, exp)
+        result = function.func(values, None, exp, None)
         # Make sure there is no eval error
         self.assertEqual(exp.evalErrorString(), "")
         self.assertEqual(result, (1, 2, 3))
@@ -137,6 +164,14 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         exp = QgsExpression('referenced_columns_set()')
         self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
 
+    def testHandlesNull(self):
+        context = QgsExpressionContext()
+        QgsExpression.registerFunction(self.null_mean)
+        exp = QgsExpression('null_mean(1, 2, NULL, 3)')
+        result = exp.evaluate(context)
+        self.assertFalse(exp.hasEvalError())
+        self.assertEqual(result, 2)
+
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
         self.assertFalse(success)
@@ -195,6 +230,45 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertFalse(e.isValid())
         e.setExpression('1')
         self.assertTrue(e.isValid())
+
+    def testCreateFieldEqualityExpression(self):
+        e = QgsExpression()
+
+        # test when value is null
+        field = "myfield"
+        value = QVariant()
+        res = '"myfield" IS NULL'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when value is null and field name has a quote
+        field = "my'field"
+        value = QVariant()
+        res = '"my\'field" IS NULL'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when field name has a quote and value is an int
+        field = "my'field"
+        value = 5
+        res = '"my\'field" = 5'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when field name has a quote and value is a string
+        field = "my'field"
+        value = '5'
+        res = '"my\'field" = \'5\''
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+        # test when field name has a quote and value is a boolean
+        field = "my'field"
+        value = True
+        res = '"my\'field" = TRUE'
+        self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+    def testReferencedAttributeIndexesNonExistingField(self):
+        e = QgsExpression()
+        e.setExpression("foo = 1")
+        self.assertTrue(e.isValid())
+        self.assertEqual(len(e.referencedAttributeIndexes(QgsFields())), 0)
 
 
 if __name__ == "__main__":

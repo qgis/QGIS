@@ -21,24 +21,24 @@
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
-  , mInternalJob( nullptr )
-  , mPainter( nullptr )
-{
-  QgsDebugMsg( "SEQUENTIAL construct" );
 
-  mImage = QImage( mSettings.outputSize(), mSettings.outputImageFormat() );
-  mImage.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
-  mImage.setDotsPerMeterY( 1000 * settings.outputDpi() / 25.4 );
+{
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL construct" ), 5 );
+
+  mImage = QImage( mSettings.deviceOutputSize(), mSettings.outputImageFormat() );
+  mImage.setDevicePixelRatio( mSettings.devicePixelRatio() );
+  mImage.setDotsPerMeterX( mSettings.devicePixelRatio() * 1000 * settings.outputDpi() / 25.4 );
+  mImage.setDotsPerMeterY( mSettings.devicePixelRatio() * 1000 * settings.outputDpi() / 25.4 );
   mImage.fill( Qt::transparent );
 }
 
 QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
 {
-  QgsDebugMsg( "SEQUENTIAL destruct" );
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL destruct" ), 5 );
   if ( isActive() )
   {
     // still running!
-    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (canceling)" );
+    QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL destruct -- still running! (canceling)" ), 5 );
     cancel();
   }
 
@@ -57,7 +57,7 @@ void QgsMapRendererSequentialJob::start()
 
   mErrors.clear();
 
-  QgsDebugMsg( "SEQUENTIAL START" );
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL START" ), 5 );
 
   Q_ASSERT( !mInternalJob && !mPainter );
 
@@ -77,7 +77,7 @@ void QgsMapRendererSequentialJob::cancel()
   if ( !isActive() )
     return;
 
-  QgsDebugMsg( "sequential - cancel internal" );
+  QgsDebugMsgLevel( QStringLiteral( "sequential - cancel internal" ), 5 );
   mInternalJob->cancel();
 
   Q_ASSERT( !mInternalJob && !mPainter );
@@ -88,7 +88,7 @@ void QgsMapRendererSequentialJob::cancelWithoutBlocking()
   if ( !isActive() )
     return;
 
-  QgsDebugMsg( "sequential - cancel internal" );
+  QgsDebugMsgLevel( QStringLiteral( "sequential - cancel internal" ), 5 );
   mInternalJob->cancelWithoutBlocking();
 }
 
@@ -128,7 +128,7 @@ QImage QgsMapRendererSequentialJob::renderedImage()
 
 void QgsMapRendererSequentialJob::internalFinished()
 {
-  QgsDebugMsg( "SEQUENTIAL finished" );
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL finished" ), 5 );
 
   mPainter->end();
   delete mPainter;

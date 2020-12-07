@@ -48,11 +48,8 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
   : mMapUnitsPerPixel( mapUnitsPerPixel )
   , mWidth( 0 )
   , mHeight( 0 )
-  , mRotation( 0 )
   , mXCenter( 0 )
   , mYCenter( 0 )
-  , xMin( 0 )
-  , yMin( 0 )
 {
   updateMatrix();
 }
@@ -65,14 +62,6 @@ QgsMapToPixel QgsMapToPixel::fromScale( double scale, QgsUnitTypes::DistanceUnit
 }
 
 QgsMapToPixel::QgsMapToPixel()
-  : mMapUnitsPerPixel( 1 )
-  , mWidth( 1 )
-  , mHeight( 1 )
-  , mRotation( 0.0 )
-  , mXCenter( 0.5 )
-  , mYCenter( 0.5 )
-  , xMin( 0 )
-  , yMin( 0 )
 {
   updateMatrix();
 }
@@ -91,7 +80,7 @@ bool QgsMapToPixel::updateMatrix()
 {
   QTransform newMatrix = transform();
 
-  // https://issues.qgis.org/issues/12757
+  // https://github.com/qgis/QGIS/issues/20856
   if ( !newMatrix.isInvertible() )
     return false;
 
@@ -99,7 +88,7 @@ bool QgsMapToPixel::updateMatrix()
   return true;
 }
 
-QgsPointXY QgsMapToPixel::toMapPoint( double x, double y ) const
+QgsPointXY QgsMapToPixel::toMapCoordinates( double x, double y ) const
 {
   bool invertible;
   QTransform matrix = mMatrix.inverted( &invertible );
@@ -107,24 +96,23 @@ QgsPointXY QgsMapToPixel::toMapPoint( double x, double y ) const
   qreal mx, my;
   qreal x_qreal = x, y_qreal = y;
   matrix.map( x_qreal, y_qreal, &mx, &my );
-  //QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
   return QgsPointXY( mx, my );
 }
 
 QgsPointXY QgsMapToPixel::toMapCoordinates( QPoint p ) const
 {
-  QgsPointXY mapPt = toMapPoint( p.x(), p.y() );
+  QgsPointXY mapPt = toMapCoordinates( static_cast<double>( p.x() ), static_cast<double>( p.y() ) );
   return QgsPointXY( mapPt );
 }
 
 QgsPointXY QgsMapToPixel::toMapCoordinates( int x, int y ) const
 {
-  return toMapPoint( x, y );
+  return toMapCoordinates( static_cast<double>( x ), static_cast<double>( y ) );
 }
 
-QgsPointXY QgsMapToPixel::toMapCoordinatesF( double x, double y ) const
+QgsPointXY QgsMapToPixel::toMapPoint( double x, double y ) const
 {
-  return toMapPoint( x, y );
+  return toMapCoordinates( x, y );
 }
 
 void QgsMapToPixel::setMapUnitsPerPixel( double mapUnitsPerPixel )

@@ -39,8 +39,10 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
+#include "qgslayout.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutpagecollection.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -53,17 +55,17 @@ class DummyPaintEffect : public QgsPaintEffect
       : mProp1( prop1 )
       , mProp2( prop2 )
     {}
-    virtual QString type() const override { return QStringLiteral( "Dummy" ); }
-    virtual QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
+    QString type() const override { return QStringLiteral( "Dummy" ); }
+    QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
     static QgsPaintEffect *create( const QgsStringMap &props ) { return new DummyPaintEffect( props[QStringLiteral( "testProp" )], props[QStringLiteral( "testProp2" )] ); }
-    virtual QgsStringMap properties() const override
+    QgsStringMap properties() const override
     {
       QgsStringMap props;
       props[QStringLiteral( "testProp" )] = mProp1;
       props[QStringLiteral( "testProp2" )] = mProp2;
       return props;
     }
-    virtual void readProperties( const QgsStringMap &props ) override
+    void readProperties( const QgsStringMap &props ) override
     {
       mProp1 = props[QStringLiteral( "testProp" )];
       mProp2 = props[QStringLiteral( "testProp2" )];
@@ -74,7 +76,7 @@ class DummyPaintEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
+    void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
 
   private:
     QString mProp1;
@@ -83,7 +85,8 @@ class DummyPaintEffect : public QgsPaintEffect
 
 
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for paint effects
  */
 class TestQgsPaintEffect: public QObject
@@ -116,7 +119,7 @@ class TestQgsPaintEffect: public QObject
     void layerEffectMarker();
     void vectorLayerEffect();
     void mapUnits();
-    void composer();
+    void layout();
 
   private:
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -129,11 +132,7 @@ class TestQgsPaintEffect: public QObject
 };
 
 
-TestQgsPaintEffect::TestQgsPaintEffect()
-  : mPicture( 0 )
-{
-
-}
+TestQgsPaintEffect::TestQgsPaintEffect() = default;
 
 void TestQgsPaintEffect::initTestCase()
 {
@@ -141,7 +140,7 @@ void TestQgsPaintEffect::initTestCase()
   QgsApplication::initQgis();
 
   mReport += QLatin1String( "<h1>Paint Effect Tests</h1>\n" );
-  mPicture = 0;
+  mPicture = nullptr;
 
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );
@@ -361,8 +360,8 @@ void TestQgsPaintEffect::blur()
   QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
-  effect->setBlurLevel( 6 );
-  QCOMPARE( effect->blurLevel(), 6 );
+  effect->setBlurLevel( 6.0 );
+  QCOMPARE( effect->blurLevel(), 6.0 );
   effect->setBlurMethod( QgsBlurEffect::GaussianBlur );
   QCOMPARE( effect->blurMethod(), QgsBlurEffect::GaussianBlur );
   effect->setDrawMode( QgsPaintEffect::Modifier );
@@ -435,8 +434,8 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
-  effect->setBlurLevel( 6 );
-  QCOMPARE( effect->blurLevel(), 6 );
+  effect->setBlurLevel( 6.0 );
+  QCOMPARE( effect->blurLevel(), 6.0 );
   effect->setOffsetAngle( 77 );
   QCOMPARE( effect->offsetAngle(), 77 );
   effect->setOffsetDistance( 9.7 );
@@ -532,8 +531,8 @@ void TestQgsPaintEffect::glow()
   QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
-  effect->setBlurLevel( 6 );
-  QCOMPARE( effect->blurLevel(), 6 );
+  effect->setBlurLevel( 6.0 );
+  QCOMPARE( effect->blurLevel(), 6.0 );
   effect->setSpread( 7.8 );
   QCOMPARE( effect->spread(), 7.8 );
   effect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
@@ -947,9 +946,9 @@ void TestQgsPaintEffect::mapUnits()
   delete lineLayer;
 }
 
-void TestQgsPaintEffect::composer()
+void TestQgsPaintEffect::layout()
 {
-  //test rendering an effect inside a composer (tests DPI scaling of effects)
+  //test rendering an effect inside a layout (tests DPI scaling of effects)
 
   QString linesFileName = mTestDataDir + "lines.shp";
   QFileInfo lineFileInfo( linesFileName );
@@ -973,25 +972,28 @@ void TestQgsPaintEffect::composer()
 
   lineLayer->setRenderer( renderer );
 
-  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
-  composition->setPaperSize( 50, 50 );
-  QgsComposerMap *composerMap = new QgsComposerMap( composition, 1, 1, 48, 48 );
-  composerMap->setFrameEnabled( true );
-  composition->addComposerMap( composerMap );
-  composerMap->setNewExtent( lineLayer->extent() );
-  composerMap->setLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsLayout l( QgsProject::instance() );
+  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &l );
+  page->setPageSize( QgsLayoutSize( 50, 50 ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 1, 1, 48, 48 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( lineLayer->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QImage outputImage( 591, 591, QImage::Format_RGB32 );
-  composition->setPlotStyle( QgsComposition::Print );
   outputImage.setDotsPerMeterX( 300 / 25.4 * 1000 );
   outputImage.setDotsPerMeterY( 300 / 25.4 * 1000 );
   QgsMultiRenderChecker::drawBackground( &outputImage );
   QPainter p( &outputImage );
-  composition->renderPage( &p, 0 );
+  QgsLayoutExporter exporter( &l );
+  exporter.renderPage( &p, 0 );
   p.end();
 
   bool result = imageCheck( QStringLiteral( "painteffect_composer" ), outputImage );
-  delete composition;
   QVERIFY( result );
   delete lineLayer;
 }

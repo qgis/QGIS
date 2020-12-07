@@ -25,14 +25,10 @@
 
 QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mValid( 0 )
 {
   setupUi( this );
+  connect( cmbIdentityCert, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAuthIdentCertEdit::cmbIdentityCert_currentIndexChanged );
   populateIdentityComboBox();
-}
-
-QgsAuthIdentCertEdit::~QgsAuthIdentCertEdit()
-{
 }
 
 bool QgsAuthIdentCertEdit::validateConfig()
@@ -77,14 +73,14 @@ void QgsAuthIdentCertEdit::clearConfig()
 
 void QgsAuthIdentCertEdit::populateIdentityComboBox()
 {
-  cmbIdentityCert->addItem( tr( "Select identity..." ), "" );
+  cmbIdentityCert->addItem( tr( "Select Identity…" ), "" );
 
-  QList<QSslCertificate> certs( QgsAuthManager::instance()->getCertIdentities() );
+  const QList<QSslCertificate> certs( QgsApplication::authManager()->certIdentities() );
   if ( !certs.isEmpty() )
   {
     cmbIdentityCert->setIconSize( QSize( 26, 22 ) );
     QgsStringMap idents;
-    Q_FOREACH ( const QSslCertificate &cert, certs )
+    for ( const QSslCertificate &cert : certs )
     {
       QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
       if ( org.isEmpty() )
@@ -101,8 +97,8 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
   }
 }
 
-void QgsAuthIdentCertEdit::on_cmbIdentityCert_currentIndexChanged( int indx )
+void QgsAuthIdentCertEdit::cmbIdentityCert_currentIndexChanged( int indx )
 {
-  Q_UNUSED( indx );
+  Q_UNUSED( indx )
   validateConfig();
 }

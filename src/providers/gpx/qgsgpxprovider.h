@@ -23,12 +23,13 @@
 #include "qgsvectordataprovider.h"
 #include "gpsdata.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
 class QFile;
 class QDomDocument;
-class QgsGPSData;
+class QgsGpsData;
 
 class QgsGPXFeatureIterator;
 
@@ -38,44 +39,44 @@ class QgsGPXFeatureIterator;
 * This provider adds the ability to load GPX files as vector layers.
 *
 */
-class QgsGPXProvider : public QgsVectorDataProvider
+class QgsGPXProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-    explicit QgsGPXProvider( const QString &uri = QString() );
-    virtual ~QgsGPXProvider();
+    explicit QgsGPXProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    ~QgsGPXProvider() override;
 
     /* Functions inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
-    virtual QString storageType() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-    virtual QgsWkbTypes::Type wkbType() const override;
-    virtual long featureCount() const override;
-    virtual QgsFields fields() const override;
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
-    virtual QVariant defaultValue( int fieldId ) const override;
+    QgsAbstractFeatureSource *featureSource() const override;
+    QString storageType() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    QgsWkbTypes::Type wkbType() const override;
+    long featureCount() const override;
+    QgsFields fields() const override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
+    QVariant defaultValue( int fieldId ) const override;
 
 
     /* Functions inherited from QgsDataProvider */
 
-    virtual QgsRectangle extent() const override;
-    virtual bool isValid() const override;
-    virtual QString name() const override;
-    virtual QString description() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+    QString name() const override;
+    QString description() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
 
     /* new functions */
 
-    void changeAttributeValues( QgsGPSObject &obj,
+    void changeAttributeValues( QgsGpsObject &obj,
                                 const QgsAttributeMap &attrs );
 
-    bool addFeature( QgsFeature &f ) override;
+    bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
 
     enum DataType
@@ -95,7 +96,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
   private:
 
-    QgsGPSData *data = nullptr;
+    QgsGpsData *data = nullptr;
 
     //! Fields
     QgsFields attributeFields;
@@ -104,16 +105,23 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     QString mFileName;
 
-    DataType mFeatureType;
+    DataType mFeatureType = WaypointType;
 
     static const char *ATTR[];
     static QVariant::Type attrType[];
     static DataType attrUsed[];
     static const int ATTR_COUNT;
 
-    bool mValid;
+    bool mValid = false;
 
     friend class QgsGPXFeatureSource;
+};
+
+class QgsGpxProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsGpxProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 
 #endif

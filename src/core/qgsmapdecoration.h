@@ -37,7 +37,7 @@ class CORE_EXPORT QgsMapDecoration
     /**
      * Constructor for QgsMapDecoration.
      */
-    QgsMapDecoration();
+    QgsMapDecoration() = default;
 
     virtual ~QgsMapDecoration() = default;
 
@@ -45,6 +45,24 @@ class CORE_EXPORT QgsMapDecoration
      * Renders a map decoration.
      */
     virtual void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) = 0;
+
+    /**
+     * Returns the map decoration display name.
+     * \since QGIS 3.14
+     */
+    const QString displayName() const { return mDisplayName; }
+
+  protected:
+
+    /**
+     * Sets the map decoration display \a name.
+     * \since QGIS 3.14
+     */
+    void setDisplayName( const QString &name ) { mDisplayName = name; }
+
+  private:
+
+    QString mDisplayName;
 
 };
 

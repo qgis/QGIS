@@ -1,69 +1,67 @@
 ########################################################
 # Files
 
-SET (BENCH_SRCS
+set (BENCH_SRCS
      main.cpp
      qgsbench.cpp
-)
-
-SET (BENCH_MOC_HDRS
-     qgsbench.h
 )
 
 ########################################################
 # Build
 
-QT5_WRAP_CPP (BENCH_MOC_SRCS  ${BENCH_MOC_HDRS})
+add_executable (qgis_bench MACOSX_BUNDLE WIN32 ${BENCH_SRCS} )
 
-ADD_EXECUTABLE (qgis_bench MACOSX_BUNDLE WIN32 ${BENCH_SRCS} ${BENCH_MOC_SRCS} )
+include_directories(
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
 
   ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/src/core
 )
-INCLUDE_DIRECTORIES(SYSTEM
-  ${GEOS_INCLUDE_DIR}
+include_directories(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
 )
 
-TARGET_LINK_LIBRARIES(qgis_bench
+target_link_libraries(qgis_bench
   qgis_core
   ${SQLITE3_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTNETWORK_LIBRARY}
-  ${QT_QTSVG_LIBRARY}
-  ${QT_QTXML_LIBRARY}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Network_LIBRARIES}
+  ${Qt5Svg_LIBRARIES}
+  ${Qt5Xml_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
-  ${QT_QTTEST_LIBRARY}
+  ${Qt5Test_LIBRARIES}
 )
 
-IF(APPLE)
-  SET_TARGET_PROPERTIES(qgis_bench PROPERTIES
+if(APPLE)
+  set_target_properties(qgis_bench PROPERTIES
     INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
     INSTALL_RPATH_USE_LINK_PATH true
   )
-ENDIF(APPLE)
+endif()
 
 ########################################################
 # Install
 
-INSTALL (TARGETS qgis_bench
+install (TARGETS qgis_bench
   BUNDLE DESTINATION ${QGIS_BIN_DIR}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
 )
-IF (APPLE)
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Frameworks\")")
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../../${QGIS_LIB_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/lib\")")
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_PLUGIN_SUBDIR}/.. \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Plugins\")")
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_DATA_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Resources\")")
+if (APPLE)
+  install (CODE "execute_process(COMMAND ln -sfn ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Frameworks\")")
+  install (CODE "execute_process(COMMAND ln -sfn ../../../../${QGIS_LIB_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/lib\")")
+  install (CODE "execute_process(COMMAND ln -sfn ../../../${QGIS_PLUGIN_SUBDIR}/.. \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Plugins\")")
+  install (CODE "execute_process(COMMAND ln -sfn ../../../${QGIS_DATA_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Resources\")")
   # may not exist, unless BundleUtilities are used
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../../share \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/share\")")
+  install (CODE "execute_process(COMMAND ln -sfn ../../../../share \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/share\")")
 
-ENDIF (APPLE)
+endif()
 

@@ -25,18 +25,22 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
+#include "qgsmssqlprovider.h"
+
 class QgsMssqlProvider;
 
-class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
+class QgsMssqlFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMssqlFeatureSource( const QgsMssqlProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QgsFields mFields;
-    QString mFidColName;
+    QgsMssqlPrimaryKeyType mPrimaryKeyType;
+    QList<int> mPrimaryKeyAttrs;
+    std::shared_ptr<QgsMssqlSharedData> mShared;
     long mSRId;
 
     /* sql geo type */
@@ -61,6 +65,8 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    bool mDisableInvalidGeometryHandling = false;
+
     QgsCoordinateReferenceSystem mCrs;
 
     // Return True if this feature source has spatial attributes.
@@ -70,28 +76,30 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     friend class QgsMssqlExpressionCompiler;
 };
 
-class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
+class QgsMssqlFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
 {
   public:
     QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsMssqlFeatureIterator();
+    ~QgsMssqlFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
-
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
     void BuildStatement( const QgsFeatureRequest &request );
-
+    QString whereClauseFid( QgsFeatureId featureId );
 
   private:
 
-    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+
+    double validLat( double latitude ) const;
+    double validLon( double longitude ) const;
 
     // The current database
     QSqlDatabase mDatabase;
@@ -105,9 +113,6 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     QString mFallbackStatement;
 
-    // Field index of FID column
-    long mFidCol = -1;
-
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
 
@@ -116,6 +121,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     bool mExpressionCompiled = false;
     bool mOrderByCompiled = false;
+    bool mDisableInvalidGeometryHandling = false;
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;

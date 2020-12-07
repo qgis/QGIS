@@ -1,0 +1,10 @@
+v.split
+Split lines to shorter segments by length.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input lines layer|1|None|False
+QgsProcessingParameterNumber|length|Maximum segment length|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterEnum|units|Length units|map;meters;kilometers;feet;surveyfeet;miles;nautmiles|False|0|True
+QgsProcessingParameterNumber|vertices|Maximum number of vertices in segment|QgsProcessingParameterNumber.Integer|None|True|None|None
+QgsProcessingParameterBoolean|-n|Add new vertices, but do not split|False|True
+QgsProcessingParameterBoolean|-f|Force segments to be exactly of given length, except for last one|False|True
+QgsProcessingParameterVectorDestination|output|Split by length

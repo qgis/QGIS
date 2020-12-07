@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '27/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.gui import (
     QgsAttributeTableModel,
@@ -56,7 +54,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         for i in range(10):
             f = QgsFeature()
             f.setAttributes(["test", i])
-            f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100 * i, 2 ^ i)))
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100 * i, 2 ^ i)))
             features.append(f)
 
         self.assertTrue(pr.addFeatures(features))
@@ -79,7 +77,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         f = QgsFeature()
         f.setAttributes(["test", 8])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
         self.layer.addFeature(f)
 
         self.assertEqual(self.am.rowCount(), 11)
@@ -90,6 +88,35 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.assertTrue(self.layer.deleteAttribute(1))
 
         self.assertEqual(self.am.columnCount(), 1)
+
+    def testEdit(self):
+        fid = 2
+        field_idx = 1
+        new_value = 333
+
+        # get the same feature from model and layer
+        feature = self.layer.getFeature(fid)
+        model_index = self.am.idToIndex(fid)
+        feature_model = self.am.feature(model_index)
+
+        # check that feature from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
+        # change attribute value for a feature and commit
+        self.layer.startEditing()
+        self.layer.changeAttributeValue(fid, field_idx, new_value)
+        self.layer.commitChanges()
+
+        # check the feature in layer is good
+        feature = self.layer.getFeature(fid)
+        self.assertEqual(feature.attribute(field_idx), new_value)
+
+        # get the same feature from model and layer
+        model_index = self.am.idToIndex(fid)
+        feature_model = self.am.feature(model_index)
+
+        # check that index from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
 
 
 if __name__ == '__main__':

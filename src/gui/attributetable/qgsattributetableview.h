@@ -17,11 +17,11 @@
 #define QGSATTRIBUTETABLEVIEW_H
 
 #include <QTableView>
-#include "qgis.h"
 #include <QAction>
+#include "qgsfeatureid.h"
 
-#include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
@@ -34,8 +34,10 @@ class QgsVectorLayerCache;
 class QMenu;
 class QProgressDialog;
 class QgsAttributeTableConfig;
+class QgsFeature;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief
  * Provides a table view of features of a QgsVectorLayer.
  *
@@ -48,15 +50,17 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsAttributeTableView
+    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
     /**
      * \brief setFeatureSelectionManager
-     * \param featureSelectionManager We will take ownership
+     * \param featureSelectionManager
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
@@ -66,9 +70,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \param object The object which is the target of the event.
      * \param event  The intercepted event
      *
-     * \returns Returns always false, so the event gets processed
+     * \returns Returns always FALSE, so the event gets processed
      */
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
     /**
      * Set the attribute table config which should be used to control
@@ -76,6 +80,24 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \since QGIS 2.16
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
+
+    /**
+     * Returns the selected features in the attribute table in table sorted order.
+     * \returns The selected features in the attribute table in the order sorted by the table.
+     * \since QGIS 3.4
+     */
+    QList<QgsFeatureId> selectedFeaturesIds() const;
+
+
+    /**
+     * Scroll to a feature with a given \a fid.
+
+      Optionally a \a column can be specified, which will also bring that column into view.
+
+     * \since QGIS 3.16
+     */
+    void scrollToFeature( const QgsFeatureId &fid, int column = -1 );
+
 
   protected:
 
@@ -130,7 +152,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * \brief
-     * Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
+     * Emitted in order to provide a hook to add additional* menu entries to the context menu.
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.
      * \param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
@@ -138,7 +160,8 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
-    /** Emitted when a column in the view has been resized.
+    /**
+     * Emitted when a column in the view has been resized.
      * \param column column index (starts at 0)
      * \param width new width in pixel
      * \since QGIS 2.16
@@ -150,7 +173,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   public slots:
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
-    virtual void selectAll() override;
+    void selectAll() override;
     virtual void selectRow( int row );
     virtual void _q_selectRow( int row );
 
@@ -169,12 +192,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void selectRow( int row, bool anchor );
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsAttributeTableDelegate *mTableDelegate = nullptr;
     QMenu *mActionPopup = nullptr;
-    int mRowSectionAnchor;
-    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
+    int mRowSectionAnchor = 0;
+    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
     QMap< QModelIndex, QWidget * > mActionWidgets;
+    QgsAttributeTableConfig mConfig;
 };
 
 #endif

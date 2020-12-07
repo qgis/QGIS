@@ -16,8 +16,7 @@
 #define QGSPROPERTY_H
 
 #include "qgis_core.h"
-#include "qgis.h"
-#include "qgsproperty_p.h"
+#include "qgis_sip.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgscolorramp.h"
@@ -29,8 +28,10 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QColor>
+#include <QDateTime>
 
 class QgsPropertyTransformer;
+class QgsPropertyPrivate;
 
 /**
  * \ingroup core
@@ -76,6 +77,7 @@ class CORE_EXPORT QgsPropertyDefinition
       VerticalAnchor, //!< Vertical anchor point
       SvgPath, //!< Path to an SVG file
       Offset, //!< 2D offset
+      DateTime, //!< DateTime value
       Custom = 3000, //!< Custom property types
     };
 
@@ -100,7 +102,7 @@ class CORE_EXPORT QgsPropertyDefinition
       /**
        * Property requires a boolean value. Note that setting DataTypeBoolean as the required type
        * means that the property also accepts string and numeric fields, as those may be convertible
-       * to a boolean value (Eg "1.0" -> true)
+       * to a boolean value (Eg "1.0" -> TRUE)
        */
       DataTypeBoolean,
     };
@@ -108,15 +110,17 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Constructs an empty property.
      */
-    QgsPropertyDefinition();
+    QgsPropertyDefinition() = default;
 
     /**
      * Constructor for QgsPropertyDefinition, using a standard property template.
      * \param name is used internally and should be a unique, alphanumeric string.
      * \param description can be any localised string describing what the property is used for.
      * \param type one of the predefined standard property template
+     * \param origin The origin of the property
+     * \param comment A free comment for the property
      */
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QString(), const QString &comment = QString() );
 
     /**
      * Constructor for custom QgsPropertyDefinitions.
@@ -125,8 +129,10 @@ class CORE_EXPORT QgsPropertyDefinition
      * \param description can be any localised string describing what the property is used for.
      * \param helpText parameter should specify a descriptive string for users outlining the types
      * of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
+     * \param origin The origin of the property
+     * \param comment A free comment for the property
      */
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString(), const QString &comment = QString() );
 
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
@@ -134,14 +140,48 @@ class CORE_EXPORT QgsPropertyDefinition
     QString name() const { return mName; }
 
     /**
+     * Sets the name of the property
+     */
+    void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Returns the origin of the property. For example, a PAL property has an
+     * origin set to "labeling" while a diagram property has an origin set to
+     * "diagram".
+     */
+    QString origin() const { return mOrigin; }
+
+    /**
+     * Sets the origin of the property. For example, a PAL property has an
+     * origin set to "labeling" while a diagram property has an origin set to
+     * "diagram".
+     */
+    void setOrigin( const QString &origin ) { mOrigin = origin; }
+
+    /**
      * Descriptive name of the property.
      */
     QString description() const { return mDescription; }
 
     /**
+     * Returns the comment of the property
+     */
+    QString comment() const { return mComment; }
+
+    /**
+     * Sets comment of the property
+     */
+    void setComment( const QString &comment ) { mComment = comment; }
+
+    /**
      * Helper text for using the property, including a description of the valid values for the property.
      */
     QString helpText() const { return mHelpText; }
+
+    /**
+     * Sets the data type
+     */
+    void setDataType( DataType type ) { mTypes = type; }
 
     /**
      * Returns the allowable field/value data type for the property.
@@ -155,7 +195,7 @@ class CORE_EXPORT QgsPropertyDefinition
     StandardPropertyTemplate standardTemplate() const { return mStandardType; }
 
     /**
-     * Returns true if the property is of a type which is compatible with property
+     * Returns TRUE if the property is of a type which is compatible with property
      * override assistants.
      */
     bool supportsAssistant() const;
@@ -164,9 +204,11 @@ class CORE_EXPORT QgsPropertyDefinition
 
     QString mName;
     QString mDescription;
-    DataType mTypes;
+    DataType mTypes = DataTypeString;
     QString mHelpText;
     StandardPropertyTemplate mStandardType = Custom;
+    QString mOrigin;
+    QString mComment;
 
     static QString trString();
 };
@@ -193,7 +235,7 @@ class CORE_EXPORT QgsProperty
     //! Property types
     enum Type
     {
-      InvalidProperty, //! Invalid (not set) property
+      InvalidProperty, //!< Invalid (not set) property
       StaticProperty, //!< Static property (QgsStaticProperty)
       FieldBasedProperty, //!< Field based property (QgsFieldBasedProperty)
       ExpressionBasedProperty, //!< Expression based property (QgsExpressionBasedProperty)
@@ -204,7 +246,7 @@ class CORE_EXPORT QgsProperty
      */
     QgsProperty();
 
-    virtual ~QgsProperty() = default;
+    virtual ~QgsProperty();
 
     /**
      * Returns a new ExpressionBasedProperty created from the specified expression.
@@ -227,7 +269,7 @@ class CORE_EXPORT QgsProperty
     QgsProperty &operator=( const QgsProperty &other );
 
     /**
-     * Returns true if the property is not an invalid type.
+     * Returns TRUE if the property is not an invalid type.
      */
     operator bool() const;
 
@@ -302,15 +344,25 @@ class CORE_EXPORT QgsProperty
     /**
      * Prepares the property against a specified expression context. Calling prepare before evaluating the
      * property multiple times allows precalculation of expensive setup tasks such as parsing expressions.
-     * Returns true if preparation was successful.
+     * Returns TRUE if preparation was successful.
      */
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
      * Returns the set of any fields referenced by the property for a specified
      * expression context.
+     * \note The optional argument ignoreContext has been added in QGIS 3.14. When set to TRUE,
+     * even fields not set in context's fields() will be reported - this is useful e.g. with vector tiles
+     * where the actual available field names may not be known beforehand.
      */
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const;
+
+    /**
+     * Returns TRUE if the property is set to a linked project color.
+     *
+     * \since QGIS 3.6
+     */
+    bool isProjectColor() const;
 
     /**
      * Calculates the current value of the property, including any transforms which are set for the property
@@ -318,7 +370,7 @@ class CORE_EXPORT QgsProperty
      * in the expression context can be used to alter the calculated value for the property, so that a property
      * is able to respond to the current environment, layers and features within QGIS.
      * \param defaultValue default value to return if the property is not active or cannot be calculated
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns calculated value for property
      * \see valueAsString()
      * \see valueAsColor()
@@ -326,77 +378,98 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = 0 ) const;
+    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * Calculates the current value of the property and interprets it as a datetime.
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultDateTime default datetime to return if the property cannot be calculated as a datetime
+     * \param ok if specified, will be set to TRUE if conversion was successful
+     * \returns value parsed to datetime
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
+     * \since QGIS 3.14
+     */
+    QDateTime valueAsDateTime( const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a string.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultString default string to return if the property cannot be calculated as a string
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to string
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = 0 ) const;
+    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a color.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultColor default color to return if the property cannot be calculated as a color
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to color
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsDouble()
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = 0 ) const;
+    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a double.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default double to return if the property cannot be calculated as a double
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to double
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = 0 ) const;
+    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an integer.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default integer to return if the property cannot be calculated as an integer
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to integer
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsBool()
      */
-    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = 0 ) const;
+    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an boolean.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultValue default boolean to return if the property cannot be calculated as an boolean
-     * \param ok if specified, will be set to true if conversion was successful
+     * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to boolean
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsInt()
      */
-    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = 0 ) const;
+    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Saves this property to a QVariantMap, wrapped in a QVariant.
@@ -417,7 +490,7 @@ class CORE_EXPORT QgsProperty
     /**
      * Sets an optional transformer to use for manipulating the calculated values for the property.
      * \param transformer transformer to install. Ownership is transferred to the property, and any
-     * existing transformer will be deleted. Set to null to remove an existing transformer.
+     * existing transformer will be deleted. Set to NULLPTR to remove an existing transformer.
      * \see transformer()
      */
     void setTransformer( QgsPropertyTransformer *transformer SIP_TRANSFER );
@@ -430,7 +503,7 @@ class CORE_EXPORT QgsProperty
 
     /**
      * Attempts to convert an existing expression based property to a base expression with
-     * corresponding transformer. Returns true if conversion was successful. Note that
+     * corresponding transformer. Returns TRUE if conversion was successful. Note that
      * calling this method requires multiple parsing of expressions, so it should only
      * be called in non-performance critical code.
      */
@@ -441,6 +514,41 @@ class CORE_EXPORT QgsProperty
     {
       return QVariant::fromValue( *this );
     }
+
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString typeString;
+    QString definitionString;
+    switch ( sipCpp->propertyType() )
+    {
+      case QgsProperty::StaticProperty:
+        typeString = QStringLiteral( "static" );
+        definitionString = sipCpp->staticValue().toString();
+        break;
+
+      case QgsProperty::FieldBasedProperty:
+        typeString = QStringLiteral( "field" );
+        definitionString = sipCpp->field();
+        break;
+
+      case QgsProperty::ExpressionBasedProperty:
+        typeString = QStringLiteral( "expression" );
+        definitionString = sipCpp->expressionString();
+        break;
+
+      case QgsProperty::InvalidProperty:
+        typeString = QStringLiteral( "invalid" );
+        break;
+    }
+
+    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != QgsProperty::InvalidProperty ? QStringLiteral( "INACTIVE " ) : QString(),
+                  typeString,
+                  definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
 

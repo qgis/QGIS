@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationquantile.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsClassificationQuantile : QgsClassificationMethod
+{
+%Docstring
+QgsClassificationQuantile is an implementation of QgsClassificationMethod
+based on quantiles
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationquantile.h"
+%End
+  public:
+    QgsClassificationQuantile();
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QgsClassificationMethod *clone() const;
+
+    virtual QIcon icon() const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationquantile.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

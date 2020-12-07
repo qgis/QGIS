@@ -21,6 +21,7 @@
 
 class QgsSpatialIndex;
 
+typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsAfsFeatureSource : public QgsAbstractFeatureSource
 {
@@ -40,17 +41,26 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
 {
   public:
     QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
-    ~QgsAfsFeatureIterator();
+    ~QgsAfsFeatureIterator() override;
     bool rewind() override;
     bool close() override;
+
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
 
   protected:
     bool fetchFeature( QgsFeature &f ) override;
 
   private:
     QgsFeatureId mFeatureIterator = 0;
+
+    QList< QgsFeatureId > mFeatureIdList;
+    QList< QgsFeatureId > mRemainingFeatureIds;
+
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+
+    QgsFeedback *mInterruptionChecker = nullptr;
+    bool mDeferredFeaturesInFilterRectCheck = false;
 };
 
 #endif // QGSAFSFEATUREITERATOR_H

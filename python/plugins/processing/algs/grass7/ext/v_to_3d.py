@@ -21,16 +21,21 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
 
-__revision__ = '$Format:%H$'
-
-
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    height = alg.getParameterValue('height')
-    column = alg.getParameterValue('column')
+    height = alg.parameterAsDouble(parameters, 'height', context)
+    column = alg.parameterAsString(parameters, 'column', context)
     if (height and column) or (not height and not column):
-        return alg.tr("You need to set either a fixed height value or the height column!")
+        return False, alg.tr("You need to set either a fixed height value or the height column!")
 
-    return None
+    return True, None
+
+
+def processInputs(alg, parameters, context, feedback):
+    if 'input' in alg.exportedLayers:
+        return
+
+    # We need to import the vector layer with v.in.ogr
+    alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
+    alg.postInputs(context)

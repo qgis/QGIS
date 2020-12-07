@@ -16,20 +16,17 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
 
-__revision__ = '$Format:%H$'
-
-
-def checkParameterValuesBeforeExecuting(alg):
-    if alg.getParameterValue('-h') and alg.getParameterValue('precipitation'):
-        return alg.tr('You can\'t use original Hargreaves flag and precipitation parameter together!')
-    if not alg.getParameterValue('-h') and not alg.getParameterValue('precipitation'):
-        return alg.tr('If you don\'t use original Hargreaves flag, you must set the precipitation raster parameter!')
-    return None
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    if (alg.parameterAsBoolean(parameters, '-h', context)
+            and alg.parameterAsLayer(parameters, 'precipitation', context)):
+        return False, alg.tr('You can\'t use original Hargreaves flag and precipitation parameter together!')
+    if (not alg.parameterAsBoolean(parameters, '-h', context)
+            and not alg.parameterAsLayer(parameters, 'precipitation', context)):
+        return False, alg.tr('If you don\'t use original Hargreaves flag, you must set the precipitation raster parameter!')
+    return True, None

@@ -16,20 +16,17 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import posixpath
 import re
 import yaml
 import hashlib
+import ast
 
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
@@ -37,35 +34,30 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessing,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterEnum)
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
-
-from processing.core.Processing import Processing
-from processing.core.outputs import (
-    OutputNumber,
-    OutputString,
-    OutputRaster,
-    OutputVector,
-    OutputHTML,
-    OutputFile
-)
-
-from processing.core.parameters import (
-    ParameterRaster,
-    ParameterVector,
-    ParameterMultipleInput,
-    ParameterFile,
-    ParameterString,
-    ParameterNumber,
-    ParameterBoolean,
-    ParameterTable
-)
 
 
 def extractSchemaPath(filepath):
     """
-    Trys to find where the file is relative to the QGIS source code directory.
+    Tries to find where the file is relative to the QGIS source code directory.
     If it is already placed in the processing or QGIS testdata directory it will
     return an appropriate schema and relative filepath
 
@@ -87,7 +79,8 @@ def extractSchemaPath(filepath):
         if part == 'testdata' and not localpath:
             localparts = parts
             localparts.reverse()
-            localpath = os.path.join(*localparts)
+            # we always want posix style paths here
+            localpath = posixpath.join(*localparts)
 
         parts.append(part)
 
@@ -132,15 +125,31 @@ def parseParameters(command):
         pos = m.end(0)
 
 
+def splitAlgIdAndParameters(command):
+    """
+    Extracts the algorithm ID and input parameter list from a processing runalg command
+    """
+    exp = re.compile(r"""['"](.*?)['"]\s*,\s*(.*)""")
+    m = exp.search(command[len('processing.run('):-1])
+    alg_id = m.group(1)
+    params = m.group(2)
+
+    # replace QgsCoordinateReferenceSystem('EPSG:4325') with just string value
+    exp = re.compile(r"""QgsCoordinateReferenceSystem\((['"].*?['"])\)""")
+    params = exp.sub('\\1', params)
+
+    return alg_id, ast.literal_eval(params)
+
+
 def createTest(text):
     definition = {}
 
-    tokens = list(parseParameters(text[len('processing.run('):-1]))
-    cmdname = tokens[0]
-    alg = QgsApplication.processingRegistry().algorithmById(cmdname)
+    alg_id, parameters = splitAlgIdAndParameters(text)
 
-    definition['name'] = 'Test ({})'.format(cmdname)
-    definition['algorithm'] = cmdname
+    alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
+
+    definition['name'] = 'Test ({})'.format(alg_id)
+    definition['algorithm'] = alg_id
 
     params = {}
     results = {}
@@ -150,13 +159,16 @@ def createTest(text):
         if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
             continue
 
+        if not param.name() in parameters:
+            continue
+
         i += 1
-        token = tokens[i]
+        token = parameters[param.name()]
         # Handle empty parameters that are optionals
         if param.flags() & QgsProcessingParameterDefinition.FlagOptional and token is None:
             continue
 
-        if isinstance(param, ParameterVector):
+        if isinstance(param, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'vector',
@@ -166,7 +178,7 @@ def createTest(text):
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
             params[param.name()] = p
-        elif isinstance(param, ParameterRaster):
+        elif isinstance(param, QgsProcessingParameterRasterLayer):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'raster',
@@ -176,27 +188,18 @@ def createTest(text):
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
             params[param.name()] = p
-        elif isinstance(param, ParameterTable):
-            schema, filepath = extractSchemaPath(token)
-            p = {
-                'type': 'table',
-                'name': filepath
-            }
-            if not schema:
-                p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
-
-            params[param.name()] = p
-        elif isinstance(param, ParameterMultipleInput):
-            multiparams = token.split(';')
+        elif isinstance(param, QgsProcessingParameterMultipleLayers):
+            multiparams = token
             newparam = []
 
             # Handle datatype detection
-            dataType = param.dataType()
-            if dataType in ['points', 'lines', 'polygons', 'any vectors']:
+            dataType = param.layerType()
+            if dataType in [QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVector]:
                 dataType = 'vector'
             else:
                 dataType = 'raster'
 
+            schema = None
             for mp in multiparams:
                 schema, filepath = extractSchemaPath(mp)
                 newparam.append({
@@ -211,7 +214,7 @@ def createTest(text):
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
             params[param.name()] = p
-        elif isinstance(param, ParameterFile):
+        elif isinstance(param, QgsProcessingParameterFile):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'file',
@@ -221,30 +224,38 @@ def createTest(text):
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
             params[param.name()] = p
-        elif isinstance(param, ParameterString):
+        elif isinstance(param, QgsProcessingParameterString):
             params[param.name()] = token
-        elif isinstance(param, ParameterBoolean):
+        elif isinstance(param, QgsProcessingParameterBoolean):
             params[param.name()] = token
-        elif isinstance(param, ParameterNumber):
-            if param.isInteger:
+        elif isinstance(param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance)):
+            if param.dataType() == QgsProcessingParameterNumber.Integer:
                 params[param.name()] = int(token)
             else:
                 params[param.name()] = float(token)
-        else:
+        elif isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(token, list):
+                params[param.name()] = [int(t) for t in token]
+            else:
+                params[param.name()] = int(token)
+        elif isinstance(param, QgsProcessingParameterBand):
+            params[param.name()] = int(token)
+        elif token:
             if token[0] == '"':
                 token = token[1:]
             if token[-1] == '"':
                 token = token[:-1]
-            params[param.name] = token
+            params[param.name()] = token
 
     definition['params'] = params
 
-    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHiddenn]):
-        token = tokens[i - len(alg.destinationParameterDefinitions())]
+    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHidden]):
+        if not out.name() in parameters:
+            continue
 
-        if isinstance(out, (OutputNumber, OutputString)):
-            results[out.name] = str(out)
-        elif isinstance(out, OutputRaster):
+        token = parameters[out.name()]
+
+        if isinstance(out, QgsProcessingParameterRasterDestination):
             if token is None:
                 QMessageBox.warning(None,
                                     tr('Error'),
@@ -255,29 +266,38 @@ def createTest(text):
                 return
 
             dataset = gdal.Open(token, GA_ReadOnly)
+            if dataset is None:
+                QMessageBox.warning(None,
+                                    tr('Error'),
+                                    tr('Seems some outputs are temporary '
+                                       'files. To create test you need to '
+                                       'redirect all algorithm outputs to '
+                                       'files'))
+                return
+
             dataArray = nan_to_num(dataset.ReadAsArray(0))
             strhash = hashlib.sha224(dataArray.data).hexdigest()
 
-            results[out.name] = {
+            results[out.name()] = {
                 'type': 'rasterhash',
                 'hash': strhash
             }
-        elif isinstance(out, OutputVector):
+        elif isinstance(out, (QgsProcessingParameterVectorDestination, QgsProcessingParameterFeatureSink)):
             schema, filepath = extractSchemaPath(token)
-            results[out.name] = {
+            results[out.name()] = {
                 'type': 'vector',
                 'name': filepath
             }
             if not schema:
-                results[out.name]['location'] = '[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]'
-        elif isinstance(out, OutputHTML) or isinstance(out, OutputFile):
+                results[out.name()]['location'] = '[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]'
+        elif isinstance(out, QgsProcessingParameterFileDestination):
             schema, filepath = extractSchemaPath(token)
-            results[out.name] = {
+            results[out.name()] = {
                 'type': 'file',
                 'name': filepath
             }
             if not schema:
-                results[out.name]['location'] = '[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]'
+                results[out.name()]['location'] = '[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]'
 
     definition['results'] = results
     dlg = ShowTestDialog(yaml.dump([definition], default_flow_style=False))
@@ -294,7 +314,7 @@ class ShowTestDialog(QDialog):
         QDialog.__init__(self)
         self.setModal(True)
         self.resize(600, 400)
-        self.setWindowTitle(self.tr('Unit test'))
+        self.setWindowTitle(self.tr('Unit Test'))
         layout = QVBoxLayout()
         self.text = QTextEdit()
         self.text.setFontFamily("monospace")

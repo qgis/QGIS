@@ -18,38 +18,34 @@
 #include "qgsapplication.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
-
+#include "qgsgui.h"
+#include "qgsnative.h"
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QTextEdit>
+#include <QTextBrowser>
+#include <QDesktopServices>
+#include <QFileInfo>
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
   , mText( text )
   , mLevel( level )
   , mDuration( duration )
-  , mWidget( nullptr )
-  , mUserIcon( QIcon() )
-  , mLayout( nullptr )
 {
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
   , mTitle( title )
   , mText( text )
   , mLevel( level )
   , mDuration( duration )
-  , mWidget( nullptr )
-  , mUserIcon( QIcon() )
-  , mLayout( nullptr )
 {
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
   , mTitle( title )
   , mText( text )
@@ -57,31 +53,32 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   , mDuration( duration )
   , mWidget( widget )
   , mUserIcon( QIcon() )
-  , mLayout( nullptr )
+
 {
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
-  , mText( QLatin1String( "" ) )
   , mLevel( level )
   , mDuration( duration )
   , mWidget( widget )
   , mUserIcon( QIcon() )
-  , mLayout( nullptr )
+
 {
   writeContent();
 }
 
 void QgsMessageBarItem::writeContent()
 {
+  if ( mDuration < 0 )
+    mDuration = QgsMessageBar::defaultMessageTimeout( mLevel );
+
   if ( !mLayout )
   {
     mLayout = new QHBoxLayout( this );
     mLayout->setContentsMargins( 0, 0, 0, 0 );
-    mTextEdit = nullptr;
+    mTextBrowser = nullptr;
     mLblIcon = nullptr;
   }
 
@@ -101,47 +98,80 @@ void QgsMessageBarItem::writeContent()
     QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
     switch ( mLevel )
     {
-      case QgsMessageBar::CRITICAL:
-        msgIcon = QStringLiteral( "/mIconCritical.png" );
+      case Qgis::Critical:
+        msgIcon = QStringLiteral( "/mIconCritical.svg" );
         break;
-      case QgsMessageBar::WARNING:
+      case Qgis::Warning:
         msgIcon = QStringLiteral( "/mIconWarning.svg" );
         break;
-      case QgsMessageBar::SUCCESS:
-        msgIcon = QStringLiteral( "/mIconSuccess.png" );
+      case Qgis::Success:
+        msgIcon = QStringLiteral( "/mIconSuccess.svg" );
         break;
       default:
         break;
     }
     icon = QgsApplication::getThemeIcon( msgIcon );
   }
-  mLblIcon->setPixmap( icon.pixmap( 24 ) );
+  const int iconSize = std::max( 24.0, fontMetrics().height() * 1.2 );
+  mLblIcon->setPixmap( icon.pixmap( iconSize ) );
+
+
+  // STYLESHEETS
+  QString contentStyleSheet;
+  if ( mLevel == Qgis::Success )
+  {
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
+                                  "QLabel,QTextEdit { color: black; } " );
+    contentStyleSheet = QStringLiteral( "<style> a, a:visited, a:hover { color:#268300; } </style>" );
+  }
+  else if ( mLevel == Qgis::Critical )
+  {
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
+                                  "QLabel,QTextEdit { color: white; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#4e0001; }</style>" );
+  }
+  else if ( mLevel == Qgis::Warning )
+  {
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
+                                  "QLabel,QTextEdit { color: black; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#945a00; }</style>" );
+  }
+  else if ( mLevel == Qgis::Info )
+  {
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
+                                  "QLabel,QTextEdit { color: #2554a1; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>" );
+  }
+  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
   {
-    if ( mTextEdit )
+    if ( mTextBrowser )
     {
-      delete mTextEdit;
-      mTextEdit = nullptr;
+      delete mTextBrowser;
+      mTextBrowser = nullptr;
     }
   }
   else
   {
-    if ( !mTextEdit )
+    if ( !mTextBrowser )
     {
-      mTextEdit = new QTextEdit( this );
-      mTextEdit->setObjectName( QStringLiteral( "textEdit" ) );
-      mTextEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-      mTextEdit->setReadOnly( true );
-      mTextEdit->setFrameShape( QFrame::NoFrame );
+      mTextBrowser = new QTextBrowser( this );
+      mTextBrowser->setObjectName( QStringLiteral( "textEdit" ) );
+      mTextBrowser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+      mTextBrowser->setReadOnly( true );
+      mTextBrowser->setOpenLinks( false );
+      connect( mTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMessageBarItem::urlClicked );
+
+      mTextBrowser->setFrameShape( QFrame::NoFrame );
       // stylesheet set here so Qt-style substitued scrollbar arrows can show within limited height
       // adjusts to height of font set in app options
-      mTextEdit->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
-                                "QScrollBar { background-color: rgba(0,0,0,0); } "
-                                "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
-                                "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
-      mLayout->addWidget( mTextEdit );
+      mTextBrowser->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+                                   "QScrollBar { background-color: rgba(0,0,0,0); } "
+                                   "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
+                                   "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
+      mLayout->addWidget( mTextBrowser );
     }
     QString content = mText;
     if ( !mTitle.isEmpty() )
@@ -152,7 +182,8 @@ void QgsMessageBarItem::writeContent()
         t += QLatin1String( ": " );
       content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
     }
-    mTextEdit->setText( content );
+    content.prepend( contentStyleSheet );
+    mTextBrowser->setText( content );
   }
 
   // WIDGET
@@ -164,29 +195,6 @@ void QgsMessageBarItem::writeContent()
       mLayout->addWidget( mWidget );
     }
   }
-
-  // STYLESHEET
-  if ( mLevel == QgsMessageBar::SUCCESS )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::CRITICAL )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                  "QLabel,QTextEdit { color: white; } ";
-  }
-  else if ( mLevel == QgsMessageBar::WARNING )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::INFO )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                  "QLabel,QTextEdit { color: #2554a1; } ";
-  }
-  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
@@ -196,6 +204,11 @@ QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
   return this;
 }
 
+QString QgsMessageBarItem::text() const
+{
+  return mText;
+}
+
 QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString &title )
 {
   mTitle = title;
@@ -203,12 +216,26 @@ QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString &title )
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel level )
+QString QgsMessageBarItem::title() const
 {
-  mLevel = level;
-  writeContent();
-  emit styleChanged( mStyleSheet );
+  return mTitle;
+}
+
+QgsMessageBarItem *QgsMessageBarItem::setLevel( Qgis::MessageLevel level )
+{
+  if ( level != mLevel )
+  {
+    mLevel = level;
+    writeContent();
+    emit styleChanged( mStyleSheet );
+  }
+
   return this;
+}
+
+Qgis::MessageLevel QgsMessageBarItem::level() const
+{
+  return mLevel;
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
@@ -227,10 +254,20 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   return this;
 }
 
+QWidget *QgsMessageBarItem::widget() const
+{
+  return mWidget;
+}
+
 QgsMessageBarItem *QgsMessageBarItem::setIcon( const QIcon &icon )
 {
   mUserIcon = icon;
   return this;
+}
+
+QIcon QgsMessageBarItem::icon() const
+{
+  return mUserIcon;
 }
 
 
@@ -240,3 +277,20 @@ QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
   return this;
 }
 
+void QgsMessageBarItem::dismiss()
+{
+  if ( !mMessageBar )
+    return;
+
+  mMessageBar->popWidget( this );
+}
+
+void QgsMessageBarItem::urlClicked( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
+  dismiss();
+}

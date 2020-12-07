@@ -15,19 +15,22 @@
 #ifndef QGSQUERYBUILDER_H
 #define QGSQUERYBUILDER_H
 #include <map>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <vector>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QStandardItem>
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
 #include "qgsguiutils.h"
-#include "qgshelp.h"
 #include "qgis_gui.h"
+#include "qgssubsetstringeditorinterface.h"
 
 class QgsVectorLayer;
+class QgsCodeEditor;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsQueryBuilder
  * \brief Query Builder for layers.
  *
@@ -38,71 +41,119 @@ class QgsVectorLayer;
  * will be returned.
  *
  */
-class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
+class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, private Ui::QgsQueryBuilderBase
 {
     Q_OBJECT
   public:
 
-    /** This constructor is used when the query builder is called from the
+    /**
+     * This constructor is used when the query builder is called from the
      * vector layer properties dialog
      * \param layer existing vector layer
      * \param parent Parent widget
      * \param fl dialog flags
      */
-    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0,
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr,
                      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsQueryBuilder();
-
     void showEvent( QShowEvent *event ) override;
+
+    //! Returns the sql statement entered in the dialog.
+    QString sql() const;
+
+    //! Set the sql statement to display in the dialog.
+    void setSql( const QString &sqlStatement );
+
+    QString subsetString() const override { return sql(); }
+    void setSubsetString( const QString &subsetString ) override { setSql( subsetString ); }
+
+#ifdef SIP_RUN
+    SIP_IF_FEATURE( HAVE_QSCI_SIP )
+
+    /**
+     * Returns the code editor widget for the SQL.
+     * \since QGIS 3.18
+     */
+    QgsCodeEditor *codeEditorWidget() const;
+    SIP_END
+    SIP_IF_FEATURE( !HAVE_QSCI_SIP )
+
+    /**
+     * Returns the code editor widget for the SQL.
+     * \since QGIS 3.18
+     */
+    QWidget *codeEditorWidget() const;
+    SIP_END
+#else
+
+    /**
+     * Returns the code editor widget for the SQL.
+     * \since QGIS 3.18
+     */
+    QgsCodeEditor *codeEditorWidget() const { return mTxtSql; }
+#endif
 
   public slots:
     void accept() override;
     void reject() override;
     void clear();
-    void on_btnEqual_clicked();
-    void on_btnLessThan_clicked();
-    void on_btnGreaterThan_clicked();
-    void on_btnPct_clicked();
-    void on_btnIn_clicked();
-    void on_btnNotIn_clicked();
-    void on_btnLike_clicked();
-    void on_btnILike_clicked();
-    QString sql();
-    void setSql( const QString &sqlStatement );
-    void on_lstFields_clicked( const QModelIndex &index );
-    void on_lstFields_doubleClicked( const QModelIndex &index );
-    void on_lstValues_doubleClicked( const QModelIndex &index );
-    void on_btnLessEqual_clicked();
-    void on_btnGreaterEqual_clicked();
-    void on_btnNotEqual_clicked();
-    void on_btnAnd_clicked();
-    void on_btnNot_clicked();
-    void on_btnOr_clicked();
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) ); }
-
-    /** Test the constructed sql statement to see if the vector layer data provider likes it.
+    /**
+     * The default implementation tests that the constructed sql statement to
+     * see if the vector layer data provider likes it.
      * The number of rows that would be returned is displayed in a message box.
      * The test uses a "select count(*) from ..." query to test the SQL
      * statement.
      */
-    void test();
+    virtual void test();
 
     /**
-     * Get all distinct values for the field. Values are inserted
+     * Save query to the XML file
+     * \since QGIS 3.16
+     */
+    void saveQuery();
+
+    /**
+     * Load query from the XML file
+     * \since QGIS 3.16
+     */
+    void loadQuery();
+
+    void setDatasourceDescription( const QString &uri );
+
+  private slots:
+    void btnEqual_clicked();
+    void btnLessThan_clicked();
+    void btnGreaterThan_clicked();
+    void btnPct_clicked();
+    void btnIn_clicked();
+    void btnNotIn_clicked();
+    void btnLike_clicked();
+    void btnILike_clicked();
+    void lstFields_clicked( const QModelIndex &index );
+    void lstFields_doubleClicked( const QModelIndex &index );
+    void lstValues_doubleClicked( const QModelIndex &index );
+    void btnLessEqual_clicked();
+    void btnGreaterEqual_clicked();
+    void btnNotEqual_clicked();
+    void btnAnd_clicked();
+    void btnNot_clicked();
+    void btnOr_clicked();
+    void onTextChanged( const QString &text );
+    void layerSubsetStringChanged();
+
+    /**
+     * Gets all distinct values for the field. Values are inserted
      * into the value list box
      */
-    void on_btnGetAllValues_clicked();
+    void btnGetAllValues_clicked();
 
     /**
-     * Get sample distinct values for the selected field. The sample size is
+     * Gets sample distinct values for the selected field. The sample size is
      * limited to an arbitrary value (currently set to 25). The values
      * are inserted into the values list box.
      */
-    void on_btnSampleValues_clicked();
-
-    void setDatasourceDescription( const QString &uri );
+    void btnSampleValues_clicked();
 
   private:
 
@@ -110,6 +161,8 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * Populate the field list for the selected table
      */
     void populateFields();
+
+    void showHelp();
 
     /**
      * Setup models for listviews
@@ -123,6 +176,8 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     QStandardItemModel *mModelFields = nullptr;
     //! Model for values ListView
     QStandardItemModel *mModelValues = nullptr;
+    //! Filter proxy Model for values ListView
+    QSortFilterProxyModel *mProxyValues = nullptr;
     //! Previous field row to delete model
     int mPreviousFieldRow;
 
@@ -131,5 +186,8 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     //! original subset string
     QString mOrigSubsetString;
+
+    //! whether to ignore subsetStringChanged() signal from the layer
+    bool mIgnoreLayerSubsetStringChangedSignal = false;
 };
 #endif //QGSQUERYBUILDER_H

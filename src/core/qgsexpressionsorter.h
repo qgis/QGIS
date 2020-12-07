@@ -30,13 +30,13 @@ class QgsExpressionSorter
         // QString::localeAwareCompare() is case insensitive for common locales,
         // but case sensitive for the C locale. So use an explicit case
         // insensitive comparison in that later case to avoid test failures.
-      , mUseCaseInsensitiveComparison( QLocale::system().name() == QLocale::c().name() )
+      , mUseCaseInsensitiveComparison( QLocale().name() == QLocale::c().name() )
     {}
 
     bool operator()( const QgsIndexedFeature &f1, const QgsIndexedFeature &f2 ) const
     {
       int i = 0;
-      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderBy, mPreparedOrderBys )
+      for ( const QgsFeatureRequest::OrderByClause &orderBy : qgis::as_const( mPreparedOrderBys ) )
       {
         const QVariant &v1 = f1.mIndexes.at( i );
         const QVariant &v2 = f2.mIndexes.at( i );
@@ -141,30 +141,30 @@ class QgsExpressionSorter
 
       QVector<QgsIndexedFeature> indexedFeatures;
 
-      QgsIndexedFeature indexedFeature;
+      QgsIndexedFeature indexedFeatureToAppend;
 
-      Q_FOREACH ( const QgsFeature &f, features )
+      for ( const QgsFeature &f : qgis::as_const( features ) )
       {
-        indexedFeature.mIndexes.resize( mPreparedOrderBys.size() );
-        indexedFeature.mFeature = f;
+        indexedFeatureToAppend.mIndexes.resize( mPreparedOrderBys.size() );
+        indexedFeatureToAppend.mFeature = f;
 
-        expressionContext->setFeature( indexedFeature.mFeature );
+        expressionContext->setFeature( indexedFeatureToAppend.mFeature );
 
         int i = 0;
-        Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderBy, mPreparedOrderBys )
+        for ( const QgsFeatureRequest::OrderByClause &orderBy : qgis::as_const( mPreparedOrderBys ) )
         {
-          indexedFeature.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
+          indexedFeatureToAppend.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
         }
-        indexedFeatures.append( indexedFeature );
+        indexedFeatures.append( indexedFeatureToAppend );
       }
 
       delete expressionContext->popScope();
 
-      qSort( indexedFeatures.begin(), indexedFeatures.end(), *this );
+      std::sort( indexedFeatures.begin(), indexedFeatures.end(), *this );
 
       features.clear();
 
-      Q_FOREACH ( const QgsIndexedFeature &indexedFeature, indexedFeatures )
+      for ( const QgsIndexedFeature &indexedFeature : qgis::as_const( indexedFeatures ) )
         features.append( indexedFeature.mFeature );
     }
 

@@ -36,7 +36,7 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   mLightAzimuth->setClearValue( 315.00 );
 
   // Update the dial correctly
-  on_mLightAzimuth_updated( 315.00 );
+  mLightAzimuth_updated( 315.00 );
   mZFactor->setValue( 1 );
   mZFactor->setClearValue( 1 );
 
@@ -46,8 +46,8 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   setFromRenderer( layer->renderer() );
 
   connect( mLightAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
-  connect( mLightAzimuth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHillshadeRendererWidget::on_mLightAzimuth_updated );
-  connect( mLightAzimuthDial, &QAbstractSlider::valueChanged, this, &QgsHillshadeRendererWidget::on_mLightAzimuthDail_updated );
+  connect( mLightAzimuth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHillshadeRendererWidget::mLightAzimuth_updated );
+  connect( mLightAzimuthDial, &QAbstractSlider::valueChanged, this, &QgsHillshadeRendererWidget::mLightAzimuthDial_updated );
   connect( mZFactor, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
   connect( mMultiDirection, &QAbstractButton::toggled, this, &QgsRasterRendererWidget::widgetChanged );
   connect( mBandsCombo, &QgsRasterBandComboBox::bandChanged, this, &QgsHillshadeRendererWidget::widgetChanged );
@@ -107,20 +107,20 @@ void QgsHillshadeRendererWidget::setMultiDirectional( bool isMultiDirectional )
   mMultiDirection->setChecked( isMultiDirectional );
 }
 
-void QgsHillshadeRendererWidget::on_mLightAzimuth_updated( double value )
+void QgsHillshadeRendererWidget::mLightAzimuth_updated( double value )
 {
-  int newvalue = ( int )value - 180;
+  int newvalue = static_cast<int>( value ) - 180;
   if ( newvalue < 0 )
     newvalue += 360;
   whileBlocking( mLightAzimuthDial )->setValue( newvalue );
   emit widgetChanged();
 }
 
-void QgsHillshadeRendererWidget::on_mLightAzimuthDail_updated( int value )
+void QgsHillshadeRendererWidget::mLightAzimuthDial_updated( int value )
 {
-  int newvalue = ( int )value + 180;
+  int newvalue = static_cast<int>( value ) + 180;
   if ( newvalue > 360 )
-    newvalue -= 360 ;
+    newvalue -= 360;
   whileBlocking( mLightAzimuth )->setValue( newvalue );
   emit widgetChanged();
 }

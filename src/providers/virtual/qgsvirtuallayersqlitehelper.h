@@ -32,7 +32,7 @@ extern "C"
 class QgsScopedSqlite
 {
   public:
-    QgsScopedSqlite() : db_( nullptr ) {}
+    QgsScopedSqlite() = default;
 
     explicit QgsScopedSqlite( const QString &path, bool withExtension = true );
 
@@ -40,6 +40,7 @@ class QgsScopedSqlite
     QgsScopedSqlite &operator=( QgsScopedSqlite &other );
     ~QgsScopedSqlite();
 
+    bool interrupt();
     sqlite3 *get() const;
     sqlite3 *release();
     void reset( sqlite3 *db );
@@ -59,8 +60,8 @@ namespace Sqlite
 
       int step();
 
-      Query &bind( const QString &str, int idx );
-      Query &bind( const QString &str );
+      Query &bind( const QVariant &value, int idx );
+      Query &bind( const QVariant &value );
 
       static void exec( sqlite3 *db, const QString &sql );
 

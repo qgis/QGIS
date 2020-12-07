@@ -9,10 +9,9 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
+import re
 import tempfile
 import shutil
 import glob
@@ -20,7 +19,21 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
-from qgis.core import QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
+from osgeo import gdal
+from qgis.core import (
+    QgsApplication,
+    QgsDataProvider,
+    QgsSettings,
+    QgsFeature,
+    QgsField,
+    QgsGeometry,
+    QgsVectorLayer,
+    QgsFeatureRequest,
+    QgsProviderRegistry,
+    QgsVectorDataProvider,
+    QgsWkbTypes,
+    QgsVectorLayerExporter,
+)
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -76,6 +89,12 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 
+    def treat_time_as_string(self):
+        return True
+
+    def treat_datetime_as_string(self):
+        return True
+
     def getSource(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
@@ -92,6 +111,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
+        return True
 
     def disableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', False)
@@ -190,7 +210,15 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                        'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
                        'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
                        'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-                       'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))'
+                       'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+                       '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')',
+                       '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')',
+                       '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
+                       '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                       'to_time("time") >= make_time(12, 14, 14)',
+                       'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
+                       'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                       'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)'
                        ])
         if int(osgeo.gdal.VersionInfo()[:1]) < 2:
             filters.insert('not null')
@@ -201,6 +229,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                     'name = \'apple\'',
                     'name LIKE \'Apple\'',
                     'name LIKE \'aPple\'',
+                    'name LIKE \'Ap_le\'',
+                    'name LIKE \'Ap\\_le\'',
                     '"name"="name2"'])
 
     def testRepack(self):
@@ -209,7 +239,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.selectByIds(ids)
         self.assertEqual(vl.selectedFeatureIds(), ids)
-        self.assertEqual(vl.pendingFeatureCount(), 5)
+        self.assertEqual(vl.featureCount(), 5)
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(3))
         self.assertTrue(vl.commitChanges())
@@ -269,7 +299,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         values = [f_iter['pk'] for f_iter in features]
         self.assertEqual(values, [200])
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (2.0, 49.0))
 
         self.assertTrue(vl.dataProvider().changeGeometryValues({fid: QgsGeometry.fromWkt('Point (3 50)')}))
@@ -278,7 +308,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         features = [f_iter for f_iter in vl.getFeatures(QgsFeatureRequest().setFilterFid(fid))]
         values = [f_iter['pk'] for f_iter in features]
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (3.0, 50.0))
 
         self.assertTrue(vl.dataProvider().deleteFeatures([fid]))
@@ -307,7 +337,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().leaveUpdateMode())
         self.assertEqual(vl.dataProvider().property("_debug_open_mode"), "read-only")
 
-        # Test that update mode will be implictly enabled if doing an action
+        # Test that update mode will be implicitly enabled if doing an action
         # that requires update mode
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertTrue(ret)
@@ -459,7 +489,51 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # Test the content of the shapefile while it is still opened
         ds = osgeo.ogr.Open(datasource)
         # Test repacking has been done
-        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        ds = None
+
+        # Delete another feature while in update mode
+        self.assertTrue(2 == 2)
+        vl.dataProvider().enterUpdateMode()
+        vl.dataProvider().deleteFeatures([0])
+
+        # Test that repacking has not been done (since in update mode)
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        ds = None
+
+        # Test that repacking was performed when leaving updateMode
+        vl.dataProvider().leaveUpdateMode()
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 2)
+        ds = None
+
+        vl = None
+
+    def testDontRepackOnReload(self):
+        ''' Test fix for #18421 '''
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        feature_count = vl.featureCount()
+        # Start an iterator that will open a new connection
+        iterator = vl.getFeatures()
+        next(iterator)
+
+        # Delete another feature while in update mode
+        vl.dataProvider().enterUpdateMode()
+        vl.dataProvider().reloadData()
+        vl.dataProvider().deleteFeatures([0])
+
+        # Test that repacking has not been done (since in update mode)
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count)
         ds = None
 
         vl = None
@@ -551,6 +625,476 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ds = osgeo.ogr.Open(datasource)
         self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
         ds = None
+
+    def testOpenWithFilter(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
+        uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
+        # ensure that no longer required ogr SQL layers are correctly cleaned up
+        # we need to run this twice for the incorrect cleanup asserts to trip,
+        # since they are triggered only when fetching an existing layer from the ogr
+        # connection pool
+        for i in range(2):
+            vl = QgsVectorLayer(uri)
+            self.assertTrue(vl.isValid(), 'Layer not valid, iteration {}'.format(i + 1))
+            self.assertEqual(vl.featureCount(), 1)
+            f = next(vl.getFeatures())
+            self.assertEqual(f['name'], 'Apple')
+            # force close of data provider
+            vl.setDataSource('', 'test', 'ogr')
+
+    def testEncoding(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'latin1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'utf8.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 1, 0):
+            # correct autodetection of vsizip based shapefiles depends on GDAL 3.1
+            file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.zip')
+            vl = QgsVectorLayer('/vsizip/{}'.format(file_path))
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+            self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'system_encoding.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        # no encoding hints, so it should default to UTF-8 (which is wrong for this particular file, but the correct guess to make first!)
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertNotEqual(next(vl.getFeatures())[1], 'äöü')
+        # set to correct encoding
+        vl.dataProvider().setEncoding('ISO-8859-1')
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+    def testCreateAttributeIndex(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
+        self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
+        self.assertFalse(vl.dataProvider().createAttributeIndex(100))
+        self.assertTrue(vl.dataProvider().createAttributeIndex(1))
+
+    def testCreateSpatialIndex(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
+        self.assertTrue(vl.dataProvider().createSpatialIndex())
+
+    def testSubSetStringEditable_bug17795_but_with_modified_behavior(self):
+        """Test that a layer is still editable after setting a subset"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+        isEditable = QgsVectorDataProvider.ChangeAttributeValues
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('"Name" = \'Arterial\'')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl.setSubsetString('')
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+    def testSubsetStringExtent_bug17863(self):
+        """Check that the extent is correct when applied in the ctor and when
+        modified after a subset string is set """
+
+        def _lessdigits(s):
+            return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
+
+        testPath = TEST_DATA_DIR + '/' + 'points.shp'
+        subSetString = '"Class" = \'Biplane\''
+        subSet = '|layerid=0|subset=%s' % subSetString
+
+        # unfiltered
+        vl = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        unfiltered_extent = _lessdigits(vl.extent().toString())
+        del(vl)
+
+        # filter after construction ...
+        subSet_vl2 = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        # ... apply filter now!
+        subSet_vl2.setSubsetString(subSetString)
+        self.assertEqual(subSet_vl2.subsetString(), subSetString)
+        self.assertNotEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        filtered_extent = _lessdigits(subSet_vl2.extent().toString())
+        del(subSet_vl2)
+
+        # filtered in constructor
+        subSet_vl = QgsVectorLayer(testPath + subSet, 'subset_test', 'ogr')
+        self.assertEqual(subSet_vl.subsetString(), subSetString)
+        self.assertTrue(subSet_vl.isValid())
+
+        # This was failing in bug 17863
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
+        self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+    def testMalformedSubsetStrings(self):
+        """Test that invalid where clauses always return false"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.setSubsetString(''))
+        self.assertTrue(vl.setSubsetString('"Name" = \'Arterial\''))
+        self.assertTrue(vl.setSubsetString('select * from lines where "Name" = \'Arterial\''))
+        self.assertFalse(vl.setSubsetString('this is invalid sql'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" in (\'Arterial\', \'Highway\' '))
+        self.assertFalse(vl.setSubsetString('select * from NonExistentTable'))
+        self.assertFalse(vl.setSubsetString('select NonExistentField from lines'))
+        self.assertFalse(vl.setSubsetString('"NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('"Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('"Name" in (\'Arterial\', \'Highway\' '))
+        self.assertTrue(vl.setSubsetString(''))
+
+    def testMultipatch(self):
+        """Check that we can deal with multipatch shapefiles, returned natively by OGR as GeometryCollection of TIN"""
+
+        testPath = TEST_DATA_DIR + '/' + 'multipatch.shp'
+        vl = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPolygonZ)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.MultiPolygonZ)
+        self.assertEqual(f.geometry().constGet().asWkt(),
+                         'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
+
+    def testShzSupport(self):
+        ''' Test support for single layer compressed shapefiles (.shz) '''
+
+        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 1, 0):
+            return
+
+        tmpfile = os.path.join(self.basetestpath, 'testShzSupport.shz')
+        ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('testShzSupport', geom_type=osgeo.ogr.wkbPoint)
+        lyr.CreateField(osgeo.ogr.FieldDefn('attr', osgeo.ogr.OFTInteger))
+        f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+        f.SetField('attr', 1)
+        f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        f = next(vl.getFeatures())
+        assert f['attr'] == 1
+        self.assertEqual(f.geometry().constGet().asWkt(), 'Point (0 0)')
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValue(f.id(), 0, -1))
+        self.assertTrue(vl.commitChanges())
+
+        f = next(vl.getFeatures())
+        assert f['attr'] == -1
+
+        # Check DataItem
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+        item = ogrprovider.createDataItem(tmpfile, None)
+        self.assertTrue(item.uri().endswith('testShzSupport.shz'))
+
+    def testShpZipSupport(self):
+        ''' Test support for multi layer compressed shapefiles (.shp.zip) '''
+
+        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 1, 0):
+            return
+
+        tmpfile = os.path.join(self.basetestpath, 'testShpZipSupport.shp.zip')
+        ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('layer1', geom_type=osgeo.ogr.wkbPoint)
+        lyr.CreateField(osgeo.ogr.FieldDefn('attr', osgeo.ogr.OFTInteger))
+        f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+        f.SetField('attr', 1)
+        f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        lyr = ds.CreateLayer('layer2', geom_type=osgeo.ogr.wkbMultiLineString)
+        lyr.CreateField(osgeo.ogr.FieldDefn('attr', osgeo.ogr.OFTInteger))
+        f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+        f.SetField('attr', 2)
+        f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt('LINESTRING(0 0,1 1)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl1 = QgsVectorLayer(tmpfile + '|layername=layer1', 'test', 'ogr')
+        vl2 = QgsVectorLayer(tmpfile + '|layername=layer2', 'test', 'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertTrue(vl2.isValid())
+        self.assertEqual(vl1.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl2.wkbType(), QgsWkbTypes.MultiLineString)
+        f1 = next(vl1.getFeatures())
+        f2 = next(vl2.getFeatures())
+        assert f1['attr'] == 1
+        self.assertEqual(f1.geometry().constGet().asWkt(), 'Point (0 0)')
+        assert f2['attr'] == 2
+        self.assertEqual(f2.geometry().constGet().asWkt(), 'MultiLineString ((0 0, 1 1))')
+
+        self.assertTrue(vl1.startEditing())
+        self.assertTrue(vl2.startEditing())
+        self.assertTrue(vl1.changeAttributeValue(f1.id(), 0, -1))
+        self.assertTrue(vl2.changeAttributeValue(f2.id(), 0, -2))
+        self.assertTrue(vl1.commitChanges())
+        self.assertTrue(vl2.commitChanges())
+
+        f = next(vl1.getFeatures())
+        assert f['attr'] == -1
+
+        f = next(vl2.getFeatures())
+        assert f['attr'] == -2
+
+        # Check DataItem
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+        item = ogrprovider.createDataItem(tmpfile, None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        uris = sorted([children[i].uri() for i in range(2)])
+        self.assertIn('testShpZipSupport.shp.zip|layername=layer1', uris[0])
+        self.assertIn('testShpZipSupport.shp.zip|layername=layer2', uris[1])
+
+        gdalprovider = next(provider for provider in registry.providers() if provider.name() == 'GDAL')
+        item = gdalprovider.createDataItem(tmpfile, None)
+        assert not item
+
+    def testWriteShapefileWithSingleConversion(self):
+        """Check writing geometries from a POLYGON ESRI shapefile does not
+        convert to multi when "forceSinglePartGeometryType" options is TRUE
+        also checks failing cases.
+
+        OGR provider always report MULTI for POLYGON and LINESTRING, but if we set
+        the import option "forceSinglePartGeometryType" the writer must respect the
+        actual single-part type if the features in the data provider are actually single
+        and not multi.
+        """
+
+        ml = QgsVectorLayer(
+            ('Polygon?crs=epsg:4326&field=id:int'),
+            'test',
+            'memory')
+
+        provider = ml.dataProvider()
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromWkt('Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))'))
+        ft.setAttributes([1])
+        res, features = provider.addFeatures([ft])
+
+        dest_file_name = os.path.join(self.basetestpath, 'multipart.shp')
+        write_result, error_message = QgsVectorLayerExporter.exportLayer(ml,
+                                                                         dest_file_name,
+                                                                         'ogr',
+                                                                         ml.crs(),
+                                                                         False,
+                                                                         {"driverName": "ESRI Shapefile"}
+                                                                         )
+        self.assertEqual(write_result, QgsVectorLayerExporter.NoError, error_message)
+
+        # Open the newly created layer
+        shapefile_layer = QgsVectorLayer(dest_file_name)
+
+        dest_singlepart_file_name = os.path.join(self.basetestpath, 'singlepart.gpkg')
+        write_result, error_message = QgsVectorLayerExporter.exportLayer(shapefile_layer,
+                                                                         dest_singlepart_file_name,
+                                                                         'ogr',
+                                                                         shapefile_layer.crs(),
+                                                                         False,
+                                                                         {
+                                                                             "forceSinglePartGeometryType": True,
+                                                                             "driverName": "GPKG",
+                                                                         })
+        self.assertEqual(write_result, QgsVectorLayerExporter.NoError, error_message)
+
+        # Load result layer and check that it's NOT MULTI
+        single_layer = QgsVectorLayer(dest_singlepart_file_name)
+        self.assertTrue(single_layer.isValid())
+        self.assertTrue(QgsWkbTypes.isSingleType(single_layer.wkbType()))
+
+        # Now save the shapfile layer into a gpkg with no force options
+        dest_multipart_file_name = os.path.join(self.basetestpath, 'multipart.gpkg')
+        write_result, error_message = QgsVectorLayerExporter.exportLayer(shapefile_layer,
+                                                                         dest_multipart_file_name,
+                                                                         'ogr',
+                                                                         shapefile_layer.crs(),
+                                                                         False,
+                                                                         {
+                                                                             "forceSinglePartGeometryType": False,
+                                                                             "driverName": "GPKG",
+                                                                         })
+        self.assertEqual(write_result, QgsVectorLayerExporter.NoError, error_message)
+        # Load result layer and check that it's MULTI
+        multi_layer = QgsVectorLayer(dest_multipart_file_name)
+        self.assertTrue(multi_layer.isValid())
+        self.assertTrue(QgsWkbTypes.isMultiType(multi_layer.wkbType()))
+
+        # Failing case: add a real multi to the shapefile and try to force to single
+        self.assertTrue(shapefile_layer.startEditing())
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromWkt('MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)), ((-10 -10,-10 -9,-9 -9,-10 -10)))'))
+        ft.setAttributes([2])
+        self.assertTrue(shapefile_layer.addFeatures([ft]))
+        self.assertTrue(shapefile_layer.commitChanges())
+
+        dest_multipart_failure_file_name = os.path.join(self.basetestpath, 'multipart_failure.gpkg')
+        write_result, error_message = QgsVectorLayerExporter.exportLayer(shapefile_layer,
+                                                                         dest_multipart_failure_file_name,
+                                                                         'ogr',
+                                                                         shapefile_layer.crs(),
+                                                                         False,
+                                                                         {
+                                                                             "forceSinglePartGeometryType": True,
+                                                                             "driverName": "GPKG",
+                                                                         })
+        self.assertTrue(QgsWkbTypes.isMultiType(multi_layer.wkbType()))
+        self.assertEqual(write_result, QgsVectorLayerExporter.ErrFeatureWriteFailed, "Failed to transform a feature with ID '1' to single part. Writing stopped.")
+
+    def testReadingLayerGeometryTypes(self):
+
+        tests = [(osgeo.ogr.wkbPoint, 'Point (0 0)', QgsWkbTypes.Point, 'Point (0 0)'),
+                 (osgeo.ogr.wkbPoint25D, 'Point Z (0 0 1)', QgsWkbTypes.PointZ, 'PointZ (0 0 1)'),
+                 (osgeo.ogr.wkbPointM, 'Point M (0 0 1)', QgsWkbTypes.PointM, 'PointM (0 0 1)'),
+                 (osgeo.ogr.wkbPointZM, 'Point ZM (0 0 1 2)', QgsWkbTypes.PointZM, 'PointZM (0 0 1 2)'),
+                 (osgeo.ogr.wkbLineString, 'LineString (0 0, 1 1)', QgsWkbTypes.MultiLineString, 'MultiLineString ((0 0, 1 1))'),
+                 (osgeo.ogr.wkbLineString25D, 'LineString Z (0 0 10, 1 1 10)', QgsWkbTypes.MultiLineStringZ, 'MultiLineStringZ ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbLineStringM, 'LineString M (0 0 10, 1 1 10)', QgsWkbTypes.MultiLineStringM, 'MultiLineStringM ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbLineStringZM, 'LineString ZM (0 0 10 20, 1 1 10 20)', QgsWkbTypes.MultiLineStringZM, 'MultiLineStringZM ((0 0 10 20, 1 1 10 20))'),
+                 (osgeo.ogr.wkbPolygon, 'Polygon ((0 0,0 1,1 1,0 0))', QgsWkbTypes.MultiPolygon, 'MultiPolygon (((0 0, 0 1, 1 1, 0 0)))'),
+                 (osgeo.ogr.wkbPolygon25D, 'Polygon Z ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.MultiPolygonZ, 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbPolygonM, 'Polygon M ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.MultiPolygonM, 'MultiPolygonM (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbPolygonZM, 'Polygon ZM ((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20))', QgsWkbTypes.MultiPolygonZM, 'MultiPolygonZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
+                 (osgeo.ogr.wkbMultiPoint, 'MultiPoint (0 0,1 1)', QgsWkbTypes.MultiPoint, 'MultiPoint ((0 0),(1 1))'),
+                 (osgeo.ogr.wkbMultiPoint25D, 'MultiPoint Z ((0 0 10), (1 1 10))', QgsWkbTypes.MultiPointZ, 'MultiPointZ ((0 0 10),(1 1 10))'),
+                 (osgeo.ogr.wkbMultiPointM, 'MultiPoint M ((0 0 10), (1 1 10))', QgsWkbTypes.MultiPointM, 'MultiPointM ((0 0 10),(1 1 10))'),
+                 (osgeo.ogr.wkbMultiPointZM, 'MultiPoint ZM ((0 0 10 20), (1 1 10 20))', QgsWkbTypes.MultiPointZM, 'MultiPointZM ((0 0 10 20),(1 1 10 20))'),
+                 (osgeo.ogr.wkbMultiLineString, 'MultiLineString ((0 0, 1 1))', QgsWkbTypes.MultiLineString, 'MultiLineString ((0 0, 1 1))'),
+                 (osgeo.ogr.wkbMultiLineString25D, 'MultiLineString Z ((0 0 10, 1 1 10))', QgsWkbTypes.MultiLineStringZ, 'MultiLineStringZ ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbMultiLineStringM, 'MultiLineString M ((0 0 10, 1 1 10))', QgsWkbTypes.MultiLineStringM, 'MultiLineStringM ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbMultiLineStringZM, 'MultiLineString ZM ((0 0 10 20, 1 1 10 20))', QgsWkbTypes.MultiLineStringZM, 'MultiLineStringZM ((0 0 10 20, 1 1 10 20))'),
+                 (osgeo.ogr.wkbMultiPolygon, 'MultiPolygon (((0 0,0 1,1 1,0 0)))', QgsWkbTypes.MultiPolygon, 'MultiPolygon (((0 0, 0 1, 1 1, 0 0)))'),
+                 (osgeo.ogr.wkbMultiPolygon25D, 'MultiPolygon Z (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.MultiPolygonZ, 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbMultiPolygonM, 'MultiPolygon M (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.MultiPolygonM, 'MultiPolygonM (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbMultiPolygonZM, 'MultiPolygon ZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))', QgsWkbTypes.MultiPolygonZM, 'MultiPolygonZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
+                 ]
+        for ogr_type, wkt, qgis_type, expected_wkt in tests:
+
+            filename = 'testPromoteToMulti'
+            tmpfile = os.path.join(self.basetestpath, filename)
+            ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+            lyr = ds.CreateLayer(filename, geom_type=ogr_type)
+            f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+            f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt(wkt))
+            lyr.CreateFeature(f)
+            ds = None
+
+            vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), qgis_type)
+            f = next(vl.getFeatures())
+            self.assertEqual(f.geometry().constGet().asWkt(), expected_wkt)
+            del vl
+
+            osgeo.ogr.GetDriverByName('ESRI Shapefile').DeleteDataSource(tmpfile)
+
+    def testEncoding(self):
+        """ Test that CP852 shapefile is read/written correctly """
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        for file in glob.glob(os.path.join(TEST_DATA_DIR, 'test_852.*')):
+            shutil.copy(os.path.join(TEST_DATA_DIR, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'test_852.shp')
+
+        vl = QgsVectorLayer(datasource, 'test')
+        self.assertTrue(vl.isValid())
+        self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ']])
+
+        f = QgsFeature()
+        f.setAttributes(['abcŐabcŐabcŐ'])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # read it back in
+        vl = QgsVectorLayer(datasource, 'test')
+        self.assertTrue(vl.isValid())
+        self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ'], ['abcŐabcŐabcŐ']])
+
+    def testSkipFeatureCountOnFeatureCount(self):
+        """Test QgsDataProvider.SkipFeatureCount on featureCount()"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+        provider = QgsProviderRegistry.instance().createProvider('ogr', testPath, QgsDataProvider.ProviderOptions(), QgsDataProvider.SkipFeatureCount)
+        self.assertTrue(provider.isValid())
+        self.assertEqual(provider.featureCount(), QgsVectorDataProvider.UnknownCount)
+
+    def testSkipFeatureCountOnSubLayers(self):
+        """Test QgsDataProvider.SkipFeatureCount on subLayers()"""
+
+        datasource = os.path.join(TEST_DATA_DIR, 'shapefile')
+        provider = QgsProviderRegistry.instance().createProvider('ogr', datasource, QgsDataProvider.ProviderOptions(), QgsDataProvider.SkipFeatureCount)
+        self.assertTrue(provider.isValid())
+        sublayers = provider.subLayers()
+        self.assertTrue(len(sublayers) > 1)
+        self.assertEqual(sublayers[0].split(QgsDataProvider.sublayerSeparator())[2], '-1')
 
 
 if __name__ == '__main__':

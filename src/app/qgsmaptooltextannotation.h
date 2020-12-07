@@ -27,7 +27,6 @@ class APP_EXPORT QgsMapToolTextAnnotation: public QgsMapToolAnnotation
 
   public:
     QgsMapToolTextAnnotation( QgsMapCanvas *canvas );
-    ~QgsMapToolTextAnnotation();
 
   protected:
     QgsAnnotation *createItem() const override;

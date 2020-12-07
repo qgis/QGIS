@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreefilterproxymodel.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayerTreeFilterProxyModel : QSortFilterProxyModel
+{
+%Docstring
+QgsLayerTreeFilterProxyModel is a sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
+Layers are checkable by default.
+Symbology nodes will not be shown.
+Layers can be filtered by their type.
+
+For more complex use-cases, the model can be re-implemented to allow a different interaction or to add more columns.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgslayertreefilterproxymodel.h"
+%End
+  public:
+    QgsLayerTreeFilterProxyModel( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
+
+    void setCheckedLayers( const QList<QgsMapLayer *> layers );
+%Docstring
+Initialize the list of checked layers.
+
+.. note::
+
+   If the model is re-implemented, this method might become useless
+%End
+
+    QList<QgsMapLayer *> checkedLayers() const;
+%Docstring
+Returns the checked layers
+%End
+
+    QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
+%Docstring
+Returns the map layer at a given index
+%End
+
+    QgsLayerTreeModel *layerTreeModel() const;
+%Docstring
+Rerturns the layer tree model
+%End
+    void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
+%Docstring
+Sets the layer tree model
+%End
+
+    void setFilters( const QgsMapLayerProxyModel::Filters &filters );
+%Docstring
+Defines the type layers (vector, raster, etc) shown in the tree
+If the list is empty, all types are shown.
+%End
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+    virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex parent( const QModelIndex &child ) const;
+
+    virtual QModelIndex sibling( int row, int column, const QModelIndex &idx ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+  public slots:
+    virtual void setFilterText( const QString &filterText = QString() );
+%Docstring
+Sets the filter text to search for a layer in the tree
+%End
+
+  protected:
+    virtual bool isLayerChecked( QgsMapLayer *layer ) const;
+%Docstring
+Returns if the layer is checked or not
+%End
+
+    virtual void setLayerChecked( QgsMapLayer *layer, bool checked );
+%Docstring
+This will set if the layer is checked or not
+%End
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreefilterproxymodel.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

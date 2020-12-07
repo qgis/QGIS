@@ -19,9 +19,11 @@
 
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  This class provides details of the viewable area that a raster will
  *  be rendered into.
  *
@@ -37,21 +39,23 @@ struct CORE_EXPORT QgsRasterViewPort
   % End
 #endif
 
-  /** \brief Coordinate (in output device coordinate system) of top left corner
-   *   of the part of the raster that is to be rendered.*/
+  /**
+   * \brief Coordinate (in output device coordinate system) of top left corner
+   * of the part of the raster that is to be rendered.
+  */
   QgsPointXY mTopLeftPoint;
 
-  /** \brief Coordinate (in output device coordinate system) of bottom right corner
-   *   of the part of the raster that is to be rendered.*/
+  /**
+   * \brief Coordinate (in output device coordinate system) of bottom right corner
+   * of the part of the raster that is to be rendered.
+  */
   QgsPointXY mBottomRightPoint;
 
   //! \brief Width, number of columns to be rendered
-  int mWidth;
+  qgssize mWidth;
 
-  /** \brief Distance in map units from bottom edge to top edge for the part of
-   *  the raster that is to be rendered.*/
   //! \brief Height, number of rows to be rendered
-  int mHeight;
+  qgssize mHeight;
 
   //! \brief Intersection of current map extent and layer extent
   QgsRectangle mDrawnExtent;
@@ -62,8 +66,10 @@ struct CORE_EXPORT QgsRasterViewPort
   //! \brief Target coordinate system
   QgsCoordinateReferenceSystem mDestCRS;
 
-  int mSrcDatumTransform;
-  int mDestDatumTransform;
+  /**
+   * Coordinate transform context
+   */
+  QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif //QGSRASTERVIEWPORT_H

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '2016-05'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -18,6 +16,7 @@ from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsAttributeFormEditorWidget,
                       QgsDefaultSearchWidgetWrapper,
                       QgsAttributeForm,
+                      QgsSearchWidgetToolButton,
                       QgsGui
                       )
 from qgis.core import (QgsVectorLayer)
@@ -37,14 +36,17 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldint:integer", "test", "memory")
         parent = QWidget()
         w = QgsDefaultSearchWidgetWrapper(layer, 0, parent)
-        af = QgsAttributeFormEditorWidget(None, None)
+        setup = QgsGui.editorWidgetRegistry().findBest(layer, "fldint")
+        wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, parent)
+        af = QgsAttributeFormEditorWidget(wrapper, setup.type(), None)
         af.setSearchWidgetWrapper(w)
 
         # test that filter combines both current value in search widget wrapper and flags from search tool button
         w.lineEdit().setText('5.5')
-        af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.EqualTo)
+        sb = af.findChild(QWidget, "SearchWidgetToolButton")
+        sb.setActiveFlags(QgsSearchWidgetWrapper.EqualTo)
         self.assertEqual(af.currentFilterExpression(), '"fldint"=5.5')
-        af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.NotEqualTo)
+        sb.setActiveFlags(QgsSearchWidgetWrapper.NotEqualTo)
         self.assertEqual(af.currentFilterExpression(), '"fldint"<>5.5')
 
     def testSetActive(self):
@@ -53,10 +55,12 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtext:string&field=fldint:integer", "test", "memory")
         parent = QWidget()
         w = QgsDefaultSearchWidgetWrapper(layer, 0, parent)
-        af = QgsAttributeFormEditorWidget(None, None)
+        setup = QgsGui.editorWidgetRegistry().findBest(layer, "fldint")
+        wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, parent)
+        af = QgsAttributeFormEditorWidget(wrapper, setup.type(), None)
         af.setSearchWidgetWrapper(w)
 
-        sb = af.searchWidgetToolButton()
+        sb = af.findChild(QWidget, "SearchWidgetToolButton")
         # start with inactive
         sb.setActiveFlags(QgsSearchWidgetWrapper.FilterFlags())
         # set to inactive
@@ -78,17 +82,19 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         """ Test creating a between type filter """
         layer = QgsVectorLayer("Point?field=fldtext:string&field=fldint:integer", "test", "memory")
         form = QgsAttributeForm(layer)
-        af = QgsAttributeFormEditorWidget(None, form)
-        af.createSearchWidgetWrappers("DateTime", 0, {})
+        wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, form)
+        af = QgsAttributeFormEditorWidget(wrapper, 'DateTime', None)
+        af.createSearchWidgetWrappers()
 
         d1 = af.findChildren(QDateTimeEdit)[0]
         d2 = af.findChildren(QDateTimeEdit)[1]
         d1.setDateTime(QDateTime(QDate(2013, 5, 6), QTime()))
         d2.setDateTime(QDateTime(QDate(2013, 5, 16), QTime()))
 
-        af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.Between)
+        sb = af.findChild(QWidget, "SearchWidgetToolButton")
+        sb.setActiveFlags(QgsSearchWidgetWrapper.Between)
         self.assertEqual(af.currentFilterExpression(), '"fldtext">=\'2013-05-06\' AND "fldtext"<=\'2013-05-16\'')
-        af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.IsNotBetween)
+        sb.setActiveFlags(QgsSearchWidgetWrapper.IsNotBetween)
         self.assertEqual(af.currentFilterExpression(), '"fldtext"<\'2013-05-06\' OR "fldtext">\'2013-05-16\'')
 
 

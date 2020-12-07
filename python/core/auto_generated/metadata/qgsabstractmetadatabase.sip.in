@@ -1,0 +1,465 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsabstractmetadatabase.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAbstractMetadataBase
+{
+%Docstring
+An abstract base class for metadata stores.
+
+QgsAbstractMetadataBase is the base class for handling storage and management of the metadata
+for various map related assets. This class is an internal QGIS format with a common
+metadata structure. It is subclassed by layer and project specific metadata classes,
+such as QgsLayerMetadata and QgsProjectMetadata.
+
+The metadata store is designed to be compatible with the Dublin Core metadata
+specifications, and will be expanded to allow compatibility with ISO specifications
+in future releases. However, the QGIS internal schema does not represent a superset
+of all existing metadata schemas and accordingly conversion from specific
+metadata formats to QgsAbstractMetadataBase may result in a loss of information.
+
+This class is designed to follow the specifications detailed in
+the schema definition available at resources/qgis-base-metadata.xsd
+within the QGIS source code.
+
+Metadata can be validated through the use of QgsAbstractMetadataBaseValidator
+subclasses. E.g. validating against the native QGIS metadata schema can be performed
+using QgsNativeMetadataValidator.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsabstractmetadatabase.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
+      sipType = sipType_QgsLayerMetadata;
+    else if ( dynamic_cast< QgsProjectMetadata * >( sipCpp ) != NULL )
+      sipType = sipType_QgsProjectMetadata;
+    else
+      sipType = NULL;
+%End
+  public:
+
+
+    typedef QMap< QString, QStringList > KeywordMap;
+
+    struct Address
+    {
+
+      Address( const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(), const QString &country = QString() );
+%Docstring
+Constructor for Address.
+%End
+
+      QString type;
+
+      QString address;
+
+      QString city;
+
+      QString administrativeArea;
+
+      QString postalCode;
+
+      QString country;
+
+      bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
+    };
+
+    struct Contact
+    {
+
+      Contact( const QString &name = QString() );
+%Docstring
+Constructor for Contact.
+%End
+
+      QString name;
+
+      QString organization;
+
+      QString position;
+
+      QList< QgsAbstractMetadataBase::Address > addresses;
+
+      QString voice;
+
+      QString fax;
+
+      QString email;
+
+      QString role;
+
+      bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
+    };
+
+    typedef QList< QgsAbstractMetadataBase::Contact > ContactList;
+
+
+    struct Link
+    {
+
+      Link( const QString &name = QString(), const QString &type = QString(), const QString &url = QString() );
+%Docstring
+Constructor for Link.
+%End
+
+      QString name;
+
+      QString type;
+
+      QString description;
+
+      QString url;
+
+      QString format;
+
+      QString mimeType;
+
+      QString size;
+
+      bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
+    };
+
+    typedef QList< QgsAbstractMetadataBase::Link > LinkList;
+
+    virtual ~QgsAbstractMetadataBase();
+
+    virtual QgsAbstractMetadataBase *clone() const = 0 /Factory/;
+%Docstring
+Clones the metadata object.
+
+.. versionadded:: 3.2
+%End
+
+    QString identifier() const;
+%Docstring
+A reference, URI, URL or some other mechanism to identify the resource.
+
+.. seealso:: :py:func:`setIdentifier`
+%End
+
+    void setIdentifier( const QString &identifier );
+%Docstring
+Sets the reference, URI, URL or some other mechanism to identify the resource.
+
+.. seealso:: :py:func:`identifier`
+%End
+
+    QString parentIdentifier() const;
+%Docstring
+A reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
+Returns an empty string if no parent identifier is set.
+
+.. seealso:: :py:func:`setParentIdentifier`
+%End
+
+    void setParentIdentifier( const QString &parentIdentifier );
+%Docstring
+Sets a reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
+Set an empty string if no parent identifier is required.
+
+.. seealso:: :py:func:`parentIdentifier`
+%End
+
+    QString language() const;
+%Docstring
+Returns the human language associated with the resource. Usually the returned string
+will follow either the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA', however
+this is not a hard requirement and the caller must account for non compliant
+values.
+
+.. seealso:: :py:func:`setLanguage`
+%End
+
+    void setLanguage( const QString &language );
+%Docstring
+Sets the human ``language`` associated with the resource. While a formal vocabulary is not imposed,
+ideally values should be taken from the ISO 639.2 or ISO 3166 specifications,
+e.g. 'ENG' or 'SPA' (ISO 639.2) or 'EN-AU' (ISO 3166).
+
+.. seealso:: :py:func:`language`
+%End
+
+    QString type() const;
+%Docstring
+Returns the nature of the resource.  While a formal vocabulary is not imposed, it is advised
+to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
+
+.. seealso:: :py:func:`setType`
+%End
+
+    void setType( const QString &type );
+%Docstring
+Sets the ``type`` (nature) of the resource.  While a formal vocabulary is not imposed, it is advised
+to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
+
+.. seealso:: :py:func:`type`
+%End
+
+    QString title() const;
+%Docstring
+Returns the human readable name of the resource, typically displayed in search results.
+
+.. seealso:: :py:func:`setTitle`
+%End
+
+    void setTitle( const QString &title );
+%Docstring
+Sets the human readable ``title`` (name) of the resource, typically displayed in search results.
+
+.. seealso:: :py:func:`title`
+%End
+
+    QString abstract() const;
+%Docstring
+Returns a free-form description of the resource.
+
+.. seealso:: :py:func:`setAbstract`
+%End
+
+    void setAbstract( const QString &abstract );
+%Docstring
+Sets a free-form ``abstract`` (description) of the resource.
+
+.. seealso:: :py:func:`abstract`
+%End
+
+    QStringList history() const;
+%Docstring
+Returns a freeform description of the history or lineage of the resource.
+
+.. seealso:: :py:func:`setHistory`
+%End
+
+    void setHistory( const QStringList &history );
+%Docstring
+Sets the freeform description of the ``history`` or lineage of the resource.
+Any existing history items will be overwritten.
+
+.. seealso:: :py:func:`addHistoryItem`
+
+.. seealso:: :py:func:`history`
+%End
+
+    void addHistoryItem( const QString &text );
+%Docstring
+Adds a single history ``text`` to the end of the existing history list.
+
+.. seealso:: :py:func:`history`
+
+.. seealso:: :py:func:`setHistory`
+%End
+
+    QgsAbstractMetadataBase::KeywordMap keywords() const;
+%Docstring
+Returns the keywords map, which is a set of descriptive keywords associated with the resource.
+
+The map key is the vocabulary string and map value is a list of keywords for that vocabulary.
+
+The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
+associated with keyword list.
+
+.. seealso:: :py:func:`setKeywords`
+
+.. seealso:: :py:func:`keywordVocabularies`
+%End
+
+    void setKeywords( const QgsAbstractMetadataBase::KeywordMap &keywords );
+%Docstring
+Sets the ``keywords`` map, which is a set of descriptive keywords associated with the resource.
+
+The map key is the vocabulary string and map value is a list of keywords for that vocabulary.
+Calling this replaces any existing keyword vocabularies.
+
+The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
+associated with keyword list.
+
+.. seealso:: :py:func:`keywords`
+
+.. seealso:: :py:func:`addKeywords`
+%End
+
+    void addKeywords( const QString &vocabulary, const QStringList &keywords );
+%Docstring
+Adds a list of descriptive ``keywords`` for a specified ``vocabulary``. Any existing
+keywords for the same vocabulary will be replaced. Other vocabularies
+will not be affected.
+
+The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
+associated with keyword list.
+
+.. seealso:: :py:func:`setKeywords`
+%End
+
+    bool removeKeywords( const QString &vocabulary );
+%Docstring
+Remove a vocabulary from the list.
+
+.. seealso:: :py:func:`setKeywords`
+
+.. seealso:: :py:func:`addKeywords`
+%End
+
+    QStringList keywordVocabularies() const;
+%Docstring
+Returns a list of keyword vocabularies contained in the metadata.
+
+The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
+associated with keyword list.
+
+.. seealso:: :py:func:`keywords`
+%End
+
+    QStringList keywords( const QString &vocabulary ) const;
+%Docstring
+Returns a list of keywords for the specified ``vocabulary``.
+If the vocabulary is not contained in the metadata, an empty
+list will be returned.
+
+The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
+associated with keyword list.
+
+.. seealso:: :py:func:`keywordVocabularies`
+%End
+
+    QStringList categories() const;
+%Docstring
+Returns categories of the resource.
+Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+
+.. seealso:: :py:func:`keywords`
+%End
+
+    void setCategories( const QStringList &categories );
+%Docstring
+Sets categories of the resource.
+Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+
+.. seealso:: :py:func:`keywords`
+%End
+
+    QgsAbstractMetadataBase::ContactList contacts() const;
+%Docstring
+Returns a list of contact persons or entities associated with the resource.
+
+.. seealso:: :py:func:`setContacts`
+%End
+
+    void setContacts( const QgsAbstractMetadataBase::ContactList &contacts );
+%Docstring
+Sets the list of ``contacts`` or entities associated with the resource. Any existing contacts
+will be replaced.
+
+.. seealso:: :py:func:`contacts`
+
+.. seealso:: :py:func:`addContact`
+%End
+
+    void addContact( const QgsAbstractMetadataBase::Contact &contact );
+%Docstring
+Adds an individual ``contact`` to the existing contacts.
+
+.. seealso:: :py:func:`contacts`
+
+.. seealso:: :py:func:`setContacts`
+%End
+
+    QgsAbstractMetadataBase::LinkList links() const;
+%Docstring
+Returns a list of online resources associated with the resource.
+
+.. seealso:: :py:func:`setLinks`
+%End
+
+    void setLinks( const QgsAbstractMetadataBase::LinkList &links );
+%Docstring
+Sets the list of online resources associated with the resource. Any existing links
+will be replaced.
+
+.. seealso:: :py:func:`links`
+
+.. seealso:: :py:func:`addLink`
+%End
+
+    void addLink( const QgsAbstractMetadataBase::Link &link );
+%Docstring
+Adds an individual ``link`` to the existing links.
+
+.. seealso:: :py:func:`links`
+
+.. seealso:: :py:func:`setLinks`
+%End
+
+    virtual bool readMetadataXml( const QDomElement &metadataElement );
+%Docstring
+Sets state from DOM document.
+
+:param metadataElement: The DOM element corresponding to ``resourceMetadata'' tag
+
+:return: ``True`` if successful
+
+Subclasses which override this method should take care to also call the base
+class method in order to read common metadata properties.
+%End
+
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+%Docstring
+Stores state in a DOM node.
+
+:param metadataElement: is a DOM element corresponding to ``resourceMetadata'' tag
+:param document: is a the DOM document being written
+
+:return: ``True`` if successful
+
+Subclasses which override this method should take care to also call the base
+class method in order to write common metadata properties.
+%End
+
+  protected:
+
+    QgsAbstractMetadataBase();
+%Docstring
+Constructor for QgsAbstractMetadataBase.
+
+QgsAbstractMetadataBase cannot be instantiated directly, it must be subclassed.
+%End
+
+
+
+
+
+
+
+
+
+    bool equals( const QgsAbstractMetadataBase &other ) const;
+%Docstring
+Tests whether the common metadata fields in this object are equal to ``other``.
+
+Subclasses should utilize this method from their equality operators to test
+equality of base class members.
+
+.. versionadded:: 3.2
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsabstractmetadatabase.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

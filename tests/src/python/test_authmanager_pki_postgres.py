@@ -14,7 +14,7 @@ Configuration from the environment:
 
 From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
 
-or, if your postgresql path differs from the default:
+or, if your PostgreSQL path differs from the default:
 
 QGIS_POSTGRES_EXECUTABLE_PATH=/usr/lib/postgresql/<your_version_goes_here>/bin \
     ctest -R PyQgsAuthManagerPKIPostgresTest -V
@@ -30,11 +30,13 @@ import signal
 import stat
 import subprocess
 import tempfile
+import glob
 
 from shutil import rmtree
 
 from utilities import unitTestDataPath
 from qgis.core import (
+    QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
@@ -43,18 +45,16 @@ from qgis.core import (
 )
 
 from qgis.PyQt.QtNetwork import QSslCertificate
+from qgis.PyQt.QtCore import QFile
 
 from qgis.testing import (
     start_app,
     unittest,
 )
 
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 QGIS_POSTGRES_SERVER_PORT = os.environ.get('QGIS_POSTGRES_SERVER_PORT', '55432')
 QGIS_POSTGRES_EXECUTABLE_PATH = os.environ.get('QGIS_POSTGRES_EXECUTABLE_PATH', '/usr/lib/postgresql/9.4/bin')
@@ -97,7 +97,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.pg_conf = os.path.join(cls.tempfolder, 'postgresql.conf')
         cls.pg_hba = os.path.join(cls.tempfolder, 'pg_hba.conf')
@@ -175,7 +175,7 @@ class TestAuthManager(unittest.TestCase):
             if line.find(b"database system is ready to accept") != -1:
                 break
             if time.time() > end:
-                raise Exception("Timeout connecting to postgresql")
+                raise Exception("Timeout connecting to PostgreSQL")
         # Create a DB
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_pki'])
         # Inject test SQL from test path
@@ -232,6 +232,29 @@ class TestAuthManager(unittest.TestCase):
         """
         pg_layer = self._getPostGISLayer('testlayer_èé')
         self.assertFalse(pg_layer.isValid())
+
+    def testRemoveTemporaryCerts(self):
+        """
+        Check that no temporary cert remain after connection with
+        postgres provider
+        """
+
+        def cleanTempPki():
+            pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
+            for fn in pkies:
+                f = QFile(fn)
+                f.setPermissions(QFile.WriteOwner)
+                f.remove()
+
+        # remove any temppki in temporary path to check that no
+        # other pki remain after connection
+        cleanTempPki()
+        # connect using postgres provider
+        pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=self.auth_config.id())
+        self.assertTrue(pg_layer.isValid())
+        # do test no certs remained
+        pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
+        self.assertEqual(len(pkies), 0)
 
 
 if __name__ == '__main__':

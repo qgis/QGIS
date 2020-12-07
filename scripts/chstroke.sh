@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    chstroke.sh
 #    ---------------------
@@ -20,7 +20,7 @@
 
 # Parameters: old_width new_width
 
-for F in `ls *.svg`
+for F in ./*.svg
 do
     cp $F svg.tmp
     cat svg.tmp | sed "s/stroke-width:$1/stroke-width:$2/" > $F

@@ -21,6 +21,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgsrastercontourrenderer.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
@@ -37,10 +38,6 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString &n
   , visibleName( visibleName )
   , rendererCreateFunction( rendererFunction )
   , widgetCreateFunction( widgetFunction )
-{
-}
-
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreateFunction( nullptr ), widgetCreateFunction( nullptr )
 {
 }
 
@@ -63,6 +60,8 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsSingleBandColorDataRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "hillshade" ), QObject::tr( "Hillshade" ),
                                           QgsHillshadeRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "contour" ), QObject::tr( "Contours" ),
+                                          QgsRasterContourRenderer::create, nullptr ) );
 }
 
 void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry &entry )

@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewdefaultactions.h"
-
+#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -51,7 +51,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
   if ( !node )
     return nullptr;
 
-  QAction *a = new QAction( tr( "&Show in Overview" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ), tr( "&Show in Overview" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::showInOverview );
   a->setCheckable( true );
   a->setChecked( node->customProperty( QStringLiteral( "overview" ), 0 ).toInt() );
@@ -60,7 +60,17 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
 
 QAction *QgsLayerTreeViewDefaultActions::actionRenameGroupOrLayer( QObject *parent )
 {
-  QAction *a = new QAction( tr( "Re&name" ), parent );
+  QgsLayerTreeNode *node = mView->currentNode();
+  if ( !node )
+    return nullptr;
+
+  QString text;
+  if ( QgsLayerTree::isGroup( node ) )
+    text = tr( "Re&name Group" );
+  else
+    text = tr( "Re&name Layer" );
+
+  QAction *a = new QAction( text, parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::renameGroupOrLayer );
   return a;
 }
@@ -87,6 +97,15 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
   return a;
 }
 
+QAction *QgsLayerTreeViewDefaultActions::actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent )
+{
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ),
+                            tr( "&Zoom to Selection" ), parent );
+  a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
+  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToSelection ) );
+  return a;
+}
+
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent )
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
@@ -99,7 +118,30 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas
 QAction *QgsLayerTreeViewDefaultActions::actionMakeTopLevel( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Move to Top-level" ), parent );
+  Q_NOWARN_DEPRECATED_PUSH
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::makeTopLevel );
+  Q_NOWARN_DEPRECATED_POP
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionMoveOutOfGroup( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move Out of &Group" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveOutOfGroup );
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionMoveToTop( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move to &Top" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveToTop );
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionMoveToBottom( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move to &Bottom" ), parent );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::moveToBottom );
   return a;
 }
 
@@ -128,7 +170,11 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllChildren( QObject *par
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityCheckedRecursive() )
     return nullptr;
-  QAction *a = new QAction( tr( "Check and all its children (Ctrl-click)" ), parent );
+#ifdef Q_OS_MACX
+  QAction *a = new QAction( tr( "Check and All its Children (⌘-click)" ), parent );
+#else
+  QAction *a = new QAction( tr( "Check and All its Children (Ctrl-click)" ), parent );
+#endif
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllChildren );
   return a;
 }
@@ -138,7 +184,11 @@ QAction *QgsLayerTreeViewDefaultActions::actionUncheckAndAllChildren( QObject *p
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityUncheckedRecursive() )
     return nullptr;
-  QAction *a = new QAction( tr( "Uncheck and all its children (Ctrl-click)" ), parent );
+#ifdef Q_OS_MACX
+  QAction *a = new QAction( tr( "Uncheck and All its Children (⌘-click)" ), parent );
+#else
+  QAction *a = new QAction( tr( "Uncheck and All its Children (Ctrl-click)" ), parent );
+#endif
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::uncheckAndAllChildren );
   return a;
 }
@@ -148,7 +198,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllParents( QObject *pare
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isLayer( node ) || node->isVisible() )
     return nullptr;
-  QAction *a = new QAction( tr( "Check and all its parents" ), parent );
+  QAction *a = new QAction( tr( "Check and All its Parents" ), parent );
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllParents );
   return a;
 }
@@ -179,17 +229,23 @@ void QgsLayerTreeViewDefaultActions::checkAndAllParents()
 
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
+  if ( mView->selectedNodes( true ).count() >= 2 )
+  {
+    groupSelected();
+    return;
+  }
   QgsLayerTreeGroup *group = mView->currentGroupNode();
   if ( !group )
     group = mView->layerTreeModel()->rootGroup();
 
   QgsLayerTreeGroup *newGroup = group->addGroup( uniqueGroupName( group ) );
-  mView->edit( mView->layerTreeModel()->node2index( newGroup ) );
+  mView->edit( mView->node2index( newGroup ) );
 }
 
 void QgsLayerTreeViewDefaultActions::removeGroupOrLayer()
 {
-  Q_FOREACH ( QgsLayerTreeNode *node, mView->selectedNodes( true ) )
+  const auto constSelectedNodes = mView->selectedNodes( true );
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     // could be more efficient if working directly with ranges instead of individual nodes
     qobject_cast<QgsLayerTreeGroup *>( node->parent() )->removeChildNode( node );
@@ -207,7 +263,8 @@ void QgsLayerTreeViewDefaultActions::showInOverview()
   if ( !node )
     return;
   int newValue = node->customProperty( QStringLiteral( "overview" ), 0 ).toInt();
-  Q_FOREACH ( QgsLayerTreeLayer *l, mView->selectedLayerNodes() )
+  const auto constSelectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : constSelectedLayerNodes )
     l->setCustomProperty( QStringLiteral( "overview" ), newValue ? 0 : 1 );
 }
 
@@ -218,7 +275,8 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
     return;
 
   int newValue = node->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt();
-  Q_FOREACH ( QgsLayerTreeLayer *l, mView->selectedLayerNodes() )
+  const auto constSelectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : constSelectedLayerNodes )
     l->setCustomProperty( QStringLiteral( "showFeatureCount" ), newValue ? 0 : 1 );
 }
 
@@ -234,6 +292,15 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
   zoomToLayers( canvas, layers );
 }
 
+void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
+{
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
+  if ( !layer )
+    return;
+
+  canvas->zoomToSelected( layer );
+}
+
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
 {
   QgsLayerTreeGroup *groupNode = mView->currentGroupNode();
@@ -241,7 +308,8 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
     return;
 
   QList<QgsMapLayer *> layers;
-  Q_FOREACH ( const QString &layerId, groupNode->findLayerIds() )
+  const auto constFindLayerIds = groupNode->findLayerIds();
+  for ( const QString &layerId : constFindLayerIds )
     layers << QgsProject::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
@@ -254,6 +322,14 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayer( canvas );
   QApplication::restoreOverrideCursor();
+}
+
+void QgsLayerTreeViewDefaultActions::zoomToSelection()
+{
+  QAction *s = qobject_cast<QAction *>( sender() );
+  QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+  zoomToSelection( canvas );
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup()
@@ -305,7 +381,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   extent.scale( 1.05 );
 
   //zoom to bounding box
-  canvas->setExtent( extent );
+  canvas->setExtent( extent, true );
   canvas->refresh();
 }
 
@@ -322,7 +398,8 @@ QString QgsLayerTreeViewDefaultActions::uniqueGroupName( QgsLayerTreeGroup *pare
 
 void QgsLayerTreeViewDefaultActions::makeTopLevel()
 {
-  Q_FOREACH ( QgsLayerTreeLayer *l, mView->selectedLayerNodes() )
+  const auto constSelectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : constSelectedLayerNodes )
   {
     QgsLayerTreeGroup *rootGroup = mView->layerTreeModel()->rootGroup();
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
@@ -335,9 +412,68 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
 }
 
 
+void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
+{
+  const QList< QgsLayerTreeLayer * >  selectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : selectedLayerNodes )
+  {
+    QgsLayerTreeGroup *rootGroup = mView->layerTreeModel()->rootGroup();
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( l->parent() );
+    if ( !parentGroup || parentGroup == rootGroup )
+      continue;
+    QgsLayerTreeGroup *tempGroup = parentGroup;
+    while ( tempGroup->parent() != rootGroup )
+    {
+      tempGroup = qobject_cast<QgsLayerTreeGroup *>( tempGroup->parent() );
+    }
+    QgsLayerTreeLayer *clonedLayer = l->clone();
+    int insertIdx = rootGroup->children().indexOf( tempGroup );
+    rootGroup->insertChildNode( insertIdx, clonedLayer );
+    parentGroup->removeChildNode( l );
+  }
+}
+
+
+void QgsLayerTreeViewDefaultActions::moveToTop()
+{
+  QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
+  std::reverse( selectedNodes.begin(), selectedNodes.end() );
+  // sort the nodes by depth first to avoid moving a group before its contents
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
+  {
+    return a->depth() > b->depth();
+  } );
+  for ( QgsLayerTreeNode *n : qgis::as_const( selectedNodes ) )
+  {
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
+    QgsLayerTreeNode *clonedNode = n->clone();
+    parentGroup->insertChildNode( 0, clonedNode );
+    parentGroup->removeChildNode( n );
+  }
+}
+
+
+void QgsLayerTreeViewDefaultActions::moveToBottom()
+{
+  QList< QgsLayerTreeNode * > selectedNodes = mView->selectedNodes();
+  // sort the nodes by depth first to avoid moving a group before its contents
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
+  {
+    return a->depth() > b->depth();
+  } );
+  for ( QgsLayerTreeNode *n : qgis::as_const( selectedNodes ) )
+  {
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
+    QgsLayerTreeNode *clonedNode = n->clone();
+    parentGroup->insertChildNode( -1, clonedNode );
+    parentGroup->removeChildNode( n );
+  }
+}
+
+
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {
-  QList<QgsLayerTreeNode *> nodes = mView->selectedNodes( true );
+  const QList<QgsLayerTreeNode *> nodes = mView->selectedNodes( true );
   if ( nodes.count() < 2 || ! QgsLayerTree::isGroup( nodes[0]->parent() ) )
     return;
 
@@ -345,19 +481,20 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
   int insertIdx = parentGroup->children().indexOf( nodes[0] );
 
   QgsLayerTreeGroup *newGroup = new QgsLayerTreeGroup( uniqueGroupName( parentGroup ) );
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  for ( QgsLayerTreeNode *node : nodes )
     newGroup->addChildNode( node->clone() );
 
   parentGroup->insertChildNode( insertIdx, newGroup );
 
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  for ( QgsLayerTreeNode *node : nodes )
   {
     QgsLayerTreeGroup *group = qobject_cast<QgsLayerTreeGroup *>( node->parent() );
     if ( group )
       group->removeChildNode( node );
   }
 
-  mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
+  mView->setCurrentIndex( mView->node2index( newGroup ) );
+  mView->edit( mView->node2index( newGroup ) );
 }
 
 void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()

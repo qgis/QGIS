@@ -37,7 +37,6 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
     };
 
     explicit QgsAuthPkcs12Edit( QWidget *parent = nullptr );
-    virtual ~QgsAuthPkcs12Edit();
 
     bool validateConfig() override;
 
@@ -52,21 +51,23 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
 
   private slots:
     void clearPkiMessage( QLineEdit *lineedit );
-    void writePkiMessage( QLineEdit *lineedit, const QString &msg, Validity valid = Unknown );
+    void writePkiMessage( QLineEdit *lineedit, const QString &msg, QgsAuthPkcs12Edit::Validity valid = Unknown );
 
     void clearPkcs12BundlePath();
     void clearPkcs12BundlePass();
 
-    void on_lePkcs12KeyPass_textChanged( const QString &pass );
-    void on_chkPkcs12PassShow_stateChanged( int state );
+    void lePkcs12KeyPass_textChanged( const QString &pass );
+    void chkPkcs12PassShow_stateChanged( int state );
 
-    void on_btnPkcs12Bundle_clicked();
+    void btnPkcs12Bundle_clicked();
 
   private:
     bool validityChange( bool curvalid );
 
+    bool populateCas( );
+
     QgsStringMap mConfigMap;
-    bool mValid;
+    bool mValid = false;
 };
 
 #endif // QGSAUTHPKCS12EDIT_H

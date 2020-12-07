@@ -16,51 +16,41 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from processing.core.parameters import getParameterFromString
+from qgis.core import QgsProcessingParameterString
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 import os
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context, feedback):
     # We create the output sequence according to percentiles number
-    quantiles = alg.getParameterValue('quantiles') - 1
+    quantiles = alg.parameterAsInt(parameters, 'quantiles', context) - 1
     outputs = []
     for i in range(0, int(quantiles)):
         outputs.append('output_{}'.format(i))
+    param = QgsProcessingParameterString(
+        'output', 'virtual output',
+        ','.join(outputs), False, False)
+    alg.addParameter(param)
 
-    output = getParameterFromString('ParameterString|output|Output Rasters|None|False|True')
-    output.value = ','.join(outputs)
-    alg.addParameter(output)
-
-    output_dir = alg.getOutputFromName('output_dir')
-    alg.removeOutputFromName('output_dir')
-
-    # Launch the algorithm
-    alg.processCommand()
-
-    # We re-add the previous output
-    alg.addOutput(output_dir)
+    # Removes outputs
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context, feedback):
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+    outputDir = alg.parameterAsString(parameters, 'output_dir', context)
+    outputParam = alg.parameterAsString(parameters, 'output', context)
+    outputs = outputParam.split(',')
+
     # We need to export each of the output
-    output_dir = alg.getOutputValue('output_dir')
-    outputParam = alg.getParameterFromName('output')
-    outputs = outputParam.value.split(',')
-    alg.parameters.remove(outputParam)
     for output in outputs:
-        command = u"r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\" --overwrite".format(
-            output,
-            os.path.join(output_dir, output + '.tif')
-        )
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+        fileName = os.path.join(outputDir, output)
+        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        alg.exportRasterLayer(output, fileName, True,
+                              outFormat, createOpt, metaOpt)

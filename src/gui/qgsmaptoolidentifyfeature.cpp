@@ -13,11 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 
-#include "qgscursors.h"
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 
 QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl )
   : QgsMapToolIdentify( canvas )
@@ -27,8 +26,7 @@ QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsV
   mToolName = tr( "Identify feature" );
 
   // set cursor
-  QPixmap cursorPixmap = QPixmap( ( const char ** ) cross_hair_cursor );
-  mCursor = QCursor( cursorPixmap, 1, 1 );
+  mCursor = QCursor( Qt::CrossCursor );
 }
 
 void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent *e )

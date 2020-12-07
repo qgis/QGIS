@@ -21,18 +21,16 @@ __author__ = 'Alexander Bruy'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingContext)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
@@ -41,18 +39,21 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class AssignProjection(GdalAlgorithm):
-
     INPUT = 'INPUT'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterCrs(self.CRS,
-                                       self.tr('Desired CRS'), ''))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Layer with projection'), True))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS,
+                                                    self.tr('Desired CRS')))
+
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT,
+                                                      self.tr('Layer with projection')))
 
     def name(self):
         return 'assignprojection'
@@ -66,23 +67,68 @@ class AssignProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self, parameters):
-        fileName = self.getParameterValue(self.INPUT)
-        crs = self.getParameterValue(self.CRS)
-        output = self.getOutputValue(self.OUTPUT)  # NOQA
+    def groupId(self):
+        return 'rasterprojections'
+
+    def commandName(self):
+        return 'gdal_edit'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        fileName = inLayer.source()
+
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         arguments = []
         arguments.append('-a_srs')
-        arguments.append(crs)
+        arguments.append(GdalUtils.gdal_crs_string(crs))
 
         arguments.append(fileName)
 
-        commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_edit.bat',
-                        GdalUtils.escapeAndJoin(arguments)]
+            commands = ["python3", "-m", self.commandName()]
         else:
-            commands = ['gdal_edit.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py']
+
+        commands.append(GdalUtils.escapeAndJoin(arguments))
 
         self.setOutputValue(self.OUTPUT, fileName)
+
         return commands
+
+    def postProcessAlgorithm(self, context, feedback):
+        # get output value
+        fileName = self.output_values.get(self.OUTPUT)
+        if not fileName:
+            return {}
+
+        # search in context project's layers
+        if context.project():
+
+            for l in context.project().mapLayers().values():
+
+                # check the source
+                if l.source() != fileName:
+                    continue
+
+                # reload provider's data
+                l.dataProvider().reloadData()
+                l.setCrs(l.dataProvider().crs())
+                l.triggerRepaint()
+
+        # search in context temporary layer store
+        for l in context.temporaryLayerStore().mapLayers().values():
+
+            # check the source
+            if l.source() != fileName:
+                continue
+
+            # reload provider's data
+            l.dataProvider().reloadData()
+            l.setCrs(l.dataProvider().crs())
+            context.temporaryLayerStore().addMapLayer(l)
+
+        return {}

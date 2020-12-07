@@ -23,39 +23,44 @@
 
 #include "qgis_core.h"
 
-class QgsGPSConnection;
+class QgsGpsConnection;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to register / unregister existing GPS connections such that the information
  * is available to all classes and plugins.
  *
- * QgsGPSConnectionRegistry is not usually directly created, but rather accessed through
+ * QgsGpsConnectionRegistry is not usually directly created, but rather accessed through
  * QgsApplication::gpsConnectionRegistry().
 */
-class CORE_EXPORT QgsGPSConnectionRegistry
+class CORE_EXPORT QgsGpsConnectionRegistry
 {
   public:
-    QgsGPSConnectionRegistry();
-    ~QgsGPSConnectionRegistry();
 
-    //! QgsGPSConnectionRegistry cannot be copied.
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh ) = delete;
-    //! QgsGPSConnectionRegistry cannot be copied.
-    QgsGPSConnectionRegistry &operator=( const QgsGPSConnectionRegistry &rh ) = delete;
+    /**
+     * Constructor for QgsGpsConnectionRegistry.
+     */
+    QgsGpsConnectionRegistry() = default;
+    ~QgsGpsConnectionRegistry();
+
+    //! QgsGpsConnectionRegistry cannot be copied.
+    QgsGpsConnectionRegistry( const QgsGpsConnectionRegistry &rh ) = delete;
+    //! QgsGpsConnectionRegistry cannot be copied.
+    QgsGpsConnectionRegistry &operator=( const QgsGpsConnectionRegistry &rh ) = delete;
 
     //! Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
-    void registerConnection( QgsGPSConnection *c );
+    void registerConnection( QgsGpsConnection *c );
     //! Unregisters connection. The registry does no longer own the connection
-    void unregisterConnection( QgsGPSConnection *c );
+    void unregisterConnection( QgsGpsConnection *c );
 
-    QList< QgsGPSConnection *> connectionList() const;
+    QList< QgsGpsConnection *> connectionList() const;
 
   private:
 #ifdef SIP_RUN
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );
+    QgsGpsConnectionRegistry( const QgsGpsConnectionRegistry &rh );
 #endif
 
-    QSet<QgsGPSConnection *> mConnections;
+    QSet<QgsGpsConnection *> mConnections;
 };
 
 #endif // QGSGPSCONNECTIONREGISTRY_H

@@ -17,19 +17,28 @@
 
 #include "qgsstatusbar.h"
 #include <QLayout>
-#include <QLabel>
+#include <QLineEdit>
+#include <QPalette>
 #include <QTimer>
+#include <QEvent>
+#include <QStatusBar>
 
 QgsStatusBar::QgsStatusBar( QWidget *parent )
   : QWidget( parent )
 {
   mLayout = new QHBoxLayout();
-  mLayout->setMargin( 0 );
   mLayout->setContentsMargins( 2, 0, 2, 0 );
   mLayout->setSpacing( 6 );
 
-  mLabel = new QLabel( QString() );
-  mLayout->addWidget( mLabel, 1 );
+  mLineEdit = new QLineEdit( QString() );
+  mLineEdit->setDisabled( true );
+  mLineEdit->setFrame( false );
+  mLineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+  QPalette palette = mLineEdit->palette();
+  palette.setColor( QPalette::Disabled, QPalette::Text, QPalette::WindowText );
+  mLineEdit->setPalette( palette );
+  mLineEdit->setStyleSheet( QStringLiteral( "* { border: 0; background-color: rgba(0, 0, 0, 0); }" ) );
+  mLayout->addWidget( mLineEdit, 10 );
   setLayout( mLayout );
 }
 
@@ -54,12 +63,13 @@ void QgsStatusBar::removeWidget( QWidget *widget )
 
 QString QgsStatusBar::currentMessage() const
 {
-  return mLabel->text();
+  return mLineEdit->text();
 }
 
 void QgsStatusBar::showMessage( const QString &text, int timeout )
 {
-  mLabel->setText( text );
+  mLineEdit->setText( text );
+  mLineEdit->setCursorPosition( 0 );
   if ( timeout > 0 )
   {
     if ( !mTempMessageTimer )
@@ -78,5 +88,26 @@ void QgsStatusBar::showMessage( const QString &text, int timeout )
 
 void QgsStatusBar::clearMessage()
 {
-  mLabel->setText( QString() );
+  mLineEdit->setText( QString() );
+}
+
+void QgsStatusBar::setParentStatusBar( QStatusBar *statusBar )
+{
+  if ( mParentStatusBar )
+    mParentStatusBar->disconnect( mShowMessageConnection );
+
+  mParentStatusBar = statusBar;
+
+  if ( mParentStatusBar )
+    mShowMessageConnection = connect( mParentStatusBar, &QStatusBar::messageChanged, this, [this]( const QString & message ) { showMessage( message ); } );
+}
+
+void QgsStatusBar::changeEvent( QEvent *event )
+{
+  QWidget::changeEvent( event );
+
+  if ( event->type() == QEvent::FontChange )
+  {
+    mLineEdit->setFont( font() );
+  }
 }

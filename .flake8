@@ -1,0 +1,18 @@
+[flake8]
+ignore =
+	E501, E402, N802, N806, F401, N803, F841, N801, N805, N815, N816, F811, N814, N804, W503, N807, N813, W504, E741,
+	# E722: Do not use bare excepts -- A candidate to remove from this list!
+	E722
+
+
+exclude = 
+	# There is simply too much in here, somebody will need to check these manually
+	src/plugins/grass/scripts,
+	# Generated code, hacking allowed. Feel free to go over it
+	python/3d/auto_additions/,
+	python/core/auto_additions/,
+	python/analysis/auto_additions/,
+	python/gui/auto_additions/,
+	python/server/auto_additions/,
+        # Plenty of star imports used
+        python/PyQt/

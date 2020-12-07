@@ -16,7 +16,7 @@
 #define QGSFEATURESTORE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsfeaturesink.h"
@@ -25,14 +25,15 @@
 #include <QMetaType>
 #include <QVariant>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A container for features with the same fields and crs.
  */
 class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
 {
   public:
     //! Constructor
-    QgsFeatureStore();
+    QgsFeatureStore() = default;
 
     //! Constructor
     QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
@@ -61,8 +62,8 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
-    bool addFeature( QgsFeature &feature ) override;
-    bool addFeatures( QgsFeatureList &features ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**
      * Returns the number of features contained in the store.
@@ -77,6 +78,12 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     int __len__() const;
     % MethodCode
     sipRes = sipCpp->count();
+    % End
+
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
     % End
 #endif
 
@@ -108,7 +115,86 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     QMap<QString, QVariant> mParams;
 };
 
-typedef QList<QgsFeatureStore> QgsFeatureStoreList;
+#ifndef SIP_RUN
+typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
+#else
+typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
+
+% MappedType QgsFeatureStoreList
+{
+  % TypeHeaderCode
+#include "qgsfeaturestore.h"
+  % End
+
+  % ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
+    return NULL;
+
+  // Set the list elements.
+  for ( int i = 0; i < sipCpp->size(); ++i )
+  {
+    QgsFeatureStore *v = new QgsFeatureStore( sipCpp->at( i ) );
+    PyObject *tobj;
+
+    if ( ( tobj = sipConvertFromNewType( v, sipType_QgsFeatureStore, Py_None ) ) == NULL )
+    {
+      Py_DECREF( l );
+      delete v;
+
+      return NULL;
+    }
+
+    PyList_SET_ITEM( l, i, tobj );
+  }
+
+  return l;
+  % End
+
+  % ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
+  {
+    if ( !PyList_Check( sipPy ) )
+      return 0;
+
+    for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+      if ( !sipCanConvertToType( PyList_GET_ITEM( sipPy, i ), sipType_QgsFeatureStore, SIP_NOT_NONE ) )
+        return 0;
+
+    return 1;
+  }
+
+  QgsFeatureStoreList *qv = new QgsFeatureStoreList;
+  SIP_SSIZE_T listSize = PyList_GET_SIZE( sipPy );
+  qv->reserve( listSize );
+
+  for ( SIP_SSIZE_T i = 0; i < listSize; ++i )
+  {
+    PyObject *obj = PyList_GET_ITEM( sipPy, i );
+    int state;
+    QgsFeatureStore *t = reinterpret_cast<QgsFeatureStore *>( sipConvertToType( obj, sipType_QgsFeatureStore, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
+
+    if ( *sipIsErr )
+    {
+      sipReleaseType( t, sipType_QgsFeatureStore, state );
+
+      delete qv;
+      return 0;
+    }
+
+    qv->append( *t );
+    sipReleaseType( t, sipType_QgsFeatureStore, state );
+  }
+
+  *sipCppPtr = qv;
+
+  return sipGetState( sipTransferObj );
+  % End
+};
+#endif
 
 Q_DECLARE_METATYPE( QgsFeatureStore )
 

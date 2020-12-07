@@ -1,0 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvasutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapCanvasUtils
+{
+%Docstring
+Utility functions for working with QgsMapCanvas widgets.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmapcanvasutils.h"
+%End
+  public:
+
+    static long zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter );
+%Docstring
+Zooms a map ``canvas`` to features from the specified ``layer`` which match the given ``filter`` expression string.
+
+The total count of matching features will be returned.
+%End
+
+    static long flashMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter );
+%Docstring
+Flashes features from the specified ``layer`` which match the given ``filter`` expression string with a map ``canvas``.
+
+The total count of matching features will be returned.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvasutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

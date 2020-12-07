@@ -27,8 +27,8 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsnewnamedialog.h"
+#include "qgshelp.h"
 
-#include <QInputDialog>
 #include <QMessageBox>
 
 QgsMapThemes *QgsMapThemes::sInstance;
@@ -42,15 +42,18 @@ QgsMapThemes::QgsMapThemes()
   mMenu->addAction( QgisApp::instance()->actionHideAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionShowSelectedLayers() );
   mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
+  mMenu->addAction( QgisApp::instance()->actionToggleSelectedLayers() );
+  mMenu->addAction( QgisApp::instance()->actionToggleSelectedLayersIndependently() );
   mMenu->addAction( QgisApp::instance()->actionHideDeselectedLayers() );
   mMenu->addSeparator();
 
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
-  mActionAddPreset = mMenu->addAction( tr( "Add Theme..." ), this, SLOT( addPreset() ) );
+  mActionRenameCurrentPreset = mMenu->addAction( tr( "Rename Current Theme…" ), this, &QgsMapThemes::renameCurrentPreset );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [ = ] { addPreset(); } );
   mMenuSeparator = mMenu->addSeparator();
 
-  mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, SLOT( removeCurrentPreset() ) );
+  mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, &QgsMapThemes::removeCurrentPreset );
 
   connect( mMenu, &QMenu::aboutToShow, this, &QgsMapThemes::menuAboutToShow );
 }
@@ -81,22 +84,6 @@ void QgsMapThemes::updatePreset( const QString &name )
   QgsProject::instance()->mapThemeCollection()->update( name, currentState() );
 }
 
-QList<QgsMapLayer *> QgsMapThemes::orderedPresetVisibleLayers( const QString &name ) const
-{
-  QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
-
-  // also make sure to order the layers according to map canvas order
-  QList<QgsMapLayer *> lst;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->layerTreeRoot()->layerOrder() )
-  {
-    if ( visibleIds.contains( layer->id() ) )
-    {
-      lst << layer;
-    }
-  }
-  return lst;
-}
-
 QMenu *QgsMapThemes::menu()
 {
   return mMenu;
@@ -110,7 +97,9 @@ void QgsMapThemes::addPreset()
   dlg.setWindowTitle( tr( "Map Themes" ) );
   dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
-  dlg.setConflictingNameWarning( tr( "A theme with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A theme with this name already exists." ) );
+  dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+  connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, &QgsMapThemes::showHelp );
   if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
@@ -133,8 +122,8 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( mMenu, tr( "Replace theme" ),
-                                   trUtf8( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
+  int res = QMessageBox::question( QgisApp::instance(), tr( "Replace Theme" ),
+                                   tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
@@ -154,13 +143,45 @@ void QgsMapThemes::applyState( const QString &presetName )
   QgsProject::instance()->mapThemeCollection()->applyTheme( presetName, root, model );
 }
 
+void QgsMapThemes::renameCurrentPreset()
+{
+  QgsMapThemeCollection::MapThemeRecord mapTheme = currentState();
+  QStringList existingNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
+
+  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
+  {
+    if ( actionPreset->isChecked() )
+    {
+      QgsNewNameDialog dlg(
+        tr( "theme" ),
+        tr( "%1" ).arg( actionPreset->text() ),
+        QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
+
+      dlg.setWindowTitle( tr( "Rename Map Theme" ) );
+      dlg.setHintString( tr( "Enter the new name of the map theme" ) );
+      dlg.setOverwriteEnabled( false );
+      dlg.setConflictingNameWarning( tr( "A theme with this name already exists." ) );
+      dlg.buttonBox()->addButton( QDialogButtonBox::Help );
+      connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, &QgsMapThemes::showHelp );
+      if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
+        return;
+
+      QgsProject::instance()->mapThemeCollection()->renameMapTheme( actionPreset->text(), dlg.name() );
+    }
+  }
+}
+
 void QgsMapThemes::removeCurrentPreset()
 {
-  Q_FOREACH ( QAction *a, mMenuPresetActions )
+  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
   {
-    if ( a->isChecked() )
+    if ( actionPreset->isChecked() )
     {
-      QgsProject::instance()->mapThemeCollection()->removeMapTheme( a->text() );
+      int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ),
+                                       tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+        QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
       break;
     }
   }
@@ -177,7 +198,8 @@ void QgsMapThemes::menuAboutToShow()
   QgsMapThemeCollection::MapThemeRecord rec = currentState();
   bool hasCurrent = false;
 
-  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &grpName : constMapThemes )
   {
     QAction *a = new QAction( grpName, mMenu );
     a->setCheckable( true );
@@ -198,4 +220,10 @@ void QgsMapThemes::menuAboutToShow()
 
   mActionAddPreset->setEnabled( !hasCurrent );
   mActionRemoveCurrentPreset->setEnabled( hasCurrent );
+  mActionRenameCurrentPreset->setEnabled( hasCurrent );
+}
+
+void QgsMapThemes::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#configuring-map-themes" ) );
 }

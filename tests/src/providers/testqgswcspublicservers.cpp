@@ -21,9 +21,6 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
-#include <QScriptEngine>
-#include <QScriptValue>
-#include <QScriptValueIterator>
 
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
@@ -121,56 +118,52 @@ void TestQgsWcsPublicServers::init()
     QString data = file.readAll();
     //QgsDebugMsg("servers: \n"  + str );
     file.close();
-    QScriptEngine engine;
-    QScriptValue result = engine.evaluate( data );
+    QJsonDocument doc = QJsonDocument::fromJson( data.toUtf8() );
+    const QJsonObject result = doc.object();
 
-    QScriptValueIterator serverIt( result );
-    while ( serverIt.hasNext() )
+    QJsonObject::ConstIterator serverIt = result.constBegin();
+    for ( ; serverIt != result.constEnd(); serverIt++ )
     {
-      serverIt.next();
-      QScriptValue serverValue = serverIt.value();
+      const QJsonObject serverObject = serverIt.value().toObject();
+      const QString serverUrl = serverObject.value( QLatin1String( "url" ) ).toString();
 
-      QString serverUrl = serverValue.property( QStringLiteral( "url" ) ).toString();
       QgsDebugMsg( "serverUrl: " + serverUrl );
 
       Server server( serverUrl );
-      server.description = serverValue.property( QStringLiteral( "description" ) ).toString();
+      server.description = serverObject.value( QLatin1String( "description" ) ).toString();
 
-      QScriptValueIterator paramsIt( serverValue.property( QStringLiteral( "params" ) ) );
-      while ( paramsIt.hasNext() )
+      const QJsonObject serverParams = serverObject.value( QLatin1String( "params" ) ).toObject();
+      QJsonObject::ConstIterator paramsIt = serverParams.constBegin();
+      for ( ; paramsIt != serverParams.constEnd(); paramsIt++ )
       {
-        paramsIt.next();
-        QgsDebugMsg( QString( "params value: %1" ).arg( paramsIt.value().toString() ) );
-        server.params.insert( paramsIt.name(), paramsIt.value().toString() );
+        QgsDebugMsg( QStringLiteral( "params value: %1" ).arg( paramsIt.value().toString() ) );
+        server.params.insert( paramsIt.key(), paramsIt.value().toString() );
       }
 
-      QScriptValue issuesValue = serverValue.property( QStringLiteral( "issues" ) );
+      QJsonObject issuesObject = serverObject.value( QLatin1String( "issues" ) ).toObject();
 
-      QScriptValueIterator issuesIt( issuesValue );
-      while ( issuesIt.hasNext() )
+      QJsonObject::ConstIterator issuesIt = issuesObject.constBegin();
+      for ( ; issuesIt != issuesObject.constEnd(); ++issuesIt )
       {
-        issuesIt.next();
-        QScriptValue issueValue = issuesIt.value();
+        QJsonObject issueObject = issuesIt.value().toObject();
 
-        QString description = issueValue.property( QStringLiteral( "description" ) ).toString();
+        QString description = issueObject.value( QLatin1String( "description" ) ).toString();
         QgsDebugMsg( "description: " + description );
         Issue issue( description );
 
-        issue.offender = issueValue.property( QStringLiteral( "offender" ) ).toString();
+        issue.offender = issueObject.value( QLatin1String( "offender" ) ).toString();
 
-        QScriptValue coveragesValue = issueValue.property( QStringLiteral( "coverages" ) );
-        QScriptValueIterator coveragesIt( coveragesValue );
-        while ( coveragesIt.hasNext() )
+        QJsonObject coveragesObject = issueObject.value( QLatin1String( "coverages" ) ).toObject();
+        QJsonObject::ConstIterator coverageIt = coveragesObject.constBegin();
+        for ( ; coverageIt != coveragesObject.constEnd(); ++coverageIt )
         {
-          coveragesIt.next();
-          issue.coverages << coveragesIt.value().toString();
+          issue.coverages << coverageIt.value().toString();
         }
 
-        QScriptValue versionsValue = issueValue.property( QStringLiteral( "versions" ) );
-        QScriptValueIterator versionsIt( versionsValue );
-        while ( versionsIt.hasNext() )
+        QJsonObject versionsObject = issueObject.value( QLatin1String( "versions" ) ).toObject();
+        QJsonObject::ConstIterator versionsIt = versionsObject.constBegin();
+        for ( ; versionsIt != versionsObject.constEnd(); ++versionsIt )
         {
-          versionsIt.next();
           issue.versions << versionsIt.value().toString();
         }
 
@@ -339,7 +332,7 @@ void TestQgsWcsPublicServers::test()
       QVector<QgsWcsCoverageSummary> myCoverages;
       if ( !myCapabilities.supportedCoverages( myCoverages ) )
       {
-        QgsDebugMsg( "Cannot get list of coverages" );
+        QgsDebugMsg( QStringLiteral( "Cannot get list of coverages" ) );
         myVersionLog << QStringLiteral( "error:Cannot get list of coverages" );
         continue;
       }
@@ -347,7 +340,7 @@ void TestQgsWcsPublicServers::test()
       myVersionLog << QStringLiteral( "totalCoverages:%1" ).arg( myCoverages.size() );
 
       int myCoverageCount = 0;
-      int myStep = myCoverages.size() / qMin( mMaxCoverages, myCoverages.size() );
+      int myStep = myCoverages.size() / std::min( mMaxCoverages, myCoverages.size() );
       int myStepCount = -1;
       bool myCoverageFound = false;
       Q_FOREACH ( QgsWcsCoverageSummary myCoverage, myCoverages )
@@ -395,13 +388,13 @@ void TestQgsWcsPublicServers::test()
         myLog << "describeCoverageUrl:" + myCapabilities.getDescribeCoverageUrl( myCoverage.identifier );
         // Test time
         //myLog << "date:" + QString( "%1").arg( QDateTime::currentDateTime().toTime_t() );
-        myLog << "date:" + QStringLiteral( "%1" ).arg( QDateTime::currentDateTime().toString() );
+        myLog << "date:" + QDateTime::currentDateTime().toString();
 
         int myWidth = 100;
         int myHeight = 100;
         if ( myCoverage.hasSize )
         {
-          myHeight = static_cast<int>( qRound( 1.0 * myWidth * myCoverage.height / myCoverage.width ) );
+          myHeight = static_cast<int>( std::round( 1.0 * myWidth * myCoverage.height / myCoverage.width ) );
         }
         myLog << QStringLiteral( "hasSize:%1" ).arg( myCoverage.hasSize );
 
@@ -411,7 +404,7 @@ void TestQgsWcsPublicServers::test()
 
         Q_FOREACH ( const QString &provider, providers )
         {
-          QTime time;
+          QElapsedTimer time;
           time.start();
           QString uri;
           if ( provider == QLatin1String( "wcs" ) )
@@ -491,7 +484,7 @@ void TestQgsWcsPublicServers::test()
               }
               delete myBlock;
             }
-            QgsDebugMsg( QString( "%1 values" ).arg( myValues.size() ) );
+            QgsDebugMsg( QStringLiteral( "%1 values" ).arg( myValues.size() ) );
             myLog << provider + QStringLiteral( "_valuesCount:%1" ).arg( myValues.size() );
 
             // Verify image colors
@@ -504,12 +497,12 @@ void TestQgsWcsPublicServers::test()
                 if ( !myColors.contains( color ) ) myColors.insert( color );
               }
             }
-            QgsDebugMsg( QString( "%1 colors" ).arg( myColors.size() ) );
+            QgsDebugMsg( QStringLiteral( "%1 colors" ).arg( myColors.size() ) );
             myLog << provider + QStringLiteral( "_colorsCount:%1" ).arg( myColors.size() );
           }
           else
           {
-            QgsDebugMsg( "Layer is not valid" );
+            QgsDebugMsg( QStringLiteral( "Layer is not valid" ) );
             myLog << provider + "_error:Layer is not valid";
           }
           myLog << provider + QStringLiteral( "_time:%1" ).arg( time.elapsed() / 1000., 0, 'f', 2 );
@@ -521,25 +514,25 @@ void TestQgsWcsPublicServers::test()
 
         Q_ASSERT( myLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
         QTextStream myStream( &myLogFile );
-        myStream << myLog.join( QStringLiteral( "\n" ) );
+        myStream << myLog.join( QLatin1Char( '\n' ) );
 
         myLogFile.close();
         QgsProject::instance()->removeAllMapLayers();
       }
       if ( !mCoverage.isEmpty() && ! myCoverageFound )
       {
-        QgsDebugMsg( "Coverage not found" );
+        QgsDebugMsg( QStringLiteral( "Coverage not found" ) );
       }
       QFile myVersionLogFile( myVersionLogPath );
       Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
       QTextStream myVersionStream( &myVersionLogFile );
-      myVersionStream << myVersionLog.join( QStringLiteral( "\n" ) );
+      myVersionStream << myVersionLog.join( QLatin1Char( '\n' ) );
       myVersionLogFile.close();
     }
     QFile myServerLogFile( myServerLogPath );
     Q_ASSERT( myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream myServerStream( &myServerLogFile );
-    myServerStream << myServerLog.join( QStringLiteral( "\n" ) );
+    myServerStream << myServerLog.join( QLatin1Char( '\n' ) );
     myServerLogFile.close();
   }
 }
@@ -641,11 +634,11 @@ void TestQgsWcsPublicServers::report()
           QStringList myValues;
           myValues << QStringLiteral( "<a href='%1'>%2</a>" ).arg( myLog.value( QStringLiteral( "describeCoverageUrl" ) ), myLog.value( QStringLiteral( "identifier" ) ) );
           //myValues << myLog.value( "hasSize" );
-          myVersionReport += cells( myValues, QLatin1String( "" ), 1, 2 );
+          myVersionReport += cells( myValues, QString(), 1, 2 );
           myValues.clear();
 
           QStringList issues = issueDescriptions( myServerLog.value( QStringLiteral( "server" ) ), myLog.value( QStringLiteral( "identifier" ) ), myLog.value( QStringLiteral( "version" ) ) );
-          QString issuesString = issues.join( QStringLiteral( "<br>" ) );
+          QString issuesString = issues.join( QLatin1String( "<br>" ) );
 
           QStringList providers;
           providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );
@@ -732,7 +725,7 @@ void TestQgsWcsPublicServers::report()
           }
           else
           {
-            myValues << QLatin1String( "" );
+            myValues << QString();
             cls = QStringLiteral( "cell-empty" );
           }
           myVersionReport += cells( myValues, cls, 24 );
@@ -884,16 +877,16 @@ int main( int argc, char *argv[] )
   int optionChar;
   static struct option long_options[] =
   {
-    {"help",     no_argument,       0, 'h'},
-    {"server",   required_argument, 0, 's'},
-    {"coverage", required_argument, 0, 'c'},
-    {"num",      required_argument, 0, 'n'},
-    {"version",  required_argument, 0, 'v'},
-    {"force",    no_argument,       0, 'f'},
-    {0, 0, 0, 0}
+    {"help",     no_argument,       nullptr, 'h'},
+    {"server",   required_argument, nullptr, 's'},
+    {"coverage", required_argument, nullptr, 'c'},
+    {"num",      required_argument, nullptr, 'n'},
+    {"version",  required_argument, nullptr, 'v'},
+    {"force",    no_argument,       nullptr, 'f'},
+    {nullptr, 0, nullptr, 0}
   };
 
-  while ( 1 )
+  while ( true )
   {
     /* getopt_long stores the option index here. */
     int option_index = 0;
@@ -909,7 +902,7 @@ int main( int argc, char *argv[] )
     {
       case 0:
         /* If this option set a flag, do nothing else now. */
-        if ( long_options[option_index].flag != 0 )
+        if ( long_options[option_index].flag != nullptr )
           break;
         printf( "option %s", long_options[option_index].name );
         if ( optarg )
@@ -942,16 +935,16 @@ int main( int argc, char *argv[] )
         return 2;   // XXX need standard exit codes
 
       default:
-        QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+        QgsDebugMsg( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
         return 1;   // XXX need standard exit codes
     }
 
   }
 
-  QgsDebugMsg( QString( "myServer = %1" ).arg( myServer ) );
-  QgsDebugMsg( QString( "myCoverage = %1" ).arg( myCoverage ) );
-  QgsDebugMsg( QString( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
-  QgsDebugMsg( QString( "myVersion = %1" ).arg( myVersion ) );
+  QgsDebugMsg( QStringLiteral( "myServer = %1" ).arg( myServer ) );
+  QgsDebugMsg( QStringLiteral( "myCoverage = %1" ).arg( myCoverage ) );
+  QgsDebugMsg( QStringLiteral( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
+  QgsDebugMsg( QStringLiteral( "myVersion = %1" ).arg( myVersion ) );
 
   if ( !myCoverage.isEmpty() && myServer.isEmpty() )
   {
@@ -959,7 +952,7 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  QgsDebugMsg( QString( "optind = %1 argc = %2" ).arg( optind ).arg( argc ) );
+  QgsDebugMsg( QStringLiteral( "optind = %1 argc = %2" ).arg( optind ).arg( argc ) );
   if ( optind > argc - 1 )
   {
     std::cerr << "CACHE_DIR missing.\n";

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ###########################################################################
 #    script.sh
 #    ---------------------
@@ -15,5 +16,10 @@
 set -e
 
 pushd build
-xvfb-run ctest -V --output-on-failure
+
+export CTEST_BUILD_DIR=${TRAVIS_BUILD_DIR}
+export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
+
+python3 "${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py" xvfb-run ctest -VV --output-on-failure -S "${TRAVIS_BUILD_DIR}/.ci/travis/travis.ctest"
+
 popd

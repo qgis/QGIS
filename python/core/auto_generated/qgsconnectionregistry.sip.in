@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsconnectionregistry.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsConnectionRegistry : QObject
+{
+%Docstring
+A registry for saved data provider connections, allowing retrieval of
+saved connections by name and provider type.
+
+QgsConnectionRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.connectionRegistry()`.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsconnectionregistry.h"
+%End
+  public:
+
+    QgsConnectionRegistry( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsConnectionRegistry.
+%End
+
+
+    QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
+%Docstring
+Creates a new connection by loading the connection with the given ``id`` from the settings.
+
+The ``id`` string must be of the format "provider://connection_name", e.g. "postgres://my_connection" for
+the PostgreSQL connection saved as "my_connection".
+
+Ownership is transferred to the caller.
+
+:raises :: py:class:`QgsProviderConnectionException`
+%End
+
+  private:
+    QgsConnectionRegistry( const QgsConnectionRegistry &other );
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsconnectionregistry.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

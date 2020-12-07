@@ -1,0 +1,367 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdatasourceuri.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDataSourceUri
+{
+%Docstring
+Class for storing the component parts of a RDBMS data source URI (e.g. a Postgres data source).
+
+This structure stores the database connection information, including host, database,
+user name, password, schema, password, and SQL where clause.
+%End
+
+%TypeHeaderCode
+#include "qgsdatasourceuri.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum SslMode
+    {
+      SslPrefer,
+      SslDisable,
+      SslAllow,
+      SslRequire,
+      SslVerifyCa,
+      SslVerifyFull
+    };
+
+    QgsDataSourceUri();
+
+    QgsDataSourceUri( const QString &uri );
+%Docstring
+Constructor for QgsDataSourceUri which parses an input ``uri`` string.
+%End
+
+
+    QString connectionInfo( bool expandAuthConfig = true ) const;
+%Docstring
+Returns the connection part of the URI.
+%End
+
+    QString uri( bool expandAuthConfig = true ) const;
+%Docstring
+Returns the complete URI as a string.
+%End
+
+    QByteArray encodedUri() const;
+%Docstring
+Returns the complete encoded URI as a byte array.
+%End
+
+
+    void setEncodedUri( const QString &uri );
+%Docstring
+Sets the complete encoded ``uri`` from a string value.
+%End
+
+    QString quotedTablename() const;
+%Docstring
+Returns the URI's table name, escaped and quoted.
+%End
+
+    void setParam( const QString &key, const QString &value );
+%Docstring
+Sets a generic parameter ``value`` on the URI.
+
+.. note::
+
+   If a parameter with the specified ``key`` already exists, another is inserted
+   and the existing value is left unchanged.
+%End
+
+    void setParam( const QString &key, const QStringList &value ) /PyName=setParamList/;
+%Docstring
+Sets a generic parameter list ``value`` on the URI.
+
+.. note::
+
+   available in Python as setParamList
+%End
+
+    int removeParam( const QString &key );
+%Docstring
+Removes a generic parameter by ``key``.
+
+.. note::
+
+   Calling this method removes all the occurrences of key, and returns the number of parameters removed.
+%End
+
+    QString param( const QString &key ) const;
+%Docstring
+Returns a generic parameter value corresponding to the specified ``key``.
+%End
+
+    QStringList params( const QString &key ) const;
+%Docstring
+Returns multiple generic parameter values corresponding to the specified ``key``.
+%End
+
+    bool hasParam( const QString &key ) const;
+%Docstring
+Returns ``True`` if a parameter with the specified ``key`` exists.
+%End
+
+    void setConnection( const QString &aHost,
+                        const QString &aPort,
+                        const QString &aDatabase,
+                        const QString &aUsername,
+                        const QString &aPassword,
+                        SslMode sslmode = SslPrefer,
+                        const QString &authConfigId = QString() );
+%Docstring
+Sets all connection related members at once.
+%End
+
+    void setConnection( const QString &aService,
+                        const QString &aDatabase,
+                        const QString &aUsername,
+                        const QString &aPassword,
+                        SslMode sslmode = SslPrefer,
+                        const QString &authConfigId = QString() );
+%Docstring
+Sets all connection related members at once (for a service case).
+%End
+
+    void setDatabase( const QString &database );
+%Docstring
+Sets the URI database name.
+%End
+
+    void setDataSource( const QString &aSchema,
+                        const QString &aTable,
+                        const QString &aGeometryColumn,
+                        const QString &aSql = QString(),
+                        const QString &aKeyColumn = QString() );
+%Docstring
+Sets all data source related members at once.
+
+The ``aSql`` argument represents a subset filter string to be applied to the source, and should take the
+form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+%End
+
+    void setAuthConfigId( const QString &authcfg );
+%Docstring
+Sets the authentication configuration ID for the URI.
+%End
+
+    void setUsername( const QString &username );
+%Docstring
+Sets the ``username`` for the URI.
+%End
+
+    void setPassword( const QString &password );
+%Docstring
+Sets the ``password`` for the URI.
+%End
+
+    static QString removePassword( const QString &aUri );
+%Docstring
+Removes the password element from a URI.
+%End
+
+    QString authConfigId() const;
+%Docstring
+Returns any associated authentication configuration ID stored in the URI.
+%End
+
+    QString username() const;
+%Docstring
+Returns the username stored in the URI.
+%End
+
+    QString schema() const;
+%Docstring
+Returns the schema stored in the URI.
+%End
+
+    QString table() const;
+%Docstring
+Returns the table name stored in the URI.
+%End
+
+    QString sql() const;
+%Docstring
+Returns the SQL filter stored in the URI, if set.
+
+This represents a subset filter string to be applied to the source, and takes the
+form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+
+.. seealso:: :py:func:`setSql`
+%End
+
+    QString geometryColumn() const;
+%Docstring
+Returns the name of the geometry column stored in the URI, if set.
+%End
+
+    void setUseEstimatedMetadata( bool flag );
+%Docstring
+Sets whether estimated metadata should be used for the connection.
+%End
+
+    bool useEstimatedMetadata() const;
+%Docstring
+Returns ``True`` if estimated metadata should be used for the connection.
+%End
+
+    void disableSelectAtId( bool flag );
+%Docstring
+Set to ``True`` to disable selection by feature ID.
+%End
+
+    bool selectAtIdDisabled() const;
+%Docstring
+Returns whether the selection by feature ID is disabled.
+%End
+
+    void clearSchema();
+%Docstring
+Clears the schema stored in the URI.
+%End
+
+    void setSchema( const QString &schema );
+%Docstring
+Sets the ``scheme`` for the URI.
+
+.. versionadded:: 2.12
+%End
+
+    void setSql( const QString &sql );
+%Docstring
+Sets the ``sql`` filter for the URI.
+
+The ``sql`` represents a subset filter string to be applied to the source, and should take the
+form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+
+.. seealso:: :py:func:`sql`
+%End
+
+    QString host() const;
+%Docstring
+Returns the host name stored in the URI.
+%End
+    QString database() const;
+%Docstring
+Returns the database name stored in the URI.
+%End
+    QString port() const;
+%Docstring
+Returns the port stored in the URI.
+%End
+
+    QString driver() const;
+%Docstring
+Returns the driver name stored in the URI
+
+.. versionadded:: 2.16
+%End
+
+    void setDriver( const QString &driver );
+%Docstring
+Sets the ``driver`` name stored in the URI.
+
+.. versionadded:: 2.16
+%End
+
+    QString password() const;
+%Docstring
+Returns the password stored in the URI.
+%End
+
+    SslMode sslMode() const;
+%Docstring
+Returns the SSL mode associated with the URI.
+%End
+
+    QString service() const;
+%Docstring
+Returns the service name associated with the URI.
+%End
+
+    QString keyColumn() const;
+%Docstring
+Returns the name of the (primary) key column for the referenced table.
+%End
+
+    void setKeyColumn( const QString &column );
+%Docstring
+Sets the name of the (primary) key ``column``.
+%End
+
+    QgsWkbTypes::Type wkbType() const;
+%Docstring
+Returns the WKB type associated with the URI.
+%End
+
+    void setWkbType( QgsWkbTypes::Type type );
+%Docstring
+Sets the WKB ``type`` associated with the URI.
+%End
+
+    QString srid() const;
+%Docstring
+Returns the spatial reference ID associated with the URI.
+%End
+
+    void setSrid( const QString &srid );
+%Docstring
+Sets the spatial reference ID associated with the URI.
+%End
+
+    static SslMode decodeSslMode( const QString &sslMode );
+%Docstring
+Decodes SSL mode string into enum value. If the string is not recognized, SslPrefer is returned.
+
+.. versionadded:: 3.2
+%End
+
+    static QString encodeSslMode( SslMode sslMode );
+%Docstring
+Encodes SSL mode enum value into a string.
+
+.. versionadded:: 3.2
+%End
+
+    void setTable( const QString &table );
+%Docstring
+Sets table to ``table``
+
+.. versionadded:: 3.10
+%End
+
+    void setGeometryColumn( const QString &geometryColumn );
+%Docstring
+Sets geometry column name to ``geometryColumn``
+
+.. versionadded:: 3.10
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdatasourceuri.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

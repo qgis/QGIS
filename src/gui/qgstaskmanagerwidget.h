@@ -18,7 +18,7 @@
 #define QGSTASKMANAGERWIDGET_H
 
 #include "qgsfloatingwidget.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgstaskmanager.h"
 #include <QStyledItemDelegate>
 #include <QToolButton>
@@ -43,20 +43,23 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
 
   public:
 
-    /** Constructor for QgsTaskManagerWidget
+    /**
+     * Constructor for QgsTaskManagerWidget
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
-    QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsTaskManagerWidget();
+    ~QgsTaskManagerWidget() override;
 
   private slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
+    void clicked( const QModelIndex &index );
 
   private:
 
+    QgsTaskManager *mManager = nullptr;
     QTreeView *mTreeView = nullptr;
     QgsTaskManagerModel *mModel = nullptr;
 };
@@ -78,7 +81,8 @@ class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
 
   public:
 
-    /** Constructor for QgsTaskManagerWidget
+    /**
+     * Constructor for QgsTaskManagerWidget
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
@@ -100,13 +104,18 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 
   public:
 
-    /** Constructor for QgsTaskManagerWidget.
+    /**
+     * Constructor for QgsTaskManagerWidget.
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
     QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent = nullptr );
 
     QSize sizeHint() const override;
+
+  protected:
+
+    void changeEvent( QEvent *event ) override;
 
   private slots:
 
@@ -143,7 +152,8 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
       Status = 2,
     };
 
-    /** Constructor for QgsTaskManagerModel
+    /**
+     * Constructor for QgsTaskManagerModel
      * \param manager task manager for model
      * \param parent parent object
      */
@@ -159,7 +169,7 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
-     * Returns the task associated with a specified model index, or nullptr if no
+     * Returns the task associated with a specified model index, or NULLPTR if no
      * task was found.
      */
     QgsTask *indexToTask( const QModelIndex &index ) const;
@@ -179,6 +189,13 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
   private:
 
+    enum ToolTipType
+    {
+      ToolTipDescription,
+      ToolTipStatus,
+      ToolTipProgress,
+    };
+
     QgsTaskManager *mManager = nullptr;
 
     QList< long > mRowToTaskIdList;
@@ -186,6 +203,9 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
     int idToRow( long id ) const;
     QModelIndex idToIndex( long id, int column ) const;
+    static QString createTooltip( QgsTask *task, ToolTipType type );
+
+    friend class QgsTaskManagerStatusBarWidget;
 };
 
 /**
@@ -200,7 +220,8 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 
   public:
 
-    /** Constructor for QgsTaskStatusWidget
+    /**
+     * Constructor for QgsTaskStatusWidget
      * \param parent parent object
      */
     QgsTaskStatusWidget( QWidget *parent = nullptr, QgsTask::TaskStatus status = QgsTask::Queued, bool canCancel = true );
@@ -220,7 +241,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
   signals:
 
     /**
-     * Emitted when the user clicks a cancellable task.
+     * Emitted when the user clicks a cancelable task.
      */
     void cancelClicked();
 
@@ -235,7 +256,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 
     bool mCanCancel;
     QgsTask::TaskStatus mStatus;
-    bool mInside;
+    bool mInside = false;
 };
 
 ///@endcond

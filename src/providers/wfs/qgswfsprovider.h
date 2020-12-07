@@ -28,26 +28,31 @@
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsdatasourceuri.h"
 
+#include "qgsprovidermetadata.h"
+
 class QgsRectangle;
 class QgsWFSSharedData;
 
 
-/** \ingroup WFSProvider
+/**
+ * \ingroup WFSProvider
  *
  * A provider reading/write features from/into a WFS server.
  *
  * Below quick design notes on the whole provider.
  *
  * QgsWFSProvider class purpose:
+ *
  * - in constructor, do a GetCapabilities request to determine server-side feature limit,
      paging capabilities, WFS version, edition capabilities. Do a DescribeFeatureType request
      to determine fields, geometry name and type.
  * - in other methods, mostly WFS-T related operations.
  *
  * QgsWFSSharedData class purpose:
+ *
  * - contains logic shared by QgsWFSProvider, QgsWFSFeatureIterator and QgsWFSFeatureDownloader.
  * - one of its main function is to maintain a on-disk cache of the features retrieved
- *   from the server. This cache is a Spatialite database.
+ *   from the server. This cache is a SpatiaLite database.
  *
  * QgsWFSRequest class purpose: abstract base class to create WFS network requests,
  * such as QgsWFSCapabilities, QgsWFSDescribeFeatureType, QgsWFSFeatureDownloader,
@@ -57,17 +62,20 @@ class QgsWFSSharedData;
  * the specific attributes of a WFS URI.
  *
  */
-class QgsWFSProvider : public QgsVectorDataProvider
+class QgsWFSProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
 
-    explicit QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
-    ~QgsWFSProvider();
+    static const QString WFS_PROVIDER_KEY;
+    static const QString WFS_PROVIDER_DESCRIPTION;
+
+    explicit QgsWFSProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
+    ~QgsWFSProvider() override;
 
     /* Inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
@@ -76,12 +84,12 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     QgsFields fields() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
-    virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
+    QString subsetString() const override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
 
     /* Inherited from QgsDataProvider */
 
@@ -90,7 +98,9 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
 
-    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
+
+    QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
 
     /* new functions */
 
@@ -102,57 +112,70 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //Editing operations
 
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-    virtual QVariantMap metadata() const override;
-    virtual QString translateMetadataKey( const QString &mdKey ) const override;
-    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    QVariantMap metadata() const override;
+    QString translateMetadataKey( const QString &mdKey ) const override;
+    QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
 
-  public slots:
+    bool empty() const override;
 
-    virtual void reloadData() override;
+    std::shared_ptr<QgsWFSSharedData> sharedData() const { return mShared; }
 
   private slots:
 
-    void featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> );
+    void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );
 
     void pushErrorSlot( const QString &errorMsg );
+
 
   private:
     //! Mutable data shared between provider and feature sources
     std::shared_ptr<QgsWFSSharedData> mShared;
 
+    /**
+     * Invalidates cache of shared object
+    */
+    void reloadProviderData() override;
+
     friend class QgsWFSFeatureSource;
+
+    /**
+     * Create the geometry element
+     */
+    QDomElement geometryElement( const QgsGeometry &geometry, QDomDocument &transactionDoc );
 
   protected:
 
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    //! Geometry type of the features in this layer
-    mutable QgsWkbTypes::Type mWKBType;
     //! Flag if provider is valid
-    bool mValid;
+    bool mValid = true;
     //! Namespace URL of the server (comes from DescribeFeatureDocument)
     QString mApplicationNamespace;
     //! Server capabilities for this layer (generated from capabilities document)
-    QgsVectorDataProvider::Capabilities mCapabilities;
+    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
     //! Fields of this typename. Might be different from mShared->mFields in case of SELECT
     QgsFields mThisTypenameFields;
 
     QString mProcessSQLErrorMsg;
     QString mProcessSQLWarningMsg;
 
-    /** Collects information about the field types. Is called internally from QgsWFSProvider ctor.
-       The method gives back the name of
-       the geometry attribute and the thematic attributes with their types*/
+    /**
+     * Collects information about the field types. Is called internally from QgsWFSProvider ctor.
+     * The method gives back the name of
+     * the geometry attribute and the thematic attributes with their types.
+    */
     bool describeFeatureType( QString &geometryAttribute,
                               QgsFields &fields, QgsWkbTypes::Type &geomType );
 
-    /** For a given typename, reads the name of the geometry attribute, the
-        thematic attributes and their types from a dom document. Returns true in case of success*/
+    /**
+     * For a given typename, reads the name of the geometry attribute, the
+     * thematic attributes and their types from a dom document. Returns true in case of success.
+    */
     bool readAttributesFromSchema( QDomDocument &schemaDoc,
                                    const QString &prefixedTypename,
                                    QString &geometryAttribute,
@@ -160,9 +183,11 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //helper methods for WFS-T
 
-    /** Sends the transaction document to the server using HTTP POST
-      \returns true if transmission to the server succeeded, otherwise false
-        note: true does not automatically mean that the transaction succeeded*/
+    /**
+     * Sends the transaction document to the server using HTTP POST
+     * \returns true if transmission to the server succeeded, otherwise false
+     * \note true does not automatically mean that the transaction succeeded
+    */
     bool sendTransactionDocument( const QDomDocument &doc, QDomDocument &serverResponse );
 
     //! Creates a transaction element and adds it (normally as first element) to the document
@@ -183,5 +208,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     bool processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg );
 };
+
+class QgsWfsProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsWfsProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QgsWFSProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+};
+
 
 #endif /* QGSWFSPROVIDER_H */

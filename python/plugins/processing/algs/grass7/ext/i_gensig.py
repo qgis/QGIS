@@ -16,37 +16,28 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from .i import regroupRasters, file2Output, moveFile
-from os import path
-from ..Grass7Utils import Grass7Utils
+import os
+from .i import regroupRasters, exportSigFile
 
 
-def processCommand(alg, parameters):
-    # Transform output files in string parameter
-    signatureFile = alg.getOutputFromName('signaturefile')
-    origSigFile = signatureFile.value
-    shortSigFile = path.basename(origSigFile)
-    alg.setOutputValue('signaturefile', shortSigFile)
-
-    signatureFile = file2Output(alg, 'signaturefile')
+def processCommand(alg, parameters, context, feedback):
+    # We need to extract the basename of the signature file
+    signatureFile = alg.parameterAsString(parameters, 'signaturefile', context)
+    shortSigFile = os.path.basename(signatureFile)
+    parameters['signaturefile'] = shortSigFile
 
     # Regroup rasters
-    group, subgroup = regroupRasters(alg, parameters, 'input', 'group', 'subgroup')
+    group, subgroup = regroupRasters(alg, parameters, context, 'input', 'group', 'subgroup')
+    alg.processCommand(parameters, context, feedback)
 
     # Re-add signature files
-    alg.addOutput(signatureFile)
+    parameters['signaturefile'] = signatureFile
+    alg.fileOutputs['signaturefile'] = signatureFile
 
-    # Find Grass directory
-    interSig = path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT', 'group', group, 'subgroup', subgroup, 'sig', shortSigFile)
-    moveFile(alg, interSig, origSigFile)
-    alg.setOutputValue('signaturefile', origSigFile)
+    # Export signature file
+    exportSigFile(alg, group, subgroup, signatureFile)

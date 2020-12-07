@@ -17,11 +17,13 @@
 #include "qgsexternalresourcewidget.h"
 #include "qgspixmaplabel.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 #include <QDir>
 #include <QGridLayout>
 #include <QVariant>
 #include <QSettings>
+#include <QImageReader>
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
 #endif
@@ -29,18 +31,12 @@
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )
-  , mFileWidgetVisible( true )
-  , mDocumentViewerContent( NoContent )
-  , mDocumentViewerHeight( 0 )
-  , mDocumentViewerWidth( 0 )
-  , mRelativeStorage( QgsFileWidget::Absolute )
-
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
 
   QGridLayout *layout = new QGridLayout();
-  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   mFileWidget = new QgsFileWidget( this );
   layout->addWidget( mFileWidget, 0, 0 );
@@ -65,7 +61,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
 {
   QString path = mFileWidget->filePath();
-  if ( path.isEmpty() )
+  if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
     return QVariant( type );
   }
@@ -104,7 +100,9 @@ QgsExternalResourceWidget::DocumentViewerContent QgsExternalResourceWidget::docu
 void QgsExternalResourceWidget::setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content )
 {
   mDocumentViewerContent = content;
-  updateDocumentViewer();
+  if ( mDocumentViewerContent != Image )
+    updateDocumentViewer();
+  loadDocument( mFileWidget->filePath() );
 }
 
 int QgsExternalResourceWidget::documentViewerHeight() const
@@ -179,7 +177,7 @@ QString QgsExternalResourceWidget::resolvePath( const QString &path )
       return path;
       break;
     case QgsFileWidget::RelativeProject:
-      return QgsProject::instance()->fileInfo().dir().filePath( path );
+      return QFileInfo( QgsProject::instance()->absoluteFilePath() ).dir().filePath( path );
       break;
     case QgsFileWidget::RelativeDefaultPath:
       return QDir( mDefaultRoot ).filePath( path );
@@ -235,17 +233,22 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl( resolvedPath ) );
+      mWebView->load( QUrl::fromEncoded( resolvedPath.toUtf8() ) );
+      mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
     }
 #endif
 
     if ( mDocumentViewerContent == Image )
     {
-      QPixmap pm( resolvedPath );
-      mPixmapLabel->setPixmap( pm );
+      // use an image reader to ensure image orientation and transforms are correctly handled
+      QImageReader ir( resolvedPath );
+      ir.setAutoTransform( true );
+      QPixmap pm = QPixmap::fromImage( ir.read() );
+      if ( !pm.isNull() )
+        mPixmapLabel->setPixmap( pm );
+      else
+        mPixmapLabel->clear();
       updateDocumentViewer();
     }
   }
 }
-
-

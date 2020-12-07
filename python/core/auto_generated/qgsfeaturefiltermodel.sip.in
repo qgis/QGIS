@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturefiltermodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFeatureFilterModel : QgsFeaturePickerModelBase
+{
+%Docstring
+Provides a list of features based on filter conditions.
+Features are fetched asynchronously.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfeaturefiltermodel.h"
+%End
+  public:
+
+    explicit QgsFeatureFilterModel( QObject *parent = 0 );
+%Docstring
+Create a new QgsFeatureFilterModel, optionally specifying a ``parent``.
+%End
+
+ QString identifierField() const;
+%Docstring
+The identifier field should be a unique field that can be used to identify individual features.
+It is normally set to the primary key of the layer.
+If there are several identifier fields defined, the behavior is not guaranteed
+
+.. deprecated:: QGIS 3.10
+   use identifierFields instead
+%End
+
+    QStringList identifierFields() const;
+%Docstring
+The identifier field should be a unique field that can be used to identify individual features.
+It is normally set to the primary key of the layer.
+
+.. versionadded:: 3.10
+%End
+
+    void setIdentifierFields( const QStringList &identifierFields );
+%Docstring
+The identifier field should be a unique field that can be used to identify individual features.
+It is normally set to the primary key of the layer.
+
+.. note::
+
+   This will also reset identifier fields to NULL
+
+.. versionadded:: 3.10
+%End
+
+    virtual void setExtraIdentifierValueToNull();
+
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model as NULL value(s).
+
+.. versionadded:: 3.10
+%End
+
+    QVariantList extraIdentifierValues() const;
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
+
+.. versionadded:: 3.10
+%End
+
+    void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
+
+.. versionadded:: 3.10
+%End
+
+
+  signals:
+
+    void identifierFieldsChanged();
+%Docstring
+The identifier field should be a unique field that can be used to identify individual features.
+It is normally set to the primary key of the layer.
+%End
+
+    void extraIdentifierValuesChanged();
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturefiltermodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

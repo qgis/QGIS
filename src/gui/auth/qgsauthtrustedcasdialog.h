@@ -18,7 +18,7 @@
 #define QGSAUTHTRUSTEDCASDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "ui_qgsauthtrustedcasdialog.h"
 
 #include <QSslCertificate>
@@ -28,7 +28,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
  */
 class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTrustedCAsDialog
@@ -42,7 +43,7 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
      * \param parent Parent widget
      * \param trustedCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthTrustedCAsDialog( QWidget *parent SIP_TRANSFERTHIS = 0,
+    explicit QgsAuthTrustedCAsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                       const QList<QSslCertificate> &trustedCAs = QList<QSslCertificate>() );
 
   private slots:
@@ -58,9 +59,9 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
 
     void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnInfoCa_clicked();
+    void btnInfoCa_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
     //! Relay messages to widget's messagebar
     void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
@@ -94,7 +95,7 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
     int messageTimeout();
 
     QList<QSslCertificate> mTrustedCAs;
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 

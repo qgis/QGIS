@@ -1,0 +1,113 @@
+Content-Length: 5914
+Content-Type: text/xml; charset=utf-8
+
+<schema xmlns:gml="http://www.opengis.net/gml" targetNamespace="http://www.qgis.org/gml" xmlns:qgs="http://www.qgis.org/gml" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ogc="http://www.opengis.net/ogc" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+ <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+ <element type="qgs:as_areasType" name="as_areas" substitutionGroup="gml:_Feature"/>
+ <complexType name="as_areasType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element maxOccurs="1" type="gml:MultiPolygonPropertyType" minOccurs="0" name="geometry"/>
+     <element type="long" name="fid"/>
+     <element type="int" nillable="true" name="gid"/>
+     <element type="string" nillable="true" name="datum"/>
+     <element type="string" nillable="true" name="bearbeiter"/>
+     <element type="string" nillable="true" name="veranstaltung"/>
+     <element type="string" nillable="true" name="beschriftung"/>
+     <element type="string" nillable="true" name="name"/>
+     <element type="string" nillable="true" name="flaechentyp"/>
+     <element type="string" nillable="true" name="farbe"/>
+     <element type="string" nillable="true" name="schraff_width"/>
+     <element type="string" nillable="true" name="schraff_width_prt"/>
+     <element type="string" nillable="true" name="schraff_size"/>
+     <element type="string" nillable="true" name="schraff_size_prt"/>
+     <element type="string" nillable="true" name="schraff_winkel"/>
+     <element type="string" nillable="true" name="umrissfarbe"/>
+     <element type="string" nillable="true" name="umrisstyp"/>
+     <element type="string" nillable="true" name="umrissstaerke"/>
+     <element type="string" nillable="true" name="umrissstaerke_prt"/>
+     <element type="decimal" nillable="true" name="umfang"/>
+     <element type="decimal" nillable="true" name="flaeche"/>
+     <element type="string" nillable="true" name="bemerkung"/>
+     <element type="string" nillable="true" name="last_change"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+ <element type="qgs:as_symbolsType" name="as_symbols" substitutionGroup="gml:_Feature"/>
+ <complexType name="as_symbolsType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element maxOccurs="1" type="gml:PointPropertyType" minOccurs="0" name="geometry"/>
+     <element type="long" name="fid"/>
+     <element type="int" nillable="true" name="gid"/>
+     <element type="string" nillable="true" name="datum"/>
+     <element type="string" nillable="true" name="bearbeiter"/>
+     <element type="string" nillable="true" name="veranstaltung"/>
+     <element type="string" nillable="true" name="beschriftung"/>
+     <element type="string" nillable="true" name="name"/>
+     <element type="string" nillable="true" name="form"/>
+     <element type="string" nillable="true" name="groesse"/>
+     <element type="string" nillable="true" name="groesse_red"/>
+     <element type="string" nillable="true" name="winkel"/>
+     <element type="string" nillable="true" name="farbe"/>
+     <element type="string" nillable="true" name="bemerkung"/>
+     <element type="string" nillable="true" name="last_change"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+ <element type="qgs:cdb_labelsType" name="cdb_labels" substitutionGroup="gml:_Feature"/>
+ <complexType name="cdb_labelsType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element maxOccurs="1" type="gml:PointPropertyType" minOccurs="0" name="geometry"/>
+     <element type="long" name="fid"/>
+     <element type="decimal" nillable="true" name="AREA"/>
+     <element type="decimal" nillable="true" name="PERIMETER"/>
+     <element type="int" nillable="true" name="STADTTEILE"/>
+     <element type="int" nillable="true" name="STADTTEI_1"/>
+     <element type="int" nillable="true" name="S_A_"/>
+     <element type="int" nillable="true" name="S_A_ID"/>
+     <element type="string" nillable="true" name="O_NAME"/>
+     <element type="string" nillable="true" name="ORTSTEIL"/>
+     <element type="string" nillable="true" name="STADTTEIL"/>
+     <element type="string" nillable="true" name="OT_SCHL"/>
+     <element type="string" nillable="true" name="GEM_SCHL"/>
+     <element type="decimal" nillable="true" name="ZVS"/>
+     <element type="string" nillable="true" name="NAME"/>
+     <element type="string" nillable="true" name="PLZ"/>
+     <element type="string" nillable="true" name="KERNSTADT_"/>
+     <element type="string" nillable="true" name="ORTSRATSBE"/>
+     <element type="decimal" nillable="true" name="PLG_KITA"/>
+     <element type="decimal" nillable="true" name="PLG_BERATU"/>
+     <element type="decimal" nillable="true" name="PLG_JUFOE"/>
+     <element type="decimal" nillable="true" name="VERFLECHTU"/>
+     <element type="decimal" nillable="true" name="FUNKTIONSB"/>
+     <element type="string" nillable="true" name="T_DATUM"/>
+     <element type="string" nillable="true" name="Impfbez_Nr"/>
+     <element type="string" nillable="true" name="Impfzentru"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+ <element type="qgs:cdb_linesType" name="cdb_lines" substitutionGroup="gml:_Feature"/>
+ <complexType name="cdb_linesType">
+  <complexContent>
+   <extension base="gml:AbstractFeatureType">
+    <sequence>
+     <element maxOccurs="1" type="gml:PolygonPropertyType" minOccurs="0" name="geometry"/>
+     <element type="long" name="fid"/>
+     <element type="int" name="id"/>
+     <element type="string" nillable="true" name="typ"/>
+     <element type="string" name="name"/>
+     <element type="string" nillable="true" name="ortsrat"/>
+     <element type="long" nillable="true" name="id_long"/>
+    </sequence>
+   </extension>
+  </complexContent>
+ </complexType>
+</schema>

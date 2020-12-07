@@ -1,95 +1,64 @@
+language: python
+python: "3.7"
+compiler: clang
+dist: bionic
+sudo: false
+cache:
+  apt: true
+  pip: true
+  directories:
+    - ${HOME}/.ccache_testing
+  timeout: 1000
+if: NOT branch =~ /^(cherry-pick-)?backport-\d+-/ AND NOT branch =~ /-patch-\d+$/
+
+env:
+  global:
+    - TRAVIS_TIMESTAMP=$(date +%s)
+    - TRAVIS_AVAILABLE_TIME=150 # in minutes
+    - TRAVIS_UPLOAD_TIME=5 # time considered to start the machine and the container (minutes)
+    # Docker hub username and password
+    - secure: "b7eMDIolaAnq1voGKC1ez7Kcf+/A0WZDJEHBvNwk2KubBfrGOE83GMDrFNF4NqjIprqIAvVKj+TrX1ckCvs24re3IqUJo71TaF1IgxzDDPwSsmNh5UMmvZkeiJys9bWjqDO9wYR5ietNmIE18qyMc8ToJk8oKm6AXuAG2n6znmM="
+    - secure: "PHCp7F3nApp38Mz6b4/OLxgfBiikRGzPQDHg3R5LX+SQOll24c/DMtwpPwizNuFEiCFcRmJ9uc1t0HWEerIZe5uqm7AtE/nMXBsvDZ+hj4Tz/fEBF98a1k4WLYheN1exFidVkJgdAeiwMOOUQXw5KuIX62bxBdzsdcd0QGwxiXo="
+    # Travis Token to create PyQGIS Documentation Travis build after Docker push
+    - secure: "bKJnk+GatxJItCWpC8gJs9N0bEbwK1TrIzTLgnXsl9vwqQLLhIfUMa40yj06HsbVY07AOdmr1+Wk5t+DKGf8YkaaFWBB1tIG8G/T0naN9vfWeBTEd7TlmV5a9ldEPcr6pjfi0he7/RDalvlPvDauEFKL28aVFd2BAe2Tj1euGpY="
+
 matrix:
   fast_finish: true
   include:
-    # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
+
+##########################################################
+#
+# TESTS FOR STANDARD COMMITS
+#
+##########################################################
+
+      ##########################################################
+      # QGIS TESTS ON BIONIC
+      ##########################################################
     - os: linux
-      language: python # This lets us use newer python versions from virtualenv
+      name: building and testing on linux 🍳
+      if: type != cron
+      services: docker
       env:
-        - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=linux
-      sudo: false
-      cache:
-        apt: true
-        pip: true
-        directories:
-          - $HOME/.ccache
-          - $HOME/depcache
-        timeout: 1000
-      compiler: clang
-      python: "3.3"
-      addons:
-        postgresql: "9.4"
-        apt:
-          sources:
-            - llvm-toolchain-precise-3.8
-            - george-edison55-precise-backports # doxygen 1.8.3 # TODO: remove
-            - ubuntu-toolchain-r-test
-          packages:
-            - doxygen # TODO: remove
-            - bison
-            - flex
-            - graphviz  # TODO: remove
-            - libpq-dev
-            - libfcgi-dev
-            - libfftw3-3
-            - libgsl0-dev
-            - pkg-config
-            - poppler-utils
-            - txt2tags # TODO: remove
-            - xvfb
-            - clang-3.8
-
-
-    - os: linux
-      language: python
-      python: "3.5"
-      env:
-        - TRAVIS_CONFIG=code_layout
-      dist: trusty
-      sudo: false
-      cache:
-        apt: true
-      addons:
-        apt:
-          sources:
-            - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
-          packages:
-            - doxygen
-            - graphviz
-            - txt2tags
-            - pkg-config
-            - xvfb
-            - flip
-            # used for spell checks
-            - perl  # sipify, lookahead regex in spell check script
-            - silversearcher-ag
-            - expect-dev  # unbuffer
-            - coreutils
-            - libyaml-tiny-perl
-    # OSX based build with QT4 and Python 2
-    - os: osx
-      osx_image: xcode8.3 # MacOS 10.12: Sierra
-      cache:
-        pip: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - TRAVIS_CONFIG=macos
-        - IGNORE_BUILD_FAILURES=YES
-
-  allow_failures:
-    - os: osx
+        - CCACHE_DIR=${HOME}/.ccache_testing
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
+        # Label ID can be found here https://api.github.com/repos/qgis/QGIS/labels
+        - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184)
 
 git:
-  depth: 30
+  depth: 120
 
 notifications:
-  irc: "chat.freenode.net#qgis-test"
-  on_failure: change
-  on_success: change
-  skip_join: true
+  irc:
+    channels:
+      - "chat.freenode.net#qgis-test"
+      - "chat.freenode.net#qgis-activity"
+    on_failure: change
+    on_success: change
+    skip_join: true
 
-notifications:
   webhooks:
     urls:
       - https://webhooks.gitter.im/e/467e3aff72e344d1dae3
@@ -108,6 +77,3 @@ before_script:
 
 script:
   - ./.ci/travis/${TRAVIS_CONFIG}/script.sh
-
-after_script:
-  - ./.ci/travis/${TRAVIS_CONFIG}/after_script.sh

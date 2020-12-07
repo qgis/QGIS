@@ -30,11 +30,7 @@ class TestQgsRubberband : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRubberband()
-      : mCanvas( 0 )
-      , mPolygonLayer( 0 )
-      , mRubberband( 0 )
-    {}
+    TestQgsRubberband() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -78,7 +74,7 @@ void TestQgsRubberband::initTestCase()
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
-  mRubberband = 0;
+  mRubberband = nullptr;
 }
 
 void TestQgsRubberband::cleanupTestCase()

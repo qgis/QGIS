@@ -24,153 +24,44 @@
 
 namespace QgsWms
 {
-
-  void writeInfoResponse( QDomDocument &infoDoc, QgsServerResponse &response, const QString &infoFormat )
-  {
-    QByteArray ba;
-    QgsMessageLog::logMessage( "Info format is:" + infoFormat );
-
-    if ( infoFormat == QLatin1String( "text/xml" ) || infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
-    {
-      ba = infoDoc.toByteArray();
-    }
-    else if ( infoFormat == QLatin1String( "text/plain" ) || infoFormat == QLatin1String( "text/html" ) )
-    {
-      //create string
-      QString featureInfoString;
-
-      if ( infoFormat == QLatin1String( "text/plain" ) )
-      {
-        featureInfoString.append( "GetFeatureInfo results\n" );
-        featureInfoString.append( "\n" );
-      }
-      else if ( infoFormat == QLatin1String( "text/html" ) )
-      {
-        featureInfoString.append( "<HEAD>\n" );
-        featureInfoString.append( "<TITLE> GetFeatureInfo results </TITLE>\n" );
-        featureInfoString.append( "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n" );
-        featureInfoString.append( "</HEAD>\n" );
-        featureInfoString.append( "<BODY>\n" );
-      }
-
-      QDomNodeList layerList = infoDoc.elementsByTagName( QStringLiteral( "Layer" ) );
-
-      //layer loop
-      for ( int i = 0; i < layerList.size(); ++i )
-      {
-        QDomElement layerElem = layerList.at( i ).toElement();
-        if ( infoFormat == QLatin1String( "text/plain" ) )
-        {
-          featureInfoString.append( "Layer '" + layerElem.attribute( QStringLiteral( "name" ) ) + "'\n" );
-        }
-        else if ( infoFormat == QLatin1String( "text/html" ) )
-        {
-          featureInfoString.append( "<TABLE border=1 width=100%>\n" );
-          featureInfoString.append( "<TR><TH width=25%>Layer</TH><TD>" + layerElem.attribute( QStringLiteral( "name" ) ) + "</TD></TR>\n" );
-          featureInfoString.append( "</BR>" );
-        }
-
-        //feature loop (for vector layers)
-        QDomNodeList featureNodeList = layerElem.elementsByTagName( QStringLiteral( "Feature" ) );
-        QDomElement currentFeatureElement;
-
-        if ( featureNodeList.isEmpty() ) //raster layer?
-        {
-          QDomNodeList attributeNodeList = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
-          for ( int j = 0; j < attributeNodeList.size(); ++j )
-          {
-            QDomElement attributeElement = attributeNodeList.at( j ).toElement();
-            if ( infoFormat == QLatin1String( "text/plain" ) )
-            {
-              featureInfoString.append( attributeElement.attribute( QStringLiteral( "name" ) ) + " = '" +
-                                        attributeElement.attribute( QStringLiteral( "value" ) ) + "'\n" );
-            }
-            else if ( infoFormat == QLatin1String( "text/html" ) )
-            {
-              featureInfoString.append( "<TR><TH>" + attributeElement.attribute( QStringLiteral( "name" ) ) + "</TH><TD>" +
-                                        attributeElement.attribute( QStringLiteral( "value" ) ) + "</TD></TR>\n" );
-            }
-          }
-        }
-        else //vector layer
-        {
-          for ( int j = 0; j < featureNodeList.size(); ++j )
-          {
-            QDomElement featureElement = featureNodeList.at( j ).toElement();
-            if ( infoFormat == QLatin1String( "text/plain" ) )
-            {
-              featureInfoString.append( "Feature " + featureElement.attribute( QStringLiteral( "id" ) ) + "\n" );
-            }
-            else if ( infoFormat == QLatin1String( "text/html" ) )
-            {
-              featureInfoString.append( "<TABLE border=1 width=100%>\n" );
-              featureInfoString.append( "<TR><TH>Feature</TH><TD>" + featureElement.attribute( QStringLiteral( "id" ) ) + "</TD></TR>\n" );
-            }
-            //attribute loop
-            QDomNodeList attributeNodeList = featureElement.elementsByTagName( QStringLiteral( "Attribute" ) );
-            for ( int k = 0; k < attributeNodeList.size(); ++k )
-            {
-              QDomElement attributeElement = attributeNodeList.at( k ).toElement();
-              if ( infoFormat == QLatin1String( "text/plain" ) )
-              {
-                featureInfoString.append( attributeElement.attribute( QStringLiteral( "name" ) ) + " = '" +
-                                          attributeElement.attribute( QStringLiteral( "value" ) ) + "'\n" );
-              }
-              else if ( infoFormat == QLatin1String( "text/html" ) )
-              {
-                featureInfoString.append( "<TR><TH>" + attributeElement.attribute( QStringLiteral( "name" ) ) + "</TH><TD>" + attributeElement.attribute( QStringLiteral( "value" ) ) + "</TD></TR>\n" );
-              }
-            }
-
-            if ( infoFormat == QLatin1String( "text/html" ) )
-            {
-              featureInfoString.append( "</TABLE>\n</BR>\n" );
-            }
-          }
-        }
-        if ( infoFormat == QLatin1String( "text/plain" ) )
-        {
-          featureInfoString.append( "\n" );
-        }
-        else if ( infoFormat == QLatin1String( "text/html" ) )
-        {
-          featureInfoString.append( "</TABLE>\n<BR></BR>\n" );
-
-        }
-      }
-      if ( infoFormat == QLatin1String( "text/html" ) )
-      {
-        featureInfoString.append( "</BODY>\n" );
-      }
-      ba = featureInfoString.toUtf8();
-    }
-    else //unsupported format, set exception
-    {
-      throw QgsServiceException( QStringLiteral( "InvalidFormat" ),
-                                 QString( "Feature info format '%1' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ).arg( infoFormat ) );
-    }
-
-    response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
-    response.write( ba );
-  }
-
-
   void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
                             const QString &version, const QgsServerRequest &request,
                             QgsServerResponse &response )
   {
-    Q_UNUSED( version );
-    QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    // get wms parameters from query
+    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
-    QDomDocument doc = renderer.getFeatureInfo( version );
-    QString outputFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
-    writeInfoResponse( doc,  response, outputFormat );
+    // WIDTH and HEIGHT are not mandatory, but we need to set a default size
+    if ( ( parameters.widthAsInt() <= 0
+           || parameters.heightAsInt() <= 0 )
+         && ! parameters.infoFormatIsImage() )
+    {
+      QSize size( 10, 10 );
+
+      if ( ! parameters.filterGeom().isEmpty() )
+      {
+        const QgsRectangle bbox = QgsGeometry::fromWkt( parameters.filterGeom() ).boundingBox();
+        const int defaultWidth = 800;
+        size.setWidth( defaultWidth );
+        size.setHeight( defaultWidth * bbox.height() / bbox.width() );
+      }
+
+      parameters.set( QgsWmsParameter::WIDTH, size.width() );
+      parameters.set( QgsWmsParameter::HEIGHT, size.height() );
+    }
+
+    // prepare render context
+    QgsWmsRenderContext context( project, serverIface );
+    context.setFlag( QgsWmsRenderContext::AddQueryLayers );
+    context.setFlag( QgsWmsRenderContext::UseFilter );
+    context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
+    context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setParameters( parameters );
+
+    const QString infoFormat = request.parameters().value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
+    response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
+
+    QgsRenderer renderer( context );
+    response.write( renderer.getFeatureInfo( version ) );
   }
-
-
-} // samespace QgsWms
-
-
-
-
+} // namespace QgsWms

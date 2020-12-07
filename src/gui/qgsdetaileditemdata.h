@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgsdetaileditemdata.h  -  A data represenation for a rich QItemData subclass
+     qgsdetaileditemdata.h  -  A data representation for a rich QItemData subclass
                              -------------------
     begin                : Sat May 17 2008
     copyright            : (C) 2008 Tim Sutton
@@ -23,37 +23,118 @@
 #include <QPixmap>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class is the data only representation of a
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
 class GUI_EXPORT QgsDetailedItemData
 {
   public:
-    QgsDetailedItemData();
+
+    /**
+     * Constructor for QgsDetailedItemData.
+     */
+    QgsDetailedItemData() = default;
+
+    /**
+     * Sets the \a title for the item.
+     * \see title()
+     */
     void setTitle( const QString &title );
+
+    /**
+     * Sets the detailed description for the item.
+     * \see detail()
+     */
     void setDetail( const QString &detail );
+
+    /**
+     * Sets the item's \a category.
+     * \see category()
+     */
     void setCategory( const QString &category );
+
+    /**
+     * Sets the item's \a icon.
+     * \see icon()
+     */
     void setIcon( const QPixmap &icon );
-    void setCheckable( const bool flag );
-    void setChecked( const bool flag );
+
+    /**
+     * Sets whether the item is checkable.
+     * \see isCheckable()
+     */
+    void setCheckable( bool flag );
+
+    /**
+     * Sets whether the item is checked.
+     * \see isChecked()
+     */
+    void setChecked( bool flag );
+
+    /**
+     * Sets whether the item is enabled.
+     * \see isEnabled()
+     */
     void setEnabled( bool flag );
 
-    /** This is a hint to the delegate to render using
+    /**
+     * This is a hint to the delegate to render using
      * a widget rather than manually painting every
      * part of the list item.
      * \note the delegate may completely ignore this
      * depending on the delegate implementation.
+     * \see isRenderedAsWidget()
      */
     void setRenderAsWidget( bool flag );
 
+    /**
+     * Returns the item's title.
+     * \see setTitle()
+     */
     QString title() const;
+
+    /**
+     * Returns the detailed description for the item.
+     * \see setDetail()
+     */
     QString detail() const;
+
+    /**
+     * Returns the item's category.
+     * \see setCategory()
+     */
     QString category() const;
+
+    /**
+     * Returns the item's icon.
+     * \see setIcon()
+     */
     QPixmap icon() const;
+
+    /**
+     * Returns TRUE if the item is checkable.
+     * \see setCheckable()
+     */
     bool isCheckable() const;
+
+    /**
+     * Returns TRUE if the item is checked.
+     * \see setChecked()
+     */
     bool isChecked() const;
+
+    /**
+     * Returns TRUE if the item is enabled.
+     * \see setEnabled()
+     */
     bool isEnabled() const;
+
+    /**
+     * Returns TRUE if the item will be rendered using a widget.
+     * \see setRenderAsWidget()
+     */
     bool isRenderedAsWidget() const;
 
   private:
@@ -62,10 +143,10 @@ class GUI_EXPORT QgsDetailedItemData
     QString mCategory;
     QString mLibraryName;
     QPixmap mPixmap;
-    bool mCheckableFlag;
-    bool mCheckedFlag;
-    bool mEnabledFlag;
-    bool mRenderAsWidgetFlag;
+    bool mCheckableFlag = false;
+    bool mCheckedFlag = false;
+    bool mEnabledFlag = true;
+    bool mRenderAsWidgetFlag = false;
 };
 
 // Make QVariant aware of this data type (see qtdocs star

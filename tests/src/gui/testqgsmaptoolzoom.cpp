@@ -17,20 +17,19 @@
 #include <QString>
 #include <QCoreApplication>
 #include <QWidget>
-#include <QMouseEvent>
 
-#include <qgsmaptoolzoom.h>
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgslogger.h>
+#include "qgsmaptoolzoom.h"
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgslogger.h"
+#include "qgsmapmouseevent.h"
+
 
 class TestQgsMapToolZoom : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolZoom()
-      : canvas( 0 )
-    {}
+    TestQgsMapToolZoom() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -64,7 +63,8 @@ void TestQgsMapToolZoom::cleanup()
   delete canvas;
 }
 
-/** Zero drag areas can happen on pen based computer when a mouse down,
+/**
+ * Zero drag areas can happen on pen based computer when a mouse down,
   * move, and up, all happened at the same spot due to the pen. In this case
   * QGIS thinks it is in dragging mode but it's not really and fails to zoom in.
   **/
@@ -78,9 +78,9 @@ void TestQgsMapToolZoom::zeroDragArea()
   QMouseEvent releases( QEvent::MouseButtonRelease, point,
                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
-  QgsMapMouseEvent mapPress( 0, &press );
-  QgsMapMouseEvent mapMove( 0, &move );
-  QgsMapMouseEvent mapReleases( 0, &releases );
+  QgsMapMouseEvent mapPress( nullptr, &press );
+  QgsMapMouseEvent mapMove( nullptr, &move );
+  QgsMapMouseEvent mapReleases( nullptr, &releases );
 
   QgsMapToolZoom *tool = new QgsMapToolZoom( canvas, false );
   // Just set some made up extent so that we can zoom.

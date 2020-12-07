@@ -9,11 +9,9 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '4/4/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.testing import unittest
-from qgis.core import QgsSQLStatement
+from qgis.core import QgsSQLStatement, QgsSQLStatementFragment
 
 
 class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
@@ -179,6 +177,79 @@ class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
         self.assertFalse(b)
         self.assertEqual(
             errorMsg, 'Table t_unknown is referenced by column c, but not selected in FROM / JOIN.')
+
+    def testFragmentColumnRef(self):
+        exp = QgsSQLStatementFragment('col')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeColumnRef)
+        self.assertEqual(exp.rootNode().name(), 'col')
+
+        exp = QgsSQLStatementFragment('"col"')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeColumnRef)
+        self.assertEqual(exp.rootNode().name(), 'col')
+
+    def testFragmentFunction(self):
+        exp = QgsSQLStatementFragment('upper(col)')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeFunction)
+        self.assertEqual(exp.rootNode().name(), 'upper')
+
+    def testFragmentCondition(self):
+        exp = QgsSQLStatementFragment('col = \'a\'')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeBinaryOperator)
+        self.assertEqual(exp.rootNode().opLeft().name(), 'col')
+        self.assertEqual(exp.rootNode().opRight().value(), 'a')
+
+    def checkFragmentError(self, statement):
+        exp = QgsSQLStatementFragment(statement)
+        self.assertEqual(exp.hasParserError(), True)
+        self.assertNotEqual(exp.parserErrorString(), '')
+        self.assertEqual(exp.dump(), "(no root)")
+        self.assertEqual(exp.rootNode(), None)
+
+    def testFragmentError(self):
+        self.checkFragmentError("SELECT")
+        self.checkFragmentError("SELECT a")
+        self.checkFragmentError("SELECT a, FROM b")
+        self.checkFragmentError("=")
+        self.checkFragmentError("WHERE 1")
+        self.checkFragmentError("FROM b")
+        self.checkFragmentError("ORDER BY a")
+
+    def testMsFragment(self):
+        # Microsoft style identifiers can have a bunch of weird characters in them!
+        exp = QgsSQLStatementFragment('[col$_# :]')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeColumnRef)
+        self.assertEqual(exp.rootNode().name(), 'col$_# :')
+
+        exp = QgsSQLStatementFragment('[table$_# :].[col$_# :]')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeColumnRef)
+        self.assertEqual(exp.rootNode().name(), 'col$_# :')
+        self.assertEqual(exp.rootNode().tableName(), 'table$_# :')
+
+    def testMsDateLiteral(self):
+        # Microsoft style date reference
+        exp = QgsSQLStatementFragment('#05-30-2020#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeLiteral)
+        self.assertEqual(exp.rootNode().value(), '05-30-2020')
+        exp = QgsSQLStatementFragment('#05/30/2020#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeLiteral)
+        self.assertEqual(exp.rootNode().value(), '05/30/2020')
+        exp = QgsSQLStatementFragment('#05/30/2020 13:45:55#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeLiteral)
+        self.assertEqual(exp.rootNode().value(), '05/30/2020 13:45:55')
+        exp = QgsSQLStatementFragment('[date] = #05/30/2020 13:45:55#')
+        self.assertFalse(exp.hasParserError())
+        self.assertIsInstance(exp.rootNode(), QgsSQLStatement.NodeBinaryOperator)
+        self.assertEqual(exp.rootNode().opLeft().name(), 'date')
+        self.assertEqual(exp.rootNode().opRight().value(), '05/30/2020 13:45:55')
 
 
 if __name__ == "__main__":

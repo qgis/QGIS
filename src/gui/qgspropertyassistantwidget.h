@@ -71,7 +71,7 @@ class GUI_EXPORT QgsPropertyGenericNumericAssistantWidget : public QgsPropertyAb
 
     QgsPropertyGenericNumericAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty() );
 
-    virtual QgsGenericNumericTransformer *createTransformer( double minValue, double maxValue ) const override;
+    QgsGenericNumericTransformer *createTransformer( double minValue, double maxValue ) const override;
 
 };
 
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsPropertySizeAssistantWidget : public QgsPropertyAbstractTran
 
     QgsPropertySizeAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty() );
 
-    virtual QgsSizeScaleTransformer *createTransformer( double minValue, double maxValue ) const override;
+    QgsSizeScaleTransformer *createTransformer( double minValue, double maxValue ) const override;
 
     QList< QgsSymbolLegendNode * > generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const override;
 };
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
 
     QgsPropertyColorAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty() );
 
-    virtual QgsColorRampTransformer *createTransformer( double minValue, double maxValue ) const override;
+    QgsColorRampTransformer *createTransformer( double minValue, double maxValue ) const override;
 
     QList< QgsSymbolLegendNode * > generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const override;
 };
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
 
     /**
      * Constructor for QgsPropertyAssistantWidget. Aside from a \a parent widget, the constructor accepts a
-     * corresponding property \a definition from which it customises the displayed options (eg a color based
+     * corresponding property \a definition from which it customizes the displayed options (eg a color based
      * property definition will show an assistant to allow creation of color based properties).
      * The \a initialState dictates the initial state to show in the widget. A corresponding \a layer
      * can also be set to allow population of GUI widgets such as field selectors.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 ############################################################################
 #
@@ -78,7 +78,7 @@ def addColumn(mapName, columnName, columnType):
 def hasColumn(tableDescription, column):
     """Checks if the column is in the table description
 
-    @todo This should be part of some object in the lib.
+    \todo This should be part of some object in the lib.
     """
     for col in tableDescription['cols']:
         if col[0] == column:
@@ -125,7 +125,7 @@ class Classifier:
                           " Please install it or ensure that it is on path"
                           " (use PYTHONPATH variable)."))
         # Pytlit has a problem with this mlpy and v.class.mlpy.py
-        # thus, warinings for objects from mlpy has to be disabled
+        # thus, warnings for objects from mlpy has to be disabled
         self.mlclassifier = mlpy.DLDA(delta=0.01)  # pylint: disable=E1101
 
     def learn(self, values, classes):
@@ -197,7 +197,7 @@ def fatal_noEnoughColumns(mapName, ncols, required):
 
 def fatal_noClassColumn(mapName, columnName):
     grass.fatal(_("Vector map <%(map)s> does not have"
-                  " the column <%(col)s> cointaining class")
+                  " the column <%(col)s> containing class")
                 % {'map': mapName, 'col': columnName})
 
 
@@ -331,7 +331,7 @@ def main():
 
     updateColumn(mapName, columnWithClass, cats, classes)
 
-    # TODO: outupt as a new map (use INSERT, can be faster)
+    # TODO: output as a new map (use INSERT, can be faster)
     # TODO: output as a new layer?
 
 

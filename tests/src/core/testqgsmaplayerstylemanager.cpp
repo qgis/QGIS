@@ -27,9 +27,7 @@ class TestQgsMapLayerStyleManager : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapLayerStyleManager()
-      : mVL( 0 )
-    {}
+    TestQgsMapLayerStyleManager() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -41,6 +39,7 @@ class TestQgsMapLayerStyleManager : public QObject
     void testStyle();
     void testReadWrite();
     void testSwitchingStyles();
+    void testCopyStyles();
 
   private:
     QgsVectorLayer *mVL = nullptr;
@@ -74,7 +73,7 @@ void TestQgsMapLayerStyleManager::testDefault()
   QVERIFY( mgr );
 
   QCOMPARE( mgr->styles().count(), 1 );
-  QCOMPARE( mgr->style( QString() ).isValid(), true );
+  QCOMPARE( mgr->style( QStringLiteral( "default" ) ).isValid(), true );
 }
 
 void TestQgsMapLayerStyleManager::testStyle()
@@ -90,7 +89,7 @@ void TestQgsMapLayerStyleManager::testStyle()
   st1.readFromLayer( mVL );
   QCOMPARE( st1.isValid(), true );
 
-  qDebug( "CNT-1: %s", st1.xmlData().toAscii().data() );
+  qDebug( "CNT-1: %s", st1.xmlData().toLatin1().data() );
 
   QgsLineSymbol *sym2 = new QgsLineSymbol();
   sym2->setColor( Qt::red );
@@ -99,7 +98,7 @@ void TestQgsMapLayerStyleManager::testStyle()
   QgsMapLayerStyle st2;
   st2.readFromLayer( mVL );
 
-  qDebug( "CNT-2: %s", st2.xmlData().toAscii().data() );
+  qDebug( "CNT-2: %s", st2.xmlData().toLatin1().data() );
 
   st1.writeToLayer( mVL );
 
@@ -141,18 +140,18 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   QString xml;
   QTextStream ts( &xml );
   doc.save( ts, 2 );
-  qDebug( "%s", xml.toAscii().data() );
+  qDebug( "%s", xml.toLatin1().data() );
 
   QgsMapLayerStyleManager sm1( mVL );
   sm1.readXml( mgrElem );
 
   QCOMPARE( sm1.styles().count(), 2 );
-  QCOMPARE( sm1.style( QString() ).isValid(), true );
+  QCOMPARE( sm1.style( QStringLiteral( "default" ) ).isValid(), true );
   QCOMPARE( sm1.style( "blue" ).isValid(), true );
   QCOMPARE( sm1.currentStyle(), QString( "blue" ) );
 
   // now use the default style - the symbol should get red color
-  sm1.setCurrentStyle( QString() );
+  sm1.setCurrentStyle( QStringLiteral( "default" ) );
 
   QgsSingleSymbolRenderer *r2 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r2 );
@@ -187,7 +186,7 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 
   _setVLColor( mVL, Qt::green );
 
-  mVL->styleManager()->setCurrentStyle( QString() );
+  mVL->styleManager()->setCurrentStyle( QStringLiteral( "default" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
   mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
@@ -195,11 +194,30 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 
   _setVLColor( mVL, Qt::blue );
 
-  mVL->styleManager()->setCurrentStyle( QString() );
+  mVL->styleManager()->setCurrentStyle( QStringLiteral( "default" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
   mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::blue ) );
+}
+
+void TestQgsMapLayerStyleManager::testCopyStyles()
+{
+  std::unique_ptr<QgsVectorLayer> lines = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> lines2 = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+
+  QgsMapLayerStyleManager *sm = lines->styleManager();
+
+  sm->addStyleFromLayer( QStringLiteral( "style2" ) );
+
+  QgsMapLayerStyleManager *sm2 = lines2->styleManager();
+
+  sm2->copyStylesFrom( sm );
+  sm2->addStyleFromLayer( "style3" );
+
+  QVERIFY( sm2->styles().contains( "style2" ) );
+  QVERIFY( sm2->styles().contains( "style3" ) );
+  QVERIFY( sm2->styles().contains( "default" ) );
 }
 
 

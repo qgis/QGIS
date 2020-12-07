@@ -1,0 +1,167 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldmappingmodel.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFieldMappingModel: QAbstractTableModel
+{
+%Docstring
+The QgsFieldMappingModel holds mapping information for mapping from one set of QgsFields to another,
+for each set of "destination" fields an expression defines how to obtain the values of the
+"destination" fields.
+The model can be optionally set "editable" allowing to modify all the fields, by default only
+the mapping expression is editable.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsfieldmappingmodel.h"
+%End
+  public:
+
+    enum class ColumnDataIndex
+    {
+      SourceExpression,
+      DestinationName,
+      DestinationType,
+      DestinationLength,
+      DestinationPrecision,
+      DestinationConstraints,
+    };
+
+
+    struct Field
+    {
+      QString originalName;
+      QgsField field;
+      QString expression;
+    };
+
+    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
+                          const QgsFields &destinationFields = QgsFields(),
+                          const QMap<QString, QString> &expressions = QMap<QString, QString>(),
+                          QObject *parent = 0 );
+%Docstring
+Constructs a QgsFieldMappingModel from a set of ``sourceFields``
+and ``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the original
+field name to the corresponding expression. A ``parent`` object
+can be also specified.
+%End
+
+    bool destinationEditable() const;
+%Docstring
+Returns ``True`` if the destination fields are editable
+%End
+
+    void setDestinationEditable( bool editable );
+%Docstring
+Sets the destination fields editable state to ``editable``
+%End
+
+    static const QMap<QVariant::Type, QString> dataTypes();
+%Docstring
+Returns a static map of supported data types
+%End
+
+    QgsFields sourceFields() const;
+%Docstring
+Returns a list of source fields
+%End
+
+    QList<QgsFieldMappingModel::Field> mapping() const;
+%Docstring
+Returns a list of Field objects representing the current status of the model
+%End
+
+    QMap< QString, QgsProperty > fieldPropertyMap() const;
+%Docstring
+Returns a map of destination field name to QgsProperty definition for field value,
+representing the current status of the model.
+
+.. seealso:: :py:func:`setFieldPropertyMap`
+%End
+
+    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+%Docstring
+Sets a map of destination field name to QgsProperty definition for field value.
+
+.. seealso:: :py:func:`fieldPropertyMap`
+%End
+
+    void appendField( const QgsField &field, const QString &expression = QString() );
+%Docstring
+Appends a new ``field`` to the model, with an optional ``expression``
+%End
+
+    bool removeField( const QModelIndex &index );
+%Docstring
+Removes the field at ``index`` from the model, returns ``True`` on success
+%End
+
+    bool moveUp( const QModelIndex &index );
+%Docstring
+Moves down the field at ``index``
+%End
+
+    bool moveDown( const QModelIndex &index );
+%Docstring
+Moves up the field at ``index``
+%End
+
+    void setSourceFields( const QgsFields &sourceFields );
+%Docstring
+Set source fields to ``sourceFields``
+%End
+
+    QgsExpressionContextGenerator *contextGenerator() const;
+%Docstring
+Returns the context generator with the source fields
+%End
+
+    void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Sets the base expression context ``generator``, which will generate the expression
+contexts for expression based widgets used by the model.
+%End
+
+    void setDestinationFields( const QgsFields &destinationFields,
+                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+%Docstring
+Set destination fields to ``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the original
+field name to the corresponding expression.
+%End
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+
+      public:
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldmappingmodel.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

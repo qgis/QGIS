@@ -19,9 +19,13 @@
 #include "qgsifeatureselectionmanager.h"
 #include "qgis_gui.h"
 
+
+SIP_NO_FILE
+
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsVectorLayerSelectionManager
  * \note not available in Python bindings
  */
@@ -32,43 +36,27 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
   public:
     explicit QgsVectorLayerSelectionManager( QgsVectorLayer *layer, QObject *parent = nullptr );
 
-    /**
-     * The number of features that are selected in this layer
-     *
-     * \returns See description
-     */
-    virtual int selectedFeatureCount() override;
+    int selectedFeatureCount() override;
+    void select( const QgsFeatureIds &ids ) override;
+    void deselect( const QgsFeatureIds &ids ) override;
+    void setSelectedFeatures( const QgsFeatureIds &ids ) override;
+    const QgsFeatureIds &selectedFeatureIds() const override;
 
     /**
-     * Select features
-     *
-     * \param ids            Feature ids to select
+     * Returns the vector layer
      */
-    virtual void select( const QgsFeatureIds &ids ) override;
+    QgsVectorLayer *layer() const;
+
+  private slots:
 
     /**
-     * Deselect features
+     * Called whenever layer selection was changed
      *
-     * \param ids            Feature ids to deselect
+     * \param selected        Newly selected feature ids
+     * \param deselected      Ids of all features which have previously been selected but are not any more
+     * \param clearAndSelect  In case this is set to TRUE, the old selection was dismissed and the new selection corresponds to selected
      */
-    virtual void deselect( const QgsFeatureIds &ids ) override;
-
-    /**
-     * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) signal with the
-     * clearAndSelect flag set.
-     *
-     * \param ids   The ids which will be the new selection
-     */
-    virtual void setSelectedFeatures( const QgsFeatureIds &ids ) override;
-
-    /**
-     * Return reference to identifiers of selected features
-     *
-     * \returns A list of QgsFeatureIds
-     * \see selectedFeatures()
-     */
-    virtual const QgsFeatureIds &selectedFeatureIds() const override;
+    virtual void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
   private:
     QgsVectorLayer *mLayer = nullptr;

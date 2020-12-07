@@ -14,11 +14,17 @@
  ***************************************************************************/
 
 #include "qgspathresolver.h"
+#include "qgslocalizeddatapathregistry.h"
 
 #include "qgis.h"
-
+#include "qgsapplication.h"
 #include <QFileInfo>
+#include <QUrl>
+#include <QUuid>
 
+
+typedef std::vector< std::pair< QString, std::function< QString( const QString & ) > > > CustomResolvers;
+Q_GLOBAL_STATIC( CustomResolvers, sCustomResolvers )
 
 QgsPathResolver::QgsPathResolver( const QString &baseFileName )
   : mBaseFileName( baseFileName )
@@ -26,9 +32,29 @@ QgsPathResolver::QgsPathResolver( const QString &baseFileName )
 }
 
 
-QString QgsPathResolver::readPath( const QString &filename ) const
+QString QgsPathResolver::readPath( const QString &f ) const
 {
+  QString filename = f;
+
+  const CustomResolvers customResolvers = *sCustomResolvers();
+  for ( const auto &resolver : customResolvers )
+    filename = resolver.second( filename );
+
+  if ( filename.isEmpty() )
+    return QString();
+
   QString src = filename;
+  if ( src.startsWith( QLatin1String( "inbuilt:" ) ) )
+  {
+    // strip away "inbuilt:" prefix, replace with actual  inbuilt data folder path
+    return QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) + src.mid( 8 );
+  }
+
+  if ( src.startsWith( QLatin1String( "localized:" ) ) )
+  {
+    // strip away "localized:" prefix, replace with actual  inbuilt data folder path
+    return QgsApplication::localizedDataPathRegistry()->globalPath( src.mid( 10 ) ) ;
+  }
 
   if ( mBaseFileName.isNull() )
   {
@@ -72,7 +98,7 @@ QString QgsPathResolver::readPath( const QString &filename ) const
     // from the filename.
 
     QFileInfo pfi( mBaseFileName );
-    QString home = pfi.absoluteFilePath();
+    QString home = pfi.absolutePath();
     if ( home.isEmpty() )
       return vsiPrefix + src;
 
@@ -103,8 +129,16 @@ QString QgsPathResolver::readPath( const QString &filename ) const
   bool uncPath = projPath.startsWith( "//" );
 #endif
 
+  // Make sure the path is absolute (see GH #33200)
+  projPath = QFileInfo( projPath ).absoluteFilePath();
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
   QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
+#else
+  QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
+  QStringList projElems = projPath.split( '/', Qt::SkipEmptyParts );
+#endif
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
@@ -123,7 +157,7 @@ QString QgsPathResolver::readPath( const QString &filename ) const
 
   // resolve ..
   int pos;
-  while ( ( pos = projElems.indexOf( QStringLiteral( ".." ) ) ) > 0 )
+  while ( ( pos = projElems.indexOf( QLatin1String( ".." ) ) ) > 0 )
   {
     // remove preceding element and ..
     projElems.removeAt( pos - 1 );
@@ -132,30 +166,79 @@ QString QgsPathResolver::readPath( const QString &filename ) const
 
 #if !defined(Q_OS_WIN)
   // make path absolute
-  projElems.prepend( QLatin1String( "" ) );
+  projElems.prepend( QString() );
 #endif
 
-  return vsiPrefix + projElems.join( QStringLiteral( "/" ) );
+  return vsiPrefix + projElems.join( QLatin1Char( '/' ) );
 }
 
+QString QgsPathResolver::setPathPreprocessor( const std::function<QString( const QString & )> &processor )
+{
+  QString id = QUuid::createUuid().toString();
+  sCustomResolvers()->emplace_back( std::make_pair( id, processor ) );
+  return id;
+}
+
+bool QgsPathResolver::removePathPreprocessor( const QString &id )
+{
+  const size_t prevCount = sCustomResolvers()->size();
+  sCustomResolvers()->erase( std::remove_if( sCustomResolvers()->begin(), sCustomResolvers()->end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomResolvers()->end() );
+  return prevCount != sCustomResolvers()->size();
+}
 
 QString QgsPathResolver::writePath( const QString &src ) const
 {
-  if ( mBaseFileName.isEmpty() || src.isEmpty() )
+  if ( src.isEmpty() )
   {
     return src;
   }
 
-  QFileInfo pfi( mBaseFileName );
-  QString projPath = pfi.absoluteFilePath();
+  QString localizedPath = QgsApplication::localizedDataPathRegistry()->localizedPath( src );
+  if ( !localizedPath.isEmpty() )
+    return QStringLiteral( "localized:" ) + localizedPath;
+
+  if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
+  {
+    // replace inbuilt data folder path with "inbuilt:" prefix
+    return QStringLiteral( "inbuilt:" ) + src.mid( QgsApplication::pkgDataPath().length() + 10 );
+  }
+
+  if ( mBaseFileName.isEmpty() )
+  {
+    return src;
+  }
+
+  // Get projPath even if project has not been created yet
+  QFileInfo pfi( QFileInfo( mBaseFileName ).path() );
+  QString projPath = pfi.canonicalFilePath();
+
+  // If project directory doesn't exit, fallback to absoluteFilePath : symbolic
+  // links won't be handled correctly, but that's OK as the path is "virtual".
+  if ( projPath.isEmpty() )
+    projPath = pfi.absoluteFilePath();
 
   if ( projPath.isEmpty() )
   {
     return src;
   }
 
-  QFileInfo srcFileInfo( src );
-  QString srcPath = srcFileInfo.exists() ? srcFileInfo.canonicalFilePath() : src;
+  // Check if it is a publicSource uri and clean it
+  QUrl url { src };
+  QString srcPath { src };
+  QString urlQuery;
+
+  if ( url.isLocalFile( ) )
+  {
+    srcPath = url.path();
+    urlQuery = url.query();
+  }
+
+  QFileInfo srcFileInfo( srcPath );
+  if ( srcFileInfo.exists() )
+    srcPath = srcFileInfo.canonicalFilePath();
 
   // if this is a VSIFILE, remove the VSI prefix and append to final result
   QString vsiPrefix = qgsVsiPrefix( src );
@@ -185,11 +268,13 @@ QString QgsPathResolver::writePath( const QString &src ) const
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-  QStringList projElems = mBaseFileName.split( '/', QString::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
   QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
-
-  // remove project file element
-  projElems.removeLast();
+#else
+  QStringList projElems = projPath.split( '/', Qt::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
+#endif
 
   projElems.removeAll( QStringLiteral( "." ) );
   srcElems.removeAll( QStringLiteral( "." ) );
@@ -207,7 +292,7 @@ QString QgsPathResolver::writePath( const QString &src ) const
 
   if ( n == 0 )
   {
-    // no common parts; might not even by a file
+    // no common parts; might not even be a file
     return src;
   }
 
@@ -226,5 +311,12 @@ QString QgsPathResolver::writePath( const QString &src ) const
     srcElems.insert( 0, QStringLiteral( "." ) );
   }
 
-  return vsiPrefix + srcElems.join( QStringLiteral( "/" ) );
+  // Append url query if any
+  QString returnPath { vsiPrefix + srcElems.join( QLatin1Char( '/' ) ) };
+  if ( ! urlQuery.isEmpty() )
+  {
+    returnPath.append( '?' );
+    returnPath.append( urlQuery );
+  }
+  return returnPath;
 }

@@ -14,12 +14,15 @@ MACRO(FIND_FLEX)
                      NAMES flex.exe
                      PATHS $ENV{LIB_DIR}/bin c:/cygwin/bin $ENV{PROGRAMFILES}/GnuWin32/bin
                     )
+      ELSEIF(APPLE AND QGIS_MAC_DEPS_DIR)
+	      FIND_PROGRAM(FLEX_EXECUTABLE flex PATHS $ENV{LIB_DIR}/bin NO_DEFAULT_PATH)
       ELSE(MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE flex)
       ENDIF (MSVC)
-        IF (NOT FLEX_EXECUTABLE)
-          MESSAGE(FATAL_ERROR "flex not found - aborting")
-        ENDIF (NOT FLEX_EXECUTABLE)
+
+      IF (NOT FLEX_EXECUTABLE)
+        MESSAGE(FATAL_ERROR "flex not found - aborting")
+      ENDIF (NOT FLEX_EXECUTABLE)
     ENDIF(NOT FLEX_EXECUTABLE)
 ENDMACRO(FIND_FLEX)
 

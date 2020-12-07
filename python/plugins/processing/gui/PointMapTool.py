@@ -21,26 +21,22 @@ __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, pyqtSignal
 
 from qgis.gui import QgsMapToolEmitPoint
 
 
 class PointMapTool(QgsMapToolEmitPoint):
+    complete = pyqtSignal()
 
     def __init__(self, canvas):
         QgsMapToolEmitPoint.__init__(self, canvas)
 
         self.canvas = canvas
-        self.cursor = Qt.ArrowCursor
+        self.cursor = Qt.CrossCursor
 
     def activate(self):
         self.canvas.setCursor(self.cursor)
 
-    def canvasPressEvent(self, event):
-        pnt = self.toMapCoordinates(event.pos())
-        self.canvasClicked.emit(pnt, event.button())
+    def canvasReleaseEvent(self, event):
+        self.complete.emit()

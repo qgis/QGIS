@@ -19,8 +19,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
+#include "qgsapplication.h"
+#include "qgsrenderer.h"
+#include "qgsexpressioncontextutils.h"
 
 // Qt includes
 #include <QPoint>
@@ -37,10 +41,12 @@
 #include "qgsmaptip.h"
 
 QgsMapTip::QgsMapTip()
-  : mWidget( nullptr ), mWebView( nullptr )
 {
-  // init the visible flag
+  // Init the visible flag
   mMapTipVisible = false;
+
+  // Init font-related values
+  applyFontSettings();
 }
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
@@ -54,12 +60,19 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   // we only want the first qualifying feature and we will only display the
   // field defined as the label field in the layer configuration file/database
 
+  // Do not render map tips if the layer is not visible
+  if ( !pMapCanvas->layers().contains( pLayer ) )
+  {
+    return;
+  }
+
   // Show the maptip on the canvas
   QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
-          backgroundColor, strokeColor;
+          backgroundColor, strokeColor, textColor;
 
   delete mWidget;
   mWidget = new QWidget( pMapCanvas );
+  mWidget->setContentsMargins( MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE );
   mWebView = new QgsWebView( mWidget );
 
 
@@ -67,30 +80,36 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
   mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
   connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
+  connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeContent(); } );
 #endif
 
-  mWebView->page()->settings()->setAttribute(
-    QWebSettings::DeveloperExtrasEnabled, true );
-  mWebView->page()->settings()->setAttribute(
-    QWebSettings::JavascriptEnabled, true );
+  mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+  mWebView->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+  mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
+
+  // Disable scrollbars, avoid random resizing issues
+  mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
   QHBoxLayout *layout = new QHBoxLayout;
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mWebView );
 
   mWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mWidget->setLayout( layout );
 
-  //assure the map tip is never larger than half the map canvas
+  // Assure the map tip is never larger than half the map canvas
   const int MAX_WIDTH = pMapCanvas->geometry().width() / 2;
   const int MAX_HEIGHT = pMapCanvas->geometry().height() / 2;
   mWidget->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
 
-  // start with 0 size,
-  // the content will automatically make it grow up to MaximumSize
+  // Start with 0 size,
+  // The content will automatically make it grow up to MaximumSize
   mWidget->resize( 0, 0 );
 
   backgroundColor = mWidget->palette().base().color().name();
   strokeColor = mWidget->palette().shadow().color().name();
+  textColor = mWidget->palette().text().color().name();
   mWidget->setStyleSheet( QString(
                             ".QWidget{"
                             "border: 1px solid %1;"
@@ -113,7 +132,9 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   bodyStyle = QString(
                 "background-color: %1;"
-                "margin: 0;" ).arg( backgroundColor );
+                "margin: 0;"
+                "font: %2pt \"%3\";"
+                "color: %4;" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily ).arg( textColor );
 
   containerStyle = QString(
                      "display: inline-block;"
@@ -126,6 +147,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
               "</body>"
               "</html>" ).arg( bodyStyle, containerStyle, tipText );
 
+  QgsDebugMsg( tipHtml );
+
   mWidget->move( pixelPosition.x(),
                  pixelPosition.y() );
 
@@ -133,23 +156,19 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   lastTipText = tipText;
 
   mWidget->show();
+}
 
+void QgsMapTip::resizeContent()
+{
 #if WITH_QTWEBKIT
-  int scrollbarWidth = mWebView->page()->mainFrame()->scrollBarGeometry(
-                         Qt::Vertical ).width();
-  int scrollbarHeight = mWebView->page()->mainFrame()->scrollBarGeometry(
-                          Qt::Horizontal ).height();
-
-  if ( scrollbarWidth > 0 || scrollbarHeight > 0 )
-  {
-    // Get the content size
-    QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
-                              QStringLiteral( "#QgsWebViewContainer" ) );
-    int width = container.geometry().width() + 5 + scrollbarWidth;
-    int height = container.geometry().height() + 5 + scrollbarHeight;
-
-    mWidget->resize( width, height );
-  }
+  // Get the content size
+  QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
+                            QStringLiteral( "#QgsWebViewContainer" ) );
+  int width = container.geometry().width() + MARGIN_VALUE * 2;
+  int height = container.geometry().height() + MARGIN_VALUE * 2;
+  mWidget->resize( width, height );
+#else
+  mWebView->adjustSize();
 #endif
 }
 
@@ -161,7 +180,7 @@ void QgsMapTip::clear( QgsMapCanvas * )
   mWebView->setHtml( QString() );
   mWidget->hide();
 
-  // reset the visible flag
+  // Reset the visible flag
   mMapTipVisible = false;
 }
 
@@ -181,30 +200,81 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
   r = mapCanvas->mapSettings().mapToLayerCoordinates( layer, r );
 
-  QgsFeature feature;
-
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) ).nextFeature( feature ) )
-    return QString();
-
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
-  if ( mapCanvas )
-    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
-
-  context.setFeature( feature );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 
   QString mapTip = vlayer->mapTipTemplate();
-  if ( !mapTip.isEmpty() )
+  QString tipString;
+  QgsExpression exp( vlayer->displayExpression() );
+  QgsFeature feature;
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect );
+  if ( mapTip.isEmpty() )
   {
-    return QgsExpression::replaceExpressionText( mapTip, &context );
+    exp.prepare( &context );
+    request.setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
   }
-  else
+
+  QgsRenderContext renderCtx = QgsRenderContext::fromMapSettings( mapCanvas->mapSettings() );
+  renderCtx.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
+
+  bool filter = false;
+  std::unique_ptr< QgsFeatureRenderer > renderer;
+  if ( vlayer->renderer() )
   {
-    QgsExpression exp( vlayer->displayExpression() );
-    return exp.evaluate( &context ).toString();
+    renderer.reset( vlayer->renderer()->clone() );
+    renderer->startRender( renderCtx, vlayer->fields() );
+    filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
+
+    const QString filterExpression = renderer->filter( vlayer->fields() );
+    if ( ! filterExpression.isEmpty() )
+    {
+      request.setFilterExpression( filterExpression );
+    }
   }
+
+  QgsFeatureIterator it = vlayer->getFeatures( request );
+  QElapsedTimer timer;
+  timer.start();
+  while ( it.nextFeature( feature ) )
+  {
+    context.setFeature( feature );
+
+    renderCtx.expressionContext().setFeature( feature );
+    if ( filter && renderer && !renderer->willRenderFeature( feature, renderCtx ) )
+    {
+      continue;
+    }
+
+    if ( !mapTip.isEmpty() )
+    {
+      tipString = QgsExpression::replaceExpressionText( mapTip, &context );
+    }
+    else
+    {
+      tipString = exp.evaluate( &context ).toString();
+    }
+
+    if ( !tipString.isEmpty() || timer.elapsed() >= 1000 )
+    {
+      break;
+    }
+  }
+
+  if ( renderer )
+    renderer->stopRender( renderCtx );
+
+  return tipString;
 }
 
-//This slot handles all clicks
+void QgsMapTip::applyFontSettings()
+{
+  QgsSettings settings;
+  QFont defaultFont = qApp->font();
+  mFontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
+  mFontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
+}
+
+// This slot handles all clicks
 void QgsMapTip::onLinkClicked( const QUrl &url )
 {
   QDesktopServices::openUrl( url );

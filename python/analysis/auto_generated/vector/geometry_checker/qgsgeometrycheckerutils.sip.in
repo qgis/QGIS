@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGeometryCheckerUtils
+{
+%Docstring
+
+Contains utilities required for geometry checks.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckerutils.h"
+%End
+  public:
+
+    class LayerFeature
+{
+%Docstring
+
+A layer feature combination to uniquely identify and access a feature in
+a set of layers.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckerutils.h"
+%End
+      public:
+
+        LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, const QgsGeometryCheckContext *context, bool useMapCrs );
+%Docstring
+Create a new layer/feature combination.
+The layer is defined by ``pool``, ``feature`` needs to be from this layer.
+If ``useMapCrs`` is ``True``, geometries will be reprojected to the mapCrs defined
+in ``context``.
+%End
+
+        QgsFeature feature() const;
+%Docstring
+Returns the feature.
+The geometry will not be reprojected regardless of useMapCrs.
+%End
+
+
+        QString layerId() const;
+%Docstring
+The layer id.
+%End
+
+        QgsGeometry geometry() const;
+%Docstring
+Returns the geometry of this feature.
+If useMapCrs was specified, it will already be reprojected into the
+CRS specified in the context specified in the constructor.
+%End
+
+        QString id() const;
+%Docstring
+Returns a combination of the layerId and the feature id.
+%End
+        bool operator==( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
+        bool operator!=( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
+
+        bool useMapCrs() const;
+%Docstring
+Returns if the geometry is reprojected to the map CRS or not.
+%End
+
+    };
+
+    class LayerFeatures
+{
+%Docstring
+
+Contains a set of layers and feature ids in those layers to pass to a geometry check.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckerutils.h"
+%End
+      public:
+
+      private:
+        LayerFeatures();
+    };
+
+
+}; // QgsGeometryCheckerUtils
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

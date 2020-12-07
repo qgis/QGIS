@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          date                 : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -64,9 +64,9 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mTestTable = mConfigureDialog->rulesTable();
 
   QgsMapCanvas *canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
-  mRBFeature1 = new QgsRubberBand( canvas );
-  mRBFeature2 = new QgsRubberBand( canvas );
-  mRBConflict = new QgsRubberBand( canvas );
+  mRBFeature1.reset( new QgsRubberBand( canvas ) );
+  mRBFeature2.reset( new QgsRubberBand( canvas ) );
+  mRBConflict.reset( new QgsRubberBand( canvas ) );
 
   mRBFeature1->setColor( QColor( 0, 0, 255, 65 ) );
   mRBFeature2->setColor( QColor( 0, 255, 0, 65 ) );
@@ -130,9 +130,12 @@ void checkDock::updateRubberBands( bool visible )
 {
   if ( !visible )
   {
-    mRBConflict->reset();
-    mRBFeature1->reset();
-    mRBFeature2->reset();
+    if ( mRBConflict )
+      mRBConflict->reset();
+    if ( mRBFeature1 )
+      mRBFeature1->reset();
+    if ( mRBFeature2 )
+      mRBFeature2->reset();
 
     clearVertexMarkers();
   }
@@ -151,7 +154,7 @@ void checkDock::deleteErrors()
 
 void checkDock::parseErrorListByLayer( const QString &layerId )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   QList<TopolError *>::Iterator it = mErrorList.begin();
 
   while ( it != mErrorList.end() )
@@ -202,7 +205,7 @@ void checkDock::errorListClicked( const QModelIndex &index )
   QgsRectangle r = mErrorList.at( row )->boundingBox();
   r.scale( 1.5 );
   QgsMapCanvas *canvas = qgsInterface->mapCanvas();
-  canvas->setExtent( r );
+  canvas->setExtent( r, true );
   canvas->refresh();
 
   mFixBox->clear();
@@ -321,12 +324,16 @@ void checkDock::fix()
 
 void checkDock::runTests( ValidateType type )
 {
+  mTest->resetCanceledFlag();
+
   for ( int i = 0; i < mTestTable->rowCount(); ++i )
   {
+    if ( mTest->testCanceled() )
+      break;
+
     QString testName = mTestTable->item( i, 0 )->text();
-    QString toleranceStr = mTestTable->item( i, 3 )->text();
-    QString layer1Str = mTestTable->item( i, 4 )->text();
-    QString layer2Str = mTestTable->item( i, 5 )->text();
+    QString layer1Str = mTestTable->item( i, 3 )->text();
+    QString layer2Str = mTestTable->item( i, 4 )->text();
 
     // test if layer1 is in the registry
     if ( !( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
@@ -348,7 +355,7 @@ void checkDock::runTests( ValidateType type )
     connect( mTest, &topolTest::progress, &progress, &QProgressDialog::setValue );
     // run the test
 
-    ErrorList errors = mTest->runTest( testName, layer1, layer2, type, toleranceStr.toDouble() );
+    ErrorList errors = mTest->runTest( testName, layer1, layer2, type );
 
     QList<TopolError *>::Iterator it;
 
@@ -373,8 +380,6 @@ void checkDock::runTests( ValidateType type )
       rb->show();
       mRbErrorMarkers << rb;
     }
-    disconnect( &progress, &QProgressDialog::canceled, mTest, &topolTest::setTestCanceled );
-    disconnect( mTest, &topolTest::progress, &progress, &QProgressDialog::setValue );
     mErrorList << errors;
   }
   mToggleRubberband->setChecked( true );
@@ -418,7 +423,7 @@ void checkDock::validateSelected()
 void checkDock::toggleErrorMarker()
 {
   QList<QgsRubberBand *>::const_iterator it;
-  for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
+  for ( it = mRbErrorMarkers.constBegin(); it != mRbErrorMarkers.constEnd(); ++it )
   {
     QgsRubberBand *rb = *it;
     if ( mToggleRubberband->isChecked() )

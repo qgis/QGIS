@@ -13,14 +13,17 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMULTILINESTRINGV2_H
-#define QGSMULTILINESTRINGV2_H
+#ifndef QGSMULTILINESTRING_H
+#define QGSMULTILINESTRING_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsmulticurve.h"
 
-/** \ingroup core
+class QgsLineString;
+
+/**
+ * \ingroup core
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
  * \since QGIS 2.10
@@ -28,29 +31,107 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
-    QgsMultiLineString();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiLineString" ); }
+
+    /**
+     * Constructor for an empty multilinestring geometry.
+     */
+    QgsMultiLineString() SIP_HOLDGIL;
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the line string with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsLineString *lineStringN( int index );
+#else
+
+    /**
+     * Returns the line string with the specified \a index.
+     *
+     * An IndexError will be raised if no line string with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT lineStringN( int index ) SIP_TYPEHINT( QgsLineString );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->lineStringN( a0 ), sipType_QgsLineString, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the line string with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsLineString *lineStringN( int index ) const;
+#endif
+
+    QString geometryType() const override SIP_HOLDGIL;
     QgsMultiLineString *clone() const override SIP_FACTORY;
-
+    void clear() override;
     bool fromWkt( const QString &wkt ) override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    /**
+     * Returns the geometry converted to the more generic curve type QgsMultiCurve
+     * \returns the converted geometry. Caller takes ownership
+    */
+    QgsMultiCurve *toCurveType() const override SIP_FACTORY;
 
-    //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+#ifndef SIP_RUN
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiCurve
-    \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    /**
+     * Cast the \a geom to a QgsMultiLineString.
+     * Should be used by qgsgeometry_cast<QgsMultiLineString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline static const QgsMultiLineString *cast( const QgsAbstractGeometry *geom )
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString )
+        return static_cast<const QgsMultiLineString *>( geom );
+      return nullptr;
+    }
+#endif
+
+    QgsMultiLineString *createEmptyWithSameType() const override SIP_FACTORY;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   protected:
 
-    virtual bool wktOmitChildType() const override { return true; }
+    bool wktOmitChildType() const override;
 };
 
-#endif // QGSMULTILINESTRINGV2_H
+// clazy:excludeall=qstring-allocations
+
+#endif // QGSMULTILINESTRING_H

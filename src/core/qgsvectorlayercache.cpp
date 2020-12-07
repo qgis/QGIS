@@ -18,11 +18,13 @@
 #include "qgsvectorlayercache.h"
 #include "qgscacheindex.h"
 #include "qgscachedfeatureiterator.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayer.h"
 
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )
   , mLayer( layer )
-  , mFullCache( false )
 {
   mCache.setMaxCost( cacheSize );
 
@@ -38,6 +40,8 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, 
   connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerCache::invalidate );
   connect( mLayer, &QgsVectorLayer::dataChanged, this, &QgsVectorLayerCache::invalidate );
   connect( mLayer, &QgsVectorLayer::attributeValueChanged, this, &QgsVectorLayerCache::onAttributeValueChanged );
+
+  connectJoinedLayers();
 }
 
 QgsVectorLayerCache::~QgsVectorLayerCache()
@@ -58,7 +62,7 @@ int QgsVectorLayerCache::cacheSize()
 
 void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 {
-  bool shouldCacheGeometry = cacheGeometry && mLayer->hasGeometryType();
+  bool shouldCacheGeometry = cacheGeometry && mLayer->isSpatial();
   bool mustInvalidate = shouldCacheGeometry && !mCacheGeometry; // going from no geometry -> geometry, so have to clear existing cache entries
   mCacheGeometry = shouldCacheGeometry;
   if ( cacheGeometry )
@@ -96,7 +100,7 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
 
     int i = 0;
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     QgsFeature f;
@@ -157,7 +161,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
   else if ( mLayer->getFeatures( QgsFeatureRequest()
                                  .setFilterFid( featureId )
                                  .setSubsetOfAttributes( mCachedAttributes )
-                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( nullptr ) ) )
+                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags() ) )
             .nextFeature( feature ) )
   {
     cacheFeature( feature );
@@ -202,11 +206,12 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() <= mCache.size() )
   {
-    Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+    for ( const auto &idx : qgis::as_const( mCacheIndices ) )
     {
       idx->requestCompleted( featureRequest, fids );
     }
-    if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone )
+    if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone &&
+         ( featureRequest.filterRect().isNull() || featureRequest.filterRect().contains( mLayer->extent() ) ) )
     {
       mFullCache = true;
     }
@@ -215,7 +220,8 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 {
-  Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+  const auto constMCacheIndices = mCacheIndices;
+  for ( QgsAbstractCacheIndex *idx : constMCacheIndices )
   {
     idx->flushFeature( fid );
   }
@@ -231,6 +237,29 @@ void QgsVectorLayerCache::onAttributeValueChanged( QgsFeatureId fid, int field, 
   }
 
   emit attributeValueChanged( fid, field, value );
+}
+
+void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value )
+{
+  const QgsVectorLayer *joinLayer = qobject_cast<const QgsVectorLayer *>( sender() );
+
+  const auto constVectorJoins = mLayer->vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+  {
+    if ( joinLayer == info.joinLayer() )
+    {
+      const QgsFeature feature = mLayer->joinBuffer()->targetedFeatureOf( &info, joinLayer->getFeature( fid ) );
+
+      const QString fieldName = info.prefixedFieldName( joinLayer->fields().field( field ) );
+      const int fieldIndex = mLayer->fields().indexFromName( fieldName );
+
+      if ( feature.isValid() && fieldIndex != -1 )
+      {
+        onAttributeValueChanged( feature.id(), fieldIndex, value );
+        return;
+      }
+    }
+  }
 }
 
 void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
@@ -265,7 +294,8 @@ void QgsVectorLayerCache::attributeDeleted( int field )
   QgsAttributeList attrs = mCachedAttributes;
   mCachedAttributes.clear();
 
-  Q_FOREACH ( int attr, attrs )
+  const auto constAttrs = attrs;
+  for ( int attr : constAttrs )
   {
     if ( attr < field )
       mCachedAttributes << attr;
@@ -300,7 +330,8 @@ void QgsVectorLayerCache::invalidate()
 bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator &it )
 {
   // check first for available indices
-  Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+  const auto constMCacheIndices = mCacheIndices;
+  for ( QgsAbstractCacheIndex *idx : constMCacheIndices )
   {
     if ( idx->getCacheIterator( it, featureRequest ) )
     {
@@ -322,7 +353,7 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
     }
     case QgsFeatureRequest::FilterFids:
     {
-      if ( mCache.keys().toSet().contains( featureRequest.filterFids() ) )
+      if ( qgis::listToSet( mCache.keys() ).contains( featureRequest.filterFids() ) )
       {
         it = QgsFeatureIterator( new QgsCachedFeatureIterator( this, featureRequest ) );
         return true;
@@ -347,7 +378,7 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )
 {
   QgsFeatureIterator it;
-  bool requiresWriterIt = true; // If a not yet cached, but cachable request is made, this stays true.
+  bool requiresWriterIt = true; // If a not yet cached, but cacheable request is made, this stays true.
 
   if ( checkInformationCovered( featureRequest ) )
   {
@@ -377,12 +408,12 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     QgsFeatureRequest myRequest = QgsFeatureRequest( featureRequest );
 
     // Make sure if we cache the geometry, it gets fetched
-    if ( mCacheGeometry && mLayer->hasGeometryType() )
+    if ( mCacheGeometry && mLayer->isSpatial() )
       myRequest.setFlags( featureRequest.flags() & ~QgsFeatureRequest::NoGeometry );
 
     // Make sure, all the cached attributes are requested as well
-    QSet<int> attrs = featureRequest.subsetOfAttributes().toSet() + mCachedAttributes.toSet();
-    myRequest.setSubsetOfAttributes( attrs.toList() );
+    QSet<int> attrs = qgis::listToSet( featureRequest.subsetOfAttributes() ) + qgis::listToSet( mCachedAttributes );
+    myRequest.setSubsetOfAttributes( qgis::setToList( attrs ) );
 
     it = QgsFeatureIterator( new QgsCachedFeatureWriterIterator( this, myRequest ) );
   }
@@ -409,7 +440,8 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &feat
   }
 
   // Check if we even cache the information requested
-  Q_FOREACH ( int attr, requestedAttributes )
+  const auto constRequestedAttributes = requestedAttributes;
+  for ( int attr : constRequestedAttributes )
   {
     if ( !mCachedAttributes.contains( attr ) )
     {
@@ -418,11 +450,17 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &feat
   }
 
   // If the request needs geometry but we don't cache this...
-  if ( !featureRequest.flags().testFlag( QgsFeatureRequest::NoGeometry )
-       && !mCacheGeometry )
-  {
-    return false;
-  }
+  return !( !featureRequest.flags().testFlag( QgsFeatureRequest::NoGeometry )
+            && !mCacheGeometry );
+}
 
-  return true;
+void QgsVectorLayerCache::connectJoinedLayers() const
+{
+  const auto constVectorJoins = mLayer->vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+  {
+    const QgsVectorLayer *vl = info.joinLayer();
+    if ( vl )
+      connect( vl, &QgsVectorLayer::attributeValueChanged, this, &QgsVectorLayerCache::onJoinAttributeValueChanged );
+  }
 }

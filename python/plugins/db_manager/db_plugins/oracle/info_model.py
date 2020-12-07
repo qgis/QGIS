@@ -24,7 +24,7 @@ The content of this file is based on
 """
 
 from qgis.PyQt.QtWidgets import QApplication
-from qgis.core import Qgis
+from qgis.core import QgsWkbTypes
 
 from ..info_model import TableInfo, VectorTableInfo, DatabaseInfo
 from ..html_elems import HtmlContent, HtmlSection, HtmlParagraph, \
@@ -142,7 +142,7 @@ class ORTableInfo(TableInfo):
                     "DBManagerPlugin", "Rows (estimation):"),
                  self.table.estimatedRowCount)
             )
-        if self.table.rowCount or self.table.rowCount >= 0:
+        if self.table.rowCount is not None and self.table.rowCount >= 0:
             # Add a real count of rows
             tbl.append(
                 (QApplication.translate("DBManagerPlugin", "Rows (counted):"),
@@ -575,8 +575,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             (QApplication.translate("DBManagerPlugin", "Geometry:"),
              self.table.geomType),
             (QApplication.translate("DBManagerPlugin",
-                                    "Qgis Geometry type:"),
-             Qgis.featureType(self.table.wkbType))
+                                    "QGIS Geometry type:"),
+             QgsWkbTypes.displayString(self.table.wkbType))
         ]
 
         # only if we have info from geometry_columns
@@ -624,7 +624,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
         if self.table.extent and len(self.table.extent) == 4:
             extent_str = (u"{:.9f}, {:.9f} - {:.9f}, "
                           u"{:.9f}".format(*self.table.extent))
-        elif self.table.rowCount > 0 or self.table.estimatedRowCount > 0:
+        elif (self.table.rowCount is not None and self.table.rowCount > 0) or (self.table.estimatedRowCount is not None and self.table.estimatedRowCount > 0):
             # Can't calculate an extent on empty layer
             extent_str = QApplication.translate(
                 "DBManagerPlugin",

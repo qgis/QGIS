@@ -18,7 +18,7 @@
 #define QGSAUTHIMPORTCERTDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "ui_qgsauthimportcertdialog.h"
 
 #include <QSslCertificate>
@@ -26,7 +26,8 @@
 
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing a certificate into the authentication database
  */
 class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthImportCertDialog
@@ -55,17 +56,17 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
      * \param filter Certificate type filter to apply to dialog
      * \param input Type of input(s) for certificates
      */
-    explicit QgsAuthImportCertDialog( QWidget *parent SIP_TRANSFERTHIS = 0,
+    explicit QgsAuthImportCertDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                       QgsAuthImportCertDialog::CertFilter filter = NoFilter,
                                       QgsAuthImportCertDialog::CertInput input = AllInputs );
 
-    //! Get list of certificate objects to import
+    //! Gets list of certificate objects to import
     const QList<QSslCertificate> certificatesToImport();
 
-    //! Get the file path to a certificate to import
+    //! Gets the file path to a certificate to import
     const QString certFileToImport();
 
-    //! Get certificate text to import
+    //! Gets certificate text to import
     const QString certTextToImport();
 
     //! Whether to allow importation of invalid certificates (so trust policy can be overridden)
@@ -79,9 +80,9 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
 
     void validateCertificates();
 
-    void on_btnImportFile_clicked();
+    void btnImportFile_clicked();
 
-    void on_chkAllowInvalid_toggled( bool checked );
+    void chkAllowInvalid_toggled( bool checked );
 
   private:
     QString getOpenFileName( const QString &title, const QString &extfilter );
@@ -92,7 +93,7 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     QgsAuthImportCertDialog::CertFilter mFilter;
     QgsAuthImportCertDialog::CertInput mInput;
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

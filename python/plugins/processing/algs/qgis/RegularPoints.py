@@ -16,15 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 import os
 from random import seed, uniform
@@ -32,22 +27,28 @@ from math import sqrt
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
-                       QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem)
+from qgis.core import (QgsApplication,
+                       QgsFields,
+                       QgsFeatureSink,
+                       QgsField,
+                       QgsFeature,
+                       QgsWkbTypes,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterDistance,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RegularPoints(QgisAlgorithm):
-
     EXTENT = 'EXTENT'
     SPACING = 'SPACING'
     INSET = 'INSET'
@@ -57,26 +58,35 @@ class RegularPoints(QgisAlgorithm):
     CRS = 'CRS'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmRegularPoints.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmRegularPoints.svg")
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
+
+    def groupId(self):
+        return 'vectorcreation'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Input extent'), optional=False))
-        self.addParameter(ParameterNumber(self.SPACING,
-                                          self.tr('Point spacing/count'), 100, 999999999.999999999, 100))
-        self.addParameter(ParameterNumber(self.INSET,
-                                          self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
-        self.addParameter(ParameterBoolean(self.RANDOMIZE,
-                                           self.tr('Apply random offset to point spacing'), False))
-        self.addParameter(ParameterBoolean(self.IS_SPACING,
-                                           self.tr('Use point spacing'), True))
-        self.addParameter(ParameterCrs(self.CRS,
-                                       self.tr('Output layer CRS'), 'ProjectCrs'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Input extent'), optional=False))
+        self.addParameter(QgsProcessingParameterDistance(self.SPACING,
+                                                         self.tr('Point spacing/count'), 100, self.CRS, False, 0.000001))
+        self.addParameter(QgsProcessingParameterDistance(self.INSET,
+                                                         self.tr('Initial inset from corner (LH side)'), 0.0, self.CRS, False, 0.0))
+        self.addParameter(QgsProcessingParameterBoolean(self.RANDOMIZE,
+                                                        self.tr('Apply random offset to point spacing'), False))
+        self.addParameter(QgsProcessingParameterBoolean(self.IS_SPACING,
+                                                        self.tr('Use point spacing'), True))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS,
+                                                    self.tr('Output layer CRS'), 'ProjectCrs'))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Regular points'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'regularpoints'
@@ -85,23 +95,20 @@ class RegularPoints(QgisAlgorithm):
         return self.tr('Regular points')
 
     def processAlgorithm(self, parameters, context, feedback):
-        extent = str(self.getParameterValue(self.EXTENT)).split(',')
-
-        spacing = float(self.getParameterValue(self.SPACING))
-        inset = float(self.getParameterValue(self.INSET))
-        randomize = self.getParameterValue(self.RANDOMIZE)
-        isSpacing = self.getParameterValue(self.IS_SPACING)
-        crsId = self.getParameterValue(self.CRS)
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromUserInput(crsId)
-
-        extent = QgsRectangle(float(extent[0]), float(extent[2]),
-                              float(extent[1]), float(extent[3]))
+        spacing = self.parameterAsDouble(parameters, self.SPACING, context)
+        inset = self.parameterAsDouble(parameters, self.INSET, context)
+        randomize = self.parameterAsBoolean(parameters, self.RANDOMIZE, context)
+        isSpacing = self.parameterAsBoolean(parameters, self.IS_SPACING, context)
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, crs, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Point, crs)
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if randomize:
             seed()
@@ -117,29 +124,37 @@ class RegularPoints(QgisAlgorithm):
         f.setFields(fields)
 
         count = 0
+        id = 0
         total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
 
         extent_geom = QgsGeometry.fromRect(extent)
-        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.geometry())
+        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.constGet())
         extent_engine.prepareGeometry()
 
         while y >= extent.yMinimum():
             x = extent.xMinimum() + inset
             while x <= extent.xMaximum():
+                if feedback.isCanceled():
+                    break
+
                 if randomize:
-                    geom = QgsGeometry().fromPoint(QgsPointXY(
+                    geom = QgsGeometry(QgsPoint(
                         uniform(x - (pSpacing / 2.0), x + (pSpacing / 2.0)),
                         uniform(y - (pSpacing / 2.0), y + (pSpacing / 2.0))))
                 else:
-                    geom = QgsGeometry().fromPoint(QgsPointXY(x, y))
+                    geom = QgsGeometry(QgsPoint(x, y))
 
-                if extent_engine.intersects(geom.geometry()):
-                    f.setAttribute('id', count)
+                if extent_engine.intersects(geom.constGet()):
+                    f.setAttributes([id])
                     f.setGeometry(geom)
-                    writer.addFeature(f)
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
                     x += pSpacing
-                    count += 1
-                    feedback.setProgress(int(count * total))
+                    id += 1
+
+                count += 1
+                feedback.setProgress(int(count * total))
+
             y = y - pSpacing
-        del writer
+
+        return {self.OUTPUT: dest_id}

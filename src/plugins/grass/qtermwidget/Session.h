@@ -71,7 +71,7 @@ public:
      * variable.
      */
     Session(QObject* parent = 0);
-    virtual ~Session();
+    ~Session() override;
 
     /**
      * Returns true if the session is currently running.  This will be true
@@ -140,7 +140,7 @@ public:
     int sessionId() const;
 
     /**
-     * Return the session title set by the user (ie. the program running
+     * Returns the session title set by the user (ie. the program running
      * in the terminal), or an empty string if the user has not set a custom title
      */
     QString userTitle() const;
@@ -573,7 +573,7 @@ public:
     /** Constructs an empty session group. */
     SessionGroup();
     /** Destroys the session group and removes all connections between master and slave sessions. */
-    ~SessionGroup();
+    ~SessionGroup() override;
 
     /** Adds a session to the group. */
     void addSession( Session * session );

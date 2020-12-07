@@ -20,21 +20,21 @@ email                : hugo dot mercier at oslandia dot com
 #include <QMainWindow>
 #include <QSettings>
 
-#include <qgsvectorlayer.h>
-#include <layertree/qgslayertreeview.h>
-#include <layertree/qgslayertreemodel.h>
-#include <layertree/qgslayertreegroup.h>
-#include <layertree/qgslayertreelayer.h>
-#include <layertree/qgslayertree.h>
-#include <qgsproviderregistry.h>
-#include <qgsvectordataprovider.h>
+#include "qgsvectorlayer.h"
+#include "layertree/qgslayertreeview.h"
+#include "layertree/qgslayertreemodel.h"
+#include "layertree/qgslayertreegroup.h"
+#include "layertree/qgslayertreelayer.h"
+#include "layertree/qgslayertree.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 
 QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent, QgsLayerTreeView *tv )
   : QDialog( parent ),
     mTreeView( tv )
 {
   setupUi( this );
-  updateLayersList( );
+  updateLayersList();
 }
 
 QStringList QgsEmbeddedLayerSelectDialog::layers() const
@@ -49,14 +49,15 @@ QStringList QgsEmbeddedLayerSelectDialog::layers() const
   return ids;
 }
 
-void QgsEmbeddedLayerSelectDialog::updateLayersList( )
+void QgsEmbeddedLayerSelectDialog::updateLayersList()
 {
   // populate list
-  mLayers->clear( );
+  mLayers->clear();
   QList<QgsLayerTreeLayer *> layers = mTreeView->layerTreeModel()->rootGroup()->findLayers();
-  Q_FOREACH ( const QgsLayerTreeLayer *l, layers )
+  const auto constLayers = layers;
+  for ( const QgsLayerTreeLayer *l : constLayers )
   {
-    if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
+    if ( l->layer() && l->layer()->type() == QgsMapLayerType::VectorLayer )
     {
       // display layer name and store its pointer
       QListWidgetItem *item = new QListWidgetItem();

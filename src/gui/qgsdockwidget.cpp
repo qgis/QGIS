@@ -17,18 +17,17 @@
 
 
 #include "qgsdockwidget.h"
+#include <QAction>
 
 
 QgsDockWidget::QgsDockWidget( QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( parent, flags )
-  , mVisibleAndActive( false )
 {
   connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }
 
 QgsDockWidget::QgsDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( title, parent, flags )
-  , mVisibleAndActive( false )
 {
   connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }
@@ -37,9 +36,6 @@ void QgsDockWidget::setUserVisible( bool visible )
 {
   if ( visible )
   {
-    if ( mVisibleAndActive )
-      return;
-
     show();
     raise();
   }
@@ -52,9 +48,35 @@ void QgsDockWidget::setUserVisible( bool visible )
   }
 }
 
+void QgsDockWidget::toggleUserVisible()
+{
+  setUserVisible( !isUserVisible() );
+}
+
 bool QgsDockWidget::isUserVisible() const
 {
   return mVisibleAndActive;
+}
+
+void QgsDockWidget::setToggleVisibilityAction( QAction *action )
+{
+  mAction = action;
+  if ( !mAction->isCheckable() )
+    mAction->setCheckable( true );
+  mAction->setChecked( isUserVisible() );
+  connect( mAction, &QAction::toggled, this, [ = ]( bool visible )
+  {
+    setUserVisible( visible );
+  } );
+  connect( this, &QgsDockWidget::visibilityChanged, mAction, [ = ]( bool visible )
+  {
+    mAction->setChecked( visible );
+  } );
+}
+
+QAction *QgsDockWidget::toggleVisibilityAction()
+{
+  return mAction;
 }
 
 void QgsDockWidget::closeEvent( QCloseEvent *e )

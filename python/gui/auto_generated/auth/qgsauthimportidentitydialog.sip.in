@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/auth/qgsauthimportidentitydialog.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAuthImportIdentityDialog : QDialog
+{
+%Docstring
+Widget for importing an identity certificate/key bundle into the authentication database
+%End
+
+%TypeHeaderCode
+#include "qgsauthimportidentitydialog.h"
+%End
+  public:
+    enum IdentityType
+    {
+      CertIdentity,
+    };
+
+    enum BundleTypes
+    {
+      PkiPaths,
+      PkiPkcs12,
+    };
+
+    enum Validity
+    {
+      Valid,
+      Invalid,
+      Unknown
+    };
+
+    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
+                                          QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Construct a dialog for importing identities
+
+:param identitytype: Type of the identity to import
+:param parent: Parent widget
+%End
+
+    QgsAuthImportIdentityDialog::IdentityType identityType();
+%Docstring
+Gets identity type
+%End
+
+
+    const QgsPkiBundle pkiBundleToImport();
+%Docstring
+Gets certificate/key bundle to be imported as a PKI bundle object
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/auth/qgsauthimportidentitydialog.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

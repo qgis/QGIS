@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Larry Shaffer'
 __date__ = '07/16/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -23,7 +21,9 @@ import os
 from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
 from qgis.PyQt.QtGui import QFont
 
-from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings
+from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings, \
+    QgsProject, QgsExpressionContextUtils, QgsExpressionContext
+from qgis.core import QgsCoordinateReferenceSystem
 
 from utilities import svgSymbolsPath
 
@@ -41,12 +41,12 @@ class TestPointBase(object):
         """:type: QgsMapCanvas"""
         # custom mismatches per group/test (should not mask any needed anomaly)
         # e.g. self._Mismatches['TestClassName'] = 300
-        # check base output class's checkTest() or sublcasses for any defaults
+        # check base output class's checkTest() or subclasses for any defaults
         self._Mismatches = dict()
         # custom color tolerances per group/test: 1 - 20 (0 default, 20 max)
         # (should not mask any needed anomaly)
         # e.g. self._ColorTols['TestClassName'] = 10
-        # check base output class's checkTest() or sublcasses for any defaults
+        # check base output class's checkTest() or subclasses for any defaults
         self._ColorTols = dict()
 
     # noinspection PyMethodMayBeStatic
@@ -97,7 +97,7 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
-        #   https://issues.qgis.org/issues/9057
+        #   https://github.com/qgis/QGIS/issues/17705
         #   http://gis.stackexchange.com/questions/86900
 
         format = self.lyr.format()
@@ -230,6 +230,7 @@ class TestPointBase(object):
         self.lyr.setFormat(format)
         self.checkTest()
 
+
 # noinspection PyPep8Naming
 
 
@@ -247,12 +248,12 @@ class TestLineBase(object):
         """:type: QgsMapCanvas"""
         # custom mismatches per group/test (should not mask any needed anomaly)
         # e.g. self._Mismatches['TestClassName'] = 300
-        # check base output class's checkTest() or sublcasses for any defaults
+        # check base output class's checkTest() or subclasses for any defaults
         self._Mismatches = dict()
         # custom color tolerances per group/test: 1 - 20 (0 default, 20 max)
         # (should not mask any needed anomaly)
         # e.g. self._ColorTols['TestClassName'] = 10
-        # check base output class's checkTest() or sublcasses for any defaults
+        # check base output class's checkTest() or subclasses for any defaults
         self._ColorTols = dict()
 
     # noinspection PyMethodMayBeStatic
@@ -308,13 +309,43 @@ class TestLineBase(object):
         self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
+    def test_curved_placement_online_html(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        format = self.lyr.format()
+        format.setAllowHtmlFormatting(True)
+        self.lyr.setFormat(format)
+        self.lyr.fieldName = "'<span style=\"color: red\">aaa</span><s>aa</s><span style=\"text-decoration: overline\">a</span>'"
+        self.lyr.isExpression = True
+        self.checkTest()
+
+    def test_length_expression(self):
+        # compare length using the ellipsoid in kms and the planimetric distance in meters
+        self.lyr.fieldName = "round($length,5) || ' - ' || round(length($geometry),2)"
+        self.lyr.isExpression = True
+
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("EPSG:32613"))
+        QgsProject.instance().setEllipsoid("WGS84")
+        QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceKilometers)
+
+        ctxt = QgsExpressionContext()
+        ctxt.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+        ctxt.appendScope(QgsExpressionContextUtils.layerScope(self.layer))
+        self._TestMapSettings.setExpressionContext(ctxt)
+
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+
 # noinspection PyPep8Naming
 
 
 def suiteTests():
     """
     Use to define which tests are run when PAL_SUITE is set.
-    Use sp_vs_suite for comparison of server and composer outputs to canvas
+    Use sp_vs_suite for comparison of server and layout outputs to canvas
     """
     sp_suite = [
         # 'test_default_label',
@@ -328,7 +359,7 @@ def suiteTests():
         # 'test_partials_labels_disabled',
     ]
     sp_vs_suite = [
-        #'test_something_specific',
+        # 'test_something_specific',
     ]
     # extended separately for finer control of PAL_SUITE (comment-out undesired)
     sp_vs_suite.extend(sp_suite)

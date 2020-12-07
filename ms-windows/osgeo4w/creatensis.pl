@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # creates a NSIS installer from OSGeo4W packages
 # note: works also on Unix
 
@@ -7,11 +7,17 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.         
+# (at your option) any later version.
 
 #
 # Download OSGeo4W packages
 #
+
+BEGIN {
+	# ignore requireAdministrator execution level while producing the
+	# uninstaller
+	$ENV{"__COMPAT_LAYER"} = 'RUNASINVOKER';
+}
 
 use strict;
 use warnings;
@@ -29,11 +35,15 @@ my $binary;
 my $root = "http://download.osgeo.org/osgeo4w";
 my $ininame = "setup.ini";
 my $arch = "x86_64";
+my $signwith;
+my $signpass;
 my $help;
 
 my $result = GetOptions(
 		"verbose+" => \$verbose,
 		"keep" => \$keep,
+		"signwith=s" => \$signwith,
+		"signpass=s" => \$signpass,
 		"releasename=s" => \$releasename,
 		"version=s" => \$version,
 		"binary=i" => \$binary,
@@ -44,6 +54,8 @@ my $result = GetOptions(
 		"arch=s" => \$arch,
 		"help" => \$help
 	);
+
+die "certificate not found" if defined $signwith && ! -f $signwith;
 
 pod2usage(1) if $help;
 
@@ -65,6 +77,9 @@ chdir $packages;
 
 system "wget $wgetopt -c http://qgis.org/downloads/Untgz.zip" unless -f "Untgz.zip";
 die "download of Untgz.zip failed" if $?;
+
+system "wget $wgetopt -c https://qgis.org/downloads/Inetc.zip" unless -f "Inetc.zip";
+die "download of Inetc.zip failed" if $?;
 
 my %dep;
 my %file;
@@ -141,7 +156,7 @@ my @desc;
 foreach my $p ( keys %pkgs ) {
 	my @f;
 	unless( exists $file{$p} ) {
-		print "No file for package $p found found.\n" if $verbose;
+		print "No file for package $p found.\n" if $verbose;
 		next;
 	}
 	push @f, "$root/$file{$p}";
@@ -265,6 +280,38 @@ unless(-d $unpacked ) {
 	chdir "..";
 }
 
+my($major, $minor, $patch);
+
+open F, "../../CMakeLists.txt";
+while(<F>) {
+	if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/i) {
+		$major = $1;
+	} elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/i) {
+		$minor = $1;
+	} elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/i) {
+		$patch = $1;
+	} elsif(/SET\(RELEASE_NAME "(.+)"\)/i) {
+		$releasename = $1 unless defined $releasename;
+	}
+}
+close F;
+
+$version = "$major.$minor.$patch" unless defined $version;
+
+my($pmajor,$pminor,$ppatch) = $version =~ /^(\d+)\.(\d+)\.(\d+)$/;
+die "Invalid version $version" unless defined $ppatch;
+
+unless( defined $binary ) {
+	if( -f "binary$archpostfix-$version" ) {
+		open P, "binary$archpostfix-$version";
+		$binary = <P>;
+		close P;
+		$binary++;
+	} else {
+		$binary = 1;
+	}
+}
+
 #
 # Create postinstall.bat
 #
@@ -290,7 +337,7 @@ print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$r";
 print F "echo OSGEO4W_STARTMENU=%OSGEO4W_STARTMENU%$r";
 print F "echo OSGEO4W_DESKTOP=%OSGEO4W_DESKTOP%$r";
 print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%$r";
-print F "cd %OSGEO4W_ROOT%$r";
+print F "cd /d %OSGEO4W_ROOT%$r";
 
 chdir $unpacked;
 for my $p (<etc/postinstall/*.bat>) {
@@ -320,7 +367,7 @@ print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%$r";
 print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%$r";
 print F "echo OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT_MSYS%$r";
 print F "PATH %OSGEO4W_ROOT%\\bin;%PATH%$r";
-print F "cd %OSGEO4W_ROOT%$r";
+print F "cd /d \"%OSGEO4W_ROOT%\"$r";
 
 chdir $unpacked;
 for my $p (<etc/preremove/*.bat>) {
@@ -337,41 +384,15 @@ print F "ren preremove.bat preremove.bat.done$r";
 
 close F;
 
-my($major, $minor, $patch);
-
-open F, "../../CMakeLists.txt";
-while(<F>) {
-	if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/) {
-		$major = $1;
-	} elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/) {
-		$minor = $1;
-	} elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/) {
-		$patch = $1;
-	} elsif(/SET\(RELEASE_NAME "(.+)"\)/) {
-		$releasename = $1 unless defined $releasename;
-	}
-}
-close F;
-
-$version = "$major.$minor.$patch" unless defined $version;
-
-my($pmajor,$pminor,$ppatch) = $version =~ /^(\d+)\.(\d+)\.(\d+)$/;
-die "Invalid version $version" unless defined $ppatch;
-
-unless( defined $binary ) {
-	if( -f "binary$archpostfix-$version" ) {
-		open P, "binary$archpostfix-$version";
-		$binary = <P>;
-		close P;
-		$binary++;
-	} else {
-		$binary = 1;
-	}
-}
-
 unless(-d "untgz") {
 	system "unzip $packages/Untgz.zip";
 	die "unpacking Untgz.zip failed" if $?;
+}
+
+unless(-d "inetc") {
+	mkdir "inetc", 0755;
+	system "unzip -p $packages/Inetc.zip Plugins/x86-ansi/INetC.dll >inetc/INetC.dll";
+	die "unpacking Inetc.zip failed" if $?;
 }
 
 chdir "..";
@@ -438,29 +459,81 @@ if( -f "osgeo4w/$unpacked/apps/$shortname/doc/LICENSE" ) {
 
 print "Running NSIS\n" if $verbose;
 
-my $cmd = "makensis";
-$cmd .= " -V$verbose";
-$cmd .= " -DVERSION_NAME='$releasename'";
-$cmd .= " -DVERSION_NUMBER='$version'";
-$cmd .= " -DBINARY_REVISION=$binary";
-$cmd .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $pmajor, $pminor, $ppatch, $binary );
-$cmd .= sprintf( " -DQGIS_BASE='$packagename %d.%d'", $pmajor, $pminor );
-$cmd .= " -DINSTALLER_NAME='$packagename-OSGeo4W-$version-$binary-Setup$archpostfix.exe'";
-$cmd .= " -DDISPLAYED_NAME=\"$packagename '$releasename' ($version)\"";
-$cmd .= " -DSHORTNAME='$shortname'";
-$cmd .= " -DINSTALLER_TYPE=OSGeo4W";
-$cmd .= " -DPACKAGE_FOLDER=osgeo4w/$unpacked";
-$cmd .= " -DLICENSE_FILE='$license'";
-$cmd .= " -DARCH='$arch'";
-$cmd .= " QGIS-Installer.nsi";
+my $installerbase = "$packagename-OSGeo4W-$version-$binary-Setup$archpostfix";
 
+my $run;
+my $instdest;
+
+if($^O eq "cygwin") {
+	$run = "cygstart ";
+	$instdest = `cygpath -w \$PWD`;
+} else {
+	$run = "wine ";
+	$instdest = `winepath -w \$PWD`;
+}
+
+$instdest =~ s/\s+$//;
+$instdest =~ s/\\/\\\\/g;
+
+
+my $args = "";
+$args .= " -V$verbose";
+$args .= " -DVERSION_NAME='$releasename'";
+$args .= " -DVERSION_NUMBER='$version'";
+$args .= " -DBINARY_REVISION=$binary";
+$args .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $pmajor, $pminor, $ppatch, $binary );
+$args .= sprintf( " -DQGIS_BASE='$packagename %d.%d'", $pmajor, $pminor );
+$args .= " -DDISPLAYED_NAME=\"$packagename $version '$releasename'\"";
+$args .= " -DPACKAGE_FOLDER=osgeo4w/$unpacked";
+$args .= " -DLICENSE_FILE='$license'";
+$args .= " -DARCH='$arch'";
+$args .= " QGIS-Installer.nsi";
+
+sub sign {
+	my $base = shift;
+
+	my $cmd = "osslsigncode sign";
+	$cmd .= " -pkcs12 \"$signwith\"";
+	$cmd .= " -pass \"$signpass\"" if defined $signpass;
+	$cmd .= " -n \"$packagename $version '$releasename'\"";
+	$cmd .= " -h sha256";
+	$cmd .= " -i \"https://qgis.org\"";
+	$cmd .= " -t \"http://timestamp.digicert.com\"";
+	$cmd .= " -in \"$base.exe\"";
+	$cmd .= " $base-signed.exe";
+	system $cmd;
+	die "signing failed [$cmd]" if $?;
+
+	rename("$base-signed.exe", "$base.exe") or die "rename failed: $!";
+}
+
+my $cmd;
+unlink "makeuinst.exe";
+$cmd = "makensis -DINNER=1 -DUNINSTALLERDEST='$instdest' -DINSTALLER_NAME='makeuinst.exe' $args";
 system $cmd;
-die "running nsis failed [$cmd]" if $?;
+die "running makensis failed [$cmd]" if $?;
+die "makeuinst.exe not created" unless -f "makeuinst.exe";
+
+unlink "uninstall.exe";
+chmod 0755, "makeuinst.exe";
+system "${run}makeuinst.exe";
+sleep 5;
+die "uninstall.exe not created" unless -f "uninstall.exe";
+unlink "makeuinst.exe";
+
+sign "uninstall" if $signwith;
+
+$cmd = "makensis -DINSTALLER_NAME='$installerbase.exe' $args";
+system $cmd;
+die "running makensis failed [$cmd]" if $?;
+
+sign "$installerbase" if $signwith;
 
 open P, ">osgeo4w/binary$archpostfix-$version";
 print P $binary;
 close P;
 
+system "md5sum $installerbase.exe >$installerbase.exe.md5sum";
 
 __END__
 
@@ -476,6 +549,8 @@ creatensis.pl [options] [packages...]
     -verbose		increase verbosity
     -releasename=name	name of release (defaults to CMakeLists.txt setting)
     -keep		don't start with a fresh unpacked directory
+    -signwith=cert.p12	optionally sign package with certificate (requires osslsigncode)
+    -signpass=password	password of certificate
     -version=m.m.p	package version (defaults to CMakeLists.txt setting)
     -binary=b		binary version of package
     -ininame=filename	name of the setup.ini (defaults to setup.ini)

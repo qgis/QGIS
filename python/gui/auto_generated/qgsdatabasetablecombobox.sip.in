@@ -1,0 +1,122 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatabasetablecombobox.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsDatabaseTableComboBox : QWidget
+{
+%Docstring
+The QgsDatabaseTableComboBox class is a combo box which displays the list of tables for a specific database connection.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the combobox to work correctly.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdatabasetablecombobox.h"
+%End
+  public:
+
+    explicit QgsDatabaseTableComboBox( const QString &provider, const QString &connection, const QString &schema = QString(), QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseTableComboBox, for the specified ``provider`` and ``connection``.
+
+The optional ``schema`` argument can be used to restrict the listed tables to a specific schema.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly.
+%End
+
+    explicit QgsDatabaseTableComboBox( QgsAbstractDatabaseProviderConnection *connection /Transfer/, const QString &schema = QString(), QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseTableComboBox, for the specified ``connection``.
+
+The optional ``schema`` argument can be used to restrict the listed tables to a specific schema.
+
+Ownership of ``connection`` is transferred to the combobox.
+%End
+
+    void setAllowEmptyTable( bool allowEmpty );
+%Docstring
+Sets whether an optional empty table ("not set") option is present in the combobox.
+
+.. seealso:: :py:func:`allowEmptyTable`
+%End
+
+    bool allowEmptyTable() const;
+%Docstring
+Returns ``True`` if the combobox allows the empty table ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyTable`
+%End
+
+    QString currentTable() const;
+%Docstring
+Returns the name of the current table selected in the combo box.
+%End
+
+    QString currentSchema() const;
+%Docstring
+Returns the schema of the current table selected in the combo box.
+%End
+
+    QComboBox *comboBox();
+%Docstring
+Returns the combobox portion of the widget.
+%End
+
+  public slots:
+
+    void setTable( const QString &table, const QString &schema = QString() );
+%Docstring
+Sets the current table selected in the combo box.
+
+If necessary, the ``schema`` can be specified too.
+%End
+
+    void setConnectionName( const QString &connection, const QString &provider = QString() );
+%Docstring
+Sets the database connection name from which to retrieve the available tables.
+
+Optionally the ``provider`` can be reset too.
+%End
+
+    void setSchema( const QString &schema );
+%Docstring
+Sets the ``schema`` from which to retrieve the available tables.
+%End
+
+    void refreshTables();
+%Docstring
+Refreshes the list of available tables.
+%End
+
+  signals:
+    void tableChanged( const QString &table, const QString &schema = QString() );
+%Docstring
+Emitted whenever the currently selected table changes.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatabasetablecombobox.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

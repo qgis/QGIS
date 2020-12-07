@@ -1,7 +1,1 @@
-<svg height="12" width="12" xmlns="http://www.w3.org/2000/svg">
-<g stroke-linejoin="round" transform="translate(0 -20)">
-<rect fill="#f05050" height="11.799762" rx="1.0727056" stroke="#000" stroke-width=".2" width="11.799762" x=".10011911" y="20.100119"/>
-<path d="m9.5 22.5l-7 7" style="fill:#fcffff;fill-rule:evenodd;stroke:#fff;stroke-width:2;stroke-linecap:round;overflow:visible"/>
-<path d="m9.5 29.5l-7-7" style="fill:#fcffff;fill-rule:evenodd;stroke:#fff;stroke-width:2;stroke-linecap:round;overflow:visible"/>
-</g>
-</svg>
+<svg height="12" width="12" xmlns="http://www.w3.org/2000/svg"><g stroke-linejoin="round" transform="translate(0 -20)"><rect fill="#f05050" height="11.799762" rx="1.072706" stroke="#000" stroke-width=".2" width="11.799762" x=".100119" y="20.100119"/><g fill="#fcffff" fill-rule="evenodd" stroke="#fff" stroke-linecap="round" stroke-width="2"><path d="m9.5 22.5-7 7"/><path d="m9.5 29.5-7-7"/></g></g></svg>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>482</width>
-    <height>496</height>
+    <height>627</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -82,13 +82,6 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QPushButton" name="btnUpdateInputLayer">
-          <property name="text">
-           <string>Update options</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
@@ -153,6 +146,13 @@
       <string>Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="5" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkDropTable">
+        <property name="text">
+         <string>Replace destination table (if exists)</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QCheckBox" name="chkPrimaryKey">
         <property name="text">
@@ -181,62 +181,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QCheckBox" name="chkSourceSrid">
-          <property name="text">
-           <string>Source SRID</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="editSourceSrid">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="spacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="chkTargetSrid">
-          <property name="text">
-           <string>Target SRID</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="editTargetSrid">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QCheckBox" name="chkEncoding">
         <property name="text">
          <string>Encoding</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QComboBox" name="cboEncoding">
         <property name="enabled">
          <bool>false</bool>
@@ -246,31 +198,66 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0" colspan="2">
+      <item row="7" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSinglePart">
         <property name="text">
-         <string>Create single-part geometries instead of multi-part</string>
+         <string>Do not promote to multi-part</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSpatialIndex">
         <property name="text">
          <string>Create spatial index</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkDropTable">
-        <property name="text">
-         <string>Replace destination table (if exists)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
+      <item row="8" column="0" colspan="2">
        <widget class="QCheckBox" name="chkLowercaseFieldNames">
         <property name="text">
          <string>Convert field names to lowercase</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="chkTargetSrid">
+        <property name="text">
+         <string>Target SRID</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QgsProjectionSelectionWidget" name="widgetTargetSrid" native="true">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsProjectionSelectionWidget" name="widgetSourceSrid" native="true">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="chkSourceSrid">
+        <property name="text">
+         <string>Source SRID</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QCheckBox" name="chkCom">
+        <property name="text">
+         <string>Comment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QLineEdit" name="editCom">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -293,14 +280,32 @@
   <zorder>groupBox_3</zorder>
   <zorder>wdgInput</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
+  <tabstop>cboInputLayer</tabstop>
+  <tabstop>btnChooseInputFile</tabstop>
+  <tabstop>chkSelectedFeatures</tabstop>
+  <tabstop>cboSchema</tabstop>
+  <tabstop>cboTable</tabstop>
+  <tabstop>chkPrimaryKey</tabstop>
+  <tabstop>editPrimaryKey</tabstop>
+  <tabstop>chkGeomColumn</tabstop>
+  <tabstop>editGeomColumn</tabstop>
   <tabstop>chkSourceSrid</tabstop>
-  <tabstop>editSourceSrid</tabstop>
+  <tabstop>chkTargetSrid</tabstop>
   <tabstop>chkEncoding</tabstop>
   <tabstop>cboEncoding</tabstop>
+  <tabstop>chkDropTable</tabstop>
   <tabstop>chkSinglePart</tabstop>
+  <tabstop>chkLowercaseFieldNames</tabstop>
   <tabstop>chkSpatialIndex</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -311,8 +316,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>325</x>
-     <y>518</y>
+     <x>343</x>
+     <y>617</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -327,12 +332,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>108</x>
-     <y>347</y>
+     <x>155</x>
+     <y>268</y>
     </hint>
     <hint type="destinationlabel">
-     <x>207</x>
-     <y>345</y>
+     <x>463</x>
+     <y>272</y>
     </hint>
    </hints>
   </connection>
@@ -343,44 +348,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>120</x>
-     <y>367</y>
+     <x>167</x>
+     <y>306</y>
     </hint>
     <hint type="destinationlabel">
-     <x>188</x>
-     <y>367</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkSourceSrid</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editSourceSrid</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>115</x>
-     <y>390</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>166</x>
-     <y>394</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkTargetSrid</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>editTargetSrid</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>360</x>
-     <y>396</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>435</x>
-     <y>394</y>
+     <x>463</x>
+     <y>310</y>
     </hint>
    </hints>
   </connection>
@@ -391,12 +364,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>98</x>
-     <y>415</y>
+     <x>145</x>
+     <y>404</y>
     </hint>
     <hint type="destinationlabel">
-     <x>201</x>
-     <y>414</y>
+     <x>463</x>
+     <y>406</y>
     </hint>
    </hints>
   </connection>
@@ -407,12 +380,61 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>452</x>
-     <y>505</y>
+     <x>470</x>
+     <y>617</y>
     </hint>
     <hint type="destinationlabel">
      <x>508</x>
      <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkSourceSrid</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widgetSourceSrid</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>463</x>
+     <y>341</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkTargetSrid</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widgetTargetSrid</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>372</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>463</x>
+     <y>372</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkCom</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editCom</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>557</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>211</x>
+     <y>553</y>
+
     </hint>
    </hints>
   </connection>

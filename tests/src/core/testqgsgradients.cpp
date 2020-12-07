@@ -34,7 +34,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
 class TestQgsGradients : public QObject
@@ -42,13 +43,7 @@ class TestQgsGradients : public QObject
     Q_OBJECT
 
   public:
-    TestQgsGradients()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mGradientFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsGradients() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -67,9 +62,12 @@ class TestQgsGradients : public QObject
     void gradientSymbolReflectSpread();
     void gradientSymbolRepeatSpread();
     void gradientSymbolRotate();
+    void opacityWithDataDefinedColor();
+    void dataDefinedOpacity();
     void gradientSymbolFromQml();
+
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
@@ -249,6 +247,27 @@ void TestQgsGradients::gradientSymbolRotate()
   mGradientFill->setAngle( 0 );
 }
 
+void TestQgsGradients::opacityWithDataDefinedColor()
+{
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mFillSymbol->setOpacity( 0.5 );
+
+  bool result = imageCheck( QStringLiteral( "gradient_opacityddcolor" ) );
+  QVERIFY( result );
+}
+
+void TestQgsGradients::dataDefinedOpacity()
+{
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mFillSymbol->setOpacity( 1.0 );
+  mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+
+  bool result = imageCheck( QStringLiteral( "gradient_ddopacity" ) );
+  QVERIFY( result );
+}
+
 void TestQgsGradients::gradientSymbolFromQml()
 {
   mReport += QLatin1String( "<h2>Gradient symbol from QML test</h2>\n" );
@@ -258,8 +277,6 @@ void TestQgsGradients::gradientSymbolFromQml()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QVERIFY( imageCheck( "gradient_from_qml" ) );
 }
-
-
 
 //
 // Private helper functions not called directly by CTest

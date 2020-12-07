@@ -28,31 +28,38 @@ class QgsServerInterface;
 
 /**
  * \ingroup server
- * QgsServiceModule
- * Class defining the service module interface for QGIS server services
+ * \class QgsServiceModule
+ * \brief Class defining the service module interface for QGIS server services
  *
  * This class acts as a service registrar for services.
  *
- * For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point
+ * For dynamic modules, a QgsServiceModule instance is returned from the
+ * QGS_ServiceModule_Init() entry point.
+ *
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServiceModule
 {
 
   public:
 
-    //! Constructor
-    QgsServiceModule();
-
-    //! Destructor
-    virtual ~QgsServiceModule() = 0;
+    /**
+     * Default constructor for QgsServiceModule.
+     */
+    QgsServiceModule() = default;
 
     /**
-     * Ask module to register all provided services
-     * \param registry QgsServiceRegistry
+     * Default destructor for QgsServiceModule.
+     */
+    virtual ~QgsServiceModule() = default;
+
+    /**
+     * Asks the module to register all provided services.
+     * \param registry Service registry
+     * \param serverIface Interface for plugins
      */
     virtual void registerSelf( QgsServiceRegistry &registry,
                                QgsServerInterface *serverIface = nullptr ) = 0;
 };
 
 #endif
-

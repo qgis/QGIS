@@ -26,7 +26,12 @@ MARK_AS_ADVANCED(PYTHON_EXECUTABLE)
 MACRO(ADD_PYTHON_TEST TESTNAME FILENAME)
   GET_SOURCE_FILE_PROPERTY(loc ${FILENAME} LOCATION)
   GET_SOURCE_FILE_PROPERTY(pyenv ${FILENAME} PYTHONPATH)
-
+  #Avoid "NOTFOUND" string when setting LD_LIBRARY_PATH later
+  if(EXISTS "${pyenv}")
+    set(pyenv "${pyenv}:")
+  else()
+    set(pyenv "")
+  endif()
   IF(WIN32)
     STRING(REGEX REPLACE ":" " " wo_semicolon "${ARGN}")
     IF(USING_NINJA OR USING_NMAKE)
@@ -48,7 +53,7 @@ MESSAGE(\"PATH:\$ENV{PATH}\")
     STRING(REGEX REPLACE ";" " " wo_semicolon "${ARGN}")
     FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
 SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}\")
-SET(ENV{LD_LIBRARY_PATH} \"${pyenv}:${QGIS_OUTPUT_DIRECTORY}/lib:\$ENV{LD_LIBRARY_PATH}\")
+SET(ENV{LD_LIBRARY_PATH} \"${pyenv}${QGIS_OUTPUT_DIRECTORY}/lib:\$ENV{LD_LIBRARY_PATH}\")
 SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/:${QGIS_OUTPUT_DIRECTORY}/python/plugins:${CMAKE_SOURCE_DIR}/tests/src/python:\$ENV{PYTHONPATH}\")
 MESSAGE(\"export LD_LIBRARY_PATH=\$ENV{LD_LIBRARY_PATH}\")
 ")
@@ -62,11 +67,12 @@ MESSAGE(\"export LD_LIBRARY_PATH=\$ENV{LD_LIBRARY_PATH}\")
 ")
   ENDFOREACH(_in)
 
+  SET (PYTHON_TEST_WRAPPER "" CACHE STRING "Wrapper command for python tests (e.g. `timeout -sSIGSEGV 55s` to segfault after 55 seconds)")
   FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
 MESSAGE(\"export PYTHONPATH=\$ENV{PYTHONPATH}\")
-MESSAGE(STATUS \"Running ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
+MESSAGE(STATUS \"Running ${PYTHON_TEST_WRAPPER} ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
 EXECUTE_PROCESS(
-  COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}
+  COMMAND ${PYTHON_TEST_WRAPPER} ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}
   RESULT_VARIABLE import_res
 )
 # Pass the output back to ctest

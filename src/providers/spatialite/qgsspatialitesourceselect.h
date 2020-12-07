@@ -22,6 +22,7 @@
 #include "qgsspatialitetablemodel.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QThread>
 #include <QMap>
@@ -34,14 +35,15 @@ class QStringList;
 class QTableWidgetItem;
 class QPushButton;
 
-/** \class QgsSpatiaLiteSourceSelect
+/**
+ * \class QgsSpatiaLiteSourceSelect
  * \brief Dialog to create connections and add tables from SpatiaLite.
  *
  * This dialog allows the user to define and save connection information
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -51,13 +53,11 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     static bool newConnection( QWidget *parent );
 
     //! Constructor
-    QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsSpatiaLiteSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsSpatiaLiteSourceSelect();
+    ~QgsSpatiaLiteSourceSelect() override;
     //! Populate the connection list combo box
     void populateConnectionList();
-    //! Determines the tables the user selected and closes the dialog
-    void addTables();
     //! String list containing the selected tables
     QStringList selectedTables();
     //! Connection info (DB-path)
@@ -67,36 +67,36 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
   public slots:
 
-    /** Connects to the database using the stored connection parameters.
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
+
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
-    void on_btnConnect_clicked();
+    void btnConnect_clicked();
     void buildQuery();
-    void addClicked();
+    void addButtonClicked() override;
     void updateStatistics();
     //! Opens the create connection dialog to build a new connection
-    void on_btnNew_clicked();
+    void btnNew_clicked();
     //! Deletes the selected connection
-    void on_btnDelete_clicked();
-    void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString &text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
-    void on_cbxAllowGeometrylessTables_stateChanged( int );
+    void btnDelete_clicked();
+    void mSearchGroupBox_toggled( bool );
+    void mSearchTableEdit_textChanged( const QString &text );
+    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
+    void mSearchModeComboBox_currentIndexChanged( const QString &text );
+    void cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex &index );
-    void on_cmbConnections_activated( int );
+    void cmbConnections_activated( int );
     void setLayerType( const QString &table, const QString &column, const QString &type );
-    void on_mTablesTreeView_clicked( const QModelIndex &index );
-    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void mTablesTreeView_clicked( const QModelIndex &index );
+    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
-
-  signals:
-    void connectionsChanged();
-    void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
+    void showHelp();
 
   private:
     enum Columns
@@ -128,9 +128,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
     QString layerURI( const QModelIndex &index );
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QPushButton *mStatsButton = nullptr;
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

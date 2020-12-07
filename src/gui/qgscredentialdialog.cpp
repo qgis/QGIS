@@ -20,9 +20,21 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QPushButton>
+#include <QMenu>
+#include <QToolButton>
 #include <QThread>
+#include <QTimer>
+#include <QGlobalStatic>
+
+QMutex QgsCredentialDialog::sIgnoredConnectionsCacheMutex;
+typedef QSet<QString> IgnoredConnectionsSet;
+
+//! Temporary cache for ignored connections, to avoid GUI freezing by multiple credentials requests to the same connection
+Q_GLOBAL_STATIC( IgnoredConnectionsSet, sIgnoredConnectionsCache );
+
 
 static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEdit" ) )
 {
@@ -31,9 +43,12 @@ static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEd
 
 QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mOkButton( nullptr )
+
 {
   setupUi( this );
+  connect( leMasterPass, &QgsPasswordLineEdit::textChanged, this, &QgsCredentialDialog::leMasterPass_textChanged );
+  connect( leMasterPassVerify, &QgsPasswordLineEdit::textChanged, this, &QgsCredentialDialog::leMasterPassVerify_textChanged );
+  connect( chkbxEraseAuthDb, &QCheckBox::toggled, this, &QgsCredentialDialog::chkbxEraseAuthDb_toggled );
   setInstance( this );
   connect( this, &QgsCredentialDialog::credentialsRequested,
            this, &QgsCredentialDialog::requestCredentials,
@@ -41,7 +56,58 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   connect( this, &QgsCredentialDialog::credentialsRequestedMasterPassword,
            this, &QgsCredentialDialog::requestCredentialsMasterPassword,
            Qt::BlockingQueuedConnection );
-  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
+
+  // Setup ignore button
+  mIgnoreButton->setToolTip( tr( "All requests for this connection will be automatically rejected" ) );
+  QMenu *menu = new QMenu( mIgnoreButton );
+  QAction *ignoreTemporarily = new QAction( tr( "Ignore for 10 Seconds" ), menu );
+  ignoreTemporarily->setToolTip( tr( "All requests for this connection will be automatically rejected for 10 seconds" ) );
+  QAction *ignoreForSession = new QAction( tr( "Ignore for Session" ), menu );
+  ignoreForSession->setToolTip( tr( "All requests for this connection will be automatically rejected for the duration of the current session" ) );
+  menu->addAction( ignoreTemporarily );
+  menu->addAction( ignoreForSession );
+  connect( ignoreTemporarily, &QAction::triggered, this, [ = ]
+  {
+    mIgnoreMode = IgnoreTemporarily;
+    mIgnoreButton->setText( ignoreTemporarily->text() );
+    mIgnoreButton->setToolTip( ignoreTemporarily->toolTip() );
+  } );
+  connect( ignoreForSession, &QAction::triggered, this, [ = ]
+  {
+    mIgnoreMode = IgnoreForSession;
+    mIgnoreButton->setText( ignoreForSession->text() );
+    mIgnoreButton->setToolTip( ignoreForSession->toolTip() );
+  } );
+  mIgnoreButton->setText( mIgnoreMode == IgnoreTemporarily ? ignoreTemporarily->text() : ignoreForSession->text() );
+  mIgnoreButton->setToolTip( mIgnoreMode == IgnoreTemporarily ? ignoreTemporarily->toolTip() : ignoreForSession->toolTip() );
+  mIgnoreButton->setMenu( menu );
+  mIgnoreButton->setMaximumHeight( mOkButton->sizeHint().height() );
+
+  // Connect ok and cancel buttons
+  connect( mOkButton, &QPushButton::clicked, this, &QgsCredentialDialog::accept );
+  connect( mCancelButton, &QPushButton::clicked, this, &QgsCredentialDialog::reject );
+
+  // Keep a cache of ignored connections, and ignore them for 10 seconds.
+  connect( mIgnoreButton, &QPushButton::clicked, this, [ = ]( bool )
+  {
+    const QString realm { labelRealm->text() };
+    {
+      QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
+      // Insert the realm in the cache of ignored connections
+      sIgnoredConnectionsCache->insert( realm );
+    }
+    if ( mIgnoreMode == IgnoreTemporarily )
+    {
+      QTimer::singleShot( 10000, nullptr, [ = ]()
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Removing ignored connection from cache: %1" ).arg( realm ), 4 );
+        QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
+        sIgnoredConnectionsCache->remove( realm );
+      } );
+    }
+    accept( );
+  } );
+
   leMasterPass->setPlaceholderText( tr( "Required" ) );
   chkbxPasswordHelperEnable->setText( tr( "Store/update the master password in your %1" )
                                       .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
@@ -53,9 +119,9 @@ bool QgsCredentialDialog::request( const QString &realm, QString &username, QStr
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
   {
-    QgsDebugMsg( "emitting signal" );
+    QgsDebugMsg( QStringLiteral( "emitting signal" ) );
     emit credentialsRequested( realm, &username, &password, message, &ok );
-    QgsDebugMsg( QString( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false", username, password ) );
+    QgsDebugMsg( QStringLiteral( "signal returned %1 (username=%2)" ).arg( ok ? "true" : "false", username ) );
   }
   else
   {
@@ -67,26 +133,37 @@ bool QgsCredentialDialog::request( const QString &realm, QString &username, QStr
 void QgsCredentialDialog::requestCredentials( const QString &realm, QString *username, QString *password, const QString &message, bool *ok )
 {
   Q_ASSERT( qApp->thread() == thread() && thread() == QThread::currentThread() );
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( QStringLiteral( "Entering." ), 4 );
+  {
+    QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
+    if ( sIgnoredConnectionsCache->contains( realm ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Skipping ignored connection: " ) + realm );
+      *ok = false;
+      return;
+    }
+  }
   stackedWidget->setCurrentIndex( 0 );
-
-  chkbxPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled( ) );
+  mIgnoreButton->show();
+  chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
   labelRealm->setText( realm );
   leUsername->setText( *username );
   lePassword->setText( *password );
   labelMessage->setText( message );
   labelMessage->setHidden( message.isEmpty() );
 
-  if ( !leUsername->text().isEmpty() )
+  if ( leUsername->text().isEmpty() )
+    leUsername->setFocus();
+  else
     lePassword->setFocus();
 
   QWidget *activeWindow = qApp->activeWindow();
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
-  QgsDebugMsg( "exec()" );
+  QgsDebugMsgLevel( QStringLiteral( "exec()" ), 4 );
   *ok = exec() == QDialog::Accepted;
-  QgsDebugMsg( QString( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
+  QgsDebugMsgLevel( QStringLiteral( "exec(): %1" ).arg( *ok ? "true" : "false" ), 4 );
 
   QApplication::restoreOverrideCursor();
 
@@ -105,7 +182,7 @@ bool QgsCredentialDialog::requestMasterPassword( QString &password, bool stored 
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
   {
-    QgsDebugMsg( "emitting signal" );
+    QgsDebugMsgLevel( QStringLiteral( "emitting signal" ), 4 );
     emit credentialsRequestedMasterPassword( &password, stored, &ok );
   }
   else
@@ -117,14 +194,16 @@ bool QgsCredentialDialog::requestMasterPassword( QString &password, bool stored 
 
 void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, bool stored, bool *ok )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( QStringLiteral( "Entering." ), 4 );
   stackedWidget->setCurrentIndex( 1 );
+
+  mIgnoreButton->hide();
   leMasterPass->setFocus();
 
   QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
   lblPasswordTitle->setText( titletxt );
 
-  chkbxPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled( ) );
+  chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
 
   leMasterPassVerify->setVisible( !stored );
   lblDontForget->setVisible( !stored );
@@ -149,16 +228,16 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
     s.setWidth( width() );
     resize( s );
 
-    QgsDebugMsg( "exec()" );
+    QgsDebugMsgLevel( QStringLiteral( "exec()" ), 4 );
     *ok = exec() == QDialog::Accepted;
-    QgsDebugMsg( QString( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
+    QgsDebugMsgLevel( QStringLiteral( "exec(): %1" ).arg( *ok ? "true" : "false" ), 4 );
 
     if ( *ok )
     {
       bool passok = !leMasterPass->text().isEmpty();
       if ( passok && stored && !chkbxEraseAuthDb->isChecked() )
       {
-        passok = QgsAuthManager::instance()->verifyMasterPassword( leMasterPass->text() );
+        passok = QgsApplication::authManager()->verifyMasterPassword( leMasterPass->text() );
       }
 
       if ( passok && !stored )
@@ -170,15 +249,15 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
       {
         if ( stored && chkbxEraseAuthDb->isChecked() )
         {
-          QgsAuthManager::instance()->setScheduledAuthDatabaseErase( true );
+          QgsApplication::authManager()->setScheduledAuthDatabaseErase( true );
         }
         else
         {
           *password = leMasterPass->text();
           // Let's store user's preferences to use the password helper
-          if ( chkbxPasswordHelperEnable->isChecked() != QgsAuthManager::instance()->passwordHelperEnabled( ) )
+          if ( chkbxPasswordHelperEnable->isChecked() != QgsApplication::authManager()->passwordHelperEnabled() )
           {
-            QgsAuthManager::instance()->setPasswordHelperEnabled( chkbxPasswordHelperEnable->isChecked() );
+            QgsApplication::authManager()->setPasswordHelperEnabled( chkbxPasswordHelperEnable->isChecked() );
           }
         }
         break;
@@ -225,13 +304,13 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   }
 }
 
-void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
+void QgsCredentialDialog::leMasterPass_textChanged( const QString &pass )
 {
-  leMasterPass->setStyleSheet( QLatin1String( "" ) );
+  leMasterPass->setStyleSheet( QString() );
   bool passok = !pass.isEmpty(); // regardless of new or comparing existing, empty password disallowed
   if ( leMasterPassVerify->isVisible() )
   {
-    leMasterPassVerify->setStyleSheet( QLatin1String( "" ) );
+    leMasterPassVerify->setStyleSheet( QString() );
     passok = passok && ( leMasterPass->text() == leMasterPassVerify->text() );
   }
   mOkButton->setEnabled( passok );
@@ -243,12 +322,12 @@ void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
   }
 }
 
-void QgsCredentialDialog::on_leMasterPassVerify_textChanged( const QString &pass )
+void QgsCredentialDialog::leMasterPassVerify_textChanged( const QString &pass )
 {
   if ( leMasterPassVerify->isVisible() )
   {
-    leMasterPass->setStyleSheet( QLatin1String( "" ) );
-    leMasterPassVerify->setStyleSheet( QLatin1String( "" ) );
+    leMasterPass->setStyleSheet( QString() );
+    leMasterPassVerify->setStyleSheet( QString() );
 
     // empty password disallowed
     bool passok = !pass.isEmpty() && ( leMasterPass->text() == leMasterPassVerify->text() );
@@ -261,7 +340,7 @@ void QgsCredentialDialog::on_leMasterPassVerify_textChanged( const QString &pass
   }
 }
 
-void QgsCredentialDialog::on_chkbxEraseAuthDb_toggled( bool checked )
+void QgsCredentialDialog::chkbxEraseAuthDb_toggled( bool checked )
 {
   if ( checked )
     mOkButton->setEnabled( true );

@@ -15,13 +15,14 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsPointClusterRenderer -V
+
 """
 
 __author__ = 'Nyall Dawson'
 __date__ = 'September 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -42,7 +43,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsPointDisplacementRenderer,
                        QgsMapSettings,
                        QgsProperty,
-                       QgsSymbolLayer
+                       QgsSymbolLayer,
+                       QgsRenderContext
                        )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -181,6 +183,11 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
         result = renderchecker.runTest('expected_cluster_variables')
         self.layer.renderer().setClusterSymbol(old_marker)
         self.assertTrue(result)
+
+    def testUsedAttributes(self):
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+
+        self.assertCountEqual(self.renderer.usedAttributes(ctx), {})
 
 
 if __name__ == '__main__':

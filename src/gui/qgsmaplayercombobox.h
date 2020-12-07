@@ -21,19 +21,19 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgis_gui.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsMapLayerComboBox class is a combo box which displays the list of layers
  * \since QGIS 2.3
  */
 class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 {
     Q_OBJECT
-    Q_FLAGS( QgsMapLayerProxyModel::Filters )
     Q_PROPERTY( QgsMapLayerProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEmptyLayer READ allowEmptyLayer WRITE setAllowEmptyLayer )
     Q_PROPERTY( bool showCrs READ showCrs WRITE setShowCrs )
@@ -42,12 +42,12 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
   public:
 
     /**
-     * \brief QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
+     * \brief QgsMapLayerComboBox creates a combo box to display the list of layers (currently in the registry).
      * The layers can be filtered and/or ordered.
      */
     explicit QgsMapLayerComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! setFilters allows fitering according to layer type and/or geometry type.
+    //! setFilters allows filtering according to layer type and/or geometry type.
     void setFilters( QgsMapLayerProxyModel::Filters filters ) { mProxyModel->setFilters( filters ); }
 
     //! currently used filter on list layers
@@ -61,8 +61,8 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
     /**
      * Sets a list of data providers which should be excluded from the combobox.
-     * \since QGIS 3.0
      * \see excludedProviders()
+     * \since QGIS 3.0
      */
     void setExcludedProviders( const QStringList &providers );
 
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setAllowEmptyLayer( bool allowEmpty );
 
     /**
-     * Returns true if the combo box allows the empty layer ("not set") choice.
+     * Returns TRUE if the combo box allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
      * \since QGIS 3.0
      */
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setShowCrs( bool showCrs );
 
     /**
-     * Returns true if the combo box shows the layer's CRS.
+     * Returns TRUE if the combo box shows the layer's CRS.
      * \see setShowCrs()
      * \since QGIS 3.0
      */
@@ -111,21 +111,23 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setAdditionalItems( const QStringList &items );
 
     /**
-     * Return the list of additional (non map layer) items included at the end of the combo box.
+     * Returns the list of additional (non map layer) items included at the end of the combo box.
      * \see setAdditionalItems()
      * \since QGIS 3.0
      */
     QStringList additionalItems() const;
 
-    /** Returns the current layer selected in the combo box.
+    /**
+     * Returns the current layer selected in the combo box.
      * \see layer
      */
     QgsMapLayer *currentLayer() const;
 
-    /** Return the layer currently shown at the specified index within the combo box.
+    /**
+     * Returns the layer currently shown at the specified index within the combo box.
      * \param layerIndex position of layer to return
-     * \since QGIS 2.10
      * \see currentLayer
+     * \since QGIS 2.10
      */
     QgsMapLayer *layer( int layerIndex ) const;
 
@@ -134,8 +136,15 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void setLayer( QgsMapLayer *layer );
 
   signals:
-    //! layerChanged this signal is emitted whenever the currently selected layer changes
+    //! Emitted whenever the currently selected layer changes.
     void layerChanged( QgsMapLayer *layer );
+
+  protected:
+
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
   protected slots:
     void indexChanged( int i );
@@ -143,6 +152,16 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
   private:
     QgsMapLayerProxyModel *mProxyModel = nullptr;
+    bool mDragActive = false;
+    bool mHighlight = false;
+
+    /**
+     * Returns a map layer, compatible with the filters set for the combo box, from
+     * the specified mime \a data (if possible!).
+     */
+    QgsMapLayer *compatibleMapLayerFromMimeData( const QMimeData *data ) const;
+
+    friend class QgsProcessingMapLayerComboBox;
 };
 
 #endif // QGSMAPLAYERCOMBOBOX_H

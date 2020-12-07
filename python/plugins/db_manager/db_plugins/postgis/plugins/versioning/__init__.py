@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
+
 # The load function is called when the "db" database or either one of its
 # children db objects (table o schema) is selected by the user.
 # @param db is the selected database
@@ -31,7 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 
 def load(db, mainwindow):
     # add the action to the DBManager menu
-    action = QAction(QIcon(), QApplication.translate("DBManagerPlugin", "&Versioning"), db)
+    action = QAction(QIcon(), QApplication.translate("DBManagerPlugin", "&Change Logging…"), db)
     mainwindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"), run)
 
 

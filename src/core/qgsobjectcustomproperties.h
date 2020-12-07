@@ -25,7 +25,8 @@
 class QDomDocument;
 class QDomNode;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
  * in \verbatim <customproperties> \endverbatim element.
  *
@@ -34,30 +35,58 @@ class QDomNode;
 class CORE_EXPORT QgsObjectCustomProperties
 {
   public:
-    QgsObjectCustomProperties();
 
-    //! Return list of stored keys
+    /**
+     * Constructor for QgsObjectCustomProperties.
+     */
+    QgsObjectCustomProperties() = default;
+
+    /**
+     * Returns a list of all stored keys.
+     */
     QStringList keys() const;
 
-    //! Add an entry to the store. If the entry with the keys exists already, it will be overwritten
+    /**
+     * Add an entry to the store with the specified \a key.
+     *
+     * If an entry with the same \a key exists already, it will be overwritten.
+     */
     void setValue( const QString &key, const QVariant &value );
 
-    //! Return value for the given key. If the key is not stored, default value will be used
+    /**
+     * Returns the value for the given \a key.
+     *
+     * If the \a key is not present in the properties, the \a defaultValue will be returned.
+     */
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
-    //! Remove a key (entry) from the store
+    /**
+     * Removes a \a key (entry) from the store.
+     */
     void remove( const QString &key );
 
+    /**
+     * Returns TRUE if the properties contains a \a key with the specified name.
+     *
+     * \since QGIS 3.14
+     */
+    bool contains( const QString &key ) const;
 
-    /** Read store contents from XML
-      \param parentNode node to read from
-      \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
+    /**
+     * Read store contents from an XML node.
+     * \param parentNode node to read from
+     * \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
+     *
+     * \see writeXml()
      */
     void readXml( const QDomNode &parentNode, const QString &keyStartsWith = QString() );
 
-    //! Write store contents to XML
+    /**
+     * Writes the store contents to an XML node.
+     *
+     * \see readXml()
+     */
     void writeXml( QDomNode &parentNode, QDomDocument &doc ) const;
-
 
   protected:
     QMap<QString, QVariant> mMap;

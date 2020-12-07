@@ -1,8 +1,0 @@
-v.lrs.where
-Finds line id and real km+offset for given points in vector map using linear reference system. 
-Vector (v.*)
-ParameterVector|lines|Input vector map containing lines|1|False
-ParameterVector|points|Input vector map containing reference points|0|False
-ParameterTable|rstable|Name of the reference system table|False
-ParameterNumber|thresh|Maximum distance of point to line allowed|0|None|1000|True
-OutputFile|output|LRS Points

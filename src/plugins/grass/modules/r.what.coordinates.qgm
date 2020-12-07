@@ -6,14 +6,14 @@
 	<flag key="f" />
 	<flag key="c" />
 	<flag key="i" />
-	<option key="input" version_max="6.4"/>
-	<option key="map" version_min="7.0"/>
-	<option key="east_north" version_max="6.4" />
-	<option key="coordinates" version_min="7.0" />
-	<file key="output" type="new" version_min="7.0" />
+
+	<option key="map"/>
+
+	<option key="coordinates" />
+	<file key="output" type="new" />
 	<option key="cache" advanced="yes"/>
-	<option key="null" advanced="yes" version_max="6.4" />
-	<option key="null_value" advanced="yes" version_min="7.0" />
-	<option key="fs" advanced="yes" version_max="6.4" />
-	<option key="separator" advanced="yes" version_min="7.0" />
+
+	<option key="null_value" advanced="yes" />
+
+	<option key="separator" advanced="yes" />
 </qgisgrassmodule>

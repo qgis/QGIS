@@ -21,7 +21,9 @@
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeaturesource.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
+#include <QPointer>
 #include <QSet>
 #include <memory>
 
@@ -42,21 +44,23 @@ class QgsVectorLayerFeatureIterator;
 % End
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
 
-    /** Constructor for QgsVectorLayerFeatureSource.
+    /**
+     * Constructor for QgsVectorLayerFeatureSource.
      * \param layer source layer
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 
-    ~QgsVectorLayerFeatureSource();
+    ~QgsVectorLayerFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
 
     friend class QgsVectorLayerFeatureIterator SIP_SKIP;
 
@@ -74,6 +78,13 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      */
     QgsCoordinateReferenceSystem crs() const;
 
+    /**
+     * Returns the layer id of the source layer.
+     *
+     * \since QGIS 3.4
+     */
+    QString id() const;
+
   protected:
 
     QgsAbstractFeatureSource *mProviderFeatureSource = nullptr;
@@ -83,6 +94,10 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
 
     QgsFields mFields;
+
+    QString mId;
+
+    QgsExpressionContextScope mLayerScope;
 
     bool mHasEditBuffer;
 
@@ -99,24 +114,26 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsCoordinateReferenceSystem mCrs;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {
   public:
     QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsVectorLayerFeatureIterator();
+    ~QgsVectorLayerFeatureIterator() override;
 
     //! reset the iterator to the starting position
-    virtual bool rewind() override;
+    bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close() override;
+    bool close() override;
 
-    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override SIP_SKIP;
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override SIP_SKIP;
 
-    /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
+    /**
+     * Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
      */
     struct CORE_EXPORT FetchJoinInfo
@@ -133,16 +150,20 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     };
 
 
-  protected:
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool isValid() const override;
 
-    //! Overrides default method as we only need to filter features in the edit buffer
-    //! while for others filtering is left to the provider implementation.
-    virtual bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
+  protected:
+    //! fetch next feature, return TRUE on success
+    bool fetchFeature( QgsFeature &feature ) override;
+
+    /**
+     * Overrides default method as we only need to filter features in the edit buffer
+     * while for others filtering is left to the provider implementation.
+     */
+    bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
+    bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
     //! \note not available in Python bindings
     void rewindEditBuffer() SIP_SKIP;
@@ -177,28 +198,32 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
      * Includes
-     *  - Joined fields
-     *  - Expression fields
+     *
+     * - Joined fields
+     * - Expression fields
      *
      * \param f The feature will be modified
      * \note not available in Python bindings
      */
     void addVirtualAttributes( QgsFeature &f ) SIP_SKIP;
 
-    /** Adds an expression based attribute to a feature
+    /**
+     * Adds an expression based attribute to a feature
      * \param f feature
      * \param attrIndex attribute index
-     * \since QGIS 2.14
      * \note not available in Python bindings
+     * \since QGIS 2.14
      */
     void addExpressionAttribute( QgsFeature &f, int attrIndex ) SIP_SKIP;
 
-    /** Update feature with uncommitted attribute updates.
+    /**
+     * Update feature with uncommitted attribute updates.
      * \note not available in Python bindings
      */
     void updateChangedAttributes( QgsFeature &f ) SIP_SKIP;
 
-    /** Update feature with uncommitted geometry updates.
+    /**
+     * Update feature with uncommitted geometry updates.
      * \note not available in Python bindings
      */
     void updateFeatureGeometry( QgsFeature &f ) SIP_SKIP;
@@ -218,8 +243,10 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
 
-    /** Information about joins used in the current select() statement.
-      Allows faster mapping of attribute ids compared to mVectorJoins */
+    /**
+     * Information about joins used in the current select() statement.
+     * Allows faster mapping of attribute ids compared to mVectorJoins.
+    */
     QMap<const QgsVectorLayerJoinInfo *, QgsVectorLayerFeatureIterator::FetchJoinInfo> mFetchJoinInfo;
 
     QMap<int, QgsExpression *> mExpressionFieldInfo;
@@ -231,9 +258,10 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
 #endif
 
+    void createExpressionContext();
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
-    QgsInterruptionChecker *mInterruptionChecker = nullptr;
+    QgsFeedback *mInterruptionChecker = nullptr;
 
     QList< int > mPreparedFields;
     QList< int > mFieldsToPrepare;
@@ -242,13 +270,13 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QList< FetchJoinInfo > mOrderedJoinInfoList;
 
     /**
-     * Will always return true. We assume that ordering has been done on provider level already.
+     * Will always return TRUE. We assume that ordering has been done on provider level already.
      *
      */
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     //! returns whether the iterator supports simplify geometries on provider side
-    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
+    bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     void createOrderedJoinList();
 
@@ -261,6 +289,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * Checks a feature's geometry for validity, if requested in feature request.
      */
     bool checkGeometryValidity( const QgsFeature &feature );
+
+    bool mDelegatedOrderByToProvider = false;
 };
 
 
@@ -271,7 +301,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
  * QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
+class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource, public QgsExpressionContextScopeGenerator
 {
   public:
 
@@ -282,11 +312,14 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
      */
     QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
-    virtual QgsCoordinateReferenceSystem sourceCrs() const override;
-    virtual QgsFields fields() const override;
-    virtual QgsWkbTypes::Type wkbType() const override;
-    virtual long featureCount() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    QgsCoordinateReferenceSystem sourceCrs() const override;
+    QgsFields fields() const override;
+    QgsWkbTypes::Type wkbType() const override;
+    long featureCount() const override;
+    QString sourceName() const override;
+    QgsExpressionContextScope *createExpressionContextScope() const override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
   private:
 
@@ -294,7 +327,36 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
     mutable QgsVectorLayerFeatureSource mSource;
     QgsFeatureIds mSelectedFeatureIds;
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QString mName;
+    QPointer< QgsVectorLayer > mLayer;
 
 };
+
+///@cond PRIVATE
+
+#ifndef SIP_RUN
+class QgsVectorLayerSelectedFeatureIterator : public QgsAbstractFeatureIterator
+{
+  public:
+
+    QgsVectorLayerSelectedFeatureIterator( const QgsFeatureIds &selectedFeatureIds,
+                                           const QgsFeatureRequest &request,
+                                           QgsVectorLayerFeatureSource &source );
+
+    bool rewind() override;
+    bool close() override;
+
+  protected:
+    bool fetchFeature( QgsFeature &f ) override;
+
+  private:
+    QgsFeatureIds mSelectedFeatureIds;
+    QgsFeatureIterator mIterator;
+
+};
+
+#endif
+
+///@endcond
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H

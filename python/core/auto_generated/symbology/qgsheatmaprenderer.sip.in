@@ -1,0 +1,233 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsheatmaprenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsHeatmapRenderer : QgsFeatureRenderer
+{
+%Docstring
+A renderer which draws points as a live heatmap
+
+.. versionadded:: 2.7
+%End
+
+%TypeHeaderCode
+#include "qgsheatmaprenderer.h"
+%End
+  public:
+
+    QgsHeatmapRenderer();
+    ~QgsHeatmapRenderer();
+
+
+    virtual QgsHeatmapRenderer *clone() const /Factory/;
+
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+%Docstring
+
+.. note::
+
+   symbolForFeature2 in Python bindings
+%End
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
+
+%Docstring
+
+.. note::
+
+   symbol2 in Python bindings
+%End
+    virtual QString dump() const;
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a new heatmap renderer instance from XML
+%End
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
+    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
+    virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
+
+
+
+    QgsColorRamp *colorRamp() const;
+%Docstring
+Returns the color ramp used for shading the heatmap.
+
+:return: color ramp for heatmap
+
+.. seealso:: :py:func:`setColorRamp`
+%End
+
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+Sets the color ramp to use for shading the heatmap.
+
+:param ramp: color ramp for heatmap. Ownership of ramp is transferred to the renderer.
+
+.. seealso:: :py:func:`colorRamp`
+%End
+
+    double radius() const;
+%Docstring
+Returns the radius for the heatmap
+
+:return: heatmap radius
+
+.. seealso:: :py:func:`setRadius`
+
+.. seealso:: :py:func:`radiusUnit`
+
+.. seealso:: :py:func:`radiusMapUnitScale`
+%End
+
+    void setRadius( const double radius );
+%Docstring
+Sets the radius for the heatmap
+
+:param radius: heatmap radius
+
+.. seealso:: :py:func:`radius`
+
+.. seealso:: :py:func:`setRadiusUnit`
+
+.. seealso:: :py:func:`setRadiusMapUnitScale`
+%End
+
+    QgsUnitTypes::RenderUnit radiusUnit() const;
+%Docstring
+Returns the units used for the heatmap's radius
+
+:return: units for heatmap radius
+
+.. seealso:: :py:func:`radius`
+
+.. seealso:: :py:func:`setRadiusUnit`
+
+.. seealso:: :py:func:`radiusMapUnitScale`
+%End
+
+    void setRadiusUnit( const QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units used for the heatmap's radius
+
+:param unit: units for heatmap radius
+
+.. seealso:: :py:func:`radiusUnit`
+
+.. seealso:: :py:func:`setRadius`
+
+.. seealso:: :py:func:`radiusMapUnitScale`
+%End
+
+    const QgsMapUnitScale &radiusMapUnitScale() const;
+%Docstring
+Returns the map unit scale used for the heatmap's radius
+
+:return: map unit scale for heatmap's radius
+
+.. seealso:: :py:func:`radius`
+
+.. seealso:: :py:func:`radiusUnit`
+
+.. seealso:: :py:func:`setRadiusMapUnitScale`
+%End
+
+    void setRadiusMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit scale used for the heatmap's radius
+
+:param scale: map unit scale for heatmap's radius
+
+.. seealso:: :py:func:`setRadius`
+
+.. seealso:: :py:func:`setRadiusUnit`
+
+.. seealso:: :py:func:`radiusMapUnitScale`
+%End
+
+    double maximumValue() const;
+%Docstring
+Returns the maximum value used for shading the heatmap.
+
+:return: maximum value for heatmap shading. If 0, then maximum value will be automatically
+         calculated.
+
+.. seealso:: :py:func:`setMaximumValue`
+%End
+
+    void setMaximumValue( const double value );
+%Docstring
+Sets the maximum value used for shading the heatmap.
+
+:param value: maximum value for heatmap shading. Set to 0 for automatic calculation of
+              maximum value.
+
+.. seealso:: :py:func:`maximumValue`
+%End
+
+    double renderQuality() const;
+%Docstring
+Returns the render quality used for drawing the heatmap.
+
+:return: render quality. A value of 1 indicates maximum quality, and increasing the
+         value will result in faster drawing but lower quality rendering.
+
+.. seealso:: :py:func:`setRenderQuality`
+%End
+
+    void setRenderQuality( const int quality );
+%Docstring
+Sets the render quality used for drawing the heatmap.
+
+:param quality: render quality. A value of 1 indicates maximum quality, and increasing the
+                value will result in faster drawing but lower quality rendering.
+
+.. seealso:: :py:func:`renderQuality`
+%End
+
+    QString weightExpression() const;
+%Docstring
+Returns the expression used for weighting points when generating the heatmap.
+
+:return: point weight expression. If empty, all points are equally weighted.
+
+.. seealso:: :py:func:`setWeightExpression`
+%End
+
+    void setWeightExpression( const QString &expression );
+%Docstring
+Sets the expression used for weighting points when generating the heatmap.
+
+:param expression: point weight expression. If set to empty, all points are equally weighted.
+
+.. seealso:: :py:func:`weightExpression`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsheatmaprenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

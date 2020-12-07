@@ -18,7 +18,7 @@
 #include "../qgisplugin.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgsvectorlayer.h"
+#include "qgseditformconfig.h"
 #include <QObject>
 
 class QgsGrassTools;
@@ -29,6 +29,7 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTool;
 class QgsRubberBand;
+class QgsVectorLayer;
 
 class QAction;
 class QIcon;
@@ -37,7 +38,7 @@ class QToolBar;
 
 /**
 * \class QgsGrassPlugin
-* \brief OpenModeller plugin for QGIS
+* \brief OpenModeller plugin for QGIS  //#spellok
 *
 */
 class QgsGrassPlugin : public QObject, public QgisPlugin
@@ -75,18 +76,18 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     virtual QString category();
 
     /**
-     * Return the plugin type
+     * Returns the plugin type
      */
     virtual int type();
 
-    virtual ~QgsGrassPlugin();
+    ~QgsGrassPlugin() override;
 
-    //! Get an icon from the active theme if possible
+    //! Gets an icon from the active theme if possible
     static QIcon getThemeIcon( const QString &name );
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! unload the plugin
     void unload() override;
     //! show the help document
@@ -115,8 +116,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void newVector();
     //! Read project
     void projectRead();
-    //! New project
-    void newProject();
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString themeName );
     void setTransform();

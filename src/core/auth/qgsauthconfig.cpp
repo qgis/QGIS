@@ -23,6 +23,8 @@
 #include <QCryptographicHash>
 #include <QUrl>
 
+#include "qgsauthcertutils.h"
+
 
 //////////////////////////////////////////////
 // QgsAuthMethodConfig
@@ -91,9 +93,9 @@ void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
     return;
   }
 
-  QStringList confs( configstr.split( CONFIG_SEP ) );
+  const QStringList confs( configstr.split( CONFIG_SEP ) );
 
-  Q_FOREACH ( const QString &conf, confs )
+  for ( const auto &conf : confs )
   {
     if ( conf.contains( CONFIG_KEY_SEP ) )
     {
@@ -147,7 +149,7 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
     if ( url.isValid() )
     {
       res = QStringLiteral( "%1://%2:%3%4" ).arg( url.scheme(), url.host() )
-            .arg( url.port() ).arg( withpath ? url.path() : QLatin1String( "" ) );
+            .arg( url.port() ).arg( withpath ? url.path() : QString() );
     }
   }
   *resource = res;
@@ -172,25 +174,6 @@ QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
   setClientKey( clientKey );
 }
 
-static QByteArray fileData_( const QString &path, bool astext = false )
-{
-  QByteArray data;
-  QFile file( path );
-  if ( file.exists() )
-  {
-    QFile::OpenMode openflags( QIODevice::ReadOnly );
-    if ( astext )
-      openflags |= QIODevice::Text;
-    bool ret = file.open( openflags );
-    if ( ret )
-    {
-      data = file.readAll();
-    }
-    file.close();
-  }
-  return data;
-}
-
 const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
     const QString &keyPath,
     const QString &keyPass,
@@ -200,35 +183,16 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
   if ( !certPath.isEmpty() && !keyPath.isEmpty()
        && ( certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
             || certPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
-       && ( keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
-            || keyPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
        && QFile::exists( certPath ) && QFile::exists( keyPath )
      )
   {
     // client cert
     bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QSslCertificate clientcert( fileData_( certPath, pem ), pem ? QSsl::Pem : QSsl::Der );
+    QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath ), pem ? QSsl::Pem : QSsl::Der );
     pkibundle.setClientCert( clientcert );
 
-    // client key
-    bool pem_key = keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QByteArray keydata( fileData_( keyPath, pem_key ) );
-
     QSslKey clientkey;
-    clientkey = QSslKey( keydata,
-                         QSsl::Rsa,
-                         pem_key ? QSsl::Pem : QSsl::Der,
-                         QSsl::PrivateKey,
-                         !keyPass.isNull() ? keyPass.toUtf8() : QByteArray() );
-    if ( clientkey.isNull() )
-    {
-      // try DSA algorithm, since Qt can't seem to determine it otherwise
-      clientkey = QSslKey( keydata,
-                           QSsl::Dsa,
-                           pem_key ? QSsl::Pem : QSsl::Der,
-                           QSsl::PrivateKey,
-                           !keyPass.isNull() ? keyPass.toUtf8() : QByteArray() );
-    }
+    clientkey = QgsAuthCertUtils::keyFromFile( keyPath, keyPass );
     pkibundle.setClientKey( clientkey );
     if ( !caChain.isEmpty() )
     {
@@ -255,7 +219,7 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
     QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
     if ( res == QCA::ConvertGood && !bundle.isNull() )
     {
-      QCA::CertificateChain cert_chain( bundle.certificateChain() );
+      const QCA::CertificateChain cert_chain( bundle.certificateChain() );
       QSslCertificate cert( cert_chain.primary().toPEM().toLatin1() );
       if ( !cert.isNull() )
       {
@@ -270,7 +234,7 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
       if ( cert_chain.size() > 1 )
       {
         QList<QSslCertificate> ca_chain;
-        Q_FOREACH ( const QCA::Certificate &ca_cert, cert_chain )
+        for ( const auto &ca_cert : cert_chain )
         {
           if ( ca_cert != cert_chain.primary() )
           {
@@ -292,7 +256,7 @@ bool QgsPkiBundle::isNull() const
 
 bool QgsPkiBundle::isValid() const
 {
-  return ( !isNull() && mCert.isValid() );
+  return ( !isNull() && QgsAuthCertUtils::certIsViable( mCert ) );
 }
 
 const QString QgsPkiBundle::certId() const
@@ -329,10 +293,12 @@ void QgsPkiBundle::setClientKey( const QSslKey &certkey )
 
 QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                                         const QSslCertificate &cert,
-                                        const QSslKey &certkey )
+                                        const QSslKey &certkey,
+                                        const QList<QSslCertificate> &cachain )
   : mConfig( config )
   , mCert( cert )
   , mCertKey( certkey )
+  , mCaChain( cachain )
 {
 }
 
@@ -352,9 +318,6 @@ QgsAuthConfigSslServer::QgsAuthConfigSslServer()
   : mSslHostPort( QString() )
   , mSslCert( QSslCertificate() )
   , mSslIgnoredErrors( QList<QSslError::SslError>() )
-  , mSslPeerVerifyMode( QSslSocket::VerifyPeer )
-  , mSslPeerVerifyDepth( 0 )
-  , mVersion( 1 )
 {
   // TODO: figure out if Qt 5 has changed yet again, e.g. TLS-only
   mQtVersion = 480;
@@ -366,7 +329,8 @@ QgsAuthConfigSslServer::QgsAuthConfigSslServer()
 const QList<QSslError> QgsAuthConfigSslServer::sslIgnoredErrors() const
 {
   QList<QSslError> errors;
-  Q_FOREACH ( QSslError::SslError errenum, sslIgnoredErrorEnums() )
+  const QList<QSslError::SslError> ignoredErrors = sslIgnoredErrorEnums();
+  for ( QSslError::SslError errenum : ignoredErrors )
   {
     errors << QSslError( errenum );
   }
@@ -381,11 +345,11 @@ const QString QgsAuthConfigSslServer::configString() const
   configlist << QString::number( static_cast< int >( mSslProtocol ) );
 
   QStringList errs;
-  Q_FOREACH ( const QSslError::SslError &err, mSslIgnoredErrors )
+  for ( auto err : mSslIgnoredErrors )
   {
     errs << QString::number( static_cast< int >( err ) );
   }
-  configlist << errs.join( QStringLiteral( "~~" ) );
+  configlist << errs.join( QLatin1String( "~~" ) );
 
   configlist << QStringLiteral( "%1~~%2" ).arg( static_cast< int >( mSslPeerVerifyMode ) ).arg( mSslPeerVerifyDepth );
 
@@ -408,8 +372,8 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
   mSslProtocol = static_cast< QSsl::SslProtocol >( configlist.at( 2 ).toInt() );
 
   mSslIgnoredErrors.clear();
-  QStringList errs( configlist.at( 3 ).split( QStringLiteral( "~~" ) ) );
-  Q_FOREACH ( const QString &err, errs )
+  const QStringList errs( configlist.at( 3 ).split( QStringLiteral( "~~" ) ) );
+  for ( const auto &err : errs )
   {
     mSslIgnoredErrors.append( static_cast< QSslError::SslError >( err.toInt() ) );
   }

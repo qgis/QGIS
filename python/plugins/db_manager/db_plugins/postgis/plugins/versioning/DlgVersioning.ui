@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add versioning support to a table</string>
+   <string>Add Change Logging Support to a Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0" rowspan="2">
@@ -19,60 +19,50 @@
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Table is expected to be empty, with a primary key.</string>
+        <string>Table should be empty, with a primary key</string>
        </property>
       </widget>
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="1">
+        <widget class="QComboBox" name="cboSchema"/>
+       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Schema</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="cboSchema"/>
-       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Table</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QComboBox" name="cboTable"/>
        </item>
-       <item row="0" column="2" rowspan="2">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Preferred</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>48</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </item>
      <item>
       <widget class="QCheckBox" name="chkCreateCurrent">
        <property name="text">
-        <string>create a view with current content (&lt;TABLE&gt;_current)</string>
+        <string>Create a view with current content (&lt;TABLE&gt;_current)</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -88,10 +78,10 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>Prim. key</string>
+           <string>Primary key</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -108,7 +98,7 @@
            <string>Start time</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -125,7 +115,7 @@
            <string>End time</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -133,6 +123,20 @@
          <widget class="QLineEdit" name="editEnd">
           <property name="text">
            <string>time_end</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>User role</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="editUser">
+          <property name="text">
+           <string>user_role</string>
           </property>
          </widget>
         </item>
@@ -157,7 +161,7 @@
    <item row="0" column="1">
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>SQL to be executed:</string>
+      <string>SQL to be executed</string>
      </property>
     </widget>
    </item>

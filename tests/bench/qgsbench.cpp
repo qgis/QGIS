@@ -19,12 +19,12 @@
 #include <cmath>
 #include <ctime>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #ifndef Q_OS_WIN
 #include <sys/resource.h>
 #endif
-#include <time.h>
-#include <math.h>
+#include <ctime>
+#include <cmath>
 
 #include <QFile>
 #include <QFileInfo>
@@ -119,8 +119,7 @@ int getrusage( int who, struct rusage *rusage )
 #endif
 
 QgsBench::QgsBench( int width, int height, int iterations )
-  : QObject()
-  , mWidth( width )
+  : mWidth( width )
   , mHeight( height )
   , mIterations( iterations )
   , mSetExtent( false )
@@ -129,14 +128,10 @@ QgsBench::QgsBench( int width, int height, int iterations )
   , mParallel( false )
 {
 
-  QgsDebugMsg( QString( "mIterations = %1" ).arg( mIterations ) );
+  QgsDebugMsg( QStringLiteral( "mIterations = %1" ).arg( mIterations ) );
 
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgsBench::readProject );
-}
-
-QgsBench::~QgsBench()
-{
 }
 
 bool QgsBench::openProject( const QString &fileName )
@@ -218,8 +213,8 @@ void QgsBench::render()
   mLogMap.insert( QStringLiteral( "revision" ), QGSVERSION );
 
   // Calc stats: user, sys, total
-  double min[4] = {DBL_MAX};
-  double max[4] = { -DBL_MAX};
+  double min[4] = {std::numeric_limits<double>::max()};
+  double max[4] = { std::numeric_limits<double>::lowest()};
   double stdev[4] = {0.};
   double maxdev[4] = {0.};
   double avg[4] = {0.};
@@ -243,12 +238,12 @@ void QgsBench::render()
     {
       for ( int i = 0; i < mTimes.size(); i++ )
       {
-        double d = fabs( avg[t] - mTimes.at( i )[t] );
-        stdev[t] += pow( d, 2 );
+        double d = std::fabs( avg[t] - mTimes.at( i )[t] );
+        stdev[t] += std::pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
 
-      stdev[t] = sqrt( stdev[t] / mTimes.size() );
+      stdev[t] = std::sqrt( stdev[t] / mTimes.size() );
     }
 
     QMap<QString, QVariant> map;
@@ -272,7 +267,7 @@ void QgsBench::saveSnapsot( const QString &fileName )
 
 void QgsBench::printLog( const QString &printTime )
 {
-  std::cout << "iterations: " << mLogMap[QStringLiteral( "iterations" )].toString().toAscii().constData() << std::endl;
+  std::cout << "iterations: " << mLogMap[QStringLiteral( "iterations" )].toString().toLatin1().constData() << std::endl;
 
   bool validPrintTime = false;
   for ( int x = 0; x < 4; ++x )
@@ -281,7 +276,7 @@ void QgsBench::printLog( const QString &printTime )
 
   if ( !validPrintTime )
   {
-    std::cout << "invalid --print option: " << printTime.toAscii().data() << std::endl;
+    std::cout << "invalid --print option: " << printTime.toLatin1().data() << std::endl;
     return;
   }
 
@@ -291,7 +286,7 @@ void QgsBench::printLog( const QString &printTime )
   while ( i != totalMap.end() )
   {
     QString s = printTime + '_' + i.key() + ": " + i.value().toString();
-    std::cout << s.toAscii().constData() << std::endl;
+    std::cout << s.toLatin1().constData() << std::endl;
     ++i;
   }
 }
@@ -307,7 +302,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
     switch ( static_cast< QMetaType::Type >( i.value().type() ) )
     {
       case QMetaType::Int:
-        list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toInt() ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QString::number( i.value().toInt() ) );
         break;
       case QMetaType::Double:
         list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
@@ -322,7 +317,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
     }
     ++i;
   }
-  return space + "{\n" +  list.join( QStringLiteral( ",\n" ) ) + '\n' + space + '}';
+  return space + "{\n" +  list.join( QLatin1String( ",\n" ) ) + '\n' + space + '}';
 }
 
 void QgsBench::saveLog( const QString &fileName )
@@ -332,7 +327,7 @@ void QgsBench::saveLog( const QString &fileName )
     return;
 
   QTextStream out( &file );
-  out << serialize( mLogMap ).toAscii().constData() << '\n';
+  out << serialize( mLogMap ).toLatin1().constData() << '\n';
   file.close();
 }
 

@@ -49,7 +49,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     };
 
     QgsGrassVectorMap( const QgsGrassObject &grassObject );
-    ~QgsGrassVectorMap();
+    ~QgsGrassVectorMap() override;
 
     QgsGrassObject grassObject() const { return mGrassObject; }
     struct Map_info *map() { return mMap; }
@@ -62,8 +62,10 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // number of instances using this map
     int userCount() const;
 
-    /** Get current number of lines.
-     *   \returns number of lines */
+    /**
+     * Gets current number of lines.
+     *   \returns number of lines
+    */
     int numLines();
     int numAreas();
     // 3D map with z coordinates
@@ -88,8 +90,10 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<QgsFeatureId, int> &newCats() { return mNewCats; }
     QMap<int, QList<QgsGrassUndoCommand *> > &undoCommands() { return mUndoCommands; }
 
-    /** Get geometry of line.
-     * \returns geometry (point,line or polygon(GV_FACE)) or 0 */
+    /**
+     * Gets geometry of line.
+     * \returns geometry (point,line or polygon(GV_FACE)) or 0
+    */
     QgsAbstractGeometry *lineGeometry( int id );
     QgsAbstractGeometry *nodeGeometry( int id );
     QgsAbstractGeometry *areaGeometry( int id );
@@ -113,26 +117,34 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     bool closeEdit( bool newMap );
     void clearUndoCommands();
 
-    /** Get layer, layer is created and loaded if not yet.
+    /**
+     * Gets layer, layer is created and loaded if not yet.
      *  \param field
-     *  \returns pointer to layer or 0 if layer doe not exist */
+     *  \returns pointer to layer or 0 if layer doe not exist
+    */
     QgsGrassVectorMapLayer *openLayer( int field );
 
-    /** Close layer and release cached data if there are no more users and close map
+    /**
+     * Close layer and release cached data if there are no more users and close map
      *  if there are no more map users.
-     *  \param layer */
+     *  \param layer
+    */
     void closeLayer( QgsGrassVectorMapLayer *layer );
 
-    /** Update map. Close and reopen vector and refresh layers.
-     *  Instances of QgsGrassProvider are not updated and should call update() method */
+    /**
+     * Update map. Close and reopen vector and refresh layers.
+     *  Instances of QgsGrassProvider are not updated and should call update() method
+    */
     void update();
 
-    /** The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
+    /**
+     * The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool mapOutdated();
 
-    /** The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
+    /**
+     * The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool attributesOutdated();
@@ -140,9 +152,11 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     //! Map description for debugging
     QString toString();
 
-    /** Get topology symbol code
+    /**
+     * Gets topology symbol code
      * \param lid line or area number
-     * \param type geometry type */
+     * \param type geometry type
+    */
     TopoSymbol topoSymbol( int lid );
 
     static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ) ; }
@@ -151,8 +165,10 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
   signals:
 
-    /** Ask all iterators to cancel iteration when possible. Connected to iterators with
-     * Qt::DirectConnection (non blocking) */
+    /**
+     * Ask all iterators to cancel iteration when possible. Connected to iterators with
+     * Qt::DirectConnection (non blocking)
+    */
     void cancelIterators();
 
     //! Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection
@@ -168,7 +184,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QgsGrassObject mGrassObject;
     // true if map is open, once the map is closed, valid is set to false and no more used
     bool mValid;
-    // Indicates if map is open, it may be open but invalide
+    // Indicates if map is open, it may be open but invalid
     bool mOpen;
     // Vector temporally disabled. Necessary for GRASS Tools on Windows
     bool mFrozen;
@@ -183,7 +199,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QDateTime mLastAttributesModified;
     // when attributes are changed
     // map header
-    struct  Map_info *mMap;
+    struct  Map_info *mMap = nullptr;
     // Is 3D, has z coordinates
     bool mIs3d;
     // Vector layers
@@ -218,7 +234,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 class GRASS_LIB_EXPORT QgsGrassVectorMapStore
 {
   public:
-    QgsGrassVectorMapStore();
+    QgsGrassVectorMapStore() = default;
 
     static QgsGrassVectorMapStore *instance();
 
@@ -226,9 +242,11 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     // This is only used for editing test to have an independent map
     static void setStore( QgsGrassVectorMapStore *store ) { sStore = store; }
 
-    /** Open map.
+    /**
+     * Open map.
      *  \param grassObject
-     *  \returns map, the map may be invalide  */
+     *  \returns map, the map may be invalid
+    */
     QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );
 
   private:

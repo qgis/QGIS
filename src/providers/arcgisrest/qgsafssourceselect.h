@@ -20,11 +20,11 @@
 
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgssourceselectdialog.h"
+#include "qgsarcgisservicesourceselect.h"
 
 class QCheckBox;
 
-class QgsAfsSourceSelect: public QgsSourceSelectDialog
+class QgsAfsSourceSelect: public QgsArcGisServiceSourceSelect
 {
     Q_OBJECT
 
@@ -37,7 +37,11 @@ class QgsAfsSourceSelect: public QgsSourceSelectDialog
                          const QString &layerTitle, const QString &layerName,
                          const QString &crs = QString(),
                          const QString &filter = QString(),
-                         const QgsRectangle &bBox = QgsRectangle() ) const override;
+                         const QgsRectangle &bBox = QgsRectangle(), const QString &layerId = QString() ) const override;
+  private:
+    //! A layer is added from the dialog
+    void addServiceLayer( QString uri, QString typeName ) override;
+
 };
 
 #endif // QGSAFSSOURCESELECT_H

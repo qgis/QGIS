@@ -1,10 +1,10 @@
 i.evapo.time
 Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).
 Imagery (i.*)
-ParameterMultipleInput|eta|Names of satellite ETa raster maps [mm/d or cm/d]|3|False
-ParameterMultipleInput|eta_doy|Names of satellite ETa Day of Year (DOY) raster maps [0-400] [-]|3|False
-ParameterMultipleInput|eto|Names of meteorological station ETo raster maps [0-400] [mm/d or cm/d]|3|False
-ParameterNumber|eto_doy_min|Value of DOY for ETo first day|0|366|1|False
-ParameterNumber|start_period|Value of DOY for the first day of the period studied|0|366|1|False
-ParameterNumber|end_period|Value of DOY for the last day of the period studied|0|366|1|False
-OutputRaster|output|Temporal integration
+QgsProcessingParameterMultipleLayers|eta|Names of satellite ETa raster maps [mm/d or cm/d]|3|None|False
+QgsProcessingParameterMultipleLayers|eta_doy|Names of satellite ETa Day of Year (DOY) raster maps [0-400] [-]|3|None|False
+QgsProcessingParameterMultipleLayers|eto|Names of meteorological station ETo raster maps [0-400] [mm/d or cm/d]|3|None|False
+QgsProcessingParameterNumber|eto_doy_min|Value of DOY for ETo first day|QgsProcessingParameterNumber.Double|1|False|0|366
+QgsProcessingParameterNumber|start_period|Value of DOY for the first day of the period studied|QgsProcessingParameterNumber.Double|1.0|False|0.0|366.0
+QgsProcessingParameterNumber|end_period|Value of DOY for the last day of the period studied|QgsProcessingParameterNumber.Double|1.0|False|0.0|366.0
+QgsProcessingParameterRasterDestination|output|Temporal integration

@@ -21,15 +21,19 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+#include "qgsfield.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfeatureiterator.h"
+
 #include <QCache>
 
-#include "qgsvectorlayer.h"
-
+class QgsVectorLayer;
+class QgsFeature;
 class QgsCachedFeatureIterator;
 class QgsAbstractCacheIndex;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class caches features of a given QgsVectorLayer.
  *
  * \brief
@@ -85,7 +89,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
   public:
     QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsVectorLayerCache();
+    ~QgsVectorLayerCache() override;
 
     /**
      * Sets the maximum number of features to keep in the cache. Some features will be removed from
@@ -113,9 +117,9 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void setCacheGeometry( bool cacheGeometry );
 
     /**
-     * Returns true if the cache will fetch and cache feature geometries.
-     * \since QGIS 3.0
+     * Returns TRUE if the cache will fetch and cache feature geometries.
      * \see setCacheGeometry()
+     * \since QGIS 3.0
      */
     bool cacheGeometry() const { return mCacheGeometry; }
 
@@ -142,14 +146,15 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * When enabled, all features will be read into cache. As this feature will most likely
      * be used for slow data sources, be aware, that the call to this method might take a long time.
      *
-     * \param fullCache   True: enable full caching, False: disable full caching
+     * \param fullCache   TRUE: enable full caching, FALSE: disable full caching
      * \note when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
-     * is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
+     * is reset. A full cache rebuild must be performed by calling setFullCache( TRUE ) again.
      * \see hasFullCache()
      */
     void setFullCache( bool fullCache );
 
-    /** Returns true if the cache is complete, ie it contains all features. This may happen as
+    /**
+     * Returns TRUE if the cache is complete, ie it contains all features. This may happen as
      * a result of a call to setFullCache() or by through a feature request which resulted in
      * all available features being cached.
      * \see setFullCache()
@@ -216,30 +221,31 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Check if a certain feature id is cached.
      * \param  fid The feature id to look for
-     * \returns True if this id is in the cache
+     * \returns TRUE if this id is in the cache
      * \see cachedFeatureIds()
      */
-    bool isFidCached( const QgsFeatureId fid ) const;
+    bool isFidCached( QgsFeatureId fid ) const;
 
-    /** Returns the set of feature IDs for features which are cached.
-     * \since QGIS 3.0
+    /**
+     * Returns the set of feature IDs for features which are cached.
      * \see isFidCached()
+     * \since QGIS 3.0
      */
-    QgsFeatureIds cachedFeatureIds() const { return mCache.keys().toSet(); }
+    QgsFeatureIds cachedFeatureIds() const { return qgis::listToSet( mCache.keys() ); }
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      * \param featureId The id of the feature to query
      * \param feature   The result of the operation will be written to this feature
      * \param skipCache Will query the layer regardless if the feature is in the cache already
-     * \returns true in case of success
+     * \returns TRUE in case of success
      */
     bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
 
     /**
      * Removes the feature identified by fid from the cache if present.
      * \param fid The id of the feature to delete
-     * \returns true if the feature was removed, false if the feature id was not found in the cache
+     * \returns TRUE if the feature was removed, FALSE if the feature id was not found in the cache
      */
     bool removeCachedFeature( QgsFeatureId fid );
 
@@ -272,6 +278,12 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     int __len__() const;
     % MethodCode
     sipRes = sipCpp->featureCount();
+    % End
+
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
     % End
 #endif
 
@@ -310,7 +322,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      *
      * \param featureRequest  The QgsFeatureRequest to be answered
-     * \returns                True if the information is being cached, false if not
+     * \returns                TRUE if the information is being cached, FALSE if not
      */
     bool checkInformationCovered( const QgsFeatureRequest &featureRequest );
 
@@ -322,7 +334,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * and to be able to cancel an operation.
      *
      * \param i       The number of already fetched features
-     * \param cancel  A reference to a boolean variable. Set to true and the operation will be canceled.
+     * \param cancel  A reference to a boolean variable. Set to TRUE and the operation will be canceled.
      *
      * \note not available in Python bindings
      */
@@ -335,19 +347,19 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     /**
      * \brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
-     * signal is being emitted, but before the local reference to it has been set to NULL. So call to
+     * signal is being emitted, but before the local reference to it has been set to NULLPTR. So call to
      * layer() will still return a valid pointer for cleanup purpose.
      */
     void cachedLayerDeleted();
 
     /**
-     * \brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
-     *        You should connect to this signal, to be sure, to not get a cached value if querying the cache.
+     * Emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
+     * You should connect to this signal, to be sure, to not get a cached value if querying the cache.
      */
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 
     /**
-     * Is emitted, when a new feature has been added to the layer and this cache.
+     * Emitted when a new feature has been added to the layer and this cache.
      * You should connect to this signal instead of the layers', if you want to be sure
      * that this cache has updated information for the new feature
      *
@@ -357,13 +369,14 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     /**
      * The cache has been invalidated and cleared. Note that when a cache is invalidated
-     * the fullCache() setting will be cleared, and a full cache rebuild via setFullCache( true )
+     * the fullCache() setting will be cleared, and a full cache rebuild via setFullCache( TRUE )
      * will need to be performed.
      */
     void invalidated();
 
   private slots:
     void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
+    void onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
     void featureDeleted( QgsFeatureId fid );
     void onFeatureAdded( QgsFeatureId fid );
     void attributeAdded( int field );
@@ -374,6 +387,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
   private:
 
+    void connectJoinedLayers() const;
+
     inline void cacheFeature( QgsFeature &feat )
     {
       QgsCachedFeature *cachedFeature = new QgsCachedFeature( feat, this );
@@ -383,8 +398,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     QgsVectorLayer *mLayer = nullptr;
     QCache< QgsFeatureId, QgsCachedFeature > mCache;
 
-    bool mCacheGeometry;
-    bool mFullCache;
+    bool mCacheGeometry = true;
+    bool mFullCache = false;
     QList<QgsAbstractCacheIndex *> mCacheIndices;
 
     QgsAttributeList mCachedAttributes;
@@ -393,10 +408,11 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     friend class QgsCachedFeatureWriterIterator;
     friend class QgsCachedFeature;
 
-    /** Returns true if the cache contains all the features required for a specified request.
+    /**
+     * Returns TRUE if the cache contains all the features required for a specified request.
      * \param featureRequest feature request
      * \param it will be set to iterator for matching features
-     * \returns true if cache can satisfy request
+     * \returns TRUE if cache can satisfy request
      * \note this method only checks for available features, not whether the cache
      * contains required attributes or geometry. For that, use checkInformationCovered()
      */

@@ -16,6 +16,7 @@
 #include "qgsapplication.h"
 #include "qgsgroupwmsdatadialog.h"
 
+#include <QRegExpValidator>
 
 QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

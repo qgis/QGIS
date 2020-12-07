@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturepickermodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFeaturePickerModel : QgsFeaturePickerModelBase
+{
+%Docstring
+Provides a list of features based on filter conditions.
+Features are fetched asynchronously.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfeaturepickermodel.h"
+%End
+  public:
+
+    explicit QgsFeaturePickerModel( QObject *parent = 0 );
+%Docstring
+Create a new QgsFeaturePickerModel, optionally specifying a ``parent``.
+%End
+
+    virtual void setExtraIdentifierValueToNull();
+
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model as NULL value(s).
+
+.. versionadded:: 3.10
+%End
+
+    void setFeature( const QgsFeatureId &fid );
+%Docstring
+Set the feature to the given feature id
+%End
+
+    QgsFeature feature() const;
+%Docstring
+Returns the current feature
+%End
+
+  signals:
+    void featureChanged( const QgsFeature &feature );
+%Docstring
+Emitted when the current feature changes
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturepickermodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

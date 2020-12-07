@@ -9,21 +9,17 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
-from future import standard_library
+
 import os
 import tempfile
-from qgis.core import (QgsSettings,)
+from qgis.core import QgsSettings, QgsTolerance, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSettings
-
-standard_library.install_aliases()
+from qgis.PyQt.QtCore import QSettings, QVariant
+from pathlib import Path
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 start_app()
@@ -36,9 +32,12 @@ class TestQgsSettings(unittest.TestCase):
     def setUp(self):
         self.cnt += 1
         h, path = tempfile.mkstemp('.ini')
+        Path(path).touch()
         assert QgsSettings.setGlobalSettingsPath(path)
         self.settings = QgsSettings('testqgissettings', 'testqgissettings%s' % self.cnt)
         self.globalsettings = QSettings(self.settings.globalSettingsPath(), QSettings.IniFormat)
+        self.globalsettings.sync()
+        assert os.path.exists(self.globalsettings.fileName())
 
     def tearDown(self):
         settings_file = self.settings.fileName()
@@ -184,6 +183,7 @@ class TestQgsSettings(unittest.TestCase):
         self.addToDefaults('testqgissettings/name', 'qgisrocks')
 
         self.settings.beginGroup('testqgissettings')
+        self.assertEqual(self.settings.group(), 'testqgissettings')
         self.assertEqual(['names'], self.settings.childGroups())
 
         self.settings.setValue('surnames/name1', 'qgisrocks-1')
@@ -192,13 +192,71 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.setValue('names/name1', 'qgisrocks-1')
         self.assertEqual('qgisrocks-1', self.settings.value('names/name1'))
         self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
         self.settings.beginGroup('testqgissettings/names')
+        self.assertEqual(self.settings.group(), 'testqgissettings/names')
         self.settings.setValue('name4', 'qgisrocks-4')
         keys = sorted(self.settings.childKeys())
         self.assertEqual(keys, ['name1', 'name2', 'name3', 'name4'])
         self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
         self.assertEqual('qgisrocks-1', self.settings.value('testqgissettings/names/name1'))
         self.assertEqual('qgisrocks-4', self.settings.value('testqgissettings/names/name4'))
+
+    def test_global_groups(self):
+        self.assertEqual(self.settings.allKeys(), [])
+        self.assertEqual(self.globalsettings.allKeys(), [])
+
+        self.addToDefaults('testqgissettings/foo/first', 'qgis')
+        self.addToDefaults('testqgissettings/foo/last', 'rocks')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(self.settings.group(), 'testqgissettings')
+        self.assertEqual(['foo'], self.settings.childGroups())
+        self.assertEqual(['foo'], self.settings.globalChildGroups())
+        self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
+
+        self.settings.setValue('testqgissettings/bar/first', 'qgis')
+        self.settings.setValue('testqgissettings/bar/last', 'rocks')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(sorted(['bar', 'foo']), sorted(self.settings.childGroups()))
+        self.assertEqual(['foo'], self.settings.globalChildGroups())
+        self.settings.endGroup()
+
+        self.globalsettings.remove('testqgissettings/foo')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(['bar'], self.settings.childGroups())
+        self.assertEqual([], self.settings.globalChildGroups())
+        self.settings.endGroup()
+
+    def test_group_section(self):
+        # Test group by using Section
+        self.settings.beginGroup('firstgroup', section=QgsSettings.Core)
+        self.assertEqual(self.settings.group(), 'core/firstgroup')
+        self.assertEqual([], self.settings.childGroups())
+        self.settings.setValue('key', 'value')
+        self.settings.setValue('key2/subkey1', 'subvalue1')
+        self.settings.setValue('key2/subkey2', 'subvalue2')
+        self.settings.setValue('key3', 'value3')
+
+        self.assertEqual(['key', 'key2/subkey1', 'key2/subkey2', 'key3'], self.settings.allKeys())
+        self.assertEqual(['key', 'key3'], self.settings.childKeys())
+        self.assertEqual(['key2'], self.settings.childGroups())
+        self.settings.endGroup()
+        self.assertEqual(self.settings.group(), '')
+        # Set value by writing the group manually
+        self.settings.setValue('firstgroup/key4', 'value4', section=QgsSettings.Core)
+        # Checking the value that have been set
+        self.assertEqual(self.settings.value('firstgroup/key', section=QgsSettings.Core), 'value')
+        self.assertEqual(self.settings.value('firstgroup/key2/subkey1', section=QgsSettings.Core), 'subvalue1')
+        self.assertEqual(self.settings.value('firstgroup/key2/subkey2', section=QgsSettings.Core), 'subvalue2')
+        self.assertEqual(self.settings.value('firstgroup/key3', section=QgsSettings.Core), 'value3')
+        self.assertEqual(self.settings.value('firstgroup/key4', section=QgsSettings.Core), 'value4')
+        # Clean up firstgroup
+        self.settings.remove('firstgroup', section=QgsSettings.Core)
 
     def test_array(self):
         self.assertEqual(self.settings.allKeys(), [])
@@ -273,6 +331,7 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.setValue('key1', 'provider1', section=QgsSettings.Providers)
         self.settings.setValue('key2', 'provider2', section=QgsSettings.Providers)
 
+        # This is an overwrite of previous setting and it is intentional
         self.settings.setValue('key1', 'auth1', section=QgsSettings.Auth)
         self.settings.setValue('key2', 'auth2', section=QgsSettings.Auth)
 
@@ -336,6 +395,75 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.value('testQgisSettings/temp'), True)
         self.settings.remove('testQgisSettings/temp')
         self.assertEqual(self.settings.value('testqQgisSettings/temp'), None)
+
+        # Test remove by using Section
+        self.settings.setValue('testQgisSettings/tempSection', True, section=QgsSettings.Core)
+        self.assertEqual(self.settings.value('testQgisSettings/tempSection', section=QgsSettings.Core), True)
+        self.settings.remove('testQgisSettings/temp', section=QgsSettings.Core)
+        self.assertEqual(self.settings.value('testqQgisSettings/temp', section=QgsSettings.Core), None)
+
+    def test_enumValue(self):
+        self.settings.setValue('enum', 'LayerUnits')
+        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.LayerUnits)
+        self.settings.setValue('enum', 'dummy_setting')
+        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.Pixels)
+        self.assertEqual(type(self.settings.enumValue('enum', QgsTolerance.Pixels)), QgsTolerance.UnitType)
+
+    def test_setEnumValue(self):
+        self.settings.setValue('enum', 'LayerUnits')
+        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.LayerUnits)
+        self.settings.setEnumValue('enum', QgsTolerance.Pixels)
+        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.Pixels)
+
+    def test_flagValue(self):
+        pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)
+        pointAndPolygon = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.PolygonLayer)
+
+        self.settings.setValue('flag', 'PointLayer|PolygonLayer')
+        self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndPolygon)
+        self.settings.setValue('flag', 'dummy_setting')
+        self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndLine)
+        self.assertEqual(type(self.settings.flagValue('enum', pointAndLine)), QgsMapLayerProxyModel.Filters)
+
+    def test_overwriteDefaultValues(self):
+        """Test that unchanged values are not stored"""
+        self.globalsettings.setValue('a_value_with_default', 'a value')
+        self.globalsettings.setValue('an_invalid_value', QVariant())
+
+        self.assertEqual(self.settings.value('a_value_with_default'), 'a value')
+        self.assertEqual(self.settings.value('an_invalid_value'), QVariant())
+
+        # Now, set them with the same current value
+        self.settings.setValue('a_value_with_default', 'a value')
+        self.settings.setValue('an_invalid_value', QVariant())
+
+        # Check
+        pure_settings = QSettings(self.settings.fileName(), QSettings.IniFormat)
+        self.assertFalse('a_value_with_default' in pure_settings.allKeys())
+        self.assertFalse('an_invalid_value' in pure_settings.allKeys())
+
+        # Set a changed value
+        self.settings.setValue('a_value_with_default', 'a new value')
+        self.settings.setValue('an_invalid_value', 'valid value')
+
+        # Check
+        self.assertTrue('a_value_with_default' in pure_settings.allKeys())
+        self.assertTrue('an_invalid_value' in pure_settings.allKeys())
+
+        self.assertEqual(self.settings.value('a_value_with_default'), 'a new value')
+        self.assertEqual(self.settings.value('an_invalid_value'), 'valid value')
+
+        # Re-set to original values
+        self.settings.setValue('a_value_with_default', 'a value')
+        self.settings.setValue('an_invalid_value', QVariant())
+
+        self.assertEqual(self.settings.value('a_value_with_default'), 'a value')
+        self.assertEqual(self.settings.value('an_invalid_value'), QVariant())
+
+        # Check if they are gone
+        pure_settings = QSettings(self.settings.fileName(), QSettings.IniFormat)
+        self.assertFalse('a_value_with_default' not in pure_settings.allKeys())
+        self.assertFalse('an_invalid_value' not in pure_settings.allKeys())
 
 
 if __name__ == '__main__':

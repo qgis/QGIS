@@ -1,0 +1,247 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreelayer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayerTreeLayer : QgsLayerTreeNode
+{
+%Docstring
+Layer tree node points to a map layer.
+
+The node can exist also without a valid instance of a layer (just ID). That
+means the referenced layer does not need to be loaded in order to use it
+in layer tree. In such case, :py:func:`~resolveReferences` method can be called
+once the layer is loaded.
+
+A map layer is supposed to be present in one layer tree just once. It is
+however possible that temporarily a layer exists in one tree more than just
+once, e.g. while reordering items with drag and drop.
+
+.. versionadded:: 2.4
+%End
+
+%TypeHeaderCode
+#include "qgslayertreelayer.h"
+%End
+  public:
+    explicit QgsLayerTreeLayer( QgsMapLayer *layer );
+
+
+    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
+%Docstring
+Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, public ``source``, and ``provider`` key.
+%End
+
+    QString layerId() const;
+%Docstring
+Returns the ID for the map layer associated with this node.
+
+.. seealso:: :py:func:`layer`
+%End
+
+    QgsMapLayer *layer() const;
+%Docstring
+Returns the map layer associated with this node.
+
+.. warning::
+
+   This can be (and often is!) ``None``, e.g. in the case of a layer node representing a layer
+   which has not yet been fully loaded into a project, or a layer node representing a layer
+   with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing ``None``.
+
+.. seealso:: :py:func:`layerId`
+%End
+
+    virtual QString name() const;
+
+%Docstring
+Returns the layer's name.
+
+.. seealso:: :py:func:`setName`
+
+.. versionadded:: 3.0
+%End
+
+    virtual void setName( const QString &n );
+
+%Docstring
+Sets the layer's name.
+
+.. seealso:: :py:func:`name`
+
+.. versionadded:: 3.0
+%End
+
+    void setUseLayerName( bool use = true );
+%Docstring
+Uses the layer's name if ``use`` is ``True``, or the name manually set if
+``False``.
+
+.. versionadded:: 3.8
+%End
+
+    bool useLayerName() const;
+%Docstring
+Returns whether the layer's name is used, or the name manually set.
+
+.. versionadded:: 3.8
+%End
+
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Read layer node from XML. Returns new instance.
+Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeLayer.resolveReferences` afterwards to do it.
+%End
+
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Read layer node from XML. Returns new instance.
+Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeLayer.resolveReferences` internally).
+
+.. versionadded:: 3.0
+%End
+
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
+
+
+    virtual QString dump() const;
+
+
+    virtual QgsLayerTreeLayer *clone() const /Factory/;
+
+
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
+%Docstring
+Resolves reference to layer from stored layer ID (if it has not been resolved already)
+
+.. versionadded:: 3.0
+%End
+
+    void setLabelExpression( const QString &expression );
+%Docstring
+set the expression to evaluate
+
+.. versionadded:: 3.10
+%End
+
+    QString labelExpression() const;
+%Docstring
+Returns the expression member of the LayerTreeNode
+
+.. versionadded:: 3.10
+%End
+
+    QgsLegendPatchShape patchShape() const;
+%Docstring
+Returns the symbol patch shape to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`setPatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`patchShape`
+
+.. versionadded:: 3.14
+%End
+
+    QSizeF patchSize() const;
+%Docstring
+Returns the user (overridden) size for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`setPatchSize`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchSize( QSizeF size );
+%Docstring
+Sets the user (overridden) ``size`` for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`patchSize`
+
+.. versionadded:: 3.14
+%End
+
+    enum LegendNodesSplitBehavior
+    {
+      UseDefaultLegendSetting,
+      AllowSplittingLegendNodesOverMultipleColumns,
+      PreventSplittingLegendNodesOverMultipleColumns,
+    };
+
+    LegendNodesSplitBehavior legendSplitBehavior() const;
+%Docstring
+Returns the column split behavior for the node.
+
+This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+
+.. seealso:: :py:func:`setLegendSplitBehavior`
+
+.. versionadded:: 3.14
+%End
+
+    void setLegendSplitBehavior( LegendNodesSplitBehavior behavior );
+%Docstring
+Sets the column split ``behavior`` for the node.
+
+This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+
+.. seealso:: :py:func:`legendSplitBehavior`
+
+.. versionadded:: 3.14
+%End
+
+  signals:
+
+    void layerLoaded();
+%Docstring
+Emitted when a previously unavailable layer got loaded.
+%End
+
+    void layerWillBeUnloaded();
+%Docstring
+Emitted when a previously available layer got unloaded (from layer registry).
+
+.. versionadded:: 2.6
+%End
+
+  protected:
+    void attachToLayer();
+
+
+
+  private:
+
+    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
+%Docstring
+Copies are not allowed
+%End
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreelayer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

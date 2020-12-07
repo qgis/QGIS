@@ -21,29 +21,42 @@ __author__ = 'Hugo Mercier'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Hugo Mercier'
 
-# This will get replaced with a git SHA1 when you do a git archive323
-
-__revision__ = '$Format:%H$'
-
-from qgis.core import (QgsFeature,
-                       QgsVirtualLayerDefinition,
+from qgis.core import (QgsVirtualLayerDefinition,
                        QgsVectorLayer,
-                       QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterDefinition,
+                       QgsExpression,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterFeatureSink,
+                       QgsFeatureSink,
+                       QgsProcessingException,
+                       QgsVectorFileWriter,
+                       QgsProject)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
+
+
+class ParameterExecuteSql(QgsProcessingParameterDefinition):
+
+    def __init__(self, name='', description=''):
+        super().__init__(name, description)
+        self.setMetadata({
+            'widget_wrapper': 'processing.algs.qgis.ui.ExecuteSQLWidget.ExecuteSQLWidgetWrapper'
+        })
+
+    def type(self):
+        return 'execute_sql'
+
+    def clone(self):
+        return ParameterExecuteSql(self.name(), self.description())
 
 
 class ExecuteSQL(QgisAlgorithm):
-
     """ This algorithm allows executing an SQL query on a set of input
     vector layers thanks to the virtual layer provider
     """
@@ -54,32 +67,32 @@ class ExecuteSQL(QgisAlgorithm):
     INPUT_GEOMETRY_FIELD = 'INPUT_GEOMETRY_FIELD'
     INPUT_GEOMETRY_TYPE = 'INPUT_GEOMETRY_TYPE'
     INPUT_GEOMETRY_CRS = 'INPUT_GEOMETRY_CRS'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
+    OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
+
+    def groupId(self):
+        return 'vectorgeneral'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
-                                                 description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
-                                                 optional=True))
 
-        self.addParameter(ParameterString(name=self.INPUT_QUERY,
-                                          description=self.tr('SQL query'),
-                                          multiline=True))
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
-        self.addParameter(ParameterString(name=self.INPUT_UID_FIELD,
-                                          description=self.tr('Unique identifier field'), optional=True))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterMultipleLayers(name=self.INPUT_DATASOURCES,
+                                                               description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
+                                                               optional=True))
 
-        self.addParameter(ParameterString(name=self.INPUT_GEOMETRY_FIELD,
-                                          description=self.tr('Geometry field'), optional=True))
+        self.addParameter(ParameterExecuteSql(name=self.INPUT_QUERY, description=self.tr('SQL query')))
+
+        self.addParameter(QgsProcessingParameterString(name=self.INPUT_UID_FIELD,
+                                                       description=self.tr('Unique identifier field'), optional=True))
+
+        self.addParameter(QgsProcessingParameterString(name=self.INPUT_GEOMETRY_FIELD,
+                                                       description=self.tr('Geometry field'), optional=True))
 
         self.geometryTypes = [
             self.tr('Autodetect'),
@@ -90,13 +103,13 @@ class ExecuteSQL(QgisAlgorithm):
             'MultiPoint',
             'MultiLineString',
             'MultiPolygon']
-        self.addParameter(ParameterSelection(self.INPUT_GEOMETRY_TYPE,
-                                             self.tr('Geometry type'), self.geometryTypes, optional=True))
+        self.addParameter(QgsProcessingParameterEnum(self.INPUT_GEOMETRY_TYPE,
+                                                     self.tr('Geometry type'), options=self.geometryTypes, optional=True))
 
-        self.addParameter(ParameterCrs(self.INPUT_GEOMETRY_CRS,
-                                       self.tr('CRS'), optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.INPUT_GEOMETRY_CRS,
+                                                    self.tr('CRS'), optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('SQL Output')))
 
     def name(self):
         return 'executesql'
@@ -105,58 +118,69 @@ class ExecuteSQL(QgisAlgorithm):
         return self.tr('Execute SQL')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layers = self.getParameterValue(self.INPUT_DATASOURCES)
-        query = self.getParameterValue(self.INPUT_QUERY)
-        uid_field = self.getParameterValue(self.INPUT_UID_FIELD)
-        geometry_field = self.getParameterValue(self.INPUT_GEOMETRY_FIELD)
-        geometry_type = self.getParameterValue(self.INPUT_GEOMETRY_TYPE)
-        geometry_crs = self.getParameterValue(self.INPUT_GEOMETRY_CRS)
+        layers = self.parameterAsLayerList(parameters, self.INPUT_DATASOURCES, context)
+        query = self.parameterAsString(parameters, self.INPUT_QUERY, context)
+        uid_field = self.parameterAsString(parameters, self.INPUT_UID_FIELD, context)
+        geometry_field = self.parameterAsString(parameters, self.INPUT_GEOMETRY_FIELD, context)
+        geometry_type = self.parameterAsEnum(parameters, self.INPUT_GEOMETRY_TYPE, context)
+        geometry_crs = self.parameterAsCrs(parameters, self.INPUT_GEOMETRY_CRS, context)
 
         df = QgsVirtualLayerDefinition()
-        layerIdx = 1
-        if layers:
-            for layerSource in layers.split(';'):
-                layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
-                if layer:
-                    df.addSource('input{}'.format(layerIdx), layer.id())
-                layerIdx += 1
+        for layerIdx, layer in enumerate(layers):
+
+            # Issue https://github.com/qgis/QGIS/issues/24041
+            # When using this algorithm from the graphic modeler, it may try to
+            # access (thanks the QgsVirtualLayerProvider) to memory layer that
+            # belongs to temporary QgsMapLayerStore, not project.
+            # So, we write them to disk is this is the case.
+            if context.project() and not context.project().mapLayer(layer.id()):
+                basename = "memorylayer." + QgsVectorFileWriter.supportedFormatExtensions()[0]
+                tmp_path = QgsProcessingUtils.generateTempFilename(basename)
+                QgsVectorFileWriter.writeAsVectorFormat(
+                    layer, tmp_path, layer.dataProvider().encoding())
+                df.addSource('input{}'.format(layerIdx + 1), tmp_path, "ogr")
+            else:
+                df.addSource('input{}'.format(layerIdx + 1), layer.id())
 
         if query == '':
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Empty SQL. Please enter valid SQL expression and try again.'))
         else:
-            df.setQuery(query)
+            localContext = self.createExpressionContext(parameters, context)
+            expandedQuery = QgsExpression.replaceExpressionText(query, localContext)
+            df.setQuery(expandedQuery)
 
         if uid_field:
             df.setUid(uid_field)
 
         if geometry_type == 1:  # no geometry
-            df.setGeometryWkbType(QgsWkbTypes.NullGeometry)
+            df.setGeometryWkbType(QgsWkbTypes.NoGeometry)
         else:
             if geometry_field:
                 df.setGeometryField(geometry_field)
             if geometry_type > 1:
                 df.setGeometryWkbType(geometry_type - 1)
-            if geometry_crs:
-                crs = QgsCoordinateReferenceSystem(geometry_crs)
-                if crs.isValid():
-                    df.setGeometrySrid(crs.postgisSrid())
+            if geometry_crs.isValid():
+                df.setGeometrySrid(geometry_crs.postgisSrid())
 
         vLayer = QgsVectorLayer(df.toString(), "temp_vlayer", "virtual")
         if not vLayer.isValid():
-            raise GeoAlgorithmExecutionException(vLayer.dataProvider().error().message())
+            raise QgsProcessingException(vLayer.dataProvider().error().message())
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(vLayer.fields(),
-                                                                           vLayer.wkbType() if geometry_type != 1 else 1,
-                                                                           vLayer.crs(), context)
+        if vLayer.wkbType() == QgsWkbTypes.Unknown:
+            raise QgsProcessingException(self.tr("Cannot find geometry field"))
 
-        features = QgsProcessingUtils.getFeatures(vLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
-        outFeat = QgsFeature()
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               vLayer.fields(), vLayer.wkbType() if geometry_type != 1 else 1, vLayer.crs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
+        features = vLayer.getFeatures()
+        total = 100.0 / vLayer.featureCount() if vLayer.featureCount() else 0
         for current, inFeat in enumerate(features):
-            outFeat.setAttributes(inFeat.attributes())
-            if geometry_type != 1:
-                outFeat.setGeometry(inFeat.geometry())
-            writer.addFeature(outFeat)
+            if feedback.isCanceled():
+                break
+
+            sink.addFeature(inFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
-        del writer
+        return {self.OUTPUT: dest_id}

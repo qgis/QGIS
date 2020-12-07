@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    EquivalentNumField.py
+    VectorLayerHistogram.py
     ---------------------
     Date                 : January 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -21,50 +21,44 @@ __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
+import warnings
 
-__revision__ = '$Format:%H$'
-
-import plotly as plt
-import plotly.graph_objs as go
-
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputHTML
 from processing.tools import vector
+
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerHistogram(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     BINS = 'BINS'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
-        return self.tr('Graphics')
+        return self.tr('Plots')
+
+    def groupId(self):
+        return 'plots'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute'), self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterNumber(self.BINS,
-                                          self.tr('number of bins'), 2, None, 10))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Attribute'), parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
+        self.addParameter(QgsProcessingParameterNumber(self.BINS,
+                                                       self.tr('number of bins'), minValue=2, defaultValue=10))
+
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Histogram'), self.tr('HTML files (*.html)')))
 
     def name(self):
         return 'vectorlayerhistogram'
@@ -73,14 +67,29 @@ class VectorLayerHistogram(QgisAlgorithm):
         return self.tr('Vector layer histogram')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        fieldname = self.getParameterValue(self.FIELD)
-        bins = self.getParameterValue(self.BINS)
+        try:
+            # importing plotly throws Python warnings from within the library - filter these out
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=ResourceWarning)
+                warnings.filterwarnings("ignore", category=ImportWarning)
+                import plotly as plt
+                import plotly.graph_objs as go
+        except ImportError:
+            raise QgsProcessingException(QCoreApplication.translate('VectorLayerHistogram', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
 
-        output = self.getOutputValue(self.OUTPUT)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        values = vector.values(layer, fieldname)
+        fieldname = self.parameterAsString(parameters, self.FIELD, context)
+        bins = self.parameterAsInt(parameters, self.BINS, context)
+
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+
+        values = vector.values(source, fieldname)
 
         data = [go.Histogram(x=values[fieldname],
                              nbinsx=bins)]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

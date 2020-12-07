@@ -1,74 +1,88 @@
 ########################################################
 # Files
 
-IF(WITH_QSPATIALITE)
-  SUBDIRS(qspatialite)
-ENDIF(WITH_QSPATIALITE)
+if(WITH_QSPATIALITE)
+  SUBDIRS(${CMAKE_SOURCE_DIR}/external/qspatialite)
+endif()
 
-SET(SPATIALITE_SRCS
+set(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
   qgsspatialiteconnpool.cpp
   qgsspatialitefeatureiterator.cpp
-  qgsspatialitesourceselect.cpp
   qgsspatialitetablemodel.cpp
+  qgsspatialiteproviderconnection.cpp
+  qgsspatialitetransaction.cpp
 )
 
-SET(SPATIALITE_MOC_HDRS
-  qgsspatialiteprovider.h
-  qgsspatialiteconnpool.h
-  qgsspatialitedataitems.h
-  qgsspatialitesourceselect.h
-  qgsspatialitetablemodel.h
-  qgsspatialiteconnection.h
-)
+if (WITH_GUI)
+  set(SPATIALITE_SRCS ${SPATIALITE_SRCS}
+    qgsspatialiteprovidergui.cpp
+    qgsspatialitedataitemguiprovider.cpp
+    qgsspatialitesourceselect.cpp
+  )
+endif()
 
 
 ########################################################
 # Build
 
-QT5_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
+if (WITH_GUI)
+  include_directories(SYSTEM
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+endif()
 
-INCLUDE_DIRECTORIES(SYSTEM
-  ${QSCINTILLA_INCLUDE_DIR}
-)
-INCLUDE_DIRECTORIES(
+include_directories(
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
+  ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
 )
 
-ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS} ${SPATIALITE_MOC_SRCS})
+add_library (spatialiteprovider MODULE ${SPATIALITE_SRCS})
 
-TARGET_LINK_LIBRARIES(spatialiteprovider
+target_link_libraries(spatialiteprovider
   qgis_core
-  qgis_gui
   ${SPATIALITE_LIBRARY}
 )
 
+if (WITH_GUI)
+  target_link_libraries (spatialiteprovider
+    qgis_gui
+  )
+  add_dependencies(spatialiteprovider ui)
+endif()
+
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
+if(CLANG_TIDY_EXE)
+  set_target_properties(
     spatialiteprovider PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
 ########################################################
 # Install
 
-INSTALL(TARGETS spatialiteprovider
+install(TARGETS spatialiteprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

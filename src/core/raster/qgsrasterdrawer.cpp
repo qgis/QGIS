@@ -25,7 +25,9 @@
 #include "qgsrendercontext.h"
 #include <QImage>
 #include <QPainter>
+#ifndef QT_NO_PRINTER
 #include <QPrinter>
+#endif
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iterator )
 {
@@ -33,7 +35,7 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iter
 
 void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !p || !mIterator || !viewPort || !qgsMapToPixel )
   {
     return;
@@ -52,15 +54,15 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
   // We know that the output data type of last pipe filter is QImage data
 
-  QgsRasterBlock *block = nullptr;
+  std::unique_ptr< QgsRasterBlock > block;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
   while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
-                                         &block, topLeftCol, topLeftRow ) )
+                                         block, topLeftCol, topLeftRow ) )
   {
     if ( !block )
     {
-      QgsDebugMsg( "Cannot get block" );
+      QgsDebugMsg( QStringLiteral( "Cannot get block" ) );
       continue;
     }
 
@@ -72,7 +74,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
     if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
     {
-      QgsDebugMsgLevel( "PdfFormat", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "PdfFormat" ), 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
       QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
@@ -100,15 +102,13 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
     drawImage( p, viewPort, img, topLeftCol, topLeftRow, qgsMapToPixel );
 
-    delete block;
-
     if ( feedback && feedback->renderPartialOutput() )
     {
       // go back to the default composition mode
       p->setCompositionMode( QPainter::CompositionMode_SourceOver );
     }
 
-    // ok this does not matter much anyway as the tile size quite big so most of the time
+    // OK this does not matter much anyway as the tile size quite big so most of the time
     // there would be just one tile for the whole display area, but it won't hurt...
     if ( feedback && feedback->isCanceled() )
       break;
@@ -124,7 +124,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
 
   //top left position in device coords
   QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol, viewPort->mTopLeftPoint.y() + topLeftRow );
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
 
   // Blending problem was reported with PDF output if background color has alpha < 255
@@ -170,7 +170,5 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 #endif
-
-  p->restore();
 }
 

@@ -1,0 +1,75 @@
+a { color: green; }
+
+#mapid.small {
+    width: 100%;
+    height: 400px;
+}
+
+.card-header span.small {
+   font-size: 70%;
+}
+
+.path-button {
+    text-transform: uppercase;
+}
+
+.path-path {
+    font-weight: bold;
+}
+
+.model-toggle {
+    font-weight: bold;
+}
+
+.model-toggle::after {
+    display: inline-block;
+    vertical-align: bottom;
+    width: 20px;
+    height: 20px;
+    content: "";
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E") 50% no-repeat;
+    background-size: 100%;
+}
+
+.top-buffer {
+    margin-top:20px;
+}
+
+table.table {
+    table-layout: fixed;
+}
+
+dl.row dt:first-child {
+    width: 20%;
+}
+
+table.table-params td:first-child, table.table-params th:first-child,
+table.table-params td:last-child, table.table-params th:last-child
+{
+    width: 15%;
+}
+
+table.table-params td.small
+{
+    font-size: 90%;
+}
+
+.btn-post, .btn-post:hover {
+  background-color: green;
+  border-color: green;
+}
+
+.btn-put, btn-put:hover {
+  background-color: orange;
+  border-color: orange;
+}
+
+.btn-patch, .btn-patch:hover {
+  background-color: magenta;
+  border-color: magenta;
+}
+
+.btn-delete, .btn-delete:hover {
+  background-color: red;
+  border-color: red;
+}

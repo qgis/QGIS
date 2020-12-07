@@ -20,7 +20,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDartMeasurement
  */
 class CORE_EXPORT QgsDartMeasurement
@@ -33,9 +34,8 @@ class CORE_EXPORT QgsDartMeasurement
       Integer
     };
 
-    QgsDartMeasurement()
-      : mType( Text )
-    {}
+    //! Constructor for QgsDartMeasurement
+    QgsDartMeasurement() = default;
 
     QgsDartMeasurement( const QString &name, Type type, const QString &value );
 
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsDartMeasurement
 
   private:
     QString mName;
-    Type mType;
+    Type mType = Text;
     QString mValue;
 };
 

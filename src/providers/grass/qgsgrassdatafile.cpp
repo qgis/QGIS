@@ -21,7 +21,6 @@
 
 QgsGrassDataFile::QgsGrassDataFile( QObject *parent )
   : QFile( parent )
-  , mFh( 0 )
 {
 }
 
@@ -56,7 +55,7 @@ qint64 QgsGrassDataFile::readData( char *data, qint64 len )
     }
     readSoFar += read;
 
-    //fprintf(stderr, "len = %d readSoFar = %d feof = %d", (int)len, (int)readSoFar, (int)feof(mFh)  );
+    //fprintf(stderr, "len = %d readSoFar = %d feof = %d", static_cast<int>(len), static_cast<int>(readSoFar), static_cast<int>(feof(mFh))  );
     if ( readSoFar == len )
     {
       break;
@@ -79,7 +78,7 @@ qint64 QgsGrassDataFile::readData( char *data, qint64 len )
       tv.tv_sec = 0;
       tv.tv_usec = 10000; // we could also wait for ever
       int sel = select( 0, &readFds, nullptr, nullptr, &tv );
-      Q_UNUSED( sel );
+      Q_UNUSED( sel )
       //fprintf(stderr, "sel = %d", sel);
     }
 #endif

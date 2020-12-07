@@ -1,0 +1,155 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilerenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsVectorTileRendererData
+{
+%Docstring
+Contains decoded features of a single vector tile and any other data necessary
+for rendering of it.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilerenderer.h"
+%End
+  public:
+    explicit QgsVectorTileRendererData( QgsTileXYZ id );
+%Docstring
+Constructs the object
+%End
+
+    QgsTileXYZ id() const;
+%Docstring
+Returns coordinates of the tile
+%End
+
+    void setTilePolygon( QPolygon polygon );
+%Docstring
+Sets polygon of the tile
+%End
+    QPolygon tilePolygon() const;
+%Docstring
+Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
+%End
+
+    void setFields( const QMap<QString, QgsFields> &fields );
+%Docstring
+Sets per-layer fields
+%End
+    QMap<QString, QgsFields> fields() const;
+%Docstring
+Returns per-layer fields
+%End
+
+    QStringList layers() const;
+%Docstring
+Returns list of layer names present in the tile
+%End
+    QVector<QgsFeature> layerFeatures( const QString &layerName ) const;
+%Docstring
+Returns list of all features within a single sub-layer
+%End
+
+};
+
+class QgsVectorTileRenderer
+{
+%Docstring
+Abstract base class for all vector tile renderer implementations.
+
+For rendering it is expected that client code calls:
+
+# :py:func:`~QgsVectorTileRendererData.startRender` to prepare renderer
+# :py:func:`~QgsVectorTileRendererData.renderTile` for each tile
+# :py:func:`~QgsVectorTileRendererData.stopRender` to clean up renderer and free resources
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilerenderer.h"
+%End
+%ConvertToSubClassCode
+
+    const QString type = sipCpp->type();
+
+    if ( type == QLatin1String( "basic" ) )
+      sipType = sipType_QgsVectorTileBasicRenderer;
+    else
+      sipType = 0;
+%End
+  public:
+    virtual ~QgsVectorTileRenderer();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns unique type name of the renderer implementation
+%End
+
+    virtual QgsVectorTileRenderer *clone() const = 0 /Factory/;
+%Docstring
+Returns a clone of the renderer
+%End
+
+    virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) = 0;
+%Docstring
+Initializes rendering. It should be paired with a :py:func:`~QgsVectorTileRenderer.stopRender` call.
+%End
+
+
+
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const;
+%Docstring
+Returns a list of the layers required for rendering.
+
+Only layers which are visible at the specified ``tileZoom`` should be included in this list.
+
+An empty string present in the list indicates that all layer in the tiles are required.
+
+.. versionadded:: 3.16
+%End
+
+    virtual void stopRender( QgsRenderContext &context ) = 0;
+%Docstring
+Finishes rendering and cleans up any resources
+%End
+
+    virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) = 0;
+%Docstring
+Renders given vector tile. Must be called between startRender/stopRender.
+%End
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Writes renderer's properties to given XML element
+%End
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads renderer's properties from given XML element
+%End
+    virtual void resolveReferences( const QgsProject &project );
+%Docstring
+Resolves references to other objects - second phase of loading - after :py:func:`~QgsVectorTileRenderer.readXml`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilerenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

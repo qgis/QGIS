@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
-from qgis.core import QgsNetworkAccessManager, QgsAuthManager
+from qgis.core import QgsNetworkAccessManager, QgsApplication, QgsNetworkRequestParameters
 
 from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from .installer_data import removeDir, repositories
@@ -40,7 +40,7 @@ from .unzip import unzip
 class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialogBase):
     # ----------------------------------------- #
 
-    def __init__(self, parent, plugin):
+    def __init__(self, parent, plugin, stable=True):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.plugin = plugin
@@ -50,17 +50,22 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.labelName.setText(plugin["name"])
         self.buttonBox.clicked.connect(self.abort)
 
-        url = QUrl(plugin["download_url"])
+        self.url = QUrl(plugin["download_url_stable"] if stable else plugin["download_url_experimental"])
+        self.redirectionCounter = 0
 
         fileName = plugin["filename"]
         tmpDir = QDir.tempPath()
         tmpPath = QDir.cleanPath(tmpDir + "/" + fileName)
         self.file = QFile(tmpPath)
 
-        self.request = QNetworkRequest(url)
-        authcfg = repositories.all()[plugin["zip_repository"]]["authcfg"]
+        self.requestDownloading()
+
+    def requestDownloading(self):
+        self.request = QNetworkRequest(self.url)
+        self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
+        authcfg = repositories.all()[self.plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
-            if not QgsAuthManager.instance().updateNetworkRequest(
+            if not QgsApplication.authManager().updateNetworkRequest(
                     self.request, authcfg.strip()):
                 self.mResult = self.tr(
                     "Update of network request with authentication "
@@ -86,7 +91,16 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
     # ----------------------------------------- #
     def stateChanged(self, state):
-        messages = [self.tr("Installing..."), self.tr("Resolving host name..."), self.tr("Connecting..."), self.tr("Host connected. Sending request..."), self.tr("Downloading data..."), self.tr("Idle"), self.tr("Closing connection..."), self.tr("Error")]
+        messages = [
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Installing…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Resolving host name…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Connecting…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Host connected. Sending request…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Downloading data…"),
+            self.tr("Idle"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Closing connection…"),
+            self.tr("Error")
+        ]
         self.labelState.setText(messages[state])
 
     # ----------------------------------------- #
@@ -106,6 +120,23 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
             self.reject()
             reply.deleteLater()
             return
+        elif reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) in (301, 302):
+            redirectionUrl = reply.attribute(QNetworkRequest.RedirectionTargetAttribute)
+            self.redirectionCounter += 1
+            if self.redirectionCounter > 4:
+                self.mResult = QCoreApplication.translate("QgsPluginInstaller", "Too many redirections")
+                self.reject()
+                reply.deleteLater()
+                return
+            else:
+                if redirectionUrl.isRelative():
+                    redirectionUrl = reply.url().resolved(redirectionUrl)
+                # Fire a new request and exit immediately in order to quietly destroy the old one
+                self.url = redirectionUrl
+                self.requestDownloading()
+                reply.deleteLater()
+                return
+
         self.file.open(QFile.WriteOnly)
         self.file.write(reply.readAll())
         self.file.close()

@@ -28,13 +28,22 @@ class QgsOracleColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsOracleColumnTypeThread( QString connName,
+
+    /**
+     *
+     * \param connName
+     * \param limitToSchema If specified, only tables from this schema will be scanned
+     * \param useEstimatedMetaData
+     * \param allowGeometrylessTables
+     */
+    QgsOracleColumnTypeThread( const QString &connName,
+                               const QString &limitToSchema,
                                bool useEstimatedMetaData,
                                bool allowGeometrylessTables );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
-    virtual void run();
+    void run() override;
 
     bool isStopped() const { return mStopped; }
     QVector<QgsOracleLayerProperty> layerProperties() const { return mLayerProperties; }
@@ -51,12 +60,13 @@ class QgsOracleColumnTypeThread : public QThread
     void stop();
 
   private:
-    QgsOracleColumnTypeThread() {}
+    QgsOracleColumnTypeThread() = default;
 
     QString mName;
-    bool mUseEstimatedMetadata;
-    bool mAllowGeometrylessTables;
-    bool mStopped;
+    QString mSchema;
+    bool mUseEstimatedMetadata = false;
+    bool mAllowGeometrylessTables = false;
+    bool mStopped = false;
     QVector<QgsOracleLayerProperty> mLayerProperties;
 };
 

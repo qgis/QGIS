@@ -134,9 +134,9 @@ WId Session::windowId() const
 	// On Qt5, requesting window IDs breaks QQuickWidget and the likes,
 	// for example, see the following bug reports:
 	//
-	// https://bugreports.qt-project.org/browse/QTBUG-41779
-	// https://bugreports.qt-project.org/browse/QTBUG-40765
-	// https://bugreports.qt-project.org/browse/QTBUG-41942
+	// https://bugreports.qt.io/browse/QTBUG-41779
+	// https://bugreports.qt.io/browse/QTBUG-40765
+	// https://bugreports.qt.io/browse/QTBUG-41942
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
   return 0;
@@ -284,11 +284,11 @@ void Session::run()
     // Check to see if the given program is executable.
 
 
-    /* ok iam not exactly sure where _program comes from - however it was set to /bin/bash on my system
+    /* OK i am not exactly sure where _program comes from - however it was set to /bin/bash on my system
      * Thats bad for BSD as its /usr/local/bin/bash there - its also bad for arch as its /usr/bin/bash there too!
      * So i added a check to see if /bin/bash exists - if no then we use $SHELL - if that does not exist either, we fall back to /bin/sh
      * As far as i know /bin/sh exists on every unix system.. You could also just put some ifdef __FREEBSD__ here but i think these 2 filechecks are worth
-     * their computing time on any system - especially with the problem on arch linux beeing there too.
+     * their computing time on any system - especially with the problem on arch linux being there too.
      */
     QString exec = QFile::encodeName(_program);
     // if 'exec' is not specified, fall back to default shell.  if that
@@ -486,7 +486,7 @@ void Session::activityStateSet(int state)
 {
     if (state==NOTIFYBELL) {
         QString s;
-        s.sprintf("Bell in session '%s'",_nameTitle.toUtf8().data());
+        s.sprintf("Bell in session '%s'",_nameTitle.toUtf8().constData());
 
         emit bellRequest( s );
     } else if (state==NOTIFYACTIVITY) {
@@ -541,8 +541,8 @@ void Session::updateTerminalSize()
         if ( view->isHidden() == false &&
                 view->lines() >= VIEW_LINES_THRESHOLD &&
                 view->columns() >= VIEW_COLUMNS_THRESHOLD ) {
-            minLines = (minLines == -1) ? view->lines() : qMin( minLines , view->lines() );
-            minColumns = (minColumns == -1) ? view->columns() : qMin( minColumns , view->columns() );
+            minLines = (minLines == -1) ? view->lines() : std::min( minLines , view->lines() );
+            minColumns = (minColumns == -1) ? view->columns() : std::min( minColumns , view->columns() );
         }
     }
 
@@ -632,16 +632,16 @@ void Session::done(int exitStatus)
 
         if (_shellProcess->exitStatus() == QProcess::NormalExit) {
             message.sprintf("Session '%s' exited with status %d.",
-                          _nameTitle.toUtf8().data(), exitStatus);
+                          _nameTitle.toUtf8().constData(), exitStatus);
         } else {
             message.sprintf("Session '%s' crashed.",
-                          _nameTitle.toUtf8().data());
+                          _nameTitle.toUtf8().constData());
         }
     }
 
     if ( !_wantedClose && _shellProcess->exitStatus() != QProcess::NormalExit )
         message.sprintf("Session '%s' exited unexpectedly.",
-                        _nameTitle.toUtf8().data());
+                        _nameTitle.toUtf8().constData());
     else
         emit finished();
 

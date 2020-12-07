@@ -16,8 +16,17 @@
 #ifndef QGSINTERNALGEOMETRYENGINE_H
 #define QGSINTERNALGEOMETRYENGINE_H
 
+#define SIP_NO_FILE
+
+#include <functional>
+
+#include "qgspointxy.h"
+
 class QgsGeometry;
 class QgsAbstractGeometry;
+class QgsLineString;
+class QgsLineSegment2D;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -39,6 +48,13 @@ class QgsInternalGeometryEngine
      * \param geometry
      */
     explicit QgsInternalGeometryEngine( const QgsGeometry &geometry );
+
+    /**
+     * Returns an error string referring to the last error encountered.
+     *
+     * \since QGIS 3.16
+     */
+    QString lastError() const;
 
     /**
      * Will extrude a line or (segmentized) curve by a given offset and return a polygon
@@ -96,8 +112,204 @@ class QgsInternalGeometryEngine
      */
     QgsGeometry densifyByDistance( double distance ) const;
 
+    /**
+     * Calculates a variable width buffer for a (multi)curve geometry.
+     *
+     * The width of the buffer at each node in the input linestrings is calculated by
+     * calling the specified \a widthFunction, which must return an array of the buffer widths
+     * for every node in the line.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)curve input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     */
+    QgsGeometry variableWidthBuffer( int segments, const std::function< std::unique_ptr< double[] >( const QgsLineString *line ) > &widthFunction ) const;
+
+    /**
+     * Calculates a tapered width buffer for a (multi)curve geometry.
+     *
+     * The buffer begins at a width of \a startWidth at the start of each curve, and
+     * ends at a width of \a endWidth. Note that unlike QgsGeometry::buffer() methods, \a startWidth
+     * and \a endWidth are the diameter of the buffer at these points, not the radius.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)curve input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     */
+    QgsGeometry taperedBuffer( double startWidth, double endWidth, int segments ) const;
+
+    /**
+     * Calculates a variable width buffer using the m-values from a (multi)line geometry.
+     *
+     * The \a segments argument specifies the number of segments to approximate quarter-circle
+     * curves in the buffer.
+     *
+     * Non (multi)line input geometries will return a null output geometry.
+     *
+     * \since QGIS 3.2
+     */
+    QgsGeometry variableWidthBufferByM( int segments ) const;
+
+    /**
+     * Returns a list of \a count random points generated inside a \a polygon geometry
+     * (if \a acceptPoint is specified, and restrictive, the number of points returned may
+     * be less than \a count).
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * When \a acceptPoint is specified, \a maxTriesPerPoint
+     * defines how many attempts to perform before giving up generating
+     * a point.
+     *
+     * \since QGIS 3.10
+     */
+    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
+        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 );
+
+    /**
+     * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+     * LineString to CompoundCurve, Polygon to CurvePolygon).
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of vertices and where they would fall on the candidate curved geometry.
+     *
+     * This method only consider a segments as suitable for replacing with an arc if the points are all
+     * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    QgsGeometry convertToCurves( double distanceTolerance, double angleTolerance ) const;
+
+    /**
+     * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
+     * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
+     * width and height of the rotated bounding box will also be returned.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling lastError().
+     *
+     * \since QGIS 3.16
+     */
+    QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
+
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
+
+    mutable QString mLastError;
 };
+
+/**
+ * A 2D ray which extends from an origin point to an infinite distance in a given direction.
+ * \ingroup core
+ * \note not available in Python bindings
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsRay2D
+{
+  public:
+
+    /**
+     * Constructor for a ray starting at the given \a origin and extending an infinite distance
+     * in the specified \a direction.
+     */
+    QgsRay2D( const QgsPointXY &origin, QgsVector direction )
+      : origin( origin )
+      , direction( direction )
+    {}
+
+    /**
+     * Finds the closest intersection point of the ray and a line \a segment.
+     *
+     * If found, the intersection point will be stored in \a intersectPoint.
+     *
+     * Returns TRUE if the ray intersects the line segment.
+     */
+    bool intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const;
+
+  private:
+
+    QgsPointXY origin;
+    QgsVector direction;
+};
+
+///@cond PRIVATE
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+
+/**
+ * Compares two line segments based on their distance from a given point
+ * Assumes: (1) the line segments are intersected by some ray from the origin
+ *          (2) the line segments do not intersect except at their endpoints
+ *          (3) no line segment is collinear with the origin
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsLineSegmentDistanceComparer
+{
+  public:
+
+    /**
+     * Constructor for QgsLineSegmentDistanceComparer, comparing points
+     * to the specified \a origin point.
+     */
+    explicit QgsLineSegmentDistanceComparer( const QgsPointXY &origin )
+      : mOrigin( origin )
+    {}
+
+    /**
+     * Checks whether the line segment \a ab is closer to the origin than the
+     * line segment \a cd.
+     * \param ab line segment: left hand side of the comparison operator
+     * \param cd line segment: right hand side of the comparison operator
+     * \returns TRUE if ab < cd (ab is closer than cd) to origin
+     */
+    bool operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const;
+
+  private:
+
+    QgsPointXY mOrigin;
+
+};
+
+
+// adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
+
+/**
+ * Compares angles from an origin to points clockwise, starting at the positive y-axis.
+ * \ingroup core
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsClockwiseAngleComparer
+{
+  public:
+    explicit QgsClockwiseAngleComparer( const QgsPointXY &origin )
+      : mVertex( origin )
+    {}
+
+    bool operator()( const QgsPointXY &a, const QgsPointXY &b ) const;
+
+  private:
+
+    QgsPointXY mVertex;
+
+};
+
+///@endcond PRIVATE
 
 #endif // QGSINTERNALGEOMETRYENGINE_H

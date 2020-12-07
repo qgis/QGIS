@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    spawn_fcgi_mac.sh
 #    ---------------------
@@ -19,15 +19,15 @@ PROCESS="mapserv"
 LABEL="org.qgis.test-${PROCESS}"
 USAGE="${0} {stop|status} or {start|restart spawn_bin fcgi_socket fcgi_bin qgis_server_temp_dir}"
 
-if [ ! -z $2 ]; then
+if [[ -n $2 ]]; then
   SPAWN_BIN=$2
-  if [ ! -z $3 ]; then
+  if [[ -n $3 ]]; then
     FCGI_SOCKET=$3
   fi
-  if [ ! -z $4 ]; then
+  if [[ -n $4 ]]; then
     FCGI_BIN=$4
   fi
-  if [ ! -z $5 ]; then
+  if [[ -n $5 ]]; then
     QGIS_SERVER_TEMP_DIR=$5
   fi
 fi

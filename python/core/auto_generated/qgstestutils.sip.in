@@ -1,0 +1,36 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstestutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+%ModuleHeaderCode
+#include "qgstestutils.h"
+%End
+
+
+namespace QgsTestUtils
+{
+
+  bool testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request = QgsFeatureRequest() );
+%Docstring
+Runs a thready safety test on iterators from a vector data ``provider``, by concurrently
+requesting features from the provider.
+
+This method returns ``True``... or it segfaults.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstestutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,10 +18,14 @@
 #define QGSGPSINFORMATIONWIDGET_H
 
 #include "ui_qgsgpsinformationwidgetbase.h"
-
-#include <qgsmapcanvas.h>
-#include <qgsgpsmarker.h>
-#include <qgsmaptoolcapture.h>
+#include "qgis_app.h"
+#include "gmath.h"
+#include "info.h"
+#include "nmeatime.h"
+#include "qgsgpsmarker.h"
+#include "qgsmaptoolcapture.h"
+#include "qgspanelwidget.h"
+#include "qgsmapcanvasinteractionblocker.h"
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
@@ -30,46 +34,77 @@
 #endif
 
 class QextSerialPort;
-class QgsGPSConnection;
-class QgsGPSTrackerThread;
-struct QgsGPSInformation;
+class QgsGpsConnection;
+class QgsGpsTrackerThread;
+class QgsGpsInformation;
+class QgsMapCanvas;
+class QgsFeature;
+class QgsGpsBearingItem;
+class QgsBearingNumericFormat;
 
 class QFile;
 class QColor;
 
-/** A dock widget that displays information from a GPS device and
+/**
+ * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
- * specify the geometry.*/
-class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidgetBase
+ * specify the geometry.
+*/
+class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCanvasInteractionBlocker, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsGPSInformationWidget();
+    QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
+    ~QgsGpsInformationWidget() override;
+
+    bool blockCanvasInteraction( Interaction interaction ) const override;
+
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     */
+    void setConnection( QgsGpsConnection *connection );
+
+  public slots:
+    void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+
 
   private slots:
-    void on_mConnectButton_toggled( bool flag );
-    void displayGPSInformation( const QgsGPSInformation &info );
+    void mConnectButton_toggled( bool flag );
+    void recenter();
+    void displayGPSInformation( const QgsGpsInformation &info );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
 //   void setTrackColor(); // no longer used
-    void on_mBtnTrackColor_clicked();
-    void on_mSpinTrackWidth_valueChanged( int value );
-    void on_mBtnPosition_clicked();
-    void on_mBtnSignal_clicked();
-    void on_mBtnSatellites_clicked();
-    void on_mBtnOptions_clicked();
-    void on_mBtnDebug_clicked();
-    void on_mBtnRefreshDevices_clicked();
-    void on_mBtnAddVertex_clicked();
-    void on_mBtnCloseFeature_clicked();
-    void on_mBtnResetFeature_clicked();
+    void trackColorChanged( const QColor &color );
+    void mSpinTrackWidth_valueChanged( int value );
+    void mBtnPosition_clicked();
+    void mBtnSignal_clicked();
+    void mBtnSatellites_clicked();
+    void mBtnOptions_clicked();
+    void mBtnDebug_clicked();
+    void mBtnRefreshDevices_clicked();
+    void mBtnAddVertex_clicked();
+    void mBtnCloseFeature_clicked();
+    void mBtnResetFeature_clicked();
 // not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
-    void on_mBtnLogFile_clicked();
+    void mBtnLogFile_clicked();
 
-    void connected( QgsGPSConnection * );
+    void connected( QgsGpsConnection * );
     void timedout();
+    void switchAcquisition();
+    void cboAcquisitionIntervalEdited();
+    void cboDistanceThresholdEdited();
+    void timestampFormatChanged( int index );
+    void cursorCoordinateChanged( const QgsPointXY &point );
+
+    /**
+     * Updates compatible fields for timestamp recording
+     */
+    void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
 
   private:
     enum FixStatus  //GPS status
@@ -81,30 +116,63 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void connectGpsSlot();
     void disconnectGps();
     void populateDevices();
-    void setStatusIndicator( const FixStatus statusValue );
+    void setStatusIndicator( FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
-    QgsGPSConnection *mNmea = nullptr;
-    QgsMapCanvas *mpCanvas = nullptr;
-    QgsGpsMarker *mpMapMarker = nullptr;
-    QwtPlot *mpPlot = nullptr;
-    QwtPlotCurve *mpCurve = nullptr;
+    void setAcquisitionInterval( uint );
+    void setDistanceThreshold( uint );
+    void updateTimeZones();
+    QVariant timestamp( QgsVectorLayer *vlayer, int idx );
+    QgsGpsConnection *mNmea = nullptr;
+    QPointer< QgsMapCanvas > mMapCanvas;
+    QgsGpsMarker *mMapMarker = nullptr;
+    QgsGpsBearingItem *mMapBearingItem = nullptr;
+
+    QwtPlot *mPlot = nullptr;
+    QwtPlotCurve *mCurve = nullptr;
 #ifdef WITH_QWTPOLAR
     QwtPolarPlot *mpSatellitesWidget = nullptr;
     QwtPolarGrid *mpSatellitesGrid = nullptr;
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
+
+    void updateGpsDistanceStatusMessage( bool forceDisplay );
+
     QgsCoordinateReferenceSystem mWgs84CRS;
+    QgsCoordinateTransform mCanvasToWgs84Transform;
+    QgsDistanceArea mDistanceCalculator;
+
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
-    QgsRubberBand *mpRubberBand = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
-    QList<QgsPointXY> mCaptureList;
+    QgsPointXY mSecondLastGpsPosition;
+    QVector<QgsPoint> mCaptureList;
+    double mLastElevation = 0.0;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-    QgsVectorLayer *mpLastLayer = nullptr;
+    QPointer< QgsVectorLayer > mLastLayer;
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
-    QColor mTrackColor;
+    QIntValidator *mAcquisitionIntValidator = nullptr;
+    QIntValidator *mDistanceThresholdValidator = nullptr;
+    nmeaPOS mLastNmeaPosition;
+    nmeaTIME mLastNmeaTime;
+    std::unique_ptr<QTimer> mAcquisitionTimer;
+    bool mAcquisitionEnabled = true;
+    int mAcquisitionInterval = 0;
+    unsigned int mDistanceThreshold = 0;
+    //! Temporary storage of preferred fields
+    QMap<QString, QString> mPreferredTimestampFields;
+    //! Flag when updating fields
+    bool mPopulatingFields = false;
+
+    QgsPointXY mLastCursorPosWgs84;
+    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
+
+    QElapsedTimer mLastRotateTimer;
+    QElapsedTimer mLastForcedStatusUpdate;
+
+    friend class TestQgsGpsInformationWidget;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H

@@ -25,6 +25,7 @@
 #include "qgsunittypes.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectutils.h"
+#include "qgsmapmouseevent.h"
 
 #include "cpl_conv.h"
 
@@ -32,9 +33,7 @@ class TestQgsMapToolSelect : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolSelect()
-      : canvas( 0 )
-    {}
+    TestQgsMapToolSelect() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

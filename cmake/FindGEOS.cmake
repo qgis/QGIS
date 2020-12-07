@@ -13,16 +13,13 @@
 #    GEOS_LIBRARY
 #
 
-IF (POLICY CMP0053) # in CMake 3.1.0+
-  CMAKE_POLICY (SET CMP0053 OLD) # keep old-style @VAR@ expansion
-ENDIF (POLICY CMP0053)
-INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacPlistMacros.cmake)
+INCLUDE (${CMAKE_SOURCE_DIR}/cmake/MacPlistMacros.cmake)
 
 IF(WIN32)
 
   IF (MINGW)
-    FIND_PATH(GEOS_INCLUDE_DIR geos_c.h /usr/local/include /usr/include c:/msys/local/include)
-    FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
+    FIND_PATH(GEOS_INCLUDE_DIR geos_c.h "$ENV{LIB_DIR}/include" /usr/local/include /usr/include c:/msys/local/include)
+    FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c PATHS "$ENV{LIB_DIR}/lib" /usr/local/lib /usr/lib c:/msys/local/lib)
   ENDIF (MINGW)
 
   IF (MSVC)
@@ -32,6 +29,11 @@ IF(WIN32)
       $ENV{LIB}
       )
   ENDIF (MSVC)
+
+ELSEIF(APPLE AND QGIS_MAC_DEPS_DIR)
+
+    FIND_PATH(GEOS_INCLUDE_DIR geos_c.h "$ENV{LIB_DIR}/include" )
+    FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c PATHS "$ENV{LIB_DIR}/lib" )
 
 ELSE(WIN32)
 
@@ -74,6 +76,7 @@ ELSE(WIN32)
       SET(GEOS_CONFIG_PREFER_PATH "$ENV{GEOS_HOME}/bin" CACHE STRING "preferred path to GEOS (geos-config)")
       FIND_PROGRAM(GEOS_CONFIG geos-config
           ${GEOS_CONFIG_PREFER_PATH}
+          $ENV{LIB_DIR}/bin
           /usr/local/bin/
           /usr/bin/
           )
@@ -148,7 +151,7 @@ ELSE(WIN32)
             SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.dylib CACHE STRING INTERNAL FORCE)
           ENDIF (NOT GEOS_LIBRARY)
         ELSE (APPLE)
-          SET(GEOS_LIBRARY ${GEOS_LINK_DIRECTORIES}/lib${GEOS_LIB_NAME}.so CACHE STRING INTERNAL)
+          FIND_LIBRARY(GEOS_LIBRARY NAMES ${GEOS_LIB_NAME} PATHS ${GEOS_LIB_DIRECTORIES}/lib)
         ENDIF (APPLE)
         #MESSAGE("DBG  GEOS_LIBRARY=${GEOS_LIBRARY}")
 
@@ -161,7 +164,7 @@ ENDIF(WIN32)
 
 IF(GEOS_INCLUDE_DIR AND NOT GEOS_VERSION)
   FILE(READ ${GEOS_INCLUDE_DIR}/geos_c.h VERSIONFILE)
-  STRING(REGEX MATCH "#define GEOS_VERSION \"[0-9]+\\.[0-9]+\\.[0-9]+(dev)?\"" GEOS_VERSION ${VERSIONFILE})
+  STRING(REGEX MATCH "#define GEOS_VERSION \"[0-9]+\\.[0-9]+\\.[0-9]+" GEOS_VERSION ${VERSIONFILE})
   STRING(REGEX MATCH "[0-9]+\\.[0-9]\\.[0-9]+" GEOS_VERSION ${GEOS_VERSION})
 ENDIF(GEOS_INCLUDE_DIR AND NOT GEOS_VERSION)
 

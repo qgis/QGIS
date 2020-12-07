@@ -29,13 +29,14 @@ class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
 class QgsHighlight;
 class QgsAttributeDialog;
+class QgsExpressionContextScope;
 
 class APP_EXPORT QgsFeatureAction : public QAction
 {
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QUuid &actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, QUuid actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
@@ -49,9 +50,32 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * \param defaultAttributes  Provide some default attributes here if desired.
      *
-     * \returns true if feature was added if showModal is true. If showModal is false, returns true in every case
+     * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
      */
-    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
+
+    /**
+     * Sets whether to force suppression of the attribute form popup after creating a new feature.
+     * If \a force is TRUE, then regardless of any user settings, form settings, etc, the attribute
+     * form will ALWAYS be suppressed.
+     */
+    void setForceSuppressFormPopup( bool force );
+
+    /**
+     * Returns the added feature or invalid feature in case addFeature() was not successful.
+     */
+    QgsFeature feature() const;
+
+  signals:
+
+    /**
+     * This signal is emitted when the add feature process is finished.
+     * Either during the call to addFeature() already or when the dialog is eventually
+     * closed (accepted or canceled).
+     *
+     * \since QGIS 3.8
+     */
+    void addFeatureFinished();
 
   private slots:
     void onFeatureSaved( const QgsFeature &feature );
@@ -65,6 +89,8 @@ class APP_EXPORT QgsFeatureAction : public QAction
     int mIdx;
 
     bool mFeatureSaved;
+
+    bool mForceSuppressFormPopup = false;
 
     static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };

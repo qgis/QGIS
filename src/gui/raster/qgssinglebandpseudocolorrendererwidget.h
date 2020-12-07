@@ -27,8 +27,13 @@
 
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSingleBandPseudoColorRendererWidget
+ *
+ * Single band pseudo color renderer widget consists of a color ramp shader widget,
+ * a raster min max widget and a band selector.
+ *
  */
 class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
@@ -37,78 +42,48 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
   public:
 
+    //! Creates new raster renderer widget
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
+    //! Creates new raster renderer widget
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandPseudoColorRendererWidget( layer, extent ); }
+
     QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
     void doComputations() override;
-    QgsRasterMinMaxWidget *minMaxWidget() override { return mMinMaxWidget; }
+    QgsRasterMinMaxWidget *minMaxWidget() override;
 
+    //! Returns the current raster band number
+    int currentBand() const;
+
+    //! Set state of the widget from renderer settings
     void setFromRenderer( const QgsRasterRenderer *r );
 
   public slots:
-
-    /** Executes the single band pseudo raster classficiation
-     */
-    void classify();
     //! called when new min/max values are loaded
     void loadMinMax( int bandNo, double min, double max );
-
-  private:
-
-    enum Column
-    {
-      ValueColumn = 0,
-      ColorColumn = 1,
-      LabelColumn = 2,
-    };
-
-    void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
-
-    /** Generate labels from the values in the color map.
-     *  Skip labels which were manually edited (black text).
-     *  Text of generated labels is made gray
-     */
-    void autoLabel();
-
-    //! Extract the unit out of the current labels and set the unit field.
-    void setUnitFromLabels();
-
-    QMenu *contextMenu = nullptr;
+    //! called when the color ramp tree has changed
+    void loadMinMaxFromTree( double min, double max );
 
   private slots:
-
-    void applyColorRamp();
-    void on_mAddEntryButton_clicked();
-    void on_mDeleteEntryButton_clicked();
-    void on_mLoadFromBandButton_clicked();
-    void on_mLoadFromFileButton_clicked();
-    void on_mExportToFileButton_clicked();
-    void on_mUnitLineEdit_textEdited( const QString &text ) { Q_UNUSED( text ); autoLabel(); }
-    void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void mColormapTreeWidget_itemEdited( QTreeWidgetItem *item, int column );
     void bandChanged();
-    void on_mColorInterpolationComboBox_currentIndexChanged( int index );
-    void on_mMinLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
-    void on_mMaxLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
-    void on_mMinLineEdit_textEdited( const QString &text ) ;
-    void on_mMaxLineEdit_textEdited( const QString &text ) ;
-    void on_mClassificationModeComboBox_currentIndexChanged( int index );
-    void changeColor();
-    void changeOpacity();
+    void mMinLineEdit_textChanged( const QString & );
+    void mMaxLineEdit_textChanged( const QString & );
+    void mMinLineEdit_textEdited( const QString &text );
+    void mMaxLineEdit_textEdited( const QString &text );
 
   private:
-
     void setLineEditValue( QLineEdit *lineEdit, double value );
     double lineEditValue( const QLineEdit *lineEdit ) const;
-    void resetClassifyButton();
+
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
-    bool mDisableMinMaxWidgetRefresh;
     int mMinMaxOrigin;
 
     void minMaxModified();
-};
 
+    // Convert min/max to localized display value with maximum precision for the current data type
+    QString displayValueWithMaxPrecision( const double value );
+
+};
 
 #endif // QGSSINGLEBANDCOLORRENDERERWIDGET_H

@@ -18,6 +18,8 @@
  ***************************************************************************/
 
 #include "qgssubstitutionlistwidget.h"
+#include "qgsgui.h"
+
 #include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QFileDialog>
@@ -28,6 +30,12 @@ QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonAdd_clicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonRemove_clicked );
+  connect( mButtonExport, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonExport_clicked );
+  connect( mButtonImport, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonImport_clicked );
   connect( mTableSubstitutions, &QTableWidget::cellChanged, this, &QgsSubstitutionListWidget::tableChanged );
 }
 
@@ -35,7 +43,8 @@ void QgsSubstitutionListWidget::setSubstitutions( const QgsStringReplacementColl
 {
   mTableSubstitutions->blockSignals( true );
   mTableSubstitutions->clearContents();
-  Q_FOREACH ( const QgsStringReplacement &replacement, substitutions.replacements() )
+  const auto constReplacements = substitutions.replacements();
+  for ( const QgsStringReplacement &replacement : constReplacements )
   {
     addSubstitution( replacement );
   }
@@ -65,14 +74,14 @@ QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
   return QgsStringReplacementCollection( result );
 }
 
-void QgsSubstitutionListWidget::on_mButtonAdd_clicked()
+void QgsSubstitutionListWidget::mButtonAdd_clicked()
 {
   addSubstitution( QgsStringReplacement( QString(), QString(), false, true ) );
   mTableSubstitutions->setFocus();
   mTableSubstitutions->setCurrentCell( mTableSubstitutions->rowCount() - 1, 0 );
 }
 
-void QgsSubstitutionListWidget::on_mButtonRemove_clicked()
+void QgsSubstitutionListWidget::mButtonRemove_clicked()
 {
   int currentRow = mTableSubstitutions->currentRow();
   mTableSubstitutions->removeRow( currentRow );
@@ -84,9 +93,9 @@ void QgsSubstitutionListWidget::tableChanged()
   emit substitutionsChanged( substitutions() );
 }
 
-void QgsSubstitutionListWidget::on_mButtonExport_clicked()
+void QgsSubstitutionListWidget::mButtonExport_clicked()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save substitutions" ), QDir::homePath(),
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Substitutions" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -109,8 +118,8 @@ void QgsSubstitutionListWidget::on_mButtonExport_clicked()
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    QMessageBox::warning( nullptr, tr( "Export substitutions" ),
-                          tr( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() ),
+    QMessageBox::warning( nullptr, tr( "Export Substitutions" ),
+                          tr( "Cannot write file %1:\n%2" ).arg( fileName, file.errorString() ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
     return;
@@ -120,9 +129,9 @@ void QgsSubstitutionListWidget::on_mButtonExport_clicked()
   doc.save( out, 4 );
 }
 
-void QgsSubstitutionListWidget::on_mButtonImport_clicked()
+void QgsSubstitutionListWidget::mButtonImport_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load substitutions" ), QDir::homePath(),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Substitutions" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -132,8 +141,8 @@ void QgsSubstitutionListWidget::on_mButtonImport_clicked()
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    QMessageBox::warning( nullptr, tr( "Import substitutions" ),
-                          tr( "Cannot read file %1:\n%2." ).arg( fileName, file.errorString() ),
+    QMessageBox::warning( nullptr, tr( "Import Substitutions" ),
+                          tr( "Cannot read file %1:\n%2" ).arg( fileName, file.errorString() ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
     return;
@@ -159,7 +168,7 @@ void QgsSubstitutionListWidget::on_mButtonImport_clicked()
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "substitutions" ) )
   {
-    QMessageBox::warning( nullptr, tr( "Import substitutions" ),
+    QMessageBox::warning( nullptr, tr( "Import Substitutions" ),
                           tr( "The selected file is not a substitution list." ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
@@ -206,7 +215,7 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &sub
 
 QgsSubstitutionListDialog::QgsSubstitutionListDialog( QWidget *parent )
   : QDialog( parent )
-  , mWidget( nullptr )
+
 {
   setWindowTitle( tr( "Substitutions" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();

@@ -34,12 +34,13 @@ class QgsTileScaleWidget : public QWidget, private Ui::QgsTileScaleWidget
   public slots:
     void layerChanged( QgsMapLayer *layer );
     void scaleChanged( double );
-    void on_mSlider_valueChanged( int );
+    void mSlider_valueChanged( int );
     void scaleEnabled( bool );
+    void locationChanged( Qt::DockWidgetArea area );
 
   private:
-    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsTileScaleWidget();
+    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    ~QgsTileScaleWidget() override = default;
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QList<double> mResolutions;

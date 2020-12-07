@@ -37,7 +37,7 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsSqliteHandle *c )
 inline void qgsConnectionPool_InvalidateConnection( QgsSqliteHandle *c )
 {
   /* Invalidation is used in particular by the WFS provider that uses a */
-  /* temporary spatialite DB and want to delete it at some point. For that */
+  /* temporary SpatiaLite DB and want to delete it at some point. For that */
   /* it must invalidate all handles pointing to it */
   c->invalidate();
 }
@@ -68,9 +68,19 @@ class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup
 //! SpatiaLite connection pool - singleton
 class QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle *, QgsSpatiaLiteConnPoolGroup>
 {
-    static QgsSpatiaLiteConnPool sInstance;
+    static QgsSpatiaLiteConnPool *sInstance;
   public:
     static QgsSpatiaLiteConnPool *instance();
+
+    // Singleton cleanup
+    //
+    // Make sure nobody is using the instance before calling
+    // this function.
+    //
+    // WARNING: concurrent call from multiple threads may result
+    //          in double-free of the instance.
+    //
+    static void cleanupInstance();
 };
 
 

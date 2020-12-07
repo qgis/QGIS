@@ -20,27 +20,26 @@
 
 //qgis includes...
 #include "qgsfeatureiterator.h"
-#include <qgsvectorlayercache.h>
-#include <qgsvectordataprovider.h>
-#include <qgsapplication.h>
-#include <qgsvectorlayereditbuffer.h>
-#include <qgscacheindexfeatureid.h>
+#include "qgsvectorlayercache.h"
+#include "qgsvectordataprovider.h"
+#include "qgsapplication.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgscacheindexfeatureid.h"
+#include "qgsvectorlayer.h"
+
 #include <QDebug>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the vector layer cache
  *
- * @see QgsVectorLayerCache
+ * \see QgsVectorLayerCache
  */
 class TestVectorLayerCache : public QObject
 {
     Q_OBJECT
   public:
-    TestVectorLayerCache()
-      : mVectorLayerCache( 0 )
-      , mFeatureIdIndex( 0 )
-      , mPointsLayer( 0 )
-    {}
+    TestVectorLayerCache() = default;
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.
@@ -56,6 +55,7 @@ class TestVectorLayerCache : public QObject
     void testFullCacheThroughRequest();
     void testCanUseCacheForRequest();
     void testCacheGeom();
+    void testFullCacheWithRect(); // Test that if rect is set then no full cache can exist, see #19468
 
     void onCommittedFeaturesAdded( const QString &, const QgsFeatureList & );
 
@@ -391,6 +391,33 @@ void TestVectorLayerCache::testCacheGeom()
   QVERIFY( cache.hasFullCache() );
   cache.setCacheGeometry( true );
   QVERIFY( !cache.hasFullCache() );
+}
+
+void TestVectorLayerCache::testFullCacheWithRect()
+{
+  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  // cache geometry
+  cache.setCacheGeometry( true );
+  QVERIFY( ! cache.hasFullCache() );
+  QgsFeatureRequest req;
+  req.setFilterRect( mPointsLayer->dataProvider()->extent().buffered( - mPointsLayer->dataProvider()->extent().width() / 2 ) );
+  QgsFeatureIterator it = cache.getFeatures( req );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+  QVERIFY( ! cache.hasFullCache() );
+
+  // Filter rect contains extent
+  req.setFilterRect( mPointsLayer->dataProvider()->extent().buffered( 1 ) );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+  QVERIFY( cache.hasFullCache() );
+
 }
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, const QgsFeatureList &features )

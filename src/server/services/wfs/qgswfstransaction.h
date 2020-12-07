@@ -35,7 +35,7 @@ namespace QgsWfs
 
     QStringList insertFeatureIds;
 
-    bool error;
+    bool error = false;
 
     QString errorMsg;
   };
@@ -52,7 +52,11 @@ namespace QgsWfs
 
     QgsFeatureRequest featureRequest;
 
-    bool error;
+    QStringList serverFids;
+
+    int totalUpdated = 0;
+
+    bool error = false;
 
     QString errorMsg;
   };
@@ -65,7 +69,11 @@ namespace QgsWfs
 
     QgsFeatureRequest featureRequest;
 
-    bool error;
+    QStringList serverFids;
+
+    int totalDeleted = 0;
+
+    bool error = false;
 
     QString errorMsg;
   };
@@ -79,29 +87,35 @@ namespace QgsWfs
     QList< transactionDelete > deletes;
   };
 
-  /** Transform Insert element to transactionInsert
+  /**
+   * Transform Insert element to transactionInsert
    */
   transactionInsert parseInsertActionElement( QDomElement &actionElem );
 
-  /** Transform Update element to transactionUpdate
+  /**
+   * Transform Update element to transactionUpdate
    */
-  transactionUpdate parseUpdateActionElement( QDomElement &actionElem );
+  transactionUpdate parseUpdateActionElement( QDomElement &actionElem, const QgsProject *project );
 
-  /** Transform Delete element to transactionDelete
+  /**
+   * Transform Delete element to transactionDelete
    */
-  transactionDelete parseDeleteActionElement( QDomElement &actionElem );
+  transactionDelete parseDeleteActionElement( QDomElement &actionElem, const QgsProject *project );
 
-  /** Transform RequestBody root element to getFeatureRequest
+  /**
+   * Transform RequestBody root element to getFeatureRequest
    */
-  transactionRequest parseTransactionRequestBody( QDomElement &docElem );
+  transactionRequest parseTransactionRequestBody( QDomElement &docElem, const QgsProject *project );
 
-  transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters );
+  transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters, const QgsProject *project );
 
-  /** Transform GML feature nodes to features
+  /**
+   * Transform GML feature nodes to features
    */
-  QgsFeatureList featuresFromGML( QDomNodeList featureNodeList, QgsVectorDataProvider *provider );
+  QgsFeatureList featuresFromGML( QDomNodeList featureNodeList, QgsVectorLayer *layer );
 
-  /** Perform the transaction
+  /**
+   * Perform the transaction
    */
   void performTransaction( transactionRequest &aRequest, QgsServerInterface *serverIface, const QgsProject *project );
 
@@ -119,7 +133,7 @@ namespace QgsWfs
   QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QgsProject *project,
                                           const QString &version, const QgsServerRequest &request );
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 #endif
 

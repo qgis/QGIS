@@ -1,0 +1,13 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <BoundingBox maxy="0" maxx="0" miny="0" CRS="EPSG:3857" minx="0"/>
+ <Layer name="json">
+  <Feature id="2">
+   <Attribute value="2" name="pk"/>
+   <Attribute value="{&#xa;    &quot;a&quot;: 1,&#xa;    &quot;b&quot;: 2&#xa;}&#xa;" name="jvalue"/>
+   <Attribute value="{&#xa;    &quot;c&quot;: 4,&#xa;    &quot;d&quot;: 5&#xa;}&#xa;" name="jbvalue"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

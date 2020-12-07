@@ -30,13 +30,18 @@
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
+#include "qgsservercachefilter.h"
+#include "qgsservercachemanager.h"
 #else
 class QgsAccessControl;
 class QgsAccessControlFilter;
+class QgsServerCacheManager;
+class QgsServerCacheFilter;
 #endif
 #include "qgsserviceregistry.h"
 #include "qgis_server.h"
 
+SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
 
 /**
@@ -57,7 +62,7 @@ class SERVER_EXPORT QgsServerInterface
   public:
 
     //! Constructor
-    QgsServerInterface();
+    QgsServerInterface() SIP_SKIP;
 
     virtual ~QgsServerInterface() = default;
 
@@ -76,50 +81,65 @@ class SERVER_EXPORT QgsServerInterface
     virtual void clearRequestHandler() = 0 SIP_SKIP;
 
     /**
-     * Get pointer to the capabiblities cache
+     * Gets pointer to the capabiblities cache
      * \returns QgsCapabilitiesCache
      */
-    virtual QgsCapabilitiesCache *capabilitiesCache() = 0;
+    virtual QgsCapabilitiesCache *capabilitiesCache() = 0 SIP_KEEPREFERENCE;
 
     /**
-     * Get pointer to the request handler
+     * Gets pointer to the request handler
      * \returns QgsRequestHandler
      */
-    virtual QgsRequestHandler *requestHandler() = 0;
+    virtual QgsRequestHandler *requestHandler() = 0 SIP_KEEPREFERENCE;
 
     /**
      * Register a QgsServerFilter
      * \param filter the QgsServerFilter to add
      * \param priority an optional priority for the filter order
      */
-    virtual void registerFilter( QgsServerFilter *filter, int priority = 0 ) = 0;
+    virtual void registerFilter( QgsServerFilter *filter SIP_TRANSFER, int priority = 0 ) = 0;
 
     /**
      * Set the filters map
      * \param filters the QgsServerFiltersMap
      */
-    virtual void setFilters( QgsServerFiltersMap *filters ) = 0;
+    virtual void setFilters( QgsServerFiltersMap *filters SIP_TRANSFER ) = 0;
 
     /**
-     * Return the list of current QgsServerFilter
+     * Returns the list of current QgsServerFilter
      * \returns QgsServerFiltersMap list of QgsServerFilter
      */
     virtual QgsServerFiltersMap filters() = 0;
 
-    /** Register an access control filter
+    /**
+     * Register an access control filter
      * \param accessControl the access control to register
      * \param priority the priority used to order them
      */
-    virtual void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) = 0;
+    virtual void registerAccessControl( QgsAccessControlFilter *accessControl SIP_TRANSFER, int priority = 0 ) = 0;
 
     //! Gets the registered access control filters
     virtual QgsAccessControl *accessControls() const = 0;
 
-    //! Return an enrironment variable, used to pass  environment variables to Python
+    /**
+     * Register a server cache filter
+     * \param serverCache the server cache to register
+     * \param priority the priority used to order them
+     * \since QGIS 3.4
+     */
+    virtual void registerServerCache( QgsServerCacheFilter *serverCache SIP_TRANSFER, int priority = 0 ) = 0;
+
+    /**
+     * Gets the registered server cache filters
+     * \since QGIS 3.4
+     */
+    virtual QgsServerCacheManager *cacheManager() const = 0;
+
+    //! Returns an enrironment variable, used to pass  environment variables to Python
     virtual QString getEnv( const QString &name ) const = 0;
 
     /**
-     * Return the configuration file path
+     * Returns the configuration file path
      * \returns QString containing the configuration file path
      */
     virtual QString configFilePath() = 0;
@@ -137,19 +157,13 @@ class SERVER_EXPORT QgsServerInterface
     virtual void removeConfigCacheEntry( const QString &path ) = 0;
 
     /**
-     * Remove entries from layer cache
-     * \param path the path of the project which own the layers to be removed
-     */
-    virtual void removeProjectLayers( const QString &path ) = 0;
-
-    /**
-     * Return the service registry
+     * Returns the service registry
      * \returns QgsServiceResgistry
      */
-    virtual QgsServiceRegistry *serviceRegistry() = 0;
+    virtual QgsServiceRegistry *serviceRegistry() = 0 SIP_KEEPREFERENCE;
 
     /**
-     * Return the server settings
+     * Returns the server settings
      * \returns QgsServerSettings
      *
      * \note not available in Python bindings
@@ -157,6 +171,10 @@ class SERVER_EXPORT QgsServerInterface
     virtual QgsServerSettings *serverSettings() = 0 SIP_SKIP;
 
   private:
+#ifdef SIP_RUN
+    QgsServerInterface();
+#endif
+
     QString mConfigFilePath;
 };
 

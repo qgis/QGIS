@@ -1,0 +1,116 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsstyleentityvisitor.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsStyleEntityVisitorInterface
+{
+%Docstring
+
+An interface for classes which can visit style entity (e.g. symbol) nodes (using the visitor pattern).
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyleentityvisitor.h"
+%End
+  public:
+
+    enum class NodeType
+    {
+      Project,
+      Layer,
+      SymbolRule,
+      Layouts,
+      PrintLayout,
+      LayoutItem,
+      Report,
+      ReportHeader,
+      ReportFooter,
+      ReportSection,
+      Annotations,
+      Annotation,
+    };
+
+    struct StyleLeaf
+    {
+
+      StyleLeaf( const QgsStyleEntityInterface *entity, const QString &identifier = QString(), const QString &description = QString() );
+%Docstring
+Constructor for StyleLeaf, visiting the given style ``entity`` with the specified ``identifier`` and ``description``.
+
+Ownership of ``entity`` is not transferred.
+%End
+
+      QString identifier;
+
+      QString description;
+
+      const QgsStyleEntityInterface *entity;
+    };
+
+    struct Node
+    {
+
+      Node( QgsStyleEntityVisitorInterface::NodeType type, const QString &identifier, const QString &description );
+%Docstring
+Constructor for Node, visiting the node with the specified ``identifier`` and ``description``.
+%End
+
+      QgsStyleEntityVisitorInterface::NodeType type;
+
+      QString identifier;
+
+      QString description;
+
+    };
+
+    virtual ~QgsStyleEntityVisitorInterface();
+
+    virtual bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity );
+%Docstring
+Called when the visitor will visit a style ``entity``.
+
+Subclasses should return ``False`` to abort further visitations, or ``True`` to continue
+visiting after processing this entity.
+%End
+
+    virtual bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node );
+%Docstring
+Called when the visitor starts visiting a ``node``.
+
+Subclasses should return ``False`` if they do NOT want to visit this particular node - e.g.
+if the node type is QgsStyleEntityVisitorInterface.NodeType.Layouts and they do not wish to visit
+layout objects. In this case the visitor will not process the node, and will move to the next available
+node instead. Return ``True`` to proceed with visiting the node.
+
+The default implementation returns ``True``.
+%End
+
+    virtual bool visitExit( const QgsStyleEntityVisitorInterface::Node &node );
+%Docstring
+Called when the visitor stops visiting a ``node``.
+
+Subclasses should return ``False`` to abort further visitations, or ``True`` to continue
+visiting other nodes.
+
+The default implementation returns ``True``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsstyleentityvisitor.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

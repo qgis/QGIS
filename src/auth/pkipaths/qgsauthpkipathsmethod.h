@@ -18,6 +18,7 @@
 #define QGSAUTHPKIPATHSMETHOD_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
@@ -29,7 +30,7 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthPkiPathsMethod();
-    ~QgsAuthPkiPathsMethod();
+    ~QgsAuthPkiPathsMethod() override;
 
     // QgsAuthMethod interface
     QString key() const override;
@@ -57,6 +58,7 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
     void removePkiConfigBundle( const QString &authcfg );
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
+
 };
 
 #endif // QGSAUTHPKIPATHSMETHOD_H

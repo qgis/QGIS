@@ -1,0 +1,86 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layout/qgslayoutcustomdrophandler.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutCustomDropHandler : QObject
+{
+%Docstring
+Abstract base class that may be implemented to handle new types of data to be dropped or pasted in QGIS layouts.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutcustomdrophandler.h"
+%End
+  public:
+
+    QgsLayoutCustomDropHandler( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutCustomDropHandler.
+%End
+
+ virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) /Deprecated/;
+%Docstring
+Called when the specified ``file`` has been dropped onto a QGIS layout. If ``True``
+is returned, then the handler has accepted this file and it should not
+be further processed (e.g. by other QgsLayoutCustomDropHandler).
+
+The base class implementation does nothing.
+
+.. deprecated::
+   use the version which specifies a drop location instead.
+%End
+
+    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF dropPoint, const QString &file );
+%Docstring
+Called when the specified ``file`` has been dropped onto a QGIS layout. If ``True``
+is returned, then the handler has accepted this file and it should not
+be further processed (e.g. by other QgsLayoutCustomDropHandler).
+
+The ``dropPoint`` point specifies the location (in layout coordinates) at which
+the drop occurred.
+
+The base class implementation does nothing.
+
+.. versionadded:: 3.12
+%End
+
+    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList< QgsLayoutItem * > &pastedItems /Out/ );
+%Docstring
+Called when the specified MIME ``data`` has been pasted onto a QGIS layout. If ``True``
+is returned, then the handler has accepted this data and it should not
+be further processed (e.g. by other QgsLayoutCustomDropHandler).
+
+The ``pastePoint`` point specifies the location (in layout coordinates) at which
+the paste occurred.
+
+The base class implementation does nothing.
+
+:param iface: pointer to the layout designer interface
+:param pastePoint: layout point at which the paste should occur
+:param data: MIME data to paste
+
+:return: - ``True`` if the handler accepted and processed the paste operation
+         - pastedItems: should be filled with any newly created items as a result of the paste
+
+
+.. versionadded:: 3.14
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layout/qgslayoutcustomdrophandler.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

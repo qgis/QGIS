@@ -29,7 +29,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Import certificate(s)</string>
+      <string>Import Certificate(s)</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="margin">
@@ -222,7 +222,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Validation results</string>
+      <string>Validation Results</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="margin">

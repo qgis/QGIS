@@ -15,20 +15,14 @@
 
 #include "qgscolorswatchgrid.h"
 #include "qgsapplication.h"
+#include "qgssymbollayerutils.h"
 #include "qgslogger.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QMenu>
+#include <QBuffer>
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
-#define SWATCH_SIZE 14 //width/height of color swatches
-#define SWATCH_SPACING 4 //horizontal/vertical gap between swatches
-#define LEFT_MARGIN 6 //margin between left edge and first swatch
-#define RIGHT_MARGIN 6 //margin between right edge and last swatch
-#define TOP_MARGIN 6 //margin between label and first swatch
-#define BOTTOM_MARGIN 6 //margin between last swatch row and end of widget
-#define LABEL_SIZE 20 //label rect height
-#define LABEL_MARGIN 4 //spacing between label box and text
 
 QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context, QWidget *parent )
   : QWidget( parent )
@@ -46,8 +40,31 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
+  mLabelHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height();
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
+#else
+  mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( '.' );
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mSwatchSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
+#else
+  mSwatchSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 1.75;
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mSwatchOutlineSize = std::max( fontMetrics().width( QStringLiteral( "." ) ) * 0.4, 1.0 );
+#else
+  mSwatchOutlineSize = std::max( fontMetrics().horizontalAdvance( '.' ) * 0.4, 1.0 );
+#endif
+
+  mSwatchSpacing = mSwatchSize * 0.3;
+  mSwatchMargin = mLabelMargin;
+
   //calculate widget width
-  mWidth = NUMBER_COLORS_PER_ROW * SWATCH_SIZE + ( NUMBER_COLORS_PER_ROW - 1 ) * SWATCH_SPACING + LEFT_MARGIN + RIGHT_MARGIN;
+  mWidth = NUMBER_COLORS_PER_ROW * mSwatchSize + ( NUMBER_COLORS_PER_ROW - 1 ) * mSwatchSpacing + mSwatchMargin + mSwatchMargin;
 
   refreshColors();
 }
@@ -86,7 +103,7 @@ void QgsColorSwatchGrid::refreshColors()
 
 void QgsColorSwatchGrid::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
   draw( painter );
   painter.end();
@@ -114,15 +131,56 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
 {
   if ( colorIdx >= 0 && colorIdx < mColors.length() )
   {
+    QColor color = mColors.at( colorIdx ).first;
+
     //if color has an associated name from the color scheme, use that
     QString colorName = mColors.at( colorIdx ).second;
-    if ( colorName.isEmpty() )
-    {
-      //otherwise, build a default string
-      QColor color = mColors.at( colorIdx ).first;
-      colorName = QString( tr( "rgb(%1, %2, %3)" ) ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
-    }
-    setToolTip( colorName );
+
+    // create very large preview swatch, because the grid itself has only tiny preview icons
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+#else
+    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+#endif
+    int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+    int margin = static_cast< int >( height * 0.1 );
+    QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
+    icon.fill( Qt::transparent );
+
+    QPainter p;
+    p.begin( &icon );
+
+    //start with checkboard pattern
+    QBrush checkBrush = QBrush( transparentBackground() );
+    p.setPen( Qt::NoPen );
+    p.setBrush( checkBrush );
+    p.drawRect( margin, margin, width, height );
+
+    //draw color over pattern
+    p.setBrush( QBrush( mColors.at( colorIdx ).first ) );
+
+    //draw border
+    p.setPen( QColor( 197, 197, 197 ) );
+    p.drawRect( margin, margin, width, height );
+    p.end();
+
+    QByteArray data;
+    QBuffer buffer( &data );
+    icon.save( &buffer, "PNG", 100 );
+
+    QString info;
+    if ( !colorName.isEmpty() )
+      info += QStringLiteral( "<h3>%1</h3><p>" ).arg( colorName );
+
+    info += QStringLiteral( "<b>HEX</b> %1<br>"
+                            "<b>RGB</b> %2<br>"
+                            "<b>HSV</b> %3,%4,%5<p>" ).arg( color.name(),
+                                QgsSymbolLayerUtils::encodeColor( color ) )
+            .arg( color.hue() ).arg( color.saturation() ).arg( color.value() );
+    info += QStringLiteral( "<img src='data:image/png;base64, %0'>" ).arg( QString( data.toBase64() ) );
+
+    setToolTip( info );
+
   }
   else
   {
@@ -169,11 +227,11 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
   {
-    mCurrentFocusBox = qMin( mCurrentFocusBox + 1, mColors.length() - 1 );
+    mCurrentFocusBox = std::min( mCurrentFocusBox + 1, mColors.length() - 1 );
   }
   else if ( event->key() == Qt::Key_Left )
   {
-    mCurrentFocusBox = qMax( mCurrentFocusBox - 1, 0 );
+    mCurrentFocusBox = std::max( mCurrentFocusBox - 1, 0 );
   }
   else if ( event->key() == Qt::Key_Up )
   {
@@ -225,22 +283,22 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
 
 void QgsColorSwatchGrid::focusInEvent( QFocusEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mFocused = true;
   repaint();
 }
 
 void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mFocused = false;
   repaint();
 }
 
 int QgsColorSwatchGrid::calculateHeight() const
 {
-  int numberRows = ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
-  return numberRows * ( SWATCH_SIZE ) + ( numberRows - 1 ) * SWATCH_SPACING + TOP_MARGIN + LABEL_SIZE + BOTTOM_MARGIN;
+  int numberRows = std::ceil( static_cast<double>( mColors.length() ) / NUMBER_COLORS_PER_ROW );
+  return numberRows * ( mSwatchSize ) + ( numberRows - 1 ) * mSwatchSpacing + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin + mSwatchMargin;
 }
 
 void QgsColorSwatchGrid::draw( QPainter &painter )
@@ -253,11 +311,11 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
   //draw header background
   painter.setBrush( headerBgColor );
   painter.setPen( Qt::NoPen );
-  painter.drawRect( QRect( 0, 0, width(), LABEL_SIZE ) );
+  painter.drawRect( QRect( 0, 0, width(), mLabelHeight + 0.5 * mLabelMargin ) );
 
   //draw header text
   painter.setPen( headerTextColor );
-  painter.drawText( QRect( LABEL_MARGIN, 0, width() - 2 * LABEL_MARGIN, LABEL_SIZE ),
+  painter.drawText( QRect( mLabelMargin, 0.25 * mLabelMargin, width() - 2 * mLabelMargin, mLabelHeight ),
                     Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
 
   //draw color swatches
@@ -268,9 +326,9 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     int row = index / NUMBER_COLORS_PER_ROW;
     int column = index % NUMBER_COLORS_PER_ROW;
 
-    QRect swatchRect = QRect( column * ( SWATCH_SIZE + SWATCH_SPACING ) + LEFT_MARGIN,
-                              row * ( SWATCH_SIZE + SWATCH_SPACING ) + TOP_MARGIN + LABEL_SIZE,
-                              SWATCH_SIZE, SWATCH_SIZE );
+    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin,
+                              row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin,
+                              mSwatchSize, mSwatchSize );
 
     if ( mCurrentHoverBox == index )
     {
@@ -291,12 +349,12 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     {
       if ( mDrawBoxDepressed )
       {
-        painter.setPen( QColor( 100, 100, 100 ) );
+        painter.setPen( QPen( QColor( 100, 100, 100 ), mSwatchOutlineSize ) );
       }
       else
       {
         //hover color
-        painter.setPen( QColor( 220, 220, 220 ) );
+        painter.setPen( QPen( QColor( 220, 220, 220 ), mSwatchOutlineSize ) );
       }
     }
     else if ( mFocused && index == mCurrentFocusBox )
@@ -306,11 +364,11 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     else if ( ( *colorIt ).first.name() == mBaseColor.name() )
     {
       //currently active color
-      painter.setPen( QColor( 75, 75, 75 ) );
+      painter.setPen( QPen( QColor( 75, 75, 75 ), mSwatchOutlineSize ) );
     }
     else
     {
-      painter.setPen( QColor( 197, 197, 197 ) );
+      painter.setPen( QPen( QColor( 197, 197, 197 ), mSwatchOutlineSize ) );
     }
 
     painter.setBrush( ( *colorIt ).first );
@@ -334,12 +392,12 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 {
   //calculate box for position
   int box = -1;
-  int column = ( position.x() - LEFT_MARGIN ) / ( SWATCH_SIZE + SWATCH_SPACING );
-  int xRem = ( position.x() - LEFT_MARGIN ) % ( SWATCH_SIZE + SWATCH_SPACING );
-  int row = ( position.y() - TOP_MARGIN - LABEL_SIZE ) / ( SWATCH_SIZE + SWATCH_SPACING );
-  int yRem = ( position.y() - TOP_MARGIN - LABEL_SIZE ) % ( SWATCH_SIZE + SWATCH_SPACING );
+  int column = ( position.x() - mSwatchMargin ) / ( mSwatchSize + mSwatchSpacing );
+  int xRem = ( position.x() - mSwatchMargin ) % ( mSwatchSize + mSwatchSpacing );
+  int row = ( position.y() - mSwatchMargin - mLabelHeight ) / ( mSwatchSize + mSwatchSpacing );
+  int yRem = ( position.y() - mSwatchMargin - mLabelHeight ) % ( mSwatchSize + mSwatchSpacing );
 
-  if ( xRem <= SWATCH_SIZE + 1 && yRem <= SWATCH_SIZE + 1 && column < NUMBER_COLORS_PER_ROW )
+  if ( xRem <= mSwatchSize + 1 && yRem <= mSwatchSize + 1 && column < NUMBER_COLORS_PER_ROW )
   {
     //if pos is actually inside a valid box, calculate which box
     box = column + row * NUMBER_COLORS_PER_ROW;
@@ -410,7 +468,7 @@ void QgsColorSwatchGridAction::setColor( const QColor &color )
 
 void QgsColorSwatchGridAction::onHover()
 {
-  //see https://bugreports.qt-project.org/browse/QTBUG-10427?focusedCommentId=185610&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-185610
+  //see https://bugreports.qt.io/browse/QTBUG-10427?focusedCommentId=185610&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-185610
 
   if ( mSuppressRecurse )
   {

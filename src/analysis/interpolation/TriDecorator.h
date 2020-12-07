@@ -17,70 +17,67 @@
 #ifndef TRIDECORATOR_H
 #define TRIDECORATOR_H
 
-#include "Triangulation.h"
-#include "qgis.h"
+#include "qgstriangulation.h"
+#include "qgis_sip.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
- * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
-class ANALYSIS_EXPORT TriDecorator : public Triangulation
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.).
+ * \note Not available in Python bindings.
+*/
+class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
 {
   public:
-    TriDecorator();
-    explicit TriDecorator( Triangulation *t );
-    virtual ~TriDecorator();
-    virtual void addLine( Line3D *line, bool breakline ) override;
-    virtual int addPoint( QgsPoint *p ) override;
+    //! Constructor for TriDecorator
+    TriDecorator() = default;
+    //! Constructor for TriDecorator with an existing triangulation
+    explicit TriDecorator( QgsTriangulation *t );
+    void addLine( const QVector< QgsPoint> &points, QgsInterpolator::SourceType lineType ) override;
+    int addPoint( const QgsPoint &p ) override;
     //! Adds an association to a triangulation
-    virtual void addTriangulation( Triangulation *t );
+    virtual void addTriangulation( QgsTriangulation *t );
     //! Performs a consistency check, remove this later
-    virtual void performConsistencyTest() override;
-    virtual bool calcNormal( double x, double y, Vector3D *result ) override;
-    virtual bool calcPoint( double x, double y, QgsPoint *result ) override;
-    virtual QgsPoint *getPoint( unsigned int i ) const override;
-    virtual int getNumberOfPoints() const override;
-    bool getTriangle( double x, double y, QgsPoint *p1, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) override;
-    bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) override;
-    virtual int getOppositePoint( int p1, int p2 ) override;
-    virtual QList<int> *getSurroundingTriangles( int pointno ) override;
-    virtual double getXMax() const override;
-    virtual double getXMin() const override;
-    virtual double getYMax() const override;
-    virtual double getYMin() const override;
-    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) override;
-    virtual void setEdgeColor( int r, int g, int b ) override;
-    virtual void setForcedEdgeColor( int r, int g, int b ) override;
-    virtual void setBreakEdgeColor( int r, int g, int b ) override;
-    virtual void setTriangleInterpolator( TriangleInterpolator *interpolator ) override;
-    virtual void eliminateHorizontalTriangles() override;
-    virtual void ruppertRefinement() override;
-    virtual bool pointInside( double x, double y ) override;
-    virtual bool swapEdge( double x, double y ) override;
-    virtual QList<int> *getPointsAroundEdge( double x, double y ) override;
+    void performConsistencyTest() override;
+    bool calcNormal( double x, double y, QgsPoint &result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
+    QgsPoint *point( int i ) const override;
+    int pointsCount() const override;
+    bool triangleVertices( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT ) override;
+    bool triangleVertices( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) override;
+    int oppositePoint( int p1, int p2 ) override;
+    QList<int> surroundingTriangles( int pointno ) override;
+    double xMax() const override;
+    double xMin() const override;
+    double yMax() const override;
+    double yMin() const override;
+    void setForcedCrossBehavior( QgsTriangulation::ForcedCrossBehavior b ) override;
+    void setTriangleInterpolator( TriangleInterpolator *interpolator ) override;
+    void eliminateHorizontalTriangles() override;
+    void ruppertRefinement() override;
+    bool pointInside( double x, double y ) override;
+    bool swapEdge( double x, double y ) override;
+    QList<int> pointsAroundEdge( double x, double y ) override;
   protected:
     //! Association with a Triangulation object
-    Triangulation *mTIN = nullptr;
+    QgsTriangulation *mTIN = nullptr;
 };
 
-inline TriDecorator::TriDecorator(): mTIN( nullptr )
+#ifndef SIP_RUN
+
+inline TriDecorator::TriDecorator( QgsTriangulation *t )
+  : mTIN( t )
 {
 
 }
 
-inline TriDecorator::TriDecorator( Triangulation *t ): mTIN( t )
-{
-
-}
-
-inline TriDecorator::~TriDecorator()
-{
-
-}
-
-inline void TriDecorator::addTriangulation( Triangulation *t )
+inline void TriDecorator::addTriangulation( QgsTriangulation *t )
 {
   mTIN = t;
 }
 
+#endif
 #endif
 

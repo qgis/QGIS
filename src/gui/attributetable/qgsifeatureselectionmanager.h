@@ -18,11 +18,11 @@
 
 #include <QObject>
 #include "qgis_sip.h"
-
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeatureid.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Is an interface class to abstract feature selection handling.
  *
  * e.g. QgsVectorLayer implements this interface to manage its selections.
@@ -37,23 +37,17 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
       : QObject( parent ) {}
 
     /**
-     * The number of features that are selected in this layer
-     *
-     * \returns See description
+     * Returns the number of features that are selected in this layer.
      */
     virtual int selectedFeatureCount() = 0;
 
     /**
-     * Select features
-     *
-     * \param ids            Feature ids to select
+     * Select features by feature \a ids.
      */
     virtual void select( const QgsFeatureIds &ids ) = 0;
 
     /**
-     * Deselect features
-     *
-     * \param ids            Feature ids to deselect
+     * Deselect features by feature \a ids.
      */
     virtual void deselect( const QgsFeatureIds &ids ) = 0;
 
@@ -63,27 +57,28 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * clearAndSelect flag set.
      *
      * \param ids   The ids which will be the new selection
+     * \see selectedFeatureIds()
      */
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 
     /**
-     * Return reference to identifiers of selected features
+     * Returns reference to identifiers of selected features
      *
      * \returns A list of QgsFeatureId's
-     * \see selectedFeatures()
+     * \see setSelectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 
   signals:
 
     /**
-     * This signal is emitted when selection was changed
+     * Emitted when selection was changed.
      *
      * \param selected        Newly selected feature ids
      * \param deselected      Ids of all features which have previously been selected but are not any more
-     * \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+     * \param clearAndSelect  In case this is set to TRUE, the old selection was dismissed and the new selection corresponds to selected
      */
-    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 };
 
 #endif // QGSIFEATURESELECTIONMANAGER_H

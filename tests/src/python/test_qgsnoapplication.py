@@ -9,11 +9,10 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-
+import sys
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication)
 from qgis.testing import unittest
 
@@ -27,6 +26,8 @@ falls back to static members, which this test is designed to check.
 So don't add start_app here or anything else which creates a
 QgsApplication instance!
 """
+
+app = QCoreApplication(sys.argv)
 
 
 class TestQgsNoApplication(unittest.TestCase):
@@ -52,6 +53,18 @@ class TestQgsNoApplication(unittest.TestCase):
         nr = 'my_null_value'
         QgsApplication.setNullRepresentation(nr)
         self.assertEqual(QgsApplication.nullRepresentation(), nr)
+
+    def testAuthManager(self):
+        self.assertTrue(QgsApplication.authManager())
+
+    def testDataItemProviderRegistry(self):
+        self.assertTrue(QgsApplication.dataItemProviderRegistry())
+
+    def testInit(self):
+        """
+        Test calling QgsApplication.initQgis() without QgsApplication instance
+        """
+        QgsApplication.initQgis()
 
 
 if __name__ == '__main__':

@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 import AlgorithmsTestBase
 
 import nose2
@@ -34,6 +30,7 @@ from qgis.testing import (
     start_app,
     unittest
 )
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
 class TestGrass7AlgorithmsImageryTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -44,6 +41,8 @@ class TestGrass7AlgorithmsImageryTest(unittest.TestCase, AlgorithmsTestBase.Algo
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []
+
+        assert Grass7Utils.installedVersion()
 
     @classmethod
     def tearDownClass(cls):

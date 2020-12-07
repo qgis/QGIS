@@ -23,12 +23,13 @@
 
 #include "qgis_gui.h"
 
-/** \class QgsPasswordLineEdit
+/**
+ * \class QgsPasswordLineEdit
  * \ingroup gui
  * QLineEdit subclass with built in support for showing/hiding
  * entered password.
  * \since QGIS 3.0
- **/
+ */
 class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 {
     Q_OBJECT
@@ -36,22 +37,26 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 
   public:
 
-    /** Constructor for QgsPasswordLineEdit.
+    /**
+     * Constructor for QgsPasswordLineEdit.
      * \param parent parent widget
      * \param passwordVisible Initial state of the password's visibility
      */
     QgsPasswordLineEdit( QWidget *parent = nullptr, bool passwordVisible = false );
 
-    /** Define if a lock icon shall be shown on the left of the widget
-     * \param visible set to false to hide the lock icon
+    /**
+     * Define if a lock icon shall be shown on the left of the widget
+     * \param visible set to FALSE to hide the lock icon
      */
     void setShowLockIcon( bool visible );
 
-    /** Returns if a lock icon shall be shown on the left of the widget
+    /**
+     * Returns if a lock icon shall be shown on the left of the widget
      */
     bool showLockIcon() const { return mLockIconVisible; }
 
-    /** Set state of the password's visibility
+    /**
+     * Set state of the password's visibility
      */
     void setPasswordVisibility( bool visible );
 
@@ -66,7 +71,7 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     QIcon mShowPasswordIcon;
     QIcon mHidePasswordIcon;
 
-    bool mLockIconVisible;
+    bool mLockIconVisible = false;
     QSize mIconsSize;
 };
 

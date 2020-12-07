@@ -28,7 +28,6 @@ QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, co
   , mFile( file )
   , mFunction( function )
   , mLine( line )
-  , mFormat( Text )
 {
 }
 
@@ -58,7 +57,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
 #if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
   // TODO: verify if we are not ahead to origin (remote hash does not exist)
   //       and there are no local not committed changes
-  QString hash = QString( Qgis::QGIS_DEV_VERSION );
+  QString hash = QString( Qgis::devVersion() );
   QString remote = QStringLiteral( QGS_GIT_REMOTE_URL );
   if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( QLatin1String( "github.com" ) ) )
   {
@@ -67,7 +66,8 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
   }
 #endif
 
-  Q_FOREACH ( const QgsErrorMessage &m, mMessageList )
+  const auto constMMessageList = mMessageList;
+  for ( const QgsErrorMessage &m : constMMessageList )
   {
 #ifdef QGISDEBUG
     QString file;

@@ -34,7 +34,6 @@ class QgsBench :  public QObject
     Q_OBJECT
   public:
     QgsBench( int width, int height, int cycles );
-    ~QgsBench();
 
     // start time counter
     void start();
@@ -84,7 +83,7 @@ class QgsBench :  public QObject
 
     double mUserStart;
     double mSysStart;
-    QTime mWallTime; // 'wall clock' time
+    QElapsedTimer mWallTime; // 'wall clock' time
 
     // user, sys, total times
     QVector<double *> mTimes;

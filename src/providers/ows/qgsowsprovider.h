@@ -25,13 +25,15 @@
 
 #include <QString>
 
+#include "qgsprovidermetadata.h"
+
 /**
-
-  \brief Data provider for GDAL layers.
-
-  This provider implements the interface defined in the QgsDataProvider class
-  to provide access to spatial data residing in a GDAL layers.
-
+ *
+ * \brief Data provider for OWS layers.
+ *
+ * This provider implements the interface defined in the QgsDataProvider class
+ * to provide access to spatial data residing in a OWS layers.
+ *
 */
 class QgsOwsProvider : public QgsDataProvider
 {
@@ -44,12 +46,10 @@ class QgsOwsProvider : public QgsDataProvider
      *
      * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
      *                otherwise we contact the host directly.
+     * \param options generic data provider options
      *
      */
-    explicit QgsOwsProvider( const QString &uri = QString() );
-
-
-    ~QgsOwsProvider();
+    explicit QgsOwsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /* Pure virtuals */
 
@@ -62,6 +62,14 @@ class QgsOwsProvider : public QgsDataProvider
     QgsRectangle extent() const override { return QgsRectangle(); }
 
     bool isValid() const override { return false; }
+};
+
+class QgsOwsProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsOwsProviderMetadata();
+    QgsOwsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 
 #endif // QGSOWSPROVIDER_H

@@ -24,7 +24,8 @@
 
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Raster namespace.
  */
 class CORE_EXPORT QgsRaster
@@ -55,8 +56,8 @@ class CORE_EXPORT QgsRaster
 
     enum IdentifyFormat
     {
-      IdentifyFormatUndefined =      0,
-      IdentifyFormatValue     =      1, // numerical pixel value
+      IdentifyFormatUndefined = 0,
+      IdentifyFormatValue     = 1, // numerical pixel value
       IdentifyFormatText      = 1 << 1, // WMS text
       IdentifyFormatHtml      = 1 << 2, // WMS HTML
       IdentifyFormatFeature   = 1 << 3, // WMS GML/JSON -> feature
@@ -100,21 +101,25 @@ class CORE_EXPORT QgsRaster
       SingleBandColorDataStyle        // ARGB values rendered directly
     };
 
-    /** Check if the specified value is representable in the given data type.
+    /**
+     * Check if the specified value is representable in the given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
      * \param value
      * \param dataType
+     *  \note not available in Python bindings
      * \since QGIS 2.16
-     *  \note not available in Python bindings */
+     */
     static bool isRepresentableValue( double value, Qgis::DataType dataType ) SIP_SKIP;
 
-    /** Get value representable by given data type.
+    /**
+     * Gets value representable by given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
      * This is done through C casting, so you have to be sure that the provided value is
      * representable in the output data type. This can be checked with isRepresentableValue().
      * \param value
      * \param dataType
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+     */
     static double representableValue( double value, Qgis::DataType dataType );
 };
 

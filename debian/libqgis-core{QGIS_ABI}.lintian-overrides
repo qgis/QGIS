@@ -1,2 +1,13 @@
-libqgis-core{QGIS_ABI}: shlib-calls-exit usr/lib/libqgis_core.so.{QGIS_ABI}
-libqgis-core{QGIS_ABI}: no-symbols-control-file usr/lib/libqgis_core.so.{QGIS_ABI}
+shlib-calls-exit *
+no-symbols-control-file *
+spelling-error-in-binary * Buid Build
+spelling-error-in-binary * ObAY Obey
+spelling-error-in-binary * PreS Press
+spelling-error-in-binary * Pres Press
+spelling-error-in-binary * aKs ask
+spelling-error-in-binary * cHEK check
+spelling-error-in-binary * dsFg dfsg
+spelling-error-in-binary * nam name
+spelling-error-in-binary * prEs press
+spelling-error-in-binary * pres press
+spelling-error-in-binary * tAHt that

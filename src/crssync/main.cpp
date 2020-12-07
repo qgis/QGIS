@@ -20,6 +20,7 @@
 #include "qgsconfig.h"
 
 #include <QRegExp>
+#include <QTemporaryDir>
 
 #include <iostream>
 #include <limits>
@@ -28,7 +29,7 @@
 
 void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 {
-  Q_UNUSED( errClass );
+  Q_UNUSED( errClass )
   QRegExp re( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" );
   if ( errNo != 6 && !re.exactMatch( msg ) )
   {
@@ -40,7 +41,18 @@ int main( int argc, char **argv )
 {
   QCoreApplication app( argc, argv );
 
-  QgsApplication::init();
+  const QStringList args = QCoreApplication::arguments();
+
+  bool verbose = false;
+
+  for ( const QString &arg : args )
+  {
+    if ( arg == QLatin1String( "--verbose" ) )
+      verbose = true;
+  }
+
+  QTemporaryDir temp;
+  QgsApplication::init( temp.path() );
 
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
@@ -48,7 +60,8 @@ int main( int argc, char **argv )
     QgsApplication::setPrefixPath( prefixPath ? prefixPath : CMAKE_INSTALL_PREFIX, TRUE );
   }
 
-  std::cout << "Synchronizing CRS database with GDAL/PROJ definitions." << std::endl;
+  if ( verbose )
+    std::cout << "Synchronizing CRS database with GDAL/PROJ definitions." << std::endl;
 
   CPLPushErrorHandler( showError );
 
@@ -56,11 +69,11 @@ int main( int argc, char **argv )
 
   CPLPopErrorHandler();
 
-  if ( res == 0 )
+  if ( res == 0 && verbose )
   {
     std::cout << "No CRS updates were necessary." << std::endl;
   }
-  else if ( res > 0 )
+  else if ( res > 0 && verbose )
   {
     std::cout << res << " CRSs updated." << std::endl;
   }
@@ -73,5 +86,7 @@ int main( int argc, char **argv )
     std::cout << -res << " CRSs could not be updated." << std::endl;
   }
 
-  exit( 0 );
+  QgsApplication::exitQgis();
+
+  return 0;
 }

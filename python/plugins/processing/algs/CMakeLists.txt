@@ -1,10 +1,10 @@
-FILE(GLOB PY_FILES *.py)
+file(GLOB PY_FILES *.py)
 
-ADD_SUBDIRECTORY(help)
-ADD_SUBDIRECTORY(gdal)
-ADD_SUBDIRECTORY(grass7)
-ADD_SUBDIRECTORY(saga)
-ADD_SUBDIRECTORY(qgis)
-ADD_SUBDIRECTORY(exampleprovider)
+add_subdirectory(help)
+add_subdirectory(gdal)
+add_subdirectory(grass7)
+add_subdirectory(otb)
+add_subdirectory(saga)
+add_subdirectory(qgis)
 
 PLUGIN_INSTALL(processing algs ${PY_FILES})

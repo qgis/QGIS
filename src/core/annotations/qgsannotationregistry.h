@@ -16,6 +16,8 @@
 #ifndef QGSANNOTATIONREGISTRY_H
 #define QGSANNOTATIONREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsannotation.h"
 #include "qgstextannotation.h"
@@ -45,7 +47,7 @@ class CORE_EXPORT QgsAnnotationMetadata
      * Constructor for QgsAnnotationMetadata. \a typeName should be a unique string
      * identifying the annotation type.
      */
-    QgsAnnotationMetadata( const QString &typeName, QgsCreateAnnotationFunc createFunc )
+    QgsAnnotationMetadata( const QString &typeName, const QgsCreateAnnotationFunc &createFunc )
       : mTypeName( typeName )
       , mCreateFunc( createFunc )
     {}
@@ -93,8 +95,8 @@ class CORE_EXPORT QgsAnnotationRegistry
     }
 
     /**
-     * Adds a new annotation type to the registry. Returns true if adding the type
-     * was successful, or false if an annotation with duplicate type already exists
+     * Adds a new annotation type to the registry. Returns TRUE if adding the type
+     * was successful, or FALSE if an annotation with duplicate type already exists
      * in the registry.
      */
     bool addAnnotationType( const QgsAnnotationMetadata &metadata )
@@ -107,7 +109,7 @@ class CORE_EXPORT QgsAnnotationRegistry
     }
 
     /**
-     * Creates a new annotation of the specified type. Returns nullptr if no
+     * Creates a new annotation of the specified type. Returns NULLPTR if no
      * matching annotations types were found.
      */
     QgsAnnotation *create( const QString &typeName ) const

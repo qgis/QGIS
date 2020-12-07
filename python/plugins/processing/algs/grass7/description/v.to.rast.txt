@@ -1,0 +1,13 @@
+v.to.rast
+Converts (rasterize) a vector layer into a raster layer.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector layer|-1|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;area|True|0,1,3|True
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterEnum|use|Source of raster values|attr;cat;val;z;dir|False|0|False
+QgsProcessingParameterField|attribute_column|Name of column for 'attr' parameter (data type must be numeric)|None|input|0|False|True
+QgsProcessingParameterField|rgb_column|Name of color definition column (with RRR:GGG:BBB entries)|None|input|0|False|True
+QgsProcessingParameterField|label_column|Name of column used as raster category labels|None|input|0|False|True
+QgsProcessingParameterNumber|value|Raster value (for use=val)|QgsProcessingParameterNumber.Double|1|True|None|None
+QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB)|QgsProcessingParameterNumber.Integer|300|True|1|None
+QgsProcessingParameterRasterDestination|output|Rasterized

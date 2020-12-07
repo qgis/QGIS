@@ -24,8 +24,8 @@
 #include <QApplication>
 #include <QToolBar>
 
-TestRendererGUI::TestRendererGUI( QWidget *parent ) :
-  QMainWindow( parent )
+TestRendererGUI::TestRendererGUI( QWidget *parent )
+  : QMainWindow( parent )
 {
   resize( 640, 480 );
 
@@ -45,7 +45,7 @@ void TestRendererGUI::loadLayers()
   QList<QgsMapLayer *> canvasLayers;
   foreach ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
-    if ( layer->type() == QgsMapLayer::VectorLayer )
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
       canvasLayers << layer;
   }
 
@@ -55,8 +55,8 @@ void TestRendererGUI::loadLayers()
 void TestRendererGUI::setRenderer()
 {
   QgsMapLayer *layer = mMapCanvas->layer( 0 );
-  Q_ASSERT( layer );
-  Q_ASSERT( layer->type() == QgsMapLayer::VectorLayer );
+  QVERIFY( layer );
+  QVERIFY( layer->type() == QgsMapLayerType::VectorLayer );
   QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
 
   QgsRendererPropertiesDialog dlg( vlayer, QgsStyle::defaultStyle() );

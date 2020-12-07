@@ -19,26 +19,30 @@
 
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
  * \class HalfEdge
+ * \note Not available in Python bindings.
  */
 class ANALYSIS_EXPORT HalfEdge
 {
   protected:
     //! Number of the dual HalfEdge
-    int mDual;
+    int mDual = -10;
     //! Number of the next HalfEdge
-    int mNext;
+    int mNext = -10;
     //! Number of the point at which this HalfEdge points
-    int mPoint;
-    //! True, if the HalfEdge belongs to a break line, false otherwise
-    bool mBreak;
-    //! True, if the HalfEdge belongs to a constrained edge, false otherwise
-    bool mForced;
+    int mPoint = -10;
+    //! True, if the HalfEdge belongs to a break line, FALSE otherwise
+    bool mBreak = false;
+    //! True, if the HalfEdge belongs to a constrained edge, FALSE otherwise
+    bool mForced = false;
 
   public:
     //! Default constructor. Values for mDual, mNext, mPoint are set to -10 which means that they are undefined
-    HalfEdge();
+    HalfEdge() = default;
     HalfEdge( int dual, int next, int point, bool mbreak, bool forced );
 
     //! Returns the number of the dual HalfEdge
@@ -63,10 +67,7 @@ class ANALYSIS_EXPORT HalfEdge
     void setForced( bool f );
 };
 
-inline HalfEdge::HalfEdge(): mDual( -10 ), mNext( -10 ), mPoint( -10 ), mBreak( false ), mForced( false )
-{
-
-}
+#ifndef SIP_RUN
 
 inline HalfEdge::HalfEdge( int dual, int next, int point, bool mbreak, bool forced ): mDual( dual ), mNext( next ), mPoint( point ), mBreak( mbreak ), mForced( forced )
 {
@@ -122,5 +123,7 @@ inline void HalfEdge::setForced( bool f )
 {
   mForced = f;
 }
+
+#endif
 
 #endif

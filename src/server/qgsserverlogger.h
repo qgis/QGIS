@@ -18,42 +18,54 @@
 #ifndef QGSSERVERLOGGER_H
 #define QGSSERVERLOGGER_H
 
+
 #include "qgsmessagelog.h"
 
 #include <QFile>
 #include <QObject>
 #include <QString>
 #include <QTextStream>
+#include "qgis_server.h"
 
-//! Writes message log into server logfile
-class QgsServerLogger: public QObject
+/**
+ * \ingroup server
+ * \brief Writes message log into server logfile
+ * \since QGIS 2.8
+ */
+class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
 {
     Q_OBJECT
   public:
 
     /**
-     * Get the singleton instance
+     * Gets the singleton instance
      */
     static QgsServerLogger *instance();
 
     /**
-     * Get the current log level
+     * Gets the current log level
      * \returns the log level
      * \since QGIS 3.0
      */
-    QgsMessageLog::MessageLevel logLevel() const { return mLogLevel; }
+    Qgis::MessageLevel logLevel() const { return mLogLevel; }
 
     /**
       * Set the current log level
       * \param level the log level
       * \since QGIS 3.0
       */
-    void setLogLevel( QgsMessageLog::MessageLevel level );
+    void setLogLevel( Qgis::MessageLevel level );
 
     /**
       * Set the current log file
       */
-    void setLogFile( const QString &f );
+    void setLogFile( const QString &filename = QString() );
+
+    /**
+     * Activates logging to stderr.
+     * \since QGIS 3.4
+     */
+    void setLogStderr();
 
   public slots:
 
@@ -64,7 +76,7 @@ class QgsServerLogger: public QObject
      * \param tag tag of the message
      * \param level log level of the message
      */
-    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) override;
 
   protected:
     QgsServerLogger();
@@ -73,8 +85,9 @@ class QgsServerLogger: public QObject
     static QgsServerLogger *sInstance;
 
     QFile mLogFile;
+    bool mLogStderr = false;
     QTextStream mTextStream;
-    QgsMessageLog::MessageLevel mLogLevel;
+    Qgis::MessageLevel mLogLevel = Qgis::None;
 };
 
 #endif // QGSSERVERLOGGER_H

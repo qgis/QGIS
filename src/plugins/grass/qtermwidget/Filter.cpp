@@ -535,7 +535,7 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     }
     else if ( kind == Email )
     {
-        openAction->setText(QObject::tr("Send Email To..."));
+        openAction->setText(QObject::tr("Send Email To…"));
         copyAction->setText(QObject::tr("Copy Email Address"));
     }
 

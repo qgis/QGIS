@@ -18,14 +18,19 @@
 #ifndef QGSLOCATOROPTIONSWIDGET_H
 #define QGSLOCATOROPTIONSWIDGET_H
 
+#include <QItemDelegate>
+#include <QTreeView>
+
 #include "qgslocatorfilter.h"
 #include "qgslocator.h"
-#include "ui_qgslocatoroptionswidgetbase.h"
+
+class QToolButton;
 
 class QgsLocatorFiltersModel;
 class QgsLocatorWidget;
 
-class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWidgetBase
+
+class QgsLocatorOptionsWidget : public QTreeView
 {
     Q_OBJECT
 
@@ -36,10 +41,11 @@ class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWid
   public slots:
 
     void commitChanges();
-    void configureCurrentFilter();
+
+  protected slots:
+    void dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles ) override;
 
   private:
-
     QgsLocatorWidget *mLocatorWidget = nullptr;
     QgsLocator *mLocator = nullptr;
     QgsLocatorFiltersModel *mModel = nullptr;
@@ -69,13 +75,16 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
       Name = 0,
       Prefix,
       Active,
-      Default
+      Default,
+      Config
     };
 
     /**
      * Constructor for QgsLocatorFiltersModel.
      */
     QgsLocatorFiltersModel( QgsLocator *locator, QObject *parent = nullptr );
+
+    QWidget *configButton( const QModelIndex &index, QWidget *parent = nullptr ) const;
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -84,7 +93,6 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const override;
-
 
     QgsLocatorFilter *filterForIndex( const QModelIndex &index ) const;
 
@@ -96,9 +104,12 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
 
     QgsLocator *mLocator = nullptr;
 
-    // changes are deferred to support cancelation
+    // changes are deferred to support cancellation
+    QHash< QgsLocatorFilter *, QString > mPrefixes;
     QHash< QgsLocatorFilter *, bool > mEnabledChanges;
     QHash< QgsLocatorFilter *, bool > mDefaultChanges;
+
+    int mIconSize, mRowSize;
 
 };
 

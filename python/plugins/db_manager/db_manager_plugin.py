@@ -25,7 +25,12 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri
+from qgis.core import (
+    QgsProject,
+    QgsMapLayerType,
+    QgsDataSourceUri,
+    QgsApplication
+)
 
 from . import resources_rc  # NOQA
 
@@ -37,8 +42,9 @@ class DBManagerPlugin(object):
         self.dlg = None
 
     def initGui(self):
-        self.action = QAction(QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin", "DB Manager"),
+        self.action = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "DB Manager…"),
                               self.iface.mainWindow())
+
         self.action.setObjectName("dbManager")
         self.action.triggered.connect(self.run)
         # Add toolbar button and menu item
@@ -47,23 +53,23 @@ class DBManagerPlugin(object):
         else:
             self.iface.addToolBarIcon(self.action)
         if hasattr(self.iface, 'addPluginToDatabaseMenu'):
-            self.iface.addPluginToDatabaseMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
+            self.iface.addPluginToDatabaseMenu(QApplication.translate("DBManagerPlugin", None), self.action)
         else:
             self.iface.addPluginToMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
 
-        self.layerAction = QAction(QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin", "Update Sql Layer"),
+        self.layerAction = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "Update SQL Layer…"),
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
-        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayer.VectorLayer, False)
+        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayerType.VectorLayer, False)
         for l in list(QgsProject.instance().mapLayers().values()):
             self.onLayerWasAdded(l)
         QgsProject.instance().layerWasAdded.connect(self.onLayerWasAdded)
 
     def unload(self):
         # Remove the plugin menu item and icon
-        if hasattr(self.iface, 'removePluginDatabaseMenu'):
-            self.iface.removePluginDatabaseMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
+        if hasattr(self.iface, 'databaseMenu'):
+            self.iface.databaseMenu().removeAction(self.action)
         else:
             self.iface.removePluginMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
         if hasattr(self.iface, 'removeDatabaseToolBarIcon'):
@@ -78,11 +84,9 @@ class DBManagerPlugin(object):
             self.dlg.close()
 
     def onLayerWasAdded(self, aMapLayer):
-        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            uri = QgsDataSourceUri(aMapLayer.source())
-            table = uri.table()
-            if table.startswith('(') and table.endswith(')'):
-                self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
+        # Be able to update every Db layer from Postgres, Spatialite and Oracle
+        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider() and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
+            self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
         # url.queryItemValue('query')
@@ -90,12 +94,11 @@ class DBManagerPlugin(object):
         # url.queryItemValue('geometry')
 
     def onUpdateSqlLayer(self):
+        # Be able to update every Db layer from Postgres, Spatialite and Oracle
         l = self.iface.activeLayer()
         if l.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            table = QgsDataSourceUri(l.source()).table()
-            if table.startswith('(') and table.endswith(')'):
-                self.run()
-                self.dlg.runSqlLayerWindow(l)
+            self.run()
+            self.dlg.runSqlLayerWindow(l)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
         # url.queryItemValue('query')

@@ -28,6 +28,26 @@
       <Type>Real</Type>
     </PropertyDefn>
     <PropertyDefn>
+      <Name>vertex_index</Name>
+      <ElementPath>vertex_index</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>vertex_part</Name>
+      <ElementPath>vertex_part</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>vertex_part_ring</Name>
+      <ElementPath>vertex_part_ring</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>vertex_part_index</Name>
+      <ElementPath>vertex_part_index</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
       <Name>distance</Name>
       <ElementPath>distance</ElementPath>
       <Type>Real</Type>

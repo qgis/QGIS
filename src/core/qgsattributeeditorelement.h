@@ -19,14 +19,18 @@
 #include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
+#include "qgspropertycollection.h"
+#include <QColor>
+
 
 class QgsRelationManager;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
- * as a tab widget or ca collapsible group box. Or it can be a field which will
+ * as a tab widget or a collapsible group box. Or it can be a field which will
  * then be represented based on the QgsEditorWidget type and configuration.
  * Or it can be a relation and embed the form of several children of another
  * layer.
@@ -60,13 +64,15 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeContainer, //!< A container
       AeTypeField,     //!< A field
       AeTypeRelation,  //!< A relation
-      AeTypeInvalid    //!< Invalid
+      AeTypeInvalid,   //!< Invalid
+      AeTypeQmlElement, //!< A QML element
+      AeTypeHtmlElement //!< A HTML element
     };
 
     /**
      * Constructor
      *
-     * \param type The type of the new element. Should never
+     * \param type The type of the new element.
      * \param name
      * \param parent
      */
@@ -80,7 +86,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     virtual ~QgsAttributeEditorElement() = default;
 
     /**
-     * Return the name of this element
+     * Returns the name of this element
      *
      * \returns The name for this element
      */
@@ -94,14 +100,14 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     AttributeEditorType type() const { return mType; }
 
     /**
-     * Get the parent of this element.
+     * Gets the parent of this element.
      *
      * \since QGIS 3.0
      */
     QgsAttributeEditorElement *parent() const { return mParent; }
 
     /**
-     * Get the XML Dom element to save this element.
+     * Gets the XML Dom element to save this element.
      *
      * \param doc The QDomDocument which is used to create new XML elements
      *
@@ -125,7 +131,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
-     *
      * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
@@ -154,10 +159,12 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \since QGIS 2.18
      */
     virtual QString typeIdentifier() const = 0;
+
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a container for attribute editors, used to group them visually in the
  * attribute form if it is set to the drag and drop designer.
  */
@@ -170,39 +177,41 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param name   The name to show as title
      * \param parent The parent. May be another container.
+     * \param backgroundColor The optional background color of the container.
      */
-    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent )
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() )
       : QgsAttributeEditorElement( AeTypeContainer, name, parent )
       , mIsGroupBox( true )
       , mColumnCount( 1 )
+      , mBackgroundColor( backgroundColor )
     {}
 
 
-    virtual ~QgsAttributeEditorContainer();
+    ~QgsAttributeEditorContainer() override;
 
     /**
      * Add a child element to this container. This may be another container, a field or a relation.
      *
      * \param element The element to add as child
      */
-    virtual void addChildElement( QgsAttributeEditorElement *element );
+    virtual void addChildElement( QgsAttributeEditorElement *element SIP_TRANSFER );
 
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
      *
-     * \param isGroupBox If true, this will be a group box
+     * \param isGroupBox If TRUE, this will be a group box
      */
     virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
 
     /**
      * Returns if this container is going to be rendered as a group box
      *
-     * \returns True if it will be a group box, false if it will be a tab
+     * \returns TRUE if it will be a group box, FALSE if it will be a tab
      */
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
     /**
-     * Get a list of the children elements of this container
+     * Gets a list of the children elements of this container
      *
      * \returns A list of elements
      */
@@ -228,7 +237,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     void setName( const QString &name );
 
     /**
-     * Get the number of columns in this group
+     * Gets the number of columns in this group
      */
     int columnCount() const;
 
@@ -242,7 +251,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \since QGIS 3.0
      */
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
      * The visibility expression is used in the attribute form to
@@ -262,6 +271,18 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      */
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
+    /**
+     * \brief backgroundColor
+     * \return background color of the container
+     * \since QGIS 3.8
+     */
+    QColor backgroundColor() const;
+
+    /**
+     * Sets the background color to \a backgroundColor
+     */
+    void setBackgroundColor( const QColor &backgroundColor );
+
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
@@ -270,9 +291,11 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QList<QgsAttributeEditorElement *> mChildren;
     int mColumnCount;
     QgsOptionalExpression mVisibilityExpression;
+    QColor mBackgroundColor;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This element will load a field's widget onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
@@ -292,12 +315,11 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     {}
 
     /**
-     * Return the index of the field
-     * \returns
+     * Returns the index of the field.
      */
     int idx() const { return mIdx; }
 
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -305,44 +327,77 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     int mIdx;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This element will load a relation editor onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
+    Q_GADGET
   public:
 
     /**
-     * Creates a new element which embeds a relation.
-     *
-     * \param name         The name of this element
-     * \param relationId   The id of the relation to embed
-     * \param parent       The parent (used as container)
+       * Possible buttons shown in the relation editor
+       * \since QGIS 3.16
+       */
+    enum Button
+    {
+      Link = 1 << 1, //!< Link button
+      Unlink = 1 << 2, //!< Unlink button
+      SaveChildEdits = 1 << 3, //!< Save child edits button
+      AddChildFeature = 1 << 4, //!< Add child feature (as in some projects we only want to allow linking/unlinking existing features)
+      DuplicateChildFeature = 1 << 5, //!< Duplicate child feature
+      DeleteChildFeature = 1 << 6, //!< Delete child feature button
+      ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
+      AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
+    };
+    Q_ENUM( Button )
+    Q_DECLARE_FLAGS( Buttons, Button )
+    Q_FLAG( Buttons )
+
+    /**
+     * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
-    QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relationId )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
     /**
-     * Creates a new element which embeds a relation.
-     *
-     * \param name         The name of this element
-     * \param relation     The relation to embed
-     * \param parent       The parent (used as container)
+     * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
-    QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
     /**
-     * Get the id of the relation which shall be embedded
+     * Creates a new element which embeds a relation.
+     *
+     * \param relationId   The id of the relation to embed
+     * \param parent       The parent (used as container)
+     */
+    QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeRelation, relationId, parent )
+      , mRelationId( relationId )
+    {}
+
+    /**
+     * Creates a new element which embeds a relation.
+     *
+     * \param relation     The relation to embed
+     * \param parent       The parent (used as container)
+     */
+    QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeRelation, relation.id(), parent )
+      , mRelationId( relation.id() )
+      , mRelation( relation )
+    {}
+
+
+    /**
+     * Gets the id of the relation which shall be embedded
      *
      * \returns the id
      */
@@ -352,48 +407,199 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * Initializes the relation from the id
      *
      * \param relManager The relation manager to use for the initialization
-     * \returns true if the relation was found in the relationmanager
+     * \returns TRUE if the relation was found in the relationmanager
      */
     bool init( QgsRelationManager *relManager );
 
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showLinkButton() const;
+    Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowLinkButton( bool showLinkButton );
+    Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showUnlinkButton() const;
+    Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowUnlinkButton( bool showUnlinkButton );
+    Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
 
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
+     */
+    Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
+     */
+    Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
+
+    /**
+     * Defines the buttons which are shown
+     * \since QGIS 3.16
+     */
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+
+    /**
+     * Returns the buttons which are shown
+     * \since QGIS 3.16
+     */
+    QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
+
+    /**
+     * Determines the force suppress form popup status.
+     * \since QGIS 3.16
+     */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Sets force suppress form popup status to \a forceSuppressFormPopup.
+     * This flag is to override the layer and general settings regarding the automatic
+     * opening of the attribute form dialog when digitizing is completed.
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+     * Determines the relation id of the second relation involved in an N:M relation.
+     * \since QGIS 3.16
+     */
+    QVariant nmRelationId() const;
+
+    /**
+     * Sets \a nmRelationId for the relation id of the second relation involved in an N:M relation.
+     * If it's empty, then it's considered as a 1:M relationship.
+     * \since QGIS 3.16
+     */
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+
+    /**
+     * Determines the label of this element
+     * \since QGIS 3.16
+     */
+    QString label() const;
+
+    /**
+     * Sets \a label for this element
+     * If it's empty it takes the relation id as label
+     * \since QGIS 3.16
+     */
+    void setLabel( const QString &label = QString() );
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
-    bool mShowLinkButton;
-    bool mShowUnlinkButton;
+    Buttons mButtons = Buttons( Button::AllButtons );
+    bool mForceSuppressFormPopup = false;
+    QVariant mNmRelationId;
+    QString mLabel;
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )
+
+
+/**
+ * \ingroup core
+ * An attribute editor widget that will represent arbitrary QML code.
+ *
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
+{
+  public:
+
+    /**
+     * Creates a new element which can display QML
+     *
+     * \param name         The name of the widget
+     * \param parent       The parent (used as container)
+    */
+    QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeQmlElement, name, parent )
+    {}
+
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * \since QGIS 3.4
+     */
+    QString qmlCode() const;
+
+    /**
+     * Sets the QML code that will be represented within this widget to \a qmlCode.
+     */
+    void setQmlCode( const QString &qmlCode );
+
+  private:
+    void saveConfiguration( QDomElement &elem ) const override;
+    QString typeIdentifier() const override;
+    QString mQmlCode;
+};
+
+
+/**
+ * \ingroup core
+ * An attribute editor widget that will represent arbitrary HTML code.
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsAttributeEditorHtmlElement : public QgsAttributeEditorElement
+{
+  public:
+
+    /**
+     * Creates a new element which can display HTML
+     *
+     * \param name         The name of the widget
+     * \param parent       The parent (used as container)
+    */
+    QgsAttributeEditorHtmlElement( const QString &name, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeHtmlElement, name, parent )
+    {}
+
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * \since QGIS 3.4
+     */
+    QString htmlCode() const;
+
+    /**
+     * Sets the HTML code that will be represented within this widget to \a htmlCode.
+     */
+    void setHtmlCode( const QString &htmlCode );
+
+  private:
+    void saveConfiguration( QDomElement &elem ) const override;
+    QString typeIdentifier() const override;
+    QString mHtmlCode;
 };
 
 

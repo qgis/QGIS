@@ -23,6 +23,7 @@
  **********************************************************************/
 
 #include "effectivearea.h"
+#include "qgspoint.h"
 
 static MINHEAP initiate_minheap( int npoints )
 {
@@ -43,7 +44,7 @@ static void destroy_minheap( MINHEAP tree )
  */
 static double triarea2d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint &P3 )
 {
-  return qAbs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
+  return std::fabs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
 }
 
 /**
@@ -65,21 +66,21 @@ static double triarea3d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint 
   cy = az * bx - ax * bz;
   cz = ax * by - ay * bx;
 
-  area = qAbs( 0.5 * ( sqrt( cx * cx + cy * cy + cz * cz ) ) );
+  area = std::fabs( 0.5 * ( std::sqrt( cx * cx + cy * cy + cz * cz ) ) );
   return area;
 }
 
 /**
- * We create the minheap by ordering the minheap array by the areas in the areanode structs that the minheap keys refere to
+ * We create the minheap by ordering the minheap array by the areas in the areanode structs that the minheap keys refer to
  */
 static int cmpfunc( const void *a, const void *b )
 {
   double v1 = ( *( areanode ** )a )->area;
   double v2 = ( *( areanode ** )b )->area;
 
-  /* qsort gives unpredictable results when comaping identical values.
-   * If two values is the same we force returning the last point in hte point array.
-   * That way we get the same ordering on diffreent machines and pllatforms
+  /* qsort gives unpredictable results when comparing identical values.
+   * If two values are the same we force returning the last point in the point array.
+   * That way we get the same ordering on different machines and platforms
    */
   if ( v1 == v2 )
     return ( *( areanode ** )a ) - ( *( areanode ** )b );
@@ -114,7 +115,7 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
   }
   if ( swap > parent )
   {
-    // ok, we have to swap something
+    // OK, we have to swap something
     tmp = treearray[parent];
     treearray[parent] = treearray[swap];
     // Update reference
@@ -134,14 +135,14 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
   //LWDEBUG( 2, "Entered  up" );
   areanode *tmp = nullptr;
 
-  Q_UNUSED( arealist );
+  Q_UNUSED( arealist )
 
   areanode **treearray = tree->key_array;
   int parent = ( c - 1 ) / 2;
 
   while ( ( ( areanode * )treearray[c] )->area < ( ( areanode * )treearray[parent] )->area )
   {
-    // ok, we have to swap
+    // OK, we have to swap
     tmp = treearray[parent];
     treearray[parent] = treearray[c];
     // Update reference
@@ -155,7 +156,7 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
 }
 
 /**
- * Get a reference to the point with the smallest effective area from the root of the min heap
+ * Gets a reference to the point with the smallest effective area from the root of the min heap
  */
 static areanode *minheap_pop( MINHEAP *tree, areanode *arealist )
 {
@@ -222,7 +223,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
     //LWDEBUGF( 4, "Check ordering qsort gives, area=%lf and belong to point %d", (( areanode* )tree.key_array[i] )->area, tree.key_array[i] - ea->initial_arealist );
   }
 
-  // Ok, now we have a minHeap, just need to keep it
+  // OK, now we have a minHeap, just need to keep it
   i = 0;
   while ( go_on )
   {
@@ -236,11 +237,11 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
       ea->res_arealist[current] = FLT_MAX;
 
     if ( ea->res_arealist[current] < check_order_min_area )
-      lwerror( "Oh no, this is a bug. For some reason the minHeap returned our points in the wrong order. Please file a ticket in PostGIS ticket system, or send a mial at the mailing list.Returned area = %lf, and last area = %lf", ea->res_arealist[current], check_order_min_area );
+      lwerror( "Oh no, this is a bug. For some reason the minHeap returned our points in the wrong order. Please file a ticket in PostGIS ticket system, or send a mail at the mailing list. Returned area = %lf, and last area = %lf", ea->res_arealist[current], check_order_min_area );
 
     check_order_min_area = ea->res_arealist[current];
 
-    // The found smallest area point is now regarded as elimnated and we have to recalculate the area the adjacent (ignoring earlier elimnated points) points gives
+    // The found smallest area point is now regarded as eliminated and we have to recalculate the area the adjacent (ignoring earlier eliminated points) points gives
 
     // Find point before and after
     before_current = ea->initial_arealist[current].prev;
@@ -281,7 +282,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
     ea->initial_arealist[before_current].next = ea->initial_arealist[current].next;
     ea->initial_arealist[after_current ].prev = ea->initial_arealist[current].prev;
 
-    // Check if we are finnished
+    // Check if we are finished
     if ( ( !set_area && ea->res_arealist[current] > trshld ) || ( ea->initial_arealist[0].next == ( npoints - 1 ) ) )
       go_on = 0;
 

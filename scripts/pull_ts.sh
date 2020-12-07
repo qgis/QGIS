@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    pull_ts.sh
 #    ---------------------
@@ -15,4 +15,4 @@
 ###########################################################################
 
 # Pull the translations from transifex and update TRANSLATORS
-scripts/update_ts.sh pull $1
+scripts/update_ts.sh pull "$@"

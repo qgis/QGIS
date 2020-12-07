@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalcontroller.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+%ModuleHeaderCode
+#include <qgstemporalnavigationobject.h>
+%End
+
+class QgsTemporalController : QObject
+{
+%Docstring
+A controller base class for temporal objects, contains a signal for notifying
+updates of the objects temporal range.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporalcontroller.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsTemporalNavigationObject *>( sipCpp ) )
+    {
+      sipType = sipType_QgsTemporalNavigationObject;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    QgsTemporalController( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTemporalController, with the specified ``parent`` object.
+%End
+
+  signals:
+
+    void updateTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Signals that a temporal ``range`` has changed and needs to be updated in
+all connected objects.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalcontroller.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

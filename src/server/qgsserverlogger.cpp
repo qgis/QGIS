@@ -16,13 +16,6 @@
  ***************************************************************************/
 
 #include "qgsserverlogger.h"
-#include "qgsapplication.h"
-#include <QCoreApplication>
-#include <QFile>
-#include <QTextStream>
-#include <QTime>
-
-#include <cstdlib>
 
 QgsServerLogger *QgsServerLogger::sInstance = nullptr;
 
@@ -36,45 +29,47 @@ QgsServerLogger *QgsServerLogger::instance()
 }
 
 QgsServerLogger::QgsServerLogger()
-  : mLogFile( nullptr )
-  , mLogLevel( QgsMessageLog::NONE )
+  : QgsMessageLogConsole()
 {
-  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ), this,
-           &QgsServerLogger::logMessage );
 }
 
-void QgsServerLogger::setLogLevel( QgsMessageLog::MessageLevel level )
+void QgsServerLogger::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
+{
+  if ( mLogLevel > level )
+  {
+    return;
+  }
+  if ( mLogFile.isOpen() )
+  {
+    QString formattedMessage = formatLogMessage( message, tag, level );
+    mTextStream << formattedMessage;
+    mTextStream.flush();
+  }
+  else if ( mLogStderr )
+  {
+    QgsMessageLogConsole::logMessage( message, tag, level );
+  }
+}
+
+void QgsServerLogger::setLogLevel( const Qgis::MessageLevel level )
 {
   mLogLevel = level;
 }
 
-void QgsServerLogger::setLogFile( const QString &f )
+void QgsServerLogger::setLogFile( const QString &filename )
 {
-  if ( ! f.isEmpty() )
-  {
-    if ( mLogFile.exists() )
-    {
-      mTextStream.flush();
-      mLogFile.close();
-    }
+  mTextStream.flush();
+  mLogFile.close();
+  mLogFile.setFileName( filename );
 
-    mLogFile.setFileName( f );
-    if ( mLogFile.open( QIODevice::Append ) )
-    {
-      mTextStream.setDevice( &mLogFile );
-    }
+  if ( ( ! filename.isEmpty() ) && mLogFile.open( QIODevice::Append ) )
+  {
+    mTextStream.setDevice( &mLogFile );
   }
 }
 
-void QgsServerLogger::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
+void QgsServerLogger::setLogStderr()
 {
-  Q_UNUSED( tag );
-  if ( !mLogFile.isOpen() || mLogLevel > level )
-  {
-    return;
-  }
-
-  mTextStream << ( "[" + QString::number( qlonglong( QCoreApplication::applicationPid() ) ) + "]["
-                   + QTime::currentTime().toString() + "] " + message + "\n" );
-  mTextStream.flush();
+  setLogFile();
+  mLogStderr = true;
 }

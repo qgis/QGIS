@@ -17,53 +17,105 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsgeometryoptions.h"
+#include "qgssnaptogridcanvasitem.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )
-  , mCaptureMode( CapturePoint )
-  , mSnapOnPress( false )
-  , mSnapOnRelease( false )
-  , mSnapOnMove( false )
-  , mSnapOnDoubleClick( false )
   , mCadDockWidget( cadDockWidget )
 {
+  Q_ASSERT( cadDockWidget );
+  connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolAdvancedDigitizing::onCurrentLayerChanged );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  snap( e );
-  if ( !mCadDockWidget->canvasPressEvent( e ) )
-    cadCanvasPressEvent( e );
+  if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
+  {
+    mCadDockWidget->applyConstraints( e );  // updates event's map point
+
+    if ( mCadDockWidget->constructionMode() )
+      return;  // decided to eat the event and not pass it to the map tool (construction mode)
+  }
+  else if ( isAutoSnapEnabled() )
+  {
+    e->snapPoint();
+  }
+
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( mSnapToLayerGridEnabled && layer )
+  {
+    e->snapToGrid( layer->geometryOptions()->geometryPrecision(), layer->crs() );
+  }
+
+  cadCanvasPressEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  snap( e );
-
-  QgsAdvancedDigitizingDockWidget::AdvancedDigitizingMode dockMode;
-  switch ( mCaptureMode )
+  if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    case CaptureLine:
-    case CapturePolygon:
-      dockMode = QgsAdvancedDigitizingDockWidget::ManyPoints;
-      break;
-    case CaptureSegment:
-      dockMode = QgsAdvancedDigitizingDockWidget::TwoPoints;
-      break;
-    default:
-      dockMode = QgsAdvancedDigitizingDockWidget::SinglePoint;
-      break;
+    if ( e->button() == Qt::RightButton )
+    {
+      mCadDockWidget->clear();
+    }
+    else
+    {
+      mCadDockWidget->applyConstraints( e );  // updates event's map point
+
+      if ( mCadDockWidget->alignToSegment( e ) )
+      {
+        // Parallel or perpendicular mode and snapped to segment: do not pass the event to map tool
+        return;
+      }
+
+      mCadDockWidget->addPoint( e->mapPoint() );
+
+      mCadDockWidget->releaseLocks( false );
+
+      if ( mCadDockWidget->constructionMode() )
+        return;  // decided to eat the event and not pass it to the map tool (construction mode)
+    }
+  }
+  else if ( isAutoSnapEnabled() )
+  {
+    e->snapPoint();
   }
 
-  if ( !mCadDockWidget->canvasReleaseEvent( e, dockMode ) )
-    cadCanvasReleaseEvent( e );
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( mSnapToGridCanvasItem && mSnapToLayerGridEnabled && layer )
+  {
+    e->snapToGrid( layer->geometryOptions()->geometryPrecision(), layer->crs() );
+  }
+
+  cadCanvasReleaseEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  snap( e );
-  if ( !mCadDockWidget->canvasMoveEvent( e ) )
-    cadCanvasMoveEvent( e );
+  if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
+  {
+    mCadDockWidget->applyConstraints( e );     // updates event's map point
+
+    // perpendicular/parallel constraint
+    // do a soft lock when snapping to a segment
+    mCadDockWidget->alignToSegment( e, QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+    mCadDockWidget->updateCadPaintItem();
+  }
+  else if ( isAutoSnapEnabled() )
+  {
+    e->snapPoint();
+  }
+
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( mSnapToGridCanvasItem && mSnapToLayerGridEnabled && layer )
+  {
+    e->snapToGrid( layer->geometryOptions()->geometryPrecision(), layer->crs() );
+    mSnapToGridCanvasItem->setPoint( e->mapPoint() );
+  }
+
+  cadCanvasMoveEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::activate()
@@ -71,6 +123,14 @@ void QgsMapToolAdvancedDigitizing::activate()
   QgsMapToolEdit::activate();
   connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->enable();
+  mSnapToGridCanvasItem = new QgsSnapToGridCanvasItem( mCanvas );
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( layer )
+  {
+    mSnapToGridCanvasItem->setCrs( currentVectorLayer()->crs() );
+    mSnapToGridCanvasItem->setPrecision( currentVectorLayer()->geometryOptions()->geometryPrecision() );
+  }
+  mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
 }
 
 void QgsMapToolAdvancedDigitizing::deactivate()
@@ -78,17 +138,46 @@ void QgsMapToolAdvancedDigitizing::deactivate()
   QgsMapToolEdit::deactivate();
   disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->disable();
+  delete mSnapToGridCanvasItem;
+  mSnapToGridCanvasItem = nullptr;
 }
 
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 {
-  Q_UNUSED( point );
+  Q_UNUSED( point )
   QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
 }
 
-void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent *e )
+void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
 {
-  if ( !mCadDockWidget->cadEnabled() )
-    e->snapPoint( QgsMapMouseEvent::SnapProjectConfig );
+  if ( mSnapToGridCanvasItem )
+  {
+    QgsVectorLayer *layer = currentVectorLayer();
+    if ( layer && mSnapToLayerGridEnabled )
+    {
+      mSnapToGridCanvasItem->setPrecision( layer->geometryOptions()->geometryPrecision() );
+      mSnapToGridCanvasItem->setCrs( layer->crs() );
+    }
+
+    if ( !layer )
+      mSnapToGridCanvasItem->setEnabled( false );
+    else
+      mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
+  }
+}
+
+bool QgsMapToolAdvancedDigitizing::snapToLayerGridEnabled() const
+{
+  return mSnapToLayerGridEnabled;
+}
+
+void QgsMapToolAdvancedDigitizing::setSnapToLayerGridEnabled( bool snapToGridEnabled )
+{
+  mSnapToLayerGridEnabled = snapToGridEnabled;
+
+  if ( mSnapToGridCanvasItem )
+  {
+    mSnapToGridCanvasItem->setEnabled( snapToGridEnabled );
+  }
 }

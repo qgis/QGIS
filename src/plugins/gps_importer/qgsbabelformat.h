@@ -27,7 +27,7 @@ class QgsBabelFormat
 {
   public:
     explicit QgsBabelFormat( const QString &name = "" );
-    virtual ~QgsBabelFormat() { }
+    virtual ~QgsBabelFormat() = default;
 
     QString name() const;
     virtual QStringList importCommand( const QString &babel,
@@ -48,8 +48,8 @@ class QgsBabelFormat
   protected:
 
     QString mName;
-    bool mSupportsImport, mSupportsExport;
-    bool mSupportsWaypoints, mSupportsRoutes, mSupportsTracks;
+    bool mSupportsImport = false, mSupportsExport = false;
+    bool mSupportsWaypoints = false, mSupportsRoutes = false, mSupportsTracks = false;
 };
 
 

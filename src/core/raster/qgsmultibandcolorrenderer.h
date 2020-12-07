@@ -19,13 +19,14 @@
 #define QGSMULTIBANDCOLORRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Renderer for multiband images with the color components
 */
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
@@ -34,7 +35,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
                                QgsContrastEnhancement *redEnhancement = nullptr, QgsContrastEnhancement *greenEnhancement = nullptr,
                                QgsContrastEnhancement *blueEnhancement = nullptr );
-    ~QgsMultiBandColorRenderer();
+    ~QgsMultiBandColorRenderer() override;
 
     //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
     QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & ) = delete;
@@ -54,21 +55,71 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     int blueBand() const { return mBlueBand; }
     void setBlueBand( int band ) { mBlueBand = band; }
 
+    /**
+     * Returns the contrast enhancement to use for the red channel.
+     *
+     * \see setRedContrastEnhancement()
+     * \see greenContrastEnhancement()
+     * \see blueContrastEnhancement()
+     */
     const QgsContrastEnhancement *redContrastEnhancement() const { return mRedContrastEnhancement; }
-    //! Takes ownership
+
+    /**
+     * Sets the contrast enhancement to use for the red channel.
+     *
+     * Ownership of the enhancement is transferred.
+     *
+     * \see redContrastEnhancement()
+     * \see setGreenContrastEnhancement()
+     * \see setBlueContrastEnhancement()
+     */
     void setRedContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
+    /**
+     * Returns the contrast enhancement to use for the green channel.
+     *
+     * \see setGreenContrastEnhancement()
+     * \see redContrastEnhancement()
+     * \see blueContrastEnhancement()
+     */
     const QgsContrastEnhancement *greenContrastEnhancement() const { return mGreenContrastEnhancement; }
-    //! Takes ownership
+
+    /**
+     * Sets the contrast enhancement to use for the green channel.
+     *
+     * Ownership of the enhancement is transferred.
+     *
+     * \see greenContrastEnhancement()
+     * \see setRedContrastEnhancement()
+     * \see setBlueContrastEnhancement()
+     */
     void setGreenContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
+    /**
+     * Returns the contrast enhancement to use for the blue channel.
+     *
+     * \see setBlueContrastEnhancement()
+     * \see redContrastEnhancement()
+     * \see greenContrastEnhancement()
+     */
     const QgsContrastEnhancement *blueContrastEnhancement() const { return mBlueContrastEnhancement; }
-    //! Takes ownership
+
+    /**
+     * Sets the contrast enhancement to use for the blue channel.
+     *
+     * Ownership of the enhancement is transferred.
+     *
+     * \see blueContrastEnhancement()
+     * \see setRedContrastEnhancement()
+     * \see setGreenContrastEnhancement()
+     */
     void setBlueContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     QList<int> usesBands() const override;
+
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
   private:
 #ifdef SIP_RUN

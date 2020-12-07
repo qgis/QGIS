@@ -15,9 +15,9 @@
 
 #include "qgslayertree.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsvectorlayer.h"
 
 QgsLayerTree::QgsLayerTree()
-  : QgsLayerTreeGroup()
 {
   connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
   connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );
@@ -39,7 +39,7 @@ QList<QgsMapLayer *> QgsLayerTree::customLayerOrder() const
 
 void QgsLayerTree::setCustomLayerOrder( const QList<QgsMapLayer *> &customLayerOrder )
 {
-  QgsWeakMapLayerPointerList  newOrder = _qgis_listRawToQPointer( customLayerOrder );
+  QgsWeakMapLayerPointerList newOrder = _qgis_listRawToQPointer( customLayerOrder );
 
   if ( newOrder == mCustomLayerOrder )
     return;
@@ -55,31 +55,42 @@ void QgsLayerTree::setCustomLayerOrder( const QStringList &customLayerOrder )
 {
   QList<QgsMapLayer *> layers;
 
-  Q_FOREACH ( const QString &layerId, customLayerOrder )
+  for ( const auto &layerId : customLayerOrder )
   {
     QgsLayerTreeLayer *nodeLayer = findLayer( layerId );
     if ( nodeLayer )
     {
-      layers.append( nodeLayer->layer() );
+      // configuration from 2.x projects might have non spatial layers
+      QgsMapLayer *layer = nodeLayer->layer();
+      if ( !layer || !layer->isSpatial() )
+      {
+        continue;
+      }
+      layers.append( layer );
     }
   }
-
   setCustomLayerOrder( layers );
 }
 
 QList<QgsMapLayer *> QgsLayerTree::layerOrder() const
 {
   if ( mHasCustomLayerOrder )
+  {
     return customLayerOrder();
+  }
   else
   {
     QList<QgsMapLayer *> layers;
-
-    Q_FOREACH ( QgsLayerTreeLayer *treeLayer, findLayers() )
+    const QList< QgsLayerTreeLayer * > foundLayers = findLayers();
+    for ( const auto &treeLayer : foundLayers )
     {
-      layers.append( treeLayer->layer() );
+      QgsMapLayer *layer = treeLayer->layer();
+      if ( !layer || !layer->isSpatial() )
+      {
+        continue;
+      }
+      layers.append( layer );
     }
-
     return layers;
   }
 }
@@ -100,33 +111,37 @@ void QgsLayerTree::setHasCustomLayerOrder( bool hasCustomLayerOrder )
   emit layerOrderChanged();
 }
 
-QgsLayerTree *QgsLayerTree::readXml( QDomElement &element )
+QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsLayerTree *tree = new QgsLayerTree();
 
   tree->readCommonXml( element );
 
-  tree->readChildrenFromXml( element );
+  tree->readChildrenFromXml( element, context );
 
   return tree;
 }
 
-void QgsLayerTree::writeXml( QDomElement &parentElement )
+void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteContext &context )
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-group" ) );
 
   writeCommonXml( elem );
 
-  Q_FOREACH ( QgsLayerTreeNode *node, mChildren )
-    node->writeXml( elem );
+  for ( QgsLayerTreeNode *node : qgis::as_const( mChildren ) )
+    node->writeXml( elem, context );
 
   QDomElement customOrderElem = doc.createElement( QStringLiteral( "custom-order" ) );
   customOrderElem.setAttribute( QStringLiteral( "enabled" ), mHasCustomLayerOrder ? 1 : 0 );
   elem.appendChild( customOrderElem );
 
-  Q_FOREACH ( QgsMapLayer *layer, mCustomLayerOrder )
+  for ( QgsMapLayer *layer : qgis::as_const( mCustomLayerOrder ) )
   {
+    // Safety belt, see https://github.com/qgis/QGIS/issues/26975
+    // Crash when deleting an item from the layout legend
+    if ( ! layer )
+      continue;
     QDomElement layerElem = doc.createElement( QStringLiteral( "item" ) );
     layerElem.appendChild( doc.createTextNode( layer->id() ) );
     customOrderElem.appendChild( layerElem );
@@ -166,12 +181,13 @@ void QgsLayerTree::nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int
     }
     else if ( QgsLayerTree::isGroup( child ) )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *nodeL, QgsLayerTree::toGroup( child )->findLayers() )
+      const auto nodeLayers = QgsLayerTree::toGroup( child )->findLayers();
+      for ( QgsLayerTreeLayer *nodeL : nodeLayers )
         layers << nodeL->layer();
     }
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  for ( QgsMapLayer *layer : qgis::as_const( layers ) )
   {
     if ( !mCustomLayerOrder.contains( layer ) && layer )
       mCustomLayerOrder.append( layer );
@@ -194,7 +210,18 @@ void QgsLayerTree::nodeRemovedChildren()
       ++layer;
   }
 
+  // we need to ensure that the customLayerOrderChanged signal is ALWAYS raised
+  // here, since that order HAS changed due to removal of the child!
+  // setCustomLayerOrder will only emit this signal when the layers list
+  // at this stage is different to the stored customer layer order. If this
+  // isn't the case (i.e. the lists ARE the same) then manually emit the
+  // signal
+  const bool emitSignal = _qgis_listRawToQPointer( layers ) == mCustomLayerOrder;
+
   setCustomLayerOrder( layers );
+  if ( emitSignal )
+    emit customLayerOrderChanged();
+
   emit layerOrderChanged();
 }
 
@@ -202,11 +229,11 @@ void QgsLayerTree::addMissingLayers()
 {
   bool changed = false;
 
-  QList<QgsLayerTreeLayer *> allLayers = findLayers();
-
-  Q_FOREACH ( QgsLayerTreeLayer *layer, allLayers )
+  const QList< QgsLayerTreeLayer * > layers = findLayers();
+  for ( const auto layer : layers )
   {
-    if ( !mCustomLayerOrder.contains( layer->layer() ) && layer->layer() )
+    if ( !mCustomLayerOrder.contains( layer->layer() ) &&
+         layer->layer() && layer->layer()->isSpatial() )
     {
       mCustomLayerOrder.append( layer->layer() );
       changed = true;

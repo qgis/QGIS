@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <property name="leftMargin">
@@ -29,7 +29,7 @@
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mLoadMinMaxValuesGroupBox">
      <property name="title">
-      <string>Min / max values settings</string>
+      <string>Min / Max Value Settings</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -76,7 +76,7 @@ count cut</string>
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="mCumulativeCutLowerDoubleSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mCumulativeCutLowerDoubleSpinBox">
             <property name="decimals">
              <number>1</number>
             </property>
@@ -90,7 +90,7 @@ count cut</string>
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="mCumulativeCutUpperDoubleSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mCumulativeCutUpperDoubleSpinBox">
             <property name="decimals">
              <number>1</number>
             </property>
@@ -132,7 +132,7 @@ standard de&amp;viation ×</string>
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="mStdDevSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mStdDevSpinBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -231,6 +231,11 @@ standard de&amp;viation ×</string>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>

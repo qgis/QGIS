@@ -1,5 +1,5 @@
-SET (CTEST_SOURCE_DIRECTORY $ENV{TRAVIS_BUILD_DIR})
-SET (CTEST_BINARY_DIRECTORY "$ENV{TRAVIS_BUILD_DIR}/build")
+SET (CTEST_SOURCE_DIRECTORY $ENV{CTEST_BUILD_DIR})
+SET (CTEST_BINARY_DIRECTORY $ENV{CTEST_BUILD_DIR}/build)
 #SET (CTEST_SOURCE_DIRECTORY /usr/src/QGIS)
 #SET (CTEST_BINARY_DIRECTORY /usr/src/qgis-build)
 
@@ -13,7 +13,11 @@ ELSE()
   SET (CTEST_BUILD_NAME "PR: $ENV{TRAVIS_PULL_REQUEST} / $ENV{TRAVIS_BRANCH} ($ENV{BUILD}) ($ENV{TRAVIS_COMMIT})")
 ENDIF()
 SET (CTEST_BUILD_CONFIGURATION "Release")
-SET (CTEST_TEST_TIMEOUT 60) # 60 seconds
+IF ($ENV{TRAVIS_CONFIG} STREQUAL "code_layout")
+  SET (CTEST_TEST_TIMEOUT 600) # 600 seconds, spelling test might take some time
+ELSE()
+  SET (CTEST_TEST_TIMEOUT 60) # 60 seconds
+ENDIF()
 IF(DEFINED ENV{CTEST_PARALLEL_LEVEL})
   SET(PARALLEL_LEVEL $ENV{CTEST_PARALLEL_LEVEL})
 ELSE(DEFINED ENV{CTEST_PARALLEL_LEVEL})
@@ -60,7 +64,7 @@ ctest_build (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE BUILDRES NUMBER_WARN
 # CDash on OTB requires the date to be set for the search to work and that's the timezone this requires
 SET(ENV{TZ} "UTC-6")
 EXECUTE_PROCESS(COMMAND date +%Y-%m-%d OUTPUT_VARIABLE CDASH_DATE)
-SET(RESULT_LINK "http://dash.orfeo-toolbox.org/index.php?project=QGIS&filtercount=1&showfilters=1&field1=buildname/string&compare1=63&value1=$ENV{TRAVIS_COMMIT}&date=${CDASH_DATE}")
+SET(RESULT_LINK "http://cdash.orfeo-toolbox.org/index.php?project=QGIS&filtercount=1&showfilters=1&field1=buildname/string&compare1=63&value1=$ENV{TRAVIS_COMMIT}&date=${CDASH_DATE}")
 EXECUTE_PROCESS(COMMAND curl --data-urlencode "url=${RESULT_LINK}" -s http://tinyurl.com/api-create.php
                 OUTPUT_VARIABLE SHORTURL)
 

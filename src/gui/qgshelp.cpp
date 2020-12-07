@@ -19,6 +19,8 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmessagelog.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QUrl>
 #include <QFileInfo>
@@ -44,6 +46,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
   if ( paths.isEmpty() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Help location is not configured!" ), QObject::tr( "QGIS Help" ) );
     return helpNotFound;
   }
 
@@ -53,9 +56,10 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QString helpPath, fullPath;
   bool helpFound = false;
 
-  Q_FOREACH ( const QString &path, paths )
+  const auto constPaths = paths;
+  for ( const QString &path : constPaths )
   {
-    if ( path.endsWith( "\\" ) || path.endsWith( "/" ) )
+    if ( path.endsWith( QLatin1String( "\\" ) ) || path.endsWith( QLatin1Char( '/' ) ) )
     {
       fullPath = path.left( path.size() - 1 );
     }
@@ -64,16 +68,19 @@ QUrl QgsHelp::helpUrl( const QString &key )
       fullPath = path;
     }
 
-    Q_FOREACH ( const QString &var, scope->variableNames() )
+    const auto constVariableNames = scope->variableNames();
+    for ( const QString &var : constVariableNames )
     {
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
     }
-    fullPath.replace( QRegularExpression( "(\\$\\$)" ), "$" );
+    fullPath.replace( QRegularExpression( QStringLiteral( "(\\$\\$)" ) ), QStringLiteral( "$" ) );
 
-    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath ).arg( key );
+    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
 
-    if ( helpPath.startsWith( QStringLiteral( "http" ) ) )
+    QgsMessageLog::logMessage( QObject::tr( "Trying to open help using key '%1'. Full URI is '%2'…" ).arg( key ).arg( helpPath ), QObject::tr( "QGIS Help" ), Qgis::Info );
+
+    if ( helpPath.startsWith( QLatin1String( "http" ) ) )
     {
       if ( !QgsHelp::urlExists( helpPath ) )
       {
@@ -83,16 +90,16 @@ QUrl QgsHelp::helpUrl( const QString &key )
     }
     else
     {
-      QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( "#" ) );
+      QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( QLatin1Char( '#' ) ) );
       if ( !QFileInfo::exists( filePath ) )
       {
         continue;
       }
       helpUrl = QUrl::fromLocalFile( filePath );
-      int pos = helpPath.lastIndexOf( "#" );
+      int pos = helpPath.lastIndexOf( QLatin1Char( '#' ) );
       if ( pos != -1 )
       {
-        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( "#" ) + 1, -1 ) );
+        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( QLatin1Char( '#' ) ) + 1, -1 ) );
       }
     }
 
@@ -160,7 +167,7 @@ bool QgsHelp::urlExists( const QString &url )
     if ( socket.waitForReadyRead() )
     {
       QByteArray bytes = socket.readAll();
-      if ( bytes.contains( "200 OK" ) ||  bytes.contains( "302 Found" ) )
+      if ( bytes.contains( "200 OK" ) ||  bytes.contains( "302 Found" ) ||  bytes.contains( "301 Moved" ) )
       {
         return true;
       }

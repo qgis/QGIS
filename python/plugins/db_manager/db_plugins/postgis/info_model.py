@@ -40,6 +40,7 @@ class PGDatabaseInfo(DatabaseInfo):
 class PGTableInfo(TableInfo):
 
     def __init__(self, table):
+        super(PGTableInfo, self).__init__(table)
         self.table = table
 
     def generalInfo(self):
@@ -84,7 +85,7 @@ class PGTableInfo(TableInfo):
             if table_priv[0]:
                 privileges.append("select")
 
-                if self.table.rowCount is not None or self.table.rowCount >= 0:
+                if self.table.rowCount is not None and self.table.rowCount >= 0:
                     tbl.append((QApplication.translate("DBManagerPlugin", "Rows (counted):"),
                                 self.table.rowCount if self.table.rowCount is not None else QApplication.translate(
                                     "DBManagerPlugin", 'Unknown (<a href="action:rows/count">find out</a>)')))
@@ -109,8 +110,8 @@ class PGTableInfo(TableInfo):
         if not self.table.isView:
             if self.table.rowCount is not None:
                 if abs(self.table.estimatedRowCount - self.table.rowCount) > 1 and \
-                        (self.table.estimatedRowCount > 2 * self.table.rowCount or
-                         self.table.rowCount > 2 * self.table.estimatedRowCount):
+                        (self.table.estimatedRowCount > 2 * self.table.rowCount
+                         or self.table.rowCount > 2 * self.table.estimatedRowCount):
                     ret.append(HtmlParagraph(QApplication.translate("DBManagerPlugin",
                                                                     "<warning> There's a significant difference between estimated and real row count. "
                                                                     'Consider running <a href="action:vacuumanalyze/run">VACUUM ANALYZE</a>.')))
@@ -161,7 +162,7 @@ class PGTableInfo(TableInfo):
         header = (
             "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
             QApplication.translate("DBManagerPlugin", "Length"), QApplication.translate("DBManagerPlugin", "Null"),
-            QApplication.translate("DBManagerPlugin", "Default"))
+            QApplication.translate("DBManagerPlugin", "Default"), QApplication.translate("DBManagerPlugin", "Comment"))
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -173,7 +174,7 @@ class PGTableInfo(TableInfo):
             attrs = {"class": "underline"} if fld.primaryKey else None
             name = HtmlTableCol(fld.name, attrs)
 
-            tbl.append((fld.num, name, fld.type2String(), char_max_len, is_null_txt, fld.default2String()))
+            tbl.append((fld.num, name, fld.type2String(), char_max_len, is_null_txt, fld.default2String(), fld.getComment()))
 
         return HtmlTable(tbl, {"class": "header"})
 

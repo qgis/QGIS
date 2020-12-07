@@ -25,7 +25,8 @@
 
 #include <QList>
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster pipe that deals with null values.
 */
 class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
@@ -51,13 +52,13 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo - 1 ); }
 
-    //! \brief Set output no data value.
+    //! Sets the output no data value.
     void setOutputNoDataValue( int bandNo, double noData );
 
   private:
-    // no data indext from 0
+    // no data indexed from 0
     QVector< QgsRasterRangeList > mNoData;
-    // no data to be set in output, indexed form 0
+    // no data to be set in output, indexed from 0
     QVector<double> mOutputNoData;
     QVector<bool> mHasOutputNoData;
 };

@@ -22,6 +22,7 @@
 #include <QUrl>
 #include <QMap>
 #include "qgis_server.h"
+#include "qgsserverparameters.h"
 
 /**
  * \ingroup server
@@ -36,6 +37,8 @@
 
 class SERVER_EXPORT QgsServerRequest
 {
+    Q_GADGET
+
   public:
 
     typedef QMap<QString, QString> Parameters;
@@ -46,14 +49,20 @@ class SERVER_EXPORT QgsServerRequest
      */
     enum Method
     {
-      HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
+      HeadMethod,
+      PutMethod,
+      GetMethod,
+      PostMethod,
+      DeleteMethod,
+      PatchMethod
     };
+    Q_ENUM( Method )
 
 
     /**
      * Constructor
      */
-    QgsServerRequest();
+    QgsServerRequest() = default;
 
     /**
      * Constructor
@@ -62,7 +71,7 @@ class SERVER_EXPORT QgsServerRequest
      * \param method the request method
      * \param headers
      */
-    QgsServerRequest( const QString &url, Method method = GetMethod, const Headers &headers = Headers( ) );
+    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     /**
      * Constructor
@@ -71,26 +80,41 @@ class SERVER_EXPORT QgsServerRequest
      * \param method the request method
      * \param headers
      */
-    QgsServerRequest( const QUrl &url, Method method = GetMethod, const Headers &headers = Headers( ) );
+    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     //! destructor
     virtual ~QgsServerRequest() = default;
 
     /**
-     * \returns  the request url
+     * Returns a string representation of an HTTP request \a method.
+     * \since QGIS 3.12
+     */
+    static QString methodToString( const Method &method );
+
+
+    /**
+     * \returns  the request url as seen by QGIS server
+     *
+     * \see originalUrl for the unrewritten url as seen by the web
+     *      server, by default the two are equal
      */
     QUrl url() const;
 
     /**
      * \returns the request method
       */
-    Method method() const;
+    QgsServerRequest::Method method() const;
 
     /**
-     * Return a map of query parameters with keys converted
+     * Returns a map of query parameters with keys converted
      * to uppercase
      */
-    Parameters parameters() const;
+    QgsServerRequest::Parameters parameters() const;
+
+    /**
+     * Returns parameters
+     */
+    QgsServerParameters serverParameters() const;
 
     /**
      * Set a parameter
@@ -98,9 +122,9 @@ class SERVER_EXPORT QgsServerRequest
     void setParameter( const QString &key, const QString &value );
 
     /**
-     * Get a parameter value
+     * Gets a parameter value
      */
-    QString parameter( const QString &key ) const;
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
 
     /**
      * Remove a parameter
@@ -108,33 +132,33 @@ class SERVER_EXPORT QgsServerRequest
     void removeParameter( const QString &key );
 
     /**
-     * Return the header value
-     * @param name of the header
-     * @return the header value or an empty string
+     * Returns the header value
+     * \param name of the header
+     * \return the header value or an empty string
      */
     QString header( const QString &name ) const;
 
     /**
      * Set an header
-     * @param name
-     * @param value
+     * \param name
+     * \param value
      */
     void setHeader( const QString &name, const QString &value );
 
     /**
-     * Return the header map
-     * @return the headers map
+     * Returns the header map
+     * \return the headers map
      */
-    QMap<QString, QString> headers( ) const;
+    QMap<QString, QString> headers() const;
 
     /**
     * Remove an header
-    * @param name
+    * \param name
     */
     void removeHeader( const QString &name );
 
     /**
-     * Return post/put data
+     * Returns post/put data
      * Check for QByteArray::isNull() to check if data
      * is available.
      */
@@ -146,20 +170,46 @@ class SERVER_EXPORT QgsServerRequest
     void setUrl( const QUrl &url );
 
     /**
+     * Returns the request url as seen by the web server,
+     * by default this is equal to the url seen by QGIS server
+     *
+     * \see url() for the rewritten url
+     * \since QGIS 3.6
+     */
+    QUrl originalUrl() const;
+
+    /**
      * Set the request method
      */
-    void setMethod( Method method );
+    void setMethod( QgsServerRequest::Method method );
+
+    /**
+     * Returns the query string parameter with the given \a name from the request URL, a \a defaultValue can be specified.
+     * \since QGIS 3.10
+     */
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+
+  protected:
+
+    /**
+     * Set the request original \a url (the request url as seen by the web server)
+     *
+     * \see setUrl() for the rewritten url
+     * \since QGIS 3.6
+     */
+    void setOriginalUrl( const QUrl &url );
+
 
   private:
+    // Url as seen by QGIS server after web server rewrite
     QUrl       mUrl;
-    Method     mMethod;
+    // Unrewritten url as seen by the web server
+    QUrl       mOriginalUrl;
+    Method     mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization
-    // Use QMap here because it will be faster for small
-    // number of elements
-    mutable bool mDecoded;
-    mutable Parameters mParams;
     mutable Headers mHeaders;
+    QgsServerParameters mParams;
 };
 
 #endif

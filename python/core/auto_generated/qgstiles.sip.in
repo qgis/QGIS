@@ -1,0 +1,169 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstiles.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsTileXYZ
+{
+%Docstring
+Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
+by the :py:func:`~zoomLevel`, and the position within tile matrix is given by :py:func:`~column`
+and :py:func:`~row`.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstiles.h"
+%End
+  public:
+    QgsTileXYZ( int tc = -1, int tr = -1, int tz = -1 );
+%Docstring
+Constructs a tile identifier from given column, row and zoom level indices
+%End
+
+    int column() const;
+%Docstring
+Returns tile's column index (X)
+%End
+    int row() const;
+%Docstring
+Returns tile's row index (Y)
+%End
+    int zoomLevel() const;
+%Docstring
+Returns tile's zoom level (Z)
+%End
+
+    QString toString() const;
+%Docstring
+Returns tile coordinates in a formatted string
+%End
+
+};
+
+
+class QgsTileRange
+{
+%Docstring
+Range of tiles in a tile matrix to be rendered. The selection is rectangular,
+given by start/end row and column numbers.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstiles.h"
+%End
+  public:
+    QgsTileRange( int c1 = -1, int c2 = -1, int r1 = -1, int r2 = -1 );
+%Docstring
+Constructs a range of tiles from given span of columns and rows
+%End
+    bool isValid() const;
+%Docstring
+Returns whether the range is valid (when all row/column numbers are not negative)
+%End
+
+    int startColumn() const;
+%Docstring
+Returns index of the first column in the range
+%End
+    int endColumn() const;
+%Docstring
+Returns index of the last column in the range
+%End
+    int startRow() const;
+%Docstring
+Returns index of the first row in the range
+%End
+    int endRow() const;
+%Docstring
+Returns index of the last row in the range
+%End
+
+};
+
+
+class QgsTileMatrix
+{
+%Docstring
+Defines a matrix of tiles for a single zoom level: it is defined by its size (width * height)
+and map extent that it covers.
+
+Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile has [0,0] coordinate
+(which is different from TMS convention where bottom-left tile has [0,0] coordinate).
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstiles.h"
+%End
+  public:
+
+    static QgsTileMatrix fromWebMercator( int mZoomLevel );
+%Docstring
+Returns a tile matrix for the usual web mercator
+%End
+
+    int zoomLevel() const;
+%Docstring
+Returns zoom level of the tile matrix
+%End
+
+    int matrixWidth() const;
+%Docstring
+Returns number of columns of the tile matrix
+%End
+
+    int matrixHeight() const;
+%Docstring
+Returns number of rows of the tile matrix
+%End
+
+    QgsRectangle extent() const;
+%Docstring
+Returns extent of the tile matrix
+%End
+
+    double scale() const;
+%Docstring
+Returns scale denominator of the tile matrix
+%End
+
+    QgsRectangle tileExtent( QgsTileXYZ id ) const;
+%Docstring
+Returns extent of the given tile in this matrix
+%End
+
+    QgsPointXY tileCenter( QgsTileXYZ id ) const;
+%Docstring
+Returns center of the given tile in this matrix
+%End
+
+    QgsTileRange tileRangeFromExtent( const QgsRectangle &mExtent );
+%Docstring
+Returns tile range that fully covers the given extent
+%End
+
+    QPointF mapToTileCoordinates( const QgsPointXY &mapPoint ) const;
+%Docstring
+Returns row/column coordinates (floating point number) from the given point in map coordinates
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstiles.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

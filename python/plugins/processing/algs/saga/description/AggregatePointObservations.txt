@@ -1,14 +1,14 @@
 Aggregate Point Observations
 shapes_points
-ParameterVector|REFERENCE|Reference Points|-1|False
-ParameterTableField|REFERENCE_ID|ID|REFERENCE|-1|False
-ParameterTable|OBSERVATIONS|Observations|False
-ParameterTableField|X|X|OBSERVATIONS|-1|False
-ParameterTableField|Y|Y|OBSERVATIONS|-1|False
-ParameterTableField|TRACK|Track|OBSERVATIONS|-1|False
-ParameterTableField|DATE|Date|OBSERVATIONS|-1|False
-ParameterTableField|TIME|Time|OBSERVATIONS|-1|False
-ParameterTableField|PARAMETER|Parameter|OBSERVATIONS|-1|False
-ParameterNumber|EPS_TIME|Maximum Time Span (Seconds)|None|None|60.0
-ParameterNumber|EPS_SPACE|Maximum Distance|None|None|0.002
-OutputTable|AGGREGATED|Aggregated
+QgsProcessingParameterFeatureSource|REFERENCE|Reference Points|-1|None|False
+QgsProcessingParameterField|REFERENCE_ID|ID|None|REFERENCE|-1|False|False
+QgsProcessingParameterFeatureSource|OBSERVATIONS|Observations|5|None|False
+QgsProcessingParameterField|X|X|None|OBSERVATIONS|-1|False|False
+QgsProcessingParameterField|Y|Y|None|OBSERVATIONS|-1|False|False
+QgsProcessingParameterField|TRACK|Track|None|OBSERVATIONS|-1|False|False
+QgsProcessingParameterField|DATE|Date|None|OBSERVATIONS|-1|False|False
+QgsProcessingParameterField|TIME|Time|None|OBSERVATIONS|-1|False|False
+QgsProcessingParameterField|PARAMETER|Parameter|None|OBSERVATIONS|-1|False|False
+QgsProcessingParameterNumber|EPS_TIME|Maximum Time Span (Seconds)|QgsProcessingParameterNumber.Double|60.0|False|None|None
+QgsProcessingParameterNumber|EPS_SPACE|Maximum Distance|QgsProcessingParameterNumber.Double|0.002|False|None|None
+QgsProcessingParameterVectorDestination|AGGREGATED|Aggregated

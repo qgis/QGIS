@@ -16,17 +16,11 @@
 #include "qgslogger.h"
 
 #include "qgssimplifymethod.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsexpressionsorter.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
-  , mClosed( false )
-  , mZombie( false )
-  , refs( 0 )
-  , mFetchedCount( 0 )
-  , mCompileStatus( NoCompilation )
-  , mUseCachedFeatures( false )
 {
 }
 
@@ -153,9 +147,14 @@ void QgsAbstractFeatureIterator::deref()
     delete this;
 }
 
+bool QgsAbstractFeatureIterator::compileFailed() const
+{
+  return mCompileFailed;
+}
+
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
-  Q_UNUSED( simplifyMethod );
+  Q_UNUSED( simplifyMethod )
   return false;
 }
 
@@ -185,7 +184,8 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
     {
       expressionContext->setFeature( indexedFeature.mFeature );
       int i = 0;
-      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderBy, preparedOrderBys )
+      const auto constPreparedOrderBys = preparedOrderBys;
+      for ( const QgsFeatureRequest::OrderByClause &orderBy : constPreparedOrderBys )
       {
         indexedFeature.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
       }
@@ -217,7 +217,7 @@ bool QgsAbstractFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::
   return false;
 }
 
-void QgsAbstractFeatureIterator::setInterruptionChecker( QgsInterruptionChecker * )
+void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * )
 {
 }
 
@@ -234,4 +234,9 @@ QgsFeatureIterator &QgsFeatureIterator::operator=( const QgsFeatureIterator &oth
       mIter->ref();
   }
   return *this;
+}
+
+bool QgsFeatureIterator::isValid() const
+{
+  return mIter && mIter->isValid();
 }

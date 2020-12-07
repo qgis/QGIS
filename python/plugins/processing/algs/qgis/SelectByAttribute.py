@@ -21,21 +21,18 @@ __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
-                       QgsProcessingUtils)
+                       QgsVectorLayer,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
 
 
 class SelectByAttribute(QgisAlgorithm):
@@ -43,10 +40,11 @@ class SelectByAttribute(QgisAlgorithm):
     FIELD = 'FIELD'
     OPERATOR = 'OPERATOR'
     VALUE = 'VALUE'
+    METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
     OPERATORS = ['=',
-                 '!=',
+                 '<>',
                  '>',
                  '>=',
                  '<',
@@ -61,42 +59,57 @@ class SelectByAttribute(QgisAlgorithm):
                         'contains',
                         'does not contain']
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('select,attribute,value,contains,null,field').split(',')
 
     def group(self):
-        return self.tr('Vector selection tools')
+        return self.tr('Vector selection')
+
+    def groupId(self):
+        return 'vectorselection'
 
     def __init__(self):
         super().__init__()
-        self.i18n_operators = ['=',
-                               '!=',
-                               '>',
-                               '>=',
-                               '<',
-                               '<=',
-                               self.tr('begins with'),
-                               self.tr('contains'),
-                               self.tr('is null'),
-                               self.tr('is not null'),
-                               self.tr('does not contain')
-                               ]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Selection attribute'), self.INPUT))
-        self.addParameter(ParameterSelection(self.OPERATOR,
-                                             self.tr('Operator'), self.i18n_operators))
-        self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
+    def initAlgorithm(self, config=None):
+        self.operators = ['=',
+                          '≠',
+                          '>',
+                          '≥',
+                          '<',
+                          '≤',
+                          self.tr('begins with'),
+                          self.tr('contains'),
+                          self.tr('is null'),
+                          self.tr('is not null'),
+                          self.tr('does not contain')
+                          ]
+
+        self.methods = [self.tr('creating new selection'),
+                        self.tr('adding to current selection'),
+                        self.tr('removing from current selection'),
+                        self.tr('selecting within current selection')]
+
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer'),
+                                                            types=[QgsProcessing.TypeVector]))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Selection attribute'),
+                                                      parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterEnum(self.OPERATOR,
+                                                     self.tr('Operator'), self.operators, defaultValue=0))
+        self.addParameter(QgsProcessingParameterString(self.VALUE,
+                                                       self.tr('Value'),
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Modify current selection by'),
+                                                     self.methods,
+                                                     defaultValue=0))
+
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
     def name(self):
         return 'selectbyattribute'
@@ -105,20 +118,23 @@ class SelectByAttribute(QgisAlgorithm):
         return self.tr('Select by attribute')
 
     def processAlgorithm(self, parameters, context, feedback):
-        fileName = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
-        fieldName = self.getParameterValue(self.FIELD)
-        operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
-        value = self.getParameterValue(self.VALUE)
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        operator = self.OPERATORS[self.parameterAsEnum(parameters, self.OPERATOR, context)]
+        value = self.parameterAsString(parameters, self.VALUE, context)
 
         fields = layer.fields()
 
         idx = layer.fields().lookupField(fieldName)
+        if idx < 0:
+            raise QgsProcessingException(self.tr("Field '{}' was not found in layer").format(fieldName))
+
         fieldType = fields[idx].type()
 
         if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
             op = ''.join(['"%s", ' % o for o in self.STRING_OPERATORS])
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Operators {0} can be used only with string fields.').format(op))
 
         field_ref = QgsExpression.quotedColumnRef(fieldName)
@@ -128,17 +144,28 @@ class SelectByAttribute(QgisAlgorithm):
         elif operator == 'is not null':
             expression_string = '{} IS NOT NULL'.format(field_ref)
         elif operator == 'begins with':
-            expression_string = """%s LIKE '%s%%'""" % (field_ref, value)
+            expression_string = "{} LIKE '{}%'".format(field_ref, value)
         elif operator == 'contains':
-            expression_string = """%s LIKE '%%%s%%'""" % (field_ref, value)
+            expression_string = "{} LIKE '%{}%'".format(field_ref, value)
         elif operator == 'does not contain':
-            expression_string = """%s NOT LIKE '%%%s%%'""" % (field_ref, value)
+            expression_string = "{} NOT LIKE '%{}%'".format(field_ref, value)
         else:
             expression_string = '{} {} {}'.format(field_ref, operator, quoted_val)
 
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+        if method == 0:
+            behavior = QgsVectorLayer.SetSelection
+        elif method == 1:
+            behavior = QgsVectorLayer.AddToSelection
+        elif method == 2:
+            behavior = QgsVectorLayer.RemoveFromSelection
+        elif method == 3:
+            behavior = QgsVectorLayer.IntersectSelection
+
         expression = QgsExpression(expression_string)
         if expression.hasParserError():
-            raise GeoAlgorithmExecutionException(expression.parserErrorString())
+            raise QgsProcessingException(expression.parserErrorString())
 
-        layer.selectByExpression(expression_string)
-        self.setOutputValue(self.OUTPUT, fileName)
+        layer.selectByExpression(expression_string, behavior)
+
+        return {self.OUTPUT: parameters[self.INPUT]}

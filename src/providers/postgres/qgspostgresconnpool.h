@@ -37,12 +37,12 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn *c )
 
 inline void qgsConnectionPool_InvalidateConnection( QgsPostgresConn *c )
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
 }
 
 inline bool qgsConnectionPool_ConnectionIsValid( QgsPostgresConn *c )
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
   return true;
 }
 
@@ -77,7 +77,7 @@ class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn *, QgsPostg
 
   private:
     QgsPostgresConnPool();
-    ~QgsPostgresConnPool();
+    ~QgsPostgresConnPool() override;
 
     static QgsPostgresConnPool *sInstance;
 };

@@ -22,6 +22,7 @@
 #ifndef QGSWFSGETFEATURE_H
 #define QGSWFSGETFEATURE_H
 
+#include "qgswfsparameters.h"
 
 namespace QgsWfs
 {
@@ -29,7 +30,11 @@ namespace QgsWfs
   {
     QString typeName;
 
+    QString srsName;
+
     QgsFeatureRequest featureRequest;
+
+    QStringList serverFids;
 
     QStringList propertyList;
   };
@@ -40,32 +45,41 @@ namespace QgsWfs
 
     long startIndex;
 
-    QString outputFormat;
+    QgsWfsParameters::Format outputFormat;
 
     QList< getFeatureQuery > queries;
 
     QString geometryName;
   };
 
-  /** Transform Query element to getFeatureQuery
+  /**
+   * Add SortBy element to featureRequest
    */
-  getFeatureQuery parseQueryElement( QDomElement &queryElem );
+  void parseSortByElement( QDomElement &sortByElem, QgsFeatureRequest &featureRequest, const QString &typeName );
 
-  /** Transform RequestBody root element to getFeatureRequest
+  /**
+   * Transform Query element to getFeatureQuery
    */
-  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem );
+  getFeatureQuery parseQueryElement( QDomElement &queryElem, const QgsProject *project = nullptr );
 
-  /** Transform parameters to getFeatureRequest
+  /**
+   * Transform RequestBody root element to getFeatureRequest
    */
-  getFeatureRequest parseGetFeatureParameters( QgsServerRequest::Parameters parameters );
+  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem, const QgsProject *project = nullptr );
 
-  /** Output WFS  GetFeature response
+  /**
+   * Transform parameters to getFeatureRequest
+   */
+  getFeatureRequest parseGetFeatureParameters( const QgsProject *project = nullptr );
+
+  /**
+   * Output WFS  GetFeature response
    */
   void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
                         const QString &version, const QgsServerRequest &request,
                         QgsServerResponse &response );
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 #endif
 

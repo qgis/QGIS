@@ -25,7 +25,8 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMessageBar
-from qgis.core import QgsVectorLayer, QgsProject, QgsSettings
+from qgis.core import Qgis, QgsVectorLayer, QgsProject, QgsSettings
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import Table
 
@@ -33,13 +34,13 @@ from .db_plugins.plugin import Table
 class LayerPreview(QgsMapCanvas):
 
     def __init__(self, parent=None):
-        QgsMapCanvas.__init__(self, parent)
+        super(LayerPreview, self).__init__(parent)
         self.parent = parent
         self.setCanvasColor(QColor(255, 255, 255))
 
         self.item = None
         self.dirty = False
-        self.currentLayer = None
+        self.currentLayerId = None
 
         # reuse settings from QGIS
         settings = QgsSettings()
@@ -64,6 +65,7 @@ class LayerPreview(QgsMapCanvas):
             # update the preview, but first let the manager chance to show the canvas
             def runPrev():
                 return self._loadTablePreview(item)
+
             QTimer.singleShot(50, runPrev)
         else:
             return
@@ -89,45 +91,46 @@ class LayerPreview(QgsMapCanvas):
 
     def _loadTablePreview(self, table, limit=False):
         """ if has geometry column load to map canvas """
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.freeze()
-        vl = None
+        with OverrideCursor(Qt.WaitCursor):
+            self.freeze()
+            vl = None
 
-        if table and table.geomType:
-            # limit the query result if required
-            if limit and table.rowCount > 1000:
-                uniqueField = table.getValidQgisUniqueFields(True)
-                if uniqueField is None:
-                    self.parent.tabs.setCurrentWidget(self.parent.info)
-                    self.parent.infoBar.pushMessage(
-                        QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
-                        QgsMessageBar.WARNING, self.parent.iface.messageTimeout())
-                    return
+            if table and table.geomType:
+                # limit the query result if required
+                if limit and table.rowCount > 1000:
+                    uniqueField = table.getValidQgisUniqueFields(True)
+                    if uniqueField is None:
+                        self.parent.tabs.setCurrentWidget(self.parent.info)
+                        self.parent.infoBar.pushMessage(
+                            QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
+                            Qgis.Warning, self.parent.iface.messageTimeout())
+                        return
 
-                uri = table.database().uri()
-                uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
-                                  uniqueField.name)
-                provider = table.database().dbplugin().providerName()
-                vl = QgsVectorLayer(uri.uri(False), table.name, provider)
+                    uri = table.database().uri()
+                    uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
+                                      uniqueField.name)
+                    provider = table.database().dbplugin().providerName()
+                    vl = QgsVectorLayer(uri.uri(False), table.name, provider)
+                else:
+                    vl = table.toMapLayer()
+
+                if vl and not vl.isValid():
+                    vl.deleteLater()
+                    vl = None
+
+            # remove old layer (if any) and set new
+            if self.currentLayerId:
+                if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayerId):
+                    QgsProject.instance().removeMapLayers([self.currentLayerId])
+
+            if vl and vl.isValid():
+                self.setLayers([vl])
+                QgsProject.instance().addMapLayers([vl], False)
+                self.zoomToFullExtent()
+                self.currentLayerId = vl.id()
             else:
-                vl = table.toMapLayer()
+                self.setLayers([])
+                self.currentLayerId = None
 
-            if not vl.isValid():
-                vl.deleteLater()
-                vl = None
-
-        # remove old layer (if any) and set new
-        if self.currentLayer:
-            QgsProject.instance().removeMapLayers([self.currentLayer.id()])
-
-        if vl:
-            self.setLayers([vl])
-            QgsProject.instance().addMapLayers([vl], False)
-            self.zoomToFullExtent()
-        else:
-            self.setLayers([])
-
-        self.currentLayer = vl
-
-        self.freeze(False)
-        QApplication.restoreOverrideCursor()
+            self.freeze(False)
+            super().refresh()

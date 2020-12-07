@@ -15,20 +15,22 @@
 
 #include "qgsmultiedittoolbutton.h"
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
+
 #include <QMenu>
 QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   : QToolButton( parent )
-  , mIsMixedValues( false )
-  , mIsChanged( false )
-  , mState( Default )
-  , mMenu( nullptr )
 {
   setFocusPolicy( Qt::StrongFocus );
 
   // set default tool button icon properties
-  setFixedSize( 22, 22 );
   setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
-  setIconSize( QSize( 16, 16 ) );
+
+  int iconSize = QgsGuiUtils::scaleIconSize( 24 );
+  setIconSize( QSize( iconSize, iconSize ) );
+  // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
+  setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+
   setPopupMode( QToolButton::InstantPopup );
 
   mMenu = new QMenu( this );
@@ -47,13 +49,13 @@ void QgsMultiEditToolButton::aboutToShowMenu()
   {
     case Default:
     {
-      QAction *noAction = mMenu->addAction( tr( "No changes to commit" ) );
+      QAction *noAction = mMenu->addAction( tr( "No Changes to Commit" ) );
       noAction->setEnabled( false );
       break;
     }
     case MixedValues:
     {
-      QString title = !mField.name().isEmpty() ? tr( "Set %1 for all selected features" ).arg( mField.name() )
+      QString title = !mField.name().isEmpty() ? tr( "Set %1 for All Selected Features" ).arg( mField.name() )
                       : tr( "Set field for all selected features" );
       QAction *setFieldAction = mMenu->addAction( title );
       connect( setFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::setFieldTriggered );
@@ -61,7 +63,7 @@ void QgsMultiEditToolButton::aboutToShowMenu()
     }
     case Changed:
     {
-      QAction *resetFieldAction = mMenu->addAction( tr( "Reset to original values" ) );
+      QAction *resetFieldAction = mMenu->addAction( tr( "Reset to Original Values" ) );
       connect( resetFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::resetFieldTriggered );
       break;
     }

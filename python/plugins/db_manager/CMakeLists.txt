@@ -1,10 +1,10 @@
-ADD_SUBDIRECTORY(db_plugins)
-ADD_SUBDIRECTORY(icons)
+add_subdirectory(db_plugins)
+add_subdirectory(icons)
 
-FILE(GLOB OTHER_FILES LICENSE README TODO)
-FILE(GLOB PY_FILES *.py)
+file(GLOB OTHER_FILES LICENSE README TODO)
+file(GLOB PY_FILES *.py)
 
-FILE(GLOB UI_FILES ui/*.ui)
+file(GLOB UI_FILES ui/*.ui)
 PYQT_WRAP_UI(PYUI_FILES ${UI_FILES})
 PYQT_ADD_RESOURCES(PYRC_FILES resources.qrc)
 

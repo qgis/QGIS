@@ -21,47 +21,31 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from processing.core.parameters import getParameterFromString
+import os
+from processing.algs.grass7.Grass7Utils import Grass7Utils
+from processing.tools.system import getTempFilename
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('inline_points') and alg.getParameterValue(u'points'):
-        return alg.tr("You need to set either an input control point file or inline control points!")
+    if (alg.parameterAsString(parameters, 'inline_points', context)
+            and alg.parameterAsString(parameters, 'points', context)):
+        return False, alg.tr("You need to set either an input control point file or inline control points!")
 
-    return None
+    return True, None
 
 
-def processCommand(alg, parameters):
-    # handle inline add data
-    input_txt = alg.getParameterFromName('inline_points')
-    inputParameter = alg.getParameterFromName('points')
-    if input_txt.value:
+def processCommand(alg, parameters, context, feedback):
+    # handle inline points
+    inlinePoints = alg.parameterAsString(parameters, 'inline_points', context)
+    if inlinePoints:
         # Creates a temporary txt file
-        ruleFile = alg.getTempFilename()
+        pointsName = getTempFilename()
 
         # Inject rules into temporary txt file
-        with open(ruleFile, "w") as tempRules:
-            tempRules.write(input_txt.value)
-        inputParameter.value = ruleFile
-        alg.parameters.remove(input_txt)
+        with open(pointsName, "w") as tempPoints:
+            tempPoints.write(inlinePoints)
+        alg.removeParameter('inline_points')
+        parameters['points'] = tempPoints
 
-    # exclude output for from_output
-    output = alg.getOutputFromName('rmsfile')
-    alg.removeOutputFromName('rmsfile')
-
-    # Create a false input parameter for rmsfile
-    param = getParameterFromString(u"ParameterString|rmsfile|the file|None|False|False")
-    param.value = output.value
-    alg.addParameter(param)
-
-    alg.processCommand()
-    alg.parameters.remove(param)
-    alg.addOutput(output)
-    if input_txt.value:
-        inputParameter.value = None
-        alg.addParameter(input_txt)
+    alg.processCommand(parameters, context, feedback, True)

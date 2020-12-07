@@ -16,17 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2014'
 __copyright__ = '(C) 2014, Victor Olaya'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 
 import os
 import subprocess

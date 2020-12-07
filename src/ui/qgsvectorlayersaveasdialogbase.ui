@@ -17,33 +17,23 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Save vector layer as...</string>
+   <string>Save Vector Layer as…</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="3" column="0">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="mCrsLabel">
         <property name="text">
          <string>CRS</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLineEdit" name="leFilename">
+       <widget class="QgsFileWidget" name="mFilename">
         <property name="enabled">
          <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="browseFilename">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Browse</string>
         </property>
        </widget>
       </item>
@@ -57,7 +47,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2" colspan="2">
+      <item row="0" column="2">
        <widget class="QComboBox" name="mFormatComboBox"/>
       </item>
       <item row="1" column="0">
@@ -66,11 +56,11 @@
          <string>File name</string>
         </property>
         <property name="buddy">
-         <cstring>leFilename</cstring>
+         <cstring>mFilename</cstring>
         </property>
        </widget>
       </item>
-      <item row="3" column="2" colspan="2">
+      <item row="3" column="2">
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
@@ -83,11 +73,11 @@
          <string>Layer name</string>
         </property>
         <property name="buddy">
-         <cstring>leFilename</cstring>
+         <cstring>leLayername</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" colspan="2">
+      <item row="2" column="2">
        <widget class="QLineEdit" name="leLayername">
         <property name="enabled">
          <bool>false</bool>
@@ -133,16 +123,6 @@
         <widget class="QCheckBox" name="mSelectedOnly">
          <property name="text">
           <string>Save only selected features</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="mAddToCanvas">
-         <property name="text">
-          <string>Add saved file to map</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -427,14 +407,51 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout1">
+     <item>
+      <widget class="QDialogButtonBox" name="mHelpButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Help</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mAddToCanvas">
+       <property name="text">
+        <string>Add saved file to map</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="mButtonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -458,6 +475,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsExtentGroupBox</class>
    <extends>QgsCollapsibleGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
@@ -471,59 +494,24 @@
  </customwidgets>
  <tabstops>
   <tabstop>mFormatComboBox</tabstop>
-  <tabstop>leFilename</tabstop>
-  <tabstop>browseFilename</tabstop>
   <tabstop>leLayername</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>
   <tabstop>mSelectedOnly</tabstop>
+  <tabstop>mAttributeTable</tabstop>
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
+  <tabstop>mReplaceRawFieldValues</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleWidget</tabstop>
   <tabstop>mGeometryTypeComboBox</tabstop>
   <tabstop>mForceMultiCheckBox</tabstop>
   <tabstop>mIncludeZCheckBox</tabstop>
-  <tabstop>mAddToCanvas</tabstop>
-  <tabstop>mAttributeTable</tabstop>
-  <tabstop>mReplaceRawFieldValues</tabstop>
   <tabstop>mOgrDatasourceOptions</tabstop>
   <tabstop>mOgrLayerOptions</tabstop>
+  <tabstop>mAddToCanvas</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsVectorLayerSaveAsDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>266</x>
-     <y>268</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsVectorLayerSaveAsDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>334</x>
-     <y>268</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

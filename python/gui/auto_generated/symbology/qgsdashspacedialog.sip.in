@@ -1,0 +1,83 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsdashspacedialog.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDashSpaceWidget: QgsPanelWidget
+{
+%Docstring
+A widget to enter a custom dash space pattern for lines
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsdashspacedialog.h"
+%End
+  public:
+
+    QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDashSpaceWidget
+%End
+
+    QVector<qreal> dashDotVector() const;
+%Docstring
+Returns the dash pattern as a list of numbers
+%End
+
+    void setUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the unit type used for the dash space pattern (used to update interface labels)
+
+:param unit: the unit type
+%End
+
+};
+
+class QgsDashSpaceDialog : QDialog
+{
+%Docstring
+A dialog to enter a custom dash space pattern for lines
+%End
+
+%TypeHeaderCode
+#include "qgsdashspacedialog.h"
+%End
+  public:
+
+    QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsDashSpaceDialog
+%End
+
+    QVector<qreal> dashDotVector() const;
+%Docstring
+Returns the dash pattern as a list of numbers
+%End
+
+    void setUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the unit type used for the dash space pattern (used to update interface labels)
+
+:param unit: the unit type
+
+.. versionadded:: 3.8
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsdashspacedialog.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

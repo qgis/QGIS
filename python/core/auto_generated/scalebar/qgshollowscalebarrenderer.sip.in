@@ -1,0 +1,55 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgshollowscalebarrenderer.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsHollowScaleBarRenderer: QgsScaleBarRenderer
+{
+%Docstring
+Scalebar style that draws a single box with alternating color for the segments, with horizontal lines through
+alternating segments. AKA "South African" style.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgshollowscalebarrenderer.h"
+%End
+  public:
+
+    QgsHollowScaleBarRenderer();
+%Docstring
+Constructor for QgsHollowScaleBarRenderer.
+%End
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual Flags flags() const;
+
+    virtual int sortKey() const;
+
+    virtual QgsHollowScaleBarRenderer *clone() const /Factory/;
+
+
+     virtual void draw( QgsRenderContext &context,
+               const QgsScaleBarSettings &settings,
+               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+    virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgshollowscalebarrenderer.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

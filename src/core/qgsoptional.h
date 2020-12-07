@@ -40,10 +40,7 @@ class CORE_EXPORT QgsOptional
     /**
      * A QgsOptional is disabled by default if default constructed.
      */
-    QgsOptional()
-      : mEnabled( false )
-    {
-    }
+    QgsOptional() = default;
 
     /**
      * A QgsOptional is enabled by default if constructed with payload.
@@ -77,7 +74,7 @@ class CORE_EXPORT QgsOptional
     }
 
     /**
-     * Boolean operator. Will return true if this optional is enabled.
+     * Boolean operator. Will return TRUE if this optional is enabled.
      */
     operator bool() const
     {
@@ -135,7 +132,7 @@ class CORE_EXPORT QgsOptional
     }
 
   private:
-    bool mEnabled;
+    bool mEnabled = false;
     T mData;
 };
 

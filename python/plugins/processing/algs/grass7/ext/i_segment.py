@@ -16,19 +16,15 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from .i import regroupRasters
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context, feedback):
     # Regroup rasters
-    regroupRasters(alg, parameters, 'input', 'group')
+    regroupRasters(alg, parameters, context, 'input', 'group')
+    alg.processCommand(parameters, context, feedback)

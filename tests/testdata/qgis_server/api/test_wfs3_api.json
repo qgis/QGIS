@@ -1,0 +1,3 @@
+Content-Type: application/json
+
+[{"code":"Improperly configured error","description":"Project not found, please check your server configuration."}]

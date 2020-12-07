@@ -1,0 +1,104 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgspolygon.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPolygon: QgsCurvePolygon
+{
+%Docstring
+Polygon geometry type.
+
+.. versionadded:: 2.10
+%End
+
+%TypeHeaderCode
+#include "qgspolygon.h"
+%End
+  public:
+
+
+    QgsPolygon() /HoldGIL/;
+%Docstring
+Constructor for an empty polygon geometry.
+%End
+
+    QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() ) /HoldGIL/;
+%Docstring
+Constructor for QgsPolygon, with the specified ``exterior`` ring and interior ``rings``.
+
+Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QString geometryType() const /HoldGIL/;
+
+    virtual QgsPolygon *clone() const /Factory/;
+
+    virtual void clear();
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
+
+
+    virtual QgsCurvePolygon *toCurveType() const /Factory/;
+
+%Docstring
+Returns the geometry converted to the more generic curve type :py:class:`QgsCurvePolygon`
+
+:return: the converted geometry. Caller takes ownership
+%End
+
+    virtual void addInteriorRing( QgsCurve *ring /Transfer/ );
+
+    virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
+
+
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+
+    double pointDistanceToBoundary( double x, double y ) const;
+%Docstring
+Returns the distance from a point to the boundary of the polygon (either the
+exterior ring or any closer interior rings). The returned distance will be
+negative if the point lies outside the polygon.
+
+.. versionadded:: 3.0
+%End
+
+
+    virtual QgsPolygon *createEmptyWithSameType() const /Factory/;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsPolygon: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  protected:
+
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgspolygon.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

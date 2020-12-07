@@ -19,9 +19,11 @@
 #define QGSBEARINGUTILS_H
 
 class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
 class QgsPointXY;
 
 #include "qgis_core.h"
+#include <QObject>
 
 /**
  * \class QgsBearingUtils
@@ -31,6 +33,8 @@ class QgsPointXY;
 */
 class CORE_EXPORT QgsBearingUtils
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -38,8 +42,9 @@ class CORE_EXPORT QgsBearingUtils
      * coordinate reference system. The returned value is in degrees clockwise from
      * vertical. An exception will be thrown if the bearing could not be calculated.
      */
-    static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
-                                    const QgsPointXY &point );
+    Q_INVOKABLE static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
+        const QgsCoordinateTransformContext  &transformContext,
+        const QgsPointXY &point );
 
 };
 

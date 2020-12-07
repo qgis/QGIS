@@ -19,44 +19,64 @@
 #define QGSMAPRENDERERJOBPROXY_H
 
 #include "qgsmapsettings.h"
-#include "qgsaccesscontrol.h"
+#include "qgsmaprendererjob.h"
+
+class QgsFeatureFilterProvider;
 
 namespace QgsWms
 {
 
-  /** \ingroup server
-    * thiss class provides a proxy for sequential or parallel map render job by
-    * reading qsettings.
-    * \since QGIS 3.0
-    */
+  /**
+   * \ingroup server
+   * \class QgsWms::QgsMapRendererJobProxy
+   * \brief Proxy for sequential or parallel map render job
+   * \since QGIS 3.0
+   */
   class QgsMapRendererJobProxy
   {
     public:
 
-      /** Constructor.
-        * \param accessControl Does not take ownership of QgsAccessControl
-        */
+      /**
+       * Constructor for QgsMapRendererJobProxy. Does not take ownership of
+       * \a featureFilterProvider.
+       * \param parallelRendering TRUE to activate parallel rendering, FALSE otherwise
+       * \param maxThreads The number of threads to use in case of parallel rendering
+       * \param featureFilterProvider Features filtering
+       */
       QgsMapRendererJobProxy(
         bool parallelRendering
         , int maxThreads
-        , QgsAccessControl *accessControl
+        , QgsFeatureFilterProvider *featureFilterProvider
       );
 
-      /** Sequential or parallel map rendering according to qsettings.
-        * \param mapSettings passed to MapRendererJob
-        * \param the rendered image
-        */
+      /**
+       * Sequential or parallel map rendering.
+       * \param mapSettings Passed to MapRendererJob
+       * \param image The resulting image
+       */
       void render( const QgsMapSettings &mapSettings, QImage *image );
 
-      /** Take ownership of the painter used for rendering.
-        * \returns painter
-        */
+      /**
+       * Takes ownership of the painter used for rendering.
+       * \returns painter
+       */
       QPainter *takePainter();
+
+      /**
+       * \brief Returns map rendering errors
+       * \returns error list
+       */
+      QgsMapRendererJob::Errors errors() const { return mErrors; }
 
     private:
       bool mParallelRendering;
-      QgsAccessControl *mAccessControl = nullptr;
+      QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
       std::unique_ptr<QPainter> mPainter;
+
+      void getRenderErrors( const QgsMapRendererJob *job );
+
+      //! Layer id / error message
+      QgsMapRendererJob::Errors mErrors;
   };
 
 

@@ -26,7 +26,8 @@ class QgsMapLayer;
 class QgsMapCanvas;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsMapLayerStyleManagerWidget class which is used to visually manage
  * the layer styles.
  */
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
      * \param canvas The canvas object.
      * \param parent The parent.
      */
-    QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
   public slots:
     void apply() override {}
@@ -54,6 +55,7 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
     void styleRenamed( const QString &oldname, const QString &newname );
     void addStyle();
     void removeStyle();
+    void renameStyle( QStandardItem *item );
     void saveAsDefault();
     void loadDefault();
     void saveStyle();

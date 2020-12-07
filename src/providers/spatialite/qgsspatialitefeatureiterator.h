@@ -27,12 +27,14 @@ extern "C"
 class QgsSqliteHandle;
 class QgsSpatiaLiteProvider;
 
-class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
+class QgsSpatiaLiteFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+
+    sqlite3 *transactionHandle();
 
   private:
     QString mGeometryColumn;
@@ -49,23 +51,24 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     bool mSpatialIndexMbrCache;
     QString mSqlitePath;
     QgsCoordinateReferenceSystem mCrs;
+    sqlite3 *mTransactionHandle = nullptr;
 
     friend class QgsSpatiaLiteFeatureIterator;
     friend class QgsSpatiaLiteExpressionCompiler;
 };
 
-class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
+class QgsSpatiaLiteFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
 {
   public:
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsSpatiaLiteFeatureIterator();
-    virtual bool rewind() override;
-    virtual bool close() override;
+    ~QgsSpatiaLiteFeatureIterator() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
@@ -81,8 +84,10 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QVariant getFeatureAttribute( sqlite3_stmt *stmt, int ic, QVariant::Type type, QVariant::Type subType );
     void getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature );
 
-    //! wrapper of the SQLite database connection
+    //! QGIS wrapper of the SQLite database connection
     QgsSqliteHandle *mHandle = nullptr;
+    //! The low level connection
+    sqlite3 *mSqliteHandle = nullptr;
 
     /**
       * SQLite statement handle
@@ -90,18 +95,18 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     sqlite3_stmt *sqliteStatement = nullptr;
 
     //! Geometry column index used when fetching geometry
-    int mGeomColIdx;
+    int mGeomColIdx = 1;
 
-    //! Set to true, if geometry is in the requested columns
-    bool mFetchGeometry;
+    //! Sets to true, if geometry is in the requested columns
+    bool mFetchGeometry = true;
 
     bool mHasPrimaryKey;
     QgsFeatureId mRowNumber;
 
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
-    bool mOrderByCompiled;
-    bool mExpressionCompiled;
+    bool mOrderByCompiled = false;
+    bool mExpressionCompiled = false;
 
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;

@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '22/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -29,8 +27,8 @@ import osgeo.gdal  # NOQA
 
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerPlugins(QgsServerTestBase):
@@ -163,7 +161,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        header, body = [_v for _v in self._execute_request('?service=simple')]
+        header, body = self._execute_request('?service=simple')
         response = header + body
         expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
@@ -171,11 +169,104 @@ class TestQgsServerPlugins(QgsServerTestBase):
         # Now, re-run with body setter
         filter5 = Filter5(serverIface)
         serverIface.registerFilter(filter5, 500)
-        header, body = [_v for _v in self._execute_request('?service=simple')]
+        header, body = self._execute_request('?service=simple')
         response = header + body
         expected = b'Content-Length: 19\nContent-type: text/plain\n\nnew body, new life!'
         self.assertEqual(response, expected)
         self.assertEqual(headers2, {'Content-type': 'text/plain'})
+
+    def test_configpath(self):
+        """ Test plugin can read confif path
+        """
+        try:
+            from qgis.server import QgsServerFilter
+            from qgis.core import QgsProject
+        except ImportError:
+            print("QGIS Server plugins are not compiled. Skipping test")
+            return
+
+        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
+        self.projectPath = os.path.join(d, "project.qgs")
+        self.server = QgsServer()
+
+        # global to be modified inside plugin filters
+        globals()['configFilePath2'] = None
+
+        class Filter0(QgsServerFilter):
+            """Body setter, clear body, keep headers"""
+
+            def requestReady(self):
+                global configFilePath2
+                configFilePath2 = self.serverInterface().configFilePath()
+
+        serverIface = self.server.serverInterface()
+        serverIface.registerFilter(Filter0(serverIface), 100)
+
+        # Test using MAP
+        self._execute_request('?service=simple&MAP=%s' % self.projectPath)
+
+        # Check config file path
+        self.assertEqual(configFilePath2, self.projectPath)
+
+        # Reset result
+        globals()['configFilePath2'] = None
+
+        # Test with prqject as argument
+        project = QgsProject()
+        project.read(self.projectPath)
+
+        self._execute_request_project('?service=simple', project=project)
+
+        # Check config file path
+        self.assertEqual(configFilePath2, project.fileName())
+
+    def test_exceptions(self):
+        """Test that plugin filter Python exceptions can be caught"""
+
+        try:
+            from qgis.server import QgsServerFilter
+        except ImportError:
+            print("QGIS Server plugins are not compiled. Skipping test")
+            return
+
+        class FilterBroken(QgsServerFilter):
+
+            def responseComplete(self):
+                raise Exception("There was something very wrong!")
+
+        serverIface = self.server.serverInterface()
+        filter1 = FilterBroken(serverIface)
+        filters = {100: [filter1]}
+        serverIface.setFilters(filters)
+        header, body = self._execute_request('')
+        self.assertEqual(body, b'Internal Server Error')
+        serverIface.setFilters({})
+
+    def test_get_path(self):
+        """Test get url and path from plugins"""
+
+        try:
+            from qgis.server import QgsServerFilter
+        except ImportError:
+            print("QGIS Server plugins are not compiled. Skipping test")
+            return
+
+        class Filter1(QgsServerFilter):
+
+            def responseComplete(self):
+                handler = self.serverInterface().requestHandler()
+                self.url = handler.url()
+                self.path = handler.path()
+
+        serverIface = self.server.serverInterface()
+        filter1 = Filter1(serverIface)
+        filters = {100: [filter1]}
+        serverIface.setFilters(filters)
+        header, body = self._execute_request('http://myserver/mypath/?myparam=1')
+        self.assertEqual(filter1.url, 'http://myserver/mypath/?myparam=1')
+        self.assertEqual(filter1.path, '/mypath/')
+
+        serverIface.setFilters({})
 
 
 if __name__ == '__main__':

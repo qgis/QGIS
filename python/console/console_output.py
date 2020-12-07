@@ -18,32 +18,40 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import range
-from builtins import object
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_RETURN_ARG, Q_ARG, QObject, pyqtSlot
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
-from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython
-from qgis.core import QgsApplication, QgsSettings
-from qgis.gui import QgsMessageBar
+from qgis.PyQt.Qsci import QsciScintilla
+from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 import sys
 
 
-class writeOut(object):
+class writeOut(QObject):
+    ERROR_COLOR = "#e31a1c"
 
     def __init__(self, shellOut, out=None, style=None):
         """
         This class allows writing to stdout and stderr
         """
+        super().__init__()
         self.sO = shellOut
         self.out = None
         self.style = style
+        self.fire_keyboard_interrupt = False
 
+    @pyqtSlot(str)
     def write(self, m):
+
+        # This manage the case when console is called from another thread
+        if QThread.currentThread() != QCoreApplication.instance().thread():
+            QMetaObject.invokeMethod(self, "write", Qt.QueuedConnection, Q_ARG(str, m))
+            return
+
         if self.style == "_traceback":
             # Show errors in red
-            stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(Qt.red)))
+            stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 0o01, stderrColor)
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 0o01, True)
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 0o01, True)
@@ -60,7 +68,11 @@ class writeOut(object):
         self.move_cursor_to_end()
 
         if self.style != "_traceback":
-            QCoreApplication.processEvents()
+            self.sO.repaint()
+
+        if self.fire_keyboard_interrupt:
+            self.fire_keyboard_interrupt = False
+            raise KeyboardInterrupt
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -77,11 +89,14 @@ class writeOut(object):
     def flush(self):
         pass
 
+    def isatty(self):
+        return False
 
-class ShellOutputScintilla(QsciScintilla):
+
+class ShellOutputScintilla(QgsCodeEditorPython):
 
     def __init__(self, parent=None):
-        super(ShellOutputScintilla, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
         self.shell = self.parent.shell
 
@@ -98,32 +113,11 @@ class ShellOutputScintilla(QsciScintilla):
         self.infoBar.setSizePolicy(sizePolicy)
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
-        # Enable non-ascii chars for editor
-        self.setUtf8(True)
-
         sys.stdout = writeOut(self, sys.stdout)
         sys.stderr = writeOut(self, sys.stderr, "_traceback")
 
         self.insertInitText()
         self.refreshSettingsOutput()
-        self.setReadOnly(True)
-
-        # Set the default font
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.setFont(font)
-        self.setMarginsFont(font)
-        # Margin 0 is used for line numbers
-        self.setMarginWidth(0, 0)
-        self.setMarginWidth(1, 0)
-        self.setMarginWidth(2, 0)
-        #fm = QFontMetrics(font)
-        self.setMarginsFont(font)
-        self.setMarginWidth(1, "00000")
-        self.setMarginLineNumbers(1, True)
-        self.setMarginsForegroundColor(QColor("#3E3EE3"))
-        self.setMarginsBackgroundColor(QColor("#f9f9f9"))
-        self.setCaretLineVisible(True)
-        self.setCaretWidth(0)
 
         self.setMinimumHeight(120)
 
@@ -135,14 +129,17 @@ class ShellOutputScintilla(QsciScintilla):
         self.runScut.activated.connect(self.enteredSelected)
         # Reimplemented copy action to prevent paste prompt (>>>,...) in command view
         self.copyShortcut = QShortcut(QKeySequence.Copy, self)
+        self.copyShortcut.setContext(Qt.WidgetWithChildrenShortcut)
         self.copyShortcut.activated.connect(self.copy)
         self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
+        self.selectAllShortcut.setContext(Qt.WidgetWithChildrenShortcut)
         self.selectAllShortcut.activated.connect(self.selectAll)
 
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
-                                             "Python Console \n"
-                                             "Use iface to access QGIS API interface or Type help(iface) for more info")
+                                             "Python Console\n"
+                                             "Use iface to access QGIS API interface or Type help(iface) for more info\n"
+                                             "Security warning: typing commands from an untrusted source can harm your computer")
 
         # some translation string for the console header ends without '\n'
         # and the first command in console will be appended at the header text.
@@ -152,49 +149,17 @@ class ShellOutputScintilla(QsciScintilla):
         else:
             self.setText(txtInit + '\n')
 
+    def initializeLexer(self):
+        super().initializeLexer()
+        self.setFoldingVisible(False)
+        self.setEdgeMode(QsciScintilla.EdgeNone)
+
     def refreshSettingsOutput(self):
         # Set Python lexer
-        self.setLexers()
-        caretLineColor = self.settings.value("pythonConsole/caretLineColor", QColor("#fcf3ed"))
-        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
-        self.setCaretLineBackgroundColor(caretLineColor)
-        self.setCaretForegroundColor(cursorColor)
+        self.initializeLexer()
+        self.setReadOnly(True)
 
-    def setLexers(self):
-        self.lexer = QsciLexerPython()
-
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-
-        loadFont = self.settings.value("pythonConsole/fontfamilytext")
-        if loadFont:
-            font.setFamily(loadFont)
-        fontSize = self.settings.value("pythonConsole/fontsize", type=int)
-        if fontSize:
-            font.setPointSize(fontSize)
-
-        self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue))), 7)
-        self.lexer.setColor(QColor(Qt.red), 14)
-        self.lexer.setFont(font, 1)
-        self.lexer.setFont(font, 2)
-        self.lexer.setFont(font, 3)
-        self.lexer.setFont(font, 4)
-
-        for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white)))
-            self.lexer.setPaper(paperColor, style)
-
-        self.setLexer(self.lexer)
+        self.setCaretWidth(0)  # NO (blinking) caret in the output
 
     def clearConsole(self):
         self.setText('')
@@ -203,44 +168,47 @@ class ShellOutputScintilla(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
-        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
-        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
-        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
-        menu.addAction(iconHideTool,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconHideToolConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
                        self.hideToolBar)
         menu.addSeparator()
         showEditorAction = menu.addAction(
+            QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg"),
             QCoreApplication.translate("PythonConsole", "Show Editor"),
             self.showEditor)
         menu.addSeparator()
-        runAction = menu.addAction(iconRun,
+        runAction = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),
                                    QCoreApplication.translate("PythonConsole", "Enter Selected"),
                                    self.enteredSelected,
                                    QKeySequence(Qt.CTRL + Qt.Key_E))
-        clearAction = menu.addAction(iconClear,
+        clearAction = menu.addAction(QgsApplication.getThemeIcon("console/iconClearConsole.svg"),
                                      QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
+        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchSelectedTextInPyQGISDocs)
         menu.addSeparator()
         copyAction = menu.addAction(
+            QgsApplication.getThemeIcon("mActionEditCopy.svg"),
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
         selectAllAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
-        menu.addAction(iconSettings,
-                       QCoreApplication.translate("PythonConsole", "Options..."),
+        menu.addAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
+                       QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.openSettings)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         showEditorAction.setEnabled(True)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
@@ -288,4 +256,4 @@ class ShellOutputScintilla(QsciScintilla):
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)
+        self.infoBar.pushMessage(text, Qgis.Info, timeout)

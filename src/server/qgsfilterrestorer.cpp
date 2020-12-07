@@ -18,7 +18,6 @@
 #include "qgsfilterrestorer.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"

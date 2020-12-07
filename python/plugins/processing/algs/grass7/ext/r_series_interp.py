@@ -21,45 +21,36 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from os import path
+import os
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    datapos = alg.getParameterValue(u'datapos')
-    infile = alg.getParameterValue(u'infile')
-    output = alg.getParameterValue(u'output')
-    outfile = alg.getParameterValue(u'outfile')
+    datapos = alg.parameterAsDouble(parameters, 'datapos', context)
+    infile = alg.parameterAsString(parameters, 'infile', context)
+    output = alg.parameterAsString(parameters, 'output', context)
+    outfile = alg.parameterAsString(parameters, 'outfile', context)
 
     if datapos and infile:
-        return alg.tr("You need to set either inline data positions or an input data positions file!")
+        return False, alg.tr("You need to set either inline data positions or an input data positions file!")
     if output and outfile:
-        return alg.tr("You need to set either sampling data positions or an output sampling data positions file!")
+        return False, alg.tr("You need to set either sampling data positions or an output sampling data positions file!")
     if not (datapos or infile or output or outfile):
-        return alg.tr("You need to set input and output data positions parameters!")
-    return None
+        return False, alg.tr("You need to set input and output data positions parameters!")
+    return True, None
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context, feedback):
     # We temporary remove the output directory
-    outdir = alg.getOutputFromName('output_dir')
-    alg.removeOutputFromName('output_dir')
-
-    alg.processCommand()
-
-    # We re-add the new output
-    alg.addOutput(outdir)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context, feedback):
     # We take all the outputs and we export them to the output directory
-    outdir = alg.getOutputFromName('output_dir')
-    output = alg.getParameterValue('output')
-    outfile = alg.getParameterValue('outfile')
+    outputDir = alg.parameterAsString(parameters, 'output_dir', context)
+    output = alg.parameterAsString(parameters, 'output', context)
+    outfile = alg.parameterAsString(parameters, 'outfile', context)
     outs = []
     if output:
         outs = output.split(',')
@@ -70,8 +61,12 @@ def processOutputs(alg):
                 if '|' in line:
                     outs.append(line.split('|')[0])
 
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+
     for out in outs:
-        command = u"r.out.gdal --overwrite -t -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\"".format(
-            out, path.join(outdir.value, '{}.tif'.format(out)))
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+        # We need to export the raster with all its bands and its color table
+        fileName = os.path.join(outputDir, out)
+        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        alg.exportRasterLayer(out, fileName, True,
+                              outFormat, createOpt, metaOpt)

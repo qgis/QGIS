@@ -1,0 +1,41 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproxystyle.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProxyStyle : QProxyStyle
+{
+%Docstring
+A QProxyStyle subclass which correctly sets the base style to match
+the QGIS application style, and handles object lifetime by correctly
+parenting to a parent widget.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsproxystyle.h"
+%End
+  public:
+
+    explicit QgsProxyStyle( QWidget *parent /Transfer/ );
+%Docstring
+Constructor for QgsProxyStyle. Ownership is transferred to the ``parent`` widget.
+
+The base style for the QProxyStyle will be set to match the current QGIS application style.
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsproxystyle.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

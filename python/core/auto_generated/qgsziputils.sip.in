@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsziputils.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+%ModuleHeaderCode
+#include "qgsziputils.h"
+%End
+
+namespace QgsZipUtils
+{
+
+  bool isZipFile( const QString &filename );
+%Docstring
+Returns ``True`` if the file name is a zipped file ( i.e with a '.qgz'
+extension, ``False`` otherwise.
+
+:param filename: The name of the file
+
+:return: ``True`` if the file is zipped, ``False`` otherwise
+%End
+
+  bool unzip( const QString &zip, const QString &dir, QStringList &files /Out/ );
+%Docstring
+Unzip a zip file in an output directory.
+
+:param zip: The zip filename
+:param dir: The output directory
+
+:return: - ``False`` if the zip filename does not exist, the output directory
+         - files: The absolute path of unzipped files
+         does not exist or is not writable.
+
+.. versionadded:: 3.0
+%End
+
+  bool zip( const QString &zip, const QStringList &files );
+%Docstring
+Zip the list of files in the zip file. If the zip file already exists or is
+empty, an error is returned. If an input file does not exist, an error is
+also returned.
+
+:param zip: The zip filename
+:param files: The absolute path to files to embed within the zip
+
+.. versionadded:: 3.0
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsziputils.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

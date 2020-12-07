@@ -15,13 +15,14 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
+
+From build dir, run: ctest -R PyQgsSingleSymbolRenderer -V
+
 """
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -35,7 +36,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsMultiRenderChecker,
                        QgsSingleSymbolRenderer,
                        QgsFillSymbol,
-                       QgsFeatureRequest
+                       QgsFeatureRequest,
+                       QgsRenderContext
                        )
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
@@ -53,7 +55,7 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
 
         self.renderer = QgsSingleSymbolRenderer(sym1)
         layer.setRenderer(self.renderer)
@@ -78,6 +80,11 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         # disable order by and retest
         self.renderer.setOrderByEnabled(False)
         self.assertTrue(renderchecker.runTest('single'))
+
+    def testUsedAttributes(self):
+        ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
+
+        self.assertCountEqual(self.renderer.usedAttributes(ctx), {})
 
 
 if __name__ == '__main__':

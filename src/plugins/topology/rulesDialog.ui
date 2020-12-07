@@ -59,20 +59,6 @@
    <item row="2" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QLabel" name="mToleranceLabel">
-         <property name="text">
-          <string>Tolerance</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="mToleranceBox"/>
-       </item>
-      </layout>
-     </item>
-     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -86,15 +72,11 @@
       </spacer>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QPushButton" name="mAddTestButton">
-         <property name="text">
-          <string>Add Rule</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QPushButton" name="mAddTestButton">
+       <property name="text">
+        <string>Add Rule</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="mDeleteTestButton">
@@ -120,11 +102,6 @@
      <column>
       <property name="text">
        <string>Layer #2</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Tolerance</string>
       </property>
      </column>
      <column>
@@ -155,7 +132,6 @@
   <tabstop>mLayer1Box</tabstop>
   <tabstop>mRuleBox</tabstop>
   <tabstop>mLayer2Box</tabstop>
-  <tabstop>mToleranceBox</tabstop>
   <tabstop>mAddTestButton</tabstop>
   <tabstop>mDeleteTestButton</tabstop>
   <tabstop>mRulesTable</tabstop>

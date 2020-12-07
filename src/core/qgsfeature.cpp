@@ -18,6 +18,8 @@ email                : sherman at mrcc.com
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsfield_p.h" // for approximateMemoryUsage()
+#include "qgsfields_p.h" // for approximateMemoryUsage()
 
 #include "qgsmessagelog.h"
 
@@ -141,6 +143,13 @@ void QgsFeature::setGeometry( const QgsGeometry &geometry )
   d->valid = true;
 }
 
+void QgsFeature::setGeometry( std::unique_ptr<QgsAbstractGeometry> geometry )
+{
+  d.detach();
+  d->geometry = QgsGeometry( std::move( geometry ) );
+  d->valid = true;
+}
+
 void QgsFeature::clearGeometry()
 {
   setGeometry( QgsGeometry() );
@@ -195,17 +204,17 @@ bool QgsFeature::hasGeometry() const
 void QgsFeature::initAttributes( int fieldCount )
 {
   d.detach();
+  d->attributes.resize( 0 ); // clears existing elements, while still preserving the currently allocated capacity of the list (unlike clear)
+  // ensures ALL attributes, including previously existing ones are default constructed.
+  // doing it this way also avoids clearing individual QVariants -- which can trigger a detachment. Cheaper just to make a new one.
   d->attributes.resize( fieldCount );
-  QVariant *ptr = d->attributes.data();
-  for ( int i = 0; i < fieldCount; ++i, ++ptr )
-    ptr->clear();
 }
 
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), Qgis::Warning );
     return false;
   }
 
@@ -272,6 +281,58 @@ int QgsFeature::fieldNameIndex( const QString &fieldName ) const
   return d->fields.lookupField( fieldName );
 }
 
+static size_t qgsQStringApproximateMemoryUsage( const QString &str )
+{
+  return sizeof( QString ) + str.size() * sizeof( QChar );
+}
+
+static size_t qgsQVariantApproximateMemoryUsage( const QVariant &v )
+{
+  // A QVariant has a private structure that is a union of things whose larger
+  // size if a long long, and a int
+  size_t s = sizeof( QVariant ) + sizeof( long long ) + sizeof( int );
+  if ( v.type() == QVariant::String )
+  {
+    s += qgsQStringApproximateMemoryUsage( v.toString() );
+  }
+  else if ( v.type() == QVariant::StringList )
+  {
+    for ( const QString &str : v.toStringList() )
+      s += qgsQStringApproximateMemoryUsage( str );
+  }
+  else if ( v.type() == QVariant::List )
+  {
+    for ( const QVariant &subV : v.toList() )
+      s += qgsQVariantApproximateMemoryUsage( subV );
+  }
+  return s;
+}
+
+int QgsFeature::approximateMemoryUsage() const
+{
+  size_t s = sizeof( *this ) + sizeof( *d );
+
+  // Attributes
+  for ( const QVariant &attr : qgis::as_const( d->attributes ) )
+  {
+    s += qgsQVariantApproximateMemoryUsage( attr );
+  }
+
+  // Geometry
+  s += sizeof( QAtomicInt ) + sizeof( void * ); // ~ sizeof(QgsGeometryPrivate)
+  // For simplicity we consider that the RAM usage is the one of the WKB
+  // representation
+  s += d->geometry.wkbSize();
+
+  // Fields
+  s += sizeof( QgsFieldsPrivate );
+  // TODO potentially: take into account the length of the name, comment, default value, etc...
+  s += d->fields.size() * ( sizeof( QgsField )  + sizeof( QgsFieldPrivate ) );
+
+  return static_cast<int>( s );
+}
+
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfeature.cpp.
@@ -312,12 +373,13 @@ QDataStream &operator>>( QDataStream &in, QgsFeature &feature )
 uint qHash( const QgsFeature &key, uint seed )
 {
   uint hash = seed;
-  Q_FOREACH ( const QVariant &attr, key.attributes() )
+  const auto constAttributes = key.attributes();
+  for ( const QVariant &attr : constAttributes )
   {
     hash ^= qHash( attr.toString() );
   }
 
-  hash ^= qHash( key.geometry().exportToWkt() );
+  hash ^= qHash( key.geometry().asWkt() );
   hash ^= qHash( key.id() );
 
   return hash;

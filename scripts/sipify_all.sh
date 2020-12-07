@@ -15,6 +15,16 @@
 ###########################################################################
 set -e
 
+# TEMPLATE_DOC=""
+# while :; do
+#     case $1 in
+#         -t|--template-doc) TEMPLATE_DOC="-template-doc"
+#         ;;
+#         *) break
+#     esac
+#     shift
+# done
+
 DIR=$(git rev-parse --show-toplevel)
 
 # GNU prefix command for mac os support (gsed, gsplit)
@@ -27,25 +37,34 @@ pushd ${DIR} > /dev/null
 
 count=0
 
-while read -r sipfile; do
-  if ! grep -Fxq "$sipfile" python/auto_sip.blacklist; then
-    echo "$sipfile"
-    header=$(sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
-    if [ ! -f $header ]; then
-      echo "*** Missing header: $header for sipfile $sipfile"
-    else
-      ./scripts/sipify.pl $header > python/$sipfile
-    fi
-    count=$((count+1))
-  fi
-done < <(
-${GP}sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server.sip
-  )
+modules=(3d core gui analysis server)
+for module in "${modules[@]}"; do
+
+  # clean auto_additions and auto_generated folders
+  rm -rf python/${module}/auto_additions/*.py
+  rm -rf python/${module}/auto_generated/*.py
+  # put back __init__.py
+  echo '"""
+This folder is completed using sipify.pl script
+It is not aimed to be manually edited
+"""' > python/${module}/auto_additions/__init__.py
+
+  while read -r sipfile; do
+      echo "$sipfile.in"
+      header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)
+      pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< $sipfile)
+      if [ ! -f $header ]; then
+        echo "*** Missing header: $header for sipfile $sipfile"
+      else
+        path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
+        mkdir -p python/$path
+        ./scripts/sipify.pl -s python/$sipfile.in -p python/${module}/auto_additions/${pyfile} $header &
+      fi
+      count=$((count+1))
+  done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
+done
+wait # wait for sipify processes to finish
 
 echo " => $count files sipified! 🍺"
-echo " only `cat python/auto_sip.blacklist | wc -l` to go 👏👏👏"
 
 popd > /dev/null

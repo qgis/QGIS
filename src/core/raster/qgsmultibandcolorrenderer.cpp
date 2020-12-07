@@ -1,10 +1,10 @@
 /***************************************************************************
-                         qgsmultibandcolorrenderer.cpp
-                         -----------------------------
-    begin                : December 2011
-    copyright            : (C) 2011 by Marco Hugentobler
-    email                : marco at sourcepole dot ch
- ***************************************************************************/
+                        qgsmultibandcolorrenderer.cpp
+                        -----------------------------
+   begin                : December 2011
+   copyright            : (C) 2011 by Marco Hugentobler
+   email                : marco at sourcepole dot ch
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -19,6 +19,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -132,7 +133,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
 
 QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo );
+  Q_UNUSED( bandNo )
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
@@ -142,7 +143,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   //In some (common) cases, we can simplify the drawing loop considerably and save render time
   bool fastDraw = ( !usesTransparency()
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
-                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement );
+                    && mAlphaBand < 1 );
 
   QSet<int> bands;
   if ( mRedBand > 0 )
@@ -157,7 +158,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   {
     bands << mBlueBand;
   }
-  if ( bands.size() < 1 )
+  if ( bands.empty() )
   {
     // no need to draw anything if no band is set
     // TODO:: we should probably return default color block
@@ -185,11 +186,11 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
-    bandBlocks[*bandIt] =  mInput->block( *bandIt, extent, width, height, feedback );
+    bandBlocks[*bandIt] = mInput->block( *bandIt, extent, width, height, feedback );
     if ( !bandBlocks[*bandIt] )
     {
-      // We should free the alloced mem from block().
-      QgsDebugMsg( "No input band" );
+      // We should free the allocated mem from block().
+      QgsDebugMsg( QStringLiteral( "No input band" ) );
       --bandIt;
       for ( ; bandIt != bands.constBegin(); --bandIt )
       {
@@ -225,9 +226,43 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  QRgb *outputBlockColorData = outputBlock->colorData();
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  // faster data access to data for the common case that input data are coming from RGB image with 8-bit bands
+  bool hasByteRgb = ( redBlock && greenBlock && blueBlock && redBlock->dataType() == Qgis::Byte && greenBlock->dataType() == Qgis::Byte && blueBlock->dataType() == Qgis::Byte );
+  const quint8 *redData = nullptr, *greenData = nullptr, *blueData = nullptr;
+  if ( hasByteRgb )
+  {
+    redData = redBlock->byteData();
+    greenData = greenBlock->byteData();
+    blueData = blueBlock->byteData();
+  }
+
+  const QRgb myDefaultColor = renderColorForNodataPixel();
+
+  if ( fastDraw )
+  {
+    // By default RGB raster layers have contrast enhancement assigned and normally that requires us to take the slow
+    // route that applies the enhancement. However if the algorithm type is "no enhancement" and all input bands are byte-sized,
+    // no transform would be applied to the input values and we can take the fast route.
+    bool hasEnhancement;
+    if ( hasByteRgb )
+    {
+      hasEnhancement =
+        ( mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
+        ( mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
+        ( mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement );
+    }
+    else
+    {
+      hasEnhancement = mRedContrastEnhancement || mGreenContrastEnhancement || mBlueContrastEnhancement;
+    }
+    if ( hasEnhancement )
+      fastDraw = false;
+  }
+
+  qgssize count = ( qgssize )width * height;
+  for ( qgssize i = 0; i < count; i++ )
   {
     if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
     {
@@ -239,10 +274,17 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
       }
       else
       {
-        int redVal = ( int )redBlock->value( i );
-        int greenVal = ( int )greenBlock->value( i );
-        int blueVal = ( int )blueBlock->value( i );
-        outputBlock->setColor( i, qRgba( redVal, greenVal, blueVal, 255 ) );
+        if ( hasByteRgb )
+        {
+          outputBlockColorData[i] = qRgb( redData[i], greenData[i], blueData[i] );
+        }
+        else
+        {
+          int redVal = static_cast<int>( redBlock->value( i ) );
+          int greenVal = static_cast<int>( greenBlock->value( i ) );
+          int blueVal = static_cast<int>( blueBlock->value( i ) );
+          outputBlockColorData[i] = qRgb( redVal, greenVal, blueVal );
+        }
       }
       continue;
     }
@@ -253,18 +295,15 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     double blueVal = 0;
     if ( mRedBand > 0 )
     {
-      redVal = redBlock->value( i );
-      if ( redBlock->isNoData( i ) ) isNoData = true;
+      redVal = redBlock->valueAndNoData( i, isNoData );
     }
     if ( !isNoData && mGreenBand > 0 )
     {
-      greenVal = greenBlock->value( i );
-      if ( greenBlock->isNoData( i ) ) isNoData = true;
+      greenVal = greenBlock->valueAndNoData( i, isNoData );
     }
     if ( !isNoData && mBlueBand > 0 )
     {
-      blueVal = blueBlock->value( i );
-      if ( blueBlock->isNoData( i ) ) isNoData = true;
+      blueVal = blueBlock->valueAndNoData( i, isNoData );
     }
     if ( isNoData )
     {
@@ -377,4 +416,122 @@ QList<int> QgsMultiBandColorRenderer::usesBands() const
     bandList << mBlueBand;
   }
   return bandList;
+}
+
+void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+{
+  // create base structure
+  QgsRasterRenderer::toSld( doc, element, props );
+
+
+#if 0
+  // TODO: the following jumped code is necessary to avoid to export channelSelection in
+  // case it's set as default value. The drawback is that it's necessary to calc band
+  // statistics that can be really slow depending on dataProvider and rastr location.
+  // this is the reason this part of code is commented and the channelSelection is
+  // always exported.
+  //
+  // before to export check if the band combination and contrast setting are the
+  // default ones to avoid to export this tags
+  bool isDefaultCombination = true;
+  QList<int> defaultBandCombination( { 1, 2, 3 } );
+
+  isDefaultCombination = isDefaultCombination && ( usesBands() == defaultBandCombination );
+  isDefaultCombination = isDefaultCombination && (
+                           mRedContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum &&
+                           mGreenContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum &&
+                           mBlueContrastEnhancement->contrastEnhancementAlgorithm() == QgsContrastEnhancement::StretchToMinimumMaximum
+                         );
+  // compute raster statistics (slow) only if true the previous conditions
+  if ( isDefaultCombination )
+  {
+    QgsRasterBandStats statRed = bandStatistics( 1, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    isDefaultCombination = isDefaultCombination && (
+                             ( mRedContrastEnhancement->minimumValue() == statRed.minimumValue &&
+                               mRedContrastEnhancement->maximumValue() == statRed.maximumValue )
+                           );
+  }
+  if ( isDefaultCombination )
+  {
+    QgsRasterBandStats statGreen = bandStatistics( 2, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    isDefaultCombination = isDefaultCombination && (
+                             ( mGreenContrastEnhancement->minimumValue() == statGreen.minimumValue &&
+                               mGreenContrastEnhancement->maximumValue() == statGreen.maximumValue )
+                           );
+  }
+  if ( isDefaultCombination )
+  {
+    QgsRasterBandStats statBlue = bandStatistics( 3, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    isDefaultCombination = isDefaultCombination && (
+                             ( mBlueContrastEnhancement->minimumValue() == statBlue.minimumValue &&
+                               mBlueContrastEnhancement->maximumValue() == statBlue.maximumValue )
+                           );
+  }
+  if ( isDefaultCombination )
+    return;
+#endif
+
+  // look for RasterSymbolizer tag
+  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  if ( elements.size() == 0 )
+    return;
+
+  // there SHOULD be only one
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
+
+  // add Channel Selection tags
+  // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
+  // after opacity or geometry or as first element after sld:RasterSymbolizer
+  QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
+  elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
+  if ( elements.size() != 0 )
+  {
+    rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
+  }
+  else
+  {
+    elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
+    if ( elements.size() != 0 )
+    {
+      rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
+    }
+    else
+    {
+      rasterSymbolizerElem.insertBefore( channelSelectionElem, rasterSymbolizerElem.firstChild() );
+    }
+  }
+
+  // for each mapped band
+  static QStringList tags { QStringLiteral( "sld:RedChannel" ), QStringLiteral( "sld:GreenChannel" ), QStringLiteral( "sld:BlueChannel" ) };
+
+  QList<QgsContrastEnhancement *> contrastEnhancements;
+  contrastEnhancements.append( mRedContrastEnhancement );
+  contrastEnhancements.append( mGreenContrastEnhancement );
+  contrastEnhancements.append( mBlueContrastEnhancement );
+
+  QList<int> bands = usesBands();
+  QList<int>::const_iterator bandIt = bands.constBegin();
+  for ( int tagCounter = 0 ; bandIt != bands.constEnd(); ++bandIt, ++tagCounter )
+  {
+    if ( *bandIt < 0 )
+      continue;
+
+    QDomElement channelElem = doc.createElement( tags[ tagCounter ] );
+    channelSelectionElem.appendChild( channelElem );
+
+    // set band
+    QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+    sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( *bandIt ) ) );
+    channelElem.appendChild( sourceChannelNameElem );
+
+    // set ContrastEnhancement for each band
+    // NO ContrastEnhancement parameter for the entire bands is managed e.g.
+    // because min/max values can vary depending on band.
+    if ( contrastEnhancements[ tagCounter ] )
+    {
+      QDomElement contrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
+      contrastEnhancements[ tagCounter ]->toSld( doc, contrastEnhancementElem );
+      channelElem.appendChild( contrastEnhancementElem );
+    }
+  }
 }

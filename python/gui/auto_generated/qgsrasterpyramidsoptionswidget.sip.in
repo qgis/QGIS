@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrasterpyramidsoptionswidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterPyramidsOptionsWidget: QWidget
+{
+%Docstring
+A widget to select format-specific raster saving options
+%End
+
+%TypeHeaderCode
+#include "qgsrasterpyramidsoptionswidget.h"
+%End
+  public:
+
+    QgsRasterPyramidsOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &provider = "gdal" );
+%Docstring
+Constructor for QgsRasterPyramidsOptionsWidget
+%End
+
+    QStringList configOptions() const;
+    QgsRasterFormatSaveOptionsWidget *createOptionsWidget() /Factory/;
+    const QList<int> overviewList() const;
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
+    QString resamplingMethod() const;
+    void setRasterLayer( QgsRasterLayer *rasterLayer );
+    void setRasterFileName( const QString &file );
+
+  public slots:
+
+    void apply();
+    void checkAllLevels( bool checked );
+
+  private slots:
+    void cbxPyramidsLevelsCustom_toggled( bool toggled );
+    void cbxPyramidsFormat_currentIndexChanged( int index );
+    void setOverviewList();
+    void updateUi();
+  signals:
+    void overviewListChanged();
+    void someValueChanged(); /* emitted when any other setting changes */
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrasterpyramidsoptionswidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

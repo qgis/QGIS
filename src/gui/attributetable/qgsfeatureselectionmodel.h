@@ -16,16 +16,16 @@
 #define QGSFEATURESELECTIONMODEL_H
 
 #include <QItemSelectionModel>
-#include "qgis.h"
+#include "qgsfeatureid.h"
 
-#include "qgsfeature.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureModel;
 class QgsIFeatureSelectionManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureSelectionModel
  */
 class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
@@ -87,14 +87,14 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    virtual void select( const QModelIndex &index, SelectionFlags command ) override { Q_UNUSED( index ); Q_UNUSED( command ); }
+    void select( const QModelIndex &index, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( index ) Q_UNUSED( command ); }
 
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
      * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    virtual void select( const QItemSelection &selection, SelectionFlags command ) override { Q_UNUSED( selection ); Q_UNUSED( command ); }
+    void select( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( selection ) Q_UNUSED( command ); }
 
     /**
      * Select features on this table. Is to be used in favor of the stock select methods.
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      * \param selection  The QItemSelection which will be selected
      * \param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
+    virtual void selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command );
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
 
@@ -117,16 +117,22 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     bool mSyncEnabled;
 
-    //! If sync is disabled
-    //! Holds a list of newly selected features which will be synced when re-enabled
+    /**
+     * If sync is disabled
+     * Holds a list of newly selected features which will be synced when re-enabled
+     */
     QgsFeatureIds mSelectedBuffer;
 
-    //! If sync is disabled
-    //! Holds a list of newly deselected features which will be synced when re-enabled
+    /**
+     * If sync is disabled
+     * Holds a list of newly deselected features which will be synced when re-enabled
+     */
     QgsFeatureIds mDeselectedBuffer;
 
-    //! If sync is disabled
-    //! Is set to true, if a clear and select operation should be performed before syncing
+    /**
+     * If sync is disabled
+     * Is set to TRUE, if a clear and select operation should be performed before syncing
+     */
     bool mClearAndSelectBuffer;
 };
 

@@ -19,25 +19,34 @@
 #ifndef QGSFILTERRESPONSEDECORATOR_H
 #define QGSFILTERRESPONSEDECORATOR_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverresponse.h"
 #include "qgsserverfilter.h"
+#include "qgsserverexception.h"
 
 /**
  * \ingroup server
  * \class QgsFilterResponseDecorator
- * Class defining decorator for calling filter's hooks
+ * \brief Class defining decorator for calling filter's hooks
+ * \since QGIS 3.0
  */
 class QgsFilterResponseDecorator: public QgsServerResponse
 {
   public:
 
+    /**
+     * Constructor for QgsFilterResponseDecorator.
+     * \param filters Map of filters to apply before terminating the response
+     * \param response Server response
+     */
     QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response );
-    ~QgsFilterResponseDecorator();
 
     /**
      * Call filters requestReady() method
      */
-    void start();
+    void start() SIP_THROW( QgsServerException ) SIP_VIRTUALERRORHANDLER( server_exception_handler );
 
     // QgsServerResponse overrides
 
@@ -47,13 +56,13 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     QString header( const QString &key ) const override { return mResponse.header( key ); }
 
-    QMap<QString, QString> headers() const override { return mResponse.headers( ); }
+    QMap<QString, QString> headers() const override { return mResponse.headers(); }
 
     bool headersSent() const override { return mResponse.headersSent(); }
 
     void setStatusCode( int code ) override { mResponse.setStatusCode( code ); }
 
-    int statusCode( ) const override { return mResponse.statusCode( ); }
+    int statusCode() const override { return mResponse.statusCode(); }
 
     void sendError( int code,  const QString &message ) override { mResponse.sendError( code, message ); }
 

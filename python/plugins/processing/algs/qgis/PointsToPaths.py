@@ -16,72 +16,83 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from datetime import datetime
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsApplication,
+from qgis.core import (QgsExpression,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
+                       QgsPointXY,
+                       QgsLineString,
                        QgsWkbTypes,
-                       QgsProcessingUtils)
+                       QgsFeatureRequest,
+                       QgsProcessingException,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterExpression,
+                       QgsProcessingParameterString,
+                       QgsProcessingFeatureSource,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterDefinition)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
-from processing.core.outputs import OutputDirectory
-from processing.tools import dataobjects
+from PyQt5.QtCore import QVariant
 
 
 class PointsToPaths(QgisAlgorithm):
-
-    VECTOR = 'VECTOR'
+    INPUT = 'INPUT'
+    CLOSE_PATH = 'CLOSE_PATH'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
+    ORDER_EXPRESSION = 'ORDER_EXPRESSION'
     DATE_FORMAT = 'DATE_FORMAT'
-    #GAP_PERIOD = 'GAP_PERIOD'
-    OUTPUT_LINES = 'OUTPUT_LINES'
-    OUTPUT_TEXT = 'OUTPUT_TEXT'
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
+    OUTPUT = 'OUTPUT'
+    OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
+
+    def groupId(self):
+        return 'vectorcreation'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.VECTOR,
-                                          self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
-        self.addParameter(ParameterTableField(self.GROUP_FIELD,
-                                              self.tr('Group field'), self.VECTOR))
-        self.addParameter(ParameterTableField(self.ORDER_FIELD,
-                                              self.tr('Order field'), self.VECTOR))
-        self.addParameter(ParameterString(self.DATE_FORMAT,
-                                          self.tr('Date format (if order field is DateTime)'), '', optional=True))
-        #self.addParameter(ParameterNumber(
-        #    self.GAP_PERIOD,
-        #    'Gap period (if order field is DateTime)', 0, 60, 0))
-        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
+
+    def tags(self):
+        return self.tr('join,points,lines,connect').split(',')
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterBoolean(self.CLOSE_PATH,
+                                                        self.tr('Close path'), defaultValue=False))
+        order_field_param = QgsProcessingParameterField(self.ORDER_FIELD,
+                                                        self.tr('Order field'), parentLayerParameterName=self.INPUT, optional=True)
+        order_field_param.setFlags(order_field_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        self.addParameter(order_field_param)
+        self.addParameter(QgsProcessingParameterExpression(self.ORDER_EXPRESSION,
+                                                           self.tr('Order expression'), parentLayerParameterName=self.INPUT, optional=True))
+        self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
+                                                      self.tr('Group field'), parentLayerParameterName=self.INPUT, optional=True))
+        self.addParameter(QgsProcessingParameterString(self.DATE_FORMAT,
+                                                       self.tr('Date format (if order field is DateTime)'), optional=True))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Paths'), QgsProcessing.TypeVectorLine))
+        output_dir_param = QgsProcessingParameterFolderDestination(self.OUTPUT_TEXT_DIR, self.tr('Directory for text output'), optional=True)
+        output_dir_param.setCreateByDefault(False)
+        self.addParameter(output_dir_param)
 
     def name(self):
         return 'pointstopath'
@@ -90,29 +101,80 @@ class PointsToPaths(QgisAlgorithm):
         return self.tr('Points to path')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
-        groupField = self.getParameterValue(self.GROUP_FIELD)
-        orderField = self.getParameterValue(self.ORDER_FIELD)
-        dateFormat = str(self.getParameterValue(self.DATE_FORMAT))
-        #gap = int(self.getParameterValue(self.GAP_PERIOD))
-        dirName = self.getOutputValue(self.OUTPUT_TEXT)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        close_path = self.parameterAsBool(parameters, self.CLOSE_PATH, context)
+        group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
+        order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
+        order_expression = self.parameterAsString(parameters, self.ORDER_EXPRESSION, context)
+        date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
+        text_dir = self.parameterAsString(parameters, self.OUTPUT_TEXT_DIR, context)
+
+        group_field_index = source.fields().lookupField(group_field_name)
+
+        if group_field_index >= 0:
+            group_field_def = source.fields().at(group_field_index)
+        else:
+            group_field_def = None
+
+        if order_field_name:
+            order_expression = QgsExpression.quotedColumnRef(order_field_name)
+
+        if not order_expression:
+            raise QgsProcessingException(self.tr('ORDER_EXPRESSION parameter is missing.'))
+
+        expression_context = self.createExpressionContext(parameters, context, source)
+        expression = QgsExpression(order_expression)
+        if expression.hasParserError():
+            raise QgsProcessingException(expression.parserErrorString())
+        expression.prepare(expression_context)
+        order_field_type = QVariant.String
+        if expression.isField():
+            field_name = next(iter(expression.referencedColumns()))
+            order_field_type = source.fields().field(field_name).type()
 
         fields = QgsFields()
-        fields.append(QgsField('group', QVariant.String, '', 254, 0))
-        fields.append(QgsField('begin', QVariant.String, '', 254, 0))
-        fields.append(QgsField('end', QVariant.String, '', 254, 0))
-        writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(),
-                                                                           context)
+        if group_field_def is not None:
+            fields.append(group_field_def)
+        begin_field = QgsField('begin', order_field_type)
+        fields.append(begin_field)
+        end_field = QgsField('end', order_field_type)
+        fields.append(end_field)
+
+        output_wkb = QgsWkbTypes.LineString
+        if QgsWkbTypes.hasM(source.wkbType()):
+            output_wkb = QgsWkbTypes.addM(output_wkb)
+        if QgsWkbTypes.hasZ(source.wkbType()):
+            output_wkb = QgsWkbTypes.addZ(output_wkb)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, output_wkb, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         points = dict()
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        required_fields = expression.referencedColumns()
+        required_fields.add(group_field_name)
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(required_fields, source.fields()), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
-            point = f.geometry().asPoint()
-            group = f[groupField]
-            order = f[orderField]
-            if dateFormat != '':
-                order = datetime.strptime(str(order), dateFormat)
+            if feedback.isCanceled():
+                break
+
+            if not f.hasGeometry():
+                continue
+
+            point = f.geometry().constGet().clone()
+            if group_field_index >= 0:
+                group = f[group_field_index]
+            else:
+                group = 1
+            expression_context.setFeature(f)
+            order = expression.evaluate(expression_context)
+            if date_format != '':
+                order = datetime.strptime(str(order), date_format)
             if group in points:
                 points[group].append((order, point))
             else:
@@ -123,44 +185,49 @@ class PointsToPaths(QgisAlgorithm):
         feedback.setProgress(0)
 
         da = QgsDistanceArea()
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
+        da.setEllipsoid(context.ellipsoid())
 
         current = 0
-        total = 100.0 / len(points)
-        for group, vertices in list(points.items()):
-            vertices.sort()
+        total = 100.0 / len(points) if points else 1
+        for group, vertices in points.items():
+            if feedback.isCanceled():
+                break
+
+            vertices.sort(key=lambda x: (x[0] is None, x[0]))
             f = QgsFeature()
-            f.initAttributes(len(fields))
-            f.setFields(fields)
-            f['group'] = group
-            f['begin'] = vertices[0][0]
-            f['end'] = vertices[-1][0]
+            attributes = []
+            if group_field_index >= 0:
+                attributes.append(group)
+            attributes.extend([vertices[0][0], vertices[-1][0]])
+            f.setAttributes(attributes)
+            line = [node[1] for node in vertices]
 
-            fileName = os.path.join(dirName, '%s.txt' % group)
+            if close_path is True:
+                if line[0] != line[-1]:
+                    line.append(line[0])
 
-            with open(fileName, 'w') as fl:
-                fl.write('angle=Azimuth\n')
-                fl.write('heading=Coordinate_System\n')
-                fl.write('dist_units=Default\n')
+            if text_dir:
+                fileName = os.path.join(text_dir, '%s.txt' % group)
 
-                line = []
-                i = 0
-                for node in vertices:
-                    line.append(node[1])
+                with open(fileName, 'w') as fl:
+                    fl.write('angle=Azimuth\n')
+                    fl.write('heading=Coordinate_System\n')
+                    fl.write('dist_units=Default\n')
 
-                    if i == 0:
-                        fl.write('startAt=%f;%f;90\n' % (node[1].x(), node[1].y()))
-                        fl.write('survey=Polygonal\n')
-                        fl.write('[data]\n')
-                    else:
-                        angle = line[i - 1].azimuth(line[i])
-                        distance = da.measureLine(line[i - 1], line[i])
-                        fl.write('%f;%f;90\n' % (angle, distance))
+                    for i in range(len(line)):
+                        if i == 0:
+                            fl.write('startAt=%f;%f;90\n' % (line[i].x(), line[i].y()))
+                            fl.write('survey=Polygonal\n')
+                            fl.write('[data]\n')
+                        else:
+                            angle = line[i - 1].azimuth(line[i])
+                            distance = da.measureLine(QgsPointXY(line[i - 1]), QgsPointXY(line[i]))
+                            fl.write('%f;%f;90\n' % (angle, distance))
 
-                    i += 1
-
-            f.setGeometry(QgsGeometry.fromPolyline(line))
-            writer.addFeature(f)
+            f.setGeometry(QgsGeometry(QgsLineString(line)))
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

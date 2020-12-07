@@ -17,6 +17,8 @@
 
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
+#include "qgshelp.h"
+
 #include <QAbstractButton>
 #include <QDialogButtonBox>
 
@@ -43,7 +45,8 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
   cboSchemeName->setIconSize( iconSize );
 
   QStringList schemes = QgsColorBrewerColorRamp::listSchemeNames();
-  Q_FOREACH ( const QString &schemeName, schemes )
+  const auto constSchemes = schemes;
+  for ( const QString &schemeName : constSchemes )
   {
     // create a preview icon using five color variant
     QgsColorBrewerColorRamp *r = new QgsColorBrewerColorRamp( schemeName, 5 );
@@ -71,7 +74,8 @@ void QgsColorBrewerColorRampWidget::populateVariants()
   cboColors->clear();
   QString schemeName = cboSchemeName->currentText();
   QList<int> variants = QgsColorBrewerColorRamp::listSchemeVariants( schemeName );
-  Q_FOREACH ( int variant, variants )
+  const auto constVariants = variants;
+  for ( int variant : constVariants )
   {
     cboColors->addItem( QString::number( variant ) );
   }
@@ -123,11 +127,24 @@ QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrew
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsColorBrewerColorRampWidget( ramp );
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
-  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  vLayout->addWidget( bbox );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsColorBrewerColorRampDialog::showHelp );
+  vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
+  setWindowTitle( tr( "ColorBrewer Ramp" ) );
   connect( mWidget, &QgsColorBrewerColorRampWidget::changed, this, &QgsColorBrewerColorRampDialog::changed );
+}
+
+QDialogButtonBox *QgsColorBrewerColorRampDialog::buttonBox() const
+{
+  return mButtonBox;
+}
+
+void QgsColorBrewerColorRampDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#setting-a-color-ramp" ) );
 }

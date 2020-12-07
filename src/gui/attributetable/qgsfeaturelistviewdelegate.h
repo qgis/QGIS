@@ -24,7 +24,8 @@ class QgsFeatureListModel;
 class QgsFeatureSelectionModel;
 class QPosition;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureListViewDelegate
  */
 class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
@@ -54,14 +55,14 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     void editButtonClicked( QModelIndex &index );
 
   protected:
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
     QItemSelectionModel *mEditSelectionModel = nullptr;
     QgsFeatureListModel *mListModel = nullptr;
-    //! Set to true if the current edit selection has been edited
+    //! Sets to TRUE if the current edit selection has been edited
     bool mCurrentFeatureEdited;
 };
 

@@ -1,0 +1,173 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudrendererregistry.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointCloudRendererAbstractMetadata
+{
+%Docstring
+Stores metadata about one point cloud renderer class.
+
+.. note::
+
+   It's necessary to implement :py:func:`~createRenderer` function.
+   In C++ you can use QgsPointCloudRendererMetadata convenience class.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrendererregistry.h"
+%End
+  public:
+
+    QgsPointCloudRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
+%Docstring
+Constructor for QgsPointCloudRendererAbstractMetadata, with the specified ``name``.
+
+The ``visibleName`` argument gives a translated, user friendly string identifying the renderer type.
+
+The ``icon`` argument can be used to specify an icon representing the renderer.
+%End
+    virtual ~QgsPointCloudRendererAbstractMetadata();
+
+    QString name() const;
+%Docstring
+Returns the unique name of the renderer. This value is not translated.
+
+.. seealso:: :py:func:`visibleName`
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns a friendly display name of the renderer. This value is translated.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns an icon representing the renderer.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+    void setIcon( const QIcon &icon );
+%Docstring
+Sets an ``icon`` representing the renderer.
+
+.. seealso:: :py:func:`icon`
+%End
+
+    virtual QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
+%Docstring
+Returns new instance of the renderer given the DOM element. Returns ``None`` on error.
+Pure virtual function: must be implemented in derived classes.
+%End
+
+
+  protected:
+};
+
+
+class QgsPointCloudRendererMetadata : QgsPointCloudRendererAbstractMetadata
+{
+%Docstring
+Convenience metadata class that uses static functions to create point cloud renderer and its widget.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrendererregistry.h"
+%End
+  public:
+
+
+    virtual QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
+
+
+
+
+  protected:
+
+  private:
+    QgsPointCloudRendererMetadata();
+};
+
+
+class QgsPointCloudRendererRegistry
+{
+%Docstring
+Registry of 2D renderers for point clouds.
+
+QgsPointCloudRendererRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.pointCloudRendererRegistry()`.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrendererregistry.h"
+%End
+  public:
+
+    QgsPointCloudRendererRegistry();
+    ~QgsPointCloudRendererRegistry();
+
+
+    bool addRenderer( QgsPointCloudRendererAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Adds a renderer to the registry. Takes ownership of the metadata object.
+
+:param metadata: renderer metadata
+
+:return: ``True`` if renderer was added successfully, or ``False`` if renderer could not
+         be added (e.g., a renderer with a duplicate name already exists)
+%End
+
+    bool removeRenderer( const QString &rendererName );
+%Docstring
+Removes a renderer from registry.
+
+:param rendererName: name of renderer to remove from registry
+
+:return: ``True`` if renderer was successfully removed, or ``False`` if matching
+         renderer could not be found
+%End
+
+    QgsPointCloudRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
+%Docstring
+Returns the metadata for a specified renderer. Returns ``None`` if a matching
+renderer was not found in the registry.
+%End
+
+    QStringList renderersList() const;
+%Docstring
+Returns a list of available renderers.
+%End
+
+    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudDataProvider *provider ) /Factory/;
+%Docstring
+Returns a new default point cloud renderer for a layer with the specified ``provider``.
+
+Caller takes ownership of the returned renderer.
+%End
+
+  private:
+    QgsPointCloudRendererRegistry( const QgsPointCloudRendererRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudrendererregistry.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

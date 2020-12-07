@@ -20,16 +20,17 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgsvirtuallayerprovider.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgeometryengine.h"
 
 #include <memory>
 #include <QPointer>
 
-class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
+class QgsVirtualLayerFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
 
@@ -51,18 +52,18 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
     friend class QgsVirtualLayerFeatureIterator;
 };
 
-class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
+class QgsVirtualLayerFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
 {
   public:
     QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
-    ~QgsVirtualLayerFeatureIterator();
+    ~QgsVirtualLayerFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
 
   private:
 
@@ -74,6 +75,7 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
 
+    std::unique_ptr< QgsGeometryEngine > mRectEngine;
 };
 
 #endif

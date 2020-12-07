@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmaprenderercustompainterjob.h"
+#include "qgsapplication.h"
 
 namespace QgsWms
 {
@@ -27,23 +28,23 @@ namespace QgsWms
   QgsMapRendererJobProxy::QgsMapRendererJobProxy(
     bool parallelRendering
     , int maxThreads
-    , QgsAccessControl *accessControl
+    , QgsFeatureFilterProvider *featureFilterProvider
   )
     :
     mParallelRendering( parallelRendering )
-    , mAccessControl( accessControl )
+    , mFeatureFilterProvider( featureFilterProvider )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
-    Q_UNUSED( mAccessControl );
+    Q_UNUSED( mFeatureFilterProvider )
 #endif
     if ( mParallelRendering )
     {
       QgsApplication::setMaxThreads( maxThreads );
-      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering activated with %1 threads" ).arg( maxThreads ), QStringLiteral( "server" ), QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering activated with %1 threads" ).arg( maxThreads ), QStringLiteral( "server" ), Qgis::Info );
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering deactivated" ), QStringLiteral( "server" ), QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering deactivated" ), QStringLiteral( "server" ), Qgis::Info );
     }
   }
 
@@ -53,21 +54,31 @@ namespace QgsWms
     {
       QgsMapRendererParallelJob renderJob( mapSettings );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      renderJob.setFeatureFilterProvider( mAccessControl );
+      renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
       renderJob.start();
+
+      // Allows the main thread to manage blocking call coming from rendering
+      // threads (see discussion in https://github.com/qgis/QGIS/issues/26819).
+      QEventLoop loop;
+      QObject::connect( &renderJob, &QgsMapRendererParallelJob::finished, &loop, &QEventLoop::quit );
+      loop.exec();
+
       renderJob.waitForFinished();
       *image = renderJob.renderedImage();
       mPainter.reset( new QPainter( image ) );
+
+      mErrors = renderJob.errors();
     }
     else
     {
       mPainter.reset( new QPainter( image ) );
       QgsMapRendererCustomPainterJob renderJob( mapSettings, mPainter.get() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      renderJob.setFeatureFilterProvider( mAccessControl );
+      renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
       renderJob.renderSynchronously();
+      mErrors = renderJob.errors();
     }
   }
 
@@ -75,5 +86,4 @@ namespace QgsWms
   {
     return mPainter.release();
   }
-
 } // namespace qgsws

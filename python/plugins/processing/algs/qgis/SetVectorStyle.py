@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SelectByLocation.py
+    SetVectorStyle.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -21,43 +21,37 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-import os
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.core.parameters import ParameterFile
-from processing.tools import dataobjects
-from qgis.utils import iface
 
 
 class SetVectorStyle(QgisAlgorithm):
-
     INPUT = 'INPUT'
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
+
+    def groupId(self):
+        return 'vectorgeneral'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Vector layer')))
-        self.addParameter(ParameterFile(self.STYLE,
-                                        self.tr('Style file'), False, False, 'qml'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled'), True))
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagDeprecated | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Vector layer')))
+        self.addParameter(QgsProcessingParameterFile(self.STYLE,
+                                                     self.tr('Style file'), extension='qml'))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
+                                                      self.tr('Styled')))
 
     def name(self):
         return 'setstyleforvectorlayer'
@@ -66,13 +60,8 @@ class SetVectorStyle(QgisAlgorithm):
         return self.tr('Set style for vector layer')
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.getParameterValue(self.INPUT)
-
-        style = self.getParameterValue(self.STYLE)
-        layer = QgsProcessingUtils.mapLayerFromString(filename, context, False)
-        if layer is None:
-            dataobjects.load(filename, os.path.basename(filename), style=style)
-        else:
-            layer.loadNamedStyle(style)
-            context.addLayerToLoadOnCompletion(layer.id())
-            layer.triggerRepaint()
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        style = self.parameterAsFile(parameters, self.STYLE, context)
+        layer.loadNamedStyle(style)
+        layer.triggerRepaint()
+        return {self.INPUT: layer}

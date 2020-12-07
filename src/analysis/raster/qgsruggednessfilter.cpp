@@ -16,16 +16,14 @@
  ***************************************************************************/
 
 #include "qgsruggednessfilter.h"
+#include <cmath>
 
-QgsRuggednessFilter::QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat ): QgsNineCellFilter( inputFile, outputFile, outputFormat )
+QgsRuggednessFilter::QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
+  : QgsNineCellFilter( inputFile, outputFile, outputFormat )
 {
 
 }
 
-QgsRuggednessFilter::QgsRuggednessFilter(): QgsNineCellFilter( QLatin1String( "" ), QLatin1String( "" ), QLatin1String( "" ) )
-{
-
-}
 
 float QgsRuggednessFilter::processNineCellWindow( float *x11, float *x21, float *x31,
     float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 )
@@ -83,6 +81,6 @@ float QgsRuggednessFilter::processNineCellWindow( float *x11, float *x21, float 
     sum += ( *x33 - *x22 ) * ( *x33 - *x22 );
   }
 
-  return sqrt( sum );
+  return std::sqrt( sum );
 }
 

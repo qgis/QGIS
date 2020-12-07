@@ -25,11 +25,10 @@
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertreemodel.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
 
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 namespace QgsWms
 {
@@ -55,19 +54,42 @@ namespace QgsWms
                         const QString &version, const QgsServerRequest &request,
                         QgsServerResponse &response )
   {
-    QDomDocument doc = getContext( serverIface, project, version, request );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
 
+    QDomDocument doc;
+    const QDomDocument *contextDocument = nullptr;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      contextDocument = &doc;
+    }
+    else //context xml not in cache. Create a new one
+    {
+      doc = getContext( serverIface, project, version, request );
+
+      if ( cacheManager )
+      {
+        cacheManager->setCachedDocument( &doc, project, request, accessControl );
+      }
+      contextDocument = &doc;
+    }
+#else
+    doc = getContext( serverIface, project, version, request );
+    contextDocument = &doc;
+#endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-    response.write( doc.toByteArray() );
+    response.write( contextDocument->toByteArray() );
   }
 
 
   QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
-
-    //QgsWmsConfigParser  *configParser = getConfigParser( serverIface );
+    Q_UNUSED( version )
 
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
@@ -101,7 +123,7 @@ namespace QgsWms
                                           QgsServerInterface *serverIface, const QgsProject *project,
                                           const QgsServerRequest &request )
     {
-      parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->fileInfo().baseName() );
+      parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->baseName() );
 
       // OWSContext General element
       QDomElement generalElem = doc.createElement( QStringLiteral( "General" ) );
@@ -239,17 +261,17 @@ namespace QgsWms
           {
             continue;
           }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
           QgsAccessControl *accessControl = serverIface->accessControls();
           if ( accessControl && !accessControl->layerReadPermission( l ) )
           {
             continue;
           }
-
+#endif
           QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
 
           // queryable layer
-          if ( project->nonIdentifiableLayers().contains( l->id() ) )
+          if ( !l->flags().testFlag( QgsMapLayer::Identifiable ) )
           {
             layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "false" ) );
           }
@@ -261,11 +283,11 @@ namespace QgsWms
           // visibility
           if ( treeLayer->itemVisibilityChecked() )
           {
-            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "true" ) );
+            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "false" ) );
           }
           else
           {
-            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "false" ) );
+            layerElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "true" ) );
           }
 
           // layer group
@@ -278,7 +300,7 @@ namespace QgsWms
           // OWSContext Layer opacity is set to 1
           layerElem.setAttribute( QStringLiteral( "opacity" ), 1 );
 
-          QString wmsName =  l->name();
+          QString wmsName = l->name();
           if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
           {
             wmsName = l->id();
@@ -313,7 +335,7 @@ namespace QgsWms
           QUrl href = serviceUrl( request, project );
 
           //href needs to be a prefix
-          QString hrefString = href.toString( QUrl::FullyDecoded );
+          QString hrefString = href.toString();
           hrefString.append( href.hasQuery() ? "&" : "?" );
 
           // COntext Server Element with WMS service URL
@@ -407,7 +429,7 @@ namespace QgsWms
           // update combineBBox
           try
           {
-            QgsCoordinateTransform t( l->crs(), project->crs() );
+            QgsCoordinateTransform t( l->crs(), project->crs(), project );
             QgsRectangle BBox = t.transformBoundingBox( l->extent() );
             if ( combinedBBox.isEmpty() )
             {
@@ -420,7 +442,7 @@ namespace QgsWms
           }
           catch ( const QgsCsException &cse )
           {
-            Q_UNUSED( cse );
+            Q_UNUSED( cse )
           }
 
           if ( parentLayer.hasChildNodes() )
@@ -437,11 +459,8 @@ namespace QgsWms
 
     void appendOwsLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer )
     {
-      Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
+      for ( const QString &styleName : currentLayer->styleManager()->styles() )
       {
-        if ( styleName.isEmpty() )
-          styleName = EMPTY_STYLE_NAME;
-
         QDomElement styleListElem = doc.createElement( QStringLiteral( "StyleList" ) );
         //only one default style in project file mode
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
@@ -460,8 +479,4 @@ namespace QgsWms
     }
   }
 
-} // samespace QgsWms
-
-
-
-
+} // namespace QgsWms

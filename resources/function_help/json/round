@@ -1,6 +1,7 @@
 {
   "name": "round",
   "type": "function",
+  "groups": ["Math"],
   "description": "Rounds a number to number of decimal places.",
   "arguments": [
 	{"arg":"value","description":"decimal number to be rounded"},

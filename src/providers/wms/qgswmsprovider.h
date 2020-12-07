@@ -24,6 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgswmscapabilities.h"
+#include "qgsprovidermetadata.h"
 
 #include <QString>
 #include <QStringList>
@@ -53,7 +54,7 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
   public:
 
     QgsWmsLegendDownloadHandler( QgsNetworkAccessManager &networkAccessManager, const QgsWmsSettings &settings, const QUrl &url );
-    ~QgsWmsLegendDownloadHandler();
+    ~QgsWmsLegendDownloadHandler() override;
 
     // Make sure to connect to "finish" before starting
     void start() override;
@@ -86,75 +87,80 @@ class QgsCachedImageFetcher: public QgsImageFetcher
     Q_OBJECT
   public:
     explicit QgsCachedImageFetcher( const QImage &img );
-    virtual ~QgsCachedImageFetcher();
-    virtual void start() override;
+
+    void start() override;
   private:
     const QImage _img; // copy is intentional
   private slots:
     void send()
     {
-      QgsDebugMsg( QString( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
+      QgsDebugMsg( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
       emit finish( _img );
     }
 };
 
 
 /**
-
-  \brief Data provider for OGC WMS layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a OGC Web Map Service.
-
+ *
+ * \brief Data provider for OGC WMS layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a OGC Web Map Service.
+ *
 */
-class QgsWmsProvider : public QgsRasterDataProvider
+class QgsWmsProvider final: public QgsRasterDataProvider
 {
     Q_OBJECT
 
   public:
 
+    static QString WMS_KEY;
+    static QString WMS_DESCRIPTION;
+
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     * \param uri HTTP URL of the Web Server.  If needed a proxy will be used
      *                otherwise we contact the host directly.
-     * \param   capabilities   Optionally existing parsed capabilities for the given URI
+     * \param options generic data provider options
+     * \param capabilities Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( const QString &uri = QString(), const QgsWmsCapabilities *capabilities = 0 );
+    QgsWmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, const QgsWmsCapabilities *capabilities = nullptr );
 
 
-    virtual ~QgsWmsProvider();
+    ~QgsWmsProvider() override;
 
     QgsWmsProvider *clone() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server
      * (in order from bottom to top)
      * \note   layers must have been previously added.
      */
-    virtual void setLayerOrder( QStringList const &layers ) override;
+    void setLayerOrder( QStringList const &layers ) override;
 
-    virtual void setSubLayerVisibility( const QString &name, bool vis ) override;
+    void setSubLayerVisibility( const QString &name, bool vis ) override;
 
     /**
      * Set the name of the connection for use in authentication where required
      */
     void setConnectionName( QString const &connName );
 
-    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
 
     bool isValid() const override;
 
 #if 0
 
-    /** Returns true if layer has tile set profiles
+    /**
+     * Returns true if layer has tile set profiles
      */
     virtual bool hasTiles() const;
 #endif
@@ -164,7 +170,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     virtual QString getTileUrl() const;
     virtual QString getLegendGraphicUrl() const;
 
-    //! get WMS version string
+    //! Gets WMS version string
     QString wmsVersion();
 
     /**
@@ -189,7 +195,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool supportsLegendGraphic() const override { return true; }
 
     QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) override;
-    virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
+    QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
 
     // TODO: Get the WMS connection
 
@@ -199,14 +205,16 @@ class QgsWmsProvider : public QgsRasterDataProvider
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
-    QString metadata() override;
+    QString htmlMetadata() override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
     QString name() const override;
+    static QString providerKey();
     QString description() const override;
-    virtual void reloadData() override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
+    QList< double > nativeResolutions() const override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -222,7 +230,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Prepare the URI so that we can later simply append param=value
      * \param uri uri to prepare
-     * \retval prepared uri
+     * \returns prepared uri
      */
     static QString prepareUri( QString uri );
 
@@ -253,9 +261,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
-  signals:
-
-    void dataChanged();
+    static bool isUrlForWMTS( const QString &url );
 
   private slots:
     void identifyReplyFinished();
@@ -266,7 +272,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
   private:
 
     //! In case of XYZ tile layer, setup capabilities from its URI
-    void setupXyzCapabilities( const QString &uri );
+    void setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent = QgsRectangle(), int sourceMinZoom = -1, int sourceMaxZoom = -1, double sourceTilePixelRatio = 0. );
+    //! In case of MBTiles layer, setup capabilities from its metadata
+    bool setupMBTilesCapabilities( const QString &uri );
 
     QImage *draw( QgsRectangle const   &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback );
 
@@ -295,7 +303,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \param forceRefresh  if true, ignores any previous response cached in memory
      *                      and always contact the server for a new copy.
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      *
      * When this returns, "layers" will make sense.
@@ -312,7 +320,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
      *
-     * \retval false if the capabilities document could not be retrieved or parsed -
+     * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
     bool calculateExtent() const;
@@ -324,7 +332,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString toParamValue( const QgsRectangle &rect, bool changeXY );
 
     /* \brief add SRS or CRS parameter */
-    void setSRSQueryItem( QUrl &url );
+    void setSRSQueryItem( QUrlQuery &url );
+
+    bool ignoreExtents() const override;
 
   private:
 
@@ -333,17 +343,26 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
 
+    /**
+      * Add WMS-T parameters to the \a query, if provider has temporal properties
+      *
+      * \since QGIS 3.14
+      */
+    void addWmstParameters( QUrlQuery &query );
+
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-      TileImage( const QRectF &r, const QImage &i ): rect( r ), img( i ) {}
+      TileImage( const QRectF &r, const QImage &i, bool smooth ): rect( r ), img( i ), smooth( smooth ) {}
       QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
       QImage img;  //!< Cached tile to be drawn
+      bool smooth; //!< Whether to use antialiasing/smooth transforms when rendering tile
     } TileImage;
-    //! Get tiles from a different resolution to cover the missing areas
+    //! Gets tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
-    /** Return the full url to request legend graphic
+    /**
+     * Returns the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
      * legends according to the QgsWmsSettings
      * \since QGIS 2.8
@@ -355,10 +374,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, const QString &key, const QString &value );
+    void setQueryItem( QUrlQuery &url, const QString &key, const QString &value );
 
     //! add image FORMAT parameter to url
-    void setFormatQueryItem( QUrl &url );
+    void setFormatQueryItem( QUrlQuery &url );
 
     //! Name of the stored connection
     QString mConnectionName;
@@ -391,11 +410,14 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * GetLegendGraphic scale for the WMS Pixmap result
      */
-    double mGetLegendGraphicScale;
+    double mGetLegendGraphicScale = 0.0;
 
     QgsRectangle mGetLegendGraphicExtent;
 
     std::unique_ptr<QgsImageFetcher> mLegendGraphicFetcher;
+
+    //! TRUE if an error was encountered while fetching a legend graphic
+    bool mLegendGraphicFetchErrored = false;
 
     /**
      * Visibility status of the given active sublayer
@@ -432,18 +454,18 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString mError;
 
-
-    /** The mime type of the message
+    /**
+     * The mime type of the message
      */
     QString mErrorFormat;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    mutable bool mExtentDirty;
+    mutable bool mExtentDirty = true;
 
     QString mServiceMetadataURL;
 
     //! tile request number, cache hits and misses
-    int mTileReqNo;
+    int mTileReqNo = 0;
 
     //! chosen tile layer
     QgsWmtsTileLayer        *mTileLayer = nullptr;
@@ -460,6 +482,14 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+
+    //! Temporal range member
+    QgsDateTimeRange mRange;
+
+    QList< double > mNativeResolutions;
+
+    friend class TestQgsWmsProvider;
+
 };
 
 
@@ -469,7 +499,7 @@ class QgsWmsImageDownloadHandler : public QObject
     Q_OBJECT
   public:
     QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback );
-    ~QgsWmsImageDownloadHandler();
+    ~QgsWmsImageDownloadHandler() override;
 
     void downloadBlocking();
 
@@ -499,7 +529,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
   public:
 
     QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsWmsAuthorization &auth, int reqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback *feedback );
-    ~QgsWmsTiledImageDownloadHandler();
+    ~QgsWmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
 
@@ -545,17 +575,13 @@ class QgsWmsStatistics
   public:
     struct Stat
     {
-      Stat()
-        : errors( 0 )
-        , cacheHits( 0 )
-        , cacheMisses( 0 )
-      {}
-      int errors;
-      int cacheHits;
-      int cacheMisses;
+      Stat() = default;
+      int errors = 0;
+      int cacheHits = 0;
+      int cacheMisses = 0;
     };
 
-    //! get reference to layer's statistics - insert to map if does not exist yet
+    //! Gets reference to layer's statistics - insert to map if does not exist yet
     static Stat &statForUri( const QString &uri ) { return sData[uri]; }
 
   protected:
@@ -563,6 +589,16 @@ class QgsWmsStatistics
 };
 
 Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
+
+class QgsWmsProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsWmsProviderMetadata();
+    QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+};
 
 #endif
 

@@ -32,8 +32,6 @@
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
   : QgsFeatureRenderer( QStringLiteral( "grassEdit" ) )
-  , mLineRenderer( 0 )
-  , mMarkerRenderer( 0 )
 {
   QHash<int, QColor> colors;
   //colors.insert( QgsGrassVectorMap::TopoUndefined, QColor( 125, 125, 125 ) );
@@ -63,9 +61,9 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   markerLayers << markerSymbolLayer;
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );
-  firstVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::FirstVertex );
+  firstVertexMarkerLine->setPlacement( QgsTemplatedLineSymbolLayerBase::FirstVertex );
   QgsMarkerLineSymbolLayer *lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer *>( firstVertexMarkerLine->clone() );
-  lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::LastVertex );
+  lastVertexMarkerLine->setPlacement( QgsTemplatedLineSymbolLayerBase::LastVertex );
   Q_FOREACH ( int value, colors.keys() )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
@@ -120,12 +118,12 @@ void QgsGrassEditRenderer::setMarkerRenderer( QgsFeatureRenderer *renderer )
   mMarkerRenderer = renderer;
 }
 
-QgsSymbol *QgsGrassEditRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsGrassEditRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   int symbolCode = feature.attribute( QStringLiteral( "topo_symbol" ) ).toInt();
   QgsDebugMsgLevel( QString( "fid = %1 symbolCode = %2" ).arg( feature.id() ).arg( symbolCode ), 3 );
 
-  QgsSymbol *symbol = 0;
+  QgsSymbol *symbol = nullptr;
   if ( symbolCode == QgsGrassVectorMap::TopoPoint || symbolCode == QgsGrassVectorMap::TopoCentroidIn ||
        symbolCode == QgsGrassVectorMap::TopoCentroidOut || symbolCode == QgsGrassVectorMap::TopoCentroidDupl ||
        symbolCode == QgsGrassVectorMap::TopoNode0 || symbolCode == QgsGrassVectorMap::TopoNode1 ||
@@ -159,7 +157,7 @@ QgsSymbol *QgsGrassEditRenderer::symbolForFeature( QgsFeature &feature, QgsRende
 
 void QgsGrassEditRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
-  Q_UNUSED( fields );
+  Q_UNUSED( fields )
   // TODO better
   //QgsFields topoFields;
   //topoFields.append( QgsField( "topo_symbol", QVariant::Int, "int" ) );
@@ -192,7 +190,7 @@ QgsFeatureRenderer *QgsGrassEditRenderer::clone() const
   return r;
 }
 
-QgsSymbolList QgsGrassEditRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsGrassEditRenderer::symbols( QgsRenderContext &context ) const
 {
   return mLineRenderer->symbols( context );
 }
@@ -263,9 +261,6 @@ QgsRendererWidget *QgsGrassEditRendererWidget::create( QgsVectorLayer *layer, Qg
 
 QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( 0 )
-  , mLineRendererWidget( 0 )
-  , mPointRendererWidget( 0 )
 {
   mRenderer = dynamic_cast<QgsGrassEditRenderer *>( renderer->clone() );
   if ( !mRenderer )

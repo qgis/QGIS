@@ -1,21 +1,53 @@
-from qgis.core import (QgsProcessingUtils,
-                       QgsProcessingParameterDefinition,
-                       QgsProject)
-from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
-from processing.tools import dataobjects
-from processing.tools.system import userFolder
-from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
-from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
-                                 QComboBox, QSpacerItem, QSizePolicy)
-from qgis.PyQt.QtGui import QTextCursor
-from processing.core.outputs import OutputRaster
-from processing.core.parameters import ParameterRaster
-from processing.gui.wrappers import InvalidParameterValue
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    RasterCalculatorWidgets.py
+    ---------------------
+    Date                 : November 2016
+    Copyright            : (C) 2016 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'November 2016'
+__copyright__ = '(C) 2016, Victor Olaya'
+
 import os
-from qgis.PyQt import uic
 from functools import partial
 import re
 import json
+
+from qgis.utils import iface
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QTextCursor
+from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
+                                 QComboBox, QSpacerItem, QSizePolicy,
+                                 QListWidgetItem)
+
+from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProject)
+
+from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
+from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
+from processing.tools import dataobjects
+from processing.tools.system import userFolder
+
+from processing.gui.wrappers import InvalidParameterValue
+
+from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalcNode
 
 pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
@@ -56,7 +88,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
         self.filledExpression = None
         self.options = options
         self.expression = expression
-        self.variables = set(re.findall('\[.*?\]', expression))
+        self.variables = set(re.findall(r'\[.*?\]', expression))
         self.comboBoxes = {}
         for variable in self.variables:
             label = QLabel(variable[1:-1])
@@ -85,12 +117,11 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
 
 
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ExpressionWidget.ui'))
+    os.path.join(pluginPath, 'RasterCalculatorWidget.ui'))
 
 
 class ExpressionWidget(BASE, WIDGET):
-
-    _expressions = {"NDVI": "([NIR] - [Red]) % ([NIR] + [Red])"}
+    _expressions = {"NDVI": "([NIR] - [Red]) / ([NIR] + [Red])"}
 
     def __init__(self, options):
         super(ExpressionWidget, self).__init__(None)
@@ -99,7 +130,7 @@ class ExpressionWidget(BASE, WIDGET):
         self.setList(options)
 
         def doubleClicked(item):
-            self.text.insertPlainText(self.options[item.text()])
+            self.text.insertPlainText('"{}"'.format(self.options[item.text()]))
 
         def addButtonText(text):
             if any(c for c in text if c.islower()):
@@ -122,6 +153,25 @@ class ExpressionWidget(BASE, WIDGET):
         self.buttonAddPredefined.clicked.connect(self.addPredefined)
 
         self.buttonSavePredefined.clicked.connect(self.savePredefined)
+        self.text.textChanged.connect(self.expressionValid)
+
+    def expressionValid(self):
+        errorString = ''
+        testNode = QgsRasterCalcNode.parseRasterCalcString(self.text.toPlainText(), errorString)
+
+        if not self.text.toPlainText():
+            self.expressionErrorLabel.setText(self.tr('Expression is empty'))
+            self.expressionErrorLabel.setStyleSheet("QLabel { color: black; }")
+            return False
+
+        if testNode:
+            self.expressionErrorLabel.setText(self.tr('Expression is valid'))
+            self.expressionErrorLabel.setStyleSheet("QLabel { color: green; font-weight: bold; }")
+            return True
+
+        self.expressionErrorLabel.setText(self.tr('Expression is not valid ') + errorString)
+        self.expressionErrorLabel.setStyleSheet("QLabel { color : red; font-weight: bold; }")
+        return False
 
     def expsFile(self):
         return os.path.join(userFolder(), 'rastercalcexpressions.json')
@@ -138,7 +188,7 @@ class ExpressionWidget(BASE, WIDGET):
         used = [v for v in self.options.values() if v in exp]
 
         for i, v in enumerate(used):
-            exp = exp.replace(v, chr(97 + i))
+            exp = exp.replace(v, f'[{chr(97 + i)}]')
 
         dlg = AddNewExpressionDialog(exp)
         dlg.exec_()
@@ -156,8 +206,20 @@ class ExpressionWidget(BASE, WIDGET):
     def setList(self, options):
         self.options = options
         self.listWidget.clear()
-        for opt in options.keys():
-            self.listWidget.addItem(opt)
+        entries = QgsRasterCalculatorEntry.rasterEntries()
+
+        def _find_source(name):
+            for entry in entries:
+                if entry.ref == name:
+                    return entry.raster.source()
+            return ''
+
+        for name in options.keys():
+            item = QListWidgetItem(name, self.listWidget)
+            tooltip = _find_source(name)
+            if tooltip:
+                item.setData(Qt.ToolTipRole, tooltip)
+            self.listWidget.addItem(item)
 
     def setValue(self, value):
         self.text.setPlainText(value)
@@ -171,29 +233,28 @@ class ExpressionWidgetWrapper(WidgetWrapper):
     def _panel(self, options):
         return ExpressionWidget(options)
 
+    def _get_options(self):
+        entries = QgsRasterCalculatorEntry.rasterEntries()
+        options = {}
+        for entry in entries:
+            options[entry.ref] = entry.ref
+        return options
+
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
-            options = {}
-            for lyr in layers:
-                for n in range(lyr.bandCount()):
-                    name = '{:s}@{:d}'.format(lyr.name(), n + 1)
-                    options[name] = name
-            return self._panel(options)
+            if iface is not None and iface.layerTreeView() is not None and iface.layerTreeView().layerTreeModel() is not None:
+                iface.layerTreeView().layerTreeModel().dataChanged.connect(self.refresh)
+            return self._panel(self._get_options())
         elif self.dialogType == DIALOG_BATCH:
             return QLineEdit()
         else:
-            layers = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
-            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(lyr) for lyr in layers}
-            return self._panel(options)
+            layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer], [QgsProcessingOutputRasterLayer])
+            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(self.dialog.resolveValueDescription(lyr)) for lyr in layers}
+            self.widget = self._panel(options)
+            return self.widget
 
-    def refresh(self):
-        layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
-        options = {}
-        for lyr in layers:
-            for n in range(lyr.bandCount()):
-                options[lyr.name()] = '{:s}@{:d}'.format(lyr.name(), n + 1)
-        self.widget.setList(options)
+    def refresh(self, *args):
+        self.widget.setList(self._get_options())
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
@@ -204,7 +265,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             self.widget.setValue(value)
 
     def value(self):
-        if self.dialogType in DIALOG_STANDARD:
+        if self.dialogType == DIALOG_STANDARD:
             return self.widget.value()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
@@ -216,7 +277,7 @@ class LayersListWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_BATCH:
-            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         else:
@@ -243,6 +304,6 @@ class LayersListWidgetWrapper(WidgetWrapper):
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
                 raise InvalidParameterValue()
             return values

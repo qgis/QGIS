@@ -1,0 +1,78 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapsettingsutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapSettingsUtils
+{
+%Docstring
+Utilities for map settings.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsmapsettingsutils.h"
+%End
+  public:
+
+    enum class EffectsCheckFlag
+    {
+      IgnoreGeoPdfSupportedEffects,
+    };
+    typedef QFlags<QgsMapSettingsUtils::EffectsCheckFlag> EffectsCheckFlags;
+
+
+    static QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags = QgsMapSettingsUtils::EffectsCheckFlags() );
+%Docstring
+Checks whether any of the layers attached to a map settings object contain advanced effects.
+
+The optional ``flags`` argument can be used to fine-tune the check behavior.
+%End
+
+    static void worldFileParameters( const QgsMapSettings &mapSettings, double &a /Out/, double &b /Out/, double &c /Out/, double &d /Out/, double &e /Out/, double &f /Out/ );
+%Docstring
+Computes the six parameters of a world file.
+
+:param mapSettings: map settings
+
+:return: - a: the a parameter
+         - b: the b parameter
+         - c: the c parameter
+         - d: the d parameter
+         - e: the e parameter
+         - f: the f parameter
+
+.. versionadded:: 3.10
+%End
+
+    static QString worldFileContent( const QgsMapSettings &mapSettings );
+%Docstring
+Creates the content of a world file.
+
+:param mapSettings: map settings
+
+.. note::
+
+   Uses 17 places of precision for all numbers output
+%End
+
+};
+
+QFlags<QgsMapSettingsUtils::EffectsCheckFlag> operator|(QgsMapSettingsUtils::EffectsCheckFlag f1, QFlags<QgsMapSettingsUtils::EffectsCheckFlag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapsettingsutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

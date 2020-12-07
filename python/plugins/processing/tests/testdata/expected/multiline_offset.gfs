@@ -2,6 +2,8 @@
   <GMLFeatureClass>
     <Name>multiline_offset</Name>
     <ElementPath>multiline_offset</ElementPath>
+    <!--MULTILINESTRING-->
+    <GeometryType>5</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>4</FeatureCount>

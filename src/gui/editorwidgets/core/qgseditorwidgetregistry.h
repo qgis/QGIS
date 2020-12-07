@@ -18,7 +18,6 @@
 
 #include <QObject>
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <QMap>
 #include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
@@ -35,7 +34,8 @@ class QgsEditorConfigWidget;
 class QgsVectorLayer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class manages all known edit widget factories.
  *
  * QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
@@ -60,8 +60,8 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param mapCanvas  Specify a map canvas with which the widgets (relation reference) work
      * \param messageBar Specify a message bar on which messages by widgets will be shown while working with the map canvas
      *
-     * \since QGIS 2.8
      * \note Not required for plugins, the QGIS application does that already
+     * \since QGIS 2.8
      */
     void initEditors( QgsMapCanvas *mapCanvas = nullptr, QgsMessageBar *messageBar = nullptr );
 
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * Deletes all the registered widgets
      */
-    ~QgsEditorWidgetRegistry();
+    ~QgsEditorWidgetRegistry() override;
 
     /**
      * Find the best editor widget and its configuration for a given field.
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
 
     /**
      * Create an attribute editor widget wrapper of a given type for a given field.
-     * The editor may be NULL if you want the widget wrapper to create a default widget.
+     * The editor may be NULLPTR if you want the widget wrapper to create a default widget.
      *
      * \param widgetId  The id of the widget type to create an attribute editor for
      * \param vl        The vector layer for which this widget will be created
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
 
     /**
      * Create an attribute editor widget wrapper of the best type for a given field.
-     * The editor may be NULL if you want the widget wrapper to create a default widget.
+     * The editor may be NULLPTR if you want the widget wrapper to create a default widget.
      *
      * \param vl        The vector layer for which this widget will be created
      * \param fieldIdx  The field index on the specified layer for which this widget will be created
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS ) SIP_FACTORY;
 
     /**
-     * Get the human readable name for a widget type
+     * Gets the human readable name for a widget type
      *
      * \param widgetId The widget type to get the name for
      *
@@ -151,16 +151,16 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QString name( const QString &widgetId );
 
     /**
-     * Get access to all registered factories
+     * Gets access to all registered factories
      *
      * \returns All ids and factories
      */
     QMap<QString, QgsEditorWidgetFactory *> factories();
 
     /**
-     * Get a factory for the given widget type id.
+     * Gets a factory for the given widget type id.
      *
-     * \returns A factory or Null if not existent
+     * \returns A factory or NULLPTR if not existent
      */
     QgsEditorWidgetFactory *factory( const QString &widgetId );
 
@@ -170,7 +170,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \param widgetId      The id which will be used later to refer to this widget type
      * \param widgetFactory The factory which will create this widget type
      *
-     * \returns true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
+     * \returns TRUE, if successful, FALSE, if the widgetId is already in use or widgetFactory is NULLPTR
      */
     bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory SIP_TRANSFER );
 
@@ -187,6 +187,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QMap<QString, QgsEditorWidgetFactory *> mWidgetFactories;
     QMap<const char *, QPair<int, QString> > mFactoriesByType;
     QgsEditorWidgetAutoConf mAutoConf;
+    std::unique_ptr<QgsEditorWidgetFactory> mFallbackWidgetFactory = nullptr;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

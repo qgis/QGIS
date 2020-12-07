@@ -29,46 +29,14 @@
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
 
+#include <gdal.h>
 #include <ogr_api.h>
 
 // Version constants
 //
 
-// Version string
-const QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
-
 // development version
 const char *Qgis::QGIS_DEV_VERSION = QGSVERSION;
-
-// Version number used for comparing versions using the
-// "Check QGIS Version" function
-const int Qgis::QGIS_VERSION_INT = VERSION_INT;
-
-// Release name
-const QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
-
-const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
-
-const QString GEOWKT =
-  "GEOGCS[\"WGS 84\", "
-  "  DATUM[\"WGS_1984\", "
-  "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-  "      AUTHORITY[\"EPSG\",7030]], "
-  "    TOWGS84[0,0,0,0,0,0,0], "
-  "    AUTHORITY[\"EPSG\",6326]], "
-  "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-  "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-  "  AXIS[\"Lat\",NORTH], "
-  "  AXIS[\"Long\",EAST], "
-  "  AUTHORITY[\"EPSG\",4326]]";
-
-const QString PROJECT_SCALES =
-  "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
-  "1:10000,1:5000,1:2500,1:1000,1:500";
-
-const QString GEO_EPSG_CRS_AUTHID = QStringLiteral( "EPSG:4326" );
-
-const QString GEO_NONE = QStringLiteral( "NONE" );
 
 const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
@@ -84,31 +52,48 @@ const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
 
+const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
+
+const QgsTolerance::UnitType Qgis::DEFAULT_SNAP_UNITS = QgsTolerance::Pixels;
+
+#ifdef Q_OS_WIN
+const double Qgis::UI_SCALE_FACTOR = 1.5;
+#else
+const double Qgis::UI_SCALE_FACTOR = 1;
+#endif
+
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
-  string.remove( QLocale::system().groupSeparator() );
-  return QLocale::system().toDouble( string, &ok );
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toDouble( string, &ok );
 }
 
 int qgsPermissiveToInt( QString string, bool &ok )
 {
   //remove any thousands separators
-  string.remove( QLocale::system().groupSeparator() );
-  return QLocale::system().toInt( string, &ok );
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toInt( string, &ok );
+}
+
+qlonglong qgsPermissiveToLongLong( QString string, bool &ok )
+{
+  //remove any thousands separators
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toLongLong( string, &ok );
 }
 
 void *qgsMalloc( size_t size )
 {
   if ( size == 0 || long( size ) < 0 )
   {
-    QgsDebugMsg( QString( "Negative or zero size %1." ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Negative or zero size %1." ).arg( size ) );
     return nullptr;
   }
   void *p = malloc( size );
   if ( !p )
   {
-    QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
   }
   return p;
 }
@@ -117,7 +102,7 @@ void *qgsCalloc( size_t nmemb, size_t size )
 {
   if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
   {
-    QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
     return nullptr;
   }
   void *p = qgsMalloc( nmemb * size );
@@ -171,8 +156,8 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QList<QVariant> &lhsl = lhs.toList();
       const QList<QVariant> &rhsl = rhs.toList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
-      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
+      int i, n = std::min( lhsl.size(), rhsl.size() );
+      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && qgsVariantEqual( lhsl[i], rhsl[i] ); i++ )
         ;
 
       if ( i == n )
@@ -186,7 +171,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QStringList &lhsl = lhs.toStringList();
       const QStringList &rhsl = rhs.toStringList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
+      int i, n = std::min( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i] == rhsl[i]; i++ )
         ;
 
@@ -208,8 +193,16 @@ bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
 
 QString qgsVsiPrefix( const QString &path )
 {
-  if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) ||
-       path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+  if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsizip/" );
+  else if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
+  {
+    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
+    if ( GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
+      return QString();
+    return QStringLiteral( "/vsizip/" );
+  }
+  else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
     return QStringLiteral( "/vsizip/" );
   else if ( path.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
@@ -220,13 +213,13 @@ QString qgsVsiPrefix( const QString &path )
             path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
     return QStringLiteral( "/vsigzip/" );
   else
-    return QLatin1String( "" );
+    return QString();
 }
 
 uint qHash( const QVariant &variant )
 {
   if ( !variant.isValid() || variant.isNull() )
-    return -1;
+    return std::numeric_limits<uint>::max();
 
   switch ( variant.type() )
   {
@@ -263,8 +256,49 @@ uint qHash( const QVariant &variant )
     case QVariant::RegExp:
       return qHash( variant.toString() );
     default:
-      return -1;
+      break;
   }
 
-  return -1;
+  return std::numeric_limits<uint>::max();
+}
+
+bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
+{
+  return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
+}
+
+QString Qgis::defaultProjectScales()
+{
+  return QStringLiteral( "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
+                         "1:10000,1:5000,1:2500,1:1000,1:500" );
+}
+
+QString Qgis::version()
+{
+  return QString::fromUtf8( VERSION );
+}
+
+int Qgis::versionInt()
+{
+  // Version number used for comparing versions using the
+  // "Check QGIS Version" function
+  return VERSION_INT;
+}
+
+QString Qgis::releaseName()
+{
+  return QString::fromUtf8( RELEASE_NAME );
+}
+
+QString Qgis::devVersion()
+{
+  return QString::fromUtf8( QGIS_DEV_VERSION );
+}
+
+template<>
+bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
+{
+  // qt's built in qMapLessThanKey for QVariantList is broken and does a case-insensitive operation.
+  // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
+  return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
 }

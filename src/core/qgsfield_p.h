@@ -27,8 +27,13 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 #include "qgsfieldconstraints.h"
 #include "qgseditorwidgetsetup.h"
+#include "qgsdefaultvalue.h"
+#include "qgsfield.h"
+
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
@@ -70,19 +75,22 @@ class QgsFieldPrivate : public QSharedData
       , precision( other.precision )
       , comment( other.comment )
       , alias( other.alias )
-      , defaultValueExpression( other.defaultValueExpression )
+      , flags( other.flags )
+      , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
+      , isReadOnly( other.isReadOnly )
     {
     }
 
-    ~QgsFieldPrivate() {}
+    ~QgsFieldPrivate() = default;
 
     bool operator==( const QgsFieldPrivate &other ) const
     {
       return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
                && ( length == other.length ) && ( precision == other.precision )
-               && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
-               && ( constraints == other.constraints ) );
+               && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
+               && ( constraints == other.constraints )  && ( flags == other.flags )
+               && ( isReadOnly == other.isReadOnly ) );
     }
 
     //! Name
@@ -109,13 +117,22 @@ class QgsFieldPrivate : public QSharedData
     //! Alias for field name (friendly name shown to users)
     QString alias;
 
-    //! Default value expression
-    QString defaultValueExpression;
+    //! Flags for the field (searchable, …)
+    QgsField::ConfigurationFlags flags = QgsField::ConfigurationFlag::None;
+
+    //! Default value
+    QgsDefaultValue defaultValueDefinition;
 
     //! Field constraints
     QgsFieldConstraints constraints;
 
     QgsEditorWidgetSetup editorWidgetSetup;
+
+    //! Read-only
+    bool isReadOnly = false;
+
+  private:
+    QgsFieldPrivate &operator=( const QgsFieldPrivate & ) = delete;
 };
 
 /// @endcond

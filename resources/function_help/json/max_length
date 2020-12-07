@@ -1,6 +1,7 @@
 {
   "name": "max_length",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the maximum length of strings from a field or expression.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

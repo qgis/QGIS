@@ -25,7 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the save as dialog
  */
 class TestQgsVectorLayerSaveAsDialog : public QObject
@@ -46,11 +47,7 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog() = default;
 
 //runs before all tests
 void TestQgsVectorLayerSaveAsDialog::initTestCase()
@@ -74,6 +71,11 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   //create a temporary layer
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
+
+  // Assign a custom CRS to the layer
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( "PROJ:+proj=merc +a=1" );
+  tempLayer->setCrs( crs );
 
   // Set a widget
   tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), QVariantMap() ) );
@@ -130,6 +132,9 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   mAttributeTable->item( 0, 0 )->setCheckState( Qt::Unchecked );
   QCOMPARE( mAttributeTable->item( 0, 2 )->checkState(), Qt::Unchecked );
   QCOMPARE( mAttributeTable->item( 0, 2 )->flags(), Qt::ItemIsUserCheckable );
+
+  // Check that we can get a custom CRS with crsObject()
+  QCOMPARE( d.crsObject(), crs ) ;
 
   //d.exec();
 }

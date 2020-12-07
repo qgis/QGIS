@@ -25,9 +25,12 @@
 
 #include <QStringList>
 #include <QFile>
+#include <QVariantMap>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+
+#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
@@ -35,56 +38,69 @@ class QFile;
 class QTextStream;
 
 class QgsMssqlFeatureIterator;
+class QgsMssqlSharedData;
 
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
 #include "qgsmssqlgeometryparser.h"
+
+enum QgsMssqlPrimaryKeyType
+{
+  PktUnknown,
+  PktInt,
+  PktFidMap
+};
 
 /**
 \class QgsMssqlProvider
 \brief Data provider for mssql server.
 *
 */
-class QgsMssqlProvider : public QgsVectorDataProvider
+class QgsMssqlProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-    explicit QgsMssqlProvider( const QString &uri = QString() );
 
-    virtual ~QgsMssqlProvider();
+    static const QString MSSQL_PROVIDER_KEY;
+    static const QString MSSQL_PROVIDER_DESCRIPTION;
 
-    static QSqlDatabase GetDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password );
+    explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
+                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
+    ~QgsMssqlProvider() override;
 
-    static bool OpenDatabase( QSqlDatabase db );
+    QgsAbstractFeatureSource *featureSource() const override;
 
     /* Implementation of functions from QgsVectorDataProvider */
 
-    virtual QString storageType() const override;
-    virtual QStringList subLayers() const override;
-    virtual QVariant minimumValue( int index ) const override;
-    virtual QVariant maximumValue( int index ) const override;
-    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    void updateExtents() override;
+    QString storageType() const override;
+    QStringList subLayers() const override;
+    QVariant minimumValue( int index ) const override;
+    QVariant maximumValue( int index ) const override;
+    QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+    QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+                                       QgsFeedback *feedback = nullptr ) const override;
 
-    virtual QgsWkbTypes::Type wkbType() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
-    virtual long featureCount() const override;
+    QgsWkbTypes::Type wkbType() const override;
+
+    long featureCount() const override;
 
     //! Update the extent, feature count, wkb type and srid for this layer
     void UpdateStatistics( bool estimate ) const;
 
-    virtual QgsFields fields() const override;
+    QgsFields fields() const override;
 
     QString subsetString() const override;
 
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
 
-    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
 
     /* Implementation of functions from QgsDataProvider */
@@ -95,35 +111,41 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     QgsAttributeList pkAttributeIndexes() const override;
 
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
 
     bool isValid() const override;
 
-    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
 
-    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
+    bool addAttributes( const QList<QgsField> &attributes ) override;
 
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
+    bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    virtual bool createSpatialIndex() override;
+    bool createSpatialIndex() override;
 
-    virtual bool createAttributeIndex( int field ) override;
+    bool createAttributeIndex( int field ) override;
 
     //! Convert a QgsField to work with MSSQL
     static bool convertField( QgsField &field );
 
-    //! Convert values to quoted values for database work *
+    //! Convert values to quoted values for database work
     static QString quotedValue( const QVariant &value );
+    static QString quotedIdentifier( const QString &value );
 
     QString defaultValueClause( int fieldId ) const override;
+    QVariant defaultValue( int fieldId ) const override;
+
+    //! Convert time value
+    static QVariant convertTimeValue( const QVariant &value );
+
 
     //! Import a vector layer into the database
     static QgsVectorLayerExporter::ExportError createEmptyLayer(
@@ -134,10 +156,10 @@ class QgsMssqlProvider : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
   protected:
     //! Loads fields from input file to member attributeFields
@@ -163,9 +185,19 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
 
-    long mNumberFeatures;
-    QString mFidColName;
-    int mFidColIdx;
+    long mNumberFeatures = 0;
+
+    /**
+      *
+      * Data type for the primary key
+      */
+    QgsMssqlPrimaryKeyType mPrimaryKeyType = PktUnknown;
+
+    /**
+     * List of primary key attributes for fetching features.
+     */
+    QList<int> mPrimaryKeyAttrs;
+
     mutable long mSRId;
     QString mGeometryColName;
     QString mGeometryColType;
@@ -176,10 +208,10 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // Coordinate reference system
     mutable QgsCoordinateReferenceSystem mCrs;
 
-    mutable QgsWkbTypes::Type mWkbType;
+    mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     // The database object
-    QSqlDatabase mDatabase;
+    mutable QSqlDatabase mDatabase;
 
     // The current sql query
     QSqlQuery mQuery;
@@ -206,18 +238,85 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    bool mDisableInvalidGeometryHandling = false;
+
     // Sets the error messages
-    void setLastError( const QString &error )
-    {
-      mLastError = error;
-    }
+    void setLastError( const QString &error );
+
+    QSqlQuery createQuery() const;
 
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
-    static QgsWkbTypes::Type getWkbType( const QString &wkbType, int dim );
+    static QgsWkbTypes::Type getWkbType( const QString &wkbType );
+
+    QString whereClauseFid( QgsFeatureId fid );
+
+    static QStringList parseUriKey( const QString &key );
+
+    std::shared_ptr<QgsMssqlSharedData> mShared;
 
     friend class QgsMssqlFeatureSource;
 
     static int sConnectionId;
+};
+
+/**
+ * Data shared between provider class and its feature sources. Ideally there should
+ * be as few members as possible because there could be simultaneous reads/writes
+ * from different threads and therefore locking has to be involved.
+*/
+class QgsMssqlSharedData
+{
+  public:
+    QgsMssqlSharedData() = default;
+
+    // FID lookups
+    QgsFeatureId lookupFid( const QVariantList &v ); // lookup existing mapping or add a new one
+    QVariant removeFid( QgsFeatureId fid );
+    void insertFid( QgsFeatureId fid, const QVariantList &k );
+    QVariantList lookupKey( QgsFeatureId featureId );
+
+  protected:
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
+
+    QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
+    QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
+};
+
+class QgsMssqlProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsMssqlProviderMetadata();
+    QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                    const QString &styleName, const QString &styleDescription,
+                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+
+    QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options ) override;
+    QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
+
+    // Connections API
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
+
+    // Data source URI API
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+
 };
 
 #endif // QGSMSSQLPROVIDER_H

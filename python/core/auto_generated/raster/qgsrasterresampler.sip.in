@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterresampler.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterResampler
+{
+%Docstring
+Interface for resampling rasters (e.g. to have a smoother appearance)
+%End
+
+%TypeHeaderCode
+#include "qgsrasterresampler.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsBilinearRasterResampler *>( sipCpp ) != NULL )
+      sipType = sipType_QgsBilinearRasterResampler;
+    else if ( dynamic_cast<QgsCubicRasterResampler *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCubicRasterResampler;
+    else
+      sipType = 0;
+%End
+  public:
+    virtual ~QgsRasterResampler();
+
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) = 0 /Deprecated/;
+%Docstring
+Resamples a source image to a destination image.
+
+The size of the passed destination image should be respected during the resampling
+process.
+
+.. deprecated:: QGIS 3.10.1
+  use the more efficient QgsRasterResamplerV2 interface instead.
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Gets a descriptive type identifier for this raster resampler.
+Needs to be implemented by subclasses.
+%End
+
+    virtual QgsRasterResampler *clone() const = 0 /Factory/;
+%Docstring
+Gets a deep copy of this object.
+Needs to be reimplemented by subclasses.
+Ownership is transferred to the caller.
+%End
+
+    virtual int tileBufferPixels() const;
+%Docstring
+Returns the optional tile buffer size in pixels. This represents
+the size to buffer individual resampled tile requests prior to resampling,
+in order to avoid rendering artifacts at the edges of raster tile boundaries.
+
+.. versionadded:: 3.10.1
+%End
+};
+
+
+class QgsRasterResamplerV2 : QgsRasterResampler
+{
+%Docstring
+Interface for resampling rasters (V2) (e.g. to have a smoother appearance),
+which provides a more efficient interface vs QgsRasterResampler.
+
+.. versionadded:: 3.10.1
+%End
+
+%TypeHeaderCode
+#include "qgsrasterresampler.h"
+%End
+  public:
+
+    virtual QImage resampleV2( const QImage &source, const QSize &size ) = 0;
+%Docstring
+Resamples a ``source`` image to the specified ``size``.
+
+Returns the resampled image, or a null QImage if the resampling fails.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterresampler.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

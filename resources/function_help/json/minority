@@ -1,6 +1,7 @@
 {
   "name": "minority",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the aggregate minority of values (least occurring value) from a field or expression.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

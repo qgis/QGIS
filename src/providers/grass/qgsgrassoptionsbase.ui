@@ -101,7 +101,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/themes/default/grass_mapset.png</normaloff>:/images/themes/default/grass_mapset.png</iconset>
+            <normaloff>:/images/themes/default/grass_mapset.svg</normaloff>:/images/themes/default/grass_mapset.svg</iconset>
           </property>
          </item>
          <item>
@@ -500,7 +500,7 @@
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QDoubleSpinBox" name="mRegionWidthSpinBox">
+                 <widget class="QgsDoubleSpinBox" name="mRegionWidthSpinBox">
                   <property name="decimals">
                    <number>1</number>
                   </property>
@@ -566,6 +566,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>

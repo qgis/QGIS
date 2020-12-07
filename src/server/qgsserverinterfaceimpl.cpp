@@ -19,7 +19,6 @@
 
 #include "qgsserverinterfaceimpl.h"
 #include "qgsconfigcache.h"
-#include "qgsmslayercache.h"
 
 //! Constructor
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, QgsServiceRegistry *srvRegistry, QgsServerSettings *settings )
@@ -30,8 +29,7 @@ QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, 
   mRequestHandler = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls = new QgsAccessControl();
-#else
-  mAccessControls = nullptr;
+  mCacheManager = new QgsServerCacheManager();
 #endif
 }
 
@@ -45,6 +43,7 @@ QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   delete mAccessControls;
+  delete mCacheManager;
 #endif
 }
 
@@ -80,11 +79,26 @@ void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter *acce
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls->registerAccessControl( accessControl, priority );
 #else
-  Q_UNUSED( accessControl );
-  Q_UNUSED( priority );
+  Q_UNUSED( accessControl )
+  Q_UNUSED( priority )
 #endif
 }
 
+//! Register a new access control filter
+void QgsServerInterfaceImpl::registerServerCache( QgsServerCacheFilter *serverCache, int priority )
+{
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  mCacheManager->registerServerCache( serverCache, priority );
+#else
+  Q_UNUSED( serverCache )
+  Q_UNUSED( priority )
+#endif
+}
+
+QgsServerCacheManager *QgsServerInterfaceImpl::cacheManager() const
+{
+  return mCacheManager;
+}
 
 void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString &path )
 {
@@ -93,11 +107,6 @@ void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString &path )
     mCapabilitiesCache->removeCapabilitiesDocument( path );
   }
   QgsConfigCache::instance()->removeEntry( path );
-}
-
-void QgsServerInterfaceImpl::removeProjectLayers( const QString &path )
-{
-  QgsMSLayerCache::instance()->removeProjectLayers( path );
 }
 
 QgsServiceRegistry *QgsServerInterfaceImpl::serviceRegistry()

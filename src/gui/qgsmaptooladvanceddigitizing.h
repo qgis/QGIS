@@ -22,8 +22,10 @@
 
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
+class QgsSnapToGridCanvasItem;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
  * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
@@ -35,15 +37,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-    //! Different capture modes
-    enum CaptureMode
-    {
-      CaptureNone,    //!< Do not capture
-      CapturePoint,   //!< Capture points
-      CaptureSegment, //!< Capture a segment (i.e. 2 points)
-      CaptureLine,    //!< Capture lines
-      CapturePolygon  //!< Capture polygons
-    };
 
     /**
      * Creates an advanced digitizing maptool
@@ -53,41 +46,71 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     //! Catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
     //! Catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     //! Catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-
-    /**
-     * The capture mode
-     *
-     * \returns Capture mode
-     */
-    CaptureMode mode() const { return mCaptureMode; }
-
-    /**
-     * Set capture mode. This should correspond to the layer on which the digitizing
-     * happens.
-     *
-     * \param mode Capture Mode
-     */
-    void setMode( CaptureMode mode ) { mCaptureMode = mode; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     /**
      * Registers this maptool with the cad dock widget
      */
-    virtual void activate() override;
+    void activate() override;
 
     /**
      * Unregisters this maptool from the cad dock widget
      */
-    virtual void deactivate() override;
+    void deactivate() override;
 
     QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget; }
 
+    /**
+     * Returns whether functionality of advanced digitizing dock widget is currently allowed.
+     *
+     * Tools may decide to switch this support on/off based on the current state of the map tool.
+     * For example, in vertex tool before user picks a vertex to move, advanced digitizing dock
+     * widget should be disabled and only enabled once a vertex is being moved. Other map tools
+     * may keep advanced digitizing allowed all the time.
+     *
+     * If TRUE is returned, that does not mean that advanced digitizing is actually active,
+     * because it is up to the user to enable/disable it when it is allowed.
+     * \sa setAdvancedDigitizingAllowed()
+     * \since QGIS 3.0
+     */
+    bool isAdvancedDigitizingAllowed() const { return mAdvancedDigitizingAllowed; }
+
+    /**
+     * Returns whether mouse events (press/move/release) should automatically try to snap mouse position
+     * (according to the snapping configuration of map canvas) before passing the mouse coordinates
+     * to the tool. This may be desirable default behavior for some map tools, but not for other map tools.
+     * It is therefore possible to configure the behavior by the map tool.
+     * \sa isAutoSnapEnabled()
+     * \since QGIS 3.0
+     */
+    bool isAutoSnapEnabled() const { return mAutoSnapEnabled; }
 
   protected:
+
+    /**
+     * Sets whether functionality of advanced digitizing dock widget is currently allowed.
+     * This method is protected because it should be a decision of the map tool and not from elsewhere.
+     * \sa isAdvancedDigitizingAllowed()
+     * \since QGIS 3.0
+     */
+    void setAdvancedDigitizingAllowed( bool allowed ) { mAdvancedDigitizingAllowed = allowed; }
+
+    /**
+     * Sets whether mouse events (press/move/release) should automatically try to snap mouse position
+     * This method is protected because it should be a decision of the map tool and not from elsewhere.
+     * \sa isAutoSnapEnabled()
+     * \since QGIS 3.0
+     */
+    void setAutoSnapEnabled( bool enabled ) { mAutoSnapEnabled = enabled; }
+
+
+    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
+
+  public:
 
     /**
      * Override this method when subclassing this class.
@@ -121,13 +144,21 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
-    //! The capture mode in which this tool operates
-    CaptureMode mCaptureMode;
+    /**
+     * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
+     *
+     * \since QGIS 3.4
+     */
+    bool snapToLayerGridEnabled() const;
 
-    bool mSnapOnPress;       //!< Snap on press
-    bool mSnapOnRelease;     //!< Snap on release
-    bool mSnapOnMove;        //!< Snap on move
-    bool mSnapOnDoubleClick; //!< Snap on double click
+    /**
+     * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
+     *
+     * \since QGIS 3.4
+     */
+    void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
 
   private slots:
 
@@ -141,10 +172,17 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void cadPointChanged( const QgsPointXY &point );
 
-  private:
-    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
+    void onCurrentLayerChanged();
 
-    void snap( QgsMapMouseEvent *e );
+  private:
+
+    //! Whether to allow use of advanced digitizing dock at this point
+    bool mAdvancedDigitizingAllowed = true;
+    //! Whether to snap mouse cursor to map before passing coordinates to cadCanvas*Event()
+    bool mAutoSnapEnabled = true;
+    //! Whether to snap to grid before passing coordinates to cadCanvas*Event()
+    bool mSnapToLayerGridEnabled = true;
+    QgsSnapToGridCanvasItem *mSnapToGridCanvasItem = nullptr;
 };
 
 #endif // QGSMAPTOOLADVANCEDDIGITIZE_H

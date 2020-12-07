@@ -1,0 +1,757 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsgeometryutils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGeometryUtils
+{
+%Docstring
+Contains various geometry utility functions.
+
+.. versionadded:: 2.10
+%End
+
+%TypeHeaderCode
+#include "qgsgeometryutils.h"
+%End
+  public:
+
+    static QVector<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) /Factory/;
+%Docstring
+Returns list of linestrings extracted from the passed geometry. The returned objects
+have to be deleted by the caller.
+%End
+
+    static QgsPoint closestVertex( const QgsAbstractGeometry &geom, const QgsPoint &pt, QgsVertexId &id /Out/ );
+%Docstring
+Returns the closest vertex to a geometry for a specified point.
+On error null point will be returned and "id" argument will be invalid.
+%End
+
+    static QgsPoint closestPoint( const QgsAbstractGeometry &geometry, const QgsPoint &point );
+%Docstring
+Returns the nearest point on a segment of a ``geometry``
+for the specified ``point``. The z and m values will be linearly interpolated between
+the two neighbouring vertices.
+%End
+
+    static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
+%Docstring
+Returns the distance along a geometry from its first vertex to the specified vertex.
+
+:param geom: geometry
+:param id: vertex id to find distance to
+
+:return: distance to vertex (following geometry)
+
+.. versionadded:: 2.16
+%End
+
+    static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
+                                    double distance,
+                                    QgsVertexId &previousVertex /Out/,
+                                    QgsVertexId &nextVertex /Out/ );
+%Docstring
+Retrieves the vertices which are before and after the interpolated point at a specified distance along a linestring
+(or polygon boundary).
+
+:param geometry: line or polygon geometry
+:param distance: distance to traverse along geometry
+:param previousVertex: will be set to previous vertex ID
+
+:return: - ``True`` if vertices were successfully retrieved
+         - nextVertex: will be set to next vertex ID
+
+.. note::
+
+   if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
+
+.. versionadded:: 3.0
+%End
+
+    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
+%Docstring
+Returns the squared 2D distance between two points.
+%End
+
+    static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX /Out/, double &minDistY /Out/, double epsilon ) /HoldGIL/;
+%Docstring
+Returns the squared distance between a point and a line.
+%End
+
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection /Out/ ) /HoldGIL/;
+%Docstring
+Computes the intersection between two lines. Z dimension is
+supported and is retrieved from the first 3D point amongst ``p1`` and
+``p2``.
+
+:param p1: Point on the first line
+:param v1: Direction vector of the first line
+:param p2: Point on the second line
+:param v2: Direction vector of the second line
+
+:return: - Whether the lines intersect
+         - intersection: Output parameter, the intersection point
+%End
+
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false ) /HoldGIL/;
+%Docstring
+Compute the intersection between two segments
+
+:param p1: First segment start point
+:param p2: First segment end point
+:param q1: Second segment start point
+:param q2: Second segment end point
+:param tolerance: The tolerance to use
+:param acceptImproperIntersection: By default, this method returns ``True`` only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
+
+:return: - Whether the segments intersect
+         - intersectionPoint: Output parameter, the intersection point
+         - isIntersection: Output parameter, return ``True`` if an intersection is found
+
+Example
+-------
+
+.. code-block:: python
+
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # Whether the segments intersect, the intersection point, is intersect
+       # (False, 'Point (0 0)', False)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (False, 'Point (0 5)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (True, 'Point (0 5)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (False, 'Point (0 2)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (True, 'Point (0 2)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (True, 'Point (0 0)', True)
+%End
+
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
+                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
+                                        QgsPointXY &intersection /In,Out/ ) /HoldGIL/;
+%Docstring
+Compute the intersection of a line and a circle.
+If the intersection has two solutions (points),
+the closest point to the initial ``intersection`` point is returned.
+
+:param center: the center of the circle
+:param radius: the radius of the circle
+:param linePoint1: a first point on the line
+:param linePoint2: a second point on the line
+:param intersection: the initial point and the returned intersection point
+
+:return: ``True`` if an intersection has been found
+%End
+
+    static int circleCircleIntersections( QgsPointXY center1, double radius1,
+                                          QgsPointXY center2, double radius2,
+                                          QgsPointXY &intersection1 /Out/, QgsPointXY &intersection2 /Out/ ) /HoldGIL/;
+%Docstring
+Calculates the intersections points between the circle with center ``center1`` and
+radius ``radius1`` and the circle with center ``center2`` and radius ``radius2``.
+
+If found, the intersection points will be stored in ``intersection1`` and ``intersection2``.
+
+:return: number of intersection points found.
+
+.. versionadded:: 3.2
+%End
+
+    static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
+                                       const QgsPointXY &p, QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ ) /HoldGIL/;
+%Docstring
+Calculates the tangent points between the circle with the specified ``center`` and ``radius``
+and the point ``p``.
+
+If found, the tangent points will be stored in ``pt1`` and ``pt2``.
+
+.. versionadded:: 3.2
+%End
+
+    static int circleCircleOuterTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
+      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) /HoldGIL/;
+%Docstring
+Calculates the outer tangent points for two circles, centered at ``center1`` and
+``center2`` and with radii of ``radius1`` and ``radius2`` respectively.
+
+The outer tangent points correspond to the points at which the two lines
+which are drawn so that they are tangential to both circles touch
+the circles.
+
+The first tangent line is described by the points
+stored in ``line1P1`` and ``line1P2``,
+and the second line is described by the points stored in ``line2P1``
+and ``line2P2``.
+
+Returns the number of tangents (either 0 or 2).
+
+.. versionadded:: 3.2
+%End
+
+    static int circleCircleInnerTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
+      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ ) /HoldGIL/;
+%Docstring
+Calculates the inner tangent points for two circles, centered at \a
+center1 and ``center2`` and with radii of ``radius1`` and ``radius2``
+respectively.
+
+The inner tangent points correspond to the points at which the two lines
+which are drawn so that they are tangential to both circles and are
+crossing each other.
+
+The first tangent line is described by the points
+stored in ``line1P1`` and ``line1P2``,
+and the second line is described by the points stored in ``line2P1``
+and ``line2P2``.
+
+Returns the number of tangents (either 0 or 2).
+
+.. versionadded:: 3.6
+%End
+
+    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) /HoldGIL/;
+%Docstring
+Project the point on a segment
+
+:param p: The point
+:param s1: The segment start point
+:param s2: The segment end point
+
+:return: The projection of the point on the segment
+%End
+
+
+
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) /HoldGIL/;
+%Docstring
+Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> (``x2``, ``y2``).
+A positive return value indicates the point is to the right of the line.
+
+If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+on the line, or exactly in line with the segment) and the result is undefined.
+%End
+
+    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
+%Docstring
+Returns a value < 0 if the point ``point`` is left of the line from ``p1`` -> ``p2``.
+A positive return value indicates the point is to the right of the line.
+
+If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+on the line, or exactly in line with the segment) and the result is undefined.
+
+.. versionadded:: 3.6
+%End
+
+    static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance ) /HoldGIL/;
+%Docstring
+Returns a point a specified ``distance`` toward a second point.
+%End
+
+
+    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) /HoldGIL/;
+%Docstring
+Interpolates a point on an arc defined by three points, ``pt1``, ``pt2`` and ``pt3``. The arc will be
+interpolated by the specified ``distance`` from ``pt1``.
+
+Any z or m values present in the points will also be linearly interpolated in the output.
+
+.. versionadded:: 3.4
+%End
+
+    static double ccwAngle( double dy, double dx ) /HoldGIL/;
+%Docstring
+Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
+%End
+
+    static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius /Out/,
+                                    double &centerX /Out/, double &centerY /Out/ ) /HoldGIL/;
+%Docstring
+Returns radius and center of the circle through pt1, pt2, pt3
+%End
+
+    static bool circleClockwise( double angle1, double angle2, double angle3 ) /HoldGIL/;
+%Docstring
+Returns ``True`` if the circle defined by three angles is ordered clockwise.
+
+The angles are defined counter-clockwise from the origin, i.e. using
+Euclidean angles as opposed to geographic "North up" angles.
+%End
+
+    static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise ) /HoldGIL/;
+%Docstring
+Returns ``True`` if, in a circle, angle is between angle1 and angle2
+%End
+
+    static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 ) /HoldGIL/;
+%Docstring
+Returns ``True`` if an angle is between angle1 and angle3 on a circle described by
+angle1, angle2 and angle3.
+%End
+
+    static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
+%Docstring
+Length of a circular string segment defined by pt1, pt2, pt3
+%End
+
+    static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
+%Docstring
+Calculates angle of a circular string part defined by pt1, pt2, pt3
+%End
+
+    static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos ) /HoldGIL/;
+%Docstring
+Calculates midpoint on circle passing through ``p1`` and ``p2``, closest to
+the given coordinate ``mousePos``. Z dimension is supported and is retrieved from the
+first 3D point amongst ``p1`` and ``p2``.
+
+.. seealso:: :py:func:`segmentMidPointFromCenter`
+%End
+
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true ) /HoldGIL/;
+%Docstring
+Calculates the midpoint on the circle passing through ``p1`` and ``p2``,
+with the specified ``center`` coordinate.
+
+If ``useShortestArc`` is ``True``, then the midpoint returned will be that corresponding
+to the shorter arc from ``p1`` to ``p2``. If it is ``False``, the longer arc from ``p1``
+to ``p2`` will be used (i.e. winding the other way around the circle).
+
+.. seealso:: :py:func:`segmentMidPoint`
+
+.. versionadded:: 3.2
+%End
+
+    static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 ) /HoldGIL/;
+%Docstring
+Calculates the direction angle of a circle tangent (clockwise from north in radians)
+%End
+
+    static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
+                               QVector<QgsPoint>  &points /Out/, double tolerance = M_PI_2 / 90,
+                               QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
+                               bool hasZ = false, bool hasM = false );
+%Docstring
+Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
+
+.. versionadded:: 3.0
+%End
+
+    static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
+                                   double pointSpacingAngleTolerance ) /HoldGIL/;
+%Docstring
+Returns ``True`` if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
+that arc portion already described by ``a1``, ``a2`` and ``a3``.
+
+The ``distanceTolerance`` specifies the maximum deviation allowed between the original location
+of point \b and where it would fall on the candidate arc.
+
+This method only consider a segments as continuing an arc if the points are all regularly spaced
+on the candidate arc. The ``pointSpacingAngleTolerance`` parameter specifies the maximum
+angular deviation (in radians) allowed when testing for regular point spacing.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.14
+%End
+
+    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) /HoldGIL/;
+%Docstring
+For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
+Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
+
+.. versionadded:: 3.0
+%End
+
+    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) /HoldGIL/;
+%Docstring
+Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
+
+.. versionadded:: 3.0
+%End
+
+
+
+
+
+
+
+
+    static double normalizedAngle( double angle ) /HoldGIL/;
+%Docstring
+Ensures that an angle is in the range 0 <= angle < 2 pi.
+
+:param angle: angle in radians
+
+:return: equivalent angle within the range [0, 2 pi)
+%End
+
+    static double lineAngle( double x1, double y1, double x2, double y2 ) /HoldGIL/;
+%Docstring
+Calculates the direction of line joining two points in radians, clockwise from the north direction.
+
+:param x1: x-coordinate of line start
+:param y1: y-coordinate of line start
+:param x2: x-coordinate of line end
+:param y2: y-coordinate of line end
+
+:return: angle in radians. Returned value is undefined if start and end point are the same.
+%End
+
+    static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
+                                           double x3, double y3 ) /HoldGIL/;
+%Docstring
+Calculates the angle between the lines AB and BC, where AB and BC described
+by points a, b and b, c.
+
+:param x1: x-coordinate of point a
+:param y1: y-coordinate of point a
+:param x2: x-coordinate of point b
+:param y2: y-coordinate of point b
+:param x3: x-coordinate of point c
+:param y3: y-coordinate of point c
+
+:return: angle between lines in radians. Returned value is undefined if two or more points are equal.
+%End
+
+    static double linePerpendicularAngle( double x1, double y1, double x2, double y2 ) /HoldGIL/;
+%Docstring
+Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
+clockwise from the north direction.
+
+:param x1: x-coordinate of line start
+:param y1: y-coordinate of line start
+:param x2: x-coordinate of line end
+:param y2: y-coordinate of line end
+
+:return: angle in radians. Returned value is undefined if start and end point are the same.
+%End
+
+    static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 ) /HoldGIL/;
+%Docstring
+Calculates the average angle (in radians) between the two linear segments from
+(``x1``, ``y1``) to (``x2``, ``y2``) and (``x2``, ``y2``) to (``x3``, ``y3``).
+%End
+
+    static double averageAngle( double a1, double a2 ) /HoldGIL/;
+%Docstring
+Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
+
+:param a1: first angle (in radians)
+:param a2: second angle (in radians)
+
+:return: average angle (in radians)
+%End
+
+
+
+    static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
+%Docstring
+Returns a middle point between points pt1 and pt2.
+Z value is computed if one of this point have Z.
+M value is computed if one of this point have M.
+
+:param pt1: first point.
+:param pt2: second point.
+
+:return: New point at middle between points pt1 and pt2.
+
+Example
+-------
+
+.. code-block:: python
+
+       p = QgsPoint( 4, 6 ) # 2D point
+       pr = midpoint ( p, QgsPoint( 2, 2 ) )
+       # pr is a 2D point: 'Point (3 4)'
+       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+       # pr is a 3D point: 'PointZ (3 4 1)'
+       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+       # pr is a 3D point: 'PointM (3 4 1)'
+       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+       # pr is a 3D point: 'PointZM (3 4 1 1)'
+
+.. versionadded:: 3.0
+%End
+
+    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction ) /HoldGIL/;
+%Docstring
+Interpolates the position of a point a ``fraction`` of the way along
+the line from (``x1``, ``y1``) to (``x2``, ``y2``).
+
+Usually the ``fraction`` should be between 0 and 1, where 0 represents the
+point at the start of the line (``x1``, ``y1``) and 1 represents
+the end of the line (``x2``, ``y2``). However, it is possible to
+use a ``fraction`` < 0 or > 1, in which case the returned point
+is extrapolated from the supplied line.
+
+.. seealso:: :py:func:`interpolatePointOnLineByValue`
+
+.. versionadded:: 3.0.2
+%End
+
+    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction ) /HoldGIL/;
+%Docstring
+Interpolates the position of a point a ``fraction`` of the way along
+the line from ``p1`` to ``p2``.
+
+Usually the ``fraction`` should be between 0 and 1, where 0 represents the
+point at the start of the line (``p1``) and 1 represents
+the end of the line (``p2``). However, it is possible to
+use a ``fraction`` < 0 or > 1, in which case the returned point
+is extrapolated from the supplied line.
+
+Any Z or M values present in the input points will also be interpolated
+and present in the returned point.
+
+.. seealso:: :py:func:`interpolatePointOnLineByValue`
+
+.. versionadded:: 3.0.2
+%End
+
+    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value ) /HoldGIL/;
+%Docstring
+Interpolates the position of a point along the line from (``x1``, ``y1``)
+to (``x2``, ``y2``).
+
+The position is interpolated using a supplied target ``value`` and the value
+at the start of the line (``v1``) and end of the line (``v2``). The returned
+point will be linearly interpolated to match position corresponding to
+the target ``value``.
+
+.. seealso:: :py:func:`interpolatePointOnLine`
+
+.. versionadded:: 3.0.2
+%End
+
+    static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
+%Docstring
+Returns the gradient of a line defined by points ``pt1`` and ``pt2``.
+
+:param pt1: first point.
+:param pt2: second point.
+
+:return: The gradient of this linear entity, or infinity if vertical
+
+.. versionadded:: 3.0
+%End
+
+    static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
+                              double &a /Out/, double &b /Out/, double &c /Out/ ) /HoldGIL/;
+%Docstring
+Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points ``pt1`` and ``pt2``.
+
+:param pt1: first point.
+:param pt2: second point.
+
+:return: - a: Output parameter, a coefficient of the equation.
+         - b: Output parameter, b coefficient of the equation.
+         - c: Output parameter, c coefficient of the equation.
+
+.. versionadded:: 3.0
+%End
+
+    static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) /HoldGIL/;
+%Docstring
+Create a perpendicular line segment from p to segment [s1, s2]
+
+:param p: The point
+:param s1: The segment start point
+:param s2: The segment end point
+
+:return: A line (segment) from p to perpendicular point on segment [s1, s2]
+%End
+
+
+    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22 ) /HoldGIL/;
+%Docstring
+An algorithm to calculate the shortest distance between two skew lines.
+
+:param P1: is the first point of the first line,
+:param P12: is the second point on the first line,
+:param P2: is the first point on the second line,
+:param P22: is the second point on the second line.
+
+:return: the shortest distance
+%End
+
+    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22,
+                                     QgsVector3D &X1  /Out/,
+                                     double epsilon = 0.0001 ) /HoldGIL/;
+%Docstring
+A method to project one skew line onto another.
+
+:param P1: is a first point that belonds to first skew line,
+:param P12: is the second point that belongs to first skew line,
+:param P2: is the first point that belongs to second skew line,
+:param P22: is the second point that belongs to second skew line,
+:param X1: is the result projection point of line P2P22 onto line P1P12,
+:param epsilon: the tolerance to use.
+
+:return: ``True`` if such point exists, ``False`` - otherwise.
+%End
+
+    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
+                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                     QgsVector3D &intersection  /Out/ ) /HoldGIL/;
+%Docstring
+An algorithm to calculate an (approximate) intersection of two lines in 3D.
+
+:param La1: is the first point on the first line,
+:param La2: is the second point on the first line,
+:param Lb1: is the first point on the second line,
+:param Lb2: is the second point on the second line,
+
+:return: - ``True`` if the intersection can be found, ``False`` - otherwise.
+         - intersection: is the result intersection, of it can be found.
+
+Example
+-------
+
+.. code-block:: python
+
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,3,0))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,3,0))
+       # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,0,0))
+       # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,1,0), QgsVector3D(3,2,0))
+       # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,2,0), QgsVector3D(3,1,0))
+       # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(5,5,5), QgsVector3D(0,0,0), QgsVector3D(0,5,5), QgsVector3D(5,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(0,5,0), QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0))
+       # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+       QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
+       # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
+%End
+
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) /HoldGIL/;
+%Docstring
+Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+.. versionadded:: 3.10
+%End
+
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
+%Docstring
+Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+:param aX: x-coordinate of first vertex in triangle
+:param aY: y-coordinate of first vertex in triangle
+:param bX: x-coordinate of second vertex in triangle
+:param bY: y-coordinate of second vertex in triangle
+:param cX: x-coordinate of third vertex in triangle
+:param cY: y-coordinate of third vertex in triangle
+:param weightB: weighting factor along axis A-B (between 0 and 1)
+:param weightC: weighting factor along axis A-C (between 0 and 1)
+
+:return: - pointX: x-coordinate of generated point
+         - pointY: y-coordinate of generated point
+
+.. versionadded:: 3.10
+%End
+
+    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+%Docstring
+A Z dimension is added to ``point`` if one of the point in the list
+``points`` is in 3D. Moreover, the Z value of ``point`` is updated with.
+
+:param points: List of points in which a 3D point is searched.
+:param point: The point to update with Z dimension and value.
+
+:return: ``True`` if the point is updated, ``False`` otherwise
+
+.. versionadded:: 3.0
+%End
+
+
+    static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
+                               double &pointX /Out/, double &pointY /Out/, double &angle /Out/ ) /HoldGIL/;
+%Docstring
+Returns the point (``pointX``, ``pointY``) forming the bisector from segment (``aX`` ``aY``) (``bX`` ``bY``)
+and segment (``bX``, ``bY``) (``dX``, ``dY``).
+The bisector segment of AB-CD is (point, projection of point by ``angle``)
+
+:param aX: x-coordinate of first vertex of the segment ab
+:param aY: y-coordinate of first vertex of the segment ab
+:param bX: x-coordinate of second vertex of the segment ab
+:param bY: y-coordinate of second vertex of the segment ab
+:param cX: x-coordinate of first vertex of the segment cd
+:param cY: y-coordinate of first vertex of the segment cd
+:param dX: x-coordinate of second vertex of the segment cd
+:param dY: y-coordinate of second vertex of the segment cd
+
+:return: - ``True`` if the bisector exists (A B and C D are not collinear)
+         - pointX: x-coordinate of generated point
+         - pointY: y-coordinate of generated point
+         - angle: angle of the bisector from pointX, pointY origin on [ab-cd]
+
+.. versionadded:: 3.18
+%End
+
+    static bool bisector( double aX, double aY, double bX, double bY, double cX, double cY,
+                          double &pointX /Out/, double &pointY /Out/ ) /HoldGIL/;
+%Docstring
+Returns the point (``pointX``, ``pointY``) forming the bisector from point (``aX``, ``aY``) to the segment (``bX``, ``bY``) (``cX``, ``cY``).
+The bisector segment of ABC is (A-point)
+
+:param aX: x-coordinate of first vertex in triangle
+:param aY: y-coordinate of first vertex in triangle
+:param bX: x-coordinate of second vertex in triangle
+:param bY: y-coordinate of second vertex in triangle
+:param cX: x-coordinate of third vertex in triangle
+:param cY: y-coordinate of third vertex in triangle
+
+:return: - ``True`` if the bisector exists (A B and C are not collinear)
+         - pointX: x-coordinate of generated point
+         - pointY: y-coordinate of generated point
+
+.. versionadded:: 3.18
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsgeometryutils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCURVEPOLYGONV2_H
-#define QGSCURVEPOLYGONV2_H
+#ifndef QGSCURVEPOLYGON_H
+#define QGSCURVEPOLYGON_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgssurface.h"
+#include <memory>
 
-class QgsPolygonV2;
+class QgsPolygon;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
  * \since QGIS 2.10
@@ -35,40 +37,108 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon();
     QgsCurvePolygon( const QgsCurvePolygon &p );
     QgsCurvePolygon &operator=( const QgsCurvePolygon &p );
-    ~QgsCurvePolygon();
 
-    virtual QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
-    virtual int dimension() const override { return 2; }
-    virtual QgsCurvePolygon *clone() const override SIP_FACTORY;
+    bool operator==( const QgsAbstractGeometry &other ) const override;
+    bool operator!=( const QgsAbstractGeometry &other ) const override;
+
+    ~QgsCurvePolygon() override;
+
+    QString geometryType() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
+    QgsCurvePolygon *clone() const override SIP_FACTORY;
     void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
 
-    QByteArray asWkb() const override;
+    int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    QString asKml( int precision = 17 ) const override;
 
     //surface interface
-    virtual double area() const override;
-    virtual double perimeter() const override;
-    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    double area() const override SIP_HOLDGIL;
+    double perimeter() const override SIP_HOLDGIL;
+    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     //curve polygon interface
-    int numInteriorRings() const;
-    const QgsCurve *exteriorRing() const;
-    const QgsCurve *interiorRing( int i ) const;
 
-    /** Returns a new polygon geometry corresponding to a segmentized approximation
+    /**
+     * Returns the number of interior rings contained with the curve polygon.
+     *
+     * \see interiorRing()
+     */
+    int numInteriorRings() const SIP_HOLDGIL
+    {
+      return mInteriorRings.size();
+    }
+
+    /**
+     * Returns the curve polygon's exterior ring.
+     *
+     * \see interiorRing()
+     */
+    const QgsCurve *exteriorRing() const SIP_HOLDGIL
+    {
+      return mExteriorRing.get();
+    }
+
+#ifndef SIP_RUN
+
+    /**
+     * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+     *
+     * \see numInteriorRings()
+     * \see exteriorRing()
+     */
+    const QgsCurve *interiorRing( int i ) const SIP_HOLDGIL
+    {
+      if ( i < 0 || i >= mInteriorRings.size() )
+      {
+        return nullptr;
+      }
+      return mInteriorRings.at( i );
+    }
+#else
+
+    /**
+     * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+     *
+     * An IndexError will be raised if no interior ring with the specified index exists.
+     *
+     * \see numInteriorRings()
+     * \see exteriorRing()
+     */
+    SIP_PYOBJECT interiorRing( int i ) SIP_HOLDGIL SIP_TYPEHINT( QgsCurve );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( const_cast< QgsCurve * >( sipCpp->interiorRing( a0 ) ), sipType_QgsCurve, NULL );
+    }
+    % End
+#endif
+
+    /**
+     * Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+    */
+    virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
-    /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
+    /**
+     * Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
      * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
      * from the CurvePolygon and all interior rings.
      * \param ring new exterior ring. Ownership is transferred to the CurvePolygon.
@@ -78,74 +148,170 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER );
 
     //! Sets all interior rings (takes ownership)
-    void setInteriorRings( const QList<QgsCurve *> &rings SIP_TRANSFER );
+    void setInteriorRings( const QVector<QgsCurve *> &rings SIP_TRANSFER );
     //! Adds an interior ring to the geometry (takes ownership)
     virtual void addInteriorRing( QgsCurve *ring SIP_TRANSFER );
+
+#ifndef SIP_RUN
 
     /**
      * Removes an interior ring from the polygon. The first interior ring has index 0.
      * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
-     * the function will return true.  It is not possible to remove the exterior ring using this method.
+     * the function will return TRUE.  It is not possible to remove the exterior ring using this method.
      * \see removeInteriorRings()
      */
     bool removeInteriorRing( int ringIndex );
+#else
+
+    /**
+     * Removes an interior ring from the polygon. The first interior ring has index 0.
+     * The corresponding ring is removed from the polygon and deleted.
+     * It is not possible to remove the exterior ring using this method.
+     *
+     * An IndexError will be raised if no interior ring with the specified index exists.
+     *
+     * \see removeInteriorRings()
+     */
+    bool removeInteriorRing( int i );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyBool_FromLong( sipCpp->removeInteriorRing( a0 ) );
+    }
+    % End
+#endif
 
     /**
      * Removes the interior rings from the polygon. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
-     * \since QGIS 3.0
      * \see removeInteriorRing()
+     * \since QGIS 3.0
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
 
-    virtual void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    /**
+     * Removes any interior rings which are not valid from the polygon.
+     *
+     * For example, this removes unclosed rings and rings with less than 4 vertices.
+     *
+     * \since QGIS 3.0
+     */
+    void removeInvalidRings();
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override;
+    /**
+     * Forces the geometry to respect the Right-Hand-Rule, in which the area that is
+     * bounded by the polygon is to the right of the boundary. In particular, the exterior
+     * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+     * direction.
+     *
+     * \since QGIS 3.6
+     */
+    void forceRHR();
 
-    virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual int nCoordinates() const override;
-    bool isEmpty() const override;
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+    QPainterPath asQPainterPath() const override;
+    void draw( QPainter &p ) const override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
+
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override;
+
+    QgsCoordinateSequence coordinateSequence() const override;
+    int nCoordinates() const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
+    bool isEmpty() const override SIP_HOLDGIL;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
 
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
-
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
 
-    /** Returns a geometry without curves. Caller takes ownership
+    /**
+     * Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+    */
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     *  \param vertex the vertex id
-     *  \returns rotation in radians, clockwise from north
+    /**
+     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+     * \param vertex the vertex id
+     * \returns rotation in radians, clockwise from north
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
-    virtual int ringCount( int /*part*/ = 0 ) const override { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
-    virtual int partCount() const override { return ringCount() > 0 ? 1 : 0; }
-    virtual QgsPoint vertexAt( QgsVertexId id ) const override;
+    int vertexCount( int part = 0, int ring = 0 ) const override;
+    int ringCount( int part = 0 ) const override SIP_HOLDGIL;
+    int partCount() const override SIP_HOLDGIL;
+    QgsPoint vertexAt( QgsVertexId id ) const override;
+    double segmentLength( QgsVertexId startVertex ) const override;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
+    bool dropZValue() override;
+    bool dropMValue() override;
+    void swapXy() override;
+
+    QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
+
+#ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+
+    /**
+     * Cast the \a geom to a QgsCurvePolygon.
+     * Should be used by qgsgeometry_cast<QgsCurvePolygon *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom )
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == QgsWkbTypes::CurvePolygon
+           || flatType == QgsWkbTypes::Polygon
+           || flatType == QgsWkbTypes::Triangle )
+        return static_cast<const QgsCurvePolygon *>( geom );
+      return nullptr;
+    }
+#endif
+
+    QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   protected:
 
-    QgsCurve *mExteriorRing = nullptr;
-    QList<QgsCurve *> mInteriorRings;
+    int childCount() const override;
+    QgsAbstractGeometry *childGeometry( int index ) const override;
 
-    virtual QgsRectangle calculateBoundingBox() const override;
+  protected:
+
+    std::unique_ptr< QgsCurve > mExteriorRing;
+    QVector<QgsCurve *> mInteriorRings;
+
+    QgsRectangle calculateBoundingBox() const override;
 };
 
-#endif // QGSCURVEPOLYGONV2_H
+// clazy:excludeall=qstring-allocations
+
+#endif // QGSCURVEPOLYGON_H

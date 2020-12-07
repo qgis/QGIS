@@ -9,17 +9,21 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '03/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.core import (
     QgsGeometry,
-    QgsGeometryValidator
+    QgsGeometryValidator,
+    QgsPointXY
 )
 
 from qgis.testing import (
-    unittest
+    unittest,
+    start_app
 )
+
+from qgis.PyQt.QtTest import QSignalSpy
+
+app = start_app()
 
 
 class TestQgsGeometryValidator(unittest.TestCase):
@@ -61,6 +65,202 @@ class TestQgsGeometryValidator(unittest.TestCase):
         self.assertTrue(g)
         # make sure validating this geometry doesn't crash QGIS
         QgsGeometryValidator.validateGeometry(g)
+
+    def test_linestring_duplicate_nodes(self):
+        g = QgsGeometry.fromWkt("LineString (1 1, 1 1, 1 1, 1 2, 1 3, 1 3, 1 3, 1 4, 1 5, 1 6, 1 6)")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(spy[0][0].where(), QgsPointXY(1, 6))
+        self.assertEqual(spy[0][0].what(), 'line 1 contains 2 duplicate nodes starting at vertex 10')
+
+        self.assertEqual(spy[1][0].where(), QgsPointXY(1, 3))
+        self.assertEqual(spy[1][0].what(), 'line 1 contains 3 duplicate nodes starting at vertex 5')
+
+        self.assertEqual(spy[2][0].where(), QgsPointXY(1, 1))
+        self.assertEqual(spy[2][0].what(), 'line 1 contains 3 duplicate nodes starting at vertex 1')
+
+    def test_ring_intersections(self):
+        # no intersections
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (6 9, 2 9, 6 1, 6 9))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 0)
+
+        # two interior rings intersecting
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (2 2, 5 2, 2 9, 2 2))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 2)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY(4.5, 2))
+        self.assertEqual(spy[0][0].what(), 'segment 1 of ring 1 of polygon 0 intersects segment 0 of ring 2 of polygon 0 at 4.5, 2')
+
+        self.assertEqual(spy[1][0].where(), QgsPointXY(2, 7))
+        self.assertEqual(spy[1][0].what(), 'segment 1 of ring 1 of polygon 0 intersects segment 2 of ring 2 of polygon 0 at 2, 7')
+
+    def test_line_vertices(self):
+        # valid line
+        g = QgsGeometry.fromWkt("LineString (0 0, 10 0)")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        # not enough vertices
+        g = QgsGeometry.fromWkt("LineString (1 0)")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'line 0 with less than two points')
+
+        g = QgsGeometry.fromWkt("LineString ()")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'line 0 with less than two points')
+
+    def test_ring_vertex_count(self):
+        # valid ring
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        # not enough vertices
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 0 0))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
+
+        g = QgsGeometry.fromWkt("Polygon (())")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 1 with less than four points')
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2, 1 1))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 2 1, 2 2, 1 1),(3 3, 3 4, 4 4))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 2 with less than four points')
+
+    def test_ring_closed(self):
+        # valid ring
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        # not closed
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 1 1))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 0 not closed')
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2, 1.1 1))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 1 not closed')
+
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 2 1, 2 2, 1 1),(3 3, 3 4, 4 4, 3.1 3))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].what(), 'ring 2 not closed')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,121 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvector3d.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsVector3D
+{
+%Docstring
+Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
+instead of single precision floating point numbers.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvector3d.h"
+%End
+  public:
+    QgsVector3D();
+%Docstring
+Constructs a null vector
+%End
+
+    QgsVector3D( double x, double y, double z );
+%Docstring
+Constructs a vector from given coordinates
+%End
+    QgsVector3D( const QVector3D &v );
+%Docstring
+Constructs a vector from single-precision QVector3D
+%End
+    bool isNull() const;
+%Docstring
+Returns ``True`` if all three coordinates are zero
+%End
+
+    double x() const;
+%Docstring
+Returns X coordinate
+%End
+    double y() const;
+%Docstring
+Returns Y coordinate
+%End
+    double z() const;
+%Docstring
+Returns Z coordinate
+%End
+
+    void set( double x, double y, double z );
+%Docstring
+Sets vector coordinates
+%End
+
+    bool operator==( const QgsVector3D &other ) const;
+    bool operator!=( const QgsVector3D &other ) const;
+
+    QgsVector3D operator+( const QgsVector3D &other ) const;
+
+    QgsVector3D operator-( const QgsVector3D &other ) const;
+
+    QgsVector3D operator *( const double factor ) const;
+
+    QgsVector3D operator /( const double factor ) const;
+
+    static double dotProduct( const QgsVector3D &v1, const QgsVector3D &v2 );
+%Docstring
+Returns the dot product of two vectors
+%End
+
+    static QgsVector3D crossProduct( const QgsVector3D &v1, const QgsVector3D &v2 );
+%Docstring
+Returns the cross product of two vectors
+%End
+
+    double length() const;
+%Docstring
+Returns the length of the vector
+%End
+
+    void normalize();
+%Docstring
+Normalizes the current vector in place.
+%End
+
+    double distance( const QgsVector3D &other ) const;
+%Docstring
+Returns the distance with the ``other`` :py:class:`QgsVector3`
+%End
+
+    static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp );
+%Docstring
+Returns the perpendicular point of vector ``vp`` from [``v1`` - ``v2``]
+%End
+
+    QString toString( int precision = 17 ) const;
+%Docstring
+Returns a string representation of the 3D vector.
+Members will be truncated to the specified ``precision``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvector3d.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

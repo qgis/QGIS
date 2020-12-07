@@ -2,7 +2,8 @@
   <GMLFeatureClass>
     <Name>nullGeometryDissolve_output</Name>
     <ElementPath>nullGeometryDissolve_output</ElementPath>
-    <GeometryType>3</GeometryType>
+    <!--MULTIPOLYGON-->
+    <GeometryType>6</GeometryType>
     <SRSName>EPSG:3003</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>1</FeatureCount>

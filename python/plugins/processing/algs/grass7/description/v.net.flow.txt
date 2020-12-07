@@ -1,15 +1,15 @@
 v.net.flow
 Computes the maximum flow between two sets of nodes in the network.
 Vector (v.*)
-ParameterVector|input|Input vector line layer (network)|1|False
-ParameterVector|points|Input vector point layer (flow nodes)|0|False
-ParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|0.0|None|50.0|False
-ParameterString|source_cats|Source Category values||False|True
-ParameterString|source_where|Source WHERE conditions of SQL statement without 'where' keyword||True|True
-ParameterString|sink_cats|Sink Category values||False|True
-ParameterString|sink_where|Sink WHERE conditions of SQL statement without 'where' keyword||True|True
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
-*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
-*ParameterTableField|node_column|Node cost column (number)|points|0|True
-OutputVector|output|Network_Flow
-OutputVector|cut|Network_Cut
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|points|Input vector point layer (flow nodes)|0|None|False
+QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50|False|0.0|None
+QgsProcessingParameterString|source_cats|Source Category values|None|False|True
+QgsProcessingParameterString|source_where|Source WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterString|sink_cats|Sink Category values|None|False|True
+QgsProcessingParameterString|sink_where|Sink WHERE conditions of SQL statement without 'where' keyword|None|True|True
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|points|0|False|True
+QgsProcessingParameterVectorDestination|output|Network_Flow
+QgsProcessingParameterVectorDestination|cut|Network_Cut

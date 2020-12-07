@@ -36,14 +36,16 @@
 namespace pal
 {
 
-  /** \brief Various Exceptions
+  /**
+   * \brief Various Exceptions
    * \ingroup core
    */
   class PalException
   {
     public:
 
-      /** \brief Thrown when a feature is not yet implemented
+      /**
+       * \brief Thrown when a feature is not yet implemented
        * \ingroup core
       */
       class NotImplemented : public std::exception
@@ -54,7 +56,8 @@ namespace pal
           }
       };
 
-      /** \brief Try to access an unknown feature
+      /**
+       * \brief Try to access an unknown feature
        * \ingroup core
       */
       class UnknownFeature : public std::exception
@@ -65,7 +68,8 @@ namespace pal
           }
       };
 
-      /** \brief Try to access an unknown layer
+      /**
+       * \brief Try to access an unknown layer
        * \ingroup core
       */
       class UnknownLayer : public std::exception
@@ -76,7 +80,8 @@ namespace pal
           }
       };
 
-      /** \brief layer already exists
+      /**
+       * \brief layer already exists
        * \ingroup core
       */
       class LayerExists : public std::exception
@@ -87,7 +92,8 @@ namespace pal
           }
       };
 
-      /** \brief features already exists
+      /**
+       * \brief features already exists
        * \ingroup core
       */
       class FeatureExists : public std::exception
@@ -98,14 +104,14 @@ namespace pal
           }
       };
 
-      /** \brief thrown when a value is not in the valid scale range\
+      /**
+       * \brief thrown when a value is not in the valid scale range\
        * \ingroup core
        *
        *  It can be thrown by :
        *
-       *    - pal::Layer::setFeatureLabelSize if either the height or the width of the label is < 0
-       *
-       *    - pal::Layer::setFeatureDistlabel is distlable < 0
+       * - pal::Layer::setFeatureLabelSize if either the height or the width of the label is < 0
+       * - pal::Layer::setFeatureDistlabel is distlable < 0
        */
       class ValueNotInRange : public std::exception
       {

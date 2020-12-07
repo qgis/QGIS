@@ -28,11 +28,13 @@
 #include "qgis_gui.h"
 
 class QgsRasterLayer;
+class QgsLocaleAwareNumericLineEditDelegate;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
 
-/** \class QgsPalettedRendererClassGatherer
+/**
+ * \class QgsPalettedRendererClassGatherer
 * Calculated raster stats for paletted renderer in a thread
 */
 class QgsPalettedRendererClassGatherer: public QThread
@@ -45,45 +47,10 @@ class QgsPalettedRendererClassGatherer: public QThread
       , mBandNumber( bandNumber )
       , mRamp( ramp )
       , mClasses( existingClasses )
-      , mFeedback( nullptr )
       , mWasCanceled( false )
     {}
 
-    virtual void run() override
-    {
-      mWasCanceled = false;
-
-      // allow responsive cancelation
-      mFeedback = new QgsRasterBlockFeedback();
-      connect( mFeedback, &QgsRasterBlockFeedback::progressChanged, this, &QgsPalettedRendererClassGatherer::progressChanged );
-
-      QgsPalettedRasterRenderer::ClassData newClasses = QgsPalettedRasterRenderer::classDataFromRaster( mLayer->dataProvider(), mBandNumber, mRamp.get(), mFeedback );
-
-      // combine existing classes with new classes
-      QgsPalettedRasterRenderer::ClassData::iterator classIt = newClasses.begin();
-      for ( ; classIt != newClasses.end(); ++classIt )
-      {
-        // check if existing classes contains this same class
-        Q_FOREACH ( const QgsPalettedRasterRenderer::Class &existingClass, mClasses )
-        {
-          if ( existingClass.value == classIt->value )
-          {
-            classIt->color = existingClass.color;
-            classIt->label = existingClass.label;
-            break;
-          }
-        }
-      }
-      mClasses = newClasses;
-
-      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
-      mFeedbackMutex.lock();
-      delete mFeedback;
-      mFeedback = nullptr;
-      mFeedbackMutex.unlock();
-
-      emit collectedClasses();
-    }
+    void run() override;
 
     //! Informs the gatherer to immediately stop collecting values
     void stop()
@@ -97,14 +64,15 @@ class QgsPalettedRendererClassGatherer: public QThread
       mWasCanceled = true;
     }
 
-    //! Returns true if collection was canceled before completion
+    //! Returns TRUE if collection was canceled before completion
     bool wasCanceled() const { return mWasCanceled; }
 
     QgsPalettedRasterRenderer::ClassData classes() const { return mClasses; }
 
   signals:
 
-    /** Emitted when classes have been collected
+    /**
+     * Emitted when classes have been collected
      */
     void collectedClasses();
 
@@ -144,6 +112,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     void setClassData( const QgsPalettedRasterRenderer::ClassData &data );
 
     QgsPalettedRasterRenderer::ClassData classData() const { return mData; }
+    QgsPalettedRasterRenderer::Class classAtIndex( const QModelIndex &index ) const { return mData.at( index.row() ); }
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
@@ -154,7 +123,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
@@ -176,10 +145,39 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 
 
 };
+
+class QgsPalettedRendererProxyModel: public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsPalettedRendererProxyModel( QObject *parent = 0 )
+      : QSortFilterProxyModel( parent )
+    {
+    }
+
+    //! Return sorted class data
+    QgsPalettedRasterRenderer::ClassData classData() const;
+
+  protected:
+
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
+    {
+      const QModelIndex lv { left.model()->index( left.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), left.parent() ) };
+      const QModelIndex rv { right.model()->index( right.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), right.parent() ) };
+      const double leftData { sourceModel()->data( lv ).toDouble( ) };
+      const double rightData { sourceModel()->data( rv ).toDouble( ) };
+      return leftData < rightData;
+    }
+
+};
+
 ///@endcond PRIVATE
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPalettedRendererWidget
  */
 class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
@@ -189,7 +187,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
   public:
 
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsPalettedRendererWidget();
+    ~QgsPalettedRendererWidget() override;
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;
@@ -202,12 +200,14 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     QMenu *mAdvancedMenu = nullptr;
     QAction *mLoadFromLayerAction = nullptr;
     QgsPalettedRendererModel *mModel = nullptr;
-    QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
+    QgsPalettedRendererProxyModel *mProxyModel = nullptr;
 
     //! Background class gatherer thread
     QgsPalettedRendererClassGatherer *mGatherer = nullptr;
 
     int mBand = -1;
+
+    QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
 
     void setSelectionColor( const QItemSelection &selection, const QColor &color );
 

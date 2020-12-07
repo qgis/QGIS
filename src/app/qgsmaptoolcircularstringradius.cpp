@@ -22,22 +22,18 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgsstatusbar.h"
-#include <QDoubleSpinBox>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+#include "qgssnapindicator.h"
+#include "qgsdoublespinbox.h"
 #include <cmath>
 
 QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddCircularString( parentTool, canvas, mode )
   , mTemporaryEndPoint( QgsPoint() )
   , mRadius( 0.0 )
-  , mRadiusSpinBox( nullptr )
+
 {
-
-}
-
-QgsMapToolCircularStringRadius::~QgsMapToolCircularStringRadius()
-{
-
+  mToolName = tr( "Add circular string by radius" );
 }
 
 void QgsMapToolCircularStringRadius::deactivate()
@@ -48,26 +44,35 @@ void QgsMapToolCircularStringRadius::deactivate()
 
 void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
+
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
 
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.isEmpty() )
     {
-      mPoints.append( mapPoint );
+      mPoints.append( point );
     }
     else
     {
       if ( mPoints.size() % 2 )
       {
-        mTemporaryEndPoint = mapPoint;
+        mTemporaryEndPoint = point;
 
         //initial radius is distance( tempPoint - mPoints.last ) / 2.0
-        double minRadius = sqrt( QgsGeometryUtils::sqrDistance2D( mPoints.last(), mTemporaryEndPoint ) ) / 2.0;
+        double minRadius = std::sqrt( QgsGeometryUtils::sqrDistance2D( mPoints.last(), mTemporaryEndPoint ) ) / 2.0;
         mRadius = minRadius + minRadius / 10.0;
 
         QgsPoint result;
-        if ( QgsGeometryUtils::segmentMidPoint( mPoints.last(), mTemporaryEndPoint, result, mRadius, QgsPoint( mapPoint.x(), mapPoint.y() ) ) )
+        if ( QgsGeometryUtils::segmentMidPoint( mPoints.last(), mTemporaryEndPoint, result, mRadius, QgsPoint( point.x(), point.y() ) ) )
         {
           mPoints.append( result );
           createRadiusSpinBox();
@@ -90,16 +95,15 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
   {
     if ( !( mPoints.size() % 2 ) )
       mPoints.removeLast();
-    deactivate();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
+    release( e );
   }
 }
 
 void QgsMapToolCircularStringRadius::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   if ( !mPoints.isEmpty() )
   {
     recalculateTempRubberBand( e->mapPoint() );
@@ -115,7 +119,7 @@ void QgsMapToolCircularStringRadius::recalculateRubberBand()
     int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
     cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
     delete mRubberBand;
-    mRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mRubberBand = createGeometryRubberBand( mLayerType );
     mRubberBand->setGeometry( cString );
     mRubberBand->show();
   }
@@ -141,12 +145,12 @@ void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPointXY
   else
   {
     rubberBandPoints.append( mPoints.last() );
-    rubberBandPoints.append( QgsPoint( mousePosition ) );
+    rubberBandPoints.append( mapPoint( mousePosition ) );
   }
   QgsCircularString *cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
   delete mTempRubberBand;
-  mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+  mTempRubberBand = createGeometryRubberBand( mLayerType, true );
   mTempRubberBand->setGeometry( cString );
   mTempRubberBand->show();
 }
@@ -154,7 +158,7 @@ void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPointXY
 void QgsMapToolCircularStringRadius::createRadiusSpinBox()
 {
   deleteRadiusSpinBox();
-  mRadiusSpinBox = new QDoubleSpinBox();
+  mRadiusSpinBox = new QgsDoubleSpinBox();
   mRadiusSpinBox->setMaximum( 99999999 );
   mRadiusSpinBox->setDecimals( 2 );
   mRadiusSpinBox->setPrefix( tr( "Radius: " ) );

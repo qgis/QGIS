@@ -49,7 +49,7 @@ class QgsOracleTableCache
     };
     Q_DECLARE_FLAGS( CacheFlags, CacheFlag )
 
-    //! Return name of the file used for the cached entries
+    //! Returns name of the file used for the cached entries
     static QString cacheDatabaseFilename();
 
     //! check whether the given connection is cached (with equal flags)

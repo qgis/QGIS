@@ -2,7 +2,7 @@
                               qgswmsutils.cpp
                               -------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -19,34 +19,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QRegularExpression>
+
 #include "qgsmodule.h"
 #include "qgswmsutils.h"
 #include "qgsmediancut.h"
-#include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
+#include "qgswmsserviceexception.h"
 
 namespace QgsWms
 {
-  QString ImplementationVersion()
-  {
-    return QStringLiteral( "1.3.0" );
-  }
-
-  // Return the wms config parser (Transitional)
-  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface )
-  {
-    QString configFilePath = serverIface->configFilePath();
-
-    QgsWmsConfigParser *parser  = QgsConfigCache::instance()->wmsConfiguration( configFilePath, serverIface->accessControls() );
-    if ( !parser )
-    {
-      throw QgsServiceException(
-        QStringLiteral( "WMS configuration error" ),
-        QStringLiteral( "There was an error reading the project file or the SLD configuration" ) );
-    }
-    return parser;
-  }
-
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
     QUrl href;
@@ -58,15 +40,25 @@ namespace QgsWms
     // Build default url
     if ( href.isEmpty() )
     {
-      href = request.url();
+      static QSet<QString> sFilter
+      {
+        QStringLiteral( "REQUEST" ),
+        QStringLiteral( "VERSION" ),
+        QStringLiteral( "SERVICE" ),
+        QStringLiteral( "LAYERS" ),
+        QStringLiteral( "STYLES" ),
+        QStringLiteral( "SLD_VERSION" ),
+        QStringLiteral( "_DC" )
+      };
+
+      href = request.originalUrl();
       QUrlQuery q( href );
 
-      q.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-      q.removeAllQueryItems( QStringLiteral( "VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "SERVICE" ) );
-      q.removeAllQueryItems( QStringLiteral( "LAYERS" ) );
-      q.removeAllQueryItems( QStringLiteral( "SLD_VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "_DC" ) );
+      for ( auto param : q.queryItems() )
+      {
+        if ( sFilter.contains( param.first.toUpper() ) )
+          q.removeAllQueryItems( param.first );
+      }
 
       href.setQuery( q );
     }
@@ -87,6 +79,11 @@ namespace QgsWms
     {
       return JPEG;
     }
+    else if ( format.compare( QLatin1String( "webp" ), Qt::CaseInsensitive ) == 0  ||
+              format.compare( QLatin1String( "image/webp" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return WEBP;
+    }
     else
     {
       // lookup for png with mode
@@ -94,7 +91,7 @@ namespace QgsWms
                                     QRegularExpression::CaseInsensitiveOption );
 
       QRegularExpressionMatch match = modeExpr.match( format );
-      QString mode = match.captured();
+      QString mode = match.captured( 1 );
       if ( mode.compare( QLatin1String( "16bit" ), Qt::CaseInsensitive ) == 0 )
         return PNG16;
       if ( mode.compare( QLatin1String( "8bit" ), Qt::CaseInsensitive ) == 0 )
@@ -105,16 +102,6 @@ namespace QgsWms
 
     return UNKN;
   }
-
-  void readLayersAndStyles( const QgsServerRequest::Parameters &parameters, QStringList &layersList, QStringList &stylesList )
-  {
-    //get layer and style lists from the parameters trying LAYERS and LAYER as well as STYLE and STYLES for GetLegendGraphic compatibility
-    layersList = parameters.value( QStringLiteral( "LAYER" ) ).split( ',', QString::SkipEmptyParts );
-    layersList = layersList + parameters.value( QStringLiteral( "LAYERS" ) ).split( ',', QString::SkipEmptyParts );
-    stylesList = parameters.value( QStringLiteral( "STYLE" ) ).split( ',', QString::SkipEmptyParts );
-    stylesList = stylesList + parameters.value( QStringLiteral( "STYLES" ) ).split( ',', QString::SkipEmptyParts );
-  }
-
 
   // Write image response
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
@@ -134,10 +121,15 @@ namespace QgsWms
       case PNG8:
       {
         QVector<QRgb> colorTable;
-        medianCut( colorTable, 256, img );
-        result = img.convertToFormat( QImage::Format_Indexed8, colorTable,
-                                      Qt::ColorOnly | Qt::ThresholdDither |
-                                      Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+
+        // Rendering is made with the format QImage::Format_ARGB32_Premultiplied
+        // So we need to convert it in QImage::Format_ARGB32 in order to properly build
+        // the color table.
+        QImage img256 = img.convertToFormat( QImage::Format_ARGB32 );
+        medianCut( colorTable, 256, img256 );
+        result = img256.convertToFormat( QImage::Format_Indexed8, colorTable,
+                                         Qt::ColorOnly | Qt::ThresholdDither |
+                                         Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       }
       contentType = "image/png";
       saveFormat = "PNG";
@@ -159,42 +151,39 @@ namespace QgsWms
         contentType = "image/jpeg";
         saveFormat = "JPEG";
         break;
+      case WEBP:
+        result = img;
+        contentType = QStringLiteral( "image/webp" );
+        saveFormat = QStringLiteral( "WEBP" );
+        break;
       default:
         QgsMessageLog::logMessage( QString( "Unsupported format string %1" ).arg( formatStr ) );
         saveFormat = UNKN;
         break;
     }
 
+    // Preserve DPI, some conversions, in particular the one for 8bit will drop this information
+    result.setDotsPerMeterX( img.dotsPerMeterX() );
+    result.setDotsPerMeterY( img.dotsPerMeterY() );
+
     if ( outputFormat != UNKN )
     {
       response.setHeader( "Content-Type", contentType );
-      result.save( response.io(), qPrintable( saveFormat ), imageQuality );
+      if ( saveFormat == QLatin1String( "JPEG" ) || saveFormat == QLatin1String( "WEBP" ) )
+      {
+        result.save( response.io(), qPrintable( saveFormat ), imageQuality );
+      }
+      else
+      {
+        result.save( response.io(), qPrintable( saveFormat ) );
+      }
     }
     else
     {
-      throw QgsServiceException( "InvalidFormat",
-                                 QString( "Output format '%1' is not supported in the GetMap request" ).arg( formatStr ) );
+      QgsWmsParameter parameter( QgsWmsParameter::FORMAT );
+      parameter.mValue = formatStr;
+      throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
+                                    parameter );
     }
   }
-
-  QgsRectangle parseBbox( const QString &bboxStr )
-  {
-    QStringList lst = bboxStr.split( ',' );
-    if ( lst.count() != 4 )
-      return QgsRectangle();
-
-    double d[4];
-    bool ok;
-    for ( int i = 0; i < 4; i++ )
-    {
-      lst[i].replace( ' ', '+' );
-      d[i] = lst[i].toDouble( &ok );
-      if ( !ok )
-        return QgsRectangle();
-    }
-    return QgsRectangle( d[0], d[1], d[2], d[3] );
-  }
-
 } // namespace QgsWms
-
-

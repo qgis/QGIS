@@ -20,15 +20,9 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include <QNetworkReply>
 #include <QTextCodec>
-
-QgsNetworkContentFetcher::QgsNetworkContentFetcher()
-  : mReply( nullptr )
-  , mContentLoaded( false )
-{
-
-}
 
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {
@@ -37,18 +31,29 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
     //cancel running request
     mReply->abort();
   }
-  if ( mReply )
-  {
-    mReply->deleteLater();
-  }
+  delete mReply;
 }
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
+void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg )
 {
-  mContentLoaded = false;
+  QNetworkRequest req( url );
+  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsNetworkContentFetcher" ) );
 
-  //get contents
-  QNetworkRequest request( url );
+  fetchContent( req, authcfg );
+}
+
+void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QString &authcfg )
+{
+  QNetworkRequest request( r );
+
+  mAuthCfg = authcfg;
+  if ( !mAuthCfg.isEmpty() )
+  {
+    QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
+  }
+
+  mContentLoaded = false;
+  mIsCanceled = false;
 
   if ( mReply )
   {
@@ -59,7 +64,13 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
+  if ( !mAuthCfg.isEmpty() )
+  {
+    QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
+  }
+  mReply->setParent( nullptr ); // we don't want thread locale QgsNetworkAccessManagers to delete the reply - we want ownership of it to belong to this object
   connect( mReply, &QNetworkReply::finished, this, [ = ] { contentLoaded(); } );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
 }
 
 QNetworkReply *QgsNetworkContentFetcher::reply()
@@ -86,10 +97,28 @@ QString QgsNetworkContentFetcher::contentAsString() const
   return codec->toUnicode( array );
 }
 
+void QgsNetworkContentFetcher::cancel()
+{
+  mIsCanceled = true;
+
+  if ( mReply )
+  {
+    //cancel any in progress requests
+    mReply->abort();
+    mReply->deleteLater();
+    mReply = nullptr;
+  }
+}
+
+bool QgsNetworkContentFetcher::wasCanceled() const
+{
+  return mIsCanceled;
+}
+
 QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 {
   //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags
-  //see https://bugreports.qt-project.org/browse/QTBUG-41011
+  //see https://bugreports.qt.io/browse/QTBUG-41011
   //so test for that ourselves
 
   //basic check
@@ -127,7 +156,13 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 
 void QgsNetworkContentFetcher::contentLoaded( bool ok )
 {
-  Q_UNUSED( ok );
+  Q_UNUSED( ok )
+
+  if ( mIsCanceled )
+  {
+    emit finished();
+    return;
+  }
 
   if ( mReply->error() != QNetworkReply::NoError )
   {
@@ -153,7 +188,7 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
 
   //redirect, so fetch redirect target
   mReply->deleteLater();
-  fetchContent( redirect.toUrl() );
+  fetchContent( redirect.toUrl(), mAuthCfg );
 }
 
 

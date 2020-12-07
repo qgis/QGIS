@@ -126,7 +126,7 @@ void HistoryFile::map()
 void HistoryFile::unmap()
 {
     int result = munmap( fileMap , length );
-    assert( result == 0 ); Q_UNUSED( result );
+    assert( result == 0 ); Q_UNUSED( result )
 
     fileMap = 0;
 }
@@ -205,7 +205,7 @@ bool HistoryScroll::hasScroll()
 /*
    The history scroll makes a Row(Row(Cell)) from
    two history buffers. The index buffer contains
-   start of line positions which refere to the cells
+   start of line positions which refers to the cells
    buffer.
 
    Note that index[0] addresses the second line
@@ -314,7 +314,7 @@ void HistoryScrollBuffer::addCellsVector(const QVector<Character>& cells)
 void HistoryScrollBuffer::addCells(const Character a[], int count)
 {
   HistoryLine newLine(count);
-  qCopy(a,a+count,newLine.begin());
+  std::copy(a,a+count,newLine.begin());
 
   addCellsVector(newLine);
 }
@@ -384,12 +384,12 @@ void HistoryScrollBuffer::setMaxNbLines(unsigned int lineCount)
     HistoryLine* oldBuffer = _historyBuffer;
     HistoryLine* newBuffer = new HistoryLine[lineCount];
 
-    for ( int i = 0 ; i < qMin(_usedLines,(int)lineCount) ; i++ )
+    for ( int i = 0 ; i < std::min(_usedLines,static_cast<int>(lineCount)) ; i++ )
     {
         newBuffer[i] = oldBuffer[bufferIndex(i)];
     }
 
-    _usedLines = qMin(_usedLines,(int)lineCount);
+    _usedLines = std::min(_usedLines,static_cast<int>(lineCount));
     _maxLineCount = lineCount;
     _head = ( _usedLines == _maxLineCount ) ? 0 : _usedLines-1;
 
@@ -522,7 +522,7 @@ void HistoryScrollBlockArray::addCells(const Character a[], int count)
 
   size_t res = m_blockArray.newBlock();
   assert (res > 0);
-  Q_UNUSED( res );
+  Q_UNUSED( res )
 
   m_lineLengths.insert(m_blockArray.getCurrent(), count);
 }
@@ -547,7 +547,7 @@ void* CompactHistoryBlock::allocate ( size_t length )
   return block;
 }
 
-void CompactHistoryBlock::deallocate ( )
+void CompactHistoryBlock::deallocate ()
 {
   allocCount--;
   Q_ASSERT ( allocCount >= 0 );
@@ -730,7 +730,7 @@ void CompactHistoryScroll::addCellsVector ( const TextLine& cells )
 void CompactHistoryScroll::addCells ( const Character a[], int count )
 {
   TextLine newLine ( count );
-  qCopy ( a,a+count,newLine.begin() );
+  std::copy ( a,a+count,newLine.begin() );
   addCellsVector ( newLine );
 }
 

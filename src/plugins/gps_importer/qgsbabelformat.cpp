@@ -24,11 +24,6 @@
 
 QgsBabelFormat::QgsBabelFormat( const QString &name )
   : mName( name )
-  , mSupportsImport( false )
-  , mSupportsExport( false )
-  , mSupportsWaypoints( false )
-  , mSupportsRoutes( false )
-  , mSupportsTracks( false )
 {
 }
 
@@ -44,10 +39,10 @@ QStringList QgsBabelFormat::importCommand( const QString &babel,
     const QString &input,
     const QString &output ) const
 {
-  Q_UNUSED( babel );
-  Q_UNUSED( featuretype );
-  Q_UNUSED( input );
-  Q_UNUSED( output );
+  Q_UNUSED( babel )
+  Q_UNUSED( featuretype )
+  Q_UNUSED( input )
+  Q_UNUSED( output )
   return QStringList();
 }
 
@@ -57,10 +52,10 @@ QStringList QgsBabelFormat::exportCommand( const QString &babel,
     const QString &input,
     const QString &output ) const
 {
-  Q_UNUSED( babel );
-  Q_UNUSED( featuretype );
-  Q_UNUSED( input );
-  Q_UNUSED( output );
+  Q_UNUSED( babel )
+  Q_UNUSED( featuretype )
+  Q_UNUSED( input )
+  Q_UNUSED( output )
   return QStringList();
 }
 

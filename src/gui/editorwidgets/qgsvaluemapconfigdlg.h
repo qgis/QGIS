@@ -21,7 +21,12 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+class QComboBox;
+
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsValueMapConfigDlg
  * \note not available in Python bindings
  */
@@ -32,15 +37,43 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
 
   public:
     explicit QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
-    virtual QVariantMap config() override;
-    virtual void setConfig( const QVariantMap &config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 
+    /**
+     * Updates the displayed table with the values from \a map.
+     * If \a insertNull is set to TRUE, it will also insert a NULL value.
+     *
+     * \note In most cases the overload that accepts a list is preferred as it
+     * keeps the order of the values.
+     */
     void updateMap( const QMap<QString, QVariant> &map, bool insertNull );
+
+    /**
+     * Updates the displayed table with the values from \a list, the order of the values
+     * is preserved.
+     * If \a insertNull is set to TRUE, it will also insert a NULL value.
+     *
+     * \since QGIS 3.12
+     */
+    void updateMap( const QList<QPair<QString, QVariant>> &list, bool insertNull );
+
+    /**
+     * Populates a \a comboBox with the appropriate entries based on a value map \a configuration.
+     *
+     * If \a skipNull is TRUE, then NULL entries will not be added.
+     *
+     * \since QGIS 3.0
+     */
+    static void populateComboBox( QComboBox *comboBox, const QVariantMap &configuration, bool skipNull );
+
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
     void setRow( int row, const QString &value, const QString &description );
 
   private slots:
+    void copySelectionToClipboard();
     void vCellChanged( int row, int column );
     void addNullButtonPushed();
     void removeSelectedButtonPushed();

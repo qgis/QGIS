@@ -1,0 +1,149 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreeutils.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayerTreeUtils
+{
+%Docstring
+Assorted functions for dealing with layer trees.
+
+.. versionadded:: 2.4
+%End
+
+%TypeHeaderCode
+#include "qgslayertreeutils.h"
+%End
+  public:
+
+    static bool readOldLegend( QgsLayerTreeGroup *root, const QDomElement &legendElem );
+%Docstring
+Try to load layer tree from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
+%End
+    static bool readOldLegendLayerOrder( const QDomElement &legendElem, bool &hasCustomOrder, QStringList &order );
+%Docstring
+Try to load custom layer order from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
+%End
+    static QDomElement writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QList<QgsMapLayer *> &order );
+%Docstring
+Returns \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
+%End
+
+    static QString checkStateToXml( Qt::CheckState state );
+%Docstring
+Convert Qt.CheckState to QString
+%End
+    static Qt::CheckState checkStateFromXml( const QString &txt );
+%Docstring
+Convert QString to Qt.CheckState
+%End
+
+    static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
+%Docstring
+Returns ``True`` if any of the layers is editable
+%End
+    static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
+%Docstring
+Returns ``True`` if any of the layers is modified
+%End
+
+    static void removeInvalidLayers( QgsLayerTreeGroup *group );
+%Docstring
+Removes layer nodes that refer to invalid layers
+%End
+
+    static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
+%Docstring
+Stores in a layer's originalXmlProperties the layer properties information
+
+.. versionadded:: 3.6
+%End
+
+    static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );
+%Docstring
+Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
+%End
+
+    static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project );
+%Docstring
+Updates an embedded ``group`` from a ``project``.
+%End
+
+    static QStringList invisibleLayerList( QgsLayerTreeNode *node );
+%Docstring
+Gets invisible layers
+%End
+
+    static void setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled = true );
+%Docstring
+Sets the expression filter of a legend layer
+%End
+    static QString legendFilterByExpression( const QgsLayerTreeLayer &layer, bool *enabled = 0 );
+%Docstring
+Returns the expression filter of a legend layer
+%End
+    static bool hasLegendFilterExpression( const QgsLayerTreeGroup &group );
+%Docstring
+Test if one of the layers in a group has an expression filter
+%End
+
+    static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
+%Docstring
+Insert a QgsMapLayer just below another one
+
+:param group: the tree group where layers are (can be the root group)
+:param refLayer: the reference layer
+:param layerToInsert: the new layer to insert just below the reference layer
+
+:return: the new tree layer
+%End
+
+    static QSet<QgsMapLayer *> collectMapLayersRecursive( const QList<QgsLayerTreeNode *> &nodes );
+%Docstring
+Returns map layers from the given list of layer tree nodes. Also recursively visits
+child nodes of groups.
+
+.. versionadded:: 3.4
+%End
+
+    static int countMapLayerInTree( QgsLayerTreeNode *tree, QgsMapLayer *layer );
+%Docstring
+Returns how many occurrences of a map layer are there in a layer tree.
+In normal situations there is at most one occurrence, but sometimes there
+may be temporarily more: for example, during drag&drop, upon drop a new layer
+node is created while the original dragged node is still in the tree, resulting
+in two occurrences.
+
+This is useful when deciding whether to start or stop listening to a signal
+of a map layer within a layer tree and only connecting/disconnecting when
+there is only one occurrence of that layer.
+
+.. versionadded:: 3.4
+%End
+
+    static QgsLayerTreeGroup *firstGroupWithoutCustomProperty( QgsLayerTreeGroup *group, const QString &property );
+%Docstring
+Returns the first parent which doesn't have the given custom property
+or the group itself if it doesn't hold the property
+
+:param group: the layer tree group
+:param property: the property
+
+.. versionadded:: 3.8
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreeutils.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

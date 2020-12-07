@@ -18,7 +18,7 @@
 
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsmapsettings.h"
 #include "qgstolerance.h"
 #include "qgspointlocator.h"
@@ -26,13 +26,16 @@
 
 class QgsSnappingConfig;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class has all the configuration of snapping and can return answers to snapping queries.
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
  * Currently it supports the following queries:
+ *
  * - snapToMap() - has multiple modes of operation
  * - snapToCurrentLayer()
+ *
  * For more complex queries it is possible to use locatorForLayer() method that returns
  * point locator instance with layer's indexed data.
  *
@@ -50,20 +53,41 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     Q_PROPERTY( QgsSnappingConfig config READ config WRITE setConfig NOTIFY configChanged )
 
   public:
-    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = 0 );
-    ~QgsSnappingUtils();
+
+    /**
+     * Constructor for QgsSnappingUtils
+     * \param parent parent object
+     * \param enableSnappingForInvisibleFeature TRUE if we want to snap feature even if there are not visible
+     */
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enableSnappingForInvisibleFeature = true );
+    ~QgsSnappingUtils() override;
 
     // main actions
 
-    //! Get a point locator for the given layer. If such locator does not exist, it will be created
+    /**
+     * Gets a point locator for the given layer. If such locator does not exist, it will be created
+     * \param vl the vector layer
+     */
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 
-    //! Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
-    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr );
-    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
+    /**
+     * Snap to map according to the current configuration.
+     * \param point point in canvas coordinates
+     * \param filter allows discarding unwanted matches.
+     * \param relaxed TRUE if this method is non blocking and the matching result can be invalid while indexing
+     */
+    QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
+
+    /**
+     * Snap to map according to the current configuration.
+     * \param pointMap point in map coordinates
+     * \param filter allows discarding unwanted matches.
+     * \param relaxed TRUE if this method is non blocking and the matching result can be invalid while indexing
+     */
+    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     //! Snap to current layer
-    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = nullptr );
 
     // environment setup
 
@@ -71,7 +95,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void setMapSettings( const QgsMapSettings &settings );
     QgsMapSettings mapSettings() const { return mMapSettings; }
 
-    //! Set current layer so that if mode is SnapCurrentLayer we know which layer to use
+    //! Sets current layer so that if mode is SnapCurrentLayer we know which layer to use
     void setCurrentLayer( QgsVectorLayer *layer );
     //! The current layer used if mode is SnapCurrentLayer
     QgsVectorLayer *currentLayer() const { return mCurrentLayer; }
@@ -86,7 +110,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       IndexExtent         //!< For all layer build index of extent given in map settings
     };
 
-    //! Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
+    //! Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
     void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
     //! Find out which strategy is used for indexing - by default hybrid indexing is used
     IndexingStrategy indexingStrategy() const { return mStrategy; }
@@ -99,16 +123,16 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
       /**
        * Create a new configuration for a snapping layer.
-
-        ```py
-        snapper = QgsMapCanvasSnappingUtils(mapCanvas)
-
-        snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
-        snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
-
-        snapper.setLayers([snapping_layer1, snapping_layer2])
-        ```
-
+       *
+       * \code{.py}
+       * snapper = QgsMapCanvasSnappingUtils(mapCanvas)
+       *
+       * snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
+       * snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+       *
+       * snapper.setLayers([snapping_layer1, snapping_layer2])
+       * \endcode
+       *
        * \param l   The vector layer for which this configuration is
        * \param t   Which parts of the geometry should be snappable
        * \param tol The tolerance radius in which the snapping will trigger
@@ -143,7 +167,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Query layers used for snapping
     QList<QgsSnappingUtils::LayerConfig> layers() const { return mLayers; }
 
-    /** Get extra information about the instance
+    /**
+     * Gets extra information about the instance
      * \since QGIS 2.14
      */
     QString dump();
@@ -152,6 +177,57 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      * The snapping configuration controls the behavior of this object
      */
     QgsSnappingConfig config() const;
+
+    /**
+     * Set if invisible features must be snapped or not.
+     *
+     * \param enable Enable or not this feature
+     *
+     * \since QGIS 3.2
+     */
+    void setEnableSnappingForInvisibleFeature( bool enable );
+
+    /**
+     * Supply an extra snapping layer (typically a memory layer).
+     * This can be used by map tools to provide additional
+     * snappings points.
+     *
+     * \see removeExtraSnapLayer()
+     * \see getExtraSnapLayers()
+     *
+     * \since QGIS 3.14
+     */
+    void addExtraSnapLayer( QgsVectorLayer *vl )
+    {
+      mExtraSnapLayers.insert( vl );
+    }
+
+    /**
+     * Removes an extra snapping layer
+     *
+     * \see addExtraSnapLayer()
+     * \see getExtraSnapLayers()
+     *
+     * \since QGIS 3.14
+     */
+    void removeExtraSnapLayer( QgsVectorLayer *vl )
+    {
+      mExtraSnapLayers.remove( vl );
+    }
+
+    /**
+     * Returns the list of extra snapping layers
+     *
+     * \see addExtraSnapLayer()
+     * \see removeExtraSnapLayer()
+     *
+     * \since QGIS 3.14
+     */
+    QSet<QgsVectorLayer *> getExtraSnapLayers()
+    {
+      return mExtraSnapLayers;
+    }
+
 
   public slots:
 
@@ -175,30 +251,36 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void configChanged( const QgsSnappingConfig &snappingConfig );
 
   protected:
-    //! Called when starting to index - can be overridden and e.g. progress dialog can be provided
+
+    //! Called when starting to index with snapToMap - can be overridden and e.g. progress dialog can be provided
     virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
-    //! Called when finished indexing a layer. When index == count the indexing is complete
+    //! Called when finished indexing a layer with snapToMap. When index == count the indexing is complete
     virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
+
+    //! Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
+    void clearAllLocators();
+
+  private slots:
+
+    //! called whenever a point locator has finished
+    void onInitFinished( bool ok );
 
   private:
     void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
-    //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
+    //! Gets destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
-    void clearAllLocators();
-
-    //! return a locator (temporary or not) according to the indexing strategy
+    //! Returns a locator (temporary or not) according to the indexing strategy
     QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
-    //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
+    //! Returns a temporary locator with index only for a small area (will be replaced by another one on next request)
     QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
 
     typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;
 
-    //! find out whether the strategy would index such layer or just use a temporary locator
-    bool isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &areaOfInterest );
+    //! Returns TRUE if \a loc index is ready to be used in the area of interest \a areaOfInterest
+    bool isIndexPrepared( QgsPointLocator *loc, const QgsRectangle &areaOfInterest );
     //! initialize index for layers where it makes sense (according to the indexing strategy)
-    void prepareIndex( const QList<LayerAndAreaOfInterest> &layers );
+    void prepareIndex( const QList<LayerAndAreaOfInterest> &layers, bool relaxed );
 
   private:
     // environment
@@ -208,7 +290,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsSnappingConfig mSnappingConfig;
 
     // configuration
-    IndexingStrategy mStrategy;
+    IndexingStrategy mStrategy = IndexHybrid;
     QList<LayerConfig> mLayers;
 
     // internal data
@@ -219,20 +301,27 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mTemporaryLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
-    //! a record for each layer seen:
-    //! - value -1  == it is small layer -> fully indexed
-    //! - value > 0 == maximum area (in map units) for which it may make sense to build index.
-    //!   This means that index is built in area around the point with this total area, because
-    //!   for a larger area the number of features will likely exceed the limit. When the limit
-    //!   is exceeded, the maximum area is lowered to prevent that from happening.
-    //!   When requesting snap in area that is not currently indexed, layer's index is destroyed
-    //!   and a new one is built in the different area.
+    //! list of additional snapping layers
+    QSet<QgsVectorLayer *> mExtraSnapLayers;
+
+    /**
+     * a record for each layer seen:
+     *
+     * - value -1  == it is small layer -> fully indexed
+     * - value > 0 == maximum area (in map units) for which it may make sense to build index.
+     *
+     * This means that index is built in area around the point with this total area, because
+     * for a larger area the number of features will likely exceed the limit. When the limit
+     * is exceeded, the maximum area is lowered to prevent that from happening.
+     * When requesting snap in area that is not currently indexed, layer's index is destroyed
+     * and a new one is built in the different area.
+     */
     QHash<QString, double> mHybridMaxAreaPerLayer;
     //! if using hybrid strategy, how many features of one layer may be indexed (to limit amount of consumed memory)
-    int mHybridPerLayerFeatureLimit;
+    int mHybridPerLayerFeatureLimit = 50000;
 
-    //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
-    bool mIsIndexing;
+    //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
+    bool mEnableSnappingForInvisibleFeature = true;
 };
 
 

@@ -1,0 +1,25 @@
+// Include auto-generated SIP files
+%Include auto_generated/processing/qgs3dalgorithms.sip
+%Include auto_generated/qgs3d.sip
+%Include auto_generated/qgs3dmapsettings.sip
+%Include auto_generated/qgs3dtypes.sip
+%Include auto_generated/qgsabstractvectorlayer3drenderer.sip
+%Include auto_generated/qgscamerapose.sip
+%Include auto_generated/qgslayoutitem3dmap.sip
+%Include auto_generated/qgspointlightsettings.sip
+%Include auto_generated/qgsdirectionallightsettings.sip
+%Include auto_generated/qgsrulebased3drenderer.sip
+%Include auto_generated/qgsvectorlayer3drenderer.sip
+%Include auto_generated/qgspointcloudlayer3drenderer.sip
+%Include auto_generated/materials/qgsabstractmaterialsettings.sip
+%Include auto_generated/materials/qgsgoochmaterialsettings.sip
+%Include auto_generated/materials/qgsmaterialregistry.sip
+%Include auto_generated/materials/qgsnullmaterialsettings.sip
+%Include auto_generated/materials/qgsphongmaterialsettings.sip
+%Include auto_generated/materials/qgsphongtexturedmaterialsettings.sip
+%Include auto_generated/materials/qgssimplelinematerialsettings.sip
+%Include auto_generated/symbols/qgsline3dsymbol.sip
+%Include auto_generated/symbols/qgspoint3dsymbol.sip
+%Include auto_generated/symbols/qgspolygon3dsymbol.sip
+%Include auto_generated/symbols/qgspointcloud3dsymbol.sip
+%Include auto_generated/qgs3dmapexportsettings.sip

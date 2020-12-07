@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>DockWidget</class>
- <widget class="QDockWidget" name="DockWidget">
+ <widget class="QDockWidget" name="ResultsViewer">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,10 +11,22 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Processing results viewer</string>
+   <string>Results Viewer</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QSplitter" name="splitter">
       <property name="orientation">
@@ -45,7 +57,7 @@
         </property>
        </column>
       </widget>
-      <widget class="QTextEdit" name="txtDescription"/>
+      <widget class="QTextBrowser" name="txtDescription"/>
      </widget>
     </item>
    </layout>

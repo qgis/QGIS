@@ -1,50 +1,55 @@
 
-SET (WCS_SRCS
-  ../gdal/qgsgdalproviderbase.cpp
+set (WCS_SRCS
+  ../../core/providers/gdal/qgsgdalproviderbase.cpp
   qgswcsprovider.cpp
   qgswcscapabilities.cpp
-  qgswcssourceselect.cpp
   qgswcsdataitems.cpp
 )
 
-SET (WCS_MOC_HDRS
-  qgswcsprovider.h
-  qgswcscapabilities.h
-  qgswcssourceselect.h
-  qgswcsdataitems.h
-)
+if (WITH_GUI)
+  set(WCS_SRCS ${WCS_SRCS}
+    qgswcsprovidergui.cpp
+    qgswcsdataitemguiprovider.cpp
+    qgswcssourceselect.cpp
+  )
+endif()
 
-QT5_WRAP_CPP (WCS_MOC_SRCS ${WCS_MOC_HDRS})
-
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/providers/gdal
+  ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(wcsprovider MODULE ${WCS_SRCS} ${WCS_MOC_SRCS})
+add_library(wcsprovider MODULE ${WCS_SRCS})
 
-TARGET_LINK_LIBRARIES(wcsprovider
+target_link_libraries(wcsprovider
   qgis_core
-  qgis_gui
 )
 
-INSTALL (TARGETS wcsprovider
+if (WITH_GUI)
+  target_link_libraries (wcsprovider
+    qgis_gui
+  )
+endif()
+
+install (TARGETS wcsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

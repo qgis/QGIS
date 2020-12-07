@@ -10,6 +10,8 @@ export DH_OPTIONS
 # Enable hardening build flags
 export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
+include /usr/share/dpkg/pkg-info.mk
+
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
@@ -18,13 +20,15 @@ DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 
 DEB_TEST_TARGET ?= Experimental
+
 QGIS_BUILDDIR ?= debian/build
+
 export QT_SELECT=5
 
-QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \([0-9]\+:\)\?\([^+-]\+\).*$$/\2/p')
+QGIS_VERSION=$(shell echo $(DEB_VERSION_UPSTREAM) | sed -e 's/\+.*//')
 
 ifeq (,$(DIST))
-	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
+	DISTRIBUTION := $(DEB_DISTRIBUTION)
 else
 	DISTRIBUTION := $(DIST)
 endif
@@ -34,26 +38,46 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
+QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bullseye bionic focal groovy"))
 	DISTRIBUTION := sid
 endif
 
 DEB_BUILD_NAME ?= $(DISTRIBUTION)-$(DEB_BUILD_ARCH)
 
-ifeq (,$(DISPLAY))
-TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" ninja
-else
-TESTMAKE=ninja
-endif
-
-QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
-QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
-QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
+QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/ip' CMakeLists.txt)
+QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/ip' CMakeLists.txt)
+QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/ip' CMakeLists.txt)
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
+GRASSABI=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2,3|sed -e 's/RC/-/'))
+
+# Include percentage of started edges
+export NINJA_STATUS=[%f/%t %p]
+
+ifeq (,$(filter terse,$(DEB_BUILD_OPTIONS)))
+	NINJA_OPTS += -v
+endif
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	MAKEFLAGS += -j$(NUMJOBS)
+	NINJA_OPTS += -j$(NUMJOBS)
+endif
+
+ifeq (,$(DISPLAY))
+TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" ninja $(NINJA_OPTS)
+else
+TESTMAKE=ninja $(NINJA_OPTS)
+endif
+
+ifeq (,$(findstring $(DISTRIBUTION),"focal groovy sid"))
+PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
+else
+PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
+endif
 
 CMAKE_OPTS := \
 	-G Ninja \
@@ -61,20 +85,24 @@ CMAKE_OPTS := \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
+	-DSIP_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
-	-DWITH_GLOBE=FALSE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
-	-DWITH_QSPATIALITE=TRUE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
-	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
-	-DDOXYGEN_ON_DEMAND=TRUE
+	-DPYTHON_LIBRARY=$(PYTHON_LIBRARY) \
+	-DDOXYGEN_ON_DEMAND=TRUE \
+	-DWITH_QSPATIALITE=TRUE \
+	-DWITH_3D=TRUE \
+	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
+	-DWITH_PDAL=TRUE \
+	-DWITH_EPT=TRUE
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -85,40 +113,29 @@ ifeq ($(GRASSVER),7)
 		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS7=TRUE \
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
-else
-	CMAKE_OPTS += \
-		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS6=TRUE \
-		-DGRASS_PREFIX=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-	MAKEFLAGS += -j$(NUMJOBS)
-endif
-
-
-ifneq (,$(WITH_GLOBE))
-	CMAKE_OPTS += -DWITH_GLOBE=TRUE
-endif
-
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid"))
-	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
+$(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h -a -f /usr/lib/$(DEB_BUILD_MULTIARCH)/cmake/Qt53DExtras/Qt53DExtrasConfig.cmake)
+ifneq (0,$(.SHELLSTATUS))
+# Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
+	CMAKE_OPTS += \
+	        -DQt53DExtras_DIR=$(realpath external/qt3dextra-headers/cmake/Qt53DExtras) \
+		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
+		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
 endif
-
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client64/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client64/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client64/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client64/lib/
 endif
 ifeq ($(DEB_BUILD_ARCH),i386)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client/lib/
 endif
 	CMAKE_OPTS += \
 		-DWITH_ORACLE=TRUE \
@@ -126,7 +143,7 @@ endif
 		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
@@ -137,7 +154,7 @@ endif
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DENABLE_TESTS=FALSE
 else
-	CMAKE_OPTS += -DENABLE_TESTS=TRUE
+	CMAKE_OPTS += -DENABLE_TESTS=TRUE -DDART_TESTING_TIMEOUT=60
 endif
 
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
@@ -163,6 +180,10 @@ ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
 	LDFLAGS += -pg
 endif
 
+ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -DNDEBUG
+	CXXFLAGS += -DNDEBUG
+endif
 
 # multi distribution support:
 # - remove lines with applicable excludes
@@ -171,10 +192,6 @@ endif
 # - remove remaining comments
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
-
-ifneq (,$(WITH_GLOBE))
-	CONTROL_EXPRESSIONS += globe
-endif
 
 ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle
@@ -188,7 +205,6 @@ $(2): $(1)
 		-e 's/#([^#]+ |)![^#]+( [^#]*|)#//g' \
 		-e '/^#/d' \
 		-e "s/\{DEB_BUILD_GNU_TYPE\}/$(DEB_BUILD_GNU_TYPE)/g" \
-		-e "s#\{QT_PLUGINS_DIR\}#$(QT_PLUGINS_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
@@ -220,44 +236,51 @@ override_dh_clean: cleantemplates
 override_dh_auto_configure:
 	dh_auto_configure -- $(CMAKE_OPTS)
 
-override_dh_auto_build-arch:
-	ninja -C $(QGIS_BUILDDIR)
+override_dh_auto_build:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build
+	! grep -q "<Error>" $(QGIS_BUILDDIR)/Testing/$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG)/Build.xml || { \
+		cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log; \
+		ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit; \
+		false; }
+else
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
+endif
 
-override_dh_auto_build-indep:
-	ninja -C $(QGIS_BUILDDIR) apidoc
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
 
 override_dh_auto_test: test-stamp
 
 test-stamp:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	# Code to run the package test suite - and ignore the outcome for now
+	# Code to run the package test suite
+	rm -f $(QGIS_BUILDDIR)/.error
 	mkdir -p debian/tmp/locale/
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
-	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
+	LOCPATH=$(CURDIR)/debian/tmp/locale/ \
 	LC_ALL=en_US.UTF-8 \
 	LD_LIBRARY_PATH=$(CURDIR)/$(QGIS_BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
-	$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)
+		$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Test || touch $(QGIS_BUILDDIR)/.error
+	# ignore submission errors
+	-$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit
+	# ignore the test outcome for now
+	# ! [ -f $(QGIS_BUILDDIR)/.error ]
 else
 	@echo Skipping tests.
 endif
 	touch test-stamp
 
 override_dh_auto_install:
-	DESTDIR=$(CURDIR)/debian/tmp ninja -C $(QGIS_BUILDDIR) install
+	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) install
 
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/html/jquery.js
-	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/jquery.js
 
 	# replace leaflet and jquery urls
 	perl -i -p \
 		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
 		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
-
-	# Use /usr/bin/python2.7 explicitly for Python Policy compliance
-	perl -i -pe 's=#!/usr/bin/env python=#!/usr/bin/python2.7=;' $$(find debian/tmp -name "*.py")
 
 	# Don't include a copy of the world.tif also included in osgearth-data
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/globe/world.tif
@@ -267,6 +290,16 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_wcstest
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_bench
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/wcs-servers.json
+
+	# remove documentation outside usr/share/doc
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/README
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/TODO
+
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/README-qgis.txt
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/README.txt
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
@@ -274,53 +307,16 @@ override_dh_auto_install:
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
 
-	# Install menu pixmap
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon-512x512.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
-
-	# Install MIME type icon
-	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128; do \
-		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-mime-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-mime.png ; \
-	done
-
-	# Install QGIS file formats icons
-	for file_type in qgs qlr qml qpt; do \
-		for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
-			install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
-			install -o root -g root -m 644 \
-				$(CURDIR)/debian/icons/qgis-$${file_type}$${size}.png \
-				$(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-$${file_type}.png ; \
-		done ; \
-	done
-
-	# Install application icon
-	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
-		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
-	done
-	
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
-
-	# Install desktop files
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis.desktop $(CURDIR)/debian/tmp/usr/share/applications
-
 	# Mime info
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
 
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mimelnk/application
-	install -o root -g root -m 644 $(CURDIR)/debian/mime/application/* $(CURDIR)/debian/tmp/usr/share/mimelnk/application
-
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process $(CURDIR)/debian/qgis/usr/bin/qgis_process.bin
 
-	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/tmp/usr/bin/qgis_process
 
 	# qgis binary wrappers
 	sed -r \
@@ -329,9 +325,13 @@ override_dh_auto_install:
 		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
+
+override_dh_missing:
+	dh_missing --fail-missing
 
 override_dh_install:
-	dh_install --autodest --list-missing
+	dh_install --autodest
 
 override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog
@@ -344,11 +344,10 @@ override_dh_installman:
 override_dh_installmime:
 	dh_installmime -pqgis
 
-
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
-	dh_sip -ppython-qgis
+	dh_sip3 -ppython3-qgis
 
 override_dh_compress:
 	dh_compress --exclude=pdf
@@ -370,3 +369,5 @@ endif
 override_dh_strip:
 	dh_strip --dbg-package=qgis-dbg
 
+override_dh_gencontrol:
+	dh_gencontrol -- -Vgrass:Depends="grass$(GRASSABI)"

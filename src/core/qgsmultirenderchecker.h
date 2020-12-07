@@ -19,7 +19,10 @@
 #include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
-/** \ingroup core
+class QgsLayout;
+
+/**
+ * \ingroup core
  * This class allows checking rendered images against comparison images.
  * Its main purpose is for the unit testing framework.
  *
@@ -52,7 +55,11 @@
 class CORE_EXPORT QgsMultiRenderChecker
 {
   public:
-    QgsMultiRenderChecker();
+
+    /**
+     * Constructor for QgsMultiRenderChecker.
+     */
+    QgsMultiRenderChecker() = default;
 
     virtual ~QgsMultiRenderChecker() = default;
 
@@ -90,6 +97,14 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
 
     /**
+     * Sets the largest allowable difference in size between the rendered and the expected image.
+     * \param xTolerance x tolerance in pixels
+     * \param yTolerance y tolerance in pixels
+     * \since QGIS 3.0
+     */
+    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+
+    /**
      * Test using renderer to generate the image to be compared.
      *
      * \param testName - to be used as the basis for writing a file to
@@ -106,18 +121,16 @@ class CORE_EXPORT QgsMultiRenderChecker
 
     /**
      * Returns a report for this test
-     *
-     * \returns A report
      */
     QString report() const { return mReport; }
 
     /**
-     * \brief controlImagePath
-     * \returns
+     * Returns the path to the control images.
      */
     QString controlImagePath() const;
 
-    /** Draws a checkboard pattern for image backgrounds, so that opacity is visible
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that opacity is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
@@ -127,41 +140,64 @@ class CORE_EXPORT QgsMultiRenderChecker
     QString mRenderedImage;
     QString mControlName;
     QString mControlPathPrefix;
-    unsigned int mColorTolerance;
+    unsigned int mColorTolerance = 0;
+    int mMaxSizeDifferenceX = 0;
+    int mMaxSizeDifferenceY = 0;
     QgsMapSettings mMapSettings;
 };
 
-#ifdef ENABLE_TESTS
 SIP_FEATURE( TESTS )
 SIP_IF_FEATURE( TESTS )
 
 ///@cond PRIVATE
 
-/** \ingroup core
- * \class QgsCompositionChecker
- * Renders a composition to an image and compares with an expected output
+/**
+ * \ingroup core
+ * \class QgsLayoutChecker
+ * Renders a layout to an image and compares with an expected output
+ * \since QGIS 3.0
  */
-class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
+class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
 {
   public:
-    QgsCompositionChecker( const QString &testName, QgsComposition *composition );
 
+    /**
+     * Constructor for QgsLayoutChecker.
+     */
+    QgsLayoutChecker( const QString &testName, QgsLayout *layout );
+
+    /**
+     * Sets the output (reference) image \a size.
+     */
     void setSize( QSize size ) { mSize = size; }
 
-    bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
+    /**
+     * Runs a render check on the layout, adding results to the specified \a report.
+     *
+     * The maximum number of allowable pixels differing from the reference image is
+     * specified via the \a pixelDiff argument.
+     *
+     * A reference image can be created by setting \a createReferenceImage to TRUE
+     * in this case the test will always return TRUE.
+     *
+     * The page number is specified via \a page, where 0 corresponds to the first
+     * page in the layout.
+     *
+     * Returns FALSE if the rendered layout differs from the expected reference image.
+     */
+    bool testLayout( QString &report, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
 
   private:
-    QgsCompositionChecker(); //forbidden
+    QgsLayoutChecker() = delete;
 
     QString mTestName;
-    QgsComposition *mComposition = nullptr;
+    QgsLayout *mLayout = nullptr;
     QSize mSize;
     int mDotsPerMeter;
 };
 ///@endcond
 
 SIP_END
-#endif
 
 
 #endif // QGSMULTIRENDERCHECKER_H

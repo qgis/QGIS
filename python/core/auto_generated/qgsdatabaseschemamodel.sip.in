@@ -1,0 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdatabaseschemamodel.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDatabaseSchemaModel : QAbstractItemModel
+{
+%Docstring
+A model containing schemas from a database connection.
+
+This class does not automatically subscribe to database updates. Schemas are queried
+from the database initially upon model construction. In order
+to update the listed schemas, :py:func:`QgsDatabaseSchemaModel.refresh()` must be manually
+called.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdatabaseschemamodel.h"
+%End
+  public:
+
+    enum Role
+    {
+      RoleEmpty,
+    };
+
+    explicit QgsDatabaseSchemaModel( const QString &provider, const QString &connection, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseSchemaModel, for the specified ``provider`` and ``connection`` name.
+
+.. warning::
+
+   The ``provider`` must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly.
+%End
+
+    explicit QgsDatabaseSchemaModel( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseSchemaModel, for the specified ``connection``.
+
+Ownership of ``connection`` is transferred to the model.
+%End
+
+    virtual QModelIndex parent( const QModelIndex &child ) const;
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent ) const;
+
+
+    void setAllowEmptySchema( bool allowEmpty );
+%Docstring
+Sets whether an optional empty schema ("not set") option is present in the model.
+
+.. seealso:: :py:func:`allowEmptySchema`
+%End
+
+    bool allowEmptySchema() const;
+%Docstring
+Returns ``True`` if the model allows the empty schema ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptySchema`
+%End
+
+  public slots:
+
+    void refresh();
+%Docstring
+Refreshes the schema list by querying the underlying connection.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdatabaseschemamodel.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

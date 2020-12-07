@@ -1,0 +1,27 @@
+<!-- template for the WFS3 API leaflet map -->
+<div class="col-md-6">
+    <div id="mapid" class="small"></div>
+
+    <script type="text/javascript">
+    jQuery( document ).ready(function( $ ) {
+        var map = L.map('mapid').setView([0, 0], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map)
+        $.get( "{{ metadata.geojsonUrl }}", function( data ) {
+          var jl = L.geoJSON( data, {
+              onEachFeature: function (feature, layer) {
+                    layer.bindPopup('<h1>'+feature.id +'</h1>');
+              }
+          }).addTo(map);
+          map.setView(jl.getBounds().getCenter());
+          if ( jl.getBounds().getEast() != jl.getBounds().getWest() && jl.getBounds().getNorth() != jl.getBounds().getSouth() )
+          {
+            map.fitBounds(jl.getBounds());
+          }
+          jl.on('featureOver', featureOver);
+        });
+    });
+
+    </script>
+</div>

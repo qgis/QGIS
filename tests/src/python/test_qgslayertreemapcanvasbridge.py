@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '8/03/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -48,12 +46,13 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
                                 "layer2", "memory")
         layer3 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer3", "memory")
+
         prj.addMapLayers([layer, layer2, layer3])
 
         canvas = QgsMapCanvas()
         bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
 
-        #custom layer order
+        # custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(True)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
@@ -100,7 +99,7 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
         custom_order_widget = QgsCustomLayerOrderWidget(bridge)
 
-        #custom layer order
+        # custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(True)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
@@ -130,6 +129,41 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         # make sure project respects this
         self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3])
         self.assertFalse(prj.layerTreeRoot().hasCustomLayerOrder())
+
+    def testNonSpatialLayer(self):
+        """ test that non spatial layers are not passed to canvas """
+
+        prj = QgsProject.instance()
+        prj.clear()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        non_spatial = QgsVectorLayer("None?field=fldtxt:string",
+                                     "non_spatial", "memory")
+
+        prj.addMapLayers([layer, layer2, layer3, non_spatial])
+
+        canvas = QgsMapCanvas()
+        bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
+
+        # custom layer order
+        prj.layerTreeRoot().setHasCustomLayerOrder(True)
+        prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
+        app.processEvents()
+        self.assertEqual(canvas.mapSettings().layers(), [layer3, layer, layer2])
+
+        # with non-spatial (should not be possible through ui, but is through api)
+        prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2, non_spatial])
+        app.processEvents()
+        # self.assertEqual(canvas.mapSettings().layers(),[layer3,layer,layer2])
+
+        # no custom layer order
+        prj.layerTreeRoot().setHasCustomLayerOrder(False)
+        app.processEvents()
+        self.assertEqual(canvas.mapSettings().layers(), [layer, layer2, layer3])
 
 
 if __name__ == '__main__':

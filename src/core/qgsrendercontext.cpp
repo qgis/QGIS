@@ -22,6 +22,8 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -30,13 +32,22 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
+  // - for Previews/Icons the default Extent can be used
+  mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
 }
 
+QgsRenderContext::~QgsRenderContext() = default;
+
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
-  : mFlags( rh.mFlags )
+  : QgsTemporalRangeObject( rh )
+  , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
+  , mMaskPainter( rh.mMaskPainter )
   , mCoordTransform( rh.mCoordTransform )
+  , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
+  , mOriginalMapExtent( rh.mOriginalMapExtent )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
   , mScaleFactor( rh.mScaleFactor )
@@ -49,6 +60,20 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
   , mSegmentationToleranceType( rh.mSegmentationToleranceType )
+  , mTransformContext( rh.mTransformContext )
+  , mPathResolver( rh.mPathResolver )
+  , mTextRenderFormat( rh.mTextRenderFormat )
+  , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
+  , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
+  , mCustomRenderingFlags( rh.mCustomRenderingFlags )
+  , mDisabledSymbolLayers()
+  , mClippingRegions( rh.mClippingRegions )
+  , mFeatureClipGeometry( rh.mFeatureClipGeometry )
+  , mTextureOrigin( rh.mTextureOrigin )
+  , mZRange( rh.mZRange )
+#ifdef QGISDEBUG
+  , mHasTransformContext( rh.mHasTransformContext )
+#endif
 {
 }
 
@@ -56,8 +81,10 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
   mFlags = rh.mFlags;
   mPainter = rh.mPainter;
+  mMaskPainter = rh.mMaskPainter;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
+  mOriginalMapExtent = rh.mOriginalMapExtent;
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
@@ -70,6 +97,24 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mFeatureFilterProvider.reset( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr );
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
+  mDistanceArea = rh.mDistanceArea;
+  mTransformContext = rh.mTransformContext;
+  mPathResolver = rh.mPathResolver;
+  mTextRenderFormat = rh.mTextRenderFormat;
+  mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
+  mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
+  mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  mClippingRegions = rh.mClippingRegions;
+  mFeatureClipGeometry = rh.mFeatureClipGeometry;
+  mTextureOrigin = rh.mTextureOrigin;
+  mZRange = rh.mZRange;
+  setIsTemporal( rh.isTemporal() );
+  if ( isTemporal() )
+    setTemporalRange( rh.temporalRange() );
+#ifdef QGISDEBUG
+  mHasTransformContext = rh.mHasTransformContext;
+#endif
+
   return *this;
 }
 
@@ -85,7 +130,47 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   {
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
+
+  if ( painter && painter->renderHints() & QPainter::Antialiasing )
+    context.setFlag( QgsRenderContext::Antialiasing, true );
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
+    context.setFlag( QgsRenderContext::LosslessImageRendering, true );
+#endif
+
   return context;
+}
+
+void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
+{
+  if ( !painter )
+    painter = mPainter;
+
+  if ( !painter )
+    return;
+
+  painter->setRenderHint( QPainter::Antialiasing, mFlags & QgsRenderContext::Antialiasing );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & QgsRenderContext::LosslessImageRendering );
+#endif
+}
+
+QgsCoordinateTransformContext QgsRenderContext::transformContext() const
+{
+#ifdef QGISDEBUG
+  if ( !mHasTransformContext )
+    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+#endif
+  return mTransformContext;
+}
+
+void QgsRenderContext::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+#ifdef QGISDEBUG
+  mHasTransformContext = true;
+#endif
 }
 
 void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
@@ -114,8 +199,11 @@ bool QgsRenderContext::testFlag( QgsRenderContext::Flag flag ) const
 QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSettings )
 {
   QgsRenderContext ctx;
+  QgsRectangle extent = mapSettings.visibleExtent();
+  extent.grow( mapSettings.extentBuffer() );
   ctx.setMapToPixel( mapSettings.mapToPixel() );
-  ctx.setExtent( mapSettings.visibleExtent() );
+  ctx.setExtent( extent );
+  ctx.setMapExtent( mapSettings.visibleExtent() );
   ctx.setFlag( DrawEditingInfo, mapSettings.testFlag( QgsMapSettings::DrawEditingInfo ) );
   ctx.setFlag( ForceVectorOutput, mapSettings.testFlag( QgsMapSettings::ForceVectorOutput ) );
   ctx.setFlag( UseAdvancedEffects, mapSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) );
@@ -127,15 +215,34 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
   ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
+  ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
+  ctx.setFlag( RenderBlocking, mapSettings.testFlag( QgsMapSettings::RenderBlocking ) );
+  ctx.setFlag( LosslessImageRendering, mapSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
+  ctx.setFlag( Render3DMap, mapSettings.testFlag( QgsMapSettings::Render3DMap ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
-
+  ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs(), mapSettings.transformContext() );
+  ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+  ctx.setTransformContext( mapSettings.transformContext() );
+  ctx.setPathResolver( mapSettings.pathResolver() );
+  ctx.setTextRenderFormat( mapSettings.textRenderFormat() );
+  ctx.setVectorSimplifyMethod( mapSettings.simplifyMethod() );
+  ctx.mRenderedFeatureHandlers = mapSettings.renderedFeatureHandlers();
+  ctx.mHasRenderedFeatureHandlers = !mapSettings.renderedFeatureHandlers().isEmpty();
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
+  ctx.mCustomRenderingFlags = mapSettings.customRenderingFlags();
+  ctx.setIsTemporal( mapSettings.isTemporal() );
+  if ( ctx.isTemporal() )
+    ctx.setTemporalRange( mapSettings.temporalRange() );
+
+  ctx.setZRange( mapSettings.zRange() );
+
+  ctx.mClippingRegions = mapSettings.clippingRegions();
 
   return ctx;
 }
@@ -229,6 +336,13 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       conversionFactor = mScaleFactor * INCH_TO_MM;
       break;
 
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      size = convertMetersToMapUnits( size );
+      unit = QgsUnitTypes::RenderMapUnits;
+      // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
+      FALLTHROUGH
+    }
     case QgsUnitTypes::RenderMapUnits:
     {
       double mup = scale.computeMapUnitsPerPixel( *this );
@@ -259,9 +373,9 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
   {
     //check max/min size
     if ( scale.minSizeMMEnabled )
-      convertedSize = qMax( convertedSize, scale.minSizeMM * mScaleFactor );
+      convertedSize = std::max( convertedSize, scale.minSizeMM * mScaleFactor );
     if ( scale.maxSizeMMEnabled )
-      convertedSize = qMin( convertedSize, scale.maxSizeMM * mScaleFactor );
+      convertedSize = std::min( convertedSize, scale.maxSizeMM * mScaleFactor );
   }
 
   return convertedSize;
@@ -273,30 +387,36 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 
   switch ( unit )
   {
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      size = convertMetersToMapUnits( size );
+      // Fall through to RenderMapUnits with values of meters converted to MapUnits
+      FALLTHROUGH
+    }
     case QgsUnitTypes::RenderMapUnits:
     {
       // check scale
-      double minSizeMU = -DBL_MAX;
+      double minSizeMU = std::numeric_limits<double>::lowest();
       if ( scale.minSizeMMEnabled )
       {
         minSizeMU = scale.minSizeMM * mScaleFactor * mup;
       }
       if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
       {
-        minSizeMU = qMax( minSizeMU, size * ( mRendererScale / scale.minScale ) );
+        minSizeMU = std::max( minSizeMU, size * ( mRendererScale / scale.minScale ) );
       }
-      size = qMax( size, minSizeMU );
+      size = std::max( size, minSizeMU );
 
-      double maxSizeMU = DBL_MAX;
+      double maxSizeMU = std::numeric_limits<double>::max();
       if ( scale.maxSizeMMEnabled )
       {
         maxSizeMU = scale.maxSizeMM * mScaleFactor * mup;
       }
       if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
       {
-        maxSizeMU = qMin( maxSizeMU, size * ( mRendererScale / scale.maxScale ) );
+        maxSizeMU = std::min( maxSizeMU, size * ( mRendererScale / scale.maxScale ) );
       }
-      size = qMin( size, maxSizeMU );
+      size = std::min( size, maxSizeMU );
 
       return size;
     }
@@ -331,6 +451,10 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
 
   switch ( outputUnit )
   {
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    {
+      return sizeInMapUnits / convertMetersToMapUnits( 1.0 );
+    }
     case QgsUnitTypes::RenderMapUnits:
     {
       return sizeInMapUnits;
@@ -359,3 +483,82 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
   }
   return 0.0;
 }
+
+double QgsRenderContext::convertMetersToMapUnits( double meters ) const
+{
+  switch ( mDistanceArea.sourceCrs().mapUnits() )
+  {
+    case QgsUnitTypes::DistanceMeters:
+      return meters;
+    case QgsUnitTypes::DistanceDegrees:
+    {
+      if ( mExtent.isNull() )
+      {
+        // we don't have an extent to calculate exactly -- so just use a very rough approximation
+        return meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, QgsUnitTypes::DistanceDegrees );
+      }
+
+      QgsPointXY pointCenter = mExtent.center();
+      // The Extent is in the sourceCrs(), when different from destinationCrs()
+      // - the point must be transformed, since DistanceArea uses the destinationCrs()
+      // Note: the default QgsCoordinateTransform() : authid() will return an empty String
+      if ( !mCoordTransform.isShortCircuited() )
+      {
+        pointCenter = mCoordTransform.transform( pointCenter );
+      }
+      return mDistanceArea.measureLineProjected( pointCenter, meters );
+    }
+    case QgsUnitTypes::DistanceKilometers:
+    case QgsUnitTypes::DistanceFeet:
+    case QgsUnitTypes::DistanceNauticalMiles:
+    case QgsUnitTypes::DistanceYards:
+    case QgsUnitTypes::DistanceMiles:
+    case QgsUnitTypes::DistanceCentimeters:
+    case QgsUnitTypes::DistanceMillimeters:
+    case QgsUnitTypes::DistanceUnknownUnit:
+      return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
+  }
+  return meters;
+}
+
+QList<QgsRenderedFeatureHandlerInterface *> QgsRenderContext::renderedFeatureHandlers() const
+{
+  return mRenderedFeatureHandlers;
+}
+
+QList<QgsMapClippingRegion> QgsRenderContext::clippingRegions() const
+{
+  return mClippingRegions;
+}
+
+QgsGeometry QgsRenderContext::featureClipGeometry() const
+{
+  return mFeatureClipGeometry;
+}
+
+void QgsRenderContext::setFeatureClipGeometry( const QgsGeometry &geometry )
+{
+  mFeatureClipGeometry = geometry;
+}
+
+QPointF QgsRenderContext::textureOrigin() const
+{
+  return mTextureOrigin;
+}
+
+void QgsRenderContext::setTextureOrigin( const QPointF &origin )
+{
+  mTextureOrigin = origin;
+}
+
+QgsDoubleRange QgsRenderContext::zRange() const
+{
+  return mZRange;
+}
+
+void QgsRenderContext::setZRange( const QgsDoubleRange &range )
+{
+  mZRange = range;
+}
+
+

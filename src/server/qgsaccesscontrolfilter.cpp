@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsaccesscontrolplugin.cpp
                           --------------------------
- Access control interface for Qgis Server plugins
+ Access control interface for QGIS Server plugins
 
   begin                : 2015-05-19
   copyright            : (C) 2015 by Stéphane Brunner
@@ -22,9 +22,6 @@
 #include "qgsmessagelog.h"
 #include "qgsfeature.h"
 
-#include <QString>
-#include <QStringList>
-
 
 //! Constructor
 QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *serverInterface ):
@@ -32,46 +29,46 @@ QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *server
 {
 }
 
-//! Return an additional layer expression filter
+//! Returns an additional layer expression filter
 QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *layer ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterExpression called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
-  Q_UNUSED( layer );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterExpression called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
+  Q_UNUSED( layer )
   return QString();
 }
 
-//! Return an additional layer subset string (typically SQL) filter
+//! Returns an additional layer subset string (typically SQL) filter
 QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *layer ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSQL called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
-  Q_UNUSED( layer );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSubsetString called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
+  Q_UNUSED( layer )
   return QString();
 }
 
-//! Return the layer permissions
+//! Returns the layer permissions
 QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer *layer ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerPermissions called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
-  Q_UNUSED( layer );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerPermissions called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
+  Q_UNUSED( layer )
   LayerPermissions permissions = QgsAccessControlFilter::LayerPermissions();
   permissions.canRead = permissions.canUpdate = permissions.canInsert = permissions.canDelete = true;
   return permissions;
 }
 
-//! Return the authorized layer attributes
+//! Returns the authorized layer attributes
 QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
 {
-  Q_UNUSED( layer );
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default authorizedLayerAttributes called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
+  Q_UNUSED( layer )
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default authorizedLayerAttributes called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   return attributes;
 }
 
 //! Are we authorized to modify the feature
 bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default allowToEdit called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
-  Q_UNUSED( layer );
-  Q_UNUSED( feature );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default allowToEdit called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
+  Q_UNUSED( layer )
+  Q_UNUSED( feature )
   return true;
 }
 

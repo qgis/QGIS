@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SET (GPS_SRCS
+set (GPS_SRCS
      qgsgpsplugin.cpp
      qgsbabelformat.cpp
      qgsgpsdevice.cpp
@@ -9,18 +9,12 @@ SET (GPS_SRCS
      qgsgpsdevicedialog.cpp
 )
 
-SET (GPS_UIS
+set (GPS_UIS
      qgsgpspluginguibase.ui
      qgsgpsdevicedialogbase.ui
 )
 
-SET (GPS_MOC_HDRS
-     qgsgpsplugin.h
-     qgsgpsplugingui.h
-     qgsgpsdevicedialog.h
-)
-
-SET (GPS_RCCS  qgsgps_plugin.qrc)
+set (GPS_RCCS  qgsgps_plugin.qrc)
 
 
 ########################################################
@@ -28,33 +22,27 @@ SET (GPS_RCCS  qgsgps_plugin.qrc)
 
 QT5_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
 
-QT5_WRAP_CPP (GPS_MOC_SRCS  ${GPS_MOC_HDRS})
+add_library (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_RCCS} ${GPS_UIS_H})
 
-QT5_ADD_RESOURCES(GPS_RCC_SRCS ${GPS_RCCS})
-
-ADD_LIBRARY (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_MOC_SRCS} ${GPS_RCC_SRCS} ${GPS_UIS_H})
-
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-INCLUDE_DIRECTORIES(SYSTEM
-  ${EXPAT_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
-  ${QEXTSERIALPORT_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-)
 
-TARGET_LINK_LIBRARIES(gpsimporterplugin
+target_link_libraries(gpsimporterplugin
   qgis_core
   qgis_gui
 )
@@ -62,6 +50,6 @@ TARGET_LINK_LIBRARIES(gpsimporterplugin
 ########################################################
 # Install
 
-INSTALL(TARGETS gpsimporterplugin
+install(TARGETS gpsimporterplugin
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

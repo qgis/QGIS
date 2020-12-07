@@ -1,10 +1,11 @@
 r.profile
 Outputs the raster layer values lying on user-defined line(s).
 Raster (r.*)
-ParameterRaster|input|Input raster layer|False
-ParameterString|profile|Profile coordinate pairs|0,0,1,1
-ParameterNumber|res|Resolution along profile|0|None|1.0
-ParameterString|null_value|Character to represent no data cell|*
-ParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
-ParameterBoolean|-c|Output RRR:GGG:BBB color values for each profile point|False
-OutputFile|output|Profile
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterString|coordinates|Profile coordinate pairs|0,0,1,1|True|True
+QgsProcessingParameterNumber|resolution|Resolution along profile|QgsProcessingParameterNumber.Double|None|True|None|0
+QgsProcessingParameterString|null_value|Character to represent no data cell|*|False|True
+QgsProcessingParameterFile|file|Name of input file containing coordinate pairs|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
+QgsProcessingParameterBoolean|-c|Output RRR:GGG:BBB color values for each profile point|False
+QgsProcessingParameterFileDestination|output|Profile|Txt files (*.txt)|None|False

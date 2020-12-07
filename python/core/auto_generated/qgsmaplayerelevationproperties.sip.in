@@ -1,0 +1,104 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerelevationproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMapLayerElevationProperties : QObject
+{
+%Docstring
+Base class for storage of map layer elevation properties.
+
+QgsMapLayerElevationProperties exposes user-configurable settings for controlling
+how an individual QgsMapLayer behaves with relation to z values or elevations.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerelevationproperties.h"
+#include "qgspointcloudlayerelevationproperties.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsPointCloudLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsPointCloudLayerElevationProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    enum Flag
+    {
+      FlagDontInvalidateCachedRendersWhenRangeChanges
+    };
+    typedef QFlags<QgsMapLayerElevationProperties::Flag> Flags;
+
+
+    QgsMapLayerElevationProperties( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsMapLayerElevationProperties, with the specified ``parent`` object.
+%End
+
+    virtual bool hasElevation() const;
+%Docstring
+Returns ``True`` if the layer has an elevation or z component.
+%End
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Writes the properties to a DOM ``element``, to be used later with :py:func:`~QgsMapLayerElevationProperties.readXml`.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads the elevation properties from a DOM ``element`` previously written by :py:func:`~QgsMapLayerElevationProperties.writeXml`.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
+%Docstring
+Returns ``True`` if the layer should be visible and rendered for the specified z ``range``.
+%End
+
+    virtual QgsMapLayerElevationProperties::Flags flags() const;
+%Docstring
+Returns flags associated to the elevation properties.
+%End
+
+    virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+%Docstring
+Attempts to calculate the overall elevation or z range for the specified ``layer``, using
+the settings defined by this elevation properties object.
+
+May return an infinite range if the extent could not be calculated.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the elevation properties have changed.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerelevationproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

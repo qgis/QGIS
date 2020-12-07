@@ -16,36 +16,34 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 import os
 import random
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsProcessingUtils
-
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
+                       QgsProcessingException,
+                       QgsProcessingUtils,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
+from collections import defaultdict
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RandomSelectionWithinSubsets(QgisAlgorithm):
-
     INPUT = 'INPUT'
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'
@@ -53,26 +51,38 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSelectRandom.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSelectRandom.svg")
 
     def group(self):
-        return self.tr('Vector selection tools')
+        return self.tr('Vector selection')
+
+    def groupId(self):
+        return 'vectorselection'
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+
+    def initAlgorithm(self, config=None):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('ID Field'), self.INPUT))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Method'), self.methods, 0))
-        self.addParameter(ParameterNumber(self.NUMBER,
-                                          self.tr('Number/percentage of selected features'), 1, None, 10))
-
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('ID field'), None, self.INPUT))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Method'), self.methods, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
+                                                       self.tr('Number/percentage of selected features'),
+                                                       QgsProcessingParameterNumber.Integer,
+                                                       10, False, 0.0))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (stratified random)')))
 
     def name(self):
         return 'randomselectionwithinsubsets'
@@ -81,61 +91,55 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
         return self.tr('Random selection within subsets')
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.getParameterValue(self.INPUT)
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+        field = self.parameterAsString(parameters, self.FIELD, context)
 
-        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
-        field = self.getParameterValue(self.FIELD)
-        method = self.getParameterValue(self.METHOD)
-
-        layer.removeSelection()
         index = layer.fields().lookupField(field)
 
-        unique = QgsProcessingUtils.uniqueValues(layer, index, context)
+        unique = layer.uniqueValues(index)
         featureCount = layer.featureCount()
 
-        value = int(self.getParameterValue(self.NUMBER))
+        value = self.parameterAsInt(parameters, self.NUMBER, context)
         if method == 0:
             if value > featureCount:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Selected number is greater that feature count. '
                             'Choose lesser value and try again.'))
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
             value = value / 100.0
 
-        selran = []
-        inFeat = QgsFeature()
-
-        current = 0
-        total = 100.0 / (featureCount * len(unique))
+        total = 100.0 / (featureCount * len(unique)) if featureCount else 1
 
         if not len(unique) == featureCount:
-            for i in unique:
-                features = QgsProcessingUtils.getFeatures(layer, context)
-                FIDs = []
-                for inFeat in features:
-                    attrs = inFeat.attributes()
-                    if attrs[index] == i:
-                        FIDs.append(inFeat.id())
-                    current += 1
-                    feedback.setProgress(int(current * total))
+            classes = defaultdict(list)
 
-                if method == 1:
-                    selValue = int(round(value * len(FIDs), 0))
-                else:
-                    selValue = value
+            features = layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([index]))
 
-                if selValue >= len(FIDs):
-                    selFeat = FIDs
-                else:
-                    selFeat = random.sample(FIDs, selValue)
+            for i, feature in enumerate(features):
+                if feedback.isCanceled():
+                    break
 
-                selran.extend(selFeat)
+                classes[feature[index]].append(feature.id())
+                feedback.setProgress(int(i * total))
+
+            selran = []
+            for k, subset in classes.items():
+                if feedback.isCanceled():
+                    break
+
+                selValue = value if method != 1 else int(round(value * len(subset), 0))
+                if selValue > len(subset):
+                    selValue = len(subset)
+                    feedback.reportError(self.tr('Subset "{}" is smaller than requested number of features.'.format(k)))
+                selran.extend(random.sample(subset, selValue))
+
             layer.selectByIds(selran)
         else:
             layer.selectByIds(list(range(featureCount)))  # FIXME: implies continuous feature ids
 
-        self.setOutputValue(self.OUTPUT, filename)
+        return {self.OUTPUT: parameters[self.INPUT]}

@@ -45,7 +45,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
   if ( scales.isEmpty() )
   {
     QgsSettings settings;
-    QString myScales = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+    QString myScales = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
     if ( !myScales.isEmpty() )
     {
       myScalesList = myScales.split( ',' );
@@ -66,7 +66,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
   for ( int i = 0; i < myScalesList.size(); ++i )
   {
     parts = myScalesList[ i ] .split( ':' );
-    denominator = QLocale::system().toDouble( parts[1], &ok );
+    denominator = QLocale().toDouble( parts[1], &ok );
     if ( ok )
     {
       myScalesList[ i ] = toString( denominator );
@@ -98,7 +98,7 @@ void QgsScaleComboBox::showPopup()
   {
     parts = itemText( i ).split( ':' );
     nextScale = parts.at( 1 ).toLong( &ok );
-    delta = qAbs( currScale - nextScale );
+    delta = std::labs( currScale - nextScale );
     if ( delta < min )
     {
       min = delta;
@@ -119,9 +119,21 @@ QString QgsScaleComboBox::scaleString() const
 
 bool QgsScaleComboBox::setScaleString( const QString &string )
 {
+  double oldScale = mScale;
+  if ( mAllowNull && string.trimmed().isEmpty() )
+  {
+    mScale = std::numeric_limits< double >::quiet_NaN();
+    setEditText( toString( mScale ) );
+    clearFocus();
+    if ( !std::isnan( oldScale ) )
+    {
+      emit scaleChanged( mScale );
+    }
+    return true;
+  }
+
   bool ok;
   double newScale = toDouble( string, &ok );
-  double oldScale = mScale;
   if ( newScale > mMinScale && newScale != 0 && mMinScale != 0 )
   {
     newScale = mMinScale;
@@ -148,6 +160,11 @@ double QgsScaleComboBox::scale() const
   return mScale;
 }
 
+bool QgsScaleComboBox::isNull() const
+{
+  return std::isnan( mScale );
+}
+
 void QgsScaleComboBox::setScale( double scale )
 {
   setScaleString( toString( scale ) );
@@ -155,6 +172,12 @@ void QgsScaleComboBox::setScale( double scale )
 
 void QgsScaleComboBox::fixupScale()
 {
+  if ( mAllowNull && currentText().trimmed().isEmpty() )
+  {
+    setScale( std::numeric_limits< double >::quiet_NaN() );
+    return;
+  }
+
   QStringList txtList = currentText().split( ':' );
   bool userSetScale = txtList.size() != 2;
 
@@ -179,17 +202,21 @@ void QgsScaleComboBox::fixupScale()
 
 QString QgsScaleComboBox::toString( double scale )
 {
+  if ( std::isnan( scale ) )
+  {
+    return QString();
+  }
   if ( scale == 0 )
   {
     return QStringLiteral( "0" );
   }
   else if ( scale <= 1 )
   {
-    return QStringLiteral( "%1:1" ).arg( QLocale::system().toString( qRound( 1.0 / scale ) ) );
+    return QStringLiteral( "%1:1" ).arg( QLocale().toString( static_cast< int >( std::round( 1.0 / scale ) ) ) );
   }
   else
   {
-    return QStringLiteral( "1:%1" ).arg( QLocale::system().toString( qRound( scale ) ) );
+    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast< float >( std::round( scale ) ), 'f', 0 ) );
   }
 }
 
@@ -233,6 +260,18 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
   return scale;
 }
 
+void QgsScaleComboBox::setAllowNull( bool allowNull )
+{
+  mAllowNull = allowNull;
+  lineEdit()->setClearButtonEnabled( allowNull );
+  updateScales();
+}
+
+bool QgsScaleComboBox::allowNull() const
+{
+  return mAllowNull;
+}
+
 void QgsScaleComboBox::setMinScale( double scale )
 {
   mMinScale = scale;
@@ -240,4 +279,10 @@ void QgsScaleComboBox::setMinScale( double scale )
   {
     setScale( mMinScale );
   }
+}
+
+void QgsScaleComboBox::setNull()
+{
+  if ( allowNull() )
+    setScale( std::numeric_limits< double >::quiet_NaN() );
 }

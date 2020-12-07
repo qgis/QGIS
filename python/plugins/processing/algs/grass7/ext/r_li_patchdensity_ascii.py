@@ -16,26 +16,21 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from .r_li import checkMovingWindow, configFile, moveOutputTxtFile
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    return checkMovingWindow(alg, True)
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    return checkMovingWindow(alg, parameters, context, True)
 
 
-def processCommand(alg, parameters):
-    configFile(alg, True)
+def processCommand(alg, parameters, context, feedback):
+    configFile(alg, parameters, context, feedback, True)
 
 
-def processOutputs(alg):
-    moveOutputTxtFile(alg)
+def processOutputs(alg, parameters, context, feedback):
+    moveOutputTxtFile(alg, parameters, context)

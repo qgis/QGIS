@@ -36,14 +36,11 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mLayersTab->layout()->removeWidget( mWMSGroupBox );
   mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
-  mTabWidget->removeTab( mTabWidget->indexOf( mSearchTab ) );
   mAddDefaultButton->hide();
 
   mLayersTreeWidget->setSelectionMode( QAbstractItemView::SingleSelection );
-}
 
-QgsWCSSourceSelect::~QgsWCSSourceSelect()
-{
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWCSSourceSelect::showHelp );
 }
 
 void QgsWCSSourceSelect::populateLayerList()
@@ -81,7 +78,7 @@ void QgsWCSSourceSelect::populateLayerList()
         coverage != coverages.end();
         ++coverage )
   {
-    QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ) );
+    QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ) );
 
     QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
@@ -89,7 +86,7 @@ void QgsWCSSourceSelect::populateLayerList()
     lItem->setData( 0, Qt::UserRole + 1, "" );
 
     // Make only leaves selectable
-    if ( !coverageParents.keys( coverage->orderId ).isEmpty() )
+    if ( coverageParents.contains( coverage->orderId ) )
     {
       lItem->setFlags( Qt::ItemIsEnabled );
     }
@@ -113,7 +110,7 @@ QString QgsWCSSourceSelect::selectedIdentifier()
   return identifier;
 }
 
-void QgsWCSSourceSelect::addClicked()
+void QgsWCSSourceSelect::addButtonClicked()
 {
   QgsDataSourceUri uri = mUri;
 
@@ -145,14 +142,15 @@ void QgsWCSSourceSelect::addClicked()
   }
 
   QString cache;
-  QgsDebugMsg( QString( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
+  QgsDebugMsg( QStringLiteral( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
   uri.setParam( QStringLiteral( "cache" ), cache );
 
   emit addRasterLayer( uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
 }
 
-void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
+
+void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 {
 
   QString identifier = selectedIdentifier();
@@ -168,7 +166,7 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
   updateButtons();
 
-  mAddButton->setEnabled( true );
+  emit enableButtons( true );
 }
 
 void QgsWCSSourceSelect::updateButtons()
@@ -186,20 +184,20 @@ void QgsWCSSourceSelect::updateButtons()
     }
   }
 
-  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCrs().isEmpty() && !selectedFormat().isEmpty() );
+  emit enableButtons( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCrs().isEmpty() && !selectedFormat().isEmpty() );
 }
 
 QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
   QList<SupportedFormat> formats;
 
-  QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
-  Q_FOREACH ( const QString &mime, mimes.keys() )
+  const QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
+  for ( auto it = mimes.constBegin(); it != mimes.constEnd(); ++it )
   {
-    SupportedFormat format = { mime, mimes.value( mime ) };
+    SupportedFormat format = { it.key(), it.value() };
 
     // prefer tiff
-    if ( mime == QLatin1String( "image/tiff" ) )
+    if ( it.key() == QLatin1String( "image/tiff" ) )
     {
       formats.prepend( format );
     }
@@ -227,7 +225,6 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 
 QStringList QgsWCSSourceSelect::selectedLayersCrses()
 {
-
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
 
@@ -253,4 +250,10 @@ QStringList QgsWCSSourceSelect::selectedLayersTimes()
 void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
 {
   // TODO: I am not convinced to disable layers according to selected CRS
+}
+
+
+void QgsWCSSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }

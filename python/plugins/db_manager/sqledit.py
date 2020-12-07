@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'February 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
 from qgis.PyQt.QtWidgets import QShortcut
@@ -107,8 +103,6 @@ class SqlEdit(QsciScintilla):
         self.defaultFont.setFixedPitch(True)
         self.defaultFont.setPointSize(fontSize)
         self.defaultFont.setStyleHint(QFont.TypeWriter)
-        self.defaultFont.setStretch(QFont.SemiCondensed)
-        self.defaultFont.setLetterSpacing(QFont.PercentageSpacing, 87.0)
         self.defaultFont.setBold(False)
 
         self.boldFont = QFont(self.defaultFont)

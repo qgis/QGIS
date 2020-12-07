@@ -18,14 +18,14 @@
 #define QGSMAPTOOLCIRCULARSTRINGCURVEPOINT_H
 
 #include "qgsmaptooladdcircularstring.h"
+#include "qgis_app.h"
 
-class QgsMapToolCircularStringCurvePoint: public QgsMapToolAddCircularString
+class APP_EXPORT QgsMapToolCircularStringCurvePoint: public QgsMapToolAddCircularString
 {
     Q_OBJECT
 
   public:
     QgsMapToolCircularStringCurvePoint( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircularStringCurvePoint();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

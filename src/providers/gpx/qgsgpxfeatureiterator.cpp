@@ -20,7 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <limits>
 #include <cstring>
@@ -31,7 +31,7 @@ QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool 
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {
@@ -40,7 +40,7 @@ QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool 
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -159,7 +159,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
 
   if ( mSource->mFeatureType == QgsGPXProvider::WaypointType )
   {
-    for ( QgsGPSData::WaypointIterator it = mSource->data->waypointsBegin() ; it != mSource->data->waypointsEnd(); ++it )
+    for ( QgsGpsData::WaypointIterator it = mSource->data->waypointsBegin() ; it != mSource->data->waypointsEnd(); ++it )
     {
       if ( it->id == fid )
       {
@@ -170,7 +170,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
   }
   else if ( mSource->mFeatureType == QgsGPXProvider::RouteType )
   {
-    for ( QgsGPSData::RouteIterator it = mSource->data->routesBegin() ; it != mSource->data->routesEnd(); ++it )
+    for ( QgsGpsData::RouteIterator it = mSource->data->routesBegin() ; it != mSource->data->routesEnd(); ++it )
     {
       if ( it->id == fid )
       {
@@ -181,7 +181,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
   }
   else if ( mSource->mFeatureType == QgsGPXProvider::TrackType )
   {
-    for ( QgsGPSData::TrackIterator it = mSource->data->tracksBegin() ; it != mSource->data->tracksEnd(); ++it )
+    for ( QgsGpsData::TrackIterator it = mSource->data->tracksBegin() ; it != mSource->data->tracksEnd(); ++it )
     {
       if ( it->id == fid )
       {
@@ -266,7 +266,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute &rte, QgsFeature &feature 
 
 bool QgsGPXFeatureIterator::readTrack( const QgsTrack &trk, QgsFeature &feature )
 {
-  //QgsDebugMsg( QString( "GPX feature track segments: %1" ).arg( trk.segments.size() ) );
+  //QgsDebugMsg( QStringLiteral( "GPX feature track segments: %1" ).arg( trk.segments.size() ) );
 
   QgsGeometry *geometry = readTrackGeometry( trk );
 
@@ -468,7 +468,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
   unsigned char *geo = new unsigned char[size];
   if ( !geo )
   {
-    QgsDebugMsg( "Track too large!" );
+    QgsDebugMsg( QStringLiteral( "Track too large!" ) );
     return nullptr;
   }
 
@@ -501,12 +501,12 @@ QgsGPXFeatureSource::QgsGPXFeatureSource( const QgsGPXProvider *p )
   , mFields( p->attributeFields )
   , mCrs( p->crs() )
 {
-  data = QgsGPSData::getData( mFileName );
+  data = QgsGpsData::getData( mFileName );
 }
 
 QgsGPXFeatureSource::~QgsGPXFeatureSource()
 {
-  QgsGPSData::releaseData( mFileName );
+  QgsGpsData::releaseData( mFileName );
 }
 
 QgsFeatureIterator QgsGPXFeatureSource::getFeatures( const QgsFeatureRequest &request )

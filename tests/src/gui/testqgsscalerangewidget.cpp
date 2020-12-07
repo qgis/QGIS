@@ -28,10 +28,11 @@
 
 #include <memory>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the scale range widget
  *
- * @see QgsScaleRangeWidget
+ * \see QgsScaleRangeWidget
  */
 class TestQgsScaleRangeWidget : public QObject
 {
@@ -71,7 +72,7 @@ void TestQgsScaleRangeWidget::test_setScaleRange()
   // Test that setting scale range is always honoured
   // rather than being limited by previously set
   // max or min.
-  // See https://issues.qgis.org/issues/15463
+  // See https://github.com/qgis/QGIS/issues/23389
 
   widget->setScaleRange( 6, 4 );
   QCOMPARE( widget->minimumScale(), 6.0 );

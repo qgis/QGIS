@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/core/qgsvectorlayerserverproperties.h
+QgsVectorLayerServerProperties.PredefinedWmsDimensionName.baseClass = QgsVectorLayerServerProperties

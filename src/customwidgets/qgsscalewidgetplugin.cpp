@@ -62,7 +62,7 @@ bool QgsScaleWidgetPlugin::isInitialized() const
 
 void QgsScaleWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

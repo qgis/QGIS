@@ -14,22 +14,11 @@
  ***************************************************************************/
 #include "qgsdiagram.h"
 #include "qgsdiagramrenderer.h"
-#include "qgsrendercontext.h"
-#include "qgsexpression.h"
-#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
-
-
-QgsDiagram::QgsDiagram()
+QgsDiagram::QgsDiagram( const QgsDiagram & ): mExpressions{}
 {
-
-}
-
-QgsDiagram::QgsDiagram( const QgsDiagram &other )
-{
-  Q_UNUSED( other );
   // do not copy the cached expression map - the expressions need to be created and prepared with getExpression(...) call
 }
 
@@ -97,9 +86,9 @@ QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, cons
   // interpolate the squared value if scale by area
   if ( s.scaleByArea )
   {
-    scaledValue = sqrt( scaledValue );
-    scaledLowerValue = sqrt( scaledLowerValue );
-    scaledUpperValue = sqrt( scaledUpperValue );
+    scaledValue = std::sqrt( scaledValue );
+    scaledLowerValue = std::sqrt( scaledLowerValue );
+    scaledUpperValue = std::sqrt( scaledUpperValue );
   }
 
   //interpolate size

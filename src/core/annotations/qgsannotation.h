@@ -22,14 +22,15 @@
 #include "qgis.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrendercontext.h"
 #include "qgssymbol.h"
 #include "qgsmargins.h"
 #include "qgsmaplayer.h"
 
-/** \ingroup core
+class QgsRenderContext;
+
+/**
+ * \ingroup core
  * \class QgsAnnotation
- * \since QGIS 3.0
  *
  * \brief Abstract base class for annotation items which are drawn over a map.
  *
@@ -41,6 +42,8 @@
  *
  * Derived classes should implement their custom painting routines within
  * a renderAnnotation() override.
+ *
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsAnnotation : public QObject
@@ -71,7 +74,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     /**
      * Constructor for QgsAnnotation.
      */
-    QgsAnnotation( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Clones the annotation, returning a new copy of the annotation
@@ -80,7 +83,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     virtual QgsAnnotation *clone() const = 0 SIP_FACTORY;
 
     /**
-     * Returns true if the annotation is visible and should be rendered.
+     * Returns TRUE if the annotation is visible and should be rendered.
      * \see setVisible()
      */
     bool isVisible() const { return mVisible; }
@@ -92,8 +95,8 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void setVisible( bool visible );
 
     /**
-     * Returns true if the annotation is attached to a fixed map position, or
-     * false if the annotation uses a position relative to the current map
+     * Returns TRUE if the annotation is attached to a fixed map position, or
+     * FALSE if the annotation uses a position relative to the current map
      * extent.
      * \see setHasFixedMapPosition()
      * \see mapPosition()
@@ -154,30 +157,64 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void setRelativePosition( QPointF position );
 
     /**
-     * Sets the annotation's frame's offset from the mapPosition() reference point.
+     * Sets the annotation's frame's offset (in pixels) from the mapPosition() reference point.
      * \see frameOffsetFromReferencePoint()
+     * \deprecated use setFrameOffsetFromReferencePointMm() instead
      */
-    void setFrameOffsetFromReferencePoint( QPointF offset );
+    Q_DECL_DEPRECATED void setFrameOffsetFromReferencePoint( QPointF offset ) SIP_DEPRECATED;
 
     /**
-     * Returns the annotation's frame's offset from the mapPosition() reference point.
+     * Returns the annotation's frame's offset (in pixels) from the mapPosition() reference point.
      * \see setFrameOffsetFromReferencePoint()
+     * \deprecated use frameOffsetFromReferencePointMm() instead
      */
-    QPointF frameOffsetFromReferencePoint() const { return mOffsetFromReferencePoint; }
+    Q_DECL_DEPRECATED QPointF frameOffsetFromReferencePoint() const SIP_DEPRECATED;
 
     /**
-     * Sets the size of the annotation's frame (the main area in which
+     * Sets the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+     * \see frameOffsetFromReferencePointMm()
+     * \since QGIS 3.4.8
+     */
+    void setFrameOffsetFromReferencePointMm( QPointF offset );
+
+    /**
+     * Returns the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+     * \see setFrameOffsetFromReferencePointMm()
+     * \since QGIS 3.4.8
+     */
+    QPointF frameOffsetFromReferencePointMm() const { return mOffsetFromReferencePoint; }
+
+    /**
+     * Sets the size (in pixels) of the annotation's frame (the main area in which
      * the annotation's content is drawn).
      * \see frameSize()
+     * \deprecated use setFrameSizeMm() instead
      */
-    void setFrameSize( QSizeF size );
+    Q_DECL_DEPRECATED void setFrameSize( QSizeF size ) SIP_DEPRECATED;
 
     /**
-     * Returns the size of the annotation's frame (the main area in which
+     * Returns the size (in pixels) of the annotation's frame (the main area in which
      * the annotation's content is drawn).
      * \see setFrameSize()
+     * \deprecated use frameSizeMm() instead
      */
-    QSizeF frameSize() const { return mFrameSize; }
+    Q_DECL_DEPRECATED QSizeF frameSize() const SIP_DEPRECATED;
+
+    /**
+     * Sets the size (in millimeters) of the annotation's frame (the main area in which
+     * the annotation's content is drawn).
+     * \see frameSizeMm()
+     * \since QGIS 3.4.8
+     */
+    void setFrameSizeMm( QSizeF size );
+
+    /**
+     * Returns the size (in millimeters) of the annotation's frame (the main area in which
+     * the annotation's content is drawn).
+     * \see setFrameSizeMm()
+     * \since QGIS 3.4.8
+     */
+    QSizeF frameSizeMm() const { return mFrameSize; }
 
     /**
      * Sets the margins (in millimeters) between the outside of the frame and the annotation
@@ -269,6 +306,17 @@ class CORE_EXPORT QgsAnnotation : public QObject
      */
     virtual void setAssociatedFeature( const QgsFeature &feature );
 
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * within the annotation.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   signals:
 
     //! Emitted whenever the annotation's appearance changes
@@ -329,10 +377,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     void updateBalloon();
 
     //! Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)
-    QLineF segment( int index ) const;
-
-    //! Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
-    QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const;
+    QLineF segment( int index, QgsRenderContext *context ) const;
 
     //! Draws the annotation frame to a destination painter
     void drawFrame( QgsRenderContext &context ) const;
@@ -342,7 +387,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
 
     bool mVisible = true;
 
-    //! True if the item stays at the same map position, false if the item stays on same screen position
+    //! True if the item stays at the same map position, FALSE if the item stays on same screen position
     bool mHasFixedMapPosition = true;
 
     //! Map position (for fixed position items)
@@ -354,10 +399,10 @@ class CORE_EXPORT QgsAnnotation : public QObject
     //! Relative position (for non-fixed items) (0-1)
     QPointF mRelativePosition;
 
-    //! Describes the shift of the item content box to the reference point
-    QPointF mOffsetFromReferencePoint = QPointF( 50, -50 );
+    //! Describes the shift of the item content box to the reference point in mm
+    QPointF mOffsetFromReferencePoint = QPointF( 13, -13 );
 
-    //! Size of the frame (without balloon)
+    //! Size of the frame in mm (without balloon)
     QSizeF mFrameSize;
 
     //! Point symbol that is to be drawn at the map reference location
@@ -371,17 +416,20 @@ class CORE_EXPORT QgsAnnotation : public QObject
     //! Segment number where the connection to the map point is attached. -1 if no balloon needed (e.g. if point is contained in frame)
     int mBalloonSegment = -1;
 
-    //! First segment point for drawing the connection (ccw direction)
+    //! First segment point for drawing the connection (ccw direction) (always in mm)
     QPointF mBalloonSegmentPoint1;
 
-    //! Second segment point for drawing the balloon connection (ccw direction)
+    //! Second segment point for drawing the balloon connection (ccw direction) (always in mm)
     QPointF mBalloonSegmentPoint2;
 
-    //! Associated layer (or nullptr if not attached to a layer)
+    //! Associated layer (or NULLPTR if not attached to a layer)
     QgsWeakMapLayerPointer mMapLayer;
 
     //! Associated feature, or invalid feature if no feature associated
     QgsFeature mFeature;
+
+    //! Roughly 10 pixels at 96 dpi, to match earlier version rendering
+    double mSegmentPointWidthMm = 2.64;
 
 };
 

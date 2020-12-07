@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessageviewer.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMessageViewer: QDialog, QgsMessageOutput
+{
+%Docstring
+A generic message view for displaying QGIS messages.
+%End
+
+%TypeHeaderCode
+#include "qgsmessageviewer.h"
+%End
+  public:
+    QgsMessageViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
+
+    virtual void setMessage( const QString &message, MessageType msgType );
+
+
+    virtual void appendMessage( const QString &message );
+
+
+    virtual void showMessage( bool blocking = true );
+
+
+    virtual void setTitle( const QString &title );
+
+
+
+    void setMessageAsHtml( const QString &msg );
+    void setMessageAsPlainText( const QString &msg );
+    void setCheckBoxText( const QString &text );
+    void setCheckBoxVisible( bool visible );
+    void setCheckBoxState( Qt::CheckState state );
+    Qt::CheckState checkBoxState();
+    void setCheckBoxQgsSettingsLabel( const QString &label );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessageviewer.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

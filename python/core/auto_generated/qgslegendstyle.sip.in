@@ -1,0 +1,155 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslegendstyle.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLegendStyle
+{
+%Docstring
+Contains detailed styling information relating to how a layout legend should be rendered.
+%End
+
+%TypeHeaderCode
+#include "qgslegendstyle.h"
+%End
+  public:
+
+    enum Style
+    {
+      Undefined,
+      Hidden,
+      Title,
+      Group,
+      Subgroup,
+      Symbol,
+      SymbolLabel,
+    };
+
+
+    enum Side
+    {
+      Top,
+      Bottom,
+      Left,
+      Right,
+    };
+
+    QgsLegendStyle();
+
+    QFont font() const;
+%Docstring
+Returns the font used for rendering this legend component.
+
+.. seealso:: :py:func:`setFont`
+%End
+
+    void setFont( const QFont &font );
+%Docstring
+Sets the ``font`` used for rendering this legend component.
+
+.. seealso:: :py:func:`font`
+%End
+
+
+    double margin( Side side );
+%Docstring
+Returns the margin (in mm) for the specified ``side`` of the component.
+
+.. note::
+
+   Not all legend components respect all margin side settings!
+
+.. seealso:: :py:func:`setMargin`
+%End
+
+    void setMargin( Side side, double margin );
+%Docstring
+Sets the ``margin`` (in mm) for the specified ``side`` of the component.
+
+.. note::
+
+   Not all legend components respect all margin side settings!
+
+.. seealso:: :py:func:`margin`
+%End
+
+    void setMargin( double margin );
+%Docstring
+Sets all margin sides to the same ``margin`` size (in mm).
+
+.. seealso:: :py:func:`margin`
+%End
+
+    Qt::Alignment alignment() const;
+%Docstring
+Returns the alignment for the legend component.
+
+.. seealso:: :py:func:`setAlignment`
+
+.. versionadded:: 3.10
+%End
+
+    void setAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the alignment for the legend component.
+
+.. seealso:: :py:func:`alignment`
+
+.. versionadded:: 3.10
+%End
+
+    void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
+%Docstring
+Writes the component's style definition to an XML element.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    void readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() );
+%Docstring
+Reads the component's style definition from an XML element.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    static QString styleName( Style s );
+%Docstring
+Returns the name for a style component as a string.
+
+This is a non-localised version, for internal use.
+
+.. seealso:: :py:func:`styleFromName`
+
+.. seealso:: :py:func:`styleLabel`
+%End
+
+    static Style styleFromName( const QString &styleName );
+%Docstring
+Returns the style from name string.
+
+.. seealso:: :py:func:`styleName`
+%End
+
+    static QString styleLabel( Style s );
+%Docstring
+Returns a translated string representing a style component, for use in UI.
+
+.. seealso:: :py:func:`styleName`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslegendstyle.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,214 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationwidgetwrapper.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRelationWidgetWrapper : QgsWidgetWrapper
+{
+
+%TypeHeaderCode
+#include "qgsrelationwidgetwrapper.h"
+%End
+  public:
+
+    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRelationWidgetWrapper
+%End
+
+    bool showLabel() const;
+%Docstring
+Defines if a title label should be shown for this widget.
+Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
+
+.. versionadded:: 2.18
+%End
+
+    void setShowLabel( bool showLabel );
+%Docstring
+Defines if a title label should be shown for this widget.
+Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
+
+.. versionadded:: 2.18
+%End
+
+ bool showLinkButton() const /Deprecated/;
+%Docstring
+Determines if the "link feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+ void setShowLinkButton( bool showLinkButton ) /Deprecated/;
+%Docstring
+Determines if the "link feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ bool showUnlinkButton() const /Deprecated/;
+%Docstring
+Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
+%Docstring
+Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
+%End
+
+ bool showSaveChildEditsButton() const /Deprecated/;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    bool forceSuppressFormPopup() const;
+%Docstring
+Determines the force suppress form popup status that is configured for this widget
+
+.. versionadded:: 3.16
+%End
+
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Sets force suppress form popup status to ``forceSuppressFormPopup`` for this widget
+and for the vectorLayerTools (if ``True``).
+This flag will override the layer and general settings regarding the automatic
+opening of the attribute form dialog when digitizing is completed.
+
+.. versionadded:: 3.16
+%End
+
+    QVariant nmRelationId() const;
+%Docstring
+Determines the relation id of the second relation involved in an N:M relation.
+
+.. versionadded:: 3.16
+%End
+
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+%Docstring
+Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
+If it's empty, then it's considered as a 1:M relationship.
+
+.. versionadded:: 3.16
+%End
+
+    QString label() const;
+%Docstring
+Determines the label of this element
+
+.. versionadded:: 3.16
+%End
+
+    void setLabel( const QString &label = QString() );
+%Docstring
+Sets ``label`` for this element
+If it's empty it takes the relation id as label
+
+.. versionadded:: 3.16
+%End
+
+    QgsRelation relation() const;
+%Docstring
+The relation for which this wrapper is created.
+
+.. versionadded:: 3.0
+%End
+
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+%Docstring
+Will be called when a value in the current edited form or table row
+changes
+
+Forward the signal to the embedded form
+
+:param attribute: The name of the attribute that changed.
+:param newValue: The new value of the attribute.
+:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
+
+.. versionadded:: 3.14
+%End
+
+
+  protected:
+    virtual QWidget *createWidget( QWidget *parent );
+
+    virtual void initWidget( QWidget *editor );
+
+    virtual bool valid() const;
+
+
+  public slots:
+    virtual void setFeature( const QgsFeature &feature );
+
+
+    void setVisible( bool visible );
+%Docstring
+Sets the visibility of the wrapper's widget.
+
+:param visible: set to ``True`` to show widget, ``False`` to hide widget
+
+.. versionadded:: 2.16
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationwidgetwrapper.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

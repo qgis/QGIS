@@ -36,6 +36,7 @@ class TestQgsStatisticSummary: public QObject
     void maxMin();
     void countMissing();
     void noValues();
+    void shortName();
 
   private:
 
@@ -85,10 +86,14 @@ void TestQgsStatisticSummary::stats()
   QCOMPARE( s2.sum(), 24.0 );
   QCOMPARE( s.mean(), 4.0 );
   QCOMPARE( s2.mean(), 4.0 );
-  QVERIFY( qgsDoubleNear( s.stDev(), 2.0816, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( s2.stDev(), 2.0816, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( s.sampleStDev(), 2.2803, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( s2.sampleStDev(), 2.2803, 0.0001 ) );
+  QCOMPARE( s.first(), 4.0 );
+  QCOMPARE( s2.first(), 4.0 );
+  QCOMPARE( s.last(), 8.0 );
+  QCOMPARE( s2.last(), 8.0 );
+  QGSCOMPARENEAR( s.stDev(), 2.0816, 0.0001 );
+  QGSCOMPARENEAR( s2.stDev(), 2.0816, 0.0001 );
+  QGSCOMPARENEAR( s.sampleStDev(), 2.2803, 0.0001 );
+  QGSCOMPARENEAR( s2.sampleStDev(), 2.2803, 0.0001 );
 
   QCOMPARE( s.min(), 2.0 );
   QCOMPARE( s2.min(), 2.0 );
@@ -227,6 +232,8 @@ void TestQgsStatisticSummary::individualStatCalculations_data()
   QTest::newRow( "third_quartile" ) << ( int )QgsStatisticalSummary::ThirdQuartile << 5.0;
   QTest::newRow( "iqr" ) << ( int )QgsStatisticalSummary::InterQuartileRange << 2.0;
   QTest::newRow( "missing" ) << ( int )QgsStatisticalSummary::CountMissing << 0.0;
+  QTest::newRow( "first" ) << static_cast< int >( QgsStatisticalSummary::First ) << 4.0;
+  QTest::newRow( "last" ) << static_cast< int >( QgsStatisticalSummary::Last ) << 8.0;
 }
 
 void TestQgsStatisticSummary::individualStatCalculations()
@@ -242,16 +249,16 @@ void TestQgsStatisticSummary::individualStatCalculations()
   QFETCH( double, expected );
 
   //start with a summary which calculates NO statistics
-  QgsStatisticalSummary s( QgsStatisticalSummary::Statistics( 0 ) );
+  QgsStatisticalSummary s{ QgsStatisticalSummary::Statistics() };
   //set it to calculate just a single statistic
   s.setStatistics( stat );
   QCOMPARE( s.statistics(), stat );
 
   s.calculate( values );
-  QVERIFY( qgsDoubleNear( s.statistic( stat ), expected, 0.00001 ) );
+  QGSCOMPARENEAR( s.statistic( stat ), expected, 0.00001 );
 
   //also test using values added one-at-a-time
-  QgsStatisticalSummary s2( QgsStatisticalSummary::Statistics( 0 ) );
+  QgsStatisticalSummary s2{ QgsStatisticalSummary::Statistics() };
   s2.setStatistics( stat );
   s2.addValue( 4 );
   s2.addValue( 4 );
@@ -311,32 +318,58 @@ void TestQgsStatisticSummary::noValues()
   QCOMPARE( s.statistic( QgsStatisticalSummary::CountMissing ), 0.0 );
   QCOMPARE( s.sum(), 0.0 );
   QCOMPARE( s.statistic( QgsStatisticalSummary::Sum ), 0.0 );
-  QVERIFY( qIsNaN( s.mean() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Mean ) ) );
-  QVERIFY( qIsNaN( s.median() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Median ) ) );
-  QVERIFY( qIsNaN( s.stDev() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::StDev ) ) );
-  QVERIFY( qIsNaN( s.sampleStDev() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::StDevSample ) ) );
-  QVERIFY( qIsNaN( s.min() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Min ) ) );
-  QVERIFY( qIsNaN( s.max() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Max ) ) );
-  QVERIFY( qIsNaN( s.range() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Range ) ) );
-  QVERIFY( qIsNaN( s.minority() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Minority ) ) );
-  QVERIFY( qIsNaN( s.majority() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Majority ) ) );
+  QVERIFY( std::isnan( s.first() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::First ) ) );
+  QVERIFY( std::isnan( s.last() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Last ) ) );
+  QVERIFY( std::isnan( s.mean() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Mean ) ) );
+  QVERIFY( std::isnan( s.median() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Median ) ) );
+  QVERIFY( std::isnan( s.stDev() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::StDev ) ) );
+  QVERIFY( std::isnan( s.sampleStDev() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::StDevSample ) ) );
+  QVERIFY( std::isnan( s.min() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Min ) ) );
+  QVERIFY( std::isnan( s.max() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Max ) ) );
+  QVERIFY( std::isnan( s.range() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Range ) ) );
+  QVERIFY( std::isnan( s.minority() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Minority ) ) );
+  QVERIFY( std::isnan( s.majority() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::Majority ) ) );
   QCOMPARE( s.variety(), 0 );
   QCOMPARE( s.statistic( QgsStatisticalSummary::Variety ), 0.0 );
-  QVERIFY( qIsNaN( s.firstQuartile() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::FirstQuartile ) ) );
-  QVERIFY( qIsNaN( s.thirdQuartile() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::ThirdQuartile ) ) );
-  QVERIFY( qIsNaN( s.interQuartileRange() ) );
-  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::InterQuartileRange ) ) );
+  QVERIFY( std::isnan( s.firstQuartile() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::FirstQuartile ) ) );
+  QVERIFY( std::isnan( s.thirdQuartile() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::ThirdQuartile ) ) );
+  QVERIFY( std::isnan( s.interQuartileRange() ) );
+  QVERIFY( std::isnan( s.statistic( QgsStatisticalSummary::InterQuartileRange ) ) );
+}
+
+void TestQgsStatisticSummary::shortName()
+{
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Count ), QStringLiteral( "count" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::CountMissing ), QStringLiteral( "countmissing" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Sum ), QStringLiteral( "sum" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Mean ), QStringLiteral( "mean" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Median ), QStringLiteral( "median" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::StDev ), QStringLiteral( "stdev" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::StDevSample ), QStringLiteral( "stdevsample" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Min ), QStringLiteral( "min" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Max ), QStringLiteral( "max" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Range ), QStringLiteral( "range" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Minority ), QStringLiteral( "minority" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Majority ), QStringLiteral( "majority" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Variety ), QStringLiteral( "variety" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::FirstQuartile ), QStringLiteral( "q1" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::ThirdQuartile ), QStringLiteral( "q3" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::InterQuartileRange ), QStringLiteral( "iqr" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::First ), QStringLiteral( "first" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( QgsStatisticalSummary::Last ), QStringLiteral( "last" ) );
 }
 
 QGSTEST_MAIN( TestQgsStatisticSummary )

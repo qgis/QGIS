@@ -1,7 +1,8 @@
 r.recode
 Recodes categorical raster maps.
 Raster (r.*)
-ParameterRaster|input|Input layer|False
-ParameterFile|rules|File containing recode rules|False
-*ParameterBoolean|-d|Force output to 'double' raster map type (DCELL)|False
-OutputRaster|output|Recoded
+QgsProcessingParameterRasterLayer|input|Input layer|None|False
+QgsProcessingParameterFile|rules|File containing recode rules|QgsProcessingParameterFile.File|txt|NoneFalse
+*QgsProcessingParameterBoolean|-d|Force output to 'double' raster map type (DCELL)|False
+*QgsProcessingParameterBoolean|-a|Align the current region to the input raster map|False
+QgsProcessingParameterRasterDestination|output|Recoded

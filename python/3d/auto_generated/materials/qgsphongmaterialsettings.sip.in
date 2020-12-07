@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsphongmaterialsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPhongMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring
+Basic shading material used for rendering based on the Phong shading model
+with three color components: ambient, diffuse and specular.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsphongmaterialsettings.h"
+%End
+  public:
+
+    QgsPhongMaterialSettings();
+%Docstring
+Constructor for QgsPhongMaterialSettings.
+%End
+
+    virtual QString type() const;
+
+
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the Phong material.
+%End
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsPhongMaterialSettings.
+%End
+
+    virtual QgsPhongMaterialSettings *clone() const /Factory/;
+
+
+    QColor ambient() const;
+%Docstring
+Returns ambient color component
+%End
+    QColor diffuse() const;
+%Docstring
+Returns diffuse color component
+%End
+    QColor specular() const;
+%Docstring
+Returns specular color component
+%End
+    float shininess() const;
+%Docstring
+Returns shininess of the surface
+%End
+
+    virtual QMap<QString, QString> toExportParameters() const;
+
+
+    void setAmbient( const QColor &ambient );
+%Docstring
+Sets ambient color component
+%End
+    void setDiffuse( const QColor &diffuse );
+%Docstring
+Sets diffuse color component
+%End
+    void setSpecular( const QColor &specular );
+%Docstring
+Sets specular color component
+%End
+    void setShininess( float shininess );
+%Docstring
+Sets shininess of the surface
+%End
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+
+    bool operator==( const QgsPhongMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsphongmaterialsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

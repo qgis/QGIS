@@ -18,19 +18,18 @@
 #include <QMenu>
 #include <QAction>
 
-#include <qgsapplication.h>
-#include <qgsexpressionbuilderdialog.h>
+#include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
 
 QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
   : QToolButton( parent )
-  , mMenu( nullptr )
-  , mLayer( nullptr )
+
 {
   mMenu = new QMenu( this );
-  mSetExpressionAction = new QAction( tr( "Edit filter expression" ), mMenu );
+  mSetExpressionAction = new QAction( tr( "Edit Filter Expression…" ), mMenu );
   connect( mSetExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onSetLegendFilterExpression );
 
-  mClearExpressionAction = new QAction( tr( "Clear filter expression" ), mMenu );
+  mClearExpressionAction = new QAction( tr( "Clear Filter Expression" ), mMenu );
   connect( mClearExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onClearFilterExpression );
   mClearExpressionAction->setEnabled( false );
 
@@ -83,7 +82,7 @@ void QgsLegendFilterButton::onSetLegendFilterExpression()
 void QgsLegendFilterButton::onClearFilterExpression()
 {
   mClearExpressionAction->setEnabled( false );
-  setExpressionText( QLatin1String( "" ) );
+  setExpressionText( QString() );
 
   setChecked( false );
 }
@@ -93,12 +92,12 @@ void QgsLegendFilterButton::updateMenu()
   if ( !mExpression.isEmpty() )
   {
     mClearExpressionAction->setEnabled( true );
-    mSetExpressionAction->setText( QString( tr( "Edit filter expression (current: %1)" ) ).arg( mExpression ) );
+    mSetExpressionAction->setText( tr( "Edit Filter Expression (current: %1)" ).arg( mExpression ) );
   }
   else
   {
     mClearExpressionAction->setEnabled( false );
-    mSetExpressionAction->setText( tr( "Edit filter expression" ) );
+    mSetExpressionAction->setText( tr( "Edit Filter Expression" ) );
   }
 }
 

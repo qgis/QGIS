@@ -1,0 +1,50 @@
+# Number of days of inactivity before an issue becomes stale
+daysUntilStale: 14
+# Number of days of inactivity before a stale issue is closed
+daysUntilClose: 7
+# Issues with these labels will never be considered stale
+exemptLabels:
+  - Merge After Thaw
+# Label to use when marking an issue as stale
+staleLabel: stale
+
+# # Limit to only `issues` or `pulls`
+only: pulls
+
+# Comment to post when marking an issue as stale. Set to `false` to disable
+markComment: >
+  The QGIS project highly values your contribution and would love to see
+  this work merged!
+  Unfortunately this PR has not had any activity in the last 14 days and
+  is being automatically marked as "stale".
+  If you think this pull request should be merged, please check
+
+  - that all unit tests are passing
+
+  - that all comments by reviewers have been addressed
+
+  - that there is enough information for reviewers, in particular
+
+    - link to any issues which this pull request fixes
+
+    - add a description of workflows which this pull request fixes
+
+    - add screenshots if applicable
+
+  - that you have written unit tests where possible
+
+  In case you should have any uncertainty, please leave a comment and we will
+  be happy to help you proceed with this pull request.
+
+  If there is no further activity on this pull request, it will be closed in a
+  week.
+
+# Comment to post when closing a stale issue. Set to `false` to disable
+closeComment: >
+  While we hate to see this happen, this PR has been automatically closed because
+  it has not had any activity in the last 21 days. If this pull request should be
+  reconsidered, please follow the guidelines in the previous comment and reopen
+  this pull request. Or, if you have any further questions, just ask! We love to
+  help, and if there's anything the QGIS project can do to help push this PR forward
+  please let us know how we can assist.
+

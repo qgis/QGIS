@@ -59,7 +59,7 @@ class FixSignals(fixer_base.BaseFix):
 
     def transform(self, node, results):
         signal = results.get("signal").value
-        signal = re.sub('^["\']([^(]+)(?:\(.*\))?["\']$', '\\1', signal)
+        signal = re.sub('^["\']([^(]+)(?:\\(.*\\))?["\']$', '\\1', signal)
 
         if 'emitter' in results:
             emitter = results.get("emitter").clone()

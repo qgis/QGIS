@@ -1,8 +1,8 @@
 Accumulated Cost (Anisotropic)
 grid_analysis
-ParameterRaster|COST|Cost Grid|False
-ParameterRaster|DIRECTION|Direction of max cost|False
-ParameterRaster|POINTS|Destination Points|False
-ParameterNumber|K|k factor|None|None|1
-ParameterNumber|THRESHOLD|Threshold for different route|None|None|0
-OutputRaster|ACCCOST|Accumulated Cost
+QgsProcessingParameterRasterLayer|COST|Cost Grid|None|False
+QgsProcessingParameterRasterLayer|DIRECTION|Direction of max cost|None|False
+QgsProcessingParameterRasterLayer|POINTS|Destination Points|None|False
+QgsProcessingParameterNumber|K|k factor|QgsProcessingParameterNumber.Integer|1|False|None|None
+QgsProcessingParameterNumber|THRESHOLD|Threshold for different route|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterRasterDestination|ACCCOST|Accumulated Cost

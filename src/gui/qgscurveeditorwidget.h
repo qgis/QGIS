@@ -17,7 +17,7 @@
 #define QGSCURVEEDITORWIDGET_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QThread>
 #include <QMutex>
 #include <QPen>
@@ -43,7 +43,8 @@ typedef QPointF QwtDoublePoint SIP_SKIP;
 // just internal guff - definitely not for exposing to public API!
 ///@cond PRIVATE
 
-/** \class QgsHistogramValuesGatherer
+/**
+ * \class QgsHistogramValuesGatherer
  * Calculates a histogram in a thread.
  * \note not available in Python bindings
  */
@@ -54,7 +55,7 @@ class QgsHistogramValuesGatherer: public QThread
   public:
     QgsHistogramValuesGatherer() = default;
 
-    virtual void run() override
+    void run() override
     {
       mWasCanceled = false;
       if ( mExpression.isEmpty() || !mLayer )
@@ -63,7 +64,7 @@ class QgsHistogramValuesGatherer: public QThread
         return;
       }
 
-      // allow responsive cancelation
+      // allow responsive cancellation
       mFeedback = new QgsFeedback();
 
       mHistogram.setValues( mLayer, mExpression, mFeedback );
@@ -89,7 +90,7 @@ class QgsHistogramValuesGatherer: public QThread
       mWasCanceled = true;
     }
 
-    //! Returns true if collection was canceled before completion
+    //! Returns TRUE if collection was canceled before completion
     bool wasCanceled() const { return mWasCanceled; }
 
     const QgsHistogram &histogram() const { return mHistogram; }
@@ -133,7 +134,8 @@ class QgsHistogramValuesGatherer: public QThread
 
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCurveEditorWidget
  * A widget for manipulating QgsCurveTransform curves.
  * \since QGIS 3.0
@@ -147,9 +149,9 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     /**
      * Constructor for QgsCurveEditorWidget.
      */
-    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
+    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsCurveTransform &curve = QgsCurveTransform() );
 
-    ~QgsCurveEditorWidget();
+    ~QgsCurveEditorWidget() override;
 
     /**
      * Returns a curve representing the current curve from the widget.
@@ -209,7 +211,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
   protected:
 
-    virtual void keyPressEvent( QKeyEvent *event ) override ;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private slots:
 
@@ -227,7 +229,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     QList< QwtPlotMarker * > mMarkers;
     QgsCurveEditorPlotEventFilter *mPlotFilter = nullptr;
-    int mCurrentPlotMarkerIndex;
+    int mCurrentPlotMarkerIndex = -1;
     //! Background histogram gatherer thread
     std::unique_ptr< QgsHistogramValuesGatherer > mGatherer;
     std::unique_ptr< QgsHistogram > mHistogram;
@@ -263,7 +265,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
 
     QgsCurveEditorPlotEventFilter( QwtPlot *plot );
 
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 
@@ -273,7 +275,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
 
   private:
 
-    QwtPlot *mPlot;
+    QwtPlot *mPlot = nullptr;
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond

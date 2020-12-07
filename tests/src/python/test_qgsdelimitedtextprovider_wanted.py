@@ -20,8 +20,6 @@
 __author__ = 'Chris Crook'
 __date__ = 'May 2013'
 __copyright__ = '(C) 2013, Chris Crook'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 def test_002_load_csv_file():
@@ -101,7 +99,7 @@ def test_003_field_naming():
             'data': 'Some data',
             'field_4': 'Some info',
             'data_2': 'NULL',
-            '28_1': 'NULL',
+            '28': 'NULL',
             '24.5': 'NULL',
             'field_3_1': 'NULL',
             'data_1': 'NULL',
@@ -128,7 +126,7 @@ def test_004_max_fields():
             'data': 'Some data',
             'field_4': 'Some info',
             'data_1': 'NULL',
-            '28_1': 'NULL',
+            '28': 'NULL',
             '24.5': 'NULL',
             '#fid': 2,
             '#geometry': 'None',
@@ -2447,5 +2445,145 @@ def test_040_issue_14666():
     wanted['log'] = [
         'Errors in file test14666.csv',
         '2 records have missing geometry definitions',
+    ]
+    return wanted
+
+
+def test_041_no_detect_type():
+    wanted = {}
+    wanted['uri'] = 'file://testtypes.csv?yField=lat&xField=lon&type=csv&detectTypes=no'
+    wanted['fieldTypes'] = ['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': 'line1',
+            'description': '1.0',
+            'lon': '1.0',
+            'lat': '1.0',
+            'empty': 'NULL',
+            'text': 'NULL',
+            'int': '0',
+            'longlong': '0',
+            'real': 'NULL',
+            'text2': '1',
+            '#fid': 2,
+            '#geometry': 'Point (1 1)',
+        },
+        3: {
+            'id': 'line2',
+            'description': '1.0',
+            'lon': '1.0',
+            'lat': '5.0',
+            'empty': 'NULL',
+            'text': '1',
+            'int': 'NULL',
+            'longlong': '9189304972279762602',
+            'real': '1.3',
+            'text2': '-4',
+            '#fid': 3,
+            '#geometry': 'Point (1 5)',
+        },
+        4: {
+            'id': 'line3',
+            'description': '5.0',
+            'lon': '5.0',
+            'lat': '5.0',
+            'empty': 'NULL',
+            'text': '1xx',
+            'int': '2',
+            'longlong': '345',
+            'real': '2',
+            'text2': '1x',
+            '#fid': 4,
+            '#geometry': 'Point (5 5)',
+        },
+        5: {
+            'id': 'line4',
+            'description': '5.0',
+            'lon': '5.0',
+            'lat': '1.0',
+            'empty': 'NULL',
+            'text': 'A string',
+            'int': '-3456',
+            'longlong': '-3123724580211819352',
+            'real': '-123.56',
+            'text2': 'NULL',
+            '#fid': 5,
+            '#geometry': 'Point (5 1)',
+        },
+        6: {
+            'id': 'line5',
+            'description': '3.0',
+            'lon': '3.0',
+            'lat': '1.0',
+            'empty': 'NULL',
+            'text': 'NULL',
+            'int': 'NULL',
+            'longlong': 'NULL',
+            'real': '23e-5',
+            'text2': '23',
+            '#fid': 6,
+            '#geometry': 'Point (3 1)',
+        },
+        7: {
+            'id': 'line6',
+            'description': '1.0',
+            'lon': '1.0',
+            'lat': '3.0',
+            'empty': 'NULL',
+            'text': '1.5',
+            'int': '9',
+            'longlong': '42',
+            'real': '99',
+            'text2': '0',
+            '#fid': 7,
+            '#geometry': 'Point (1 3)',
+        },
+    }
+    wanted['log'] = [
+    ]
+    return wanted
+
+
+def test_042_no_detect_types_csvt():
+    wanted = {}
+    wanted['uri'] = 'file://testcsvt.csv?geomType=none&type=csv&detectTypes=no'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Test csvt 1',
+            'fint': '1',
+            'freal': '1.2',
+            'fstr': '1',
+            'fstr_1': 'text',
+            'fdatetime': '2015-03-02T12:30:00',
+            'fdate': '2014-12-30',
+            'ftime': '23:55',
+            'flong': '-456',
+            'flonglong': '-678',
+            'field_12': 'NULL',
+            '#fid': 2,
+            '#geometry': 'None',
+        },
+        3: {
+            'id': '2',
+            'description': 'Test csvt 2',
+            'fint': '3',
+            'freal': '1.5',
+            'fstr': '99',
+            'fstr_1': '23.5',
+            'fdatetime': '80',
+            'fdate': '2015-03-28',
+            'ftime': '2014-12-30',
+            'flong': '01:55',
+            'flonglong': '9189304972279762602',
+            'field_12': '-3123724580211819352',
+            '#fid': 3,
+            '#geometry': 'None',
+        },
+    }
+    wanted['log'] = [
     ]
     return wanted

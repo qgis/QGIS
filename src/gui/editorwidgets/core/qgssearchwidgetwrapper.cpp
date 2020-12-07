@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfields.h"
+#include "qgsapplication.h"
 
 #include <QWidget>
 
@@ -34,7 +35,9 @@ QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilte
          << Contains
          << DoesNotContain
          << IsNull
-         << IsNotNull;
+         << IsNotNull
+         << StartsWith
+         << EndsWith;
 }
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::nonExclusiveFilterFlags()
@@ -50,15 +53,15 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
     case EqualTo:
       return QObject::tr( "Equal to (=)" );
     case NotEqualTo:
-      return QObject::tr( "Not equal to (!=)" );
+      return QObject::tr( "Not equal to (≠)" );
     case GreaterThan:
       return QObject::tr( "Greater than (>)" );
     case LessThan:
       return QObject::tr( "Less than (<)" );
     case GreaterThanOrEqualTo:
-      return QObject::tr( "Greater than or equal to (>=)" );
+      return QObject::tr( "Greater than or equal to (≥)" );
     case LessThanOrEqualTo:
-      return QObject::tr( "Less than or equal to (<=)" );
+      return QObject::tr( "Less than or equal to (≤)" );
     case Between:
       return QObject::tr( "Between (inclusive)" );
     case IsNotBetween:
@@ -73,7 +76,10 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
       return QObject::tr( "Is missing (null)" );
     case IsNotNull:
       return QObject::tr( "Is not missing (not null)" );
-
+    case StartsWith:
+      return QObject::tr( "Starts with" );
+    case EndsWith:
+      return QObject::tr( "Ends with" );
   }
   return QString();
 }
@@ -95,6 +101,14 @@ QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::defaultFlags() const
   return FilterFlags();
 }
 
+QString QgsSearchWidgetWrapper::createFieldIdentifier() const
+{
+  QString field = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  if ( mAggregate.isEmpty() )
+    return field;
+  else
+    return QStringLiteral( "relation_aggregate('%1','%2',%3)" ).arg( context().relation().id(), mAggregate, field );
+}
 
 void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 {
@@ -104,5 +118,20 @@ void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 void QgsSearchWidgetWrapper::clearExpression()
 {
   mExpression = QStringLiteral( "TRUE" );
+}
+
+QString QgsSearchWidgetWrapper::aggregate() const
+{
+  return mAggregate;
+}
+
+void QgsSearchWidgetWrapper::setAggregate( const QString &aggregate )
+{
+  mAggregate = aggregate;
+}
+
+int QgsSearchWidgetWrapper::fieldIndex() const
+{
+  return mFieldIdx;
 }
 

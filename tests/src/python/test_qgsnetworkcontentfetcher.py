@@ -12,8 +12,6 @@ from builtins import str
 __author__ = 'Matthias Kuhn'
 __date__ = '4/28/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -22,7 +20,7 @@ from qgis.testing import unittest, start_app
 from qgis.core import QgsNetworkContentFetcher
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtNetwork import QNetworkReply
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 import socketserver
 import threading
 import http.server
@@ -80,6 +78,21 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
         fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
+        fetcher.finished.connect(self.contentLoaded)
+        while not self.loaded:
+            app.processEvents()
+
+        r = fetcher.reply()
+        assert r.error() == QNetworkReply.NoError, r.error()
+
+        html = fetcher.contentAsString()
+        assert 'QGIS' in html
+
+    def testFetchRequestContent(self):
+        fetcher = QgsNetworkContentFetcher()
+        self.loaded = False
+        request = QNetworkRequest(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
+        fetcher.fetchContent(request)
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             app.processEvents()

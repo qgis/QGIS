@@ -1,0 +1,248 @@
+tests:
+
+  - algorithm: gdal:buffervectors
+    name: Buffer lines
+    params:
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_lines.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: BUffer lines with dissolve
+    params:
+      DISSOLVE: true
+      DISTANCE: 1.0
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_lines_dissolve.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: Buffer polygons
+    params:
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_polys.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: Buffer polygons with dissolve
+    params:
+      DISSOLVE: true
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_polys_dissolve.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip points by extent
+    params:
+      EXTENT: 0.6180722891566264,5.408433734939758,0.4337349397590362,2.306024096385542
+        [EPSG:4326]
+      INPUT:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_points.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip lines by extent
+    params:
+      EXTENT: 4.362348178137652,8.698380566801621,-1.193522267206478,3.0914979757085024
+        [EPSG:4326]
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip polygons by extent
+    params:
+      EXTENT: 0.7143072289156609,4.718222891566264,1.4430722891566266,5.390060240963856
+        [EPSG:4326]
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_polygons.gml
+        type: vector
+
+# Fail on Travis with
+# ERROR 1: TopologyException: Input geom 1 is invalid: Self-intersection at or near point 2 -1 at 2 -1
+#  - algorithm: gdal:clipvectorbypolygon
+#    name: Clip points by polygons
+#    params:
+#      INPUT:
+#        name: points.gml
+#        type: vector
+#      MASK:
+#        name: polys.gml
+#        type: vector
+#      OPTIONS: ''
+#    results:
+#      OUTPUT:
+#        name: expected/gdal/clip_points_by_polygon.gml
+#        type: vector
+#
+#  - algorithm: gdal:clipvectorbypolygon
+#    name: Clip lines by polygons
+#    params:
+#      INPUT:
+#        name: lines.gml
+#        type: vector
+#      MASK:
+#        name: polys.gml
+#        type: vector
+#      OPTIONS: ''
+#    results:
+#      OUTPUT:
+#        name: expected/gdal/clip_lines_by_polygon.gml
+#        type: vector
+
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by multipolygons
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: multipolys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines_by_multipolygon.gml
+        type: vector
+
+  - algorithm: gdal:executesql
+    name: Execute SQL
+    params:
+      DIALECT: 0
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+      SQL: SELECT * FROM polys2 WHERE intval=2
+    results:
+      OUTPUT:
+        name: expected/gdal/execute_sql.gml
+        type: vector
+
+  - algorithm: gdal:offsetcurve
+    name: Offset curve (right-sided)
+    params:
+      DISTANCE: -0.5
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/offset_lines.gml
+        type: vector
+
+  - algorithm: gdal:ogrinfo
+    name: ogrinfo
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      SUMMARY_ONLY: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info.html
+        type: regex
+        rules:
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+          - 'Geometry: Line String'
+          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+
+  - algorithm: gdal:onesidebuffer
+    name: One-sided buffer (left-handed)
+    params:
+      BUFFER_SIDE: 1
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/one_side_buffer.gml
+        type: vector
+
+  - algorithm: gdal:pointsalonglines
+    name: Points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/points_along_lines.gml
+        type: vector
+
+  - algorithm: gdal:dissolve
+    name: Dissolve points (multipoint output)
+    params:
+      COMPUTE_AREA: false
+      COMPUTE_STATISTICS: false
+      COUNT_FEATURES: false
+      EXPLODE_COLLECTIONS: false
+      FIELD: TestField
+      GEOMETRY: geometry
+      INPUT:
+        name: custom/dissolve_points.shp
+        type: vector
+      KEEP_ATTRIBUTES: false
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/dissolved_points.gml
+        type: vector

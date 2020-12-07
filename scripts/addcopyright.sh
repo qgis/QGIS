@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    addcopyright.sh
 #    ---------------------
@@ -30,11 +30,11 @@ else
 fi
 
 for i in $FILES; do
-	echo $i >&2
+	echo "${i}" >&2
 	author=
 	authordate=
 	eval $(git log --reverse --pretty="export author='%an' authordate=\"\$(date --date='%ai' +'%%B %Y')\"" $i | head -1)
-	basename=$(basename $i)
+	basename=$(basename "${i}")
 	authoryear=${authordate#* }
 
         case $i in
@@ -43,15 +43,15 @@ for i in $FILES; do
 		author=volayaf
 		;;
 
-	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/gps/qextserialport/*|lib/astyle/*|python/pyspatialite/*)
+	src/app/qtmain_android.cpp)
 		# Skip third party files
-                echo $f skipped
+                echo "${i} skipped"
                 continue
                 ;;
 
 	esac
 
-	case $author in
+	case "${author}" in
 	morb_au)
 		authorname="Brendan Morley"
 		authoremail="morb at ozemail dot com dot au"
@@ -217,6 +217,21 @@ for i in $FILES; do
 		authoremail="nyall dot dawson at gmail dot com"
 		;;
 
+	"David")
+		authorname="David Signer"
+		authoremail="david at opengis dot ch"
+		;;
+
+	"Etienne Trimaille")
+		authorname="Etienne Trimaille"
+		authoremail="etienne dot trimaille at gmail dot com"
+		;;
+
+	"David Marteau")
+		authorname="David Marteau"
+		authoremail="david at innophi dot com"
+		;;
+
 	*)
 		echo "Author $author not found."
 		exit 1
@@ -287,8 +302,6 @@ $shebang# -*- coding: utf-8 -*-
 __author__ = '$authorname'
 __date__ = '$authordate'
 __copyright__ = '(C) $authoryear, $authorname'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '\$Format:%H$'
 
 EOF
 		;;

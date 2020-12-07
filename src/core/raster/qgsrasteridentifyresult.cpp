@@ -22,12 +22,6 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterdataprovider.h"
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult()
-  : mValid( false )
-  , mFormat( QgsRaster::IdentifyFormatUndefined )
-{
-}
-
 QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results )
   : mValid( true )
   , mFormat( format )
@@ -36,9 +30,7 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat form
 }
 
 QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError &error )
-  : mValid( false )
-  , mFormat( QgsRaster::IdentifyFormatUndefined )
-  , mError( error )
+  : mError( error )
 {
 }
 

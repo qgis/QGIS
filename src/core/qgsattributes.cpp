@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #include "qgsattributes.h"
-
+#include "qgis.h"
 
 
 QgsAttributeMap QgsAttributes::toMap() const
@@ -28,4 +28,12 @@ QgsAttributeMap QgsAttributes::toMap() const
       map.insert( idx, v );
   }
   return map;
+}
+
+uint qHash( const QgsAttributes &attributes )
+{
+  if ( attributes.isEmpty() )
+    return std::numeric_limits<uint>::max();
+  else
+    return qHash( attributes.at( 0 ) );
 }

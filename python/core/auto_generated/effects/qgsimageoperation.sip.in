@@ -1,0 +1,205 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/effects/qgsimageoperation.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsImageOperation
+{
+%Docstring
+Contains operations and filters which apply to QImages
+
+A set of optimised pixel manipulation operations and filters which can be applied
+to QImages. All operations only apply to ARGB32 format images, and it is left up
+to the calling procedure to ensure that any passed images are of the correct
+format.
+
+Operations are written to either modify an image in place or return a new image, depending
+on which is faster for the particular operation.
+
+.. versionadded:: 2.7
+%End
+
+%TypeHeaderCode
+#include "qgsimageoperation.h"
+%End
+  public:
+
+    enum GrayscaleMode
+    {
+      GrayscaleLightness,
+      GrayscaleLuminosity,
+      GrayscaleAverage,
+      GrayscaleOff
+    };
+
+    enum FlipType
+    {
+      FlipHorizontal,
+      FlipVertical
+    };
+
+    static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity );
+%Docstring
+Convert a QImage to a grayscale image. Alpha channel is preserved.
+
+:param image: QImage to convert
+:param mode: mode to use during grayscale conversion
+%End
+
+    static void adjustBrightnessContrast( QImage &image, int brightness, double contrast );
+%Docstring
+Alter the brightness or contrast of a QImage.
+
+:param image: QImage to alter
+:param brightness: brightness value, in the range -255 to 255. A brightness value of 0 indicates
+                   no change to brightness, a negative value will darken the image, and a positive value will brighten
+                   the image.
+:param contrast: contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
+                 to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
+                 contrast of the image.
+%End
+
+    static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
+                                     double colorizeStrength = 1.0 );
+%Docstring
+Alter the hue or saturation of a QImage.
+
+:param image: QImage to alter
+:param saturation: double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
+:param colorizeColor: color to use for colorizing image. Set to an invalid QColor to disable
+                      colorization.
+:param colorizeStrength: double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
+%End
+
+    static void multiplyOpacity( QImage &image, double factor );
+%Docstring
+Multiplies opacity of image pixel values by a factor.
+
+:param image: QImage to alter
+:param factor: factor to multiple pixel's opacity by
+%End
+
+    static void overlayColor( QImage &image, const QColor &color );
+%Docstring
+Overlays a color onto an image. This operation retains the alpha channel of the
+original image, but replaces all image pixel colors with the specified color.
+
+:param image: QImage to alter
+:param color: color to overlay (any alpha component of the color is ignored)
+%End
+
+    struct DistanceTransformProperties
+    {
+
+      bool shadeExterior;
+
+      bool useMaxDistance;
+
+      double spread;
+
+      QgsColorRamp *ramp;
+    };
+
+    static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties );
+%Docstring
+Performs a distance transform on the source image and shades the result
+using a color ramp.
+
+:param image: QImage to alter
+:param properties: DistanceTransformProperties object with parameters
+                   for the distance transform operation
+%End
+
+    static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
+%Docstring
+Performs a stack blur on an image. Stack blur represents a good balance between
+speed and blur quality.
+
+:param image: QImage to blur
+:param radius: blur radius in pixels, maximum value of 16
+:param alphaOnly: set to ``True`` to blur only the alpha component of the image
+
+.. note::
+
+   for fastest operation, ensure the source image is ARGB32_Premultiplied if
+   alphaOnly is set to ``False``, or ARGB32 if alphaOnly is ``True``
+%End
+
+    static QImage *gaussianBlur( QImage &image, int radius ) /Factory/;
+%Docstring
+Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
+quality blur.
+
+:param image: QImage to blur
+:param radius: blur radius in pixels
+
+:return: blurred image
+
+.. note::
+
+   for fastest operation, ensure the source image is ARGB32_Premultiplied
+%End
+
+    static void flipImage( QImage &image, FlipType type );
+%Docstring
+Flips an image horizontally or vertically
+
+:param image: QImage to flip
+:param type: type of flip to perform (horizontal or vertical)
+%End
+
+    static QRect nonTransparentImageRect( const QImage &image, QSize minSize = QSize(), bool center = false );
+%Docstring
+Calculates the non-transparent region of an image.
+
+:param image: source image
+:param minSize: minimum size for returned region, if desired. If the
+                non-transparent region of the image is smaller than this minimum size,
+                it will be centered in the returned rectangle.
+:param center: return rectangle will be centered on the center of the original image if set to ``True``
+
+.. seealso:: :py:func:`cropTransparent`
+
+.. versionadded:: 2.9
+%End
+
+    static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
+%Docstring
+Crop any transparent border from around an image.
+
+:param image: source image
+:param minSize: minimum size for cropped image, if desired. If the
+                cropped image is smaller than the minimum size, it will be centered
+                in the returned image.
+:param center: cropped image will be centered on the center of the original image if set to ``True``
+
+.. versionadded:: 2.9
+%End
+
+      public:
+      public:
+      public:
+      public:
+      public:
+      public:
+      public:
+      public:
+      public:
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/effects/qgsimageoperation.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

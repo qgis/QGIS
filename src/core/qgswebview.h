@@ -17,6 +17,8 @@
 #define QGSWEBVIEW_H
 
 
+#define SIP_NO_FILE
+
 #include <QWidget>
 
 #ifdef WITH_QTWEBKIT
@@ -26,7 +28,8 @@
 #include "qgis_core.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsWebView : public QWebView
 {
@@ -38,9 +41,9 @@ class CORE_EXPORT QgsWebView : public QWebView
     {
       QDesktopWidget desktop;
       // Apply zoom factor for HiDPI screens
-      if ( desktop.physicalDpiX() > 96 )
+      if ( desktop.logicalDpiX() > 96 )
       {
-        setZoomFactor( desktop.physicalDpiX() / 96 );
+        setZoomFactor( desktop.logicalDpiX() / 96 );
       }
     }
 };
@@ -50,7 +53,8 @@ class CORE_EXPORT QgsWebView : public QWebView
 
 class QPrinter;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
  * library is not available. It should be used instead of QWebView inside QGIS.
  *
@@ -64,7 +68,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
 /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
-    explicit QgsWebView( QWidget *parent = 0 )
+    explicit QgsWebView( QWidget *parent = nullptr )
       : QTextBrowser( parent )
       , mSettings( new QWebSettings() )
       , mPage( new QWebPage( this ) )

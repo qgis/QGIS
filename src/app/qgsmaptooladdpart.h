@@ -22,7 +22,9 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture
     Q_OBJECT
   public:
     QgsMapToolAddPart( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolAddPart();
+
+    QgsMapToolCapture::Capabilities capabilities() const override;
+
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 

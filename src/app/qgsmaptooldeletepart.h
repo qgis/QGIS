@@ -18,6 +18,8 @@
 
 #include "qgsmaptooledit.h"
 #include "qgis_app.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 
 class QgsVertexMarker;
 
@@ -28,7 +30,7 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
 
   public:
     QgsMapToolDeletePart( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolDeletePart();
+    ~QgsMapToolDeletePart() override;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '30/08/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -176,6 +174,51 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.ForceFirstLetterToCapital), '    TESTING ABC')
         self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.ForceFirstLetterToCapital),
                          '    Testing Abc')
+
+    def testfuzzyScore(self):
+        self.assertEqual(QgsStringUtils.fuzzyScore('', ''), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', ''), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('', 'foo'), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', 'foo'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('bar', 'foo'), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('FOO', 'foo'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', 'FOO'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('   foo   ', 'foo'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', '   foo   '), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', '   foo   '), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo_bar', 'foo bar'), 1)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foo'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'fooba'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo_bar', 'ob'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foobar'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foo_bar'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo_bar', 'foo bar'), 0)
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
+            QgsStringUtils.fuzzyScore('foo_bar', 'foobar')
+        )
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo bar', 'foo_bar'),
+            QgsStringUtils.fuzzyScore('foo_bar', 'foo_bar')
+        )
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo bar', 'foo bar'),
+            QgsStringUtils.fuzzyScore('foo_bar', 'foo bar')
+        )
+        # note the accent
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo_bér', 'foober'),
+            QgsStringUtils.fuzzyScore('foo_ber', 'foobér')
+        )
+        self.assertGreater(
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd hig'),
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd e h')
+        )
+        #  full words are preferred, even though the same number of characters used
+        self.assertGreater(
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd hig'),
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd e hi')
+        )
 
 
 if __name__ == '__main__':

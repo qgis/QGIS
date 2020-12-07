@@ -16,875 +16,267 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
-from builtins import object
-from builtins import basestring
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import sys
-import os
-import math
-from inspect import isclass
-from copy import deepcopy
-import numbers
 
-from qgis.core import QgsProcessingUtils
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
+from qgis.core import (QgsRasterLayer,
+                       QgsVectorLayer,
+                       QgsMapLayer,
+                       QgsCoordinateReferenceSystem,
                        QgsExpression,
                        QgsProject,
                        QgsRectangle,
+                       QgsWkbTypes,
                        QgsVectorFileWriter,
-                       QgsProcessingParameterDefinition)
-
-from processing.tools.vector import resolveFieldIndex
-from processing.tools import dataobjects
-from processing.core.outputs import OutputNumber, OutputRaster, OutputVector
-
-
-def parseBool(s):
-    if s is None or s == str(None).lower():
-        return None
-    return str(s).lower() == str(True).lower()
-
-
-def _splitParameterOptions(line):
-    tokens = line.split('=', 1)
-    if tokens[1].lower().strip().startswith('optional'):
-        isOptional = True
-        definition = tokens[1].strip()[len('optional') + 1:]
-    else:
-        isOptional = False
-        definition = tokens[1]
-    return isOptional, tokens[0], definition
-
-
-def _createDescriptiveName(s):
-    return s.replace('_', ' ')
-
-
-class Parameter(object):
-
-    """
-    Base class for all parameters that a geoalgorithm might
-    take as input.
-    """
-
-    def __init__(self, name='', description='', default=None, optional=False,
-                 metadata={}):
-        self.value = default
-
-    def __str__(self):
-        return u'{} <{}>'.format(self.name(), self.__class__.__name__)
-
-    def todict(self):
-        o = deepcopy(self.__dict__)
-        del o['metadata']
-        return o
-
-    def tr(self, string, context=''):
-        if context == '':
-            context = 'Parameter'
-        return QCoreApplication.translate(context, string)
-
-
-class ParameterBoolean(Parameter):
-
-    def __init__(self, name='', description='', default=None, optional=False, metadata={}):
-        Parameter.__init__(self, name, description, parseBool(default), optional, metadata)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'boolean '
-        return '##' + self.name() + '=' + param_type + str(self.defaultValue())
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("boolean"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('boolean') + 1:] or None
-            if default == 'None':
-                default = None
-            if default:
-                param = ParameterBoolean(name, descName, default)
-            else:
-                param = ParameterBoolean(name, descName)
-            param.optional = isOptional
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagOptional)
-            return param
-
-
-class ParameterCrs(Parameter):
-
-    def __init__(self, name='', description='', default=None, optional=False, metadata={}):
-        '''The value is a string that uniquely identifies the
-        coordinate reference system. Typically it is the auth id of the CRS
-        (if the authority is EPSG) or proj4 string of the CRS (in case
-        of other authorities or user defined projections).'''
-        Parameter.__init__(self, name, description, default, optional, metadata)
-        if self.value == 'ProjectCrs':
-            self.value = QgsProject.instance().crs().authid()
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'crs '
-        return '##' + self.name() + '=' + param_type + str(self.defaultValue())
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("crs"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('crs') + 1:]
-            if default == 'None':
-                default = None
-            if default:
-                return ParameterCrs(name, descName, default, isOptional)
-            else:
-                return ParameterCrs(name, descName, None, isOptional)
-
-
-class ParameterExtent(Parameter):
-
-    USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
-
-    def __init__(self, name='', description='', default=None, optional=True):
-        Parameter.__init__(self, name, description, default, optional)
-        # The value is a string in the form "xmin, xmax, ymin, ymax"
-        self.skip_crs_check = False
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'extent'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("extent"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('extent') + 1:] or None
-            return ParameterExtent(name, descName, default, isOptional)
-
-
-class ParameterPoint(Parameter):
-
-    def __init__(self, name='', description='', default=None, optional=False):
-        Parameter.__init__(self, name, description, default, optional)
-        # The value is a string in the form "x, y"
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'point'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("point"):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('point') + 1:] or None
-            return ParameterPoint(name, descName, default, isOptional)
-
-
-class ParameterFile(Parameter):
-
-    def __init__(self, name='', description='', isFolder=False, optional=True, ext=None):
-        Parameter.__init__(self, name, description, None, parseBool(optional))
-        self.ext = ext
-        self.isFolder = parseBool(isFolder)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        if self.isFolder:
-            param_type += 'folder'
-        else:
-            param_type += 'file'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("file") or definition.startswith("folder"):
-            descName = _createDescriptiveName(name)
-            return ParameterFile(name, descName, definition.startswith("folder"), isOptional)
-
-
-class ParameterFixedTable(Parameter):
-
-    def __init__(self, name='', description='', numRows=3,
-                 cols=['value'], fixedNumOfRows=False, optional=False):
-        Parameter.__init__(self, name, description, None, optional)
-        self.cols = cols
-        if isinstance(cols, str):
-            self.cols = self.cols.split(";")
-        self.numRows = int(numRows)
-        self.fixedNumOfRows = parseBool(fixedNumOfRows)
-
-    @staticmethod
-    def tableToString(table):
-        tablestring = ''
-        for i in range(len(table)):
-            for j in range(len(table[0])):
-                tablestring = tablestring + table[i][j] + ','
-        tablestring = tablestring[:-1]
-        return tablestring
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'fixedtable'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.startswith("fixedtable"):
-            descName = _createDescriptiveName(name)
-            return ParameterFixedTable(name, descName, optional=isOptional)
-
-
-class ParameterMultipleInput(Parameter):
-
-    """A parameter representing several data objects.
-
-    Its value is a string with substrings separated by semicolons,
-    each of which represents the data source location of each element.
-    """
-
-    exported = None
-
-    def __init__(self, name='', description='', datatype=-1, optional=False, metadata={}):
-        Parameter.__init__(self, name, description, None, optional, metadata=metadata)
-        self.datatype = int(float(datatype))
-        self.exported = None
-        self.minNumInputs = 0
-
-    """ Set minimum required number of inputs for parameter
-
-    By default minimal number of inputs is set to 1
-
-    @type _minNumInputs: numeric type or None
-    @param _minNumInputs: required minimum number of inputs for parameter. \
-                          If user will pass None as parameter, we will use default minimal number of inputs (1)
-    @return: result, if the minimum number of inputs were set.
-    """
-
-    def setMinNumInputs(self, _minNumInputs):
-        if _minNumInputs is None:
-            self.minNumInputs = 0
-            return True
-
-        if _minNumInputs < 1 and not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            # don't allow to set negative or null number of inputs if parameter isn't optional
-            return False
-
-        self.minNumInputs = int(_minNumInputs)
-        return True
-
-    """ Get minimum required number of inputs for parameter
-
-    @return: minimum number of inputs required for this parameter
-    @see: setMinNumInputs()
-    """
-
-    def getMinNumInputs(self):
-        return self.minNumInputs
-
-    def getSafeExportedLayers(self):
-        """
-        Returns not the value entered by the user, but a string with
-        semicolon-separated filenames which contains the data of the
-        selected layers, but saved in a standard format (currently
-        shapefiles for vector layers and GeoTiff for raster) so that
-        they can be opened by most external applications.
-
-        If there is a selection and QGIS is configured to use just the
-        selection, it exports the layer even if it is already in a
-        suitable format.
-
-        Works only if the layer represented by the parameter value is
-        currently loaded in QGIS. Otherwise, it will not perform any
-        export and return the current value string.
-
-        If the current value represents a layer in a suitable format,
-        it does no export at all and returns that value.
-
-        Currently, it works just for vector layer. In the case of
-        raster layers, it returns the parameter value.
-
-        The layers are exported just the first time the method is
-        called. The method can be called several times and it will
-        always return the same string, performing the export only the
-        first time.
-        """
-        context = dataobjects.createContext()
-        if self.exported:
-            return self.exported
-        self.exported = self.value
-        layers = self.value.split(';')
-        if layers is None or len(layers) == 0:
-            return self.value
-        if self.datatype == dataobjects.TYPE_RASTER:
-            for layerfile in layers:
-                layer = QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
-                if layer:
-                    filename = dataobjects.exportRasterLayer(layer)
-                    self.exported = self.exported.replace(layerfile, filename)
-            return self.exported
-        elif self.datatype == dataobjects.TYPE_FILE:
-            return self.value
-        else:
-            for layerfile in layers:
-                layer = QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
-                if layer:
-                    filename = dataobjects.exportVectorLayer(layer)
-                    self.exported = self.exported.replace(layerfile, filename)
-            return self.exported
-
-    def getAsString(self, value):
-        if self.datatype == dataobjects.TYPE_RASTER:
-            if isinstance(value, QgsRasterLayer):
-                return str(value.dataProvider().dataSourceUri())
-            else:
-                s = str(value)
-                layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
-                for layer in layers:
-                    if layer.name() == s:
-                        return str(layer.dataProvider().dataSourceUri())
-                return s
-
-        if self.datatype == dataobjects.TYPE_FILE:
-            return str(value)
-        else:
-            if isinstance(value, QgsVectorLayer):
-                return str(value.source())
-            else:
-                s = str(value)
-                if self.datatype != dataobjects.TYPE_VECTOR_ANY:
-                    layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.datatype], False)
-                else:
-                    layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
-                for layer in layers:
-                    if layer.name() == s:
-                        return str(layer.source())
-                return s
-
-    def dataType(self):
-        if self.datatype == dataobjects.TYPE_VECTOR_POINT:
-            return 'points'
-        elif self.datatype == dataobjects.TYPE_VECTOR_LINE:
-            return 'lines'
-        elif self.datatype == dataobjects.TYPE_VECTOR_POLYGON:
-            return 'polygons'
-        elif self.datatype == dataobjects.TYPE_RASTER:
-            return 'rasters'
-        elif self.datatype == dataobjects.TYPE_FILE:
-            return 'files'
-        else:
-            return 'any vectors'
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        if self.datatype == dataobjects.TYPE_RASTER:
-            param_type += 'multiple raster'
-        if self.datatype == dataobjects.TYPE_FILE:
-            param_type += 'multiple file'
-        else:
-            param_type += 'multiple vector'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip() == 'multiple raster':
-            return ParameterMultipleInput(name, descName,
-                                          dataobjects.TYPE_RASTER, isOptional)
-        elif definition.lower().strip() == 'multiple vector':
-            return ParameterMultipleInput(name, definition,
-                                          dataobjects.TYPE_VECTOR_ANY, isOptional)
-
-
-class ParameterNumber(Parameter):
-
-    def __init__(self, name='', description='', minValue=None, maxValue=None,
-                 default=None, optional=False, metadata={}):
-        Parameter.__init__(self, name, description, default, optional, metadata)
-
-        if default is not None:
-            try:
-                self.default = int(str(default))
-                self.isInteger = True
-            except ValueError:
-                self.default = float(default)
-                self.isInteger = False
-        else:
-            self.isInteger = False
-
-        if minValue is not None:
-            self.min = int(float(minValue)) if self.isInteger else float(minValue)
-        else:
-            self.min = None
-        if maxValue is not None:
-            self.max = int(float(maxValue)) if self.isInteger else float(maxValue)
-        else:
-            self.max = None
-        self.value = self.default
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'number'
-        code = '##' + self.name() + '=' + param_type
-        if self.default:
-            code += str(self.default)
-        return code
-
-    @classmethod
-    def fromScriptCode(self, line):
-
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('number'):
-            default = definition.strip()[len('number'):] or None
-            if default == 'None':
-                default = None
-            return ParameterNumber(name, descName, default=default, optional=isOptional)
-
-    def _layerVariables(self, element, alg=None):
-        variables = {}
-        context = createContext()
-        layer = QgsProcessingUtils.mapLayerFromString(element.value, context)
-        if layer is not None:
-            name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
-            variables['@%s_minx' % name] = layer.extent().xMinimum()
-            variables['@%s_miny' % name] = layer.extent().yMinimum()
-            variables['@%s_maxx' % name] = layer.extent().yMaximum()
-            variables['@%s_maxy' % name] = layer.extent().yMaximum()
-            if isinstance(element, (ParameterRaster, OutputRaster)):
-                stats = layer.dataProvider().bandStatistics(1)
-                variables['@%s_avg' % name] = stats.mean
-                variables['@%s_stddev' % name] = stats.stdDev
-                variables['@%s_min' % name] = stats.minimumValue
-                variables['@%s_max' % name] = stats.maximumValue
-        return variables
-
-    def evaluateForModeler(self, value, model):
-        if isinstance(value, numbers.Number):
-            return value
-        variables = {}
-        for param in model.parameters:
-            if isinstance(param, ParameterNumber):
-                variables["@" + param.name()] = param.value
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                variables.update(self._layerVariables(param))
-
-        for alg in list(model.algs.values()):
-            for out in alg.algorithm.outputs:
-                if isinstance(out, OutputNumber):
-                    variables["@%s_%s" % (alg.name(), out.name)] = out.value
-                if isinstance(out, (OutputRaster, OutputVector)):
-                    variables.update(self._layerVariables(out, alg))
-        for k, v in list(variables.items()):
-            value = value.replace(k, str(v))
-
-        return value
-
-
-class ParameterRange(Parameter):
-
-    def __init__(self, name='', description='', default=None, optional=False):
-        Parameter.__init__(self, name, description, default, optional)
-
-        if default is not None:
-            values = default.split(',')
-            try:
-                int(values[0])
-                int(values[1])
-                self.isInteger = True
-            except:
-                self.isInteger = False
-        else:
-            self.isInteger = False
-
-
-class ParameterRaster(Parameter):
-
-    def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
-        Parameter.__init__(self, name, description, None, optional)
-        self.showSublayersDialog = parseBool(showSublayersDialog)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'raster'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('raster'):
-            return ParameterRaster(name, descName, optional=isOptional)
-
-
-class ParameterSelection(Parameter):
-
-    def __init__(self, name='', description='', options=[], default=None, isSource=False,
-                 multiple=False, optional=False):
-        Parameter.__init__(self, name, description, default, optional)
-        self.multiple = multiple
-        isSource = parseBool(isSource)
-        self.options = options
-        if isSource:
-            self.options = []
-            layer = QgsVectorLayer(options[0], "layer", "ogr")
-            if layer.isValid():
-                try:
-                    index = resolveFieldIndex(layer, options[1])
-                    feats = QgsProcessingUtils.getFeatures(layer, dataobjects.createContext())
-                    for feature in feats:
-                        self.options.append(str(feature.attributes()[index]))
-                except ValueError:
-                    pass
-        elif isinstance(self.options, str):
-            self.options = self.options.split(";")
-
-        # compute options as (value, text)
-        options = []
-        for i, option in enumerate(self.options):
-            if option is None or isinstance(option, basestring):
-                options.append((i, option))
-            else:
-                options.append((option[0], option[1]))
-        self.options = options
-        self.values = [option[0] for option in options]
-
-        self.value = None
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('selectionfromfile'):
-            options = definition.strip()[len('selectionfromfile '):].split(';')
-            return ParameterSelection(name, descName, options, isSource=True, optional=isOptional)
-        elif definition.lower().strip().startswith('selection'):
-            options = definition.strip()[len('selection '):].split(';')
-            return ParameterSelection(name, descName, options, optional=isOptional)
-        elif definition.lower().strip().startswith('multipleselectionfromfile'):
-            options = definition.strip()[len('multipleselectionfromfile '):].split(';')
-            return ParameterSelection(name, descName, options, isSource=True,
-                                      multiple=True, optional=isOptional)
-        elif definition.lower().strip().startswith('multipleselection'):
-            options = definition.strip()[len('multipleselection '):].split(';')
-            return ParameterSelection(name, descName, options, multiple=True, optional=isOptional)
-
-
-class ParameterEvaluationException(Exception):
-
-    def __init__(self, param, msg):
-        Exception.__init__(msg)
-        self.param = param
-
-
-class ParameterString(Parameter):
-
-    def __init__(self, name='', description='', default=None, multiline=False,
-                 optional=False, evaluateExpressions=False, metadata={}):
-        Parameter.__init__(self, name, description, default, optional, metadata)
-        self.multiline = parseBool(multiline)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'string '
-        return '##' + self.name() + '=' + param_type + repr(self.defaultValue())
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('string'):
-            default = definition.strip()[len('string') + 1:] or None
-            if default == 'None':
-                default = None
-            elif default.startswith('"') or default.startswith('\''):
-                default = eval(default)
-            if default:
-                return ParameterString(name, descName, default, optional=isOptional)
-            else:
-                return ParameterString(name, descName, optional=isOptional)
-        elif definition.lower().strip().startswith('longstring'):
-            default = definition.strip()[len('longstring') + 1:]
-            if default:
-                return ParameterString(name, descName, default, multiline=True, optional=isOptional)
-            else:
-                return ParameterString(name, descName, multiline=True, optional=isOptional)
-
-
-class ParameterExpression(Parameter):
-
-    def __init__(self, name='', description='', default=None, optional=False, parent_layer=None):
-        Parameter.__init__(self, name, description, default, optional)
-        self.parent_layer = parent_layer
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'expression '
-        return '##' + self.name() + '=' + param_type + str(self.defaultValue())
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.lower().strip().startswith('expression'):
-            descName = _createDescriptiveName(name)
-            default = definition.strip()[len('expression') + 1:] or None
-            if default == 'None':
-                default = None
-            if default:
-                return ParameterExpression(name, descName, default, optional=isOptional)
-            else:
-                return ParameterExpression(name, descName, optional=isOptional)
-
-
-class ParameterTable(Parameter):
-
-    def __init__(self, name='', description='', optional=False):
-        Parameter.__init__(self, name, description, None, optional)
-        self.exported = None
-
-    def getSafeExportedTable(self):
-        """Returns not the value entered by the user, but a string with
-        a filename which contains the data of this table, but saved in
-        a standard format (currently always a DBF file) so that it can
-        be opened by most external applications.
-
-        Works only if the table represented by the parameter value is
-        currently loaded in QGIS. Otherwise, it will not perform any
-        export and return the current value string.
-
-        If the current value represents a table in a suitable format,
-        it does not export at all and returns that value.
-
-        The table is exported just the first time the method is called.
-        The method can be called several times and it will always
-        return the same file, performing the export only the first
-        time.
-        """
-        context = dataobjects.createContext()
-        if self.exported:
-            return self.exported
-        table = QgsProcessingUtils.mapLayerFromString(self.value, context, False)
-        if table:
-            self.exported = dataobjects.exportTable(table)
-        else:
-            self.exported = self.value
-        return self.exported
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'table'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('table'):
-            return ParameterTable(name, descName, isOptional)
-
-
-class ParameterTableField(Parameter):
-
-    """A parameter representing a table field.
-    Its value is a string that represents the name of the field.
-    """
-
-    DATA_TYPE_NUMBER = 0
-    DATA_TYPE_STRING = 1
-    DATA_TYPE_DATETIME = 2
-    DATA_TYPE_ANY = -1
-
-    def __init__(self, name='', description='', parent=None, datatype=-1,
-                 optional=False, multiple=False):
-        Parameter.__init__(self, name, description, None, optional)
-        self.parent = parent
-        self.multiple = multiple
-        self.datatype = int(datatype)
-
-    def __str__(self):
-        return self.name() + ' <' + self.__module__.split('.')[-1] + ' from ' \
-            + self.parent + '>'
-
-    def dataType(self):
-        if self.datatype == self.DATA_TYPE_NUMBER:
-            return 'numeric'
-        elif self.datatype == self.DATA_TYPE_STRING:
-            return 'string'
-        elif self.datatype == self.DATA_TYPE_DATETIME:
-            return 'datetime'
-        else:
-            return 'any'
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'field'
-        return '##' + self.name() + '=' + param_type + str(self.parent)
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip().startswith('field'):
-            if definition.lower().strip().startswith('field number'):
-                parent = definition.strip()[len('field number') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_NUMBER
-            elif definition.lower().strip().startswith('field string'):
-                parent = definition.strip()[len('field string') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_STRING
-            elif definition.lower().strip().startswith('field datetime'):
-                parent = definition.strip()[len('field datetime') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_DATETIME
-            else:
-                parent = definition.strip()[len('field') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_ANY
-
-            return ParameterTableField(name, descName, parent, datatype, isOptional)
-
-
-class ParameterVector(Parameter):
-
-    def __init__(self, name='', description='', datatype=[-1],
-                 optional=False):
-        Parameter.__init__(self, name, description, None, optional)
-        if isinstance(datatype, int):
-            datatype = [datatype]
-        elif isinstance(datatype, str):
-            datatype = [int(t) for t in datatype.split(',')]
-        self.datatype = datatype
-        self.exported = None
-        self.allowOnlyOpenedLayers = False
-
-    def getSafeExportedLayer(self):
-        """Returns not the value entered by the user, but a string with
-        a filename which contains the data of this layer, but saved in
-        a standard format (currently always a shapefile) so that it can
-        be opened by most external applications.
-
-        If there is a selection and QGIS is configured to use just the
-        selection, if exports the layer even if it is already in a
-        suitable format.
-
-        Works only if the layer represented by the parameter value is
-        currently loaded in QGIS. Otherwise, it will not perform any
-        export and return the current value string.
-
-        If the current value represents a layer in a suitable format,
-        it does not export at all and returns that value.
-
-        The layer is exported just the first time the method is called.
-        The method can be called several times and it will always
-        return the same file, performing the export only the first
-        time.
-        """
-        context = dataobjects.createContext()
-
-        if self.exported:
-            return self.exported
-        layer = QgsProcessingUtils.mapLayerFromString(self.value, context, False)
-        if layer:
-            self.exported = dataobjects.exportVectorLayer(layer)
-        else:
-            self.exported = self.value
-        return self.exported
-
-    def dataType(self):
-        return dataobjects.vectorDataType(self)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'vector'
-        return '##' + self.name() + '=' + param_type
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        descName = _createDescriptiveName(name)
-        if definition.lower().strip() == 'vector':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_ANY], isOptional)
-        elif definition.lower().strip() == 'vector point':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_POINT], isOptional)
-        elif definition.lower().strip() == 'vector line':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_LINE], isOptional)
-        elif definition.lower().strip() == 'vector polygon':
-            return ParameterVector(name, descName,
-                                   [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
-
-
-paramClasses = [c for c in list(sys.modules[__name__].__dict__.values()) if isclass(c) and issubclass(c, Parameter)]
-
-
-def getParameterFromString(s):
+                       QgsProcessing,
+                       QgsProcessingUtils,
+                       QgsProcessingParameters,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterRange,
+                       QgsProcessingParameterPoint,
+                       QgsProcessingParameterGeometry,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterExpression,
+                       QgsProcessingParameterMatrix,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterMapLayer,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterColor)
+
+from qgis.PyQt.QtCore import QCoreApplication
+
+PARAMETER_NUMBER = 'number'
+PARAMETER_DISTANCE = 'distance'
+PARAMETER_SCALE = 'scale'
+PARAMETER_RASTER = 'raster'
+PARAMETER_TABLE = 'vector'
+PARAMETER_VECTOR = 'source'
+PARAMETER_STRING = 'string'
+PARAMETER_EXPRESSION = 'expression'
+PARAMETER_BOOLEAN = 'boolean'
+PARAMETER_TABLE_FIELD = 'field'
+PARAMETER_EXTENT = 'extent'
+PARAMETER_FILE = 'file'
+PARAMETER_POINT = 'point'
+PARAMETER_GEOMETRY = 'geometry'
+PARAMETER_CRS = 'crs'
+PARAMETER_MULTIPLE = 'multilayer'
+PARAMETER_BAND = 'band'
+PARAMETER_LAYOUTITEM = 'layoutitem'
+PARAMETER_MAP_LAYER = 'layer'
+PARAMETER_RANGE = 'range'
+PARAMETER_ENUM = 'enum'
+PARAMETER_MATRIX = 'matrix'
+PARAMETER_VECTOR_DESTINATION = 'vectorDestination'
+PARAMETER_FILE_DESTINATION = 'fileDestination'
+PARAMETER_FOLDER_DESTINATION = 'folderDestination'
+PARAMETER_RASTER_DESTINATION = 'rasterDestination'
+
+
+def getParameterFromString(s, context=''):
     # Try the parameter definitions used in description files
-    if '|' in s and (s.startswith("Parameter") or s.startswith("*Parameter")):
+    if '|' in s and (s.startswith("QgsProcessingParameter") or s.startswith("*QgsProcessingParameter") or s.startswith('Parameter') or s.startswith('*Parameter')):
         isAdvanced = False
         if s.startswith("*"):
             s = s[1:]
             isAdvanced = True
         tokens = s.split("|")
         params = [t if str(t) != str(None) else None for t in tokens[1:]]
-        try:
+
+        if True:
             clazz = getattr(sys.modules[__name__], tokens[0])
+            # convert to correct type
+            if clazz == QgsProcessingParameterRasterLayer:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterBand:
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterVectorLayer:
+                if len(params) > 2:
+                    params[2] = [int(p) for p in params[2].split(';')]
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterMapLayer:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                    try:
+                        params[4] = [int(p) for p in params[4].split(';')]
+                    except:
+                        params[4] = [getattr(QgsProcessing, p.split(".")[1]) for p in params[4].split(';')]
+            elif clazz == QgsProcessingParameterBoolean:
+                if len(params) > 2:
+                    params[2] = True if params[2].lower() == 'true' else False
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterPoint:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterGeometry:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    try:
+                        params[4] = [int(p) for p in params[4].split(';')]
+                    except:
+                        params[4] = [getattr(QgsWkbTypes, p.split(".")[1]) for p in params[4].split(';')]
+            elif clazz == QgsProcessingParameterCrs:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterRange:
+                if len(params) > 2:
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessingParameterNumber, params[2].split(".")[1])
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterExtent:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterExpression:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterEnum:
+                if len(params) > 2:
+                    params[2] = params[2].split(';')
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    # For multiple values; default value is a list of int
+                    if params[3] is True:
+                        params[4] = [int(v) for v in params[4].split(',')] if params[4] is not None else None
+                    else:
+                        params[4] = int(params[4]) if params[4] is not None else None
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterFeatureSource:
+                if len(params) > 2:
+                    try:
+                        params[2] = [int(p) for p in params[2].split(';')]
+                    except:
+                        params[2] = [getattr(QgsProcessing, p.split(".")[1]) for p in params[2].split(';')]
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterMultipleLayers:
+                if len(params) > 2:
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessing, params[2].split(".")[1])
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterMatrix:
+                if len(params) > 2:
+                    params[2] = int(params[2])
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = params[4].split(';')
+                if len(params) > 6:
+                    params[6] = True if params[6].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterField:
+                if len(params) > 4:
+                    try:
+                        params[4] = int(params[4])
+                    except:
+                        params[4] = getattr(QgsProcessingParameterField, params[4].split(".")[1])
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
+                if len(params) > 6:
+                    params[6] = True if params[6].lower() == 'true' else False
+                if len(params) > 7:
+                    params[7] = True if params[7].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterFile:
+                if len(params) > 2:
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessingParameterFile, params[2].split(".")[1])
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterNumber:
+                if len(params) > 2:
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessingParameterNumber, params[2].split(".")[1])
+                if len(params) > 3:
+                    params[3] = float(params[3].strip()) if params[3] is not None else None
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = float(params[5].strip()) if params[5] is not None else -sys.float_info.max + 1
+                if len(params) > 6:
+                    params[6] = float(params[6].strip()) if params[6] is not None else sys.float_info.max - 1
+            elif clazz == QgsProcessingParameterString:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterColor:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterFileDestination:
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterFolderDestination:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterRasterDestination:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterVectorDestination:
+                if len(params) > 2:
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessing, params[2].split(".")[1])
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
+
             param = clazz(*params)
             if isAdvanced:
                 param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+
+            param.setDescription(QCoreApplication.translate(context, param.description()))
+
             return param
-        except:
+        else:
             return None
     else:  # try script syntax
-        for paramClass in paramClasses:
-            try:
-                param = paramClass.fromScriptCode(s)
-                if param is not None:
-                    return param
-            except:
-                pass
+
+        # try native method
+        param = QgsProcessingParameters.parameterFromScriptCode(s)
+        if param:
+            return param

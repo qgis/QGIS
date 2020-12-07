@@ -29,10 +29,7 @@ class TestQgsVectorDataProvider : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsVectorDataProvider()
-      : vlayerPoints( 0 )
-      , vlayerLines( 0 )
-    {}
+    TestQgsVectorDataProvider() = default;
 
   private slots:
 
@@ -57,8 +54,8 @@ class TestQgsVectorDataProvider : public QObject
 
 void TestQgsVectorDataProvider::initTestCase()
 {
-  vlayerPoints = 0;
-  vlayerLines = 0;
+  vlayerPoints = nullptr;
+  vlayerLines = nullptr;
 
   // load QGIS
   QgsApplication::init();
@@ -68,12 +65,12 @@ void TestQgsVectorDataProvider::initTestCase()
   QString layerLinesUrl = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
 
   // load layers
-
-  vlayerPoints = new QgsVectorLayer( layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
+  const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
+  vlayerPoints = new QgsVectorLayer( layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
   QVERIFY( vlayerPoints );
   QVERIFY( vlayerPoints->isValid() );
 
-  vlayerLines = new QgsVectorLayer( layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ) );
+  vlayerLines = new QgsVectorLayer( layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
   QVERIFY( vlayerLines );
   QVERIFY( vlayerLines->isValid() );
 }
@@ -90,7 +87,7 @@ void TestQgsVectorDataProvider::cleanupTestCase()
 
 static double keep6digits( double x )
 {
-  return qRound( x * 1e6 ) / 1e6;
+  return std::round( x * 1e6 ) / 1e6;
 }
 
 static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyOneAttribute )

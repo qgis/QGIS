@@ -17,35 +17,48 @@
  ***************************************************************************/
 
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
+
+#include "qgsoptionsdialogbase.h"
+#include "qgsoptionswidgetfactory.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgsguiutils.h"
+#include "qgsscalewidget.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
+
+#include <QList>
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
 class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
+class QgsMetadataWidget;
+class QgsTreeWidgetItem;
+class QgsLayerCapabilitiesModel;
+class QgsBearingNumericFormat;
+class QgsOptionsPageWidget;
 
-/** Dialog to set project level properties
-
-  \note actual state is stored in QgsProject singleton instance
-
+/**
+ * Dialog to set project level properties
+ *
+ * \note actual state is stored in QgsProject singleton instance
+ *
  */
-class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
+class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                          const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
+    ~QgsProjectProperties() override;
 
-    ~QgsProjectProperties();
+    void setCurrentPage( const QString & );
 
     /**
        Every project has a title
@@ -53,9 +66,12 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString title() const;
     void title( QString const &title );
 
-    //! Accessor for projection
-    QString projectionWkt();
+    /**
+     * Sets the \a crs shown as selected within the dialog.
+     */
+    void setSelectedCrs( const QgsCoordinateReferenceSystem &crs );
 
+    QgsExpressionContext createExpressionContext() const override;
   public slots:
 
     /**
@@ -64,71 +80,89 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void apply();
 
     /**
-     * Slot to show the projections tab when the dialog is opened
-     */
-    void showProjectionsTab();
+     * Let the user add a scale to the list of project scales
+     * used in scale combobox instead of global ones.
+    */
+    void pbnAddScale_clicked();
 
-    /** Let the user add a scale to the list of project scales
-     * used in scale combobox instead of global ones */
-    void on_pbnAddScale_clicked();
-
-    /** Let the user remove a scale from the list of project scales
-     * used in scale combobox instead of global ones */
-    void on_pbnRemoveScale_clicked();
-
-    //! Let the user load scales from file
-    void on_pbnImportScales_clicked();
+    /**
+     * Let the user remove a scale from the list of project scales
+     * used in scale combobox instead of global ones.
+    */
+    void pbnRemoveScale_clicked();
 
     //! Let the user load scales from file
-    void on_pbnExportScales_clicked();
+    void pbnImportScales_clicked();
+
+    //! Let the user load scales from file
+    void pbnExportScales_clicked();
 
     //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
+    //! generate the ts file with the locale selected in the checkbox
+    void onGenerateTsFileButton() const;
+
     /**
      * Set WMS default extent to current canvas extent
      */
-    void on_pbnWMSExtCanvas_clicked();
-    void on_pbnWMSAddSRS_clicked();
-    void on_pbnWMSRemoveSRS_clicked();
-    void on_pbnWMSSetUsedSRS_clicked();
-    void on_mAddWMSComposerButton_clicked();
-    void on_mRemoveWMSComposerButton_clicked();
-    void on_mAddLayerRestrictionButton_clicked();
-    void on_mRemoveLayerRestrictionButton_clicked();
-    void on_mWMSInspireScenario1_toggled( bool on );
-    void on_mWMSInspireScenario2_toggled( bool on );
+    void pbnWMSExtCanvas_clicked();
+
+    /**
+     *
+     */
+    void pbnWMSAddSRS_clicked();
+    void pbnWMSRemoveSRS_clicked();
+    void pbnWMSSetUsedSRS_clicked();
+
+    /**
+     * Slots to link WMS CRS list to WMTS Grids tree view
+     */
+    void lwWmsRowsInserted( const QModelIndex &parent, int first, int last );
+    void lwWmsRowsRemoved( const QModelIndex &parent, int first, int last );
+
+    /**
+     *
+     */
+    void mAddWMSPrintLayoutButton_clicked();
+    void mRemoveWMSPrintLayoutButton_clicked();
+    void mAddLayerRestrictionButton_clicked();
+    void mRemoveLayerRestrictionButton_clicked();
+    void mWMSInspireScenario1_toggled( bool on );
+    void mWMSInspireScenario2_toggled( bool on );
 
     /**
      * Slots to select/deselect all the WFS layers
      */
-    void on_pbnWFSLayersSelectAll_clicked();
-    void on_pbnWFSLayersDeselectAll_clicked();
+    void pbnWFSLayersSelectAll_clicked();
+    void pbnWFSLayersDeselectAll_clicked();
 
     /**
      * Slots to select/deselect all the WCS layers
      */
-    void on_pbnWCSLayersSelectAll_clicked();
-    void on_pbnWCSLayersDeselectAll_clicked();
+    void pbnWCSLayersSelectAll_clicked();
+    void pbnWCSLayersDeselectAll_clicked();
 
     /**
      * Slots to launch OWS test
      */
-    void on_pbnLaunchOWSChecker_clicked();
+    void pbnLaunchOWSChecker_clicked();
 
     /**
      * Slots for Styles
      */
-    void on_pbtnStyleManager_clicked();
-    void on_pbtnStyleMarker_clicked();
-    void on_pbtnStyleLine_clicked();
-    void on_pbtnStyleFill_clicked();
-    void on_pbtnStyleColorRamp_clicked();
+    void pbtnStyleManager_clicked();
+    void pbtnStyleMarker_clicked();
+    void pbtnStyleLine_clicked();
+    void pbtnStyleFill_clicked();
+    void pbtnStyleColorRamp_clicked();
 
     /**
-     * Slot to show the context help for this dialog
+     * Slot to link WMTS checkboxes in tree widget
      */
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
+    void twWmtsItemChanged( QTreeWidgetItem *item, int column );
+    void twWmtsGridItemDoubleClicked( QTreeWidgetItem *item, int column );
+    void twWmtsGridItemChanged( QTreeWidgetItem *item, int column );
 
     /**
      * Slot to link WFS checkboxes
@@ -141,27 +175,39 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void cbxWCSPubliedStateChanged( int aIdx );
 
     /**
-      * If user changes the CRS, set the corresponding map units
-      */
-    void srIdUpdated();
-
-    /* Update ComboBox accorindg to the selected new index
-     * Also sets the new selected Ellipsoid. */
+     * Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+    */
     void updateEllipsoidUI( int newIndex );
 
-    //! sets the right ellipsoid for measuring (from settings)
-    void projectionSelectorInitialized();
-
-    void on_mButtonAddColor_clicked();
+    void mButtonAddColor_clicked();
 
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
-    //! Signal used to inform listeners that project scale list may have changed
-    void scalesChanged( const QStringList &scales = QStringList() );
+  private slots:
+
+    void customizeBearingFormat();
+
+    /**
+     * Sets the start and end dates input values from the project
+     * temporal layers.
+     *
+     * Looks for the smallest date and the greatest date from the
+     * project layers and set them for start and end dates
+     *  input respectively.
+     *
+     * \since QGIS 3.14
+     */
+    void calculateFromLayersButton_clicked();
 
   private:
+
+    /**
+      * Called when the user sets a CRS for the project.
+      */
+    void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
     //! Formats for displaying coordinates
     enum CoordinateFormat
@@ -169,25 +215,24 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
       DecimalDegrees, //!< Decimal degrees
       DegreesMinutes, //!< Degrees, decimal minutes
       DegreesMinutesSeconds, //!< Degrees, minutes, seconds
-      MapUnits, //! Show coordinates in map units
+      MapUnits, //!< Show coordinates in map units
     };
 
     QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
+    QgsLayerCapabilitiesModel *mLayerCapabilitiesModel = nullptr;
+
+    QDoubleSpinBox *mWMSDefaultMapUnitsPerMm = nullptr;
+    QgsScaleWidget *mWMSDefaultMapUnitScale = nullptr;
+
+    QgsCoordinateReferenceSystem mCrs;
+
+    void checkPageWidgetNameMap();
 
     void populateStyles();
     void editSymbol( QComboBox *cbo );
-
-    /**
-     * Function to save non-base dialog states
-     */
-    void saveState();
-
-    /**
-     * Function to restore non-base dialog states
-     */
-    void restoreState();
 
     /**
      * Reset the Python macros
@@ -204,12 +249,21 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     };
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
+    bool mBlockCrsUpdates = false;
 
-    //! Check OWS configuration
-    void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
+    QList< QgsOptionsPageWidget * > mAdditionalProjectPropertiesWidgets;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
+
+    //! populate WMTS tree
+    void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
+    //! add WMTS Grid definition based on CRS
+    void addWmtsGrid( const QString &crsStr );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
+
+    void setCurrentEllipsoid( const QString &ellipsoidAcronym );
 
     //! Create a new scale item and add it to the list of scales
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
@@ -219,5 +273,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     static const char *GEO_NONE_DESC;
 
-    void updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units );
+    void updateGuiForMapUnits();
+
+    void showHelp();
+
+    friend class TestQgsProjectProperties;
 };

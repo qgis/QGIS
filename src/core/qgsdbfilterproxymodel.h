@@ -19,7 +19,7 @@
 #define QGSDBFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgis_core.h"
 
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
     /**
      * Constructor for QgsDatabaseFilterProxyModel.
      */
-    QgsDatabaseFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsDatabaseFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Calls QSortFilterProxyModel::setFilterWildcard and triggers update
     void _setFilterWildcard( const QString &pattern );
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
     void _setFilterRegExp( const QString &pattern );
 
   protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
+    bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
 };
 
 #endif

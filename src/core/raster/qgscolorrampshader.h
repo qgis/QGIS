@@ -22,7 +22,7 @@ originally part of the larger QgsRasterLayer class
 #define QGSCOLORRAMPSHADER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QVector>
 #include <memory>
@@ -32,7 +32,8 @@ originally part of the larger QgsRasterLayer class
 #include "qgsrastershaderfunction.h"
 #include "qgsrectangle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
  */
 class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
@@ -56,23 +57,41 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       Quantile = 3 //!< Uses quantile (i.e. equal pixel) count
     };
 
-    /** Creates a new color ramp shader.
+    /**
+     * Creates a new color ramp shader.
      * \param minimumValue minimum value for the raster shader
      * \param maximumValue maximum value for the raster shader
      * \param type interpolation type used
      * \param classificationMode method used to classify the color ramp shader
-     * \param colorRamp vector color ramp used to classify the color ramp shader
+     * \param colorRamp vector color ramp used to classify the color ramp shader. Ownership is transferred to the shader.
      * \returns new QgsColorRampShader
      */
-    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsColorRampShader( const QgsColorRampShader &other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsColorRampShader &operator=( const QgsColorRampShader &other );
+
+    bool operator==( const QgsColorRampShader &other ) const
+    {
+      if ( mColorRampItemList.count() != other.mColorRampItemList.count() ||
+           mClassificationMode != other.mClassificationMode ||
+           mColorRampType != other.mColorRampType )
+      {
+        return false;
+      }
+      for ( int i = 0; i < mColorRampItemList.count(); ++i )
+      {
+        if ( mColorRampItemList.at( i ) != other.mColorRampItemList.at( i ) ) return false;
+      }
+      return true;
+    }
 
     //An entry for classification based upon value.
     //Such a classification is typically used for
@@ -81,7 +100,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     struct ColorRampItem
     {
       //! default constructor
-      ColorRampItem() : value( 0 ) {}
+      ColorRampItem() = default;
       //! convenience constructor
       ColorRampItem( double val, const QColor &col, const QString &lbl = QString() )
         : label( lbl )
@@ -90,69 +109,98 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       {}
 
       QString label;
-      double value;
+      double value = 0;
       QColor color;
 
       // compare operator for sorting
       bool operator<( const QgsColorRampShader::ColorRampItem &other ) const { return value < other.value; }
+
+      bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const
+      {
+        return ( color != other.color ) ||
+               ( !std::isnan( value ) && !std::isnan( other.value ) && value != other.value ) ||
+               ( std::isnan( value ) != std::isnan( other.value ) );
+      }
     };
 
-    //! \brief Get the custom colormap
+    //! Returns the custom colormap.
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const { return mColorRampItemList.toList(); }
 
-    //! \brief Get the color ramp type
+    //! Returns the color ramp type.
     Type colorRampType() const { return mColorRampType; }
 
-    //! \brief Get the color ramp type as a string
-    QString colorRampTypeAsQString();
+    //! Returns the color ramp type as a string.
+    QString colorRampTypeAsQString() const;
 
-    //! \brief Set custom colormap
+    //! Sets a custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
 
-    //! \brief Set the color ramp type
+    //! Sets the color ramp type
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 
-    /** Get the source color ramp
-     * \since QGIS 3.0
-     * \see setSourceColorRamp()
+    /**
+     * Whether the color ramp contains any items
+     * \since QGIS 3.4
      */
-    QgsColorRamp *sourceColorRamp() const SIP_FACTORY;
+    bool isEmpty() const;
 
-    /** Set the source color ramp. Ownership is transferred to the renderer.
+    /**
+     * Returns the source color ramp.
+     *
+     * \see setSourceColorRamp()
      * \since QGIS 3.0
+     */
+    QgsColorRamp *sourceColorRamp() const;
+
+    /**
+     * Set the source color ramp. Ownership is transferred to the shader.
      * \see sourceColorRamp()
+     * \since QGIS 3.0
      */
     void setSourceColorRamp( QgsColorRamp *colorramp SIP_TRANSFER );
 
-    //! \brief Set the color ramp type
+    //! Sets the color ramp type
     void setColorRampType( const QString &type );
 
-    /** Classify color ramp shader
+    /**
+     * Classify color ramp shader
      * \param classes number of classes
      * \param band raster band used in classification (only used in quantile mode)
      * \param extent extent used in classification (only used in quantile mode)
      * \param input raster input used in classification (only used in quantile mode)
      */
-    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
+    void classifyColorRamp( int classes = 0, int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
 
-    /** Classify color ramp shader
+    /**
+     * Classify color ramp shader
      * \param band raster band used in classification (quantile mode only)
      * \param extent extent used in classification (quantile mode only)
      * \param input raster input used in classification (quantile mode only)
      */
-    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
+    void classifyColorRamp( int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
 
     //! \brief Generates and new RGB value based on one input value
-    bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
+    bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) const override;
 
     //! \brief Generates and new RGB value based on original RGB value
     bool shade( double redValue, double greenValue,
                 double blueValue, double alphaValue,
                 int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT,
-                int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
+                int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) const override;
 
-    //! \brief Get symbology items if provided by renderer
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
+
+    /**
+     * Writes configuration to a new DOM element
+     * \since QGIS 3.4
+     */
+    QDomElement writeXml( QDomDocument &doc ) const;
+
+    /**
+     * Reads configuration from the given DOM element
+     * \since QGIS 3.4
+     */
+    void readXml( const QDomElement &elem );
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode ) { mClassificationMode = classificationMode; }
@@ -160,13 +208,15 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //! Returns the classification mode
     ClassificationMode classificationMode() const { return mClassificationMode; }
 
-    /** Sets whether the shader should not render values out of range.
-     * \param clip set to true to clip values which are out of range.
+    /**
+     * Sets whether the shader should not render values out of range.
+     * \param clip set to TRUE to clip values which are out of range.
      * \see clip()
      */
     void setClip( bool clip ) { mClip = clip; }
 
-    /** Returns whether the shader will clip values which are out of range.
+    /**
+     * Returns whether the shader will clip values which are out of range.
      * \see setClip()
      */
     bool clip() const { return mClip; }
@@ -178,25 +228,30 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
   private:
 
-    /** This vector holds the information for classification based on values.
+    /**
+     * This vector holds the information for classification based on values.
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values
-     * between two class breaks (true) or if the item values are (linearly)
-     * interpolated for values between the item values (false)*/
+     * between two class breaks (TRUE) or if the item values are (linearly)
+     * interpolated for values between the item values (FALSE)
+    */
     QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     Type mColorRampType;
     ClassificationMode mClassificationMode;
 
-    /** Look up table to speed up finding the right color.
-      * It is initialized on the first call to shade(). */
-    QVector<int> mLUT;
-    double mLUTOffset;
-    double mLUTFactor;
-    bool mLUTInitialized;
+    /**
+     * Look up table to speed up finding the right color.
+     * It is initialized on the first call to shade().
+    */
+    mutable std::vector<int> mLUT;
+    mutable double mLUTOffset = 0.0;
+    mutable double mLUTFactor = 1.0;
+    mutable bool mLUTInitialized = false;
 
     //! Do not render values out of range
-    bool mClip;
+    bool mClip = false;
+
 };
 
 #endif

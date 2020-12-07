@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-04-21'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import tempfile
@@ -21,7 +19,7 @@ from qgis.PyQt.QtWidgets import QLineEdit, QDialogButtonBox, QTreeWidget, QCombo
 from qgis.PyQt.QtTest import QTest
 
 from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
-from qgis.gui import QgsNewGeoPackageLayerDialog
+from qgis.gui import QgsNewGeoPackageLayerDialog, QgsFileWidget
 from qgis.testing import start_app, unittest
 
 
@@ -63,7 +61,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog = QgsNewGeoPackageLayerDialog()
         dialog.setProperty("hideDialogs", True)
 
-        mDatabaseEdit = dialog.findChild(QLineEdit, "mDatabaseEdit")
+        mDatabase = dialog.findChild(QgsFileWidget, "mDatabase")
         buttonBox = dialog.findChild(QDialogButtonBox, "buttonBox")
         ok_button = buttonBox.button(QDialogButtonBox.Ok)
         mTableNameEdit = dialog.findChild(QLineEdit, "mTableNameEdit")
@@ -86,7 +84,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         self.assertFalse(ok_button.isEnabled())
 
         dbname = os.path.join(self.basetestpath, 'test.gpkg')
-        mDatabaseEdit.setText(dbname)
+        mDatabase.setFilePath(dbname)
         self.assertEqual(mTableNameEdit.text(), 'test')
         self.assertEqual(mLayerIdentifierEdit.text(), 'test')
         self.assertTrue(ok_button.isEnabled())
@@ -261,7 +259,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
             QgsProject.instance().removeAllMapLayers()
 
         # Try invalid path
-        mDatabaseEdit.setText('/this/is/invalid/test.gpkg')
+        mDatabase.setFilePath('/this/is/invalid/test.gpkg')
         self.accepted = False
         QTest.mouseClick(ok_button, Qt.LeftButton)
         self.assertFalse(self.accepted)

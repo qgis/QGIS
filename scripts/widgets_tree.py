@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -21,8 +21,6 @@
 __author__ = 'Martin Dobias'
 __date__ = 'May 2011'
 __copyright__ = '(C) 2011, Martin Dobias'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 """
 Reads .ui files from ../src/ui/ directory and write to stdout an XML describing
@@ -45,6 +43,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 # qwt_plot is missing somehow but it may depend on installed packages
 from qgis.PyQt import Qwt5 as qwt_plot
+
 sys.modules['qwt_plot'] = qwt_plot
 
 # loadUi is looking for custom widget in module which is lowercase version of
@@ -53,7 +52,7 @@ sys.modules['qwt_plot'] = qwt_plot
 # QgsRendererRulesTreeWidget
 # and QgsProjectionSelector cannot open db file
 from qgis import gui
-for m in ['qgscolorbutton', 'qgscolorrampcombobox', 'qgsprojectionselector', 'qgslabelpreview', 'qgsrulebasedrendererv2widget', 'qgscollapsiblegroupbox', 'qgsblendmodecombobox', 'qgsexpressionbuilderwidget', 'qgsrasterformatsaveoptionswidget', 'qgsrasterpyramidsoptionswidget', 'qgsscalecombobox', 'qgsfilterlineedit', 'qgsdualview']:
+for m in ['qgscolorbutton', 'qgscolorrampcombobox', 'qgsprojectionselector', 'qgslabelpreview', 'qgsrulebasedrendererwidget', 'qgscollapsiblegroupbox', 'qgsblendmodecombobox', 'qgsexpressionbuilderwidget', 'qgsrasterformatsaveoptionswidget', 'qgsrasterpyramidsoptionswidget', 'qgsscalecombobox', 'qgsfilterlineedit', 'qgsdualview']:
     sys.modules[m] = gui
 
 
@@ -74,10 +73,10 @@ class UiInspector:
         sys.stderr.write(msg + "\n")
 
     def widgetXml(self, element, widget, level=0, label=None):
-        #print tostring ( element )
-        #self.printMsg ( "class: " + str( type ( widget ) ) )
-        #self.printMsg ( "objectName: " + widget.objectName() )
-        #self.printMsg ( "windowTitle: " + widget.windowTitle() )
+        # print tostring ( element )
+        # self.printMsg ( "class: " + str( type ( widget ) ) )
+        # self.printMsg ( "objectName: " + widget.objectName() )
+        # self.printMsg ( "windowTitle: " + widget.windowTitle() )
 
         if not widget.objectName():
             return
@@ -96,7 +95,7 @@ class UiInspector:
         subElement.setAttribute('label', lab)
         element.appendChild(subElement)
 
-        #print str ( widget.children () )
+        # print str ( widget.children () )
         # tab widget label is stored in QTabWidget->QTabBarPrivate->tabList->QTab ..
         if type(widget) in [QTabWidget]:
             children = list({'widget': widget.widget(i), 'label': widget.tabText(i)} for i in range(0, widget.count()))
@@ -116,10 +115,9 @@ class UiInspector:
             # qgsrasterlayerpropertiesbase.ui is giving: No module named qwt_plot
             try:
                 widget = loadUi(p)
-                #print dir ( ui )
+                # print dir ( ui )
                 self.widgetXml(element, widget)
-            except Exception, e:
-                #except IOError, e:
+            except Exception as e:
                 self.printMsg(str(e))
 
         return self.doc.toString(2)
@@ -127,7 +125,8 @@ class UiInspector:
 
 if __name__ == '__main__':
     from qgis.PyQt.QtCore import QApplication
-    app = QApplication(sys.argv) # required by loadUi
+
+    app = QApplication(sys.argv)  # required by loadUi
     inspector = UiInspector()
     xml = inspector.xml()
     sys.stdout.write(xml)

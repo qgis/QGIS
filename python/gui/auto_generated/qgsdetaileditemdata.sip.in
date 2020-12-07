@@ -1,0 +1,156 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdetaileditemdata.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDetailedItemData
+{
+%Docstring
+This class is the data only representation of a
+QgsDetailedItemWidget, designed to be used in custom views.
+%End
+
+%TypeHeaderCode
+#include "qgsdetaileditemdata.h"
+%End
+  public:
+
+    QgsDetailedItemData();
+%Docstring
+Constructor for QgsDetailedItemData.
+%End
+
+    void setTitle( const QString &title );
+%Docstring
+Sets the ``title`` for the item.
+
+.. seealso:: :py:func:`title`
+%End
+
+    void setDetail( const QString &detail );
+%Docstring
+Sets the detailed description for the item.
+
+.. seealso:: :py:func:`detail`
+%End
+
+    void setCategory( const QString &category );
+%Docstring
+Sets the item's ``category``.
+
+.. seealso:: :py:func:`category`
+%End
+
+    void setIcon( const QPixmap &icon );
+%Docstring
+Sets the item's ``icon``.
+
+.. seealso:: :py:func:`icon`
+%End
+
+    void setCheckable( bool flag );
+%Docstring
+Sets whether the item is checkable.
+
+.. seealso:: :py:func:`isCheckable`
+%End
+
+    void setChecked( bool flag );
+%Docstring
+Sets whether the item is checked.
+
+.. seealso:: :py:func:`isChecked`
+%End
+
+    void setEnabled( bool flag );
+%Docstring
+Sets whether the item is enabled.
+
+.. seealso:: :py:func:`isEnabled`
+%End
+
+    void setRenderAsWidget( bool flag );
+%Docstring
+This is a hint to the delegate to render using
+a widget rather than manually painting every
+part of the list item.
+
+.. note::
+
+   the delegate may completely ignore this
+   depending on the delegate implementation.
+
+.. seealso:: :py:func:`isRenderedAsWidget`
+%End
+
+    QString title() const;
+%Docstring
+Returns the item's title.
+
+.. seealso:: :py:func:`setTitle`
+%End
+
+    QString detail() const;
+%Docstring
+Returns the detailed description for the item.
+
+.. seealso:: :py:func:`setDetail`
+%End
+
+    QString category() const;
+%Docstring
+Returns the item's category.
+
+.. seealso:: :py:func:`setCategory`
+%End
+
+    QPixmap icon() const;
+%Docstring
+Returns the item's icon.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+    bool isCheckable() const;
+%Docstring
+Returns ``True`` if the item is checkable.
+
+.. seealso:: :py:func:`setCheckable`
+%End
+
+    bool isChecked() const;
+%Docstring
+Returns ``True`` if the item is checked.
+
+.. seealso:: :py:func:`setChecked`
+%End
+
+    bool isEnabled() const;
+%Docstring
+Returns ``True`` if the item is enabled.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    bool isRenderedAsWidget() const;
+%Docstring
+Returns ``True`` if the item will be rendered using a widget.
+
+.. seealso:: :py:func:`setRenderAsWidget`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdetaileditemdata.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

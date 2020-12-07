@@ -17,11 +17,12 @@ email                : jef at norbit dot de
 #define QGSGEOMETRYVALIDATOR_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QThread>
 #include "qgsgeometry.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryValidator
  */
 class CORE_EXPORT QgsGeometryValidator : public QThread
@@ -33,32 +34,52 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     /**
      * Constructor for QgsGeometryValidator.
      */
-    QgsGeometryValidator( const QgsGeometry &geoemtry, QList<QgsGeometry::Error> *errors = nullptr, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
-    ~QgsGeometryValidator();
+    QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors = nullptr, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    ~QgsGeometryValidator() override;
 
     void run() override;
     void stop();
 
-    //! Validate geometry and produce a list of geometry errors
-    static void validateGeometry( const QgsGeometry &geometry, QList<QgsGeometry::Error> &errors SIP_OUT, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    /**
+     * Validate geometry and produce a list of geometry errors.
+     * This method blocks the thread until the validation is finished.
+     */
+    static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors SIP_OUT, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 
   signals:
-    void errorFound( const QgsGeometry::Error & );
+
+    /**
+     * Sent when an error has been found during the validation process.
+     *
+     * The \a error contains details about the error.
+     */
+    void errorFound( const QgsGeometry::Error &error );
+
+    /**
+     * Sent when the validation is finished.
+     *
+     * The result is in a human readable \a summary, mentioning
+     * if the validation has been aborted, successfully been validated
+     * or how many errors have been found.
+     *
+     * \since QGIS 3.6
+     */
+    void validationFinished( const QString &summary );
 
   public slots:
     void addError( const QgsGeometry::Error & );
 
   private:
-    void validatePolyline( int i, QgsPolyline polyline, bool ring = false );
-    void validatePolygon( int i, const QgsPolygon &polygon );
-    void checkRingIntersections( int p0, int i0, const QgsPolyline &ring0, int p1, int i1, const QgsPolyline &ring1 );
-    double distLine2Point( const QgsPointXY &p, QgsVector v, const QgsPointXY &q );
-    bool intersectLines( const QgsPointXY &p, QgsVector v, const QgsPointXY &q, QgsVector w, QgsPointXY &s );
-    bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside );
-    bool pointInRing( const QgsPolyline &ring, const QgsPointXY &p );
+    void validatePolyline( int i, const QgsLineString *line, bool ring = false );
+    void validatePolygon( int partIndex, const QgsPolygon *polygon );
+    void checkRingIntersections( int partIndex0, int ringIndex0, const QgsLineString *ring0, int partIndex1, int ringIndex1, const QgsLineString *ring1 );
+    double distLine2Point( double px, double py, QgsVector v, double qX, double qY );
+    bool intersectLines( double px, double py, QgsVector v, double qx, double qy, QgsVector w, double &sX, double &sY );
+    bool ringInRing( const QgsLineString *inside, const QgsLineString *outside );
+    bool pointInRing( const QgsLineString *ring, double pX, double pY );
 
     QgsGeometry mGeometry;
-    QList<QgsGeometry::Error> *mErrors;
+    QVector<QgsGeometry::Error> *mErrors;
     bool mStop;
     int mErrorCount;
     QgsGeometry::ValidationMethod mMethod = QgsGeometry::ValidatorQgisInternal;

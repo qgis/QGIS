@@ -20,7 +20,10 @@
 #include <QStack>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+class QMenu;
+
+/**
+ * \ingroup gui
  * \brief Base class for any widget that can be shown as a inline panel
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
@@ -32,7 +35,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * \brief Base class for any widget that can be shown as a inline panel
      * \param parent Parent widget.
      */
-    QgsPanelWidget( QWidget *parent = 0 );
+    QgsPanelWidget( QWidget *parent = nullptr );
 
     /**
      * Set the title of the panel when shown in the interface.
@@ -67,20 +70,20 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * \param dockMode True to enable dock mode.
+     * \param dockMode TRUE to enable dock mode.
      */
     virtual void setDockMode( bool dockMode );
 
     /**
-     * Return the dock mode state.
-     * \returns True if in dock mode.  If in dock mode the widget
+     * Returns the dock mode state.
+     * \returns TRUE if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening
-     * If false it will open dialogs when openPanel is called.
+     * If FALSE it will open dialogs when openPanel is called.
      */
     bool dockMode() { return mDockMode; }
 
     /**
-     * The the auto delete property on the widget. True by default.
+     * The the auto delete property on the widget. TRUE by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
      * \param autoDelete Enable or disable auto delete on the panel.
@@ -88,20 +91,38 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     void setAutoDelete( bool autoDelete ) { mAutoDelete = autoDelete; }
 
     /**
-     * The the auto delete property on the widget. True by default.
+     * The the auto delete property on the widget. TRUE by default.
      * When auto delete is enabled when a panel is removed from the stack
      * it will be deleted.
      * \returns The auto delete value for the widget.
      */
     bool autoDelete() { return mAutoDelete; }
 
-    /** Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
+    /**
+     * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
      * \param widget widget which may be contained within a panel widget
-     * \returns parent panel widget if found, otherwise nullptr
+     * \returns parent panel widget if found, otherwise NULLPTR
      * \since QGIS 3.0
      */
     static QgsPanelWidget *findParentPanel( QWidget *widget );
+
+    /**
+     * Returns the (translated) tooltip text to use for the menu button for this panel.
+     *
+     * This is only used when the panel returns a menuButtonMenu().
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString menuButtonTooltip() const;
+
+    /**
+     * Returns the menu to use for the menu button for this panel, or NULLPTR if
+     * no menu button is required.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QMenu *menuButtonMenu();
 
   signals:
 
@@ -136,10 +157,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
     /**
      * Open a panel or dialog depending on dock mode setting
-     * If dock mode is true this method will emit the showPanel signal
+     * If dock mode is TRUE this method will emit the showPanel signal
      * for connected slots to handle the open event.
      *
-     * If dock mode is false this method will open a dialog
+     * If dock mode is FALSE this method will open a dialog
      * and block the user.
      *
      * \param panel The panel widget to open.
@@ -158,17 +179,18 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * \brief Overridden key press event to handle the esc event on the widget.
      * \param event The key event
      */
-    void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-    bool mAutoDelete;
+    bool mAutoDelete = true;
     QString mPanelTitle;
-    bool mDockMode;
+    bool mDockMode = false;
 
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Wrapper widget for existing widgets which can't have
  * the inheritance tree changed, e.g dialogs.
  *
@@ -190,7 +212,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 
     /**
      * Returns the internal widget that is wrapped in this panel.
-     * \returns The internal widget. Can be nullptr.
+     * \returns The internal widget. Can be NULLPTR.
      */
     QWidget *widget() { return mWidget; }
 

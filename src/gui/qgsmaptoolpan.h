@@ -18,10 +18,14 @@
 
 #include "qgsmaptool.h"
 #include "qgis_gui.h"
+#include "qgspointxy.h"
+#include "qgsdistancearea.h"
+
 class QgsMapCanvas;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A map tool for panning the map.
  * \see QgsMapTool
  */
@@ -32,17 +36,38 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
   public:
     //! constructor
     QgsMapToolPan( QgsMapCanvas *canvas );
-    ~QgsMapToolPan();
+    ~QgsMapToolPan() override;
 
     void activate() override;
     void deactivate() override;
 
-    virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
+    Flags flags() const override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
     bool gestureEvent( QGestureEvent *e ) override;
+
+    /**
+     * Returns TRUE if a drag operation is in progress.
+     *
+     * \since QGIS 3.12
+     */
+    bool isDragging() const { return mDragging; }
+
+  signals:
+
+    /**
+     * Emitted whenever the distance or bearing of an in-progress panning
+     * operation is changed.
+     *
+     * This signal will be emitted during a pan operation as the user moves the map,
+     * giving the total distance and bearing between the map position at the
+     * start of the pan and the current pan position.
+     *
+     * \since QGIS 3.12
+     */
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
 
   private:
 

@@ -1,8 +1,8 @@
 /***************************************************************************
-                              qgsfssutils.cpp
+                              qgswfssutils.cpp
                               -------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)
                          (C) 2012 by René-Luc D'Hont    ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2017 by David Marteau
@@ -22,50 +22,101 @@
 
 #include "qgswfsutils.h"
 #include "qgsogcutils.h"
-#include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
+#include "qgswfsparameters.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 namespace QgsWfs
 {
   QString implementationVersion()
   {
-    return QStringLiteral( "1.0.0" );
+    return QStringLiteral( "1.1.0" );
   }
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
-    QString href;
+    QUrl href;
     if ( project )
     {
-      href = QgsServerProjectUtils::wfsServiceUrl( *project );
+      href.setUrl( QgsServerProjectUtils::wfsServiceUrl( *project ) );
     }
 
     // Build default url
     if ( href.isEmpty() )
     {
-      QUrl url = request.url();
-      QUrlQuery q( url );
 
-      q.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-      q.removeAllQueryItems( QStringLiteral( "VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "SERVICE" ) );
-      q.removeAllQueryItems( QStringLiteral( "_DC" ) );
+      static QSet<QString> sFilter
+      {
+        QStringLiteral( "REQUEST" ),
+        QStringLiteral( "VERSION" ),
+        QStringLiteral( "SERVICE" ),
+      };
 
-      url.setQuery( q );
-      href = url.toString( QUrl::FullyDecoded );
+      href = request.originalUrl();
+      QUrlQuery q( href );
+
+      for ( auto param : q.queryItems() )
+      {
+        if ( sFilter.contains( param.first.toUpper() ) )
+          q.removeAllQueryItems( param.first );
+      }
+
+      href.setQuery( q );
     }
 
-    return  href;
+    return  href.toString();
   }
 
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem )
+  QString layerTypeName( const QgsMapLayer *layer )
+  {
+    QString name = layer->name();
+    if ( !layer->shortName().isEmpty() )
+      name = layer->shortName();
+    name = name.replace( ' ', '_' );
+    return name;
+  }
+
+  QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )
+  {
+    QStringList layerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+    for ( const QString &layerId : layerIds )
+    {
+      QgsMapLayer *layer = project->mapLayer( layerId );
+      if ( !layer )
+      {
+        continue;
+      }
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
+      {
+        continue;
+      }
+
+      if ( layerTypeName( layer ) == typeName )
+      {
+        return qobject_cast<QgsVectorLayer *>( layer );
+      }
+    }
+    return nullptr;
+  }
+
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QgsProject *project )
+  {
+    // Get the server feature ids in filter element
+    QStringList collectedServerFids;
+    return parseFilterElement( typeName, filterElem, collectedServerFids, project );
+  }
+
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project, const QgsMapLayer *layer )
   {
     QgsFeatureRequest request;
 
     QDomNodeList fidNodes = filterElem.elementsByTagName( QStringLiteral( "FeatureId" ) );
+    QDomNodeList goidNodes = filterElem.elementsByTagName( QStringLiteral( "GmlObjectId" ) );
     if ( !fidNodes.isEmpty() )
     {
-      QgsFeatureIds fids;
+      // Get the server feature ids in filter element
+      QStringList collectedServerFids;
       QDomElement fidElem;
       for ( int f = 0; f < fidNodes.size(); f++ )
       {
@@ -75,24 +126,56 @@ namespace QgsWfs
           throw QgsRequestNotWellFormedException( "FeatureId element without fid attribute" );
         }
 
-        QString fid = fidElem.attribute( QStringLiteral( "fid" ) );
-        if ( fid.contains( QLatin1String( "." ) ) )
+        QString serverFid = fidElem.attribute( QStringLiteral( "fid" ) );
+        if ( serverFid.contains( QLatin1String( "." ) ) )
         {
-          if ( fid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+          if ( serverFid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
             continue;
-          fid = fid.section( QStringLiteral( "." ), 1, 1 );
+          serverFid = serverFid.section( QStringLiteral( "." ), 1, 1 );
         }
-        fids.insert( fid.toInt() );
+        collectedServerFids << serverFid;
       }
+      // No server feature ids found
+      if ( collectedServerFids.isEmpty() )
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element correctly parse against typeName '%1'" ).arg( typeName ) );
+      }
+      // update server feature ids
+      serverFids.append( collectedServerFids );
+      request.setFlags( QgsFeatureRequest::NoFlags );
+      return request;
+    }
+    else if ( !goidNodes.isEmpty() )
+    {
+      // Get the server feature ids in filter element
+      QStringList collectedServerFids;
+      QDomElement goidElem;
+      for ( int f = 0; f < goidNodes.size(); f++ )
+      {
+        goidElem = goidNodes.at( f ).toElement();
+        if ( !goidElem.hasAttribute( QStringLiteral( "id" ) ) && !goidElem.hasAttribute( QStringLiteral( "gml:id" ) ) )
+        {
+          throw QgsRequestNotWellFormedException( "GmlObjectId element without gml:id attribute" );
+        }
 
-      if ( !fids.isEmpty() )
-      {
-        request.setFilterFids( fids );
+        QString serverFid = goidElem.attribute( QStringLiteral( "id" ) );
+        if ( serverFid.isEmpty() )
+          serverFid = goidElem.attribute( QStringLiteral( "gml:id" ) );
+        if ( serverFid.contains( QLatin1String( "." ) ) )
+        {
+          if ( serverFid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+            continue;
+          serverFid = serverFid.section( QStringLiteral( "." ), 1, 1 );
+        }
+        collectedServerFids << serverFid;
       }
-      else
+      // No server feature ids found
+      if ( collectedServerFids.isEmpty() )
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element corrcetly parse against typeName '%1'" ).arg( typeName ) );
+        throw QgsRequestNotWellFormedException( QStringLiteral( "No GmlObjectId element correctly parse against typeName '%1'" ).arg( typeName ) );
       }
+      // update server feature ids
+      serverFids.append( collectedServerFids );
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;
     }
@@ -109,20 +192,97 @@ namespace QgsWfs
         }
         else if ( childElem.tagName() != QLatin1String( "PropertyName" ) )
         {
-          QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem );
+          QgsOgcUtils::Context ctx { layer, project ? project->transformContext() : QgsCoordinateTransformContext() };
+          QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem, ctx );
           request.setFilterRect( geom.boundingBox() );
         }
         childElem = childElem.nextSiblingElement();
       }
+
+      request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
+      return request;
+    }
+    // Apply BBOX through filterRect even inside an And to use spatial index
+    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "And" ) &&
+              !filterElem.firstChildElement().firstChildElement( QLatin1String( "BBOX" ) ).isNull() )
+    {
+      int nbChildElem = filterElem.firstChildElement().childNodes().size();
+
+      // Create a filter element to parse And child not BBOX
+      QDomElement childFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+      if ( nbChildElem > 2 )
+      {
+        QDomElement childAndElement = filterElem.ownerDocument().createElement( QLatin1String( "And" ) );
+        childFilterElement.appendChild( childAndElement );
+      }
+
+      // Create a filter element to parse  BBOX
+      QDomElement bboxFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+
+      QDomElement childElem = filterElem.firstChildElement().firstChildElement();
+      while ( !childElem.isNull() )
+      {
+        // Update request based on BBOX
+        if ( childElem.tagName() == QLatin1String( "BBOX" ) )
+        {
+          // Clone BBOX
+          bboxFilterElement.appendChild( childElem.cloneNode( true ) );
+        }
+        else
+        {
+          // Clone And child
+          if ( nbChildElem > 2 )
+          {
+            childFilterElement.firstChildElement().appendChild( childElem.cloneNode( true ) );
+          }
+          else
+          {
+            childFilterElement.appendChild( childElem.cloneNode( true ) );
+          }
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+
+      // Parse the filter element with the cloned BBOX
+      QStringList collectedServerFids;
+      QgsFeatureRequest bboxRequest = parseFilterElement( typeName, bboxFilterElement, collectedServerFids, project );
+
+      // Update request based on BBOX
+      if ( request.filterRect().isEmpty() )
+      {
+        request.setFilterRect( bboxRequest.filterRect() );
+      }
+      else
+      {
+        request.setFilterRect( request.filterRect().intersect( bboxRequest.filterRect() ) );
+      }
+
+      // Parse the filter element with the cloned And child
+      QgsFeatureRequest childRequest = parseFilterElement( typeName, childFilterElement, collectedServerFids, project );
+
+      // Update server feature ids
+      if ( !collectedServerFids.isEmpty() )
+      {
+        serverFids.append( collectedServerFids );
+      }
+
+      // Update expression
+      request.setFilterExpression( childRequest.filterExpression()->expression() );
+
       request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
       return request;
     }
     else
     {
-      std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+      QgsVectorLayer *layer = nullptr;
+      if ( project != nullptr )
+      {
+        layer = layerByTypeName( project, typeName );
+      }
+      std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem, layer ) );
       if ( filter )
       {
-        if ( filter->hasParserError() )
+        if ( filter->hasParserError() || !filter->parserErrorString().isEmpty() )
         {
           throw QgsRequestNotWellFormedException( filter->parserErrorString() );
         }

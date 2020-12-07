@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # creates a new release
 
 # Copyright (C) 2014 Jürgen E. Fischer <jef@norbit.de>
@@ -12,6 +12,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 use Pod::Usage;
+use POSIX;
 
 my $dryrun;
 
@@ -27,10 +28,10 @@ sub updateCMakeLists($$$$) {
 	open I, "CMakeLists.txt.orig";
 	open O, ">CMakeLists.txt" or die "cannot create CMakeLists.txt: $!";
 	while(<I>) {
-		s/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/SET(CPACK_PACKAGE_VERSION_MAJOR "$major")/;
-		s/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/SET(CPACK_PACKAGE_VERSION_MINOR "$minor")/;
-		s/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/SET(CPACK_PACKAGE_VERSION_PATCH "$patch")/;
-		s/SET\(RELEASE_NAME "(.+)"\)/SET(RELEASE_NAME "$release")/;
+		s/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/set(CPACK_PACKAGE_VERSION_MAJOR "$major")/i;
+		s/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/set(CPACK_PACKAGE_VERSION_MINOR "$minor")/i;
+		s/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/set(CPACK_PACKAGE_VERSION_PATCH "$patch")/i;
+		s/SET\(RELEASE_NAME "(.+)"\)/set(RELEASE_NAME "$release")/i;
 		print O;
 	}
 	close O;
@@ -59,7 +60,7 @@ my $skipts = 0;
 my $result = GetOptions(
 		"major" => \$domajor,
 		"minor" => \$dominor,
-		"point" => \$dopoint,
+		"point:i" => \$dopoint,
 		"releasename=s" => \$newreleasename,
 		"help" => \$help,
 		"ltr" => \$doltr,
@@ -75,7 +76,7 @@ $i++ if defined $domajor;
 $i++ if defined $dominor;
 $i++ if defined $dopoint;
 pod2usage("Exactly one of -major, -minor or -point expected") if $i!=1;
-pod2usage("Release name for major and minor releases expected") if !$dopoint && !defined $newreleasename;
+pod2usage("Release name for major and minor releases expected") if !defined $dopoint && !defined $newreleasename;
 pod2usage("Pre-major releases can only be minor releases") if $dopremajor && !$dominor;
 pod2usage("No CMakeLists.txt in current directory") unless -r "CMakeLists.txt";
 
@@ -85,13 +86,13 @@ my $patch;
 my $releasename;
 open F, "CMakeLists.txt";
 while(<F>) {
-        if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/) {
+        if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/i) {
                 $major = $1;
-        } elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/) {
+        } elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/i) {
                 $minor = $1;
-        } elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/) {
+        } elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/i) {
                 $patch = $1;
-	} elsif(/SET\(RELEASE_NAME \"(.*)\"\)/) {
+	} elsif(/SET\(RELEASE_NAME \"(.*)\"\)/i) {
 		$releasename = $1;
         }
 }
@@ -105,10 +106,10 @@ pod2usage("Version mismatch ($2.$3) in branch $branch vs. $major.$minor in CMake
 pod2usage("Release name Master expected on master branch" ) if $branch =~ /^master/ && $releasename ne "Master";
 
 if( $branch =~ /^master.*/ ) {
-	pod2usage("No point releases on master branch") if $dopoint;
+	pod2usage("No point releases on master branch") if defined $dopoint;
 	pod2usage("No new release name for major/minor release") unless $newreleasename || $newreleasename eq $releasename;
 } else {
-	pod2usage("Only point releases on release branches") if !$dopoint;
+	pod2usage("Only point releases on release branches") if !defined $dopoint;
 	pod2usage("New release names only for new minor releases") if $newreleasename;
 	$newreleasename = $releasename;
 }
@@ -124,16 +125,17 @@ if( $domajor ) {
 	$newmajor = $major;
 	$newminor = $minor + 1;
 	$newpatch = 0;
-} elsif( $dopoint ) {
+} elsif( defined $dopoint ) {
 	$newmajor = $major;
 	$newminor = $minor;
-	$newpatch = $patch + 1;
+	pod2usage("Given point release number <= $patch") if $dopoint && $dopoint <= $patch;
+	$newpatch = $dopoint ? $dopoint : $patch + 1;
 } else {
 	pod2usage("No version change");
 }
 
 my $splashwidth;
-unless( $dopoint ) {
+unless( defined $dopoint ) {
 	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
 	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png";
 	my $welcomeformat = `identify -format '%wx%h %m' ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png`;
@@ -149,22 +151,21 @@ my $relbranch = "release-${newmajor}_${newminor}";
 my $ltrtag = $doltr ? "ltr-${newmajor}_${newminor}" : "";
 my $reltag = "final-${newmajor}_${newminor}_${newpatch}";
 
-unless( $dopoint ) {
-	unless( $skipts ) {
-		print "Pulling transifex translations...\n";
-		run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
-		run( "git add i18n/*.ts", "adding translations failed" );
-		run( "git commit -n -a -m \"translation update for $release from transifex\"", "could not commit translation updates" );
-	} else {
-		print "TRANSIFEX UPDATE SKIPPED!\n";
-	}
+unless( $skipts ) {
+	print "Pulling transifex translations...\n";
+	run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
+	run( "git add i18n/*.ts", "adding translations failed" );
+	run( "git commit -n -a -m \"translation update for $version from transifex\"", "could not commit translation updates" );
+} else {
+	print "TRANSIFEX UPDATE SKIPPED!\n";
 }
 
 print "Updating changelog...\n";
 run( "scripts/create_changelog.sh", "create_changelog.sh failed" );
+run( "perl -i -pe 's#<releases>#<releases>\n    <release version=\"$newmajor.$newminor.$newpatch\" date=\"" . strftime("%Y-%m-%d", localtime) . "\" />#' linux/org.qgis.qgis.appdata.xml.in", "appdata update failed" );
 
-unless( $dopoint ) {
-	run( "scripts/update-news.pl $newmajor $newminor '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
+unless( defined $dopoint ) {
+	run( "scripts/update_news.pl $newmajor.$newminor '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
 
 	run( "git commit -n -a -m \"changelog and news update for $release\"", "could not commit changelog and news update" );
 
@@ -179,18 +180,14 @@ run( "dch -r ''", "dch failed" );
 run( "dch --newversion $version 'Release of $version'", "dch failed" );
 run( "cp debian/changelog /tmp", "backup changelog failed" );
 
-unless( $dopoint ) {
+unless( defined $dopoint ) {
+	run( "perl -i -pe 's/qgis-dev-deps/qgis-ltr-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) if $doltr;
+	run( "perl -i -pe 's/qgis-dev-deps/qgis-rel-deps/;' INSTALL.md", "could not update osgeo4w deps package" ) unless $doltr;
 	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
 	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
-
-	if( -f "images/splash/splash-release.xcf.bz2" ) {
-		run( "cp -v images/splash/splash-$newmajor.$newminor.xcf.bz2 images/splash/splash.xcf.bz2", "splash xcf switch failed" );
-	} else {
-		print "WARNING: NO images/splash/splash-release.xcf.bz2\n";
-	}
-
 	run( "git commit -n -a -m 'Release of $release ($newreleasename)'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
+	run( "for i in \$(seq 20); do tx push -s -b $relbranch && exit 0; echo \"Retry \$i/20...\"; done; exit 1", "push translation for $relbranch branch" );
 } else {
 	run( "git commit -n -a -m 'Release of $version'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $version'", "tag failed" );
@@ -200,10 +197,10 @@ run( "git tag $ltrtag -m 'Long term release $release'", "ltr tag failed" ) if $d
 
 print "Producing archive...\n";
 run( "git archive --format tar --prefix=qgis-$version/ $reltag | bzip2 -c >qgis-$version.tar.bz2", "git archive failed" );
-run( "md5sum qgis-$version.tar.bz2 >qgis-$version.tar.bz2.md5", "md5sum failed" );
+run( "sha256sum qgis-$version.tar.bz2 >qgis-$version.tar.bz2.sha256", "sha256sum failed" );
 
 my @topush;
-unless( $dopoint ) {
+unless( defined $dopoint ) {
 	$newminor++;
 
 	print "Updating master...\n";
@@ -238,7 +235,12 @@ my $topush = join(" ", @topush);
 
 print "Push dry-run...\n";
 run( "git push -n --follow-tags origin $topush", "push dry run failed" );
-print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n\n";
+print "Now manually push and upload the tar balls:\n\tgit push --follow-tags origin $topush\n\trsync qgis-$version.tar.bz2* ssh.qgis.org:/var/www/downloads/\n";
+unless($dopoint) {
+	print "Create new transifex branch and push the translations.\n";
+	print "Update the versions and release name in release spreadsheet.\n";
+	print "Package and update the website afterwards.\n";
+}
 print "WARNING: TRANSIFEX UPDATE SKIPPED!\n" if $skipts;
 
 
@@ -248,12 +250,12 @@ release.pl - create a new release
 
 =head1 SYNOPSIS
 
-release.pl {{-major|-minor [-premajor]} [-skipts] -releasename=releasename|-point} [-ltr]
+release.pl {{-major|-minor [-premajor]} [-skipts] -releasename=releasename|-point[=version]} [-ltr]
 
   Options:
     -major              do a new major release
     -minor              do a new minor release
-    -point              do a new point release
+    -point[=number]     do a new point release with an optional number
     -releasename=name   new release name for master/minor release
     -ltr                new release is a long term release
     -dryrun             just echo but don't run any commands
@@ -269,5 +271,5 @@ release.pl {{-major|-minor [-premajor]} [-skipts] -releasename=releasename|-poin
   master_$currentmajor to allow more interim minor releases
   while the new major version is being developed in master.
   For that the minor version of the master branch leading
-  to the next major release is bumped to 999.
+  to the next major release is bumped to 99.
 =cut

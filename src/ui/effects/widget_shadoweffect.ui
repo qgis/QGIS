@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -41,6 +41,9 @@
           </property>
           <property name="maximum">
            <double>9999999.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
           </property>
           <property name="showClearButton" stdset="0">
            <bool>false</bool>
@@ -76,28 +79,6 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QgsColorButton" name="mShadowColorBtn">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_28">
           <property name="text">
@@ -129,13 +110,35 @@
         <item row="5" column="1" colspan="2">
          <widget class="QgsBlendModeComboBox" name="mShadowBlendCmbBx"/>
         </item>
-        <item row="2" column="1" colspan="2">
-         <widget class="QgsSpinBox" name="mShadowRadiuSpnBx">
+        <item row="2" column="1">
+         <widget class="QgsDoubleSpinBox" name="mShadowRadiuSpnBx">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
           <property name="maximum">
-           <number>16</number>
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
           </property>
           <property name="showClearButton" stdset="0">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QgsUnitSelectionWidget" name="mBlurUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>
@@ -210,6 +213,22 @@
           </property>
          </widget>
         </item>
+        <item row="4" column="1" colspan="2">
+         <widget class="QgsColorButton" name="mShadowColorBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -223,7 +242,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -238,11 +257,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -253,10 +267,9 @@
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
+   <class>QgsEffectDrawModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -265,9 +278,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsEffectDrawModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgseffectdrawmodecombobox.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

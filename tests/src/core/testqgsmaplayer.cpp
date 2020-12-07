@@ -28,24 +28,8 @@
 #include "qgsvectorlayerref.h"
 #include "qgsmaplayerlistutils.h"
 
-class TestSignalReceiver : public QObject
-{
-    Q_OBJECT
-
-  public:
-    TestSignalReceiver()
-      : QObject( 0 )
-      , blendMode( QPainter::CompositionMode_SourceOver )
-    {}
-    QPainter::CompositionMode blendMode;
-  public slots:
-    void onBlendModeChanged( const QPainter::CompositionMode blendMode )
-    {
-      this->blendMode = blendMode;
-    }
-};
-
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
 class TestQgsMapLayer : public QObject
@@ -53,9 +37,7 @@ class TestQgsMapLayer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapLayer()
-      : mpLayer( 0 )
-    {}
+    TestQgsMapLayer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -64,6 +46,7 @@ class TestQgsMapLayer : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void isValid();
+    void formatName();
 
     void setBlendMode();
 
@@ -73,6 +56,10 @@ class TestQgsMapLayer : public QObject
 
     void layerRef();
     void layerRefListUtils();
+    void layerRefResolveByIdOrNameOnly();
+    void layerRefResolveWeakly();
+
+    void styleCategories();
 
 
   private:
@@ -118,17 +105,32 @@ void TestQgsMapLayer::isValid()
   QVERIFY( mpLayer->isValid() );
 }
 
+void TestQgsMapLayer::formatName()
+{
+  QCOMPARE( QgsMapLayer::formatLayerName( QString() ), QString() );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer" ) ), QStringLiteral( "Layer" ) );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer name" ) ), QStringLiteral( "Layer Name" ) );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer_name" ) ), QStringLiteral( "Layer Name" ) );
+}
+
 void TestQgsMapLayer::setBlendMode()
 {
-  TestSignalReceiver receiver;
-  QObject::connect( mpLayer, SIGNAL( blendModeChanged( const QPainter::CompositionMode ) ),
-                    &receiver, SLOT( onBlendModeChanged( const QPainter::CompositionMode ) ) );
-  QCOMPARE( int( receiver.blendMode ), 0 );
+  QSignalSpy spy( mpLayer, &QgsMapLayer::blendModeChanged );
+
   mpLayer->setBlendMode( QPainter::CompositionMode_Screen );
   // check the signal has been correctly emitted
-  QCOMPARE( receiver.blendMode, QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Screen ) );
   // check accessor
   QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Screen );
+
+  mpLayer->setBlendMode( QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.count(), 1 );
+
+  mpLayer->setBlendMode( QPainter::CompositionMode_Darken );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Darken ) );
+  QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Darken );
 }
 
 void TestQgsMapLayer::isInScaleRange_data()
@@ -254,8 +256,8 @@ void TestQgsMapLayer::layerRef()
 void TestQgsMapLayer::layerRefListUtils()
 {
   // conversion utils
-  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
-  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
 
   QList<QgsMapLayer *> listRawSource;
   listRawSource << vlA << vlB;
@@ -268,16 +270,89 @@ void TestQgsMapLayer::layerRefListUtils()
   QCOMPARE( raw, QList< QgsMapLayer *>() << vlA << vlB );
 
   //remove layers
-  QgsVectorLayer *vlC = new QgsVectorLayer( "Point", "c", "memory" );
-  QgsVectorLayer *vlD = new QgsVectorLayer( "Point", "d", "memory" );
+  QgsVectorLayer *vlC = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "c" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlD = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "d" ), QStringLiteral( "memory" ) );
   refs << QgsMapLayerRef( vlC ) << QgsMapLayerRef( vlD );
 
   _qgis_removeLayers( refs, QList< QgsMapLayer *>() << vlB << vlD );
   QCOMPARE( refs.size(), 2 );
   QCOMPARE( refs.at( 0 ).get(), vlA );
   QCOMPARE( refs.at( 1 ).get(), vlC );
+}
 
+void TestQgsMapLayer::layerRefResolveByIdOrNameOnly()
+{
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  QgsVectorLayerRef ref;
+  QgsProject::instance()->addMapLayer( vlA );
+  ref.name = vlA->name();
+  QCOMPARE( ref.resolveByIdOrNameOnly( QgsProject::instance() ), vlA );
+  ref.layerId = vlA->id();
+  // Same name, different id
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( vlB );
+  QCOMPARE( ref.resolveByIdOrNameOnly( QgsProject::instance() ), vlA );
+  // Remove layer A and check if B is returned (because they have the same name)
+  QgsProject::instance()->removeMapLayer( vlA );
+  QCOMPARE( ref.resolveByIdOrNameOnly( QgsProject::instance() ), vlB );
+  // Cleanup
+  QgsProject::instance()->removeAllMapLayers();
+}
 
+void TestQgsMapLayer::layerRefResolveWeakly()
+{
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  QgsVectorLayerRef ref;
+  QgsProject::instance()->addMapLayer( vlA );
+  ref.name = vlA->name();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance() ) );
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
+
+  ref = QgsVectorLayerRef();
+  ref.name = QStringLiteral( "another name" );
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
+  ref.provider = vlA->providerType();
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Provider ) );
+
+  ref = QgsVectorLayerRef();
+  ref.name = QStringLiteral( "another name" );
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Provider |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.provider = vlA->providerType();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Provider |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.name = vlA->name();
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(),
+                              static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Provider |
+                                  QgsVectorLayerRef::MatchType::Name ) ) );
+
+  ref = QgsVectorLayerRef();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Source |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.source = vlA->publicSource();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Source |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.name = vlA->name();
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(),
+                              static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Source |
+                                  QgsVectorLayerRef::MatchType::Name ) ) );
+}
+
+void TestQgsMapLayer::styleCategories()
+{
+  // control that AllStyleCategories is actually complete
+  QgsMapLayer::StyleCategories allStyleCategories = QgsMapLayer::AllStyleCategories;
+  for ( QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
+  {
+    if ( category == QgsMapLayer::AllStyleCategories )
+      continue;
+
+    QVERIFY( allStyleCategories.testFlag( category ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )

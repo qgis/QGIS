@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    lighttpd_mac.sh
 #    ---------------------
@@ -19,12 +19,12 @@ PROCESS="lighttpd"
 LABEL="org.qgis.test-${PROCESS}"
 USAGE="${0} {stop|status} or {start|restart lighttpd-path lighttpd_conf qgis_server_temp_dir}"
 
-if [ ! -z $2 ]; then
+if [[ -n $2 ]]; then
   LIGHTTPD_BIN=$2
-  if [ ! -z $3 ]; then
+  if [[ -n $3 ]]; then
     LIGHTTPD_CONF_PATH=$3
   fi
-  if [ ! -z $4 ]; then
+  if [[ -n $4 ]]; then
     QGIS_SERVER_TEMP_DIR=$4
   fi
 fi

@@ -16,18 +16,21 @@
 #define QGSFIELDVALUESLINEEDIT_H
 
 #include "qgsfilterlineedit.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
+
 #include <QStringListModel>
 #include <QTreeView>
 #include <QFocusEvent>
 #include <QHeaderView>
 #include <QTimer>
 #include <QThread>
+#include <QMutex>
+
 #include "qgis_gui.h"
 
 class QgsFloatingWidget;
+class QgsVectorLayer;
 
 
 #ifndef SIP_RUN
@@ -35,7 +38,8 @@ class QgsFloatingWidget;
 // just internal guff - definitely not for exposing to public API!
 ///@cond PRIVATE
 
-/** \class QgsFieldValuesLineEditValuesGatherer
+/**
+ * \class QgsFieldValuesLineEditValuesGatherer
  * Collates unique values containing a matching substring in a thread.
  */
 class QgsFieldValuesLineEditValuesGatherer: public QThread
@@ -46,55 +50,26 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     QgsFieldValuesLineEditValuesGatherer( QgsVectorLayer *layer, int attributeIndex )
       : mLayer( layer )
       , mAttributeIndex( attributeIndex )
-      , mFeedback( nullptr )
       , mWasCanceled( false )
     {}
 
-    /** Sets the substring to find matching values containing
+    /**
+     * Sets the substring to find matching values containing
      */
     void setSubstring( const QString &string ) { mSubstring = string; }
 
-    virtual void run() override
-    {
-      mWasCanceled = false;
-      if ( mSubstring.isEmpty() )
-      {
-        emit collectedValues( QStringList() );
-        return;
-      }
-
-      // allow responsive cancelation
-      mFeedback = new QgsFeedback();
-      // just get 100 values... maybe less/more would be useful?
-      mValues = mLayer->uniqueStringsMatching( mAttributeIndex, mSubstring, 100, mFeedback );
-
-      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
-      mFeedbackMutex.lock();
-      delete mFeedback;
-      mFeedback = nullptr;
-      mFeedbackMutex.unlock();
-
-      emit collectedValues( mValues );
-    }
+    void run() override;
 
     //! Informs the gatherer to immediately stop collecting values
-    void stop()
-    {
-      // be cautious, in case gatherer stops naturally just as we are canceling it and mFeedback gets deleted
-      mFeedbackMutex.lock();
-      if ( mFeedback )
-        mFeedback->cancel();
-      mFeedbackMutex.unlock();
+    void stop();
 
-      mWasCanceled = true;
-    }
-
-    //! Returns true if collection was canceled before completion
+    //! Returns TRUE if collection was canceled before completion
     bool wasCanceled() const { return mWasCanceled; }
 
   signals:
 
-    /** Emitted when values have been collected
+    /**
+     * Emitted when values have been collected
      * \param values list of unique matching string values
      */
     void collectedValues( const QStringList &values );
@@ -114,7 +89,8 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
 
 #endif
 
-/** \class QgsFieldValuesLineEdit
+/**
+ * \class QgsFieldValuesLineEdit
  * \ingroup gui
  * A line edit with an autocompleter which takes unique values from a vector layer's fields.
  * The autocompleter is populated from the vector layer in the background to ensure responsive
@@ -130,34 +106,39 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 
   public:
 
-    /** Constructor for QgsFieldValuesLineEdit
+    /**
+     * Constructor for QgsFieldValuesLineEdit
      * \param parent parent widget
      */
-    QgsFieldValuesLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsFieldValuesLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsFieldValuesLineEdit();
+    ~QgsFieldValuesLineEdit() override;
 
-    /** Sets the layer containing the field that values will be shown from.
+    /**
+     * Sets the layer containing the field that values will be shown from.
      * \param layer vector layer
      * \see layer()
      * \see setAttributeIndex()
      */
     void setLayer( QgsVectorLayer *layer );
 
-    /** Returns the layer containing the field that values will be shown from.
+    /**
+     * Returns the layer containing the field that values will be shown from.
      * \see setLayer()
      * \see attributeIndex()
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
-    /** Sets the attribute index for the field containing values to show in the widget.
+    /**
+     * Sets the attribute index for the field containing values to show in the widget.
      * \param index index of attribute
      * \see attributeIndex()
      * \see setLayer()
      */
     void setAttributeIndex( int index );
 
-    /** Returns the attribute index for the field containing values shown in the widget.
+    /**
+     * Returns the attribute index for the field containing values shown in the widget.
      * \see setAttributeIndex()
      * \see layer()
      */
@@ -165,34 +146,40 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 
   signals:
 
-    /** Emitted when the layer associated with the widget changes.
+    /**
+     * Emitted when the layer associated with the widget changes.
      * \param layer vector layer
      */
     void layerChanged( QgsVectorLayer *layer );
 
-    /** Emitted when the field associated with the widget changes.
+    /**
+     * Emitted when the field associated with the widget changes.
      * \param index new attribute index for field
      */
     void attributeIndexChanged( int index );
 
   private slots:
 
-    /** Requests that the autocompleter updates its completion list. The update will not occur immediately
+    /**
+     * Requests that the autocompleter updates its completion list. The update will not occur immediately
      * but after a preset timeout to avoid multiple updates while a user is quickly typing.
      */
     void requestCompleterUpdate();
 
-    /** Updates the autocompleter list immediately. Calling
+    /**
+     * Updates the autocompleter list immediately. Calling
      * this will trigger a background request to the layer to fetch matching unique values.
      */
     void triggerCompleterUpdate();
 
-    /** Updates the values shown in the completer list.
+    /**
+     * Updates the values shown in the completer list.
      * \param values list of string values to show
      */
     void updateCompleter( const QStringList &values );
 
-    /** Called when the gatherer thread is complete, regardless of whether it finished collecting values.
+    /**
+     * Called when the gatherer thread is complete, regardless of whether it finished collecting values.
      * Cleans up the gatherer thread and triggers a new background thread if the widget's text has changed
      * in the meantime.
      */
@@ -201,10 +188,10 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
   private:
 
     QgsVectorLayer *mLayer = nullptr;
-    int mAttributeIndex;
+    int mAttributeIndex = -1;
 
-    //! Will be true when a background update of the completer values is occurring
-    bool mUpdateRequested;
+    //! Will be TRUE when a background update of the completer values is occurring
+    bool mUpdateRequested = false;
 
     //! Timer to prevent multiple updates of autocomplete list
     QTimer mShowPopupTimer;

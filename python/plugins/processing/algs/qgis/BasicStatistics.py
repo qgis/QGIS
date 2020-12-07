@@ -21,26 +21,24 @@ __author__ = 'Nyall Dawson'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import codecs
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsStatisticalSummary,
+from qgis.core import (QgsApplication,
+                       QgsStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
-                       QgsProcessingUtils,
+                       QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterTableField,
-                       QgsProcessingParameterFileOutput,
-                       QgsProcessingOutputHtml,
-                       QgsProcessingOutputNumber)
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputNumber,
+                       QgsProcessingFeatureSource)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -48,7 +46,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class BasicStatisticsForField(QgisAlgorithm):
-
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
@@ -75,27 +72,36 @@ class BasicStatisticsForField(QgisAlgorithm):
     IQR = 'IQR'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def tags(self):
-        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
-                       'count,distinct,unique,variance,median,quartile,range,majority,minority').split(',')
+        return self.tr(
+            'stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
+            'count,distinct,unique,variance,median,quartile,range,majority,minority,summary').split(',')
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector analysis')
+
+    def groupId(self):
+        return 'vectoranalysis'
 
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
-                                                              self.tr('Input layer')))
+                                                              self.tr('Input layer'),
+                                                              types=[QgsProcessing.TypeVector]))
 
-        self.addParameter(QgsProcessingParameterTableField(self.FIELD_NAME,
-                                                           self.tr('Field to calculate statistics on'),
-                                                           None, self.INPUT_LAYER, QgsProcessingParameterTableField.Any))
+        self.addParameter(QgsProcessingParameterField(self.FIELD_NAME,
+                                                      self.tr('Field to calculate statistics on'),
+                                                      None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
 
-        self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'),
+                                                                self.tr('HTML files (*.html)'), None, True))
 
         self.addOutput(QgsProcessingOutputNumber(self.COUNT, self.tr('Count')))
         self.addOutput(QgsProcessingOutputNumber(self.UNIQUE, self.tr('Number of unique values')))
@@ -126,13 +132,17 @@ class BasicStatisticsForField(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_LAYER))
+
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
         field = source.fields().at(source.fields().lookupField(field_name))
 
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], source.fields())
-        features = source.getFeatures(request)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name],
+                                                                                                   source.fields())
+        features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         count = source.featureCount()
 
         data = []
@@ -156,7 +166,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         return results
 
     def calcNumericStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 0
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
             if feedback.isCanceled():
@@ -205,7 +215,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         return data, results
 
     def calcStringStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 1
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
             if feedback.isCanceled():
@@ -237,7 +247,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         return data, results
 
     def calcDateTimeStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 1
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):
             if feedback.isCanceled():
@@ -257,8 +267,10 @@ class BasicStatisticsForField(QgisAlgorithm):
         data.append(self.tr('Count: {}').format(count))
         data.append(self.tr('Unique values: {}').format(stat.countDistinct()))
         data.append(self.tr('NULL (missing) values: {}').format(stat.countMissing()))
-        data.append(self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))))
-        data.append(self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max))))
+        data.append(
+            self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))))
+        data.append(
+            self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max))))
 
         return data, results
 

@@ -1,0 +1,195 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.3.0-Master" projectname="">
+  <homePath path=""/>
+  <title></title>
+  <autotransaction active="0"/>
+  <evaluateDefaultValues active="0"/>
+  <trust active="0"/>
+  <projectCrs>
+    <spatialrefsys>
+      <proj4>+proj=utm +zone=56 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2450</srsid>
+      <srid>28356</srid>
+      <authid>EPSG:28356</authid>
+      <description>GDA94 / MGA zone 56</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>GRS80</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys>
+  </projectCrs>
+  <layer-tree-group>
+    <customproperties/>
+    <custom-order enabled="0"/>
+  </layer-tree-group>
+  <snapping-settings type="1" enabled="0" tolerance="12" intersection-snapping="0" unit="1" mode="2">
+    <individual-layer-settings/>
+  </snapping-settings>
+  <relations/>
+  <mapcanvas annotationsVisible="1" name="theMapCanvas">
+    <units>meters</units>
+    <extent>
+      <xmin>355083.7377388997701928</xmin>
+      <ymin>7257233.87903024069964886</ymin>
+      <xmax>387285.14944755739998072</xmax>
+      <ymax>7267711.67644753865897655</ymax>
+    </extent>
+    <rotation>0</rotation>
+    <destinationsrs>
+      <spatialrefsys>
+        <proj4>+proj=utm +zone=56 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+        <srsid>2450</srsid>
+        <srid>28356</srid>
+        <authid>EPSG:28356</authid>
+        <description>GDA94 / MGA zone 56</description>
+        <projectionacronym>utm</projectionacronym>
+        <ellipsoidacronym>GRS80</ellipsoidacronym>
+        <geographicflag>false</geographicflag>
+      </spatialrefsys>
+    </destinationsrs>
+    <rendermaptile>0</rendermaptile>
+  </mapcanvas>
+  <projectModels/>
+  <legend updateDrawingOrder="true"/>
+  <mapViewDocks/>
+  <mapViewDocks3D/>
+  <projectlayers/>
+  <layerorder/>
+  <properties>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+    <Gui>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+    </Gui>
+    <Measure>
+      <Ellipsoid type="QString">GRS80</Ellipsoid>
+    </Measure>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <Measurement>
+      <AreaUnits type="QString">m2</AreaUnits>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+    </Measurement>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+    <PAL>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <SearchMethod type="int">0</SearchMethod>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <DrawOutlineLabels type="bool">true</DrawOutlineLabels>
+    </PAL>
+    <PositionPrecision>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+      <Automatic type="bool">true</Automatic>
+    </PositionPrecision>
+  </properties>
+  <visibility-presets/>
+  <transformContext/>
+  <projectMetadata>
+    <identifier></identifier>
+    <parentidentifier></parentidentifier>
+    <language></language>
+    <type></type>
+    <title></title>
+    <abstract></abstract>
+    <links/>
+    <author>Nyall Dawson</author>
+    <creation>2018-10-19T16:27:45</creation>
+  </projectMetadata>
+  <Annotations/>
+  <Layouts>
+    <Layout printResolution="300" worldFileMap="{a2d2096e-816d-4d5e-893e-db8d6568ae69}" name="Layout 1" units="mm">
+      <Snapper tolerance="5" snapToItems="1" snapToGrid="0" snapToGuides="1"/>
+      <Grid resUnits="mm" offsetX="0" offsetUnits="mm" resolution="10" offsetY="0"/>
+      <PageCollection>
+        <symbol type="fill" alpha="1" name="" clip_to_extent="1">
+          <layer enabled="1" pass="0" locked="0" class="SimpleFill">
+            <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+            <prop v="255,255,255,255" k="color"/>
+            <prop v="miter" k="joinstyle"/>
+            <prop v="0,0" k="offset"/>
+            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+            <prop v="MM" k="offset_unit"/>
+            <prop v="35,35,35,255" k="outline_color"/>
+            <prop v="no" k="outline_style"/>
+            <prop v="0.26" k="outline_width"/>
+            <prop v="MM" k="outline_width_unit"/>
+            <prop v="solid" k="style"/>
+            <data_defined_properties>
+              <Option type="Map">
+                <Option type="QString" name="name" value=""/>
+                <Option name="properties"/>
+                <Option type="QString" name="type" value="collection"/>
+              </Option>
+            </data_defined_properties>
+          </layer>
+        </symbol>
+        <LayoutItem outlineWidthM="0.3,mm" positionLock="false" zValue="0" frame="false" size="297,210,mm" uuid="{def6edd4-1ef8-48f2-a7a8-81714862e333}" background="true" templateUuid="{def6edd4-1ef8-48f2-a7a8-81714862e333}" positionOnPage="0,0,mm" visibility="1" id="" excludeFromExports="0" opacity="1" groupUuid="" frameJoinStyle="miter" type="65638" position="0,0,mm" itemRotation="0" blendMode="0" referencePoint="0">
+          <FrameColor blue="0" alpha="255" red="0" green="0"/>
+          <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+          <LayoutObject>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option type="QString" name="name" value=""/>
+                <Option name="properties"/>
+                <Option type="QString" name="type" value="collection"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </LayoutObject>
+        </LayoutItem>
+        <GuideCollection visible="1"/>
+      </PageCollection>
+      <LayoutItem mapRotation="0" outlineWidthM="0.3,mm" followPresetName="" positionLock="false" zValue="2" frame="false" size="79.1579,67.7009,mm" uuid="{a2d2096e-816d-4d5e-893e-db8d6568ae69}" background="true" templateUuid="{a2d2096e-816d-4d5e-893e-db8d6568ae69}" positionOnPage="45.1339,45.8283,mm" visibility="1" drawCanvasItems="true" id="map" excludeFromExports="0" keepLayerSet="false" opacity="1" groupUuid="" frameJoinStyle="miter" type="65639" position="45.1339,45.8283,mm" followPreset="false" itemRotation="0" blendMode="0" referencePoint="0">
+        <FrameColor blue="0" alpha="255" red="0" green="0"/>
+        <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+        <LayoutObject>
+          <dataDefinedProperties>
+            <Option type="Map">
+              <Option type="QString" name="name" value=""/>
+              <Option name="properties"/>
+              <Option type="QString" name="type" value="collection"/>
+            </Option>
+          </dataDefinedProperties>
+          <customproperties/>
+        </LayoutObject>
+        <Extent ymin="7246996.71233341563493013" xmax="389279.53545193641912192" ymax="7277948.84314436372369528" xmin="353089.3517345207510516"/>
+        <LayerSet/>
+        <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
+      </LayoutItem>
+      <LayoutItem marginX="0" outlineWidthM="0.3,mm" positionLock="false" zValue="1" frame="false" labelText="Lorem ipsum" size="95.4756,25.3444,mm" halign="8" uuid="{01c25aae-09f6-446f-aeb9-709ceeba884f}" background="false" templateUuid="{01c25aae-09f6-446f-aeb9-709ceeba884f}" positionOnPage="22.567,16.6648,mm" visibility="1" id="label" excludeFromExports="0" htmlState="0" opacity="1" groupUuid="" valign="32" marginY="0" frameJoinStyle="miter" type="65641" position="22.567,16.6648,mm" itemRotation="0" blendMode="0" referencePoint="0">
+        <FrameColor blue="0" alpha="255" red="0" green="0"/>
+        <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+        <LayoutObject>
+          <dataDefinedProperties>
+            <Option type="Map">
+              <Option type="QString" name="name" value=""/>
+              <Option name="properties"/>
+              <Option type="QString" name="type" value="collection"/>
+            </Option>
+          </dataDefinedProperties>
+          <customproperties/>
+        </LayoutObject>
+        <LabelFont style="" description="Cantarell,10,-1,5,50,0,0,0,0,0"/>
+        <FontColor blue="0" red="0" green="0"/>
+      </LayoutItem>
+      <customproperties>
+        <property key="atlasRasterFormat" value="png"/>
+      </customproperties>
+      <Atlas sortFeatures="0" enabled="0" pageNameExpression="" filterFeatures="0" coverageLayer="" filenamePattern="'output_'||@atlas_featurenumber" hideCoverage="0"/>
+    </Layout>
+  </Layouts>
+</qgis>

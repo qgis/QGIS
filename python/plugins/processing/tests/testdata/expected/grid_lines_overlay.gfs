@@ -37,10 +37,5 @@
       <ElementPath>id</ElementPath>
       <Type>Integer</Type>
     </PropertyDefn>
-    <PropertyDefn>
-      <Name>coord</Name>
-      <ElementPath>coord</ElementPath>
-      <Type>Real</Type>
-    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>

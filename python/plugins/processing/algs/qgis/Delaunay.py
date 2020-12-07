@@ -16,35 +16,31 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
-                       QgsProcessingUtils,
-                       QgsFields)
+                       QgsProcessing,
+                       QgsFields,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 from . import voronoi
 
@@ -52,24 +48,27 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Delaunay(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'delaunay.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDelaunay.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDelaunay.svg")
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
 
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Delaunay triangulation'),
-                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Delaunay triangulation'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'delaunaytriangulation'
@@ -78,22 +77,30 @@ class Delaunay(QgisAlgorithm):
         return self.tr('Delaunay triangulation')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = QgsFields()
         fields.append(QgsField('POINTA', QVariant.Double, '', 24, 15))
         fields.append(QgsField('POINTB', QVariant.Double, '', 24, 15))
         fields.append(QgsField('POINTC', QVariant.Double, '', 24, 15))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         pts = []
         ptDict = {}
         ptNdx = -1
         c = voronoi.Context()
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             geom = QgsGeometry(inFeat.geometry())
             if geom.isNull():
                 continue
@@ -110,7 +117,7 @@ class Delaunay(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 
@@ -122,8 +129,11 @@ class Delaunay(QgisAlgorithm):
         triangles = c.triangles
         feat = QgsFeature()
 
-        total = 100.0 / len(triangles)
+        total = 100.0 / len(triangles) if triangles else 1
         for current, triangle in enumerate(triangles):
+            if feedback.isCanceled():
+                break
+
             indices = list(triangle)
             indices.append(indices[0])
             polygon = []
@@ -132,7 +142,7 @@ class Delaunay(QgisAlgorithm):
             for index in indices:
                 fid, n = ptDict[ids[index]]
                 request = QgsFeatureRequest().setFilterFid(fid)
-                inFeat = next(layer.getFeatures(request))
+                inFeat = next(source.getFeatures(request))
                 geom = QgsGeometry(inFeat.geometry())
                 if geom.isMultipart():
                     point = QgsPointXY(geom.asMultiPoint()[n])
@@ -143,9 +153,9 @@ class Delaunay(QgisAlgorithm):
                     attrs.append(ids[index])
                 step += 1
             feat.setAttributes(attrs)
-            geometry = QgsGeometry().fromPolygon([polygon])
+            geometry = QgsGeometry().fromPolygonXY([polygon])
             feat.setGeometry(geometry)
-            writer.addFeature(feat)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

@@ -23,16 +23,12 @@
 #include "qgsrasterlayer.h"
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestProjectionIssues : public QObject
 {
     Q_OBJECT
   public:
-    TestProjectionIssues()
-      : mRasterLayer( 0 )
-      , mMapCanvas( 0 )
-    {}
+    TestProjectionIssues() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -56,8 +52,7 @@ void TestProjectionIssues::initTestCase()
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   // Set to WGS84
-  QgsCoordinateReferenceSystem sourceCRS;
-  sourceCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem sourceCRS( QStringLiteral( "EPSG:4326" ) );
   mRasterLayer->setCrs( sourceCRS, false );
 
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
@@ -79,8 +74,7 @@ void TestProjectionIssues::initTestCase()
   mMapCanvas->setLayers( canvasLayers );
 
   //reproject to SWEDREF 99 TM
-  QgsCoordinateReferenceSystem destCRS;
-  destCRS.createFromId( 3006, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:3006" ) );
   mMapCanvas->setDestinationCrs( destCRS );
 
 }

@@ -30,12 +30,16 @@
 #ifndef PALSTAT_H
 #define PALSTAT_H
 
+#define SIP_NO_FILE
+
+
 #include <QStringList>
 
 namespace pal
 {
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    * \brief Summary statistics of labeling problem.
    * \class pal::PalStat
    * \note not available in Python bindings
@@ -72,17 +76,17 @@ namespace pal
       int getNbLayers();
 
       /**
-       * \brief get a name of the labelled layer 'layerId'
+       * Returns the name of the labelled layer \a layerId.
        */
       QString getLayerName( int layerId );
 
       /**
-       * \brief get the number of object in layer 'layerId'
+       * Returns the number of object in layer \a layerId.
        */
       int getLayerNbObjects( int layerId );
 
       /**
-       * \brief get the number of object in layer 'layerId' which are labelled
+       * Returns the number of object in layer \a layerId which are labelled.
        */
       int getLayerNbLabelledObjects( int layerId );
 

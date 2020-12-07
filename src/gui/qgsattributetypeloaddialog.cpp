@@ -36,8 +36,7 @@
 #include <QFileDialog>
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
-  : QDialog()
-  , mLayer( vl )
+  : mLayer( vl )
 {
   setupUi( this );
 
@@ -66,7 +65,8 @@ void QgsAttributeTypeLoadDialog::fillLayerList()
 {
   layerComboBox->blockSignals( true );
   layerComboBox->clear();
-  Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
+  const auto constMapLayers = QgsProject::instance()->mapLayers();
+  for ( QgsMapLayer *l : constMapLayers )
   {
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
     if ( vl )

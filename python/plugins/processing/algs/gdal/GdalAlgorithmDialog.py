@@ -21,10 +21,7 @@ __author__ = 'Victor Olaya'
 __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QWidget,
                                  QVBoxLayout,
                                  QPushButton,
@@ -33,48 +30,41 @@ from qgis.PyQt.QtWidgets import (QWidget,
                                  QLineEdit,
                                  QComboBox,
                                  QCheckBox,
-                                 QSizePolicy)
+                                 QSizePolicy,
+                                 QDialogButtonBox)
 
-from qgis.gui import QgsMessageBar
+from qgis.core import (QgsProcessingFeedback,
+                       QgsProcessingParameterDefinition)
+from qgis.gui import (QgsMessageBar,
+                      QgsProjectionSelectionWidget,
+                      QgsProcessingAlgorithmDialogBase,
+                      QgsProcessingLayerOutputDestinationWidget)
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
+from processing.gui.wrappers import WidgetWrapper
+from processing.tools.dataobjects import createContext
 
 
 class GdalAlgorithmDialog(AlgorithmDialog):
 
-    def __init__(self, alg):
-        AlgorithmDialogBase.__init__(self, alg)
+    def __init__(self, alg, parent=None):
+        super().__init__(alg, parent=parent)
+        self.mainWidget().parametersHaveChanged()
 
-        self.alg = alg
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().insertWidget(0, self.bar)
-
-        self.setMainWidget(GdalParametersPanel(self, alg))
-
-        cornerWidget = QWidget()
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 5)
-        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
-        runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
-        runAsBatchButton.clicked.connect(self.runAsBatch)
-        layout.addWidget(runAsBatchButton)
-        cornerWidget.setLayout(layout)
-        self.tabWidget.setCornerWidget(cornerWidget)
-
-        self.mainWidget.parametersHaveChanged()
+    def getParametersPanel(self, alg, parent):
+        return GdalParametersPanel(parent, alg)
 
 
 class GdalParametersPanel(ParametersPanel):
 
     def __init__(self, parent, alg):
-        ParametersPanel.__init__(self, parent, alg)
+        super().__init__(parent, alg)
 
+        self.dialog = parent
         w = QWidget()
         layout = QVBoxLayout()
         layout.setMargin(0)
@@ -86,35 +76,68 @@ class GdalParametersPanel(ParametersPanel):
         self.text.setReadOnly(True)
         layout.addWidget(self.text)
         w.setLayout(layout)
-        self.layoutMain.addWidget(w)
+        self.addExtraWidget(w)
 
         self.connectParameterSignals()
         self.parametersHaveChanged()
 
     def connectParameterSignals(self):
         for wrapper in list(self.wrappers.values()):
-            w = wrapper.widget
-            if isinstance(w, QLineEdit):
-                w.textChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, QComboBox):
-                w.currentIndexChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, QCheckBox):
-                w.stateChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, MultipleInputPanel):
-                w.selectionChanged.connect(self.parametersHaveChanged)
-            elif isinstance(w, NumberInputPanel):
-                w.hasChanged.connect(self.parametersHaveChanged)
+            wrapper.widgetValueHasChanged.connect(self.parametersHaveChanged)
+
+            # TODO - remove when all wrappers correctly emit widgetValueHasChanged!
+
+            # For compatibility with 3.x API, we need to check whether the wrapper is
+            # the deprecated WidgetWrapper class. If not, it's the newer
+            # QgsAbstractProcessingParameterWidgetWrapper class
+            # TODO QGIS 4.0 - remove
+            if issubclass(wrapper.__class__, WidgetWrapper):
+                w = wrapper.widget
+            else:
+                w = wrapper.wrappedWidget()
+
+            self.connectWidgetChangedSignals(w)
+            for c in w.findChildren(QWidget):
+                self.connectWidgetChangedSignals(c)
+
+    def connectWidgetChangedSignals(self, w):
+        if isinstance(w, QLineEdit):
+            w.textChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, QComboBox):
+            w.currentIndexChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, QgsProjectionSelectionWidget):
+            w.crsChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, QCheckBox):
+            w.stateChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, MultipleInputPanel):
+            w.selectionChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, NumberInputPanel):
+            w.hasChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, QgsProcessingLayerOutputDestinationWidget):
+            w.destinationChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
+        context = createContext()
+        feedback = QgsProcessingFeedback()
         try:
-            parameters = self.parent.getParamValues()
-            for output in self.alg.destinationParameterDefinitions():
-                if parameters[output.name()] is None:
+            parameters = self.dialog.createProcessingParameters()
+            for output in self.algorithm().destinationParameterDefinitions():
+                if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
-            commands = self.alg.getConsoleCommands(parameters)
+            for p in self.algorithm().parameterDefinitions():
+                if p.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    continue
+
+                if (not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
+                        or (not p.checkValueIsAcceptable(parameters[p.name()])):
+                    # not ready yet
+                    self.text.setPlainText('')
+                    return
+
+            commands = self.algorithm().getConsoleCommands(parameters, context, feedback, executing=False)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
             self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description()))
-        except:
-            self.text.setPlainText("")
+        except AlgorithmDialogBase.InvalidOutputExtension as e:
+            self.text.setPlainText(e.message)

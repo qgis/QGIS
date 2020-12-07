@@ -1,0 +1,97 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstolerance.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTolerance
+{
+%Docstring
+This is the class is providing tolerance value in map unit values.
+%End
+
+%TypeHeaderCode
+#include "qgstolerance.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum UnitType
+    {
+      //! Layer unit value
+      LayerUnits,
+      //! Pixels unit of tolerance
+      Pixels,
+      //! Map (project) units. Added in 2.8
+      ProjectUnits
+    };
+
+    static double vertexSearchRadius( const QgsMapSettings &mapSettings );
+%Docstring
+Static function to get vertex tolerance value.
+The value is read from settings and transformed if necessary.
+
+:return: value of vertex tolerance in map units (not layer units)
+
+.. versionadded:: 2.8
+%End
+
+    static double vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
+%Docstring
+Static function to get vertex tolerance value for a layer.
+The value is read from settings and transformed if necessary.
+
+:return: value of vertex tolerance in layer units
+%End
+
+    static double defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
+%Docstring
+Static function to get default tolerance value for a layer.
+The value is read from settings and transformed if necessary.
+
+:return: value of default tolerance in layer units
+%End
+
+    static double toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units );
+%Docstring
+Static function to translate tolerance value into map units
+
+:param tolerance: tolerance value to be translated
+:param layer: source layer necessary in case tolerance is in layer units
+:param mapSettings: settings of the map
+:param units: type of units to be translated
+
+:return: value of tolerance in map units
+
+.. versionadded:: 2.8
+%End
+
+    static double toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, UnitType units = LayerUnits );
+%Docstring
+Static function to translate tolerance value into layer units
+
+:param tolerance: tolerance value to be translated
+:param layer: reference layer
+:param mapSettings: settings of the map
+:param units: type of units to be translated
+
+:return: value of tolerance in layer units
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstolerance.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

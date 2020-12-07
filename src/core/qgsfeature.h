@@ -17,7 +17,7 @@ email                : sherman at mrcc.com
 #define QGSFEATURE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include <QExplicitlySharedDataPointer>
 #include <QList>
@@ -29,12 +29,14 @@ email                : sherman at mrcc.com
 
 #include "qgsattributes.h"
 #include "qgsfields.h"
-
+#include "qgsfeatureid.h"
+#include <memory>
 class QgsFeature;
 class QgsFeaturePrivate;
 class QgsField;
 class QgsGeometry;
 class QgsRectangle;
+class QgsAbstractGeometry;
 
 
 /***************************************************************************
@@ -43,17 +45,9 @@ class QgsRectangle;
  * See details in QEP #17
  ****************************************************************************/
 
-// feature id class (currently 64 bit)
 
-// 64 bit feature ids
-typedef qint64 QgsFeatureId;
-#define FID_IS_NEW(fid)     (fid<0)
-#define FID_TO_NUMBER(fid)  static_cast<qint64>(fid)
-#define FID_TO_STRING(fid)  QString::number( fid )
-#define STRING_TO_FID(str)  (str).toLongLong()
-
-
-/** \ingroup core
+/**
+ * \ingroup core
  * The feature class encapsulates a single feature including its id,
  * geometry and a list of field/values attributes.
  * \note QgsFeature objects are implicitly shared.
@@ -70,6 +64,7 @@ class CORE_EXPORT QgsFeature
     Q_PROPERTY( QgsFeatureId id READ id WRITE setId )
     Q_PROPERTY( QgsAttributes attributes READ attributes WRITE setAttributes )
     Q_PROPERTY( QgsFields fields READ fields WRITE setFields )
+    Q_PROPERTY( QgsGeometry geometry READ geometry WRITE setGeometry )
 
   public:
 
@@ -101,7 +96,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -136,7 +131,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -168,7 +163,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -176,30 +171,34 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Constructor for QgsFeature
+    /**
+     * Constructor for QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( qint64 id = 0 );
+    QgsFeature( qint64 id = FID_NULL );
 #endif
 
-    /** Constructor for QgsFeature
+    /**
+     * Constructor for QgsFeature
      * \param fields feature's fields
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( const QgsFields &fields, QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+    QgsFeature( const QgsFields &fields, qint64 id = FID_NULL );
 #endif
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFeature( const QgsFeature &rhs );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFeature &operator=( const QgsFeature &rhs ) SIP_SKIP;
 
@@ -215,27 +214,31 @@ class CORE_EXPORT QgsFeature
 
     virtual ~QgsFeature();
 
-    /** Get the feature ID for this feature.
+    /**
+     * Gets the feature ID for this feature.
      * \returns feature ID
      * \see setId()
      */
     QgsFeatureId id() const;
 
-    /** Sets the feature ID for this feature.
+    /**
+     * Sets the feature ID for this feature.
      * \param id feature id
      * \see id
      */
     void setId( QgsFeatureId id );
 
-    /** Returns the feature's attributes.
+    /**
+     * Returns the feature's attributes.
      * \returns list of feature's attributes
      * \see setAttributes
-     * \since QGIS 2.9
      * \note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+     * \since QGIS 2.9
      */
     QgsAttributes attributes() const;
 
-    /** Sets the feature's attributes.
+    /**
+     * Sets the feature's attributes.
      * The feature will be valid after.
      * \param attrs attribute list
      * \see setAttribute
@@ -243,12 +246,13 @@ class CORE_EXPORT QgsFeature
      */
     void setAttributes( const QgsAttributes &attrs );
 
-    /** Set an attribute's value by field index.
+    /**
+     * Set an attribute's value by field index.
      * The feature will be valid if it was successful.
      * \param field the index of the field to set
      * \param attr the value of the attribute
-     * \returns false, if the field index does not exist
-     * \note For Python: raises a KeyError exception instead of returning false
+     * \returns FALSE, if the field index does not exist
+     * \note For Python: raises a KeyError exception instead of returning FALSE
      * \note Alternatively in Python: @code feature[field] = attr @endcode
      * \see setAttributes
      */
@@ -278,12 +282,14 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Initialize this feature with the given number of fields. Discard any previously set attribute data.
+    /**
+     * Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * \param fieldCount Number of fields to initialize
      */
     void initAttributes( int fieldCount );
 
-    /** Deletes an attribute and its value.
+    /**
+     * Deletes an attribute and its value.
      * \param field the index of the field
      * \see setAttribute
      * \note For Python: raises a KeyError exception if the field is not found
@@ -302,68 +308,113 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Returns the validity of this feature. This is normally set by
+    /**
+     * Returns the validity of this feature. This is normally set by
      * the provider to indicate some problem that makes the feature
      * invalid or to indicate a null feature.
      * \see setValid
      */
     bool isValid() const;
 
-    /** Sets the validity of the feature.
-     * \param validity set to true if feature is valid
+    /**
+     * Sets the validity of the feature.
+     * \param validity set to TRUE if feature is valid
      * \see isValid
      */
     void setValid( bool validity );
 
-    /** Returns true if the feature has an associated geometry.
+    /**
+     * Returns TRUE if the feature has an associated geometry.
      * \see geometry()
      * \since QGIS 3.0.
      */
     bool hasGeometry() const;
 
-    /** Returns the geometry associated with this feature. If the feature has no geometry,
+    /**
+     * Returns the geometry associated with this feature. If the feature has no geometry,
      * an empty QgsGeometry object will be returned.
      * \see hasGeometry()
      * \see setGeometry()
      */
     QgsGeometry geometry() const;
 
-    /** Set the feature's geometry. The feature will be valid after.
+    /**
+     * Set the feature's geometry. The feature will be valid after.
      * \param geometry new feature geometry
      * \see geometry()
      * \see clearGeometry()
      */
     void setGeometry( const QgsGeometry &geometry );
 
-    /** Removes any geometry associated with the feature.
+    /**
+     * Set the feature's \a geometry. Ownership of the geometry is transferred to the feature.
+     * The feature will be made valid after calling this method.
+     *
+     * This method is a shortcut for calling:
+     * \code{.py}
+     *   feature.setGeometry( QgsGeometry( geometry ) )
+     * \endcode
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # Sets a feature's geometry to a point geometry
+     *   feature.setGeometry( QgsPoint( 210, 41 ) )
+     *   print(feature.geometry())
+     *   # output: <QgsGeometry: Point (210 41)>
+     *
+     *   # Sets a feature's geometry to a line string
+     *   feature.setGeometry( QgsLineString( [ QgsPoint( 210, 41 ), QgsPoint( 301, 55 ) ] ) )
+     *   print(feature.geometry())
+     *   # output: <QgsGeometry: LineString (210 41, 301 55)>
+     * \endcode
+     *
+     * \see geometry()
+     * \see clearGeometry()
+     * \since QGIS 3.6
+     */
+#ifndef SIP_RUN
+    void setGeometry( std::unique_ptr< QgsAbstractGeometry > geometry );
+#else
+    void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    % MethodCode
+    sipCpp->setGeometry( std::unique_ptr< QgsAbstractGeometry>( a0 ) );
+    % End
+#endif
+
+    /**
+     * Removes any geometry associated with the feature.
      * \see setGeometry()
      * \see hasGeometry()
      * \since QGIS 3.0
      */
     void clearGeometry();
 
-    /** Assign a field map with the feature to allow attribute access by attribute name.
+    /**
+     * Assign a field map with the feature to allow attribute access by attribute name.
      *  \param fields The attribute fields which this feature holds
-     *  \param initAttributes If true, attributes are initialized. Clears any data previously assigned.
-     *                        C++: Defaults to false
-     *                        Python: Defaults to true
-     * \since QGIS 2.9
+     *  \param initAttributes If TRUE, attributes are initialized. Clears any data previously assigned.
+     *                        C++: Defaults to FALSE
+     *                        Python: Defaults to TRUE
      * \see fields
+     * \since QGIS 2.9
      */
     void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYARGDEFAULT( true ) );
 
-    /** Returns the field map associated with the feature.
+    /**
+     * Returns the field map associated with the feature.
      * \see setFields
      */
     QgsFields fields() const;
 
-    /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
+    /**
+     * Insert a value into attribute. Returns FALSE if attribute name could not be converted to index.
      *  Field map must be associated using setFields() before this method can be used.
      *  The feature will be valid if it was successful
      *  \param name The name of the field to set
      *  \param value The value to set
-     *  \returns false if attribute name could not be converted to index (C++ only)
-     *  \note For Python: raises a KeyError exception instead of returning false
+     *  \returns FALSE if attribute name could not be converted to index (C++ only)
+     *  \note For Python: raises a KeyError exception instead of returning FALSE
      *  \note Alternatively in Python: @code feature[name] = attr @endcode
      *  \see setFields
      */
@@ -375,7 +426,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -392,11 +443,12 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Removes an attribute value by field name. Field map must be associated using setFields()
+    /**
+     * Removes an attribute value by field name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the field to delete
-     *  \returns false if attribute name could not be converted to index (C++ only)
-     *  \note For Python: raises a KeyError exception instead of returning false
+     *  \returns FALSE if attribute name could not be converted to index (C++ only)
+     *  \note For Python: raises a KeyError exception instead of returning FALSE
      *  \note Alternatively in Python: @code del feature[name] @endcode
      *  \see setFields
      */
@@ -406,7 +458,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
       sipRes = false;
     }
@@ -418,7 +470,8 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Lookup attribute value from attribute name. Field map must be associated using setFields()
+    /**
+     * Lookup attribute value from attribute name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such name exists )
@@ -434,7 +487,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -445,7 +498,8 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Lookup attribute value from its index. Field map must be associated using setFields()
+    /**
+     * Lookup attribute value from its index. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param fieldIdx The index of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such index exists )
@@ -473,13 +527,25 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Utility method to get attribute index from name. Field map must be associated using setFields()
+    /**
+     * Utility method to get attribute index from name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param fieldName name of field to get attribute index of
      *  \returns -1 if field does not exist or field map is not associated.
      *  \see setFields
      */
     int fieldNameIndex( const QString &fieldName ) const;
+
+    /**
+     * Returns the approximate RAM usage of the feature, in bytes.
+     *
+     * This method takes into account the size of variable elements (strings,
+     * geometry, ...), but the value returned should be considered as a lower
+     * bound estimation.
+     *
+     * \since QGIS 3.16
+     */
+    int approximateMemoryUsage() const;
 
     //! Allows direct construction of QVariants from features.
     operator QVariant() const
@@ -512,13 +578,6 @@ typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 typedef QMap<QgsFeatureId, QgsGeometry> QgsGeometryMap;
 #else
 typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
-#endif
-
-
-#ifndef SIP_RUN
-typedef QSet<QgsFeatureId> QgsFeatureIds;
-#else
-typedef QSet<qint64> QgsFeatureIds;
 #endif
 
 typedef QList<QgsFeature> QgsFeatureList;

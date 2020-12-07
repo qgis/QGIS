@@ -16,81 +16,39 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from processing.core.outputs import getOutputFromString
+import os
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
-def processInputs(alg):
-    # If there is another raster to copy categories from
-    # we need to import it with r.in.gdal rather than r.external
-    first = alg.getParameterValue(u'first')
-    second = alg.getParameterValue(u'second')
-    if first in list(alg.exportedLayers.keys()) and second in list(alg.exportedLayers.keys()):
+def processInputs(alg, parameters, context, feedback):
+    if 'first' and 'second' in alg.exportedLayers:
         return
 
-    for raster in [first, second]:
-        alg.setSessionProjectionFromLayer(raster, alg.commands)
-
-        destFilename = alg.getTempFilename()
-        alg.exportedLayers[raster] = destFilename
-        command = 'r.in.gdal input={} output={} --overwrite -o'.format(raster, destFilename)
-        alg.commands.append(command)
-
-    alg.setSessionProjectionFromProject(alg.commands)
-
-    region = str(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
-    regionCoords = region.split(',')
-    command = 'g.region'
-    command += ' -a'
-    command += ' n=' + str(regionCoords[3])
-    command += ' s=' + str(regionCoords[2])
-    command += ' e=' + str(regionCoords[1])
-    command += ' w=' + str(regionCoords[0])
-    cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
-    if cellsize:
-        command += ' res=' + str(cellsize)
-    else:
-        command += ' res=' + str(alg.getDefaultCellsize(parameters, context))
-    alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
-    if alignToResolution:
-        command += ' -a'
-    alg.commands.append(command)
+    # Use v.in.ogr
+    for name in ['first', 'second']:
+        alg.loadRasterLayerFromParameter(name, parameters, context, False, None)
+    alg.postInputs(context)
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context, feedback):
     # We need to remove all outputs
-    basename = getOutputFromString('OutputRaster|output|Output basename')
-    basename.value = 'output'
-    alg.addOutput(basename)
-    outputNames = ['output_{}'.format(f) for f in ['red', 'green', 'blue']]
-    outputs = [alg.getOutputFromName(f) for f in outputNames]
-    for output in outputNames:
-        alg.exportedLayers[alg.getOutputValue(output)] = 'output' + alg.uniqueSuffix
-        alg.removeOutputFromName(output)
-
-    alg.processCommand()
-
-    # And to re-add them
-    alg.removeOutputFromName('output')
-    for output in outputs:
-        alg.addOutput(output)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context, feedback):
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+
     # Export each color raster
     colors = ['red', 'green', 'blue']
     for color in colors:
-        output = alg.getOutputValue('output_{}'.format(color))
-        command = "r.out.gdal input={} output=\"{}\" createopt=\"TFW=YES,COMPRESS=LZW\"".format(
-            alg.exportedLayers[output] + '.' + color[0], output)
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+        fileName = os.path.normpath(
+            alg.parameterAsOutputLayer(parameters, 'output_{}'.format(color), context))
+        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        alg.exportRasterLayer('blended.{}'.format(color[0]),
+                              fileName, True, outFormat, createOpt, metaOpt)

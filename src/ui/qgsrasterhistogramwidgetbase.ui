@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -222,7 +222,7 @@
                <string>Save plot</string>
               </property>
               <property name="text">
-               <string>Save as image...</string>
+               <string>Save as image…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">

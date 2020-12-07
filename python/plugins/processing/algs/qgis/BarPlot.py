@@ -21,55 +21,45 @@ __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
+import warnings
 
-__revision__ = '$Format:%H$'
-
-import plotly as plt
-import plotly.graph_objs as go
-
-
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils,
+from qgis.core import (QgsFeatureRequest,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterTableField,
-                       QgsProcessingParameterFileOutput,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterField,
+                       QgsProcessingException,
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class BarPlot(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
-        return self.tr('Graphics')
+        return self.tr('Plots')
+
+    def groupId(self):
+        return 'plots'
 
     def __init__(self):
         super().__init__()
 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterTableField(self.NAME_FIELD,
-                                                           self.tr('Category name field'),
-                                                           None, self.INPUT, QgsProcessingParameterTableField.Any))
-        self.addParameter(QgsProcessingParameterTableField(self.VALUE_FIELD,
-                                                           self.tr('Value field'),
-                                                           None, self.INPUT, QgsProcessingParameterTableField.Numeric))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Numeric))
 
-        self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT, self.tr('Added'), self.tr('HTML files (*.html)')))
-
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Bar plot')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Bar plot'), self.tr('HTML files (*.html)')))
 
     def name(self):
         return 'barplot'
@@ -78,7 +68,19 @@ class BarPlot(QgisAlgorithm):
         return self.tr('Bar plot')
 
     def processAlgorithm(self, parameters, context, feedback):
+        try:
+            # importing plotly throws Python warnings from within the library - filter these out
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=ResourceWarning)
+                warnings.filterwarnings("ignore", category=ImportWarning)
+                import plotly as plt
+                import plotly.graph_objs as go
+        except ImportError:
+            raise QgsProcessingException(QCoreApplication.translate('BarPlot', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
+
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
@@ -87,7 +89,7 @@ class BarPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)
 
-        x_var = [i[namefieldname] for i in source.getFeatures()]
+        x_var = vector.convert_nulls([i[namefieldname] for i in source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))], '<NULL>')
 
         data = [go.Bar(x=x_var,
                        y=values[valuefieldname])]

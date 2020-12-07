@@ -1,0 +1,10 @@
+r.lake
+Fills lake at given point to given level.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Elevation|None|False
+QgsProcessingParameterNumber|water_level|Water level|QgsProcessingParameterNumber.Double|None|False|None|None
+QgsProcessingParameterPoint|coordinates|Seed point coordinates||True
+QgsProcessingParameterRasterLayer|seed|Raster layer with starting point(s) (at least 1 cell > 0)|None|True
+QgsProcessingParameterBoolean|-n|Use negative depth values for lake raster layer|False
+QgsProcessingParameterRasterDestination|lake|Lake
+

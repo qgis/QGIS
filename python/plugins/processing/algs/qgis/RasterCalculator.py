@@ -16,86 +16,79 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
-import os
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
+import os
 import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterMultipleInput, ParameterExtent, ParameterString, ParameterRaster, ParameterNumber
-from processing.core.outputs import OutputRaster
-from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
-from qgis.core import (QgsApplication,
-                       QgsRectangle,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingUtils,
-                       QgsProject)
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingParameterString,
+                       QgsCoordinateTransform,
+                       QgsMapLayer)
+from qgis.PyQt.QtCore import QObject
 from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.algs.qgis.ui.RasterCalculatorWidgets import LayersListWidgetWrapper, ExpressionWidgetWrapper
 
 
 class RasterCalculator(QgisAlgorithm):
-
     LAYERS = 'LAYERS'
     EXTENT = 'EXTENT'
     CELLSIZE = 'CELLSIZE'
     EXPRESSION = 'EXPRESSION'
+    CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
-        return self.tr('Raster')
+        return self.tr('Raster analysis')
+
+    def groupId(self):
+        return 'rasteranalysis'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterMultipleInput(self.LAYERS,
-                                                 self.tr('Input layers'),
-                                                 datatype=dataobjects.TYPE_RASTER,
-                                                 optional=True,
-                                                 metadata={'widget_wrapper': LayersListWidgetWrapper}))
 
-        class ParameterRasterCalculatorExpression(ParameterString):
+    def initAlgorithm(self, config=None):
+        class ParameterRasterCalculatorExpression(QgsProcessingParameterString):
 
-            def evaluateForModeler(self, value, model):
-                for i in list(model.inputs.values()):
-                    param = i.param
-                    if isinstance(param, ParameterRaster):
-                        new = "{}@".format(os.path.basename(param.value))
-                        old = "{}@".format(param.name())
-                        value = value.replace(old, new)
+            def __init__(self, name='', description='', multiLine=False):
+                super().__init__(name, description, multiLine=multiLine)
+                self.setMetadata({
+                    'widget_wrapper': 'processing.algs.qgis.ui.RasterCalculatorWidgets.ExpressionWidgetWrapper'
+                })
 
-                    for alg in list(model.algs.values()):
-                        for out in alg.algorithm.outputs:
-                            if isinstance(out, OutputRaster):
-                                if out.value:
-                                    new = "{}@".format(os.path.basename(out.value))
-                                    old = "{}:{}@".format(alg.modeler_name, out.name)
-                                    value = value.replace(old, new)
-                return value
+            def type(self):
+                return 'raster_calc_expression'
+
+            def clone(self):
+                return ParameterRasterCalculatorExpression(self.name(), self.description(), self.multiLine())
 
         self.addParameter(ParameterRasterCalculatorExpression(self.EXPRESSION, self.tr('Expression'),
-                                                              multiline=True,
-                                                              metadata={'widget_wrapper': ExpressionWidgetWrapper}))
-        self.addParameter(ParameterNumber(self.CELLSIZE,
-                                          self.tr('Cell size (use 0 or empty to set it automatically)'),
-                                          minValue=0.0, default=0.0, optional=True))
-        self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Output extent'),
-                                          optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
+                                                              multiLine=True))
+        self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
+                                                               self.tr('Reference layer(s) (used for automated extent, cellsize, and CRS)'),
+                                                               layerType=QgsProcessing.TypeRaster,
+                                                               optional=True))
+        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE,
+                                                       self.tr('Cell size (use 0 or empty to set it automatically)'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, defaultValue=0.0, optional=True))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Output extent'),
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Output CRS', optional=True))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Output')))
 
     def name(self):
         return 'rastercalculator'
@@ -104,79 +97,174 @@ class RasterCalculator(QgisAlgorithm):
         return self.tr('Raster calculator')
 
     def processAlgorithm(self, parameters, context, feedback):
-        expression = self.getParameterValue(self.EXPRESSION)
-        layersValue = self.getParameterValue(self.LAYERS)
+        expression = self.parameterAsString(parameters, self.EXPRESSION, context)
+        layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
+
         layersDict = {}
-        if layersValue:
-            layers = [QgsProcessingUtils.mapLayerFromString(f, context) for f in layersValue.split(";")]
-            layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
+        if layers:
+            layersDict = {lyr.source(): lyr for lyr in layers}
 
-        for lyr in QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance()):
-            name = lyr.name()
-            if (name + "@") in expression:
-                layersDict[name] = lyr
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
+        if crs is None or not crs.isValid():
+            if not layers:
+                raise QgsProcessingException(self.tr("No reference layer selected nor CRS provided"))
+            else:
+                crs = list(layersDict.values())[0].crs()
 
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        if bbox.isNull() and not layers:
+            raise QgsProcessingException(self.tr("No reference layer selected nor extent box provided"))
+
+        if not bbox.isNull():
+            bboxCrs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
+            if bboxCrs != crs:
+                transform = QgsCoordinateTransform(bboxCrs, crs, context.transformContext())
+                bbox = transform.transformBoundingBox(bbox)
+
+        if bbox.isNull() and layers:
+            bbox = QgsProcessingUtils.combineLayerExtents(layers, crs, context)
+
+        cellsize = self.parameterAsDouble(parameters, self.CELLSIZE, context)
+        if cellsize == 0 and not layers:
+            raise QgsProcessingException(self.tr("No reference layer selected nor cellsize value provided"))
+
+        def _cellsize(layer):
+            ext = layer.extent()
+            if layer.crs() != crs:
+                transform = QgsCoordinateTransform(layer.crs(), crs, context.transformContext())
+                ext = transform.transformBoundingBox(ext)
+            return (ext.xMaximum() - ext.xMinimum()) / layer.width()
+
+        if cellsize == 0:
+            cellsize = min([_cellsize(lyr) for lyr in layersDict.values()])
+
+        # check for layers available in the model
+        layersDictCopy = layersDict.copy()  # need a shallow copy because next calls invalidate iterator
+        for lyr in layersDictCopy.values():
+            expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
+
+        # check for layers available in the project
+        if context.project():
+            for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
+                expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
+
+        # create the list of layers to be passed as inputs to RasterCalculaltor
+        # at this phase expression has been modified to match available layers
+        # in the current scope
         entries = []
         for name, lyr in layersDict.items():
             for n in range(lyr.bandCount()):
-                entry = QgsRasterCalculatorEntry()
-                entry.ref = '{:s}@{:d}'.format(name, n + 1)
-                entry.raster = lyr
-                entry.bandNumber = n + 1
+                ref = '{:s}@{:d}'.format(name, n + 1)
+
+                if ref in expression:
+                    entry = QgsRasterCalculatorEntry()
+                    entry.ref = ref
+                    entry.raster = lyr
+                    entry.bandNumber = n + 1
+                    entries.append(entry)
+
+        # Append any missing entry from the current project
+        for entry in QgsRasterCalculatorEntry.rasterEntries():
+            if not [e for e in entries if e.ref == entry.ref]:
                 entries.append(entry)
 
-        output = self.getOutputValue(self.OUTPUT)
-        extentValue = self.getParameterValue(self.EXTENT)
-        if not extentValue:
-            extentValue = QgsProcessingUtils.combineLayerExtents(layersValue)
+        output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        if extentValue:
-            extent = extentValue.split(',')
-            bbox = QgsRectangle(float(extent[0]), float(extent[2]),
-                                float(extent[1]), float(extent[3]))
-        else:
-            if layersDict:
-                bbox = list(layersDict.values())[0].extent()
-                for lyr in layersDict.values():
-                    bbox.combineExtentWith(lyr.extent())
-            else:
-                raise GeoAlgorithmExecutionException(self.tr("No layers selected"))
-
-        def _cellsize(layer):
-            return (layer.extent().xMaximum() - layer.extent().xMinimum()) / layer.width()
-        cellsize = self.getParameterValue(self.CELLSIZE) or min([_cellsize(lyr) for lyr in layersDict.values()])
-        width = math.floor((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
-        height = math.floor((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
+        width = round((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
+        height = round((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
         driverName = GdalUtils.getFormatShortNameFromFilename(output)
+
         calc = QgsRasterCalculator(expression,
                                    output,
                                    driverName,
                                    bbox,
+                                   crs,
                                    width,
                                    height,
-                                   entries)
+                                   entries,
+                                   context.transformContext())
 
-        res = calc.processCalculation()
+        res = calc.processCalculation(feedback)
         if res == QgsRasterCalculator.ParserError:
-            raise GeoAlgorithmExecutionException(self.tr("Error parsing formula"))
+            raise QgsProcessingException(self.tr("Error parsing formula"))
+        elif res == QgsRasterCalculator.CalculationError:
+            raise QgsProcessingException(self.tr("An error occurred while performing the calculation"))
 
-    def processBeforeAddingToModeler(self, algorithm, model):
-        values = []
-        expression = algorithm.params[self.EXPRESSION]
-        for i in list(model.inputs.values()):
-            param = i.param
-            if isinstance(param, ParameterRaster) and "{}@".format(param.name) in expression:
-                values.append(ValueFromInput(param.name()))
+        return {self.OUTPUT: output}
 
-        if algorithm.name:
-            dependent = model.getDependentAlgorithms(algorithm.name)
-        else:
-            dependent = []
-        for alg in list(model.algs.values()):
-            if alg.modeler_name not in dependent:
-                for out in alg.algorithm.outputs:
-                    if (isinstance(out, OutputRaster) and
-                            "{}:{}@".format(alg.modeler_name, out.name) in expression):
-                        values.append(ValueFromOutput(alg.modeler_name, out.name))
+    def mappedNameToLayer(self, lyr, expression, layersDict, context):
+        '''Try to identify if a real layer is mapped in the expression with a symbolic name.'''
 
-        algorithm.params[self.LAYERS] = values
+        nameToMap = lyr.source()
+
+        # check if nameToMap is a file
+        # TODO: what about URI eg for a COG?
+        if os.path.isfile(nameToMap):
+            # get only the name without extension and path of the file
+            nameToMap = os.path.splitext(os.path.basename(nameToMap))[0]
+
+        # check for layers directly added in the expression
+        if (nameToMap + "@") in expression:
+            layersDict[nameToMap] = lyr
+
+        # get "algorithm_inputs" scope of the expressionContext related
+        # with mapped variables
+        indexOfScope = context.expressionContext().indexOfScope("algorithm_inputs")
+        if indexOfScope >= 0:
+            expContextAlgInputsScope = context.expressionContext().scope(indexOfScope)
+
+            # check for the layers that are mapped as input in a model
+            # to do this check in the latest scope all passed variables
+            # to look for a variable that is a layer or a string filename
+            # to a layer
+            varDescription = None
+            for varName in expContextAlgInputsScope.variableNames():
+
+                layerInContext = expContextAlgInputsScope.variable(varName)
+
+                if not isinstance(layerInContext, str) and not isinstance(layerInContext, QgsMapLayer):
+                    continue
+
+                if isinstance(layerInContext, QgsMapLayer) and nameToMap not in layerInContext.source():
+                    continue
+
+                varDescription = expContextAlgInputsScope.description(varName)
+
+                # because there can be variable with None or "" description
+                # then skip them
+                if not varDescription:
+                    continue
+
+                # check if it's description starts with Output as in:
+                #    Output 'Output' from algorithm 'calc1'
+                # as set in https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
+                # but var in expression is called simply
+                #    'Output' from algorithm 'calc1'
+
+                # get the translation string to use to parse the description
+                # HAVE to use the same translated string as in
+                # https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
+                translatedDesc = self.tr("Output '%1' from algorithm '%2'")
+                elementZero = translatedDesc.split(" ")[0]  # For english the string result should be "Output"
+
+                elements = varDescription.split(" ")
+                if len(elements) > 1 and elements[0] == elementZero:
+                    # remove heading QObject.tr"Output ") string. Note adding a space at the end of elementZero!
+                    varDescription = varDescription[len(elementZero) + 1:]
+
+                # check if cleaned varDescription is present in the expression
+                # if not skip it
+                if (varDescription + "@") not in expression:
+                    continue
+
+                # !!!found!!! => substitute in expression
+                # and add in the list of layers that will be passed to raster calculator
+                nameToMap = varName
+                new = "{}@".format(nameToMap)
+                old = "{}@".format(varDescription)
+                expression = expression.replace(old, new)
+
+                layersDict[nameToMap] = lyr
+
+        # need return the modified expression because it's not a reference
+        return expression

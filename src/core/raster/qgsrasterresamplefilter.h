@@ -19,13 +19,14 @@
 #define QGSRASTERRESAMPLEFILTER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterresampler.h"
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Resample filter pipe for rasters.
   */
 class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
@@ -43,11 +44,11 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
-    //! Set resampler for zoomed in scales. Takes ownership of the object
+    //! Sets resampler for zoomed in scales. Takes ownership of the object
     void setZoomedInResampler( QgsRasterResampler *r SIP_TRANSFER );
     const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler.get(); }
 
-    //! Set resampler for zoomed out scales. Takes ownership of the object
+    //! Sets resampler for zoomed out scales. Takes ownership of the object
     void setZoomedOutResampler( QgsRasterResampler *r SIP_TRANSFER );
     const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler.get(); }
 
@@ -66,7 +67,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     std::unique_ptr< QgsRasterResampler > mZoomedOutResampler;
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
-    double mMaxOversampling;
+    double mMaxOversampling = 2.0;
 
   private:
 };

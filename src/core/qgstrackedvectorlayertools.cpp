@@ -16,16 +16,14 @@
 #include "qgstrackedvectorlayertools.h"
 #include "qgsvectorlayer.h"
 
-QgsTrackedVectorLayerTools::QgsTrackedVectorLayerTools()
-  : mBackend()
-{
-}
 
 bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const
 {
   QgsFeature *f = feature;
   if ( !feature )
     f = new QgsFeature();
+
+  const_cast<QgsVectorLayerTools *>( mBackend )->setForceSuppressFormPopup( forceSuppressFormPopup() );
 
   if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f ) )
   {
@@ -57,9 +55,9 @@ bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
   return mBackend->saveEdits( layer );
 }
 
-bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg ) const
+bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer ) const
 {
-  return mBackend->copyMoveFeatures( layer, request, dx, dy, errorMsg );
+  return mBackend->copyMoveFeatures( layer, request, dx, dy, errorMsg, topologicalEditing, topologicalLayer );
 }
 
 void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools *tools )

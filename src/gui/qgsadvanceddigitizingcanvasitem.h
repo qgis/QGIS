@@ -21,27 +21,44 @@
 #include "qgsmapcanvasitem.h"
 #include "qgis_gui.h"
 
+
 class QgsAdvancedDigitizingDockWidget;
 
-/** \ingroup gui
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsadvanceddigitizingcanvasitem.h>
+% End
+#endif
+
+/**
+ * \ingroup gui
  * \brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (\see QgsAdvancedDigitizingDockWidget) on the map canvas.
  */
 class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsAdvancedDigitizingCanvasItem *>( sipCpp ) )
+      sipType = sipType_QgsAdvancedDigitizingCanvasItem;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     void paint( QPainter *painter ) override;
 
-  protected:
+  private:
     QPen mLockedPen;
     QPen mConstruction1Pen;
     QPen mConstruction2Pen;
     QPen mSnapPen;
     QPen mSnapLinePen;
     QPen mCursorPen;
-
-  private:
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
 };
 

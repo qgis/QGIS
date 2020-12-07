@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    push_ts.sh
 #    ---------------------
@@ -15,4 +15,4 @@
 ###########################################################################
 
 # Update the english translation and push it to transifex
-scripts/update_ts.sh push $1
+scripts/update_ts.sh push "$@"

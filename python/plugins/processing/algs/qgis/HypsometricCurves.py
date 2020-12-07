@@ -16,66 +16,61 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'November 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import csv
 
-import numpy
 from osgeo import gdal, ogr, osr
 
 from qgis.core import (QgsRectangle,
                        QgsGeometry,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsFeatureRequest,
+                       QgsProcessingException,
+                       QgsProcessing,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFolderDestination)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputDirectory
+from processing.tools import raster
 
-from processing.tools import raster, vector, dataobjects
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class HypsometricCurves(QgisAlgorithm):
-
     INPUT_DEM = 'INPUT_DEM'
     BOUNDARY_LAYER = 'BOUNDARY_LAYER'
     STEP = 'STEP'
     USE_PERCENTAGE = 'USE_PERCENTAGE'
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
-        return self.tr('Raster tools')
+        return self.tr('Raster terrain analysis')
+
+    def groupId(self):
+        return 'rasterterrainanalysis'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT_DEM,
-                                          self.tr('DEM to analyze')))
-        self.addParameter(ParameterVector(self.BOUNDARY_LAYER,
-                                          self.tr('Boundary layer'), dataobjects.TYPE_VECTOR_POLYGON))
-        self.addParameter(ParameterNumber(self.STEP,
-                                          self.tr('Step'), 0.0, 999999999.999999, 100.0))
-        self.addParameter(ParameterBoolean(self.USE_PERCENTAGE,
-                                           self.tr('Use % of area instead of absolute value'), False))
 
-        self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
-                                       self.tr('Hypsometric curves')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_DEM,
+                                                            self.tr('DEM to analyze')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.BOUNDARY_LAYER,
+                                                              self.tr('Boundary layer'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterNumber(self.STEP,
+                                                       self.tr('Step'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=100.0))
+        self.addParameter(QgsProcessingParameterBoolean(self.USE_PERCENTAGE,
+                                                        self.tr('Use % of area instead of absolute value'), defaultValue=False))
+
+        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT_DIRECTORY,
+                                                                  self.tr('Hypsometric curves')))
 
     def name(self):
         return 'hypsometriccurves'
@@ -84,12 +79,25 @@ class HypsometricCurves(QgisAlgorithm):
         return self.tr('Hypsometric curves')
 
     def processAlgorithm(self, parameters, context, feedback):
-        rasterPath = self.getParameterValue(self.INPUT_DEM)
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.BOUNDARY_LAYER), context)
-        step = self.getParameterValue(self.STEP)
-        percentage = self.getParameterValue(self.USE_PERCENTAGE)
+        try:
+            import numpy
+        except ImportError:
+            raise QgsProcessingException(QCoreApplication.translate('HypsometricCurves', 'This algorithm requires the Python “numpy” library. Please install this library and try again.'))
 
-        outputPath = self.getOutputValue(self.OUTPUT_DIRECTORY)
+        raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_DEM, context)
+        target_crs = raster_layer.crs()
+        rasterPath = raster_layer.source()
+
+        source = self.parameterAsSource(parameters, self.BOUNDARY_LAYER, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.BOUNDARY_LAYER))
+
+        step = self.parameterAsDouble(parameters, self.STEP, context)
+        percentage = self.parameterAsBoolean(parameters, self.USE_PERCENTAGE, context)
+
+        outputPath = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
+        if not os.path.exists(outputPath):
+            os.makedirs(outputPath)
 
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geoTransform = rasterDS.GetGeoTransform()
@@ -108,15 +116,21 @@ class HypsometricCurves(QgisAlgorithm):
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 
         crs = osr.SpatialReference()
-        crs.ImportFromProj4(str(layer.crs().toProj4()))
+        crs.ImportFromProj4(str(target_crs.toProj()))
 
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures(QgsFeatureRequest().setDestinationCrs(target_crs, context.transformContext()))
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):
+            if not f.hasGeometry():
+                continue
+
+            if feedback.isCanceled():
+                break
+
             geom = f.geometry()
             intersectedGeom = rasterGeom.intersection(geom)
 
@@ -127,9 +141,9 @@ class HypsometricCurves(QgisAlgorithm):
                 continue
 
             fName = os.path.join(
-                outputPath, 'hystogram_%s_%s.csv' % (layer.name(), f.id()))
+                outputPath, 'histogram_{}_{}.csv'.format(source.sourceName(), f.id()))
 
-            ogrGeom = ogr.CreateGeometryFromWkt(intersectedGeom.exportToWkt())
+            ogrGeom = ogr.CreateGeometryFromWkt(intersectedGeom.asWkt())
             bbox = intersectedGeom.boundingBox()
             xMin = bbox.xMinimum()
             xMax = bbox.xMaximum()
@@ -188,6 +202,8 @@ class HypsometricCurves(QgisAlgorithm):
 
         rasterDS = None
 
+        return {self.OUTPUT_DIRECTORY: outputPath}
+
     def calculateHypsometry(self, fid, fName, feedback, data, pX, pY,
                             percentage, step):
         out = dict()
@@ -212,7 +228,7 @@ class HypsometricCurves(QgisAlgorithm):
         else:
             multiplier = pX * pY
 
-        for k, v in list(out.items()):
+        for k, v in out.items():
             out[k] = v * multiplier
 
         prev = None
@@ -223,7 +239,9 @@ class HypsometricCurves(QgisAlgorithm):
                 out[i[0]] = i[1] + out[prev]
             prev = i[0]
 
-        writer = vector.TableWriter(fName, 'utf-8', [self.tr('Area'), self.tr('Elevation')])
-        for i in sorted(out.items()):
-            writer.addRecord([i[1], i[0]])
-        del writer
+        with open(fName, 'w', newline='', encoding='utf-8') as out_file:
+            writer = csv.writer(out_file)
+            writer.writerow([self.tr('Area'), self.tr('Elevation')])
+
+            for i in sorted(out.items()):
+                writer.writerow([i[1], i[0]])

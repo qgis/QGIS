@@ -16,29 +16,154 @@
 
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
-#include "qgspgnewconnection.h"
+#include "qgspostgresprojectstorage.h"
+#include "qgspostgresprovider.h"
 #include "qgscolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
-#include "qgsnewnamedialog.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
-
+#include "qgssettings.h"
 #include <QMessageBox>
-#include <QInputDialog>
-#include <QProgressDialog>
 #include <climits>
 
-QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause );
-QGISEXTERN bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade = false );
+bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
+{
+  QgsDebugMsg( "deleting layer " + uri );
+
+  QgsDataSourceUri dsUri( uri );
+  QString schemaName = dsUri.schema();
+  QString tableName = dsUri.table();
+  QString geometryCol = dsUri.geometryColumn();
+
+  QString schemaTableName;
+  if ( !schemaName.isEmpty() )
+  {
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
+  }
+  schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  // handle deletion of views
+  QString sqlViewCheck = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
+                         .arg( QgsPostgresConn::quotedValue( schemaTableName ) );
+  QgsPostgresResult resViewCheck( conn->PQexec( sqlViewCheck ) );
+  QString type = resViewCheck.PQgetvalue( 0, 0 );
+  if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) )
+  {
+    QString sql = QStringLiteral( "DROP %1VIEW %2" ).arg( type == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED " ) : QString(), schemaTableName );
+    QgsPostgresResult result( conn->PQexec( sql ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      errCause = QObject::tr( "Unable to delete view %1: \n%2" )
+                 .arg( schemaTableName,
+                       result.PQresultErrorMessage() );
+      conn->unref();
+      return false;
+    }
+    conn->unref();
+    return true;
+  }
+
+
+  // check the geometry column count
+  QString sql = QString( "SELECT count(*) "
+                         "FROM geometry_columns, pg_class, pg_namespace "
+                         "WHERE f_table_name=relname AND f_table_schema=nspname "
+                         "AND pg_class.relnamespace=pg_namespace.oid "
+                         "AND f_table_schema=%1 AND f_table_name=%2" )
+                .arg( QgsPostgresConn::quotedValue( schemaName ),
+                      QgsPostgresConn::quotedValue( tableName ) );
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
+               .arg( schemaTableName,
+                     result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  int count = result.PQgetvalue( 0, 0 ).toInt();
+
+  if ( !geometryCol.isEmpty() && count > 1 )
+  {
+    // the table has more geometry columns, drop just the geometry column
+    sql = QStringLiteral( "SELECT DropGeometryColumn(%1,%2,%3)" )
+          .arg( QgsPostgresConn::quotedValue( schemaName ),
+                QgsPostgresConn::quotedValue( tableName ),
+                QgsPostgresConn::quotedValue( geometryCol ) );
+  }
+  else
+  {
+    // drop the table
+    sql = QStringLiteral( "SELECT DropGeometryTable(%1,%2)" )
+          .arg( QgsPostgresConn::quotedValue( schemaName ),
+                QgsPostgresConn::quotedValue( tableName ) );
+  }
+
+  result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
+               .arg( schemaTableName,
+                     result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  conn->unref();
+  return true;
+}
+
+bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade )
+{
+  QgsDebugMsg( "deleting schema " + schema );
+
+  if ( schema.isEmpty() )
+    return false;
+
+  QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  // drop the schema
+  QString sql = QStringLiteral( "DROP SCHEMA %1 %2" )
+                .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    errCause = QObject::tr( "Unable to delete schema %1: \n%2" )
+               .arg( schemaName,
+                     result.PQresultErrorMessage() );
+    conn->unref();
+    return false;
+  }
+
+  conn->unref();
+  return true;
+}
 
 
 // ---------------------------------------------------------------------------
-QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
 {
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
 }
 
@@ -48,7 +173,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
   QVector<QgsDataItem *>items;
 
   QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
-  // TODO: wee need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
+  // TODO: we need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !conn )
   {
@@ -67,7 +192,8 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  Q_FOREACH ( const QgsPostgresSchemaProperty &schema, schemas )
+  const auto constSchemas = schemas;
+  for ( const QgsPostgresSchemaProperty &schema : constSchemas )
   {
     QgsPGSchemaItem *schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + '/' + schema.name );
     if ( !schema.description.isEmpty() )
@@ -91,100 +217,17 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
-QList<QAction *> QgsPGConnectionItem::actions()
+
+void QgsPGConnectionItem::refreshSchema( const QString &schema )
 {
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
-  connect( actionRefresh, &QAction::triggered, this, &QgsPGConnectionItem::refreshConnection );
-  lst.append( actionRefresh );
-
-  QAction *separator = new QAction( this );
-  separator->setSeparator( true );
-  lst.append( separator );
-
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), this );
-  connect( actionEdit, &QAction::triggered, this, &QgsPGConnectionItem::editConnection );
-  lst.append( actionEdit );
-
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), this );
-  connect( actionDelete, &QAction::triggered, this, &QgsPGConnectionItem::deleteConnection );
-  lst.append( actionDelete );
-
-  QAction *separator2 = new QAction( this );
-  separator2->setSeparator( true );
-  lst.append( separator2 );
-
-  QAction *actionCreateSchema = new QAction( tr( "Create Schema..." ), this );
-  connect( actionCreateSchema, &QAction::triggered, this, &QgsPGConnectionItem::createSchema );
-  lst.append( actionCreateSchema );
-
-  return lst;
-}
-
-void QgsPGConnectionItem::editConnection()
-{
-  QgsPgNewConnection nc( nullptr, mName );
-  if ( nc.exec() )
+  const auto constMChildren = mChildren;
+  for ( QgsDataItem *child : constMChildren )
   {
-    // the parent should be updated
-    if ( mParent )
-      mParent->refresh();
+    if ( child->name() == schema || schema.isEmpty() )
+    {
+      child->refresh();
+    }
   }
-}
-
-void QgsPGConnectionItem::deleteConnection()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
-                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsPostgresConn::deleteConnection( mName );
-  // the parent should be updated
-  if ( mParent )
-    mParent->refresh();
-}
-
-void QgsPGConnectionItem::refreshConnection()
-{
-  // the parent should be updated
-  refresh();
-}
-
-void QgsPGConnectionItem::createSchema()
-{
-  QString schemaName = QInputDialog::getText( nullptr, tr( "Create Schema" ), tr( "Schema name:" ) );
-  if ( schemaName.isEmpty() )
-    return;
-
-  QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
-  if ( !conn )
-  {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema." ) );
-    return;
-  }
-
-  //create the schema
-  QString sql = QStringLiteral( "CREATE SCHEMA %1" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
-
-  QgsPostgresResult result( conn->PQexec( sql ) );
-  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-  {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
-                          result.PQresultErrorMessage() ) );
-    conn->unref();
-    return;
-  }
-
-  conn->unref();
-  refresh();
-}
-
-bool QgsPGConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
-{
-  return handleDrop( data, QString() );
 }
 
 bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
@@ -199,17 +242,19 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
   bool hasError = false;
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
   {
-    if ( u.layerType != QLatin1String( "vector" ) )
+    // open the source layer
+    bool owner;
+    QString error;
+    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+    if ( !srcLayer )
     {
-      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
-      hasError = true; // only vectors can be imported
+      importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
+      hasError = true;
       continue;
     }
-
-    // open the source layer
-    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
 
     if ( srcLayer->isValid() )
     {
@@ -221,14 +266,14 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
         uri.setSchema( toSchema );
       }
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs() ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs(), QVariantMap(), owner ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
       {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to PostGIS database" ), tr( "Import was successful." ) );
-        refresh();
+        refreshSchema( toSchema );
       } );
 
       // when an error occurs:
@@ -241,7 +286,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
-        refresh();
+        refreshSchema( toSchema );
       } );
 
       QgsApplication::taskManager()->addTask( exportTask.release() );
@@ -257,7 +302,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to PostGIS database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
 
@@ -266,11 +311,13 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
 
 // ---------------------------------------------------------------------------
 QgsPGLayerItem::QgsPGLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsPostgresLayerProperty &layerProperty )
-  : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "postgres" ) )
+  : QgsLayerItem( parent, name, path, QString(), layerType, layerProperty.isRaster ? QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) )
   , mLayerProperty( layerProperty )
 {
+  mCapabilities |= Delete | Fertile;
   mUri = createUri();
-  setState( Populated );
+  // No rasters for now
+  setState( layerProperty.isRaster ? Populated : NotPopulated );
   Q_ASSERT( mLayerProperty.size() == 1 );
 }
 
@@ -279,179 +326,61 @@ QString QgsPGLayerItem::comments() const
   return mLayerProperty.tableComment;
 }
 
-QList<QAction *> QgsPGLayerItem::actions()
-{
-  QList<QAction *> lst;
-
-  QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
-
-  QAction *actionRenameLayer = new QAction( tr( "Rename %1..." ).arg( typeName ), this );
-  connect( actionRenameLayer, &QAction::triggered, this, &QgsPGLayerItem::renameLayer );
-  lst.append( actionRenameLayer );
-
-  QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( typeName ), this );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsPGLayerItem::deleteLayer );
-  lst.append( actionDeleteLayer );
-
-  if ( !mLayerProperty.isView )
-  {
-    QAction *actionTruncateLayer = new QAction( tr( "Truncate %1" ).arg( typeName ), this );
-    connect( actionTruncateLayer, &QAction::triggered, this, &QgsPGLayerItem::truncateTable );
-    lst.append( actionTruncateLayer );
-  }
-
-  return lst;
-}
-
-void QgsPGLayerItem::deleteLayer()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
-                              QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QString errCause;
-  bool res = ::deleteLayer( mUri, errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Table" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
-    if ( mParent )
-      mParent->refresh();
-  }
-}
-
-void QgsPGLayerItem::renameLayer()
-{
-  QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
-  QString lowerTypeName = mLayerProperty.isView ? tr( "view" ) : tr( "table" );
-
-  QgsNewNameDialog dlg( tr( "%1 %2.%3" ).arg( lowerTypeName, mLayerProperty.schemaName, mLayerProperty.tableName ), mLayerProperty.tableName );
-  dlg.setWindowTitle( tr( "Rename %1" ).arg( typeName ) );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == mLayerProperty.tableName )
-    return;
-
-  QString schemaName = mLayerProperty.schemaName;
-  QString tableName = mLayerProperty.tableName;
-  QString schemaTableName;
-  if ( !schemaName.isEmpty() )
-  {
-    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
-  }
-  QString oldName = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
-  QString newName = QgsPostgresConn::quotedIdentifier( dlg.name() );
-
-  QgsDataSourceUri dsUri( mUri );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
-  if ( !conn )
-  {
-    QMessageBox::warning( nullptr, tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename %1." ).arg( lowerTypeName ) );
-    return;
-  }
-
-  //rename the layer
-  QString sql;
-  if ( mLayerProperty.isView )
-  {
-    sql = QStringLiteral( "ALTER %1 VIEW %2 RENAME TO %3" ).arg( mLayerProperty.relKind == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED" ) : QString(),
-          oldName, newName );
-  }
-  else
-  {
-    sql = QStringLiteral( "ALTER TABLE %1 RENAME TO %2" ).arg( oldName, newName );
-  }
-
-  QgsPostgresResult result( conn->PQexec( sql ) );
-  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-  {
-    QMessageBox::warning( nullptr, tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename %1 %2\n%3" ).arg( lowerTypeName, mName,
-                          result.PQresultErrorMessage() ) );
-    conn->unref();
-    return;
-  }
-
-  conn->unref();
-  if ( mParent )
-    mParent->refresh();
-}
-
-void QgsPGLayerItem::truncateTable()
-{
-  if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ),
-                              QObject::tr( "Are you sure you want to truncate %1.%2?\n\nThis will delete all data within the table." ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
-
-  QgsDataSourceUri dsUri( mUri );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
-  if ( !conn )
-  {
-    QMessageBox::warning( nullptr, tr( "Truncate Table" ), tr( "Unable to truncate table." ) );
-    return;
-  }
-
-  QString schemaName = mLayerProperty.schemaName;
-  QString tableName = mLayerProperty.tableName;
-  QString schemaTableName;
-  if ( !schemaName.isEmpty() )
-  {
-    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + '.';
-  }
-  QString tableRef = schemaTableName + QgsPostgresConn::quotedIdentifier( tableName );
-
-  QString sql = QStringLiteral( "TRUNCATE TABLE %1" ).arg( tableRef );
-
-  QgsPostgresResult result( conn->PQexec( sql ) );
-  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-  {
-    QMessageBox::warning( nullptr, tr( "Truncate Table" ), tr( "Unable to truncate %1\n%2" ).arg( mName,
-                          result.PQresultErrorMessage() ) );
-    conn->unref();
-    return;
-  }
-
-  conn->unref();
-  QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
-}
-
 QString QgsPGLayerItem::createUri()
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
-    QgsDebugMsg( "connection item not found." );
+    QgsDebugMsg( QStringLiteral( "connection item not found." ) );
     return QString();
   }
 
-  QgsDataSourceUri uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
-  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
+  const QString &connName = connItem->name();
+
+  QgsDataSourceUri uri( QgsPostgresConn::connUri( connName ).connectionInfo( false ) );
+
+  const QgsSettings &settings = QgsSettings();
+  QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connName );
+
+  QStringList defPk( settings.value(
+                       QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
+                       QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
+                     ).toStringList() );
+
+  const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connName );
+  uri.setUseEstimatedMetadata( useEstimatedMetadata );
+
+  QStringList cols;
+  for ( const auto &col : defPk )
+  {
+    cols << QgsPostgresConn::quotedIdentifier( col );
+  }
+
+  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, cols.join( ',' ) );
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
-  if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
+  if ( uri.wkbType() != QgsWkbTypes::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
-  QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri( false ) ) );
+
+  QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
 }
 
 // ---------------------------------------------------------------------------
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "PostGIS" ) )
   , mConnectionName( connectionName )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.png" );
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
 }
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 {
-
   QVector<QgsDataItem *>items;
 
   QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
+
   if ( !conn )
   {
     items.append( new QgsErrorItem( this, tr( "Connection failed" ), mPath + "/error" ) );
@@ -460,10 +389,10 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   QVector<QgsPostgresLayerProperty> layerProperties;
-  bool ok = conn->supportedLayers( layerProperties,
-                                   QgsPostgresConn::geometryColumnsOnly( mConnectionName ),
-                                   QgsPostgresConn::publicSchemaOnly( mConnectionName ),
-                                   QgsPostgresConn::allowGeometrylessTables( mConnectionName ), mName );
+  const bool ok = conn->supportedLayers( layerProperties,
+                                         QgsPostgresConn::geometryColumnsOnly( mConnectionName ),
+                                         QgsPostgresConn::publicSchemaOnly( mConnectionName ),
+                                         QgsPostgresConn::allowGeometrylessTables( mConnectionName ), mName );
 
   if ( !ok )
   {
@@ -472,192 +401,129 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     return items;
   }
 
-  bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
-  Q_FOREACH ( QgsPostgresLayerProperty layerProperty, layerProperties )
+  const bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
+  const bool estimatedMetadata = QgsPostgresConn::useEstimatedMetadata( mConnectionName );
+  const auto constLayerProperties = layerProperties;
+  for ( QgsPostgresLayerProperty layerProperty : constLayerProperties )
   {
     if ( layerProperty.schemaName != mName )
       continue;
 
     if ( !layerProperty.geometryColName.isNull() &&
-         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
-           layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
+         !layerProperty.isRaster &&
+         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown  ||
+           layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       if ( dontResolveType )
       {
-        //QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ) );
+        QgsDebugMsgLevel( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ), 2 );
         continue;
       }
-
-      conn->retrieveLayerTypes( layerProperty, true /* useEstimatedMetadata */ );
+      // If the table is empty there is no way we can retrieve layer types, let's make a copy and restore it
+      QgsPostgresLayerProperty propertyCopy { layerProperty };
+      conn->retrieveLayerTypes( layerProperty, estimatedMetadata );
+      if ( layerProperty.size() == 0 )
+      {
+        layerProperty = propertyCopy;
+      }
     }
 
     for ( int i = 0; i < layerProperty.size(); i++ )
     {
-      QgsPGLayerItem *layerItem = createLayer( layerProperty.at( i ) );
+      QgsDataItem *layerItem = nullptr;
+      layerItem = createLayer( layerProperty.at( i ) );
       if ( layerItem )
         items.append( layerItem );
     }
   }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
+
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
+  if ( QgsPostgresConn::allowProjectsInDatabase( mConnectionName ) && storage )
+  {
+    QgsPostgresProjectUri postUri;
+    postUri.connInfo = uri;
+    postUri.schemaName = mName;
+    QString schemaUri = QgsPostgresProjectStorage::encodeUri( postUri );
+    const QStringList projectNames = storage->listProjects( schemaUri );
+    for ( const QString &projectName : projectNames )
+    {
+      QgsPostgresProjectUri projectUri( postUri );
+      projectUri.projectName = projectName;
+      items.append( new QgsProjectItem( this, projectName, QgsPostgresProjectStorage::encodeUri( projectUri ) ) );
+    }
+  }
+
   return items;
 }
 
-QList<QAction *> QgsPGSchemaItem::actions()
-{
-  QList<QAction *> lst;
-
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
-  connect( actionRefresh, &QAction::triggered, this, static_cast<void ( QgsDataItem::* )()>( &QgsDataItem::refresh ) );
-  lst.append( actionRefresh );
-
-  QAction *separator = new QAction( this );
-  separator->setSeparator( true );
-  lst.append( separator );
-
-  QAction *actionRename = new QAction( tr( "Rename Schema..." ), this );
-  connect( actionRename, &QAction::triggered, this, &QgsPGSchemaItem::renameSchema );
-  lst.append( actionRename );
-
-  QAction *actionDelete = new QAction( tr( "Delete Schema" ), this );
-  connect( actionDelete, &QAction::triggered, this, &QgsPGSchemaItem::deleteSchema );
-  lst.append( actionDelete );
-
-  return lst;
-}
-
-void QgsPGSchemaItem::deleteSchema()
-{
-  // check if schema contains tables/views
-  QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
-  if ( !conn )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Schema" ), tr( "Unable to delete schema." ) );
-    return;
-  }
-
-  QString sql = QStringLiteral( "SELECT table_name FROM information_schema.tables WHERE table_schema='%1'" ).arg( mName );
-  QgsPostgresResult result( conn->PQexec( sql ) );
-  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Schema" ), tr( "Unable to delete schema." ) );
-    conn->unref();
-    return;
-  }
-
-  QStringList childObjects;
-  int maxListed = 10;
-  for ( int idx = 0; idx < result.PQntuples(); idx++ )
-  {
-    childObjects << result.PQgetvalue( idx, 0 );
-    QgsPostgresSchemaProperty schema;
-    if ( idx == maxListed - 1 )
-      break;
-  }
-
-  int count = result.PQntuples();
-  if ( count > 0 )
-  {
-    QString objects = childObjects.join( QStringLiteral( "\n" ) );
-    if ( count > maxListed )
-    {
-      objects += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( count - maxListed );
-    }
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ),
-                                QObject::tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( mName, objects ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    {
-      conn->unref();
-      return;
-    }
-  }
-  else
-  {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ),
-                                QObject::tr( "Are you sure you want to delete the schema '%1'?" ).arg( mName ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-      return;
-  }
-
-  QString errCause;
-  bool res = ::deleteSchema( mName, uri, errCause, count > 0 );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Schema" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Delete Schema" ), tr( "Schema deleted successfully." ) );
-    if ( mParent )
-      mParent->refresh();
-  }
-}
-
-void QgsPGSchemaItem::renameSchema()
-{
-  QgsNewNameDialog dlg( tr( "schema '%1'" ).arg( mName ), mName );
-  dlg.setWindowTitle( tr( "Rename Schema" ) );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == mName )
-    return;
-
-  QString schemaName = QgsPostgresConn::quotedIdentifier( mName );
-  QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
-  if ( !conn )
-  {
-    QMessageBox::warning( nullptr, tr( "Rename Schema" ), tr( "Unable to rename schema." ) );
-    return;
-  }
-
-  //rename the schema
-  QString sql = QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
-                .arg( schemaName, QgsPostgresConn::quotedIdentifier( dlg.name() ) );
-
-  QgsPostgresResult result( conn->PQexec( sql ) );
-  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-  {
-    QMessageBox::warning( nullptr, tr( "Rename Schema" ), tr( "Unable to rename schema %1\n%2" ).arg( schemaName,
-                          result.PQresultErrorMessage() ) );
-    conn->unref();
-    return;
-  }
-
-  conn->unref();
-  QMessageBox::information( nullptr, tr( "Rename Schema" ), tr( "Schema renamed successfully." ) );
-  if ( mParent )
-    mParent->refresh();
-}
 
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
   //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
+  QString tip;
+  if ( layerProperty.isView && ! layerProperty.isMaterializedView )
+  {
+    tip = tr( "View" );
+  }
+  else if ( layerProperty.isView && layerProperty.isMaterializedView )
+  {
+    tip = tr( "Materialized view" );
+  }
+  else if ( layerProperty.isRaster )
+  {
+    tip = tr( "Raster" );
+  }
+  else if ( layerProperty.isForeignTable )
+  {
+    tip = tr( "Foreign table" );
+  }
+  else
+  {
+    tip = tr( "Table" );
+  }
+
   QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
-  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
+  if ( ! layerProperty.isRaster )
+  {
+    tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName, QgsPostgresConn::displayStringForWkbType( wkbType ) );
+  }
+
+  if ( layerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
+    tip += tr( " (srid %1)" ).arg( layerProperty.srids.at( 0 ) );
+  else
+    tip += tr( " (unknown srid)" );
+
   if ( !layerProperty.tableComment.isEmpty() )
   {
     tip = layerProperty.tableComment + '\n' + tip;
   }
 
-  QgsLayerItem::LayerType layerType;
-  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( ( QgsWkbTypes::Type )wkbType );
-  switch ( geomType )
-  {
-    case QgsWkbTypes::PointGeometry:
-      layerType = QgsLayerItem::Point;
-      break;
-    case QgsWkbTypes::LineGeometry:
-      layerType = QgsLayerItem::Line;
-      break;
-    case QgsWkbTypes::PolygonGeometry:
-      layerType = QgsLayerItem::Polygon;
-      break;
-    default:
-      if ( !layerProperty.geometryColName.isEmpty() )
-        return nullptr;
 
-      layerType = QgsLayerItem::TableLayer;
-      tip = tr( "as geometryless table" );
+  QgsLayerItem::LayerType layerType = QgsLayerItem::Raster;
+  if ( ! layerProperty.isRaster )
+  {
+    QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( ( QgsWkbTypes::Type )wkbType );
+    switch ( geomType )
+    {
+      case QgsWkbTypes::PointGeometry:
+        layerType = QgsLayerItem::Point;
+        break;
+      case QgsWkbTypes::LineGeometry:
+        layerType = QgsLayerItem::Line;
+        break;
+      case QgsWkbTypes::PolygonGeometry:
+        layerType = QgsLayerItem::Polygon;
+        break;
+      default:
+        if ( !layerProperty.geometryColName.isEmpty() )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Adding layer item %1.%2 without type constraint as geometryless table" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ), 2 );
+        }
+        layerType = QgsLayerItem::TableLayer;
+        tip = tr( "as geometryless table" );
+    }
   }
 
   QgsPGLayerItem *layerItem = new QgsPGLayerItem( this, layerProperty.defaultName(), mPath + '/' + layerProperty.tableName, layerType, layerProperty );
@@ -665,22 +531,16 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   return layerItem;
 }
 
-bool QgsPGSchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
+QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
 {
-  QgsPGConnectionItem *conn = qobject_cast<QgsPGConnectionItem *>( parent() );
-  if ( !conn )
-    return false;
-
-  bool result = conn->handleDrop( data, mName );
-  if ( result )
-    refresh();
-
-  return result;
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  return children;
 }
 
 // ---------------------------------------------------------------------------
-QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "PostGIS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconPostgis.svg" );
@@ -697,41 +557,36 @@ QVector<QgsDataItem *> QgsPGRootItem::createChildren()
   return connections;
 }
 
-QList<QAction *> QgsPGRootItem::actions()
-{
-  QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, &QAction::triggered, this, &QgsPGRootItem::newConnection );
-  lst.append( actionNew );
-
-  return lst;
-}
-
-QWidget *QgsPGRootItem::paramWidget()
-{
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::connectionsChanged );
-  return select;
-}
-
-void QgsPGRootItem::connectionsChanged()
+void QgsPGRootItem::onConnectionsChanged()
 {
   refresh();
 }
 
-void QgsPGRootItem::newConnection()
-{
-  QgsPgNewConnection nc( nullptr );
-  if ( nc.exec() )
-  {
-    refresh();
-  }
-}
-
 QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
 
-QGISEXTERN void registerGui( QMainWindow *mainWindow )
+QString QgsPostgresDataItemProvider::name()
 {
-  QgsPGRootItem::sMainWindow = mainWindow;
+  return QStringLiteral( "PostGIS" );
+}
+
+QString QgsPostgresDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "postgres" );
+}
+
+int QgsPostgresDataItemProvider::capabilities() const
+{
+  return QgsDataProvider::Database;
+}
+
+QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+{
+  Q_UNUSED( pathIn )
+  return new QgsPGRootItem( parentItem, QStringLiteral( "PostGIS" ), QStringLiteral( "pg:" ) );
+}
+
+
+bool QgsPGSchemaItem::layerCollection() const
+{
+  return true;
 }

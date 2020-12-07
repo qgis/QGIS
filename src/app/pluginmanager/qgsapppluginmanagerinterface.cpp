@@ -16,16 +16,11 @@
 
 #include "qgsapppluginmanagerinterface.h"
 #include "qgspluginmanager.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 
 
 QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager *pluginManager )
   : mPluginManager( pluginManager )
-{
-}
-
-
-QgsAppPluginManagerInterface::~QgsAppPluginManagerInterface()
 {
 }
 
@@ -52,7 +47,7 @@ void QgsAppPluginManagerInterface::addPluginMetadata( const QMap<QString, QStrin
 {
   if ( metadata.isEmpty() || !metadata.contains( QStringLiteral( "id" ) ) )
   {
-    QgsDebugMsg( "Warning: incomplete metadata" );
+    QgsDebugMsg( QStringLiteral( "Warning: incomplete metadata" ) );
     return;
   }
   mPluginManager->addPluginMetadata( metadata.value( QStringLiteral( "id" ) ), metadata );
@@ -78,7 +73,7 @@ void QgsAppPluginManagerInterface::addToRepositoryList( const QMap<QString, QStr
   mPluginManager->addToRepositoryList( repository );
 }
 
-void QgsAppPluginManagerInterface::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsAppPluginManagerInterface::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
 {
   mPluginManager->pushMessage( text, level, duration );
 }

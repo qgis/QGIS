@@ -20,12 +20,11 @@
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
 #include "qgsapplication.h"
-#include "qgsactionmenu.h"
 #include "qgssettings.h"
+#include "qgsmessagebar.h"
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )
-  , mHighlight( nullptr )
   , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
   init( vl, thepFeature, context, showDialogButtons );
@@ -39,20 +38,23 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mHighlight;
   }
 
-  if ( mOwnedFeature )
-    delete mOwnedFeature;
+  delete mOwnedFeature;
 
   saveGeometry();
 }
 
 void QgsAttributeDialog::saveGeometry()
 {
-  QgsSettings().setValue( mSettingsPath + "geometry", QDialog::saveGeometry() );
+  // WARNING!!!! Don't use QgsGui::enableAutoGeometryRestore for this dialog -- the object name
+  // is dynamic and is set to match the layer/feature combination.
+  QgsSettings().setValue( QStringLiteral( "Windows/AttributeDialog/geometry" ), QDialog::saveGeometry() );
 }
 
 void QgsAttributeDialog::restoreGeometry()
 {
-  QDialog::restoreGeometry( QgsSettings().value( mSettingsPath + "geometry" ).toByteArray() );
+  // WARNING!!!! Don't use QgsGui::enableAutoGeometryRestore for this dialog -- the object name
+  // is dynamic and is set to match the layer/feature combination.
+  QDialog::restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/AttributeDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsAttributeDialog::setHighlight( QgsHighlight *h )
@@ -64,8 +66,17 @@ void QgsAttributeDialog::setHighlight( QgsHighlight *h )
 
 void QgsAttributeDialog::accept()
 {
-  mAttributeForm->save();
-  QDialog::accept();
+  bool didSave = mAttributeForm->save();
+  if ( didSave )
+  {
+    QDialog::accept();
+  }
+  else
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "Your JSON value is invalid and has not been saved" ),
+                              Qgis::MessageLevel::Critical );
+  }
 }
 
 void QgsAttributeDialog::show()
@@ -78,7 +89,7 @@ void QgsAttributeDialog::show()
 void QgsAttributeDialog::reject()
 {
   // Delete any actions on other layers that may have been triggered from this dialog
-  if ( mAttributeForm->mode() == QgsAttributeForm::AddFeatureMode )
+  if ( mAttributeForm->mode() == QgsAttributeEditorContext::AddFeatureMode )
     mTrackedVectorLayerTools.rollback();
 
   QDialog::reject();
@@ -89,7 +100,13 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   QgsAttributeEditorContext trackedContext = context;
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
-  layout()->setMargin( 0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+  layout()->addWidget( mMessageBar );
+
+  setLayout( layout() );
+
   mTrackedVectorLayerTools.setVectorLayerTools( trackedContext.vectorLayerTools() );
   trackedContext.setVectorLayerTools( &mTrackedVectorLayerTools );
   if ( showDialogButtons )
@@ -103,20 +120,22 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
-  QgsActionMenu *menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "AttributeTableRow" ), this );
-  if ( !menu->actions().isEmpty() )
+  mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
+  if ( !mMenu->menuActions().isEmpty() )
   {
     QMenuBar *menuBar = new QMenuBar( this );
-    menuBar->addMenu( menu );
+    menuBar->addMenu( mMenu );
     layout()->setMenuBar( menuBar );
-  }
-  else
-  {
-    delete menu;
   }
 
   restoreGeometry();
   focusNextChild();
+}
+
+void QgsAttributeDialog::setMode( QgsAttributeEditorContext::Mode mode )
+{
+  mAttributeForm->setMode( mode );
+  mMenu->setMode( mode );
 }
 
 bool QgsAttributeDialog::event( QEvent *e )
@@ -127,4 +146,9 @@ bool QgsAttributeDialog::event( QEvent *e )
     mHighlight->hide();
 
   return QDialog::event( e );
+}
+
+void QgsAttributeDialog::setExtraContextScope( QgsExpressionContextScope *extraScope )
+{
+  mAttributeForm->setExtraContextScope( extraScope );
 }

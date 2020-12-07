@@ -29,7 +29,8 @@ class QgsRasterRenderer;
 class QgsMapCanvas;
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRasterRendererWidget
  */
 class GUI_EXPORT QgsRasterRendererWidget: public QWidget
@@ -38,11 +39,10 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 
   public:
 
-    //TODO QGIS 3.0 - remove extent parameter, replace with map canvas parameter
+    //TODO QGIS 4.0 - remove extent parameter, replace with map canvas parameter
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
       : mRasterLayer( layer )
       , mExtent( extent )
-      , mCanvas( nullptr )
     {}
 
     virtual QgsRasterRenderer *renderer() = 0 SIP_FACTORY;
@@ -50,7 +50,8 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     void setRasterLayer( QgsRasterLayer *layer ) { mRasterLayer = layer; }
     const QgsRasterLayer *rasterLayer() const { return mRasterLayer; }
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map extent and other properties from the canvas.
      * \param canvas map canvas
      * \see mapCanvas()
@@ -58,25 +59,25 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
      */
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
-    /** Returns the map canvas associated with the widget.
+    /**
+     * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
-     * \see canvasExtent()
      * \since QGIS 2.16
      */
     QgsMapCanvas *mapCanvas();
 
-    virtual QString min( int index = 0 ) { Q_UNUSED( index ); return QString(); }
-    virtual QString max( int index = 0 ) { Q_UNUSED( index ); return QString(); }
-    virtual void setMin( const QString &value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
-    virtual void setMax( const QString &value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
+    virtual QString min( int index = 0 ) { Q_UNUSED( index ) return QString(); }
+    virtual QString max( int index = 0 ) { Q_UNUSED( index ) return QString(); }
+    virtual void setMin( const QString &value, int index = 0 ) { Q_UNUSED( index ) Q_UNUSED( value ); }
+    virtual void setMax( const QString &value, int index = 0 ) { Q_UNUSED( index ) Q_UNUSED( value ); }
     virtual QString stdDev() { return QString(); }
-    virtual void setStdDev( const QString &value ) { Q_UNUSED( value ); }
-    virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
+    virtual void setStdDev( const QString &value ) { Q_UNUSED( value ) }
+    virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ) return -1; }
 
     //! Load programmatically with current values
     virtual void doComputations() { }
 
-    //! Return min/max widget when it exists.
+    //! Returns min/max widget when it exists.
     virtual QgsRasterMinMaxWidget *minMaxWidget() { return nullptr; }
 
   signals:

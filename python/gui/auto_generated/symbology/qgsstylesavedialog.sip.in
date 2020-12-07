@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsstylesavedialog.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsStyleSaveDialog: QDialog
+{
+%Docstring
+a dialog for setting properties of a newly saved style.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsstylesavedialog.h"
+%End
+  public:
+
+    QgsStyleSaveDialog( QWidget *parent /TransferThis/ = 0, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
+%Docstring
+Constructor for :py:class:`QgsSymbolSaveDialog`
+
+:param parent: parent widget
+:param type: the QgsStyle entity type being saved
+%End
+
+    QString name() const;
+%Docstring
+Returns the entered name for the new symbol.
+%End
+
+    void setDefaultTags( const QString &tags );
+%Docstring
+Sets the default ``tags`` for the newly created item.
+
+.. versionadded:: 3.10
+%End
+
+    QString tags() const;
+%Docstring
+Returns any tags entered for the new symbol (as a comma separated value list).
+%End
+
+    bool isFavorite() const;
+%Docstring
+Returns ``True`` if the favorite is checked for the symbol.
+%End
+
+    QgsStyle::StyleEntity selectedType() const;
+%Docstring
+Returns the type of style entity to save.
+
+.. versionadded:: 3.10
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsstylesavedialog.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

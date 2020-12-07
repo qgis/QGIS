@@ -17,18 +17,16 @@
 
 #include <QVector>
 
-#ifdef QGISDEBUG
 #ifdef WIN32
 #include <windows.h>
 #include <dbghelp.h>
-#endif
 #endif
 
 #include "qgis.h"
 
 ///@cond PRIVATE
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *ExceptionInfo )
 {
   QgsStackLines stack;
@@ -49,11 +47,16 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
     paths = QgsStackTrace::mSymbolPaths.toStdString().c_str();
   }
 
-  BOOL success = SymInitialize( process, paths, TRUE );
+  SymInitialize( process, paths, TRUE );
 
   // StackWalk64() may modify context record passed to it, so we will
   // use a copy.
-  CONTEXT context_record = *ExceptionInfo->ContextRecord;
+  CONTEXT context_record;
+  if ( ExceptionInfo )
+    context_record = *ExceptionInfo->ContextRecord;
+  else
+    RtlCaptureContext( &context_record );
+
   // Initialize stack walking.
   STACKFRAME64 stack_frame;
   memset( &stack_frame, 0, sizeof( stack_frame ) );
@@ -98,32 +101,30 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
     if ( SymFromAddr( process, ( DWORD64 )stack_frame.AddrPC.Offset, &displacement, symbol ) )
     {
       DWORD dwDisplacement;
-      QString fileName;
-      QString lineNumber;
-      QString moduleName;
-      if ( SymGetLineFromAddr( process, ( DWORD )( stack_frame.AddrPC.Offset ), &dwDisplacement, line ) )
-      {
-        fileName = QString( line->FileName );
-        lineNumber = QString::number( line->LineNumber );
-      }
-      else
-      {
-        fileName = "(unknown file)";
-        lineNumber = "(unknown line)";
-      }
-      if ( SymGetModuleInfo( process, ( DWORD )( stack_frame.AddrPC.Offset ), module ) )
-      {
-        moduleName = QString( module->ModuleName );
-      }
-      else
-      {
-        moduleName = "(unknown module)";
-      }
+
       QgsStackTrace::StackLine stackline;
-      stackline.moduleName = moduleName;
-      stackline.fileName = fileName;
-      stackline.lineNumber = lineNumber;
       stackline.symbolName = QString( symbol->Name );
+
+      if ( SymGetLineFromAddr( process, ( DWORD64 ) stack_frame.AddrPC.Offset, &dwDisplacement, line ) )
+      {
+        stackline.fileName = QString( line->FileName );
+        stackline.lineNumber = QString::number( line->LineNumber );
+      }
+      else
+      {
+        stackline.fileName = "(unknown file)";
+        stackline.lineNumber = "(unknown line)";
+      }
+
+      if ( SymGetModuleInfo( process, ( DWORD64 ) stack_frame.AddrPC.Offset, module ) )
+      {
+        stackline.moduleName = module->ModuleName;
+      }
+      else
+      {
+        stackline.moduleName = "(unknown module)";
+      }
+
       stack.append( stackline );
     }
   }
@@ -133,7 +134,6 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
   qgsFree( module );
   SymCleanup( process );
   return stack;
-
 }
 
 QString QgsStackTrace::mSymbolPaths;
@@ -143,12 +143,12 @@ void QgsStackTrace::setSymbolPath( QString symbolPaths )
   mSymbolPaths = symbolPaths;
 }
 
-#endif // Q_OS_WIN
+#endif // _MSC_VER
 
 #ifdef Q_OS_LINUX
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 {
-  Q_UNUSED( maxFrames );
+  Q_UNUSED( maxFrames )
   QgsStackLines stack;
 #ifndef QGISDEBUG
   return stack;
@@ -159,21 +159,16 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 }
 #endif
 
-QgsStackTrace::QgsStackTrace()
-{
-
-}
-
 bool QgsStackTrace::StackLine::isQgisModule() const
 {
-  return moduleName.toLower().contains( "qgis" );
+  return moduleName.contains( QLatin1String( "qgis" ), Qt::CaseInsensitive );
 }
 
 bool QgsStackTrace::StackLine::isValid() const
 {
-  return !( fileName.toLower().contains( "exe_common" ) ||
-            fileName.toLower().contains( "unknown" ) ||
-            lineNumber.toLower().contains( "unknown" ) );
+  return !( fileName.contains( QLatin1String( "exe_common" ), Qt::CaseInsensitive ) ||
+            fileName.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) ||
+            lineNumber.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) );
 
 }
 ///@endcond

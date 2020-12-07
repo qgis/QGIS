@@ -23,10 +23,12 @@
 
 #include "qgsattributetableconfig.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsVectorLayer;
 
-/** \class QgsOrganizeTableColumnsDialog
+/**
+ * \class QgsOrganizeTableColumnsDialog
  * \ingroup gui
  * Dialog for organising (hiding and reordering) columns in the attributes table.
  * \since QGIS 2.16
@@ -41,14 +43,24 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      * Constructor
      * \param vl The concerned vector layer
      * \param parent parent object
+     * \param config attribute table config to use.
+     * \param flags window flags
+     */
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
+
+    ///@cond PRIVATE
+
+    /**
+     * Constructor
+     * \param vl The concerned vector layer
+     * \param parent parent object
      * \param flags window flags
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
-
-    ~QgsOrganizeTableColumnsDialog();
+    ///@endcond
 
     /**
-     * Get the updated configuration
+     * Gets the updated configuration
      */
     QgsAttributeTableConfig config() const;
 

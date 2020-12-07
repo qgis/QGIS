@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 ###########################################################################
 #    qgis_srs.sh
 #    ---------------------
@@ -18,7 +18,7 @@
 # AUTHOR:       Maciej Sieczka, msieczka@sieczka.org, http://www.sieczka.org
 #
 # PURPOSE:      Create a QGIS srs.db-compliant SQL script with SRS, ellipsoid
-#               and projections defs based on the output of installed PROJ.4 and
+#               and projections defs based on the output of installed PROJ and
 #               GDAL.
 #
 # VERSION:      1.1.0, 2009.03.19
@@ -37,7 +37,7 @@
 #
 # 1.0.3: Minor cosmetics in comments.
 #
-# 1.0.2: Replace 'latlon' and 'lonlat' in the `proj -le` output, so that QGIS
+# 1.0.2: Replace 'latlon' and 'lonlat' in the $(proj -le) output, so that QGIS
 #        can parse the 'tbl_projection' table to provide the GCSs list in the
 #        'Projection' dialog (BTW, the dialog should be called 'Coordinate
 #        system' actually, as a projection is only a component of a cs).
@@ -129,15 +129,15 @@ pop_tbl_projs ()
 
 # Process each proj4 projection acronym...
 
-for i in `proj -l | cut -d" " -f1 | sed -e 's/lonlat/longlat/' -e 's/latlon/latlong/'` ; do
+for i in $(proj -l | cut -d" " -f1 | sed -e 's/lonlat/longlat/' -e 's/latlon/latlong/') ; do
 
  #...to extract it's parameters, making sure not more than 4 fields are created...
 
- proj=`proj -l=$i | tr -d "\t" | sed 's/^ *//g' | sed 's/ : /\n/' | sed "s/'/''/g" | awk '{print "'\''"$0"'\''"}' | tr "\n" "," | sed 's/,$/\n/' | sed "s/','/ /4g"`
+ proj=$(proj -l=$i | tr -d "\t" | sed 's/^ *//g' | sed 's/ : /\n/' | sed "s/'/''/g" | awk '{print "'\''"$0"'\''"}' | tr "\n" "," | sed 's/,$/\n/' | sed "s/','/ /4g")
 
  #...count the number of parameters...
 
- proj_nf=`echo $proj | awk -F"','" '{print NF}'`
+ proj_nf=$(echo $proj | awk -F"','" '{print NF}')
 
  #...if only 3 (3 or 4 are possible) add an empty 4th one.
 
@@ -189,24 +189,24 @@ pop_tbl_srss ()
 {
 # Populate SRSs table:
 
-gdal_share=`gdal-config --datadir`
+gdal_share=$(gdal-config --datadir)
 no=0
 
 # Extract projected SRSs from the installed GDAL pcs.csv file:
 
 #Find valid EPSG numbers parsing GDAL's pcs.csv:
-for i in `awk 'NR>1' ${gdal_share}/pcs.csv | cut -d, -f1`; do
+for i in $(awk 'NR>1' ${gdal_share}/pcs.csv | cut -d, -f1); do
 
-  raw=`epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: "`
+  raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: ")
 
-  if [ -n "$raw" ]; then
+  if [[ -n "$raw" ]]; then
 
-   no=`expr $no + 1`
-   name=`echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g"`
-   proj=`echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2`
-   ellps=`echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2`
-   srs=`echo $raw | grep -o "+proj.\{1,\} +no_defs"`
-   epsg=`echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g'`
+   no=$((no + 1))
+   name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")
+   proj=$(echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2)
+   ellps=$(echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2)
+   srs=$(echo $raw | grep -o "+proj.\{1,\} +no_defs")
+   epsg=$(echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g')
    isgeo=0
 
    echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},${epsg},${isgeo});"
@@ -218,18 +218,18 @@ done
 # Extract un-projected SRSs from the installed GDAL gcs.csv file:
 
 #Find valid EPSG numbers parsing GDAL's gcs.csv:
-for i in `awk 'NR>1' ${gdal_share}/gcs.csv | cut -d, -f1`; do
+for i in $(awk 'NR>1' ${gdal_share}/gcs.csv | cut -d, -f1); do
 
-  raw=`epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: "`
+  raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: ")
 
-  if [ -n "$raw" ]; then
+  if [[ -n "$raw" ]]; then
 
-   no=`expr $no + 1`
-   name=`echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g"`
-   proj=`echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2`
-   ellps=`echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2`
-   srs=`echo $raw | grep -o "+proj.\{1,\} +no_defs"`
-   epsg=`echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g'`
+   no=$((no + 1))
+   name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")
+   proj=$(echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2)
+   ellps=$(echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2)
+   srs=$(echo $raw | grep -o "+proj.\{1,\} +no_defs")
+   epsg=$(echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g')
    isgeo=1
 
    echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},${epsg},${isgeo});"

@@ -24,14 +24,14 @@ include(CheckLibraryExists)
 
 # try to use sqlite framework on mac
 # want clean framework path, not unix compatibility path
-IF (APPLE)
+IF (APPLE AND NOT IOS)
   IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
       OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
       OR NOT CMAKE_FIND_FRAMEWORK)
     SET (CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
     SET (CMAKE_FIND_FRAMEWORK "ONLY" CACHE STRING "" FORCE)
     FIND_PATH(SPATIALITE_INCLUDE_DIR SQLite3/spatialite.h)
-    # if no spatialite header, we don't want sqlite find below to succeed
+    # if no SpatiaLite header, we don't want SQLite find below to succeed
     IF (SPATIALITE_INCLUDE_DIR)
       FIND_LIBRARY(SPATIALITE_LIBRARY SQLite3)
       # FIND_PATH doesn't add "Headers" for a framework
@@ -39,7 +39,7 @@ IF (APPLE)
     ENDIF (SPATIALITE_INCLUDE_DIR)
     SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
   ENDIF ()
-ENDIF (APPLE)
+ENDIF (APPLE AND NOT IOS)
 
 FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
   /usr/include
@@ -65,14 +65,10 @@ IF (SPATIALITE_FOUND)
       MESSAGE(STATUS "Found SpatiaLite: ${SPATIALITE_LIBRARY}")
    ENDIF (NOT SPATIALITE_FIND_QUIETLY)
 
-   # Check for symbol gaiaDropTable
    IF(APPLE)
      # no extra LDFLAGS used in link test, may fail in OS X SDK
      SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
    ENDIF(APPLE)
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_G_4_1_1)
-   check_library_exists("${SPATIALITE_LIBRARY}" spatialite_init_ex "" SPATIALITE_HAS_INIT_EX)
 
 ELSE (SPATIALITE_FOUND)
 

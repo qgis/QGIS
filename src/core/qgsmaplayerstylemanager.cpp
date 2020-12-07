@@ -14,35 +14,52 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerstyle.h"
+#include "qgsmaplayer.h"
 
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 
 #include <QDomElement>
 #include <QTextStream>
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   : mLayer( layer )
-  , mOverriddenOriginalStyle( nullptr )
+
 {
   reset();
 }
 
+QString QgsMapLayerStyleManager::defaultStyleName() const
+{
+  return tr( "default" );
+}
+
+
 void QgsMapLayerStyleManager::reset()
 {
-  mStyles.insert( QString(), QgsMapLayerStyle() ); // insert entry for the default current style
-  mCurrentStyle.clear();
+  mStyles.insert( defaultStyleName(), QgsMapLayerStyle() ); // insert entry for the default current style
+  mCurrentStyle = defaultStyleName();
 }
 
 void QgsMapLayerStyleManager::readXml( const QDomElement &mgrElement )
 {
   mCurrentStyle = mgrElement.attribute( QStringLiteral( "current" ) );
+  if ( mCurrentStyle.isEmpty() )
+  {
+    // For old project made with QGIS 2, we migrate to "default".
+    mCurrentStyle = defaultStyleName();
+  }
 
   mStyles.clear();
   QDomElement ch = mgrElement.firstChildElement( QStringLiteral( "map-layer-style" ) );
   while ( !ch.isNull() )
   {
     QString name = ch.attribute( QStringLiteral( "name" ) );
+    if ( name.isEmpty() )
+    {
+      // For old project made with QGIS 2, we migrate to "default".
+      name = defaultStyleName();
+    }
     QgsMapLayerStyle style;
     style.readXml( ch );
     mStyles.insert( name, style );
@@ -56,7 +73,8 @@ void QgsMapLayerStyleManager::writeXml( QDomElement &mgrElement ) const
   QDomDocument doc = mgrElement.ownerDocument();
   mgrElement.setAttribute( QStringLiteral( "current" ), mCurrentStyle );
 
-  Q_FOREACH ( const QString &name, styles() )
+  const auto constStyles = styles();
+  for ( const QString &name : constStyles )
   {
     QDomElement ch = doc.createElement( QStringLiteral( "map-layer-style" ) );
     ch.setAttribute( QStringLiteral( "name" ), name );
@@ -208,79 +226,18 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   return true;
 }
 
-
-// -----
-
-QgsMapLayerStyle::QgsMapLayerStyle()
+bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) const
 {
+  return styleName == defaultStyleName();
 }
 
-QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
-  : mXmlData( xmlData )
+void QgsMapLayerStyleManager::copyStylesFrom( QgsMapLayerStyleManager *other )
 {
-}
+  const QStringList styleNames = other->mStyles.keys();
 
-bool QgsMapLayerStyle::isValid() const
-{
-  return !mXmlData.isEmpty();
-}
-
-void QgsMapLayerStyle::clear()
-{
-  mXmlData.clear();
-}
-
-QString QgsMapLayerStyle::xmlData() const
-{
-  return mXmlData;
-}
-
-void QgsMapLayerStyle::readFromLayer( QgsMapLayer *layer )
-{
-  QString errorMsg;
-  QDomDocument doc;
-  layer->exportNamedStyle( doc, errorMsg );
-  if ( !errorMsg.isEmpty() )
+  for ( const QString &styleName : styleNames )
   {
-    QgsDebugMsg( "Failed to export style from layer: " + errorMsg );
-    return;
+    mStyles.remove( styleName );
+    addStyle( styleName, other->style( styleName ) );
   }
-
-  mXmlData.clear();
-  QTextStream stream( &mXmlData );
-  doc.documentElement().save( stream, 0 );
-}
-
-void QgsMapLayerStyle::writeToLayer( QgsMapLayer *layer ) const
-{
-  QDomDocument doc( QStringLiteral( "qgis" ) );
-  if ( !doc.setContent( mXmlData ) )
-  {
-    QgsDebugMsg( "Failed to parse XML of previously stored XML data - this should not happen!" );
-    return;
-  }
-
-  QString errorMsg;
-  if ( !layer->importNamedStyle( doc, errorMsg ) )
-  {
-    QgsDebugMsg( "Failed to import style to layer: " + errorMsg );
-  }
-}
-
-void QgsMapLayerStyle::readXml( const QDomElement &styleElement )
-{
-  mXmlData.clear();
-  QTextStream stream( &mXmlData );
-  styleElement.firstChildElement().save( stream, 0 );
-}
-
-void QgsMapLayerStyle::writeXml( QDomElement &styleElement ) const
-{
-  // the currently selected style has no content stored here (layer has all the information inside)
-  if ( !isValid() )
-    return;
-
-  QDomDocument docX;
-  docX.setContent( mXmlData );
-  styleElement.appendChild( docX.documentElement() );
 }

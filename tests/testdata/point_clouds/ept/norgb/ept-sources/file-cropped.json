@@ -1,0 +1,254 @@
+{
+  "bounds": [
+    1.1824941528320352,
+    32.94006787109376,
+    -1.9833798454284666,
+    1.5105941528320344,
+    33.30966787109375,
+    -1.9225798454284666
+  ],
+  "metadata": {
+    "readers.las": {
+      "comp_spatialreference": "",
+      "compressed": false,
+      "count": 22,
+      "creation_doy": 336,
+      "creation_year": 2020,
+      "dataformat_id": 3,
+      "dataoffset": 227,
+      "filesource_id": 51143,
+      "global_encoding": 0,
+      "global_encoding_base64": "AAA=",
+      "header_size": 227,
+      "major_version": 1,
+      "maxx": 1.510594153,
+      "maxy": 33.30966787,
+      "maxz": -1.922579845,
+      "minor_version": 2,
+      "minx": 1.182494153,
+      "miny": 32.94006787,
+      "minz": -1.983379845,
+      "offset_x": 0,
+      "offset_y": 0,
+      "offset_z": 0,
+      "point_length": 34,
+      "project_id": "00000000-0000-0000-0000-000000000000",
+      "scale_x": 0.01,
+      "scale_y": 0.01,
+      "scale_z": 0.01,
+      "software_id": "PDAL 2.1.0 (Releas)",
+      "spatialreference": "",
+      "srs": {
+        "compoundwkt": "",
+        "horizontal": "",
+        "isgeocentric": false,
+        "isgeographic": false,
+        "prettycompoundwkt": "",
+        "prettywkt": "",
+        "proj4": "",
+        "units": {
+          "horizontal": "unknown",
+          "vertical": ""
+        },
+        "vertical": "",
+        "wkt": ""
+      },
+      "system_id": "PDAL"
+    }
+  },
+  "path": "/shared/GIS/Data/Point Clouds/Nodebo/Campus/file-cropped.las",
+  "pipeline": [
+    {
+      "filename": "/shared/GIS/Data/Point Clouds/Nodebo/Campus/file-cropped.las"
+    }
+  ],
+  "points": 22,
+  "schema": [
+    {
+      "count": 22,
+      "maximum": 1.51,
+      "mean": 1.341363636363636,
+      "minimum": 1.18,
+      "name": "X",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 0.09854834782736911,
+      "type": "signed",
+      "variance": 0.009711776859504128
+    },
+    {
+      "count": 22,
+      "maximum": 33.31,
+      "mean": 33.13181818181818,
+      "minimum": 32.94,
+      "name": "Y",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 0.1087798595845748,
+      "type": "signed",
+      "variance": 0.01183305785123981
+    },
+    {
+      "count": 22,
+      "maximum": -1.92,
+      "mean": -1.9545454545454546,
+      "minimum": -1.98,
+      "name": "Z",
+      "scale": 0.01,
+      "size": 4,
+      "stddev": 0.016439219381841032,
+      "type": "signed",
+      "variance": 0.0002702479338842979
+    },
+    {
+      "count": 22,
+      "maximum": 38,
+      "mean": 13.72727272727273,
+      "minimum": 2,
+      "name": "Intensity",
+      "size": 2,
+      "stddev": 10.553680177514202,
+      "type": "unsigned",
+      "variance": 111.3801652892562
+    },
+    {
+      "count": 22,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "ReturnNumber",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 22,
+      "maximum": 1,
+      "mean": 1,
+      "minimum": 1,
+      "name": "NumberOfReturns",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 22,
+      "maximum": 1,
+      "mean": 0.6363636363636365,
+      "minimum": 0,
+      "name": "ScanDirectionFlag",
+      "size": 1,
+      "stddev": 0.48104569292083466,
+      "type": "unsigned",
+      "variance": 0.23140495867768596
+    },
+    {
+      "count": 22,
+      "maximum": 1,
+      "mean": 0.5000000000000001,
+      "minimum": 0,
+      "name": "EdgeOfFlightLine",
+      "size": 1,
+      "stddev": 0.5,
+      "type": "unsigned",
+      "variance": 0.25
+    },
+    {
+      "count": 22,
+      "counts": [
+        {
+          "count": 22,
+          "value": 0
+        }
+      ],
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Classification",
+      "size": 1,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 22,
+      "maximum": 94,
+      "mean": -36.5,
+      "minimum": -120,
+      "name": "ScanAngleRank",
+      "size": 4,
+      "stddev": 60.186641526021525,
+      "type": "float",
+      "variance": 3622.431818181819
+    },
+    {
+      "count": 22,
+      "maximum": 227,
+      "mean": 149.68181818181822,
+      "minimum": 9,
+      "name": "UserData",
+      "size": 1,
+      "stddev": 65.47337166126557,
+      "type": "unsigned",
+      "variance": 4286.762396694215
+    },
+    {
+      "count": 22,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "PointSourceId",
+      "size": 2,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 22,
+      "maximum": 340.79595947265625,
+      "mean": 279.0253649624911,
+      "minimum": 190.91554260253906,
+      "name": "GpsTime",
+      "size": 8,
+      "stddev": 68.08847106571992,
+      "type": "float",
+      "variance": 4636.039892067379
+    },
+    {
+      "count": 22,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Red",
+      "size": 2,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 22,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Green",
+      "size": 2,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    },
+    {
+      "count": 22,
+      "maximum": 0,
+      "mean": 0,
+      "minimum": 0,
+      "name": "Blue",
+      "size": 2,
+      "stddev": 0,
+      "type": "unsigned",
+      "variance": 0
+    }
+  ],
+  "srs": {}
+}

@@ -1,6 +1,6 @@
 Line-Polygon Intersection
 shapes_lines
-ParameterVector|LINES|Lines|1|False
-ParameterVector|POLYGONS|Polygons|2|False
-ParameterSelection|METHOD|Output|[0] one multi-line per polygon;[1] keep original line attributes
-OutputVector|INTERSECT|Intersection
+QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
+QgsProcessingParameterEnum|METHOD|Output|[0] one multi-line per polygon;[1] keep original line attributes
+QgsProcessingParameterVectorDestination|INTERSECT|Intersection

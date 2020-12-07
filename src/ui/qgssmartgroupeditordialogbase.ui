@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Smart Group Name</string>
+      <string>Smart group name</string>
      </property>
     </widget>
    </item>

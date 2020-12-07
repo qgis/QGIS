@@ -19,11 +19,8 @@
 
 #include "qgis.h"
 #include "qgsfcgiserverresponse.h"
-#include "qgslogger.h"
-#include "qgsserverlogger.h"
 #include "qgsmessagelog.h"
 #include <fcgi_stdio.h>
-
 #include <QDebug>
 
 //
@@ -35,10 +32,6 @@ QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
 {
   mBuffer.open( QIODevice::ReadWrite );
   setDefaultHeaders();
-}
-
-QgsFcgiServerResponse::~QgsFcgiServerResponse()
-{
 }
 
 void QgsFcgiServerResponse::removeHeader( const QString &key )
@@ -101,7 +94,7 @@ void QgsFcgiServerResponse::finish()
   {
     if ( ! mHeaders.contains( "Content-Length" ) )
     {
-      mHeaders.insert( QStringLiteral( "Content-Length" ), QStringLiteral( "%1" ).arg( mBuffer.pos() ) );
+      mHeaders.insert( QStringLiteral( "Content-Length" ), QString::number( mBuffer.pos() ) );
     }
   }
   flush();
@@ -139,7 +132,7 @@ void QgsFcgiServerResponse::flush()
 #ifdef QGISDEBUG
     qDebug() << QStringLiteral( "Sent %1 blocks of %2 bytes" ).arg( count ).arg( ba.size() );
 #else
-    Q_UNUSED( count );
+    Q_UNUSED( count )
 #endif
     // Reset the internal buffer
     ba.clear();
@@ -173,5 +166,5 @@ void QgsFcgiServerResponse::truncate()
 
 void QgsFcgiServerResponse::setDefaultHeaders()
 {
-  setHeader( QStringLiteral( "Server" ), QStringLiteral( " Qgis FCGI server - QGis version %1" ).arg( Qgis::QGIS_VERSION ) );
+  setHeader( QStringLiteral( "Server" ), QStringLiteral( " QGIS FCGI server - QGIS version %1" ).arg( Qgis::version() ) );
 }

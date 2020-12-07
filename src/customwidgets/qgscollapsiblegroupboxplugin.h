@@ -28,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT QgsCollapsibleGroupBoxPlugin : public QObject, public
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsCollapsibleGroupBoxPlugin( QObject *parent = 0 );
+    explicit QgsCollapsibleGroupBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

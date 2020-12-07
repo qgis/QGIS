@@ -16,22 +16,16 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from processing.tools.system import userFolder
 
 
-class RenderingStyles(object):
-
+class RenderingStyles:
     styles = {}
 
     @staticmethod

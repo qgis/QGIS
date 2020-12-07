@@ -1,4 +1,4 @@
 Minimum Distance Analysis
 statistics_points
-ParameterVector|POINTS|Points|0|False
-OutputTable|TABLE|Minimum Distance Analysis
+QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
+QgsProcessingParameterVectorDestination|TABLE|Minimum Distance Analysis

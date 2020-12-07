@@ -1,1 +1,7 @@
-libqgis-app{QGIS_ABI}: no-symbols-control-file usr/lib/libqgis_app.so.{QGIS_ABI}
+no-symbols-control-file *
+spelling-error-in-binary * MoR More
+spelling-error-in-binary * Pres Press
+spelling-error-in-binary * Righ Right
+spelling-error-in-binary * Rigt Right
+spelling-error-in-binary * pres press
+spelling-error-in-binary * whE when

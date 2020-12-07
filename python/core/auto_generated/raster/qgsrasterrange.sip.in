@@ -1,0 +1,141 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrange.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+typedef QList<QgsRasterRange> QgsRasterRangeList;
+
+class QgsRasterRange
+{
+%Docstring
+Raster values range container. Represents range of values between min and max
+including min and max value.
+%End
+
+%TypeHeaderCode
+#include "qgsrasterrange.h"
+%End
+  public:
+
+    enum BoundsType
+    {
+      IncludeMinAndMax,
+      IncludeMax,
+      IncludeMin,
+      Exclusive,
+    };
+
+    QgsRasterRange();
+%Docstring
+Default constructor, both min and max value for the range will be set to NaN.
+%End
+
+    QgsRasterRange( double min, double max, BoundsType bounds = IncludeMinAndMax );
+%Docstring
+Constructor for a range with the given ``min`` and ``max`` values.
+
+The ``bounds`` argument dictates how the min and max value themselves
+will be handled by the range.
+%End
+
+    double min() const;
+%Docstring
+Returns the minimum value for the range.
+
+.. seealso:: :py:func:`setMin`
+%End
+
+    double max() const;
+%Docstring
+Returns the maximum value for the range.
+
+.. seealso:: :py:func:`setMax`
+%End
+
+    BoundsType bounds() const;
+%Docstring
+Returns the bounds type for the range, which specifies
+whether or not the min and max values themselves are included
+in the range.
+
+.. seealso:: :py:func:`setBounds`
+
+.. versionadded:: 3.2
+%End
+
+    double setMin( double min );
+%Docstring
+Sets the minimum value for the range.
+
+.. seealso:: :py:func:`min`
+%End
+
+    double setMax( double max );
+%Docstring
+Sets the maximum value for the range.
+
+.. seealso:: :py:func:`max`
+%End
+
+    void setBounds( BoundsType type );
+%Docstring
+Sets the bounds ``type`` for the range, which specifies
+whether or not the min and max values themselves are included
+in the range.
+
+.. seealso:: :py:func:`bounds`
+
+.. versionadded:: 3.2
+%End
+
+    bool operator==( const QgsRasterRange &o ) const;
+
+    bool contains( double value ) const;
+%Docstring
+Returns ``True`` if this range contains the specified ``value``.
+
+.. versionadded:: 3.2
+%End
+
+    static bool contains( double value, const QgsRasterRangeList &rangeList );
+%Docstring
+Tests if a ``value`` is within the list of ranges
+
+:param value: value
+:param rangeList: list of ranges
+
+:return: ``True`` if value is in at least one of ranges
+%End
+
+    bool overlaps( const QgsRasterRange &other ) const;
+%Docstring
+Returns ``True`` if this range overlaps another range.
+
+.. versionadded:: 3.2
+%End
+
+    QString asText() const;
+%Docstring
+Returns a text representation of the range.
+
+.. versionadded:: 3.2
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrange.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

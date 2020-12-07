@@ -69,7 +69,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Import certificate</string>
+       <string>Import Certificate</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="spacing">
@@ -127,7 +127,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="spinbxPort">
+             <widget class="QgsSpinBox" name="spinbxPort">
               <property name="maximum">
                <number>50000</number>
               </property>
@@ -170,7 +170,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spinbxTimeout">
+           <widget class="QgsSpinBox" name="spinbxTimeout">
             <property name="font">
              <font>
               <pointsize>8</pointsize>
@@ -272,6 +272,11 @@
    <extends>QWidget</extends>
    <header>qgsauthsslconfigwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>

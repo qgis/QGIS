@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslistwidget.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsListWidget: QgsTableWidgetBase
+{
+%Docstring
+Widget allowing to edit a QVariantList, using a table.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslistwidget.h"
+%End
+  public:
+
+    explicit QgsListWidget( QVariant::Type subType, QWidget *parent = 0 );
+%Docstring
+Constructor.
+%End
+
+    void setList( const QVariantList &list );
+%Docstring
+Set the initial value of the widget.
+%End
+
+    QVariantList list() const;
+%Docstring
+Gets the edit value.
+
+:return: the QVariantList
+%End
+
+    bool valid() const;
+%Docstring
+Check the content is valid
+
+:return: ``True`` if valid
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslistwidget.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

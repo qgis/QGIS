@@ -21,61 +21,76 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
-
-from processing.core.outputs import OutputHTML
-
-from processing.algs.gdal.GdalUtils import GdalUtils
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFileDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.vector import ogrConnectionString
 
-
-class OgrInfo(GdalAlgorithm):
-
+class ogrinfo(GdalAlgorithm):
     INPUT = 'INPUT'
     SUMMARY_ONLY = 'SUMMARY_ONLY'
+    NO_METADATA = 'NO_METADATA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterBoolean(self.SUMMARY_ONLY,
-                                           self.tr('Summary output only'),
-                                           True))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Layer information')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBoolean(self.SUMMARY_ONLY,
+                                                        self.tr('Summary output only'),
+                                                        defaultValue=True))
+        self.addParameter(QgsProcessingParameterBoolean(self.NO_METADATA,
+                                                        self.tr('Suppress metadata info'),
+                                                        defaultValue=False))
+
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
+                                                                self.tr('Layer information'),
+                                                                self.tr('HTML files (*.html)')))
 
     def name(self):
         return 'ogrinfo'
 
     def displayName(self):
-        return self.tr('Information')
+        return self.tr('Vector information')
 
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def getConsoleCommands(self, parameters):
-        arguments = ["ogrinfo"]
-        arguments.append('-al')
-        if self.getParameterValue(self.SUMMARY_ONLY):
+    def groupId(self):
+        return 'vectormiscellaneous'
+
+    def commandName(self):
+        return 'ogrinfo'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        arguments = ['-al']
+
+        if self.parameterAsBoolean(parameters, self.SUMMARY_ONLY, context):
             arguments.append('-so')
-        layer = self.getParameterValue(self.INPUT)
-        conn = ogrConnectionString(layer)
-        arguments.append(conn)
-        return arguments
+        if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
+            arguments.append('-nomd')
+
+        inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        arguments.append(ogrLayer)
+        arguments.append(layerName)
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):
-        GdalUtils.runGdal(self.getConsoleCommands(parameters), feedback)
-        output = self.getOutputValue(self.OUTPUT)
+        GdalUtils.runGdal(self.getConsoleCommands(parameters, context, feedback), feedback)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         with open(output, 'w') as f:
             f.write('<pre>')
             for s in GdalUtils.getConsoleOutput()[1:]:
-                f.write(s)
+                f.write(str(s))
             f.write('</pre>')
+
+        return {self.OUTPUT: output}

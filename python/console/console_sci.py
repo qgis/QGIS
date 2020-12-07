@@ -18,13 +18,12 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import bytes
-from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
-from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, QFontDatabase
-from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
+from qgis.PyQt.Qsci import QsciScintilla
+from qgis.gui import QgsCodeEditorPython, QgsCodeEditorColorScheme
 
 import sys
 import os
@@ -33,18 +32,24 @@ import codecs
 import re
 import traceback
 
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import QgsApplication, QgsSettings, Qgis
+from qgis.gui import QgsCodeEditor
+
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
-_init_commands = ["from qgis.core import *", "import qgis.utils",
-                  "from qgis.utils import iface"]
+_init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
+                  "from qgis.gui import *", "from qgis.analysis import *", "from qgis._3d import *",
+                  "import processing", "import qgis.utils",
+                  "from qgis.utils import iface", "from qgis.PyQt.QtCore import *", "from qgis.PyQt.QtGui import *",
+                  "from qgis.PyQt.QtWidgets import *",
+                  "from qgis.PyQt.QtNetwork import *", "from qgis.PyQt.QtXml import *"]
 _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
 
 
-class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
+class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
 
     def __init__(self, parent=None):
-        super(ShellScintilla, self).__init__(parent)
+        super(QgsCodeEditorPython, self).__init__(parent)
         code.InteractiveInterpreter.__init__(self, locals=None)
 
         self.parent = parent
@@ -54,36 +59,23 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         self.settings = QgsSettings()
 
-        # Enable non-ascii chars for editor
-        self.setUtf8(True)
-
         self.new_input_line = True
 
-        self.setMarginWidth(0, 0)
-        self.setMarginWidth(1, 0)
-        self.setMarginWidth(2, 0)
-
         self.buffer = []
+        self.continuationLine = False
 
-        self.displayPrompt(False)
+        self.displayPrompt(self.continuationLine)
 
         for line in _init_commands:
             self.runsource(line)
 
         self.history = []
-        self.historyIndex = 0
+        self.softHistory = ['']
+        self.softHistoryIndex = 0
         # Read history command file
         self.readHistoryFile()
 
         self.historyDlg = HistoryDialog(self)
-
-        # Brace matching: enable for a brace immediately before or after
-        # the current position
-        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
-
-        # Current line visible with special background color
-        self.setCaretWidth(2)
 
         self.refreshSettingsShell()
 
@@ -112,34 +104,30 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
         self.newShortcutCSS.setContext(Qt.WidgetShortcut)
         self.newShortcutCAS.setContext(Qt.WidgetShortcut)
-        self.newShortcutCAS.activated.connect(self.autoCompleteKeyBinding)
+        self.newShortcutCAS.activated.connect(self.autoComplete)
         self.newShortcutCSS.activated.connect(self.showHistory)
 
+    def initializeLexer(self):
+        super().initializeLexer()
+        self.setCaretLineVisible(False)
+        self.setLineNumbersVisible(False)  # NO linenumbers for the input line
+        self.setFoldingVisible(False)
+        # Margin 1 is used for the '>>>' prompt (console input)
+        self.setMarginLineNumbers(1, True)
+        self.setMarginWidth(1, "00000")
+        self.setMarginType(1, 5)  # TextMarginRightJustified=5
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditorColorScheme.ColorRole.Background))
+        self.setEdgeMode(QsciScintilla.EdgeNone)
+
     def _setMinimumHeight(self):
-        font = self.lexer.defaultFont(0)
+        font = self.lexer().defaultFont(0)
         fm = QFontMetrics(font)
 
         self.setMinimumHeight(fm.height() + 10)
 
     def refreshSettingsShell(self):
         # Set Python lexer
-        self.setLexers()
-        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
-        self.setAutoCompletionThreshold(threshold)
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.setAutoCompletionSource(self.AcsDocument)
-            elif radioButtonSource == 'fromAPI':
-                self.setAutoCompletionSource(self.AcsAPIs)
-            elif radioButtonSource == 'fromDocAPI':
-                self.setAutoCompletionSource(self.AcsAll)
-        else:
-            self.setAutoCompletionSource(self.AcsNone)
-
-        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
-        self.setCaretForegroundColor(cursorColor)
+        self.initializeLexer()
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
@@ -150,80 +138,14 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.historyDlg._reloadHistory()
         self.historyDlg.activateWindow()
 
-    def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.autoCompleteFromDocument()
-            elif radioButtonSource == 'fromAPI':
-                self.autoCompleteFromAPIs()
-            elif radioButtonSource == 'fromDocAPI':
-                self.autoCompleteFromAll()
-
     def commandConsole(self, commands):
         if not self.is_cursor_on_last_line():
             self.move_cursor_to_end()
-        line, pos = self.getCursorPosition()
-        selCmdLength = len(self.text(line))
-        self.setSelection(line, 4, line, selCmdLength)
-        self.removeSelectedText()
         for cmd in commands:
-            self.append(cmd)
+            self.setText(cmd)
             self.entered()
         self.move_cursor_to_end()
         self.setFocus()
-
-    def setLexers(self):
-        self.lexer = QsciLexerPython()
-
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-
-        loadFont = self.settings.value("pythonConsole/fontfamilytext")
-        if loadFont:
-            font.setFamily(loadFont)
-        fontSize = self.settings.value("pythonConsole/fontsize", type=int)
-        if fontSize:
-            font.setPointSize(fontSize)
-
-        self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue))), 7)
-        self.lexer.setFont(font, 1)
-        self.lexer.setFont(font, 3)
-        self.lexer.setFont(font, 4)
-
-        for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white)))
-            self.lexer.setPaper(paperColor, style)
-
-        self.api = QsciAPIs(self.lexer)
-        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-        if checkBoxAPI:
-            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
-            self.api.loadPrepared(pap)
-        elif checkBoxPreparedAPI:
-            self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
-        else:
-            apiPath = self.settings.value("pythonConsole/userAPI", [])
-            for i in range(0, len(apiPath)):
-                self.api.load(apiPath[i])
-            self.api.prepare()
-            self.lexer.setAPIs(self.api)
-
-        self.setLexer(self.lexer)
-
-    # TODO: show completion list for file and directory
 
     def getText(self):
         """ Get the text as a unicode string. """
@@ -246,12 +168,24 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.lines() - 1
-        return (line, len(self.text(line)))
+        return line, len(self.text(line))
+
+    def is_cursor_at_start(self):
+        """Return True if cursor is at the end of text"""
+        cline, cindex = self.getCursorPosition()
+        return cline == 0 and cindex == 0
 
     def is_cursor_at_end(self):
         """Return True if cursor is at the end of text"""
         cline, cindex = self.getCursorPosition()
         return (cline, cindex) == self.get_end_pos()
+
+    def move_cursor_to_start(self):
+        """Move cursor to start of text"""
+        self.setCursorPosition(0, 0)
+        self.ensureCursorVisible()
+        self.ensureLineVisible(0)
+        self.displayPrompt(self.continuationLine)
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -259,16 +193,12 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setCursorPosition(line, index)
         self.ensureCursorVisible()
         self.ensureLineVisible(line)
+        self.displayPrompt(self.continuationLine)
 
     def is_cursor_on_last_line(self):
         """Return True if cursor is on the last line"""
         cline, _ = self.getCursorPosition()
         return cline == self.lines() - 1
-
-    def is_cursor_on_edition_zone(self):
-        """ Return True if the cursor is in the edition zone """
-        cline, cindex = self.getCursorPosition()
-        return cline == self.lines() - 1 and cindex >= 4
 
     def new_prompt(self, prompt):
         """
@@ -281,18 +211,26 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.ensureLineVisible(line)
 
     def displayPrompt(self, more=False):
-        self.append("... ") if more else self.append(">>> ")
-        self.move_cursor_to_end()
+        self.SendScintilla(QsciScintilla.SCI_MARGINSETTEXT, 0, str.encode("..." if more else ">>>"))
 
-    def updateHistory(self, command):
+    def syncSoftHistory(self):
+        self.softHistory = self.history[:]
+        self.softHistory.append('')
+        self.softHistoryIndex = len(self.softHistory) - 1
+
+    def updateSoftHistory(self):
+        self.softHistory[self.softHistoryIndex] = self.text()
+
+    def updateHistory(self, command, skipSoftHistory=False):
         if isinstance(command, list):
             for line in command:
                 self.history.append(line)
         elif not command == "":
             if len(self.history) <= 0 or \
-               command != self.history[-1]:
+                    command != self.history[-1]:
                 self.history.append(command)
-        self.historyIndex = len(self.history)
+        if not skipSoftHistory:
+            self.syncSoftHistory()
 
     def writeHistoryFile(self, fromCloseConsole=False):
         ok = False
@@ -316,13 +254,15 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 for line in rH:
                     if line != "\n":
                         l = line.rstrip('\n')
-                        self.updateHistory(l)
+                        self.updateHistory(l, True)
+            self.syncSoftHistory()
         else:
             return
 
     def clearHistory(self, clearSession=False):
         if clearSession:
             self.history = []
+            self.syncSoftHistory()
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Session and file history cleared successfully.')
             self.parent.callWidgetMessageBar(msgText)
@@ -343,44 +283,39 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.clearHistory(True)
 
     def showPrevious(self):
-        if self.historyIndex < len(self.history) and self.history:
-            line, pos = self.getCursorPosition()
-            selCmdLength = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLength)
-            self.removeSelectedText()
-            self.historyIndex += 1
-            if self.historyIndex == len(self.history):
-                self.insert("")
-                pass
-            else:
-                self.insert(self.history[self.historyIndex])
+        if self.softHistoryIndex < len(self.softHistory) - 1 and self.softHistory:
+            self.softHistoryIndex += 1
+            self.setText(self.softHistory[self.softHistoryIndex])
             self.move_cursor_to_end()
-            #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+            # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def showNext(self):
-        if self.historyIndex > 0 and self.history:
-            line, pos = self.getCursorPosition()
-            selCmdLength = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLength)
-            self.removeSelectedText()
-            self.historyIndex -= 1
-            if self.historyIndex == len(self.history):
-                self.insert("")
-            else:
-                self.insert(self.history[self.historyIndex])
+        if self.softHistoryIndex > 0 and self.softHistory:
+            self.softHistoryIndex -= 1
+            self.setText(self.softHistory[self.softHistoryIndex])
             self.move_cursor_to_end()
-            #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+            # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def keyPressEvent(self, e):
+        # update the live history
+        self.updateSoftHistory()
+
         startLine, startPos, endLine, endPos = self.getSelection()
 
         # handle invalid cursor position and multiline selections
-        if not self.is_cursor_on_edition_zone() or startLine < endLine:
+        if startLine < endLine:
             # allow copying and selecting
             if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier):
-                if e.key() in (Qt.Key_C, Qt.Key_A):
+                if e.key() == Qt.Key_C:
+                    # only catch and return from Ctrl-C here if there's a selection
+                    if self.hasSelectedText():
+                        QsciScintilla.keyPressEvent(self, e)
+                        return
+                elif e.key() == Qt.Key_A:
                     QsciScintilla.keyPressEvent(self, e)
-                return
+                    return
+                else:
+                    return
             # allow selection
             if e.modifiers() & Qt.ShiftModifier:
                 if e.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home, Qt.Key_End):
@@ -389,49 +324,42 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             # all other keystrokes get sent to the input line
             self.move_cursor_to_end()
 
+        if e.modifiers() & (
+                Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
+            # keyboard interrupt
+            sys.stdout.fire_keyboard_interrupt = True
+            return
+
         line, index = self.getCursorPosition()
         cmd = self.text(line)
+        hasSelectedText = self.hasSelectedText()
 
         if e.key() in (Qt.Key_Return, Qt.Key_Enter) and not self.isListActive():
             self.entered()
 
         elif e.key() in (Qt.Key_Left, Qt.Key_Home):
             QsciScintilla.keyPressEvent(self, e)
-            # check whether the cursor is moved out of the edition zone
-            newline, newindex = self.getCursorPosition()
-            if newline < line or newindex < 4:
-                # fix selection and the cursor position
-                if self.hasSelectedText():
-                    self.setSelection(line, self.getSelection()[3], line, 4)
-                else:
-                    self.setCursorPosition(line, 4)
 
         elif e.key() in (Qt.Key_Backspace, Qt.Key_Delete):
             QsciScintilla.keyPressEvent(self, e)
-            # check whether the cursor is moved out of the edition zone
-            _, newindex = self.getCursorPosition()
-            if newindex < 4:
-                # restore the prompt chars (if removed) and
-                # fix the cursor position
-                self.insert(cmd[:3 - newindex] + " ")
-                self.setCursorPosition(line, 4)
             self.recolor()
 
         elif (e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_V) or \
-             (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
+                (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
             self.paste()
             e.accept()
 
         elif e.key() == Qt.Key_Down and not self.isListActive():
             self.showPrevious()
+
         elif e.key() == Qt.Key_Up and not self.isListActive():
             self.showNext()
+
         # TODO: press event for auto-completion file directory
         else:
             t = e.text()
             self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
             self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
-            txt = cmd[:index].replace('>>> ', '').replace('... ', '')
             # Close bracket automatically
             if t in self.opening and self.autoCloseBracket:
                 i = self.opening.index(t)
@@ -441,27 +369,28 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                     self.insert(self.opening[i] + selText + self.closing[i])
                     self.setCursorPosition(endLine, endPos + 2)
                     return
-                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt) or
-                                   re.match(r'^[ \t]*class \w+$', txt)):
+                elif t == '(' and (re.match(r'^[ \t]*def \w+$', cmd)
+                                   or re.match(r'^[ \t]*class \w+$', cmd)):
                     self.insert('):')
                 else:
                     self.insert(self.closing[i])
             # FIXES #8392 (automatically removes the redundant char
             # when autoclosing brackets option is enabled)
             elif t in [')', ']', '}'] and self.autoCloseBracket:
-                txt = self.text(line)
                 try:
-                    if txt[index - 1] in self.opening and t == txt[index]:
+                    if cmd[index - 1] in self.opening and t == cmd[index]:
                         self.setCursorPosition(line, index + 1)
                         self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
                 except IndexError:
                     pass
             elif t == ' ' and self.autoImport:
                 ptrn = r'^[ \t]*from [\w.]+$'
-                if re.match(ptrn, txt):
+                if re.match(ptrn, cmd):
                     self.insert(' import')
                     self.setCursorPosition(line, index + 7)
             QsciScintilla.keyPressEvent(self, e)
+
+        self.displayPrompt(self.continuationLine)
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
@@ -471,11 +400,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         subMenu.addAction(
             QCoreApplication.translate("PythonConsole", "Show"),
             self.showHistory, 'Ctrl+Shift+SPACE')
-        subMenu.addSeparator()
-        subMenu.addAction(
-            QCoreApplication.translate("PythonConsole", "Save"),
-            self.writeHistoryFile)
-        subMenu.addSeparator()
         subMenu.addAction(
             QCoreApplication.translate("PythonConsole", "Clear File"),
             self.clearHistory)
@@ -485,15 +409,22 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         menu.addMenu(subMenu)
         menu.addSeparator()
         copyAction = menu.addAction(
+            QgsApplication.getThemeIcon("mActionEditCopy.svg"),
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
         pasteAction = menu.addAction(
+            QgsApplication.getThemeIcon("mActionEditPaste.svg"),
             QCoreApplication.translate("PythonConsole", "Paste"),
             self.paste, QKeySequence.Paste)
+        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchSelectedTextInPyQGISDocs)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         if self.hasSelectedText():
             copyAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
         menu.exec_(self.mapToGlobal(e.pos()))
@@ -546,72 +477,75 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
                 self.insert(cleanLine)
                 self.move_cursor_to_end()
-                self.runCommand(self.currentCommand())
+                self.runCommand(self.text())
             if pasteList[-1] != "":
                 line = pasteList[-1]
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
+                curpos = self.getCursorPosition()
                 self.insert(cleanLine)
-                self.move_cursor_to_end()
+                self.setCursorPosition(curpos[0], curpos[1] + len(cleanLine))
 
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:
             self.append(line)
             self.move_cursor_to_end()
             self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-            self.runCommand(self.currentCommand())
+            self.runCommand(self.text())
         self.append(listOpenFile[-1])
         self.move_cursor_to_end()
         self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def entered(self):
         self.move_cursor_to_end()
-        self.runCommand(self.currentCommand())
+        self.runCommand(self.text())
         self.setFocus()
         self.move_cursor_to_end()
-
-    def currentCommand(self):
-        linenr, index = self.getCursorPosition()
-        string = self.text()
-        cmdLine = string[4:]
-        cmd = cmdLine
-        return cmd
 
     def runCommand(self, cmd):
         self.writeCMD(cmd)
         import webbrowser
         self.updateHistory(cmd)
-        if cmd in ('_pyqgis', '_api'):
+        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+        if cmd in ('_pyqgis', '_api', '_cookbook'):
             if cmd == '_pyqgis':
-                webbrowser.open("http://qgis.org/pyqgis-cookbook/")
+                webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
             elif cmd == '_api':
-                webbrowser.open("http://qgis.org/api/")
-            more = False
+                webbrowser.open("https://qgis.org/api/{}".format('' if version == 'master' else version))
+            elif cmd == '_cookbook':
+                webbrowser.open("https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
+                    'testing' if version == 'master' else version))
         else:
             self.buffer.append(cmd)
-            src = u"\n".join(self.buffer)
+            src = "\n".join(self.buffer)
             more = self.runsource(src)
+            self.continuationLine = True
             if not more:
+                self.continuationLine = False
                 self.buffer = []
+
         # prevents to commands with more lines to break the console
         # in the case they have a eol different from '\n'
         self.setText('')
         self.move_cursor_to_end()
-        self.displayPrompt(more)
+        self.displayPrompt(self.continuationLine)
 
     def write(self, txt):
         sys.stderr.write(txt)
 
     def writeCMD(self, txt):
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
-            getCmdString = self.text()
-            prompt = getCmdString[0:4]
+            prompt = "... " if self.continuationLine else ">>> "
             sys.stdout.write(prompt + txt + '\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
         hook = sys.excepthook
         try:
             def excepthook(etype, value, tb):
-                self.write(u"".join(traceback.format_exception(etype, value, tb)))
+                self.write("".join(traceback.format_exception(etype, value, tb)))
 
             sys.excepthook = excepthook
 
@@ -629,7 +563,7 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
         self.setWindowTitle(QCoreApplication.translate("PythonConsole",
                                                        "Python Console - Command History"))
         self.listView.setToolTip(QCoreApplication.translate("PythonConsole",
-                                                            "Double click on item to execute"))
+                                                            "Double-click on item to execute"))
         self.model = QStandardItemModel(self.listView)
 
         self._reloadHistory()
@@ -639,6 +573,13 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
         self.listView.doubleClicked.connect(self._runHistory)
         self.reloadHistory.clicked.connect(self._reloadHistory)
         self.saveHistory.clicked.connect(self._saveHistory)
+        self.runHistoryButton.clicked.connect(self._executeSelectedHistory)
+
+    def _executeSelectedHistory(self):
+        items = self.listView.selectionModel().selectedIndexes()
+        items.sort()
+        for item in items:
+            self.parent.runCommand(item.data(Qt.DisplayRole))
 
     def _runHistory(self, item):
         cmd = item.data(Qt.DisplayRole)
@@ -649,6 +590,7 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
     def _reloadHistory(self):
         self.model.clear()
+        item = None
         for i in self.parent.history:
             item = QStandardItem(i)
             if sys.platform.startswith('win'):
@@ -657,6 +599,8 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
         self.listView.setModel(self.model)
         self.listView.scrollToBottom()
+        if item:
+            self.listView.setCurrentIndex(self.model.indexFromItem(item))
 
     def _deleteItem(self):
         itemsSelected = self.listView.selectionModel().selectedIndexes()
@@ -664,6 +608,10 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
             item = itemsSelected[0].row()
             # Remove item from the command history (just for the current session)
             self.parent.history.pop(item)
-            self.parent.historyIndex -= 1
+            self.parent.softHistory.pop(item)
+            if item < self.parent.softHistoryIndex:
+                self.parent.softHistoryIndex -= 1
+            self.parent.setText(self.parent.softHistory[self.parent.softHistoryIndex])
+            self.parent.move_cursor_to_end()
             # Remove row from the command history dialog
             self.model.removeRow(item)

@@ -1,1 +1,1 @@
-usr/lib/libqgis_gui.so.{QGIS_ABI}
+usr/lib/libqgis_gui.so.*

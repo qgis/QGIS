@@ -1,0 +1,63 @@
+name: Mac OS build
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'mac/**'
+    - 'CMakeLists.txt'
+  pull_request:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'mac/**'
+    - 'CMakeLists.txt'
+
+env:
+  QT_VERSION: 5.14.2
+  QGIS_DEPS_VERSION: 0.6.0
+
+jobs:
+  mac_os_build:
+    if: github.repository == 'qgis/QGIS'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: download qgis-deps
+        run: |
+          wget https://qgis.org/downloads/macos/deps/qt-${QT_VERSION}.tar.gz
+          wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
+          wget https://qgis.org/downloads/macos/deps/install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+
+      - name: install qgis-deps
+        run: |
+          chmod +x ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+          sudo ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+
+      - name: create build system
+        run: |
+          QGIS_DIR=`pwd`
+          mkdir -p ../build-QGIS
+          cd ../build-QGIS
+
+          # FIXME: PDAL disable because of #39971
+          PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
+          cmake -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
+               -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
+               -DWITH_BINDINGS=TRUE \
+               -DWITH_3D=TRUE \
+               -DWITH_PDAL=FALSE \
+               -DWITH_EPT=TRUE \
+               $QGIS_DIR
+
+      - name: build QGIS
+        run: |
+          cd ../build-QGIS
+          make -j $(sysctl -n hw.ncpu)

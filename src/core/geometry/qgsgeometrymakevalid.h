@@ -16,10 +16,14 @@
 #ifndef QGSGEOMETRYMAKEVALID_H
 #define QGSGEOMETRYMAKEVALID_H
 
+#define SIP_NO_FILE
+
+#include <memory>
+
 class QString;
 class QgsAbstractGeometry;
 
 //! Implementation of QgsGeometry::makeValid(). Not a public API.
-QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry &lwgeom_in, QString &errorMessage );
+std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage );
 
 #endif // QGSGEOMETRYMAKEVALID_H

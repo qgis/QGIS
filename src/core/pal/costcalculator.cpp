@@ -25,17 +25,12 @@
 
 using namespace pal;
 
-bool CostCalculator::candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 )
+bool CostCalculator::candidateSortGrow( const std::unique_ptr< LabelPosition > &c1, const std::unique_ptr< LabelPosition > &c2 )
 {
   return c1->cost() < c2->cost();
 }
 
-bool CostCalculator::candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 )
-{
-  return c1->cost() > c2->cost();
-}
-
-void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle )
+void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obstacle, Pal *pal )
 {
   int n = 0;
   double dist;
@@ -66,15 +61,15 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
       // behavior depends on obstacle avoid type
       switch ( obstacle->layer()->obstacleType() )
       {
-        case QgsPalLayerSettings::PolygonInterior:
+        case QgsLabelObstacleSettings::PolygonInterior:
           // n ranges from 0 -> 12
           n = lp->polygonIntersectionCost( obstacle );
           break;
-        case QgsPalLayerSettings::PolygonBoundary:
+        case QgsLabelObstacleSettings::PolygonBoundary:
           // penalty may need tweaking, given that interior mode ranges up to 12
           n = ( lp->crossesBoundary( obstacle ) ? 6 : 0 );
           break;
-        case QgsPalLayerSettings::PolygonWhole:
+        case QgsLabelObstacleSettings::PolygonWhole:
           // n is either 0 or 12
           n = ( lp->intersectsWithPolygon( obstacle ) ? 12 : 0 );
           break;
@@ -83,126 +78,168 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
       break;
   }
 
+  //scale cost by obstacle's factor
+  double obstacleCost = obstacle->obstacleSettings().factor() * double( n );
   if ( n > 0 )
     lp->setConflictsWithObstacle( true );
 
-  //scale cost by obstacle's factor
-  double obstacleCost = obstacle->obstacleFactor() * double( n );
+  switch ( pal->placementVersion() )
+  {
+    case QgsLabelingEngineSettings::PlacementEngineVersion1:
+      break;
+
+    case QgsLabelingEngineSettings::PlacementEngineVersion2:
+    {
+      // obstacle factor is from 0 -> 2, label priority is from 1 -> 0. argh!
+      const double priority = 2 * ( 1 - lp->feature->calculatePriority() );
+      const double obstaclePriority = obstacle->obstacleSettings().factor();
+
+      // if feature priority is < obstaclePriorty, there's a hard conflict...
+      if ( n > 0 && ( priority < obstaclePriority && !qgsDoubleNear( priority, obstaclePriority, 0.001 ) ) )
+      {
+        lp->setHasHardObstacleConflict( true );
+      }
+      break;
+    }
+  }
 
   // label cost is penalized
   lp->setCost( lp->cost() + obstacleCost );
 }
 
-void CostCalculator::setPolygonCandidatesCost( int nblp, QList< LabelPosition * > &lPos, RTree<FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
 {
-  double normalizer;
-  // compute raw cost
-  for ( int i = 0; i < nblp; ++i )
-    setCandidateCostFromPolygon( lPos.at( i ), obstacles, bbx, bby );
+  // first we calculate the ring distance cost for all candidates for this feature. We then use the range
+  // of distance costs to calculate a standardised scaling for the costs
+  QHash< LabelPosition *, double > polygonRingDistances;
+  double minCandidateRingDistance = std::numeric_limits< double >::max();
+  double maxCandidateRingDistance = std::numeric_limits< double >::lowest();
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
+  {
+    const double candidatePolygonRingDistance = calculatePolygonRingDistance( pos.get(), bbx, bby );
 
-  // lPos with big values came first (value = min distance from label to Polygon's Perimeter)
-  // IMPORTANT - only want to sort first nblp positions. The rest have not had the cost
-  // calculated so will have nonsense values
-  QList< LabelPosition * > toSort;
-  toSort.reserve( nblp );
-  for ( int i = 0; i < nblp; ++i )
-  {
-    toSort << lPos.at( i );
-  }
-  std::sort( toSort.begin(), toSort.end(), candidateSortShrink );
-  for ( int i = 0; i < nblp; ++i )
-  {
-    lPos[i] = toSort.at( i );
+    minCandidateRingDistance = std::min( minCandidateRingDistance, candidatePolygonRingDistance );
+    maxCandidateRingDistance = std::max( maxCandidateRingDistance, candidatePolygonRingDistance );
+
+    polygonRingDistances.insert( pos.get(), candidatePolygonRingDistance );
   }
 
-  // define the value's range
-  double cost_max = lPos.at( 0 )->cost();
-  double cost_min = lPos.at( nblp - 1 )->cost();
+  // define the cost's range, if range is too small, just ignore the ring distance cost
+  const double costRange = maxCandidateRingDistance - minCandidateRingDistance;
+  if ( costRange <= EPSILON )
+    return;
 
-  cost_max -= cost_min;
+  const double normalizer = 0.0020 / costRange;
 
-  if ( cost_max > EPSILON )
-  {
-    normalizer = 0.0020 / cost_max;
-  }
-  else
-  {
-    normalizer = 1;
-  }
-
-  // adjust cost => the best is 0.0001, the worst is 0.0021
+  // adjust cost => the best is 0, the worst is 0.002
   // others are set proportionally between best and worst
-  for ( int i = 0; i < nblp; ++i )
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    //if (cost_max - cost_min < EPSILON)
-    if ( cost_max > EPSILON )
-    {
-      lPos.at( i )->setCost( 0.0021 - ( lPos.at( i )->cost() - cost_min ) * normalizer );
-    }
-    else
-    {
-      //lPos[i]->cost = 0.0001 + (lPos[i]->cost - cost_min) * normalizer;
-      lPos.at( i )->setCost( 0.0001 );
-    }
+    const double polygonRingDistanceCost = polygonRingDistances.value( pos.get() );
+    pos->setCost( pos->cost() + 0.002 - ( polygonRingDistanceCost - minCandidateRingDistance ) * normalizer );
   }
 }
 
-void CostCalculator::setCandidateCostFromPolygon( LabelPosition *lp, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+void CostCalculator::calculateCandidatePolygonCentroidDistanceCosts( pal::FeaturePart *feature, std::vector<std::unique_ptr<LabelPosition> > &lPos )
 {
-  double amin[2];
-  double amax[2];
+  double cx, cy;
+  feature->getCentroid( cx, cy );
 
-  PolygonCostCalculator *pCost = new PolygonCostCalculator( lp );
+  // first we calculate the centroid distance cost for all candidates for this feature. We then use the range
+  // of distance costs to calculate a standardised scaling for the costs
+  QHash< LabelPosition *, double > polygonCentroidDistances;
+  double minCandidateCentroidDistance = std::numeric_limits< double >::max();
+  double maxCandidateCentroidDistance = std::numeric_limits< double >::lowest();
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
+  {
+    const double lPosX = ( pos->x[0] + pos->x[2] ) / 2.0;
+    const double lPosY = ( pos->y[0] + pos->y[2] ) / 2.0;
 
-  // center
-  //cost = feat->getDistInside((this->x[0] + this->x[2])/2.0, (this->y[0] + this->y[2])/2.0 );
+    const double candidatePolygonCentroidDistance = std::sqrt( ( cx - lPosX ) * ( cx - lPosX ) + ( cy - lPosY ) * ( cy - lPosY ) );
 
-  pCost->update( lp->feature );
+    minCandidateCentroidDistance  = std::min( minCandidateCentroidDistance, candidatePolygonCentroidDistance );
+    maxCandidateCentroidDistance = std::max( maxCandidateCentroidDistance, candidatePolygonCentroidDistance );
 
-  PointSet *extent = new PointSet( 4, bbx, bby );
+    polygonCentroidDistances.insert( pos.get(), candidatePolygonCentroidDistance );
+  }
 
-  pCost->update( extent );
+  // define the cost's range, if range is too small, just ignore the ring distance cost
+  const double costRange = maxCandidateCentroidDistance - minCandidateCentroidDistance;
+  if ( costRange <= EPSILON )
+    return;
 
-  delete extent;
+  const double normalizer = 0.001 / costRange;
 
-  lp->feature->getBoundingBox( amin, amax );
-
-  obstacles->Search( amin, amax, LabelPosition::polygonObstacleCallback, pCost );
-
-  lp->setCost( pCost->getCost() );
-
-  delete pCost;
+  // adjust cost => the closest is 0, the furthest is 0.001
+  // others are set proportionally between best and worst
+  // NOTE: centroid cost range may need adjusting with respect to ring distance range!
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
+  {
+    const double polygonCentroidDistance = polygonCentroidDistances.value( pos.get() );
+    pos->setCost( pos->cost() + ( polygonCentroidDistance - minCandidateCentroidDistance ) * normalizer );
+  }
 }
 
-int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, double bbx[4], double bby[4] )
 {
-  // If candidates list is smaller than expected
-  if ( max_p > feat->lPos.count() )
-    max_p = feat->lPos.count();
-  //
-  // sort candidates list, best label to worst
-  std::sort( feat->lPos.begin(), feat->lPos.end(), candidateSortGrow );
+  // TODO 1: Consider whether distance calculation should use min distance to the candidate rectangle
+  // instead of just the center
+  CandidatePolygonRingDistanceCalculator ringDistanceCalculator( candidate );
 
-  // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
+  // first, check max distance to outside of polygon
+  // TODO 2: there's a bug here -- if a candidate's center falls outside the polygon, then a larger
+  // distance to the polygon boundary is being considered as the best placement. That's clearly wrong --
+  // if any part of label candidate sits outside the polygon, we should first prefer candidates which sit
+  // entirely WITHIN the polygon, or failing that, candidates which are CLOSER to the polygon boundary, not further from it!
+  ringDistanceCalculator.addRing( candidate->feature );
+
+  // prefer candidates further from the outside of map rather then those close to the outside of the map
+  // TODO 3: should be using the actual map boundary here, not the bounding box
+  PointSet extent( 4, bbx, bby );
+  ringDistanceCalculator.addRing( &extent );
+
+  // prefer candidates which further from interior rings (holes) of the polygon
+  for ( int i = 0; i < candidate->feature->getNumSelfObstacles(); ++i )
+  {
+    ringDistanceCalculator.addRing( candidate->feature->getSelfObstacle( i ) );
+  }
+
+  return ringDistanceCalculator.minimumDistance();
+}
+
+void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double bby[4] )
+{
+  // sort candidates list, best label to worst
+  std::sort( feat->candidates.begin(), feat->candidates.end(), candidateSortGrow );
+
+  // Original nonsense comment from pal library:
+  // "try to exclude all conflitual labels (good ones have cost < 1 by pruning)"
+  // my interpretation: it appears this scans through the candidates and chooses some threshold
+  // based on the candidate cost, after which all remaining candidates are simply discarded
+  // my suspicion: I don't think this is needed (or wanted) here, and is reflective of the fact
+  // that obstacle costs are too low vs inferior candidate placement costs (i.e. without this,
+  // an "around point" label would rather be placed over an obstacle then be placed in a position > 6 o'clock
   double discrim = 0.0;
-  int stop;
+  std::size_t stop = 0;
   do
   {
     discrim += 1.0;
-    for ( stop = 0; stop < feat->lPos.count() && feat->lPos.at( stop )->cost() < discrim; stop++ )
+    for ( stop = 0; stop < feat->candidates.size() && feat->candidates[ stop ]->cost() < discrim; stop++ )
       ;
   }
-  while ( stop == 0 && discrim < feat->lPos.last()->cost() + 2.0 );
+  while ( stop == 0 && discrim < feat->candidates.back()->cost() + 2.0 );
 
+  // THIS LOOKS SUSPICIOUS -- it clamps all costs to a fixed value??
   if ( discrim > 1.5 )
   {
-    int k;
-    for ( k = 0; k < stop; k++ )
-      feat->lPos.at( k )->setCost( 0.0021 );
+    for ( std::size_t k = 0; k < stop; k++ )
+      feat->candidates[ k ]->setCost( 0.0021 );
   }
 
-  if ( max_p > stop )
-    max_p = stop;
+  if ( feat->candidates.size() > stop )
+  {
+    feat->candidates.resize( stop );
+  }
 
   // Sets costs for candidates of polygon
 
@@ -210,39 +247,34 @@ int CostCalculator::finalizeCandidatesCosts( Feats *feat, int max_p, RTree <Feat
   {
     int arrangement = feat->feature->layer()->arrangement();
     if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
-      setPolygonCandidatesCost( stop, feat->lPos, obstacles, bbx, bby );
+    {
+      // prefer positions closer to the pole of inaccessibilities
+      calculateCandidatePolygonRingDistanceCosts( feat->candidates, bbx, bby );
+      // ...of these, prefer positions closer to the overall polygon centroid
+      calculateCandidatePolygonCentroidDistanceCosts( feat->feature, feat->candidates );
+    }
   }
 
   // add size penalty (small lines/polygons get higher cost)
-  feat->feature->addSizePenalty( max_p, feat->lPos, bbx, bby );
-
-  return max_p;
+  feat->feature->addSizePenalty( feat->candidates, bbx, bby );
 }
 
-PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
+CandidatePolygonRingDistanceCalculator::CandidatePolygonRingDistanceCalculator( LabelPosition *candidate )
+  : mPx( ( candidate->x[0] + candidate->x[2] ) / 2.0 )
+  , mPy( ( candidate->y[0] + candidate->y[2] ) / 2.0 )
 {
-  px = ( lp->x[0] + lp->x[2] ) / 2.0;
-  py = ( lp->y[0] + lp->y[2] ) / 2.0;
-
-  dist = DBL_MAX;
-  ok = false;
 }
 
-void PolygonCostCalculator::update( PointSet *pset )
+void CandidatePolygonRingDistanceCalculator::addRing( const pal::PointSet *ring )
 {
-  double d = pset->minDistanceToPoint( px, py );
-  if ( d < dist )
+  double d = ring->minDistanceToPoint( mPx, mPy );
+  if ( d < mMinDistance )
   {
-    dist = d;
+    mMinDistance = d;
   }
 }
 
-LabelPosition *PolygonCostCalculator::getLabel()
+double CandidatePolygonRingDistanceCalculator::minimumDistance() const
 {
-  return lp;
-}
-
-double PolygonCostCalculator::getCost()
-{
-  return ( 4 * dist );
+  return mMinDistance;
 }

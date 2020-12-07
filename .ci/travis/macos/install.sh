@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ###########################################################################
 #    install.sh
 #    ---------------------
@@ -14,7 +15,7 @@
 ###########################################################################
 
 mkdir build
-pushd build
+pushd build || exit
 
 export PATH=/usr/local/opt/ccache/libexec:$PATH
 HB=$(brew --prefix)
@@ -37,7 +38,8 @@ fcgi
 expat
 sqlite
 flex
-bison"
+bison
+libzip"
 
 full_prefixes=""
 for p in ${prefixes}; do
@@ -50,15 +52,15 @@ done
 cmake \
   -G 'Ninja' \
   -DCMAKE_FIND_FRAMEWORK:STRING=LAST \
-  -DCMAKE_PREFIX_PATH:STRING=${full_prefixes} \
+  -DCMAKE_PREFIX_PATH:STRING="${full_prefixes}" \
   -DWITH_SERVER=OFF \
   -DWITH_DESKTOP=OFF \
   -DWITH_STAGED_PLUGINS=ON \
   -DENABLE_MODELTEST=ON \
   -DENABLE_PGTEST=OFF \
+  -DENABLE_SAGA_TESTS=ON \
   -DWITH_QWTPOLAR=OFF \
-  -DWITH_PYSPATIALITE=ON \
   -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
   ..
 
-popd
+popd || exit

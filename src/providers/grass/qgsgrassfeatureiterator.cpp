@@ -29,17 +29,8 @@
 extern "C"
 {
 #include <grass/version.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
-
-#if GRASS_VERSION_MAJOR < 7
-#else
 
 void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist *list )
 {
@@ -63,7 +54,6 @@ void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist *list )
     Vect_select_areas_by_box( (map), (box), blist); \
     copy_boxlist_and_destroy( blist, (list) );\
   }
-#endif
 
 //QMutex QgsGrassFeatureIterator::sMutex;
 
@@ -71,11 +61,11 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
   : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
 {
 
-  // WARNING: the iterater cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
+  // WARNING: the iterator cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
   // multiple iterators if features are edited -> lock only critical sections
 
   // Create selection
-  int size = 1 + qMax( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
+  int size = 1 + std::max( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
   QgsDebugMsg( QString( "mSelection.resize(%1)" ).arg( size ) );
   mSelection.resize( size );
 
@@ -130,7 +120,7 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool u
 
   mSelection.fill( false );
 
-  BOUND_BOX box;
+  bound_box box;
   box.N = rect.yMaximum();
   box.S = rect.yMinimum();
   box.E = rect.xMaximum();
@@ -195,11 +185,11 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool u
         type = GV_POINTS | GV_LINES;
       }
       QgsDebugMsg( QString( "type = %1" ).arg( type ) );
-      Vect_select_lines_by_polygon( mSource->map(), polygon, 0, NULL, type, list );
+      Vect_select_lines_by_polygon( mSource->map(), polygon, 0, nullptr, type, list );
     }
     else if ( mSource->mLayerType == QgsGrassProvider::Polygon )
     {
-      Vect_select_areas_by_polygon( mSource->map(), polygon, 0, NULL, list );
+      Vect_select_areas_by_polygon( mSource->map(), polygon, 0, nullptr, list );
     }
     else if ( mSource->mLayerType == QgsGrassProvider::TopoNode )
     {
@@ -249,14 +239,15 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   int type = 0;
   int lid = 0;
   QgsFeatureId featureId = 0;
-  QgsAbstractGeometry *oldGeometry = 0;
+  QgsAbstractGeometry *oldGeometry = nullptr;
   int cidxFieldIndex = mSource->mLayer->cidxFieldIndex();
 
 #ifdef QGISDEBUG
   if ( mSource->mEditing )
   {
     QgsDebugMsgLevel( "newLids:", 3 );
-    Q_FOREACH ( int oldLid, mSource->mLayer->map()->newLids().keys() )
+    const auto constKeys = mSource->mLayer->map()->newLids().keys();
+    for ( int oldLid : constKeys )
     {
       QgsDebugMsgLevel( QString( "%1 -> %2" ).arg( oldLid ).arg( mSource->mLayer->map()->newLids().value( oldLid ) ), 3 );
     }
@@ -271,7 +262,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
 
     if ( mSource->mEditing )
     {
-      // Undo needs the oldes version of geometry, but we also need topo_symbol, so we must read
+      // Undo needs the oldest version of geometry, but we also need topo_symbol, so we must read
       // topo_symbol from map if the newLine exists  read
       if ( mSource->mLayer->map()->oldGeometries().contains( lid ) )
       {
@@ -299,7 +290,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
         mSource->mLayer->map()->unlockReadWrite();
         return false;
       }
-      type = Vect_read_line( mSource->map(), 0, 0, lid );
+      type = Vect_read_line( mSource->map(), nullptr, nullptr, lid );
 
       // TODO real cat when line/cat was rewritten?!
       cat = catFromFid( mRequest.filterFid() );
@@ -352,7 +343,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
         }
 
         struct line_cats *cats = Vect_new_cats_struct();
-        int tmpType = Vect_read_line( mSource->map(), 0, cats, mNextLid );
+        int tmpType = Vect_read_line( mSource->map(), nullptr, cats, mNextLid );
         if ( cats->n_cats == 0 )
         {
           lid = mNextLid;
@@ -392,7 +383,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
           break;
         }
         lid = mNextLid;
-        type = Vect_read_line( mSource->map(), 0, 0, mNextLid++ );
+        type = Vect_read_line( mSource->map(), nullptr, nullptr, mNextLid++ );
         if ( !( type & mSource->mGrassType ) )
         {
           continue;
@@ -518,12 +509,8 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     feature.initAttributes( mSource->mFields.size() );
     feature.setAttribute( 0, lid );
-#if GRASS_VERSION_MAJOR < 7
-    if ( mSource->mLayerType == QgsGrassProvider::TOPO_POINT || mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
-#else
     /* No more topo points in GRASS 7 */
     if ( mSource->mLayerType == QgsGrassProvider::TopoLine )
-#endif
     {
       feature.setAttribute( 1, QgsGrass::vectorTypeName( type ) );
 
@@ -554,7 +541,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         int line = Vect_get_node_line( mSource->map(), lid, i );
         QgsDebugMsg( "cancel" );
-        if ( i > 0 ) lines += QLatin1String( "," );
+        if ( i > 0 ) lines += QLatin1Char( ',' );
         lines += QString::number( line );
       }
       feature.setAttribute( 1, lines );
@@ -600,7 +587,7 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature &feature, int id, i
 {
   QgsDebugMsgLevel( QString( "id = %1 type = %2" ).arg( id ).arg( type ), 3 );
 
-  QgsAbstractGeometry *geometry = 0;
+  QgsAbstractGeometry *geometry = nullptr;
   if ( type & ( GV_POINTS | GV_LINES | GV_FACE ) )
   {
     geometry = mSource->mLayer->map()->lineGeometry( id );
@@ -678,7 +665,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1" ).arg( cat ), 3 );
   QgsAttributeList attlist;
-  int nFields =  mSource->mLayer->fields().size();
+  int nFields = mSource->mLayer->fields().size();
   if ( nFields > 0 )
   {
     for ( int i = 0; i <  mSource->mLayer->fields().size(); i++ )
@@ -718,7 +705,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
     QVariant value;
     if ( isEditedLayer )
     {
-      value =  mSource->mLayer->attribute( cat, *iter );
+      value = mSource->mLayer->attribute( cat, *iter );
       if ( value.type() == QVariant::ByteArray )
       {
         value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
@@ -756,7 +743,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider *p )
   , mGrassType( p->mGrassType )
   , mQgisType( p->mQgisType )
   , mFields( p->fields() )
-  , mEncoding( p->textEncoding() )
+  , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
   , mEditing( p->mEditBuffer )
 {
   Q_ASSERT( mLayer );

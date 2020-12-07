@@ -17,6 +17,7 @@
 
 #include <QDialog>
 #include "qgsalignraster.h"
+#include "qgshelp.h"
 #include "ui_qgsalignrasterdialog.h"
 
 class QgsAlignRaster;
@@ -27,7 +28,7 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
     Q_OBJECT
   public:
     explicit QgsAlignRasterDialog( QWidget *parent = nullptr );
-    ~QgsAlignRasterDialog();
+    ~QgsAlignRasterDialog() override;
 
   signals:
 
@@ -49,6 +50,7 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
     void updateCustomGridOffset();
 
     void updateParametersFromReferenceLayer();
+    void showHelp();
 
   protected:
     void populateLayersView();

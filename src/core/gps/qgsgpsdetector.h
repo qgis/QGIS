@@ -21,41 +21,51 @@
 #include <QObject>
 #include <QList>
 #include <QPair>
+#include <memory>
 
 #include "qgis_core.h"
-#include "qextserialport.h"
 
-class QgsGPSConnection;
-struct QgsGPSInformation;
+class QgsGpsConnection;
+class QgsGpsInformation;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class to detect the GPS port
  */
-class CORE_EXPORT QgsGPSDetector : public QObject
+class CORE_EXPORT QgsGpsDetector : public QObject
 {
     Q_OBJECT
   public:
-    QgsGPSDetector( const QString &portName );
-    ~QgsGPSDetector();
+    QgsGpsDetector( const QString &portName );
+    ~QgsGpsDetector() override;
 
     static QList< QPair<QString, QString> > availablePorts();
 
   public slots:
     void advance();
-    void detected( const QgsGPSInformation & );
+    void detected( const QgsGpsInformation & );
     void connDestroyed( QObject * );
 
   signals:
-    void detected( QgsGPSConnection * );
+
+    // TODO QGIS 4.0 - this is horrible, fragile, leaky and crash prone API.
+    // don't transfer ownership with this signal, and add an explicit takeConnection member!
+
+    /**
+     * Emitted when the GPS connection has been detected. A single connection must listen for this signal and
+     * immediately take ownership of the \a connection object.
+     */
+    void detected( QgsGpsConnection *connection );
+
     void detectionFailed();
 
   private:
-    int mPortIndex;
-    int mBaudIndex;
+    int mPortIndex = 0;
+    int mBaudIndex = -1;
     QList< QPair< QString, QString > > mPortList;
-    QList<BaudRateType> mBaudList;
+    QList<qint32> mBaudList;
 
-    QgsGPSConnection *mConn = nullptr;
+    std::unique_ptr< QgsGpsConnection > mConn;
 };
 
 #endif // QGSGPSDETECTOR_H

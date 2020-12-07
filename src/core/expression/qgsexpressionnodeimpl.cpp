@@ -38,7 +38,8 @@ const char *QgsExpressionNodeUnaryOperator::UNARY_OPERATOR_TEXT[] =
 bool QgsExpressionNodeInOperator::needsGeometry() const
 {
   bool needs = false;
-  Q_FOREACH ( QgsExpressionNode *n, mList->list() )
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( QgsExpressionNode *n : nodeList )
     needs |= n->needsGeometry();
   return needs;
 }
@@ -51,7 +52,7 @@ QgsExpressionNode::NodeList::~NodeList()
 void QgsExpressionNode::NodeList::append( QgsExpressionNode::NamedNode *node )
 {
   mList.append( node->node );
-  mNameList.append( node->name.toLower() );
+  mNameList.append( cleanNamedNodeName( node->name ) );
   mHasNamedNodes = true;
   delete node;
 }
@@ -59,7 +60,7 @@ void QgsExpressionNode::NodeList::append( QgsExpressionNode::NamedNode *node )
 QgsExpressionNode::NodeList *QgsExpressionNode::NodeList::clone() const
 {
   NodeList *nl = new NodeList;
-  Q_FOREACH ( QgsExpressionNode *node, mList )
+  for ( QgsExpressionNode *node : mList )
   {
     nl->mList.append( node->clone() );
   }
@@ -72,13 +73,30 @@ QString QgsExpressionNode::NodeList::dump() const
 {
   QString msg;
   bool first = true;
-  Q_FOREACH ( QgsExpressionNode *n, mList )
+  for ( QgsExpressionNode *n : mList )
   {
     if ( !first ) msg += QLatin1String( ", " );
     else first = false;
     msg += n->dump();
   }
   return msg;
+}
+
+QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
+{
+  QString cleaned = name.toLower();
+
+  // upgrade older argument names to standard versions
+  if ( cleaned == QLatin1String( "geom" ) )
+    cleaned = QStringLiteral( "geometry" );
+  else if ( cleaned == QLatin1String( "val" ) )
+    cleaned = QStringLiteral( "value" );
+  else if ( cleaned == QLatin1String( "geometry a" ) )
+    cleaned = QStringLiteral( "geometry1" );
+  else if ( cleaned == QLatin1String( "geometry b" ) )
+    cleaned = QStringLiteral( "geometry2" );
+
+  return cleaned;
 }
 
 
@@ -123,7 +141,10 @@ bool QgsExpressionNodeUnaryOperator::prepareNode( QgsExpression *parent, const Q
 
 QString QgsExpressionNodeUnaryOperator::dump() const
 {
-  return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+  if ( dynamic_cast<QgsExpressionNodeBinaryOperator *>( mOperand ) )
+    return QStringLiteral( "%1 ( %2 )" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+  else
+    return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
 QSet<QString> QgsExpressionNodeUnaryOperator::referencedColumns() const
@@ -134,6 +155,19 @@ QSet<QString> QgsExpressionNodeUnaryOperator::referencedColumns() const
 QSet<QString> QgsExpressionNodeUnaryOperator::referencedVariables() const
 {
   return mOperand->referencedVariables();
+}
+
+QSet<QString> QgsExpressionNodeUnaryOperator::referencedFunctions() const
+{
+  return mOperand->referencedFunctions();
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeUnaryOperator::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst.append( this );
+  lst += mOperand->nodes();
+  return lst;
 }
 
 bool QgsExpressionNodeUnaryOperator::needsGeometry() const
@@ -164,6 +198,17 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
 {
   QVariant vL = mOpLeft->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
+
+  if ( mOp == boAnd || mOp == boOr )
+  {
+    QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR;
+    if ( mOp == boAnd && tvlL == QgsExpressionUtils::False )
+      return TVL_False;  // shortcut -- no need to evaluate right-hand side
+    if ( mOp == boOr && tvlL == QgsExpressionUtils::True )
+      return TVL_True;  // shortcut -- no need to evaluate right-hand side
+  }
+
   QVariant vR = mOpRight->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
 
@@ -179,7 +224,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return QVariant( sL + sR );
       }
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case boMinus:
     case boMul:
     case boDiv:
@@ -189,7 +234,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return QVariant();
       else if ( mOp != boDiv && QgsExpressionUtils::isIntSafe( vL ) && QgsExpressionUtils::isIntSafe( vR ) )
       {
-        // both are integers - let's use integer arithmetics
+        // both are integers - let's use integer arithmetic
         qlonglong iL = QgsExpressionUtils::getIntValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         qlonglong iR = QgsExpressionUtils::getIntValue( vR, parent );
@@ -268,7 +313,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
       ENSURE_NO_EVAL_ERROR;
       if ( fR == 0. )
         return QVariant(); // silently handle division by zero and return NULL
-      return QVariant( qFloor( fL / fR ) );
+      return QVariant( qlonglong( std::floor( fL / fR ) ) );
     }
     case boPow:
       if ( QgsExpressionUtils::isNull( vL ) || QgsExpressionUtils::isNull( vR ) )
@@ -279,7 +324,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR;
         double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
         ENSURE_NO_EVAL_ERROR;
-        return QVariant( pow( fL, fR ) );
+        return QVariant( std::pow( fL, fR ) );
       }
 
     case boAnd:
@@ -375,14 +420,55 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             return TVL_Unknown;
         }
       }
-      else if ( QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) &&
-                ( vL.type() != QVariant::String || vR.type() != QVariant::String ) )
+      else if ( ( vL.type() == QVariant::DateTime && vR.type() == QVariant::DateTime ) )
+      {
+        QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+
+        // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
+        // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
+        // results (due to different hidden timezones), we force all datetime comparisons to treat
+        // all datetime values as having the same time zone
+        dL.setTimeSpec( Qt::UTC );
+        dR.setTimeSpec( Qt::UTC );
+
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Date && vR.type() == QVariant::Date ) )
+      {
+        const QDate dL = QgsExpressionUtils::getDateValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QDate dR = QgsExpressionUtils::getDateValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.daysTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Time && vR.type() == QVariant::Time ) )
+      {
+        const QTime dL = QgsExpressionUtils::getTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QTime dR = QgsExpressionUtils::getTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() != QVariant::String || vR.type() != QVariant::String ) &&
+                QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
       {
         // do numeric comparison if both operators can be converted to numbers,
         // and they aren't both string
         double fL = QgsExpressionUtils::getDoubleValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( fL - fR ) ? TVL_True : TVL_False;
+      }
+      // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
+      else if ( vL.canConvert< QgsInterval >() && vR.canConvert< QgsInterval >() )
+      {
+        double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
+        ENSURE_NO_EVAL_ERROR;
+        double fR = QgsExpressionUtils::getInterval( vR, parent ).seconds();
         ENSURE_NO_EVAL_ERROR;
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }
@@ -577,7 +663,7 @@ double QgsExpressionNodeBinaryOperator::computeDouble( double x, double y )
     case boDiv:
       return x / y;
     case boMod:
-      return fmod( x, y );
+      return std::fmod( x, y );
     default:
       Q_ASSERT( false );
       return 0;
@@ -695,15 +781,15 @@ QString QgsExpressionNodeBinaryOperator::dump() const
   QString fmt;
   if ( leftAssociative() )
   {
-    fmt += lOp && ( lOp->precedence() < precedence() ) ? "(%1)" : "%1";
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
     fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() <= precedence() ) ? "(%3)" : "%3";
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
   }
   else
   {
-    fmt += lOp && ( lOp->precedence() <= precedence() ) ? "(%1)" : "%1";
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
     fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
   }
 
   return fmt.arg( mOpLeft->dump(), BINARY_OPERATOR_TEXT[mOp], rdump );
@@ -717,6 +803,19 @@ QSet<QString> QgsExpressionNodeBinaryOperator::referencedColumns() const
 QSet<QString> QgsExpressionNodeBinaryOperator::referencedVariables() const
 {
   return mOpLeft->referencedVariables() + mOpRight->referencedVariables();
+}
+
+QSet<QString> QgsExpressionNodeBinaryOperator::referencedFunctions() const
+{
+  return mOpLeft->referencedFunctions() + mOpRight->referencedFunctions();
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeBinaryOperator::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  lst += mOpLeft->nodes() + mOpRight->nodes();
+  return lst;
 }
 
 bool QgsExpressionNodeBinaryOperator::needsGeometry() const
@@ -749,7 +848,8 @@ QVariant QgsExpressionNodeInOperator::evalNode( QgsExpression *parent, const Qgs
 
   bool listHasNull = false;
 
-  Q_FOREACH ( QgsExpressionNode *n, mList->list() )
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( QgsExpressionNode *n : nodeList )
   {
     QVariant v2 = n->eval( parent, context );
     ENSURE_NO_EVAL_ERROR;
@@ -759,8 +859,11 @@ QVariant QgsExpressionNodeInOperator::evalNode( QgsExpression *parent, const Qgs
     {
       bool equal = false;
       // check whether they are equal
-      if ( QgsExpressionUtils::isDoubleSafe( v1 ) && QgsExpressionUtils::isDoubleSafe( v2 ) )
+      if ( ( v1.type() != QVariant::String || v2.type() != QVariant::String ) &&
+           QgsExpressionUtils::isDoubleSafe( v1 ) && QgsExpressionUtils::isDoubleSafe( v2 ) )
       {
+        // do numeric comparison if both operators can be converted to numbers,
+        // and they aren't both string
         double f1 = QgsExpressionUtils::getDoubleValue( v1, parent );
         ENSURE_NO_EVAL_ERROR;
         double f2 = QgsExpressionUtils::getDoubleValue( v2, parent );
@@ -802,7 +905,8 @@ QgsExpressionNode::NodeType QgsExpressionNodeInOperator::nodeType() const
 bool QgsExpressionNodeInOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res = mNode->prepare( parent, context );
-  Q_FOREACH ( QgsExpressionNode *n, mList->list() )
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( QgsExpressionNode *n : nodeList )
   {
     res = res && n->prepare( parent, context );
   }
@@ -826,7 +930,8 @@ bool QgsExpressionNodeInOperator::isStatic( QgsExpression *parent, const QgsExpr
   if ( !mNode->isStatic( parent, context ) )
     return false;
 
-  Q_FOREACH ( QgsExpressionNode *n, mList->list() )
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( QgsExpressionNode *n : nodeList )
   {
     if ( !n->isStatic( parent, context ) )
       return false;
@@ -842,31 +947,7 @@ QVariant QgsExpressionNodeFunction::evalNode( QgsExpression *parent, const QgsEx
   QString name = QgsExpression::QgsExpression::Functions()[mFnIndex]->name();
   QgsExpressionFunction *fd = context && context->hasFunction( name ) ? context->function( name ) : QgsExpression::QgsExpression::Functions()[mFnIndex];
 
-  // evaluate arguments
-  QVariantList argValues;
-  if ( mArgs )
-  {
-    Q_FOREACH ( QgsExpressionNode *n, mArgs->list() )
-    {
-      QVariant v;
-      if ( fd->lazyEval() )
-      {
-        // Pass in the node for the function to eval as it needs.
-        v = QVariant::fromValue( n );
-      }
-      else
-      {
-        v = n->eval( parent, context );
-        ENSURE_NO_EVAL_ERROR;
-        if ( QgsExpressionUtils::isNull( v ) && !fd->handlesNull() )
-          return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
-      }
-      argValues.append( v );
-    }
-  }
-
-  // run the function
-  QVariant res = fd->func( argValues, context, parent );
+  QVariant res = fd->run( mArgs, context, parent, this );
   ENSURE_NO_EVAL_ERROR;
 
   // everything went fine
@@ -930,7 +1011,8 @@ bool QgsExpressionNodeFunction::prepareNode( QgsExpression *parent, const QgsExp
   bool res = fd->prepare( this, parent, context );
   if ( mArgs && !fd->lazyEval() )
   {
-    Q_FOREACH ( QgsExpressionNode *n, mArgs->list() )
+    const QList< QgsExpressionNode * > nodeList = mArgs->list();
+    for ( QgsExpressionNode *n : nodeList )
     {
       res = res && n->prepare( parent, context );
     }
@@ -942,7 +1024,7 @@ QString QgsExpressionNodeFunction::dump() const
 {
   QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
   if ( fd->params() == 0 )
-    return QStringLiteral( "%1%2" ).arg( fd->name(), fd->name().startsWith( '$' ) ? "" : "()" ); // special column
+    return QStringLiteral( "%1%2" ).arg( fd->name(), fd->name().startsWith( '$' ) ? QString() : QStringLiteral( "()" ) ); // special column
   else
     return QStringLiteral( "%1(%2)" ).arg( fd->name(), mArgs ? mArgs->dump() : QString() ); // function
 }
@@ -958,9 +1040,13 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
     return functionColumns;
   }
 
-  Q_FOREACH ( QgsExpressionNode *n, mArgs->list() )
+  int paramIndex = 0;
+  const QList< QgsExpressionNode * > nodeList = mArgs->list();
+  for ( QgsExpressionNode *n : nodeList )
   {
-    functionColumns.unite( n->referencedColumns() );
+    if ( fd->parameters().count() <= paramIndex || !fd->parameters().at( paramIndex ).isSubExpression() )
+      functionColumns.unite( n->referencedColumns() );
+    paramIndex++;
   }
 
   return functionColumns;
@@ -969,11 +1055,11 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
 QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
 {
   QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
-  if ( fd->name() == "var" )
+  if ( fd->name() == QLatin1String( "var" ) )
   {
     if ( !mArgs->list().isEmpty() )
     {
-      QgsExpressionNodeLiteral *var = dynamic_cast<QgsExpressionNodeLiteral *>( mArgs->list().first() );
+      QgsExpressionNodeLiteral *var = dynamic_cast<QgsExpressionNodeLiteral *>( mArgs->list().at( 0 ) );
       if ( var )
         return QSet<QString>() << var->value().toString();
     }
@@ -986,7 +1072,8 @@ QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
     if ( !mArgs )
       return functionVariables;
 
-    Q_FOREACH ( QgsExpressionNode *n, mArgs->list() )
+    const QList< QgsExpressionNode * > nodeList = mArgs->list();
+    for ( QgsExpressionNode *n : nodeList )
     {
       functionVariables.unite( n->referencedVariables() );
     }
@@ -995,12 +1082,45 @@ QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
   }
 }
 
+QSet<QString> QgsExpressionNodeFunction::referencedFunctions() const
+{
+  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  QSet<QString> functions = QSet<QString>();
+  functions.insert( fd->name() );
+
+  if ( !mArgs )
+    return functions;
+
+  const QList< QgsExpressionNode * > nodeList = mArgs->list();
+  for ( QgsExpressionNode *n : nodeList )
+  {
+    functions.unite( n->referencedFunctions() );
+  }
+  return functions;
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeFunction::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  if ( !mArgs )
+    return lst;
+
+  const QList< QgsExpressionNode * > nodeList = mArgs->list();
+  for ( QgsExpressionNode *n : nodeList )
+  {
+    lst += n->nodes();
+  }
+  return lst;
+}
+
 bool QgsExpressionNodeFunction::needsGeometry() const
 {
   bool needs = QgsExpression::QgsExpression::Functions()[mFnIndex]->usesGeometry( this );
   if ( mArgs )
   {
-    Q_FOREACH ( QgsExpressionNode *n, mArgs->list() )
+    const QList< QgsExpressionNode * > nodeList = mArgs->list();
+    for ( QgsExpressionNode *n : nodeList )
       needs |= n->needsGeometry();
   }
   return needs;
@@ -1068,7 +1188,8 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
 
     //last check for bad names
     idx = 0;
-    Q_FOREACH ( const QString &name, args->names() )
+    const QStringList nameList = args->names();
+    for ( const QString &name : nameList )
     {
       if ( !name.isEmpty() && !functionParams.contains( name ) )
       {
@@ -1095,8 +1216,8 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
 
 QVariant QgsExpressionNodeLiteral::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( parent );
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
   return mValue;
 }
 
@@ -1107,8 +1228,8 @@ QgsExpressionNode::NodeType QgsExpressionNodeLiteral::nodeType() const
 
 bool QgsExpressionNodeLiteral::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( context );
+  Q_UNUSED( parent )
+  Q_UNUSED( context )
   return true;
 }
 
@@ -1124,12 +1245,14 @@ QString QgsExpressionNodeLiteral::dump() const
       return QString::number( mValue.toInt() );
     case QVariant::Double:
       return QString::number( mValue.toDouble() );
+    case QVariant::LongLong:
+      return QString::number( mValue.toLongLong() );
     case QVariant::String:
       return QgsExpression::quotedString( mValue.toString() );
     case QVariant::Bool:
       return mValue.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
     default:
-      return tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName(), mValue.toString() );
+      return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );
   }
 }
 
@@ -1141,6 +1264,18 @@ QSet<QString> QgsExpressionNodeLiteral::referencedColumns() const
 QSet<QString> QgsExpressionNodeLiteral::referencedVariables() const
 {
   return QSet<QString>();
+}
+
+QSet<QString> QgsExpressionNodeLiteral::referencedFunctions() const
+{
+  return QSet<QString>();
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeLiteral::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  return lst;
 }
 
 bool QgsExpressionNodeLiteral::needsGeometry() const
@@ -1166,7 +1301,7 @@ bool QgsExpressionNodeLiteral::isStatic( QgsExpression *parent, const QgsExpress
 
 QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   int index = mIndex;
 
   if ( index < 0 )
@@ -1179,15 +1314,24 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
     }
   }
 
-  if ( context && context->hasFeature() )
+  if ( context )
   {
     QgsFeature feature = context->feature();
-    if ( index >= 0 )
-      return feature.attribute( index );
+    if ( feature.isValid() )
+    {
+      if ( index >= 0 )
+        return feature.attribute( index );
+      else
+        return feature.attribute( mName );
+    }
     else
-      return feature.attribute( mName );
+    {
+      parent->setEvalErrorString( tr( "No feature available for field '%1' evaluation" ).arg( mName ) );
+    }
   }
-  return QVariant( '[' + mName + ']' );
+  if ( index < 0 )
+    parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
+  return QVariant();
 }
 
 QgsExpressionNode::NodeType QgsExpressionNodeColumnRef::nodeType() const
@@ -1203,16 +1347,18 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
   QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
 
   mIndex = fields.lookupField( mName );
-  if ( mIndex >= 0 )
+
+  if ( mIndex == -1 && context->hasFeature() )
   {
-    return true;
+    mIndex = context->feature().fieldNameIndex( mName );
   }
-  else
+
+  if ( mIndex == -1 )
   {
-    parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
-    mIndex = -1;
+    parent->setEvalErrorString( tr( "Field '%1' not found" ).arg( mName ) );
     return false;
   }
+  return true;
 }
 
 QString QgsExpressionNodeColumnRef::dump() const
@@ -1228,6 +1374,18 @@ QSet<QString> QgsExpressionNodeColumnRef::referencedColumns() const
 QSet<QString> QgsExpressionNodeColumnRef::referencedVariables() const
 {
   return QSet<QString>();
+}
+
+QSet<QString> QgsExpressionNodeColumnRef::referencedFunctions() const
+{
+  return QSet<QString>();
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeColumnRef::nodes() const
+{
+  QList<const QgsExpressionNode *> result;
+  result << this;
+  return result;
 }
 
 bool QgsExpressionNodeColumnRef::needsGeometry() const
@@ -1271,7 +1429,7 @@ QgsExpressionNode::NodeType QgsExpressionNodeCondition::nodeType() const
 
 QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_FOREACH ( WhenThen *cond, mConditions )
+  for ( WhenThen *cond : qgis::as_const( mConditions ) )
   {
     QVariant vWhen = cond->mWhenExp->eval( parent, context );
     QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( vWhen, parent );
@@ -1298,7 +1456,7 @@ QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsE
 bool QgsExpressionNodeCondition::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res;
-  Q_FOREACH ( WhenThen *cond, mConditions )
+  for ( WhenThen *cond : qgis::as_const( mConditions ) )
   {
     res = cond->mWhenExp->prepare( parent, context )
           & cond->mThenExp->prepare( parent, context );
@@ -1315,20 +1473,20 @@ bool QgsExpressionNodeCondition::prepareNode( QgsExpression *parent, const QgsEx
 QString QgsExpressionNodeCondition::dump() const
 {
   QString msg( QStringLiteral( "CASE" ) );
-  Q_FOREACH ( WhenThen *cond, mConditions )
+  for ( WhenThen *cond : mConditions )
   {
     msg += QStringLiteral( " WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump(), cond->mThenExp->dump() );
   }
   if ( mElseExp )
     msg += QStringLiteral( " ELSE %1" ).arg( mElseExp->dump() );
-  msg += QStringLiteral( " END" );
+  msg += QLatin1String( " END" );
   return msg;
 }
 
 QSet<QString> QgsExpressionNodeCondition::referencedColumns() const
 {
   QSet<QString> lst;
-  Q_FOREACH ( WhenThen *cond, mConditions )
+  for ( WhenThen *cond : mConditions )
   {
     lst += cond->mWhenExp->referencedColumns() + cond->mThenExp->referencedColumns();
   }
@@ -1342,7 +1500,7 @@ QSet<QString> QgsExpressionNodeCondition::referencedColumns() const
 QSet<QString> QgsExpressionNodeCondition::referencedVariables() const
 {
   QSet<QString> lst;
-  Q_FOREACH ( WhenThen *cond, mConditions )
+  for ( WhenThen *cond : mConditions )
   {
     lst += cond->mWhenExp->referencedVariables() + cond->mThenExp->referencedVariables();
   }
@@ -1353,25 +1511,51 @@ QSet<QString> QgsExpressionNodeCondition::referencedVariables() const
   return lst;
 }
 
+QSet<QString> QgsExpressionNodeCondition::referencedFunctions() const
+{
+  QSet<QString> lst;
+  for ( WhenThen *cond : mConditions )
+  {
+    lst += cond->mWhenExp->referencedFunctions() + cond->mThenExp->referencedFunctions();
+  }
+
+  if ( mElseExp )
+    lst += mElseExp->referencedFunctions();
+
+  return lst;
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeCondition::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  for ( WhenThen *cond : mConditions )
+  {
+    lst += cond->mWhenExp->nodes() + cond->mThenExp->nodes();
+  }
+
+  if ( mElseExp )
+    lst += mElseExp->nodes();
+
+  return lst;
+}
+
 bool QgsExpressionNodeCondition::needsGeometry() const
 {
-  Q_FOREACH ( WhenThen *cond, mConditions )
+  for ( WhenThen *cond : mConditions )
   {
     if ( cond->mWhenExp->needsGeometry() ||
          cond->mThenExp->needsGeometry() )
       return true;
   }
 
-  if ( mElseExp && mElseExp->needsGeometry() )
-    return true;
-
-  return false;
+  return mElseExp && mElseExp->needsGeometry();
 }
 
 QgsExpressionNode *QgsExpressionNodeCondition::clone() const
 {
   WhenThenList conditions;
-  Q_FOREACH ( WhenThen *wt, mConditions )
+  for ( WhenThen *wt : mConditions )
     conditions.append( wt->clone() );
 
   QgsExpressionNodeCondition *copy = new QgsExpressionNodeCondition( conditions, mElseExp ? mElseExp->clone() : nullptr );
@@ -1381,7 +1565,7 @@ QgsExpressionNode *QgsExpressionNodeCondition::clone() const
 
 bool QgsExpressionNodeCondition::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
-  Q_FOREACH ( WhenThen *wt, mConditions )
+  for ( WhenThen *wt : mConditions )
   {
     if ( !wt->mWhenExp->isStatic( parent, context ) || !wt->mThenExp->isStatic( parent, context ) )
       return false;
@@ -1396,7 +1580,8 @@ bool QgsExpressionNodeCondition::isStatic( QgsExpression *parent, const QgsExpre
 QSet<QString> QgsExpressionNodeInOperator::referencedColumns() const
 {
   QSet<QString> lst( mNode->referencedColumns() );
-  Q_FOREACH ( const QgsExpressionNode *n, mList->list() )
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( const QgsExpressionNode *n : nodeList )
     lst.unite( n->referencedColumns() );
   return lst;
 }
@@ -1404,8 +1589,28 @@ QSet<QString> QgsExpressionNodeInOperator::referencedColumns() const
 QSet<QString> QgsExpressionNodeInOperator::referencedVariables() const
 {
   QSet<QString> lst( mNode->referencedVariables() );
-  Q_FOREACH ( const QgsExpressionNode *n, mList->list() )
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( const QgsExpressionNode *n : nodeList )
     lst.unite( n->referencedVariables() );
+  return lst;
+}
+
+QSet<QString> QgsExpressionNodeInOperator::referencedFunctions() const
+{
+  QSet<QString> lst( mNode->referencedFunctions() );
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( const QgsExpressionNode *n : nodeList )
+    lst.unite( n->referencedFunctions() );
+  return lst;
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeInOperator::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  const QList< QgsExpressionNode * > nodeList = mList->list();
+  for ( const QgsExpressionNode *n : nodeList )
+    lst += n->nodes();
   return lst;
 }
 
@@ -1429,4 +1634,99 @@ QgsExpressionNodeCondition::WhenThen *QgsExpressionNodeCondition::WhenThen::clon
 QString QgsExpressionNodeBinaryOperator::text() const
 {
   return BINARY_OPERATOR_TEXT[mOp];
+}
+
+//
+
+QVariant QgsExpressionNodeIndexOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  const QVariant container = mContainer->eval( parent, context );
+  ENSURE_NO_EVAL_ERROR;
+  const QVariant index = mIndex->eval( parent, context );
+  ENSURE_NO_EVAL_ERROR;
+
+  switch ( container.type() )
+  {
+    case QVariant::Map:
+      return QgsExpressionUtils::getMapValue( container, parent ).value( index.toString() );
+
+    case QVariant::List:
+    case QVariant::StringList:
+    {
+      const QVariantList list = QgsExpressionUtils::getListValue( container, parent );
+      qlonglong pos = QgsExpressionUtils::getIntValue( index, parent );
+      if ( pos >= list.length() || pos < -list.length() )
+      {
+        return QVariant();
+      }
+      if ( pos < 0 )
+      {
+        // negative indices are from back of list
+        pos += list.length();
+      }
+
+      return list.at( pos );
+    }
+
+    default:
+      parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
+      return QVariant();
+  }
+}
+
+QgsExpressionNode::NodeType QgsExpressionNodeIndexOperator::nodeType() const
+{
+  return ntIndexOperator;
+}
+
+bool QgsExpressionNodeIndexOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  bool resC = mContainer->prepare( parent, context );
+  bool resV = mIndex->prepare( parent, context );
+  return resC && resV;
+}
+
+QString QgsExpressionNodeIndexOperator::dump() const
+{
+  return QStringLiteral( "%1[%2]" ).arg( mContainer->dump(), mIndex->dump() );
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedColumns() const
+{
+  return mContainer->referencedColumns() + mIndex->referencedColumns();
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedVariables() const
+{
+  return mContainer->referencedVariables() + mIndex->referencedVariables();
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedFunctions() const
+{
+  return mContainer->referencedFunctions() + mIndex->referencedFunctions();
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeIndexOperator::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  lst += mContainer->nodes() + mIndex->nodes();
+  return lst;
+}
+
+bool QgsExpressionNodeIndexOperator::needsGeometry() const
+{
+  return mContainer->needsGeometry() || mIndex->needsGeometry();
+}
+
+QgsExpressionNode *QgsExpressionNodeIndexOperator::clone() const
+{
+  QgsExpressionNodeIndexOperator *copy = new QgsExpressionNodeIndexOperator( mContainer->clone(), mIndex->clone() );
+  cloneTo( copy );
+  return copy;
+}
+
+bool QgsExpressionNodeIndexOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  return mContainer->isStatic( parent, context ) && mIndex->isStatic( parent, context );
 }

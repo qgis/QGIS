@@ -16,87 +16,149 @@
 #ifndef QGSPOINTMARKERITEM_H
 #define QGSPOINTMARKERITEM_H
 
-#include "qgsmapcanvasitem.h"
-#include "qgsfeature.h"
-#include "effects/qgspainteffect.h"
 #include <QFontMetricsF>
 #include <QPixmap>
-#include "qgis_app.h"
 #include <memory>
+
+#include "qgis_app.h"
+#include "qgsmapcanvasitem.h"
+#include "qgsfeature.h"
+#include "qgspainteffect.h"
 
 class QgsMarkerSymbol;
 
-/** \ingroup app
- * \class QgsPointMarkerItem
- * \brief An item that shows a point marker symbol centered on a map location.
- */
 
-class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
+/**
+ * \ingroup app
+ * \class QgsMapCanvasSymbolItem
+ * \brief Base class for map canvas items which are rendered using a QgsSymbol.
+ */
+class APP_EXPORT QgsMapCanvasSymbolItem: public QgsMapCanvasItem
 {
   public:
 
-    QgsPointMarkerItem( QgsMapCanvas *canvas = nullptr );
+    QgsMapCanvasSymbolItem( QgsMapCanvas *canvas = nullptr );
 
     void paint( QPainter *painter ) override;
 
-    /** Sets the center point of the marker symbol (in map coordinates)
-     * \param p center point
-    */
-    void setPointLocation( const QgsPointXY &p );
-
-    /** Sets the marker symbol to use for rendering the point. Note - you may need to call
-     * updateSize() after setting the symbol.
-     * \param symbol marker symbol. Ownership is transferred to item.
+    /**
+     * Sets the symbol to use for rendering the item.
      * \see symbol()
-     * \see updateSize()
      */
-    void setSymbol( QgsMarkerSymbol *symbol );
+    void setSymbol( std::unique_ptr< QgsSymbol > symbol );
 
-    /** Returns the marker symbol used for rendering the point.
+    /**
+     * Returns the symbol used for rendering the item.
      * \see setSymbol()
      */
-    QgsMarkerSymbol *symbol();
+    const QgsSymbol *symbol() const;
 
-    /** Sets the feature used for rendering the marker symbol. The feature's attributes
+    /**
+     * Sets the feature used for rendering the symbol. The feature's attributes
      * may affect the rendered symbol if data defined overrides are in place.
      * \param feature feature for symbol
      * \see feature()
-     * \see updateSize()
      */
     void setFeature( const QgsFeature &feature );
 
-    /** Returns the feature used for rendering the marker symbol.
+    /**
+     * Returns the feature used for rendering the symbol.
      * \see setFeature()
      */
     QgsFeature feature() const { return mFeature; }
 
-    /** Must be called after setting the symbol or feature and when the symbol's size may
-     * have changed.
-     */
-    void updateSize();
-
-    /** Sets the \a opacity for the marker.
+    /**
+     * Sets the \a opacity for the item.
      * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
      * and 1 is fully opaque
      * \see opacity()
      */
     void setOpacity( double opacity );
 
-    /** Returns the opacity for the marker.
+    /**
+     * Returns the opacity for the item.
      * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
      * and 1 is fully opaque
      * \see setOpacity()
      */
     double opacity() const;
 
-  private:
+  protected:
 
-    QgsFeature mFeature;
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
-    QPointF mLocation;
-    std::unique_ptr< QgsDrawSourceEffect > mOpacityEffect;
+    virtual void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) = 0;
 
     QgsRenderContext renderContext( QPainter *painter );
+    std::unique_ptr< QgsSymbol > mSymbol;
+    QgsFeature mFeature;
+
+  private:
+
+    std::unique_ptr< QgsDrawSourceEffect > mOpacityEffect;
+
+};
+
+/**
+ * \ingroup app
+ * \class QgsMapCanvasMarkerSymbolItem
+ * \brief An item that shows a point marker symbol centered on a map location.
+ */
+class APP_EXPORT QgsMapCanvasMarkerSymbolItem: public QgsMapCanvasSymbolItem
+{
+  public:
+
+    QgsMapCanvasMarkerSymbolItem( QgsMapCanvas *canvas = nullptr );
+
+    /**
+     * Sets the center point of the marker symbol (in map coordinates)
+     * \param p center point
+    */
+    void setPointLocation( const QgsPointXY &p );
+
+    /**
+     * Must be called after setting the symbol or feature and when the symbol's size may
+     * have changed.
+     */
+    void updateSize();
+
+    void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
+
+  private:
+
+    QPointF mLocation;
+
+    QgsMarkerSymbol *markerSymbol();
+};
+
+/**
+ * \ingroup app
+ * \class QgsMapCanvasLineSymbolItem
+ * \brief An item that shows a line symbol over the map.
+ */
+class APP_EXPORT QgsMapCanvasLineSymbolItem: public QgsMapCanvasSymbolItem
+{
+  public:
+
+    QgsMapCanvasLineSymbolItem( QgsMapCanvas *canvas = nullptr );
+
+    /**
+     * Sets the line to draw (in map coordinates)
+     */
+    void setLine( const QPolygonF &line );
+
+    /**
+     * Sets the line to draw (in map coordinates)
+    */
+    void setLine( const QLineF &line );
+
+    QRectF boundingRect() const override;
+
+    void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
+
+  private:
+
+    QPolygonF mLine;
+
+    QgsLineSymbol *lineSymbol();
 };
 
 #endif // QGSPOINTMARKERITEM_H

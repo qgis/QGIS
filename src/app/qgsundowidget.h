@@ -25,6 +25,7 @@
 #include <QWidget>
 #include <QUndoView>
 #include <QUndoStack>
+#include <QPointer>
 
 #include "qgspanelwidget.h"
 #include "qgis_app.h"
@@ -39,16 +40,8 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-    QWidget *dockWidgetContents = nullptr;
-    QGridLayout *gridLayout = nullptr;
-    QSpacerItem *spacerItem = nullptr;
-    QPushButton *undoButton = nullptr;
-    QPushButton *redoButton = nullptr;
-    QSpacerItem *spacerItem1 = nullptr;
 
     QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas );
-    void setupUi( QWidget *UndoWidget );
-    void retranslateUi( QWidget *UndoWidget );
 
     /**
      * Setting new undo stack for undo view
@@ -56,12 +49,18 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
     void setUndoStack( QUndoStack *undoStack );
 
     /**
+     * Show or hide the undo/redo buttons on the widget.
+     * \param show Show or hide the undo/redo buttons.
+     */
+    void setButtonsVisible( bool show );
+
+    /**
      * Handles destroying of stack when active layer is changed
      */
-    void destroyStack();
+    void unsetStack();
 
     //! Access to dock's contents
-    QWidget *dockContents() { return dockWidgetContents; }
+    QWidget *dockContents() { return mDockWidgetContents; }
 
   public slots:
 
@@ -95,11 +94,16 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 
   private:
     QUndoView *mUndoView = nullptr;
-    QUndoStack *mUndoStack = nullptr;
+    QPointer< QUndoStack > mUndoStack;
     QgsMapCanvas *mMapCanvas = nullptr;
 
-    int mPreviousIndex;
-    int mPreviousCount;
+    int mPreviousIndex = 0;
+    int mPreviousCount = 0;
+
+    QWidget *mDockWidgetContents = nullptr;
+    QGridLayout *mGridLayout = nullptr;
+    QPushButton *mUndoButton = nullptr;
+    QPushButton *mRedoButton = nullptr;
 };
 
 

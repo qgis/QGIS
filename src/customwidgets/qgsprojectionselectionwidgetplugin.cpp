@@ -62,7 +62,7 @@ bool QgsProjectionSelectionWidgetPlugin::isInitialized() const
 
 void QgsProjectionSelectionWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

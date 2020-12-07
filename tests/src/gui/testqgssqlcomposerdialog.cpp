@@ -41,7 +41,7 @@ bool TestQgsSQLComposerDialog::runTest()
   //const char* travis = getenv( "TRAVIS_OS_NAME" );
   //if ( travis && strcmp( travis, "osx" ) == 0 )
   //{
-  //  QgsDebugMsg( "Test disabled" );
+  //  QgsDebugMsg( QStringLiteral( "Test disabled" ) );
   //  return false;
   //}
   return true;
@@ -225,7 +225,7 @@ void TestQgsSQLComposerDialog::testSelectColumn()
     return;
   QgsSQLComposerDialog d;
   d.addColumnNames( QList<QgsSQLComposerDialog::PairNameType>() <<
-                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "a" ), QLatin1String( "" ) ) <<
+                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "a" ), QString() ) <<
                     QgsSQLComposerDialog::PairNameType( QStringLiteral( "b" ), QStringLiteral( "type" ) ), QStringLiteral( "my_table" ) );
 
   QCOMPARE( getColumnsCombo( d )->itemText( 1 ), QString( "a" ) );
@@ -313,7 +313,7 @@ void TestQgsSQLComposerDialog::testSelectFunction()
   {
     QgsSQLComposerDialog::Function f;
     f.name = QStringLiteral( "sixth_func" );
-    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg1" ), QLatin1String( "" ) );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg1" ), QString() );
     f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg2" ), QStringLiteral( "xs:double" ) );
     f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg3" ), QStringLiteral( "gml:AbstractGeometryType" ) );
     f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "number" ), QStringLiteral( "xs:int" ) );
@@ -322,7 +322,7 @@ void TestQgsSQLComposerDialog::testSelectFunction()
   {
     QgsSQLComposerDialog::Function f;
     f.name = QStringLiteral( "seventh_func" );
-    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg1" ), QLatin1String( "" ) );
+    f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg1" ), QString() );
     f.argumentList << QgsSQLComposerDialog::Argument( QStringLiteral( "arg2" ), QStringLiteral( "xs:double" ) );
     f.minArgs = 1;
     functions << f;
@@ -418,7 +418,7 @@ void TestQgsSQLComposerDialog::testJoins()
 
   QTableWidget *table = getTableJoins( d );
   QCOMPARE( table->rowCount(), 1 );
-  QCOMPARE( table->item( 0, 0 ) != nullptr, true );
+  QVERIFY( table->item( 0, 0 ) );
   table->item( 0, 0 )->setText( QStringLiteral( "join_table" ) );
   table->item( 0, 1 )->setText( QStringLiteral( "join_expr" ) );
 
@@ -461,7 +461,7 @@ void TestQgsSQLComposerDialog::testJoins()
 
   QTest::mouseClick( getAddJoinButton( d ), Qt::LeftButton );
   QCOMPARE( table->rowCount(), 1 );
-  QCOMPARE( table->item( 0, 0 ) != nullptr, true );
+  QVERIFY( table->item( 0, 0 ) );
 }
 
 QGSTEST_MAIN( TestQgsSQLComposerDialog )

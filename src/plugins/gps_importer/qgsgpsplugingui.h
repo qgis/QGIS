@@ -17,7 +17,6 @@
 #ifndef QGSGPSPLUGINGUI_H
 #define QGSGPSPLUGINGUI_H
 
-#include "qgsvectorlayer.h"
 #include "ui_qgsgpspluginguibase.h"
 #include "qgsbabelformat.h"
 #include "qgsgpsdevice.h"
@@ -27,19 +26,21 @@
 
 #include <QString>
 
+class QgsVectorLayer;
+
 
 /**
 */
-class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
+class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
 {
     Q_OBJECT
 
   public:
-    QgsGPSPluginGui( const BabelMap &importers,
-                     std::map<QString, QgsGPSDevice *> &devices,
+    QgsGpsPluginGui( const BabelMap &importers,
+                     std::map<QString, QgsGpsDevice *> &devices,
                      const std::vector<QgsVectorLayer *> &gpxMapLayers,
                      QWidget *parent, Qt::WindowFlags );
-    ~QgsGPSPluginGui();
+    ~QgsGpsPluginGui() override;
 
   public slots:
 
@@ -49,13 +50,13 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
     void on_pbnGPXSelectFile_clicked();
 
-    void on_pbnIMPInput_clicked();
-    void on_pbnIMPOutput_clicked();
+    void pbnIMPInput_clicked();
+    void pbnIMPOutput_clicked();
 
-    void on_pbnCONVInput_clicked();
-    void on_pbnCONVOutput_clicked();
+    void pbnCONVInput_clicked();
+    void pbnCONVOutput_clicked();
 
-    void on_pbnDLOutput_clicked();
+    void pbnDLOutput_clicked();
 
   private:
     void populateDeviceComboBox();
@@ -66,6 +67,7 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
     void saveState();
     void restoreState();
+    void showHelp();
 
 #if 0
     void populateLoadDialog();
@@ -76,10 +78,9 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
   private slots:
 
-    void on_pbnRefresh_clicked();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_gps/plugins_gps.html" ) ); }
+    void pbnRefresh_clicked();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   signals:
     void drawRasterLayer( const QString & );
@@ -103,7 +104,7 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
     std::vector<QgsVectorLayer *> mGPXLayers;
     const BabelMap &mImporters;
-    std::map<QString, QgsGPSDevice *> &mDevices;
+    std::map<QString, QgsGpsDevice *> &mDevices;
     QString mBabelFilter;
     QString mImpFormat;
     QAbstractButton *pbnOK = nullptr;

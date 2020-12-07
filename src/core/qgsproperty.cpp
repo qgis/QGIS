@@ -14,23 +14,20 @@
  ***************************************************************************/
 
 #include "qgsproperty.h"
+#include "qgsproperty_p.h"
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include <qmath.h>
 
-
-QgsPropertyDefinition::QgsPropertyDefinition()
-  : mTypes( DataTypeString )
-{}
-
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, const QString &origin, const QString &comment )
   : mName( name )
   , mDescription( description )
   , mStandardType( type )
+  , mOrigin( origin )
+  , mComment( comment )
 {
   switch ( mStandardType )
   {
@@ -41,27 +38,27 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case Integer:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "int [&lt;= 0 =&gt;]" );
+      mHelpText = QObject::tr( "int [≤ 0 ≥]" );
       break;
 
     case IntegerPositive:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "int [&gt;= 0]" );
+      mHelpText = QObject::tr( "int [≥ 0]" );
       break;
 
     case IntegerPositiveGreaterZero:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "int [&gt;= 1]" );
+      mHelpText = QObject::tr( "int [≥ 1]" );
       break;
 
     case Double:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&lt;= 0.0 =&gt;]" );
+      mHelpText = QObject::tr( "double [≤ 0.0 ≥]" );
       break;
 
     case DoublePositive:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      mHelpText = QObject::tr( "double [≥ 0.0]" );
       break;
 
     case Double0To1:
@@ -86,7 +83,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case RenderUnits:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
       break;
 
     case ColorWithAlpha:
@@ -101,14 +98,14 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case PenJoinStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
       break;
 
     case BlendMode:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
-                                              "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                                              "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
+                  "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
+                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
       break;
 
     case Point:
@@ -118,56 +115,61 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case Size:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      mHelpText = QObject::tr( "double [≥ 0.0]" );
       break;
 
     case Size2D:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "double size [<b>width,height</b>]" );
+      mHelpText = QObject::tr( "string of doubles '<b>width,height</b>' or array of doubles <b>[width, height]</b>" );
       break;
 
     case LineStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
       break;
 
     case StrokeWidth:
       mTypes = DataTypeNumeric;
-      mHelpText = QObject::tr( "double [&gt;= 0.0]" );
+      mHelpText = QObject::tr( "double [≥ 0.0]" );
       break;
 
     case FillStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
-                                              "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
-                                              "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+      mHelpText = trString() + QStringLiteral( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                  "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                  "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
       break;
 
     case CapStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
       break;
 
     case HorizontalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
       break;
 
     case VerticalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
       break;
 
     case SvgPath:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>filepath</b>] as<br>"
-                                              "<b>''</b>=empty|absolute|search-paths-relative|<br>"
-                                              "project-relative|URL" );
+      mHelpText = trString() + QStringLiteral( "[<b>filepath</b>] as<br>"
+                  "<b>''</b>=empty|absolute|search-paths-relative|<br>"
+                  "project-relative|URL" );
       break;
 
     case Offset:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "double offset [<b>x,y</b>]" );
+      mHelpText = QObject::tr( "string of doubles '<b>x,y</b>' or array of doubles <b>[x, y]</b>" );
+      break;
+
+    case DateTime:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "DateTime or string representation of a DateTime" );
       break;
 
     case Custom:
@@ -175,11 +177,13 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin, const QString &comment )
   : mName( name )
   , mDescription( description )
   , mTypes( dataType )
   , mHelpText( helpText )
+  , mOrigin( origin )
+  , mComment( comment )
 {}
 
 bool QgsPropertyDefinition::supportsAssistant() const
@@ -202,6 +206,8 @@ QgsProperty::QgsProperty()
 {
   d = new QgsPropertyPrivate();
 }
+
+QgsProperty::~QgsProperty() = default;
 
 QgsProperty QgsProperty::fromExpression( const QString &expression, bool isActive )
 {
@@ -311,6 +317,7 @@ void QgsProperty::setExpressionString( const QString &expression )
   d->expressionString = expression;
   d->expression = QgsExpression( expression );
   d->expressionPrepared = false;
+  d->expressionIsInvalid = false;
 }
 
 QString QgsProperty::expressionString() const
@@ -372,10 +379,12 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
       {
         d->expressionReferencedCols.clear();
         d->expressionPrepared = false;
+        d->expressionIsInvalid = true;
         return false;
       }
 
       d->expressionPrepared = true;
+      d->expressionIsInvalid = false;
       d->expressionReferencedCols = d->expression.referencedColumns();
       return true;
     }
@@ -388,7 +397,7 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
   return false;
 }
 
-QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context ) const
+QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
   if ( !d->active )
     return QSet<QString>();
@@ -409,15 +418,33 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
     case ExpressionBasedProperty:
     {
+      if ( ignoreContext )
+      {
+        return d->expression.referencedColumns();
+      }
+
+      if ( d->expressionIsInvalid )
+        return QSet< QString >();
+
       d.detach();
       if ( !d->expressionPrepared && !prepare( context ) )
+      {
+        d->expressionIsInvalid = true;
         return QSet< QString >();
+      }
 
       return d->expressionReferencedCols;
     }
 
   }
   return QSet<QString>();
+}
+
+bool QgsProperty::isProjectColor() const
+{
+  QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
+  return d->type == QgsProperty::ExpressionBasedProperty && !d->expressionString.isEmpty()
+         && rx.match( d->expressionString ).hasMatch();
 }
 
 QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
@@ -450,19 +477,20 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
           *ok = true;
         return f.attribute( d->cachedFieldIdx );
       }
-
-      int fieldIdx = f.fieldNameIndex( d->fieldName );
-      if ( fieldIdx < 0 )
+      prepare( context );
+      if ( d->cachedFieldIdx < 0 )
         return defaultValue;
 
       if ( ok )
         *ok = true;
-      return f.attribute( fieldIdx );
+      return f.attribute( d->cachedFieldIdx );
     }
 
     case ExpressionBasedProperty:
     {
-      d.detach();
+      if ( d->expressionIsInvalid )
+        return defaultValue;
+
       if ( !d->expressionPrepared && !prepare( context ) )
         return defaultValue;
 
@@ -482,7 +510,7 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
     case InvalidProperty:
       return defaultValue;
 
-  };
+  }
 
   return QVariant();
 }
@@ -509,6 +537,34 @@ QVariant QgsProperty::value( const QgsExpressionContext &context, const QVariant
     *ok = true;
 
   return val;
+}
+
+QDateTime QgsProperty::valueAsDateTime( const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
+{
+  bool valOk = false;
+  QVariant val = value( context, defaultDateTime, &valOk );
+
+  if ( !valOk || !val.isValid() )
+    return defaultDateTime;
+
+  QDateTime dateTime;
+  if ( val.type() == QVariant::DateTime )
+  {
+    dateTime = val.value<QDateTime>();
+  }
+  else
+  {
+    dateTime = val.toDateTime();
+  }
+
+  if ( !dateTime.isValid() )
+    return defaultDateTime;
+  else
+  {
+    if ( ok )
+      *ok = true;
+    return dateTime;
+  }
 }
 
 QString QgsProperty::valueAsString( const QgsExpressionContext &context, const QString &defaultString, bool *ok ) const
@@ -605,7 +661,7 @@ int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultVal
     {
       if ( ok )
         *ok = true;
-      return qRound( dbl );
+      return std::round( dbl );
     }
     else
     {
@@ -628,7 +684,7 @@ bool QgsProperty::valueAsBool( const QgsExpressionContext &context, bool default
   bool valOk = false;
   QVariant val = value( context, defaultValue, &valOk );
 
-  if ( !valOk || !val.isValid() )
+  if ( !valOk || !val.isValid() || val.isNull() )
     return defaultValue;
 
   if ( ok )
@@ -702,6 +758,7 @@ bool QgsProperty::loadVariant( const QVariant &property )
 
       d->expression = QgsExpression( d->expressionString );
       d->expressionPrepared = false;
+      d->expressionIsInvalid = false;
       d->expressionReferencedCols.clear();
       break;
 
@@ -711,8 +768,7 @@ bool QgsProperty::loadVariant( const QVariant &property )
   }
 
   //restore transformer if present
-  if ( d->transformer )
-    delete d->transformer;
+  delete d->transformer;
   d->transformer = nullptr;
 
 

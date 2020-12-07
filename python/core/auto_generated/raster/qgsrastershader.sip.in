@@ -1,0 +1,135 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastershader.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRasterShader
+{
+%Docstring
+Interface for all raster shaders.
+%End
+
+%TypeHeaderCode
+#include "qgsrastershader.h"
+%End
+  public:
+    QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
+
+
+
+    double maximumValue() const;
+%Docstring
+Returns the maximum value for the raster shader.
+
+.. seealso:: :py:func:`setMaximumValue`
+
+.. seealso:: :py:func:`minimumValue`
+%End
+
+    double minimumValue() const;
+%Docstring
+Returns the minimum value for the raster shader.
+
+.. seealso:: :py:func:`setMinimumValue`
+
+.. seealso:: :py:func:`maximumValue`
+%End
+
+    QgsRasterShaderFunction *rasterShaderFunction();
+
+
+    bool shade( double value,
+                int *returnRedValue /Out/,
+                int *returnGreenValue /Out/,
+                int *returnBlueValue /Out/,
+                int *returnAlpha /Out/ );
+%Docstring
+Generates a new RGBA value based on one input ``value``.
+
+:param value: The original value to base a new RGBA value on
+:param returnRedValue: The red component of the new RGBA value
+:param returnGreenValue: The green component of the new RGBA value
+:param returnBlueValue: The blue component of the new RGBA value
+
+:return: - ``True`` if the return values are valid otherwise ``False``
+         - returnAlpha: The alpha component of the new RGBA value
+%End
+
+    bool shade( double redValue,
+                double greenValue,
+                double blueValue,
+                double alphaValue,
+                int *returnRedValue /Out/,
+                int *returnGreenValue /Out/,
+                int *returnBlueValue /Out/,
+                int *returnAlpha /Out/ );
+%Docstring
+Generates a new RGBA value based on an original RGBA value.
+
+:param redValue: The red component of the original value to base a new RGBA value on
+:param greenValue: The green component of the original value to base a new RGBA value on
+:param blueValue: The blue component of the original value to base a new RGBA value on
+:param alphaValue: The alpha component of the original value to base a new RGBA value on
+:param returnRedValue: The red component of the new RGBA value
+:param returnGreenValue: The green component of the new RGBA value
+:param returnBlueValue: The blue component of the new RGBA value
+
+:return: - ``True`` if the return values are valid otherwise ``False``
+         - returnAlpha: The alpha component of the new RGBA value
+%End
+
+    void setRasterShaderFunction( QgsRasterShaderFunction *function /Transfer/ );
+%Docstring
+A public method that allows the user to set their own shader ``function``.
+
+.. note::
+
+   Raster shader takes ownership of the shader function instance
+%End
+
+    void setMaximumValue( double value );
+%Docstring
+Sets the maximum ``value`` for the raster shader.
+
+.. seealso:: :py:func:`setMinimumValue`
+
+.. seealso:: :py:func:`maximumValue`
+%End
+
+    void setMinimumValue( double value );
+%Docstring
+Sets the minimum ``value`` for the raster shader.
+
+.. seealso:: :py:func:`setMaximumValue`
+
+.. seealso:: :py:func:`minimumValue`
+%End
+
+    void writeXml( QDomDocument &doc, QDomElement &parent ) const;
+%Docstring
+Writes shader state to an XML element.
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads shader state from an XML element.
+%End
+
+  private:
+    QgsRasterShader( const QgsRasterShader &rh );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastershader.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

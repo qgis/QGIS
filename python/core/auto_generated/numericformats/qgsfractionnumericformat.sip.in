@@ -1,0 +1,172 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsfractionnumericformat.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsFractionNumericFormat : QgsNumericFormat
+{
+%Docstring
+A numeric formatter which returns a vulgar fractional representation of a decimal value (e.g. "1/2" instead of 0.5).
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsfractionnumericformat.h"
+%End
+  public:
+
+    QgsFractionNumericFormat();
+%Docstring
+Default constructor
+%End
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey();
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
+
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
+
+    virtual double suggestSampleValue() const;
+
+
+    bool useDedicatedUnicodeCharacters() const;
+%Docstring
+Returns ``True`` if dedicated unicode characters should be used, when the are available for the
+particular fraction (e.g. ½, ¼).
+
+.. seealso:: :py:func:`setUseDedicatedUnicodeCharacters`
+
+.. seealso:: :py:func:`useUnicodeSuperSubscript`
+%End
+
+    void setUseDedicatedUnicodeCharacters( bool enabled );
+%Docstring
+Sets whether dedicated unicode characters should be used, when the are available for the
+particular fraction (e.g. ½, ¼).
+
+.. seealso:: :py:func:`useDedicatedUnicodeCharacters`
+
+.. seealso:: :py:func:`setUseUnicodeSuperSubscript`
+%End
+
+    bool useUnicodeSuperSubscript() const;
+%Docstring
+Returns ``True`` if unicode superscript and subscript characters should be used, (e.g. "⁶/₇").
+
+.. seealso:: :py:func:`setUseUnicodeSuperSubscript`
+
+.. seealso:: :py:func:`useDedicatedUnicodeCharacters`
+%End
+
+    void setUseUnicodeSuperSubscript( bool enabled );
+%Docstring
+Sets whether unicode superscript and subscript characters should be used, (e.g. "⁶/₇").
+
+.. seealso:: :py:func:`useUnicodeSuperSubscript`
+
+.. seealso:: :py:func:`setUseDedicatedUnicodeCharacters`
+%End
+
+    bool showThousandsSeparator() const;
+%Docstring
+Returns ``True`` if the thousands grouping separator will be shown.
+
+.. seealso:: :py:func:`setShowThousandsSeparator`
+%End
+
+    void setShowThousandsSeparator( bool show );
+%Docstring
+Sets whether the thousands grouping separator will be shown.
+
+.. seealso:: :py:func:`showThousandsSeparator`
+%End
+
+    bool showPlusSign() const;
+%Docstring
+Returns ``True`` if a leading plus sign will be shown for positive values.
+
+.. seealso:: :py:func:`setShowPlusSign`
+%End
+
+    void setShowPlusSign( bool show );
+%Docstring
+Sets whether a leading plus sign will be shown for positive values.
+
+.. seealso:: :py:func:`showPlusSign`
+%End
+
+    QChar thousandsSeparator() const;
+%Docstring
+Returns any override for the thousands separator character. If an invalid QChar is returned,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`setThousandsSeparator`
+%End
+
+    void setThousandsSeparator( QChar character );
+%Docstring
+Sets an override ``character`` for the thousands separator character. If an invalid QChar is set,
+then the QGIS locale separator is used instead.
+
+.. seealso:: :py:func:`thousandsSeparator`
+%End
+
+    static bool doubleToVulgarFraction( const double value, unsigned long long &numerator /Out/, unsigned long long &denominator /Out/, int &sign /Out/, const double tolerance = 1e-10 );
+%Docstring
+Converts a double ``value`` to a vulgar fraction (e.g. ⅓, ¼, etc) by attempting to calculate
+the corresponding ``numerator`` and ``denominator``, within the specified ``tolerance``.
+
+This method is based of Richard's algorithm (1981) from "Continued Fractions without Tears" (University of Minnesota).
+
+:param value: input value to convert
+:param tolerance: acceptable tolerance. Larger values will give "nicer" fractions.
+
+:return: - ``True`` if ``value`` was successfully converted to a fraction
+         - numerator: will be set to calculated fraction numerator
+         - denominator: will be set to the calculated fraction denominator
+         - sign: will be set to the sign of the result (as -1 or +1 values)
+%End
+
+    static QString toUnicodeSuperscript( const QString &input );
+%Docstring
+Converts numbers in an ``input`` string to unicode superscript equivalents.
+
+.. seealso:: :py:func:`toUnicodeSubscript`
+%End
+
+    static QString toUnicodeSubscript( const QString &input );
+%Docstring
+Converts numbers in an ``input`` string to unicode subscript equivalents.
+
+.. seealso:: :py:func:`toUnicodeSuperscript`
+%End
+
+  protected:
+
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
+%Docstring
+Sets the format's ``configuration``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsfractionnumericformat.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

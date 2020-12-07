@@ -21,44 +21,49 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsApplication,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsGeometryCollection,
+                       QgsPolygon,
+                       QgsMultiPolygon,
+                       QgsMultiSurface,
+                       QgsWkbTypes,
+                       QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingUtils)
 
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class LinesToPolygons(QgisAlgorithm):
-
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+class LinesToPolygons(QgisFeatureBasedAlgorithm):
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmLineToPolygon.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmLineToPolygon.svg")
 
     def tags(self):
         return self.tr('line,polygon,convert').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def name(self):
         return 'linestopolygons'
@@ -66,40 +71,66 @@ class LinesToPolygons(QgisAlgorithm):
     def displayName(self):
         return self.tr('Lines to polygons')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+    def outputName(self):
+        return self.tr('Polygons')
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon,
-                                                                     layer.crs(), context)
+    def outputType(self):
+        return QgsProcessing.TypeVectorPolygon
 
-        outFeat = QgsFeature()
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-        for current, f in enumerate(features):
-            outGeomList = []
-            if f.geometry().isMultipart():
-                outGeomList = f.geometry().asMultiPolyline()
-            else:
-                outGeomList.append(f.geometry().asPolyline())
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
-            polyGeom = self.removeBadLines(outGeomList)
-            if len(polyGeom) != 0:
-                outFeat.setGeometry(QgsGeometry.fromPolygon(polyGeom))
-                attrs = f.attributes()
-                outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat)
+    def outputWkbType(self, input_wkb_type):
+        return self.convertWkbToPolygons(input_wkb_type)
 
-            feedback.setProgress(int(current * total))
+    def processFeature(self, feature, context, feedback):
+        if feature.hasGeometry():
+            feature.setGeometry(QgsGeometry(self.convertToPolygons(feature.geometry())))
+            if feature.geometry().isEmpty():
+                feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
+        return [feature]
 
-        del writer
+    def supportInPlaceEdit(self, layer):
+        return False
 
-    def removeBadLines(self, lines):
-        geom = []
-        if len(lines) == 1:
-            if len(lines[0]) > 2:
-                geom = lines
-            else:
-                geom = []
+    def convertWkbToPolygons(self, wkb):
+        multi_wkb = QgsWkbTypes.NoGeometry
+        if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.LineString:
+            multi_wkb = QgsWkbTypes.MultiPolygon
+        elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.CompoundCurve:
+            multi_wkb = QgsWkbTypes.MultiSurface
+        if QgsWkbTypes.hasM(wkb):
+            multi_wkb = QgsWkbTypes.addM(multi_wkb)
+        if QgsWkbTypes.hasZ(wkb):
+            multi_wkb = QgsWkbTypes.addZ(multi_wkb)
+
+        return multi_wkb
+
+    def convertToPolygons(self, geometry):
+        surfaces = self.getSurfaces(geometry.constGet())
+        output_wkb = self.convertWkbToPolygons(geometry.wkbType())
+        out_geom = None
+        if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiPolygon:
+            out_geom = QgsMultiPolygon()
         else:
-            geom = [elem for elem in lines if len(elem) > 2]
-        return geom
+            out_geom = QgsMultiSurface()
+
+        for surface in surfaces:
+            out_geom.addGeometry(surface)
+
+        return out_geom
+
+    def getSurfaces(self, geometry):
+        surfaces = []
+        if isinstance(geometry, QgsGeometryCollection):
+            # collection
+            for i in range(geometry.numGeometries()):
+                surfaces.extend(self.getSurfaces(geometry.geometryN(i)))
+        else:
+            # not collection
+            if geometry.vertexCount() > 2:
+                surface = QgsPolygon()
+                surface.setExteriorRing(geometry.clone())
+                surfaces.append(surface)
+
+        return surfaces

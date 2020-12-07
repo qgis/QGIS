@@ -18,6 +18,7 @@
 #include "qgshistogramwidget.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsstatisticalsummary.h"
 #include "qgssettings.h"
 
@@ -84,7 +85,7 @@ QgsHistogramWidget::~QgsHistogramWidget()
 
 static bool _rangesByLower( const QgsRendererRange &a, const QgsRendererRange &b )
 {
-  return a.lowerValue() < b.lowerValue() ? -1 : 0;
+  return a.lowerValue() < b.lowerValue();
 }
 
 void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList &ranges )
@@ -103,7 +104,7 @@ void QgsHistogramWidget::refreshValues()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   bool ok;
-  mValues = mVectorLayer->getDoubleValues( mSourceFieldExp, ok );
+  mValues = QgsVectorLayerUtils::getDoubleValues( mVectorLayer, mSourceFieldExp, ok );
 
   if ( ! ok )
   {
@@ -115,7 +116,7 @@ void QgsHistogramWidget::refreshValues()
   std::sort( mValues.begin(), mValues.end() );
   mHistogram.setValues( mValues );
   mBinsSpinBox->blockSignals( true );
-  mBinsSpinBox->setValue( qMax( mHistogram.optimalNumberBins(), 30 ) );
+  mBinsSpinBox->setValue( std::max( mHistogram.optimalNumberBins(), 30 ) );
   mBinsSpinBox->blockSignals( false );
 
   mStats.setStatistics( QgsStatisticalSummary::StDev );
@@ -200,7 +201,7 @@ void QgsHistogramWidget::drawHistogram()
 
   // make colors list
   mHistoColors.clear();
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
   {
     mHistoColors << ( range.symbol() ? range.symbol()->color() : Qt::black );
   }
@@ -235,7 +236,7 @@ void QgsHistogramWidget::drawHistogram()
       dataHisto << QwtIntervalSample( lastValue, mRanges.at( rangeIndex - 1 ).upperValue(), edges.at( bin ) );
     }
 
-    double upperEdge = !mRanges.isEmpty() ? qMin( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
+    double upperEdge = !mRanges.isEmpty() ? std::min( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
                        : edges.at( bin + 1 );
 
     dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );
@@ -247,7 +248,7 @@ void QgsHistogramWidget::drawHistogram()
   plotHistogram->attach( mpPlot );
 
   mRangeMarkers.clear();
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
+  for ( const QgsRendererRange &range : qgis::as_const( mRanges ) )
   {
     QwtPlotMarker *rangeMarker = new QwtPlotMarker();
     rangeMarker->attach( mpPlot );

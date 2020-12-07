@@ -1,0 +1,133 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerdialog.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsModelDesignerDialog : QMainWindow
+{
+%Docstring
+Model designer dialog base class
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodeldesignerdialog.h"
+%End
+  public:
+
+    QgsModelDesignerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    ~QgsModelDesignerDialog();
+
+    virtual void closeEvent( QCloseEvent *event );
+
+
+    void beginUndoCommand( const QString &text, int id = 0 );
+%Docstring
+Starts an undo command. This should be called before any changes are made to the model.
+%End
+
+    void endUndoCommand();
+%Docstring
+Ends the current undo command. This should be called after changes are made to the model.
+%End
+
+    QgsProcessingModelAlgorithm *model();
+%Docstring
+Returns the model shown in the dialog.
+%End
+
+    void setModel( QgsProcessingModelAlgorithm *model /Transfer/ );
+%Docstring
+Sets the ``model`` shown in the dialog.
+
+Ownership of ``model`` is transferred to the dialog.
+%End
+
+    void loadModel( const QString &path );
+%Docstring
+Loads a model into the designer from the specified file ``path``.
+%End
+
+    void setModelScene( QgsModelGraphicsScene *scene /Transfer/ );
+%Docstring
+Sets the related ``scene``.
+%End
+
+  protected:
+
+    virtual void repaintModel( bool showControls = true ) = 0;
+    virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
+    virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
+    virtual void exportAsScriptAlgorithm() = 0;
+    virtual void saveModel( bool saveAs = false ) = 0;
+
+    QToolBar *toolbar();
+    QAction *actionOpen();
+    QAction *actionSaveInProject();
+    QAction *actionEditHelp();
+    QAction *actionRun();
+    QgsMessageBar *messageBar();
+    QGraphicsView *view();
+
+    void setDirty( bool dirty );
+
+    bool validateSave();
+%Docstring
+Checks if the model can current be saved, and returns ``True`` if it can.
+%End
+
+    bool checkForUnsavedChanges();
+%Docstring
+Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
+
+Returns ``False`` if the cancel option was selected
+%End
+
+    void setLastRunChildAlgorithmResults( const QVariantMap &results );
+%Docstring
+Sets the results of child algorithms for the last run of the model through the designer window.
+%End
+
+    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
+%Docstring
+Sets the inputs for child algorithms for the last run of the model through the designer window.
+%End
+
+};
+
+
+
+class QgsModelChildDependenciesWidget : QWidget
+{
+
+%TypeHeaderCode
+#include "qgsmodeldesignerdialog.h"
+%End
+  public:
+
+    QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
+    QList< QgsProcessingModelChildDependency > value() const;
+    void setValue( const QList< QgsProcessingModelChildDependency >  &value );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerdialog.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

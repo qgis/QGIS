@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/models/qgsprocessingmodelcomment.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingModelComment : QgsProcessingModelComponent
+{
+%Docstring
+Represents a comment in a model.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmodelcomment.h"
+%End
+  public:
+
+    QgsProcessingModelComment( const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingModelComment with the specified ``description``.
+%End
+
+    virtual QgsProcessingModelComment *clone() const /Factory/;
+
+
+    QVariant toVariant() const;
+%Docstring
+Saves this comment to a QVariant.
+
+.. seealso:: :py:func:`loadVariant`
+%End
+
+    bool loadVariant( const QVariantMap &map );
+%Docstring
+Loads this comment from a QVariantMap.
+
+.. seealso:: :py:func:`toVariant`
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/models/qgsprocessingmodelcomment.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class to convert from older project file versions to newer.
  * This class provides possibility to store a project file as a QDomDocument,
  * and provides the ability to specify version of the project file, and
@@ -34,7 +35,8 @@
 
 class QgsRasterLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsProjectFileTransform
 {
@@ -42,7 +44,8 @@ class CORE_EXPORT QgsProjectFileTransform
     //Default constructor
     //QgsProjectfiletransform() {}
 
-    /** Create an instance from a Dom and a supplied version
+    /**
+     * Create an instance from a Dom and a supplied version
      * \param domDocument The Dom document to use as content
      * \param version Version number
      */
@@ -56,44 +59,31 @@ class CORE_EXPORT QgsProjectFileTransform
 
     bool updateRevision( const QgsProjectVersion &version );
 
-    /** Prints the contents via QgsDebugMsg()
+    /**
+     * Prints the contents via QgsDebugMsg()
      */
     void dump();
 
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );
 
+    /**
+     * The current dom document
+     *
+     * \since QGIS 3.12
+     */
+    QDomDocument &dom();
+
+    /**
+     * The current project version
+     *
+     * \since QGIS 3.12
+     */
+    QgsProjectVersion currentVersion() const;
+
   private:
-
-    typedef struct
-    {
-      QgsProjectVersion from;
-      QgsProjectVersion to;
-      void ( QgsProjectFileTransform::* transformFunc )();
-    } TransformItem;
-
-    static TransformItem sTransformers[];
 
     QDomDocument mDom;
     QgsProjectVersion mCurrentVersion;
-
-    // Transformer functions below. Declare functions here,
-    // define them in qgsprojectfiletransform.cpp and add them
-    // to the transformArray with proper version number
-    void transformNull() {} // Do absolutely nothing
-    void transform081to090();
-    void transform091to0100();
-    void transform0100to0110();
-    void transform0110to1000();
-    void transform1100to1200();
-    void transform1400to1500();
-    void transform1800to1900();
-    void transform2200to2300();
-    void transform2990();
-
-    //helper functions
-    static int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &bandName, QgsRasterLayer *rlayer );
-    static void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterproperties, QDomElement &rendererElem );
-    static void transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem );
 };
 
 

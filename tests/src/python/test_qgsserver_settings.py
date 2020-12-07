@@ -10,8 +10,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Paul Blottiere'
 __date__ = '20/12/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -19,7 +17,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from utilities import unitTestDataPath
 from qgis.testing import unittest
-from qgis.server import QgsServerSettings
+from qgis.server import QgsServerSettings, QgsServerSettingsEnv
 
 
 class TestQgsServerSettings(unittest.TestCase):
@@ -133,6 +131,36 @@ class TestQgsServerSettings(unittest.TestCase):
         self.assertEqual(self.settings.cacheDirectory(), "/tmp/fake")
         os.environ.pop(env)
 
+    def test_env_trust_layer_metadata(self):
+        env = "QGIS_SERVER_TRUST_LAYER_METADATA"
+
+        self.assertFalse(self.settings.trustLayerMetadata())
+
+        os.environ[env] = "1"
+        self.settings.load()
+        self.assertTrue(self.settings.trustLayerMetadata())
+        os.environ.pop(env)
+
+        os.environ[env] = "0"
+        self.settings.load()
+        self.assertFalse(self.settings.trustLayerMetadata())
+        os.environ.pop(env)
+
+    def test_env_load_layouts_disabled(self):
+        env = "QGIS_SERVER_DISABLE_GETPRINT"
+
+        self.assertFalse(self.settings.getPrintDisabled())
+
+        os.environ[env] = "1"
+        self.settings.load()
+        self.assertTrue(self.settings.getPrintDisabled())
+        os.environ.pop(env)
+
+        os.environ[env] = "0"
+        self.settings.load()
+        self.assertFalse(self.settings.getPrintDisabled())
+        os.environ.pop(env)
+
     def test_priority(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
@@ -207,6 +235,39 @@ class TestQgsServerSettings(unittest.TestCase):
 
         # clear environment
         os.environ.pop(env)
+
+    def test_env_actual(self):
+        env = "QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES"
+        env2 = "QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS"
+
+        os.environ[env] = "/tmp/initial"
+        os.environ[env2] = "pg:initial"
+
+        # test initial value
+        self.settings.load()
+        self.assertEqual(self.settings.landingPageProjectsDirectories(), "/tmp/initial")
+        self.assertEqual(self.settings.landingPageProjectsPgConnections(), "pg:initial")
+
+        # set new environment variable
+        os.environ[env] = "/tmp/new"
+        os.environ[env2] = "pg:new"
+
+        # test new environment variable
+        self.assertEqual(self.settings.landingPageProjectsDirectories(), "/tmp/new")
+        self.assertEqual(self.settings.landingPageProjectsPgConnections(), "pg:new")
+
+        # current environment variable are popped
+        os.environ.pop(env)
+        os.environ.pop(env2)
+
+        # fallback to initial values
+        self.assertEqual(self.settings.landingPageProjectsDirectories(), "/tmp/initial")
+        self.assertEqual(self.settings.landingPageProjectsPgConnections(), "pg:initial")
+
+    def test_env_name(self):
+        env = QgsServerSettingsEnv.QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES
+        name = QgsServerSettings.name(env)
+        self.assertEqual(name, "QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES")
 
 
 if __name__ == '__main__':

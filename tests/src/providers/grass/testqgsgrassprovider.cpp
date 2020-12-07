@@ -55,10 +55,10 @@ extern "C"
 class TestQgsGrassFeature : public QgsFeature
 {
   public:
-    TestQgsGrassFeature() : grassType( 0 ) { setValid( true ); }
+    TestQgsGrassFeature() { setValid( true ); }
     explicit TestQgsGrassFeature( int type ) : grassType( type ) { setValid( true ); }
 
-    int grassType;
+    int grassType =  0 ;
 };
 
 // Command which can be composed of more GRASS features, e.g. boundaries + centroid equivalent
@@ -81,27 +81,19 @@ class TestQgsGrassCommand
       RedoAll
     };
 
-    TestQgsGrassCommand()
-      : command( AddFeature )
-      , verify( true )
-      , fid( 0 )
-      , geometry( 0 )
-    {}
+    TestQgsGrassCommand() = default;
     explicit TestQgsGrassCommand( Command c )
       : command( c )
-      , verify( true )
-      , fid( 0 )
-      , geometry( 0 )
     {}
 
     QString toString() const;
-    Command command;
+    Command command =  AddFeature ;
     // some commands (in case of multiple commands making single change) must not be verified
-    bool verify;
+    bool verify =  true ;
 
     QList<TestQgsGrassFeature> grassFeatures;
     QgsFeature expectedFeature; // simple feature for verification
-    QgsFeatureId fid;
+    QgsFeatureId fid =  0 ;
     QgsField field;
     QgsGeometry *geometry = nullptr;
     QVariant value;
@@ -134,13 +126,13 @@ QString TestQgsGrassCommand::toString() const
     {
       if ( grassFeature.hasGeometry() )
       {
-        string += "<br>grass: " + grassFeature.geometry().exportToWkt( 1 );
+        string += "<br>grass: " + grassFeature.geometry().asWkt( 1 );
       }
     }
 
     if ( expectedFeature.hasGeometry() )
     {
-      string += "<br>expected: " + expectedFeature.geometry().exportToWkt( 1 );
+      string += "<br>expected: " + expectedFeature.geometry().asWkt( 1 );
     }
   }
   else if ( command == DeleteFeature )
@@ -151,7 +143,7 @@ QString TestQgsGrassCommand::toString() const
   else if ( command == ChangeGeometry )
   {
     string += QLatin1String( "ChangeGeometry " );
-    string += QStringLiteral( "fid: %1 geometry: %2" ).arg( fid ).arg( geometry->exportToWkt( 1 ) );
+    string += QStringLiteral( "fid: %1 geometry: %2" ).arg( fid ).arg( geometry->asWkt( 1 ) );
   }
   else if ( command == AddAttribute )
   {
@@ -190,7 +182,8 @@ class TestQgsGrassCommandGroup
     QMap<QgsFeatureId, QgsFeatureId> expectedFids;
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsGrassProvider: public QObject
@@ -340,7 +333,7 @@ bool TestQgsGrassProvider::compare( const QStringList &expected, const QStringLi
 
 bool TestQgsGrassProvider::compare( double expected, double got, bool &ok )
 {
-  if ( qAbs( got - expected ) > TINY_VALUE )
+  if ( std::fabs( got - expected ) > TINY_VALUE )
   {
     ok = false;
     return false;
@@ -356,7 +349,7 @@ void TestQgsGrassProvider::fatalError()
   QString errorMessage = QStringLiteral( "test fatal error" );
   G_TRY
   {
-    G_fatal_error( "%s", errorMessage.toAscii().data() );
+    G_fatal_error( "%s", errorMessage.toLatin1().data() );
     ok = false; // should not be reached
     reportRow( QStringLiteral( "G_fatal_error() did not throw exception" ) );
   }
@@ -378,8 +371,8 @@ void TestQgsGrassProvider::locations()
   QStringList expectedLocations;
   expectedLocations << QStringLiteral( "wgs84" );
   QStringList locations = QgsGrass::locations( mGisdbase );
-  reportRow( "expectedLocations: " + expectedLocations.join( QStringLiteral( ", " ) ) );
-  reportRow( "locations: " + locations.join( QStringLiteral( ", " ) ) );
+  reportRow( "expectedLocations: " + expectedLocations.join( QLatin1String( ", " ) ) );
+  reportRow( "locations: " + locations.join( QLatin1String( ", " ) ) );
   compare( expectedLocations, locations, ok );
   GVERIFY( ok );
 }
@@ -402,15 +395,15 @@ void TestQgsGrassProvider::mapsets()
   QStringList expectedMapsets;
   expectedMapsets << QStringLiteral( "PERMANENT" ) << QStringLiteral( "test" ) << QStringLiteral( "test6" ) << QStringLiteral( "test7" );
   QStringList mapsets = QgsGrass::mapsets( tmpGisdbase,  mLocation );
-  reportRow( "expectedMapsets: " + expectedMapsets.join( QStringLiteral( ", " ) ) );
-  reportRow( "mapsets: " + mapsets.join( QStringLiteral( ", " ) ) );
+  reportRow( "expectedMapsets: " + expectedMapsets.join( QLatin1String( ", " ) ) );
+  reportRow( "mapsets: " + mapsets.join( QLatin1String( ", " ) ) );
   compare( expectedMapsets, mapsets, ok );
   QgsGrass::setLocation( tmpGisdbase,  mLocation ); // for G_is_mapset_in_search_path
   // Disabled because adding of all mapsets to search path was disabled in setLocation()
 #if 0
   Q_FOREACH ( QString expectedMapset, expectedMapsets )
   {
-    if ( G_is_mapset_in_search_path( expectedMapset.toAscii().data() ) != 1 )
+    if ( G_is_mapset_in_search_path( expectedMapset.toLatin1().data() ) != 1 )
     {
       reportRow( "mapset " + expectedMapset + " not in search path" );
       ok = false;
@@ -468,16 +461,16 @@ void TestQgsGrassProvider::maps()
   QStringList expectedVectors;
   expectedVectors << QStringLiteral( "test" );
   QStringList vectors = QgsGrass::vectors( mGisdbase,  mLocation, mBuildMapset );
-  reportRow( "expectedVectors: " + expectedVectors.join( QStringLiteral( ", " ) ) );
-  reportRow( "vectors: " + vectors.join( QStringLiteral( ", " ) ) );
+  reportRow( "expectedVectors: " + expectedVectors.join( QLatin1String( ", " ) ) );
+  reportRow( "vectors: " + vectors.join( QLatin1String( ", " ) ) );
   compare( expectedVectors, vectors, ok );
 
   reportRow( QLatin1String( "" ) );
   QStringList expectedRasters;
   expectedRasters << QStringLiteral( "cell" ) << QStringLiteral( "dcell" ) << QStringLiteral( "fcell" );
   QStringList rasters = QgsGrass::rasters( mGisdbase,  mLocation, QStringLiteral( "test" ) );
-  reportRow( "expectedRasters: " + expectedRasters.join( QStringLiteral( ", " ) ) );
-  reportRow( "rasters: " + rasters.join( QStringLiteral( ", " ) ) );
+  reportRow( "expectedRasters: " + expectedRasters.join( QLatin1String( ", " ) ) );
+  reportRow( "rasters: " + rasters.join( QLatin1String( ", " ) ) );
   compare( expectedRasters, rasters, ok );
   GVERIFY( ok );
 }
@@ -492,13 +485,13 @@ void TestQgsGrassProvider::vectorLayers()
 
   reportRow( "mapset: " + mapset );
   reportRow( "mapName: " + mapName );
-  reportRow( "expectedLayers: " + expectedLayers.join( QStringLiteral( ", " ) ) );
+  reportRow( "expectedLayers: " + expectedLayers.join( QLatin1String( ", " ) ) );
 
   bool ok = true;
   G_TRY
   {
     QStringList layers = QgsGrass::vectorLayers( mGisdbase, mLocation, mapset, mapName );
-    reportRow( "layers: " + layers.join( QStringLiteral( ", " ) ) );
+    reportRow( "layers: " + layers.join( QLatin1String( ", " ) ) );
     compare( expectedLayers, layers, ok );
   }
   G_CATCH( QgsGrass::Exception & e )
@@ -831,7 +824,9 @@ void TestQgsGrassProvider::rasterImport()
     if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
     {
       QgsRasterProjector *projector = new QgsRasterProjector;
+      Q_NOWARN_DEPRECATED_PUSH
       projector->setCrs( providerCrs, mapsetCrs );
+      Q_NOWARN_DEPRECATED_POP
       projector->destExtentSize( provider->extent(), provider->xSize(), provider->ySize(),
                                  newExtent, newXSize, newYSize );
 
@@ -902,7 +897,7 @@ void TestQgsGrassProvider::vectorImport()
     delete import;
 
     QStringList layers = QgsGrass::vectorLayers( tmpGisdbase, tmpLocation, tmpMapset, name );
-    reportRow( "created layers: " + layers.join( QStringLiteral( "," ) ) );
+    reportRow( "created layers: " + layers.join( QLatin1Char( ',' ) ) );
   }
   removeRecursively( tmpGisdbase );
   GVERIFY( ok );
@@ -917,7 +912,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassFeature grassFeature;
   QgsLineString *line = nullptr;
   QgsGeometry *geometry = nullptr;
-  QList<QgsPoint> pointList;
+  QVector<QgsPoint> pointList;
 
   // Start editing
   command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );
@@ -1216,7 +1211,7 @@ void TestQgsGrassProvider::edit()
         grassLayer->startEditing();
         grassProvider->startEditing( grassLayer );
 
-        Q_ASSERT( expectedLayer );
+        QVERIFY( expectedLayer );
         expectedLayer->startEditing();
       }
 
@@ -1385,7 +1380,7 @@ void TestQgsGrassProvider::edit()
       }
       else if ( command.command == TestQgsGrassCommand::UndoAll )
       {
-        if ( grassLayer->undoStack()->count() !=  editCommands.size() ||
+        if ( grassLayer->undoStack()->count() != editCommands.size() ||
              grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
           reportRow( QStringLiteral( "Different undo stack size: %1, expected: %2, editCommands: %3" )
@@ -1407,14 +1402,14 @@ void TestQgsGrassProvider::edit()
             }
             else
             {
-              reportRow( QStringLiteral( "undo ok" ) );
+              reportRow( QStringLiteral( "undo OK" ) );
             }
           }
         }
       }
       else if ( command.command == TestQgsGrassCommand::RedoAll )
       {
-        if ( grassLayer->undoStack()->count() !=  editCommands.size() ||
+        if ( grassLayer->undoStack()->count() != editCommands.size() ||
              grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
           reportRow( QStringLiteral( "Different undo stack size: %1, expected: %2, editCommands: %3" )
@@ -1436,7 +1431,7 @@ void TestQgsGrassProvider::edit()
             }
             else
             {
-              reportRow( QStringLiteral( "redo ok" ) );
+              reportRow( QStringLiteral( "redo OK" ) );
             }
           }
         }
@@ -1464,7 +1459,7 @@ void TestQgsGrassProvider::edit()
         }
         else
         {
-          reportRow( QStringLiteral( "command ok" ) );
+          reportRow( QStringLiteral( "command OK" ) );
         }
       }
     }
@@ -1523,7 +1518,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
       {
         names << feature.fields().at( j ).name();
       }
-      reportRow( QStringLiteral( "Attribute %1 not found, feature attributes: %2" ).arg( name, names.join( QStringLiteral( "," ) ) ) );
+      reportRow( QStringLiteral( "Attribute %1 not found, feature attributes: %2" ).arg( name, names.join( QLatin1Char( ',' ) ) ) );
       return false;
     }
     indexes.remove( index );
@@ -1542,7 +1537,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
     {
       names << feature.fields().at( i ).name();
     }
-    reportRow( QStringLiteral( "feature has %1 unexpected attributes: %2" ).arg( indexes.size() ).arg( names.join( QStringLiteral( "," ) ) ) );
+    reportRow( QStringLiteral( "feature has %1 unexpected attributes: %2" ).arg( indexes.size() ).arg( names.join( QLatin1Char( ',' ) ) ) );
     return false;
   }
   return true;
@@ -1591,7 +1586,7 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
     }
     else
     {
-      reportRow( "comparison ok: " + grassUri );
+      reportRow( "comparison OK: " + grassUri );
     }
   }
   return ok;
@@ -1618,7 +1613,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   bool sharedOk = compare( features, expectedFeatures, ok );
   if ( sharedOk )
   {
-    //reportRow( "comparison with shared layer ok" );
+    //reportRow( "comparison with shared layer OK" );
   }
   else
   {
@@ -1628,7 +1623,6 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   // We cannot test attribute table changes with independent layer in GRASS 6, which is using
   // DBF files, which are written when driver is closed (map layer keeps driver open during editing)
   bool independentOk = true;
-#if GRASS_VERSION_MAJOR >= 7
   // Open an independent layer which does not share data with edited one
   // build topology
   G_TRY
@@ -1644,11 +1638,9 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
       throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
     }
 
-#if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
+
     Vect_build( map );
-#else
-    Vect_build( map, stderr );
-#endif
+
     //Vect_set_release_support( map );
     Vect_close( map );
     QgsGrass::vectDestroyMapStruct( map );
@@ -1678,13 +1670,12 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   independentOk = compare( features, expectedFeatures, ok );
   if ( independentOk )
   {
-    //reportRow( "comparison with independent layer ok" );
+    //reportRow( "comparison with independent layer OK" );
   }
   else
   {
     reportRow( QStringLiteral( "comparison with independent layer failed" ) );
   }
-#endif // GRASS_VERSION_MAJOR >= 7
 
   return sharedOk && independentOk;
 }

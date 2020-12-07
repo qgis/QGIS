@@ -21,58 +21,44 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
 __copyright__ = '(C) 201, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import shutil
 
-from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QFileDialog
 
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsSettings
 
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.script.WrongScriptException import WrongScriptException
-from processing.script.ScriptUtils import ScriptUtils
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
+from processing.script import ScriptUtils
 
 
 class AddScriptFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name, self.i18n_name = self.trAction('Add script from file')
-        self.group, self.i18n_group = self.trAction('Tools')
-
-    def getIcon(self):
-        return QgsApplication.getThemeIcon("/processingScript.svg")
+        self.name = QCoreApplication.translate("AddScriptFromFileAction", "Add Script to Toolbox…")
+        self.group = self.tr("Tools")
 
     def execute(self):
         settings = QgsSettings()
-        lastDir = settings.value('Processing/lastScriptsDir', '')
-        filenames, selected_filter = QFileDialog.getOpenFileNames(self.toolbox,
-                                                                  self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
-                                                                  self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
-        if filenames:
-            validAlgs = 0
-            wrongAlgs = []
-            for filename in filenames:
+        lastDir = settings.value("processing/lastScriptsDir", "")
+        files, _ = QFileDialog.getOpenFileNames(self.toolbox,
+                                                self.tr("Add script(s)"),
+                                                lastDir,
+                                                self.tr("Processing scripts (*.py *.PY)"))
+        if files:
+            settings.setValue("processing/lastScriptsDir", os.path.dirname(files[0]))
+
+            valid = 0
+            for f in files:
                 try:
-                    settings.setValue('Processing/lastScriptsDir',
-                                      QFileInfo(filename).absoluteDir().absolutePath())
-                    script = ScriptAlgorithm(filename)
-                    destFilename = os.path.join(ScriptUtils.scriptsFolders()[0], os.path.basename(filename))
-                    with open(destFilename, 'w') as f:
-                        f.write(script.script)
-                    validAlgs += 1
-                except WrongScriptException:
-                    wrongAlgs.append(os.path.basename(filename))
-            if validAlgs:
-                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
-            if wrongAlgs:
-                QMessageBox.warning(self.toolbox,
-                                    self.tr('Error reading scripts', 'AddScriptFromFileAction'),
-                                    self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction') +
-                                    "\n-".join(wrongAlgs))
+                    shutil.copy(f, ScriptUtils.scriptsFolders()[0])
+                    valid += 1
+                except OSError as e:
+                    QgsMessageLog.logMessage(self.tr("Could not copy script '{}'\n{}").format(f, str(e)),
+                                             "Processing",
+                                             Qgis.Warning)
+
+            if valid > 0:
+                QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()

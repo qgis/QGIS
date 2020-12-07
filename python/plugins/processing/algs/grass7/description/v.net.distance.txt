@@ -1,18 +1,19 @@
 v.net.distance
 Computes shortest distance via the network between the given sets of features.
 Vector (v.*)
-ParameterVector|input|Input vector line layer (network)|1|False
-ParameterVector|from_points|Input vector point layer (from)|0|False
-ParameterVector|to_points|Input vector point layer (to)|0|False
-ParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|0.0|None|50.0|False
-*ParameterSelection|arc_type|Arc type|line;boundary;line,boundary|2
-*ParameterString|from_cats|From Category values||False|True
-*ParameterString|from_where|From WHERE conditions of SQL statement without 'where' keyword||True|True
-*ParameterSelection|to_type|To feature type|point;line;boundary|0
-*ParameterString|to_cats|To Category values||False|True
-*ParameterString|to_where|To WHERE conditions of SQL statement without 'where' keyword||True|True
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
-*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
-*ParameterTableField|node_column|Node cost column (number)|from_points|0|True
-*ParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
-OutputVector|output|Network_Distance
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|flayer|Input vector from points layer (from)|0|None|False
+QgsProcessingParameterFeatureSource|tlayer|Input vector to layer (to)|-1|None|False
+QgsProcessingParameterNumber|threshold|Threshold for connecting nodes to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
+*QgsProcessingParameterEnum|arc_type|Arc type|line;boundary|True|0,1|True
+*QgsProcessingParameterString|from_cats|From Category values|None|False|True
+*QgsProcessingParameterString|from_where|From WHERE conditions of SQL statement without 'where' keyword|None|True|True
+*QgsProcessingParameterEnum|to_type|To feature type|point;line;boundary|True|0|True
+*QgsProcessingParameterString|to_cats|To Category values|None|False|True
+*QgsProcessingParameterString|to_where|To WHERE conditions of SQL statement without 'where' keyword|None|True|True
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|flayer|0|False|True
+*QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
+*QgsProcessingParameterBoolean|-l|Write each output path as one line, not as original input segments|False|True
+QgsProcessingParameterVectorDestination|output|Network_Distance

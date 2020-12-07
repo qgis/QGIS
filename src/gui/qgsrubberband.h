@@ -16,26 +16,59 @@
 #define QGSRUBBERBAND_H
 
 #include "qgsmapcanvasitem.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometry.h"
+
 #include <QBrush>
-#include <QList>
+#include <QVector>
 #include <QPen>
 #include <QPolygon>
+#include <QObject>
+#include <QSvgRenderer>
+
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;
 
-/** \ingroup gui
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+% End
+#endif
+
+/**
+ * \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
-  for tracking the mouse while drawing polylines or polygons.
+ * for tracking the mouse while drawing polylines or polygons.
  */
-class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
+#ifndef SIP_RUN
+class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
+#else
+class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
+{
+#endif
+    Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
   public:
+
+    Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
+    Q_PROPERTY( QColor strokeColor READ strokeColor WRITE setStrokeColor )
+    Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
+    Q_PROPERTY( QColor secondaryStrokeColor READ secondaryStrokeColor WRITE setSecondaryStrokeColor )
+    Q_PROPERTY( int width READ width WRITE setWidth )
 
     //! Icons
     enum IconType
@@ -82,17 +115,27 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
        * \since QGIS 3.0
        */
       ICON_FULL_DIAMOND,
+
+      /**
+       * An svg image is used to highlight points
+       * \since QGIS 3.10
+       */
+      ICON_SVG
     };
 
     /**
      * Creates a new RubberBand.
-     *  \param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  \param mapCanvas The map canvas to draw onto.
+     *         Its CRS will be used to map points onto screen coordinates.
+     * The ownership is transferred to this canvas.
+     *  \param geometryType Defines how the data should be drawn onto the screen.
+     *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
-     * Sets the color for the rubberband
+     * Sets the color for the rubberband.
+     * Shorthand method to set fill and stroke color with a single call.
      *  \param color  The color used to render this rubberband
      */
     void setColor( const QColor &color );
@@ -151,6 +194,15 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     void setIcon( IconType icon );
 
+    /**
+     * Set the path to the svg file to use to draw points.
+     * Calling this function automatically calls setIcon(ICON_SVG)
+     * \param path The path to the svg
+     * \param drawOffset The offset where to draw the image origin
+     * \since QGIS 3.10
+     */
+    void setSvgIcon( const QString &path, QPoint drawOffset );
+
 
     /**
      * Returns the current icon type to highlight point geometries.
@@ -187,45 +239,49 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Adds a vertex to the rubberband and update canvas.
      * The rendering of the vertex depends on the current GeometryType and icon.
-     * If adding more points consider using update=false for better performance
+     * If adding more points consider using update=FALSE for better performance
      *  \param p             The vertex/point to add
      *  \param doUpdate      Should the map canvas be updated immediately?
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
+     *  \param ringIndex     The index of the polygon ring (in case of polygons with holes)
      */
-    void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 
-    /** Ensures that a polygon geometry is closed and that the last vertex equals the
+    /**
+     * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
-     * \param doUpdate set to true to update the map canvas immediately
-     * \param geometryIndex index of the feature part (in case of multipart geometries)
+     * \param doUpdate set to TRUE to update the map canvas immediately
+     * \param geometryIndex The index of the feature part (in case of multipart geometries)
+     * \param ringIndex     The index of the polygon ring (in case of polygons with holes)
      * \since QGIS 2.16
      */
-    void closePoints( bool doUpdate = true, int geometryIndex = 0 );
+    void closePoints( bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Removes a vertex from the rubberband and (optionally) updates canvas.
      * \param index The index of the vertex/point to remove, negative indexes start at end
      * \param doUpdate Should the map canvas be updated immediately?
      * \param geometryIndex The index of the feature part (in case of multipart geometries)
+     * \param ringIndex     The index of the polygon ring (in case of polygons with holes)
      */
-    void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0 );
+    void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Removes the last point. Most useful in connection with undo operations
      */
-    void removeLastPoint( int geometryIndex = 0, bool doUpdate = true );
+    void removeLastPoint( int geometryIndex = 0, bool doUpdate = true, int ringIndex = 0 );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( const QgsPointXY &p, int geometryIndex = 0 );
+    void movePoint( const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0 );
+    void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Returns number of vertices in feature part
@@ -235,14 +291,25 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     int partSize( int geometryIndex ) const;
 
     /**
-     * Sets this rubber band to the geometry of an existing feature.
+     * Sets this rubber band to \a geom.
      * This is useful for feature highlighting.
      * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
      *  \param geom the geometry object
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+
+    /**
+     * Sets this rubber band to \a geometry.
+     * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
+     * The coordinate reference system of the geometry can be specified with \a crs. If an invalid \a crs
+     * is passed, the geometry will not be reprojected and needs to be in canvas crs already.
+     * By default, no reprojection is done.
+     *
+     * \since QGIS 3.4
+     */
+    void setToGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Sets this rubber band to a map canvas rectangle
@@ -257,11 +324,21 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * of the rubberband explicitly by calling reset() or setToGeometry() with appropriate arguments.
      * setToGeometry() is also to be preferred for backwards-compatibility.
      *
-     *  \param geom the geometry object. Will be treated as a collection of vertices.
+     *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
-    void addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
+
+    /**
+     * Adds a \a geometry to the rubberband.
+     *
+     * If \a crs is specified, the geometry will be automatically reprojected from \a crs
+     * to the canvas CRS.
+     *
+     * \since QGIS 3.0
+     */
+    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)
@@ -282,12 +359,16 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     int numberOfVertices() const;
 
+    // TODO QGIS 4: rename i to geometryIndex, j to vertexIndex
+    // TODO QGIS 4: reorder parameters to geom, ring, ring
+
     /**
      * Returns a vertex
      *  \param i   The geometry index
-     *  \param j   The vertex index within geometry i
+     *  \param j   The vertex index within ring ringIndex
+     *  \param ringIndex   The ring index within geometry i
      */
-    const QgsPointXY *getPoint( int i, int j = 0 ) const;
+    const QgsPointXY *getPoint( int i, int j = 0, int ringIndex = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry
@@ -295,7 +376,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     QgsGeometry asGeometry() const;
 
-    virtual void updatePosition() override;
+    void updatePosition() override;
 
   protected:
 
@@ -303,14 +384,21 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Paints the rubber band in response to an update event.
      *  \param p The QPainter object
      */
-    virtual void paint( QPainter *p ) override;
+    void paint( QPainter *p ) override;
 
     /**
      * Draws shape of the rubber band.
      *  \param p The QPainter object
      *  \param pts A list of points used to draw the shape
      */
-    void drawShape( QPainter *p, QVector<QPointF> &pts );
+    void drawShape( QPainter *p, const QVector<QPointF> &pts );
+
+    /**
+     * Draws shape of the rubber band.
+     *  \param p The QPainter object
+     *  \param rings A list of points used to draw the shape
+     */
+    void drawShape( QPainter *p, const QVector<QPolygonF> &rings );
 
     //! Recalculates needed rectangle
     void updateRect();
@@ -321,22 +409,22 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QPen mSecondaryPen;
 
     //! The size of the icon for points.
-    int mIconSize;
+    int mIconSize = 5;
 
     //! Icon to be shown.
-    IconType mIconType;
+    IconType mIconType = ICON_CIRCLE;
+    std::unique_ptr<QSvgRenderer> mSvgRenderer;
+    QPoint mSvgOffset;
 
     /**
      * Nested lists used for multitypes
      */
-    QList< QList <QgsPointXY> > mPoints;
-    QgsWkbTypes::GeometryType mGeometryType;
-    double mTranslationOffsetX;
-    double mTranslationOffsetY;
+    QVector< QVector< QVector <QgsPointXY> > > mPoints;
+    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::PolygonGeometry;
+    double mTranslationOffsetX = 0.0;
+    double mTranslationOffsetY = 0.0;
 
     QgsRubberBand();
-
-    static QgsPolyline getPolyline( const QList<QgsPointXY> &points );
 
 };
 

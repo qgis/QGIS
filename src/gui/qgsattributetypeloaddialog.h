@@ -28,7 +28,8 @@ class QgsField;
 class QgsMapCanvas;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTypeLoadDialog
  */
 class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttributeLoadValues
@@ -51,15 +52,16 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     void setVectorLayer( QgsVectorLayer *layer );
 
     /**
-     * Getter to value map which is currently active
-     * \returns value map of vlues selected from layer
+     * Returns the value map which is currently active.
+     *
+     * \returns value map of values selected from layer
      */
     QMap<QString, QVariant> &valueMap();
 
     /**
-     * Returns true if the "Add NULL value" checkbox has been checked.
+     * Returns TRUE if the "Add NULL value" checkbox has been checked.
      *
-     * \returns true if the "Add NULL value" checkbox has been checked.
+     * \returns TRUE if the "Add NULL value" checkbox has been checked.
      */
     bool insertNull();
 

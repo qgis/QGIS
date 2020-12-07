@@ -21,27 +21,27 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+from qgis.core import (Qgis,
+                       QgsMessageLog,
+                       QgsApplication,
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.gui.EditScriptAction import EditScriptAction
-from processing.gui.DeleteScriptAction import DeleteScriptAction
-from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-from processing.script.ScriptUtils import ScriptUtils
-from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
-from processing.gui.GetScriptsAndModels import GetScriptsAction
+
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
-from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
+from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
+from processing.script.CreateNewScriptAction import CreateNewScriptAction
+from processing.script.AddScriptFromTemplateAction import AddScriptFromTemplateAction
+from processing.script.DeleteScriptAction import DeleteScriptAction
+from processing.script.EditScriptAction import EditScriptAction
+from processing.script.OpenScriptFromFileAction import OpenScriptFromFileAction
+from processing.script import ScriptUtils
+from processing.tools.system import userFolder
 
 
 class ScriptAlgorithmProvider(QgsProcessingProvider):
@@ -50,29 +50,34 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         super().__init__()
         self.algs = []
         self.folder_algorithms = []
-        self.actions = [CreateNewScriptAction('Create new script',
-                                              CreateNewScriptAction.SCRIPT_PYTHON),
-                        AddScriptFromFileAction(),
-                        GetScriptsAction(),
-                        CreateScriptCollectionPluginAction()]
-        self.contextMenuActions = \
-            [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
-             DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
+        self.actions = [CreateNewScriptAction(),
+                        AddScriptFromTemplateAction(),
+                        OpenScriptFromFileAction(),
+                        AddScriptFromFileAction()
+                        ]
+        self.contextMenuActions = [EditScriptAction(),
+                                   DeleteScriptAction()]
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(),
-                                            ScriptUtils.SCRIPTS_FOLDER,
-                                            self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
-                                            ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
-        ProviderActions.registerProviderActions(self, self.actions)
-        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('Script Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting(self.name(),
+                                                ScriptUtils.SCRIPTS_FOLDERS,
+                                                self.tr("Scripts folder(s)"),
+                                                ScriptUtils.defaultScriptsFolder(),
+                                                valuetype=Setting.MULTIPLE_FOLDERS))
+
+            ProviderActions.registerProviderActions(self, self.actions)
+            ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
+
         return True
 
     def unload(self):
-        ProcessingConfig.removeSetting(ScriptUtils.SCRIPTS_FOLDER)
+        ProcessingConfig.removeSetting(ScriptUtils.SCRIPTS_FOLDERS)
+
         ProviderActions.deregisterProviderActions(self)
         ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 
@@ -83,19 +88,39 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.iconPath("processingScript.svg")
 
     def id(self):
-        return 'script'
+        return "script"
 
     def name(self):
-        return self.tr('Scripts', 'ScriptAlgorithmProvider')
+        return self.tr("Scripts")
+
+    def supportsNonFileBasedOutput(self):
+        # TODO - this may not be strictly true. We probably need a way for scripts
+        # to indicate whether individual outputs support non-file based outputs,
+        # but for now allow it. At best we expose nice features to users, at worst
+        # they'll get an error if they use them with incompatible outputs...
+        return True
 
     def loadAlgorithms(self):
         self.algs = []
         folders = ScriptUtils.scriptsFolders()
-        for f in folders:
-            self.algs.extend(ScriptUtils.loadFromFolder(f))
-        self.algs.extend(self.folder_algorithms)
+        # always add default script folder to the list
+        defaultScriptFolder = ScriptUtils.defaultScriptsFolder()
+        if defaultScriptFolder not in folders:
+            folders.append(defaultScriptFolder)
+        # load all scripts
+        for folder in folders:
+            folder = ScriptUtils.resetScriptFolder(folder)
+            if not folder:
+                continue
+
+            for path, subdirs, files in os.walk(folder):
+                for entry in files:
+                    if entry.lower().endswith(".py"):
+                        moduleName = os.path.splitext(os.path.basename(entry))[0]
+                        filePath = os.path.abspath(os.path.join(path, entry))
+                        alg = ScriptUtils.loadAlgorithm(moduleName, filePath)
+                        if alg is not None:
+                            self.algs.append(alg)
+
         for a in self.algs:
             self.addAlgorithm(a)
-
-    def addAlgorithmsFromFolder(self, folder):
-        self.folder_algorithms.extend(ScriptUtils.loadFromFolder(folder))

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -21,8 +21,6 @@
 __author__ = 'Radim Blazek'
 __date__ = 'July 2009'
 __copyright__ = '(C) 2009, Radim Blazek'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 ############################################################################

@@ -1,0 +1,96 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextfragment.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsTextFragment
+{
+%Docstring
+Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
+
+.. warning::
+
+   This API is not considered stable and may change in future QGIS versions.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstextfragment.h"
+%End
+  public:
+
+    explicit QgsTextFragment( const QString &text = QString(), const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+%Docstring
+Constructor for QgsTextFragment, with the specified ``text`` and optional character ``format``.
+%End
+
+    explicit QgsTextFragment( const QTextFragment &fragment );
+%Docstring
+Constructor for QgsTextFragment, based on the specified QTextFragment ``fragment``.
+%End
+
+    QString text() const;
+%Docstring
+Returns the text content of the fragment.
+
+.. seealso:: :py:func:`setText`
+%End
+
+    void setText( const QString &text );
+%Docstring
+Sets the ``text`` content of the fragment.
+
+.. seealso:: :py:func:`text`
+%End
+
+    const QgsTextCharacterFormat &characterFormat() const;
+%Docstring
+Returns the character formatting for the fragment.
+
+.. seealso:: :py:func:`setCharacterFormat`
+%End
+
+    void setCharacterFormat( const QgsTextCharacterFormat &format );
+%Docstring
+Sets the character ``format`` for the fragment.
+
+.. seealso:: :py:func:`characterFormat`
+%End
+
+    double horizontalAdvance( const QFont &font, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
+%Docstring
+Returns the horizontal advance associated with this fragment, when rendered using
+the specified base ``font``.
+
+Set ``fontHasBeenUpdatedForFragment`` to ``True`` if ``font`` already represents the character
+format for this fragment.
+
+The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
+QgsTextRenderer.FONT_WORKAROUND_SCALE and then manually calculations
+based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+at small font sizes.
+%End
+
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+%Docstring
+Applies a ``capitalization`` style to the fragment's text.
+
+.. versionadded:: 3.16
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextfragment.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

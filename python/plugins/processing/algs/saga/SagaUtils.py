@@ -21,17 +21,15 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import platform
 import stat
 import subprocess
 import time
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -58,7 +56,7 @@ def sagaBatchJobFilename():
 
 def findSagaFolder():
     folder = None
-    if isMac():
+    if isMac() or platform.system() == 'FreeBSD':
         testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
         if os.path.exists(os.path.join(testfolder, 'saga_cmd')):
             folder = testfolder
@@ -83,7 +81,7 @@ def findSagaFolder():
 
 
 def sagaPath():
-    if not isWindows() and not isMac():
+    if not isWindows() and not isMac() and not platform.system() == 'FreeBSD':
         return ''
 
     folder = findSagaFolder()
@@ -95,23 +93,20 @@ def sagaDescriptionPath():
 
 
 def createSagaBatchJobFileFromSagaCommands(commands):
-
-    with open(sagaBatchJobFilename(), 'w') as fout:
+    with open(sagaBatchJobFilename(), 'w', encoding="utf8") as fout:
         if isWindows():
             fout.write('set SAGA=' + sagaPath() + '\n')
             fout.write('set SAGA_MLB=' + os.path.join(sagaPath(), 'modules') + '\n')
             fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
-        elif isMac():
+        elif isMac() or platform.system() == 'FreeBSD':
             fout.write('export SAGA_MLB=' + os.path.join(sagaPath(), '../lib/saga') + '\n')
             fout.write('export PATH=' + sagaPath() + ':$PATH\n')
         else:
             pass
         for command in commands:
-            try:
-                # Python 2
-                fout.write('saga_cmd ' + command.encode('utf8') + '\n')
-            except TypeError:
-                # Python 3
+            if isWindows():
+                fout.write('call saga_cmd ' + command + '\n')
+            else:
                 fout.write('saga_cmd ' + command + '\n')
 
         fout.write('exit')
@@ -128,7 +123,7 @@ def getInstalledVersion(runSaga=False):
 
     if isWindows():
         commands = [os.path.join(sagaPath(), "saga_cmd.exe"), "-v"]
-    elif isMac():
+    elif isMac() or platform.system() == 'FreeBSD':
         commands = [os.path.join(sagaPath(), "saga_cmd -v")]
     else:
         # for Linux use just one string instead of separated parameters as the list
@@ -144,7 +139,7 @@ def getInstalledVersion(runSaga=False):
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ) as proc:
-            if isMac():  # This trick avoids having an uninterrupted system call exception if SAGA is not installed
+            if isMac() or platform.system() == 'FreeBSD':  # This trick avoids having an uninterrupted system call exception if SAGA is not installed
                 time.sleep(1)
             try:
                 lines = proc.stdout.readlines()
@@ -168,7 +163,7 @@ def executeSaga(feedback):
     else:
         os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
                  stat.S_IREAD | stat.S_IWRITE)
-        command = [sagaBatchJobFilename()]
+        command = ["'" + sagaBatchJobFilename() + "'"]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
     with subprocess.Popen(
@@ -196,4 +191,4 @@ def executeSaga(feedback):
             pass
 
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
-        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)

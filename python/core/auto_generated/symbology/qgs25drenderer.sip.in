@@ -1,0 +1,122 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgs25drenderer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class Qgs25DRenderer : QgsFeatureRenderer
+{
+
+%TypeHeaderCode
+#include "qgs25drenderer.h"
+%End
+  public:
+    Qgs25DRenderer();
+
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Create a new 2.5D renderer from XML
+
+:param element: XML information
+:param context: reading context
+%End
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
+
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
+    virtual void stopRender( QgsRenderContext &context );
+
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual QgsFeatureRenderer *clone() const /Factory/;
+
+
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
+    QColor roofColor() const;
+%Docstring
+Gets the roof color
+%End
+
+    void setRoofColor( const QColor &roofColor );
+%Docstring
+Set the roof color
+%End
+
+    QColor wallColor() const;
+%Docstring
+Gets the wall color
+%End
+
+    void setWallColor( const QColor &wallColor );
+%Docstring
+Set the wall color
+%End
+
+    void setWallShadingEnabled( bool enabled );
+%Docstring
+Set wall shading enabled
+%End
+
+    bool wallShadingEnabled() const;
+%Docstring
+Gets wall shading enabled
+%End
+
+    QColor shadowColor() const;
+%Docstring
+Gets the shadow's color
+%End
+
+    void setShadowColor( const QColor &shadowColor );
+%Docstring
+Set the shadow's color
+%End
+
+    double shadowSpread() const;
+%Docstring
+Gets the shadow's spread distance in map units
+%End
+
+    void setShadowSpread( double shadowSpread );
+%Docstring
+Set the shadow's spread distance in map units
+%End
+
+    static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Try to convert from an existing renderer. If it is not of the same type
+we assume that the internals are not compatible and create a new default
+2.5D renderer.
+%End
+
+    bool shadowEnabled() const;
+%Docstring
+Is the shadow enabled
+%End
+
+    void setShadowEnabled( bool value );
+%Docstring
+Enable or disable the shadow
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgs25drenderer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

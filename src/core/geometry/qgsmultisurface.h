@@ -13,14 +13,18 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMULTISURFACEV2_H
-#define QGSMULTISURFACEV2_H
+#ifndef QGSMULTISURFACE_H
+#define QGSMULTISURFACE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
+
+class QgsSurface;
+
+/**
+ * \ingroup core
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
  * \since QGIS 2.10
@@ -28,24 +32,94 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
-    QgsMultiSurface();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+
+    /**
+     * Constructor for an empty multisurface geometry.
+     */
+    QgsMultiSurface() SIP_HOLDGIL;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the surface with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsSurface *surfaceN( int index );
+#else
+
+    /**
+     * Returns the surface with the specified \a index.
+     *
+     * An IndexError will be raised if no surface with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT surfaceN( int index ) SIP_TYPEHINT( QgsSurface );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->surfaceN( a0 ), sipType_QgsSurface, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the surface with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsSurface *surfaceN( int index ) const;
+#endif
+
+    QString geometryType() const override SIP_HOLDGIL;
+    void clear() override;
     QgsMultiSurface *clone() const override SIP_FACTORY;
-
+    QgsMultiSurface *toCurveType() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+#ifndef SIP_RUN
 
+    /**
+     * Cast the \a geom to a QgsMultiSurface.
+     * Should be used by qgsgeometry_cast<QgsMultiSurface *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline static const QgsMultiSurface *cast( const QgsAbstractGeometry *geom )
+    {
+      if ( !geom )
+        return nullptr;
 
-    //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override  SIP_TRANSFER;
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+      if ( flatType == QgsWkbTypes::MultiSurface
+           || flatType == QgsWkbTypes::MultiPolygon )
+        return static_cast<const QgsMultiSurface *>( geom );
+      return nullptr;
+    }
+#endif
+
+    QgsMultiSurface *createEmptyWithSameType() const override SIP_FACTORY;
+
 };
 
-#endif // QGSMULTISURFACEV2_H
+// clazy:excludeall=qstring-allocations
+
+#endif // QGSMULTISURFACE_H

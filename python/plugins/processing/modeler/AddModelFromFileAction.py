@@ -21,20 +21,14 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
 __copyright__ = '(C) 201, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import shutil
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
 
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
 
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -43,8 +37,8 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name, self.i18n_name = self.trAction('Add model from file')
-        self.group, self.i18n_group = self.trAction('Tools')
+        self.name = QCoreApplication.translate('AddModelFromFileAction', 'Add Model to Toolbox…')
+        self.group = self.tr('Tools')
 
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
@@ -53,17 +47,17 @@ class AddModelFromFileAction(ToolboxAction):
         settings = QgsSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
         filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
-                                                                self.tr('Open model', 'AddModelFromFileAction'), lastDir,
-                                                                self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
+                                                                self.tr('Open Model', 'AddModelFromFileAction'), lastDir,
+                                                                self.tr('Processing models (*.model3 *.MODEL3)', 'AddModelFromFileAction'))
         if filename:
             settings.setValue('Processing/lastModelsDir',
                               QFileInfo(filename).absoluteDir().absolutePath())
 
-            alg = ModelerAlgorithm()
+            alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
                 QMessageBox.warning(
                     self.toolbox,
-                    self.tr('Error reading model', 'AddModelFromFileAction'),
+                    self.tr('Open Model', 'AddModelFromFileAction'),
                     self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
                 return
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))

@@ -1,0 +1,3854 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.5.0-Master" projectname="">
+  <homePath path=""/>
+  <title></title>
+  <autotransaction active="1"/>
+  <evaluateDefaultValues active="1"/>
+  <trust active="0"/>
+  <projectCrs>
+    <spatialrefsys>
+      <proj4>+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>47</srsid>
+      <srid>2056</srid>
+      <authid>EPSG:2056</authid>
+      <description>CH1903+ / LV95</description>
+      <projectionacronym>somerc</projectionacronym>
+      <ellipsoidacronym>bessel</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys>
+  </projectCrs>
+  <layer-tree-group>
+    <customproperties/>
+    <layer-tree-layer name="belasteter_standort_geo_lage_punkt" id="belasteter_standort_geo_lage_punkt_f6ed4e73_358b_4839_b221_a60bf2d14fae" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=belasteter_standort_geo_lage_punkt">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer name="belasteter_standort" id="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=belasteter_standort">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-group name="tables" checked="Qt::Checked" expanded="1">
+      <customproperties/>
+      <layer-tree-layer name="parzellenidentifikation" id="parzellenidentifikation_58a1a5f5_c79f_4f70_818b_c6f8797887c6" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=parzellenidentifikation">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="untersmassn_" id="untersmassn__eb961a65_2d7d_4943_9db3_5cd223088248" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=untersmassn_">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="egrid_" id="egrid__bc39e05c_3f3b_4c37_8aad_bce146d34025" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=egrid_">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="deponietyp_" id="deponietyp__d26c7560_76b2_48cb_a762_703b87c4d618" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=deponietyp_">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="localisedmtext" id="localisedmtext_f42380e8_cf8f_49bd_8b18_d656351669e1" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=localisedmtext">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="localisedtext" id="localisedtext_a894d49d_ed2b_4e60_a701_7c894c85427e" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=localisedtext">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="zustaendigkeitkataster" id="zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=zustaendigkeitkataster">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="multilingualmtext" id="multilingualmtext_359ccd38_5875_41b1_b807_88d1c02e0d10" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=multilingualmtext">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="multilingualtext" id="multilingualtext_5c53b1c9_e62a_4916_b65c_75f150826891" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=multilingualtext">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="localisationch_v1_localisedmtext" id="localisationch_v1_localisedmtext_11b91799_c2cb_41ac_8fde_b9f25e8d7db9" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=localisationch_v1_localisedmtext">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="localisationch_v1_multilingualmtext" id="localisationch_v1_multilingualmtext_8b40f7a0_6617_474b_a8b8_f5ee80c9d342" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=localisationch_v1_multilingualmtext">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="localisationch_v1_localisedtext" id="localisationch_v1_localisedtext_2994a3b2_4d85_4327_9d9a_21b55e82d5ef" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=localisationch_v1_localisedtext">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="localisationch_v1_multilingualtext" id="localisationch_v1_multilingualtext_a73b3600_8f18_4cc8_93cd_a8e19605c779" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=localisationch_v1_multilingualtext">
+        <customproperties/>
+      </layer-tree-layer>
+    </layer-tree-group>
+    <layer-tree-group name="domains" checked="Qt::Checked" expanded="0">
+      <customproperties/>
+      <layer-tree-layer name="untersmassn" id="untersmassn_11fa5ae9_3e36_425d_a8a2_4969a1543dbf" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=untersmassn">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="statusaltlv" id="statusaltlv_70c1ba8d_8677_4a7d_aced_78eb11586423" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=statusaltlv">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="deponietyp" id="deponietyp_a1651ee2_7cc4_4ddb_8845_4f03dbc425dd" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=deponietyp">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="languagecode_iso639_1" id="languagecode_iso639_1_2f56d0b8_3dfb_4632_8db3_b077d77021e2" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=languagecode_iso639_1">
+        <customproperties/>
+      </layer-tree-layer>
+      <layer-tree-layer name="standorttyp" id="standorttyp_7d0e040f_edc7_4c27_a2da_8ee51efbddd0" providerKey="ogr" checked="Qt::Checked" expanded="1" source="./kbs.gpkg|layername=standorttyp">
+        <customproperties/>
+      </layer-tree-layer>
+    </layer-tree-group>
+    <custom-order enabled="0">
+      <item>belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced</item>
+      <item>belasteter_standort_geo_lage_punkt_f6ed4e73_358b_4839_b221_a60bf2d14fae</item>
+      <item>localisationch_v1_multilingualtext_a73b3600_8f18_4cc8_93cd_a8e19605c779</item>
+      <item>localisationch_v1_localisedtext_2994a3b2_4d85_4327_9d9a_21b55e82d5ef</item>
+      <item>localisationch_v1_multilingualmtext_8b40f7a0_6617_474b_a8b8_f5ee80c9d342</item>
+      <item>localisationch_v1_localisedmtext_11b91799_c2cb_41ac_8fde_b9f25e8d7db9</item>
+      <item>multilingualtext_5c53b1c9_e62a_4916_b65c_75f150826891</item>
+      <item>multilingualmtext_359ccd38_5875_41b1_b807_88d1c02e0d10</item>
+      <item>zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17</item>
+      <item>localisedtext_a894d49d_ed2b_4e60_a701_7c894c85427e</item>
+      <item>localisedmtext_f42380e8_cf8f_49bd_8b18_d656351669e1</item>
+      <item>deponietyp__d26c7560_76b2_48cb_a762_703b87c4d618</item>
+      <item>egrid__bc39e05c_3f3b_4c37_8aad_bce146d34025</item>
+      <item>untersmassn__eb961a65_2d7d_4943_9db3_5cd223088248</item>
+      <item>parzellenidentifikation_58a1a5f5_c79f_4f70_818b_c6f8797887c6</item>
+      <item>standorttyp_7d0e040f_edc7_4c27_a2da_8ee51efbddd0</item>
+      <item>languagecode_iso639_1_2f56d0b8_3dfb_4632_8db3_b077d77021e2</item>
+      <item>deponietyp_a1651ee2_7cc4_4ddb_8845_4f03dbc425dd</item>
+      <item>statusaltlv_70c1ba8d_8677_4a7d_aced_78eb11586423</item>
+      <item>untersmassn_11fa5ae9_3e36_425d_a8a2_4969a1543dbf</item>
+    </custom-order>
+  </layer-tree-group>
+  <snapping-settings enabled="0" mode="2" unit="2" type="1" intersection-snapping="0" tolerance="0">
+    <individual-layer-settings>
+      <layer-setting enabled="0" id="belasteter_standort_geo_lage_punkt_f6ed4e73_358b_4839_b221_a60bf2d14fae" units="2" type="1" tolerance="0"/>
+      <layer-setting enabled="0" id="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" units="2" type="1" tolerance="0"/>
+    </individual-layer-settings>
+  </snapping-settings>
+  <relations>
+    <relation name="belasteter_standort_geo_lage_punkt_T_Id_belasteter_standort_T_Id" strength="Association" id="belasteter_standort_geo_lage_punkt_T_Id_belasteter_standort_T_Id" referencedLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" referencingLayer="belasteter_standort_geo_lage_punkt_f6ed4e73_358b_4839_b221_a60bf2d14fae">
+      <fieldRef referencedField="T_Id" referencingField="T_Id"/>
+    </relation>
+    <relation name="belasteter_standort_standorttyp_standorttyp_iliCode" strength="Association" id="belasteter_standort_standorttyp_standorttyp_iliCode" referencedLayer="standorttyp_7d0e040f_edc7_4c27_a2da_8ee51efbddd0" referencingLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced">
+      <fieldRef referencedField="iliCode" referencingField="standorttyp"/>
+    </relation>
+    <relation name="belasteter_standort_statusaltlv_statusaltlv_iliCode" strength="Association" id="belasteter_standort_statusaltlv_statusaltlv_iliCode" referencedLayer="statusaltlv_70c1ba8d_8677_4a7d_aced_78eb11586423" referencingLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced">
+      <fieldRef referencedField="iliCode" referencingField="statusaltlv"/>
+    </relation>
+    <relation name="belasteter_standort_zustaendigkeitkataster_zustaendigkeitkataster_T_Id" strength="Association" id="belasteter_standort_zustaendigkeitkataster_zustaendigkeitkataster_T_Id" referencedLayer="zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17" referencingLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced">
+      <fieldRef referencedField="T_Id" referencingField="zustaendigkeitkataster"/>
+    </relation>
+    <relation name="deponietyp__avalue_deponietyp_iliCode" strength="Association" id="deponietyp__avalue_deponietyp_iliCode" referencedLayer="deponietyp_a1651ee2_7cc4_4ddb_8845_4f03dbc425dd" referencingLayer="deponietyp__d26c7560_76b2_48cb_a762_703b87c4d618">
+      <fieldRef referencedField="iliCode" referencingField="avalue"/>
+    </relation>
+    <relation name="deponietyp__belasteter_standort_deponietyp_belasteter_standort_T_Id" strength="Association" id="deponietyp__belasteter_standort_deponietyp_belasteter_standort_T_Id" referencedLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" referencingLayer="deponietyp__d26c7560_76b2_48cb_a762_703b87c4d618">
+      <fieldRef referencedField="T_Id" referencingField="belasteter_standort_deponietyp"/>
+    </relation>
+    <relation name="egrid__belasteter_standort_egrid_belasteter_standort_T_Id" strength="Association" id="egrid__belasteter_standort_egrid_belasteter_standort_T_Id" referencedLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" referencingLayer="egrid__bc39e05c_3f3b_4c37_8aad_bce146d34025">
+      <fieldRef referencedField="T_Id" referencingField="belasteter_standort_egrid"/>
+    </relation>
+    <relation name="localisedmtext_loclstnch_vltlnglmtext_localisedtext_localisationch_v1_multilingualmtext_T_Id" strength="Association" id="localisedmtext_loclstnch_vltlnglmtext_localisedtext_localisationch_v1_multilingualmtext_T_Id" referencedLayer="localisationch_v1_multilingualmtext_8b40f7a0_6617_474b_a8b8_f5ee80c9d342" referencingLayer="localisedmtext_f42380e8_cf8f_49bd_8b18_d656351669e1">
+      <fieldRef referencedField="T_Id" referencingField="loclstnch_vltlnglmtext_localisedtext"/>
+    </relation>
+    <relation name="localisedmtext_multilingualmtext_localisedtext_multilingualmtext_T_Id" strength="Association" id="localisedmtext_multilingualmtext_localisedtext_multilingualmtext_T_Id" referencedLayer="multilingualmtext_359ccd38_5875_41b1_b807_88d1c02e0d10" referencingLayer="localisedmtext_f42380e8_cf8f_49bd_8b18_d656351669e1">
+      <fieldRef referencedField="T_Id" referencingField="multilingualmtext_localisedtext"/>
+    </relation>
+    <relation name="localisedtext_loclstnch_vmltlngltext_localisedtext_localisationch_v1_multilingualtext_T_Id" strength="Association" id="localisedtext_loclstnch_vmltlngltext_localisedtext_localisationch_v1_multilingualtext_T_Id" referencedLayer="localisationch_v1_multilingualtext_a73b3600_8f18_4cc8_93cd_a8e19605c779" referencingLayer="localisedtext_a894d49d_ed2b_4e60_a701_7c894c85427e">
+      <fieldRef referencedField="T_Id" referencingField="loclstnch_vmltlngltext_localisedtext"/>
+    </relation>
+    <relation name="localisedtext_multilingualtext_localisedtext_multilingualtext_T_Id" strength="Association" id="localisedtext_multilingualtext_localisedtext_multilingualtext_T_Id" referencedLayer="multilingualtext_5c53b1c9_e62a_4916_b65c_75f150826891" referencingLayer="localisedtext_a894d49d_ed2b_4e60_a701_7c894c85427e">
+      <fieldRef referencedField="T_Id" referencingField="multilingualtext_localisedtext"/>
+    </relation>
+    <relation name="parzellenidentifikation_belasteter_standort_parzellenverweis_belasteter_standort_T_Id" strength="Association" id="parzellenidentifikation_belasteter_standort_parzellenverweis_belasteter_standort_T_Id" referencedLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" referencingLayer="parzellenidentifikation_58a1a5f5_c79f_4f70_818b_c6f8797887c6">
+      <fieldRef referencedField="T_Id" referencingField="belasteter_standort_parzellenverweis"/>
+    </relation>
+    <relation name="untersmassn__avalue_untersmassn_iliCode" strength="Association" id="untersmassn__avalue_untersmassn_iliCode" referencedLayer="untersmassn_11fa5ae9_3e36_425d_a8a2_4969a1543dbf" referencingLayer="untersmassn__eb961a65_2d7d_4943_9db3_5cd223088248">
+      <fieldRef referencedField="iliCode" referencingField="avalue"/>
+    </relation>
+    <relation name="untersmassn__belasteter_standort_untersuchungsmassnahmen_belasteter_standort_T_Id" strength="Association" id="untersmassn__belasteter_standort_untersuchungsmassnahmen_belasteter_standort_T_Id" referencedLayer="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" referencingLayer="untersmassn__eb961a65_2d7d_4943_9db3_5cd223088248">
+      <fieldRef referencedField="T_Id" referencingField="belasteter_standort_untersuchungsmassnahmen"/>
+    </relation>
+  </relations>
+  <mapcanvas name="theMapCanvas" annotationsVisible="1">
+    <units>meters</units>
+    <extent>
+      <xmin>2449750</xmin>
+      <ymin>1038375</ymin>
+      <xmax>2880250</xmax>
+      <ymax>1316625</ymax>
+    </extent>
+    <rotation>0</rotation>
+    <destinationsrs>
+      <spatialrefsys>
+        <proj4>+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs</proj4>
+        <srsid>47</srsid>
+        <srid>2056</srid>
+        <authid>EPSG:2056</authid>
+        <description>CH1903+ / LV95</description>
+        <projectionacronym>somerc</projectionacronym>
+        <ellipsoidacronym>bessel</ellipsoidacronym>
+        <geographicflag>false</geographicflag>
+      </spatialrefsys>
+    </destinationsrs>
+    <rendermaptile>0</rendermaptile>
+  </mapcanvas>
+  <projectModels/>
+  <legend updateDrawingOrder="true">
+    <legendlayer name="belasteter_standort_geo_lage_punkt" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile isInOverview="0" layerid="belasteter_standort_geo_lage_punkt_f6ed4e73_358b_4839_b221_a60bf2d14fae" visible="1"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer name="belasteter_standort" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile isInOverview="0" layerid="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced" visible="1"/>
+      </filegroup>
+    </legendlayer>
+    <legendgroup name="tables" checked="Qt::Checked" open="true">
+      <legendlayer name="parzellenidentifikation" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="parzellenidentifikation_58a1a5f5_c79f_4f70_818b_c6f8797887c6" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="untersmassn_" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="untersmassn__eb961a65_2d7d_4943_9db3_5cd223088248" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="egrid_" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="egrid__bc39e05c_3f3b_4c37_8aad_bce146d34025" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="deponietyp_" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="deponietyp__d26c7560_76b2_48cb_a762_703b87c4d618" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="localisedmtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="localisedmtext_f42380e8_cf8f_49bd_8b18_d656351669e1" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="localisedtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="localisedtext_a894d49d_ed2b_4e60_a701_7c894c85427e" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="zustaendigkeitkataster" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="multilingualmtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="multilingualmtext_359ccd38_5875_41b1_b807_88d1c02e0d10" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="multilingualtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="multilingualtext_5c53b1c9_e62a_4916_b65c_75f150826891" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="localisationch_v1_localisedmtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="localisationch_v1_localisedmtext_11b91799_c2cb_41ac_8fde_b9f25e8d7db9" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="localisationch_v1_multilingualmtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="localisationch_v1_multilingualmtext_8b40f7a0_6617_474b_a8b8_f5ee80c9d342" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="localisationch_v1_localisedtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="localisationch_v1_localisedtext_2994a3b2_4d85_4327_9d9a_21b55e82d5ef" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="localisationch_v1_multilingualtext" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="localisationch_v1_multilingualtext_a73b3600_8f18_4cc8_93cd_a8e19605c779" visible="1"/>
+        </filegroup>
+      </legendlayer>
+    </legendgroup>
+    <legendgroup name="domains" checked="Qt::Checked" open="false">
+      <legendlayer name="untersmassn" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="untersmassn_11fa5ae9_3e36_425d_a8a2_4969a1543dbf" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="statusaltlv" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="statusaltlv_70c1ba8d_8677_4a7d_aced_78eb11586423" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="deponietyp" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="deponietyp_a1651ee2_7cc4_4ddb_8845_4f03dbc425dd" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="languagecode_iso639_1" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="languagecode_iso639_1_2f56d0b8_3dfb_4632_8db3_b077d77021e2" visible="1"/>
+        </filegroup>
+      </legendlayer>
+      <legendlayer name="standorttyp" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" open="true">
+        <filegroup open="true" hidden="false">
+          <legendlayerfile isInOverview="0" layerid="standorttyp_7d0e040f_edc7_4c27_a2da_8ee51efbddd0" visible="1"/>
+        </filegroup>
+      </legendlayer>
+    </legendgroup>
+  </legend>
+  <mapViewDocks/>
+  <projectlayers>
+    <maplayer maxScale="0" simplifyAlgorithm="0" simplifyLocal="1" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" simplifyDrawingTol="1" simplifyDrawingHints="1" geometry="Polygon" autoRefreshEnabled="0" simplifyMaxScale="1" autoRefreshTime="0" labelsEnabled="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <extent>
+        <xmin>2460000</xmin>
+        <ymin>1045000</ymin>
+        <xmax>2870000</xmax>
+        <ymax>1310000</ymax>
+      </extent>
+      <id>belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced</id>
+      <datasource>./kbs.gpkg|layername=belasteter_standort</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>belasteter_standort</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs</proj4>
+          <srsid>47</srsid>
+          <srid>2056</srid>
+          <authid>EPSG:2056</authid>
+          <description>CH1903+ / LV95</description>
+          <projectionacronym>somerc</projectionacronym>
+          <ellipsoidacronym>bessel</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 enableorderby="0" symbollevels="0" forceraster="0" type="singleSymbol">
+        <symbols>
+          <symbol name="0" force_rhr="0" clip_to_extent="1" type="fill" alpha="1">
+            <layer pass="0" enabled="1" class="SimpleFill" locked="0">
+              <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="color" v="133,182,111,255"/>
+              <prop k="joinstyle" v="bevel"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_color" v="35,35,35,255"/>
+              <prop k="outline_style" v="solid"/>
+              <prop k="outline_width" v="0.26"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="style" v="solid"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option name="name" value="" type="QString"/>
+                  <Option name="properties"/>
+                  <Option name="type" value="collection" type="QString"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale/>
+      </renderer-v2>
+      <customproperties/>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Ili_Tid">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="katasternummer">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="url_standort">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="standorttyp">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="belasteter_standort_standorttyp_standorttyp_iliCode" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="inbetrieb">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="nachsorge">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="statusaltlv">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="belasteter_standort_statusaltlv_statusaltlv_iliCode" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="ersteintrag">
+          <editWidget type="DateTime">
+            <config>
+              <Option type="Map">
+                <Option name="calendar_popup" value="true" type="bool"/>
+                <Option name="display_format" value="M/d/yy" type="QString"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="letzteanpassung">
+          <editWidget type="DateTime">
+            <config>
+              <Option type="Map">
+                <Option name="calendar_popup" value="true" type="bool"/>
+                <Option name="display_format" value="M/d/yy" type="QString"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="url_kbs_auszug">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="bemerkung">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="bemerkung_de">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="bemerkung_fr">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="bemerkung_rm">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="bemerkung_it">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="bemerkung_en">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="zustaendigkeitkataster">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="belasteter_standort_zustaendigkeitkataster_zustaendigkeitkataster_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Ili_Tid" index="1"/>
+        <alias name="" field="katasternummer" index="2"/>
+        <alias name="" field="url_standort" index="3"/>
+        <alias name="" field="standorttyp" index="4"/>
+        <alias name="" field="inbetrieb" index="5"/>
+        <alias name="" field="nachsorge" index="6"/>
+        <alias name="" field="statusaltlv" index="7"/>
+        <alias name="" field="ersteintrag" index="8"/>
+        <alias name="" field="letzteanpassung" index="9"/>
+        <alias name="" field="url_kbs_auszug" index="10"/>
+        <alias name="" field="bemerkung" index="11"/>
+        <alias name="" field="bemerkung_de" index="12"/>
+        <alias name="" field="bemerkung_fr" index="13"/>
+        <alias name="" field="bemerkung_rm" index="14"/>
+        <alias name="" field="bemerkung_it" index="15"/>
+        <alias name="" field="bemerkung_en" index="16"/>
+        <alias name="" field="zustaendigkeitkataster" index="17"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Ili_Tid"/>
+        <default expression="" applyOnUpdate="0" field="katasternummer"/>
+        <default expression="" applyOnUpdate="0" field="url_standort"/>
+        <default expression="" applyOnUpdate="0" field="standorttyp"/>
+        <default expression="" applyOnUpdate="0" field="inbetrieb"/>
+        <default expression="" applyOnUpdate="0" field="nachsorge"/>
+        <default expression="" applyOnUpdate="0" field="statusaltlv"/>
+        <default expression="" applyOnUpdate="0" field="ersteintrag"/>
+        <default expression="" applyOnUpdate="0" field="letzteanpassung"/>
+        <default expression="" applyOnUpdate="0" field="url_kbs_auszug"/>
+        <default expression="" applyOnUpdate="0" field="bemerkung"/>
+        <default expression="" applyOnUpdate="0" field="bemerkung_de"/>
+        <default expression="" applyOnUpdate="0" field="bemerkung_fr"/>
+        <default expression="" applyOnUpdate="0" field="bemerkung_rm"/>
+        <default expression="" applyOnUpdate="0" field="bemerkung_it"/>
+        <default expression="" applyOnUpdate="0" field="bemerkung_en"/>
+        <default expression="" applyOnUpdate="0" field="zustaendigkeitkataster"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Ili_Tid" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="katasternummer" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="url_standort" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="standorttyp" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="inbetrieb" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="nachsorge" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="statusaltlv" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="ersteintrag" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="letzteanpassung" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="url_kbs_auszug" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="bemerkung" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="bemerkung_de" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="bemerkung_fr" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="bemerkung_rm" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="bemerkung_it" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="bemerkung_en" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="zustaendigkeitkataster" constraints="1"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Ili_Tid"/>
+        <constraint desc="" exp="" field="katasternummer"/>
+        <constraint desc="" exp="" field="url_standort"/>
+        <constraint desc="" exp="" field="standorttyp"/>
+        <constraint desc="" exp="" field="inbetrieb"/>
+        <constraint desc="" exp="" field="nachsorge"/>
+        <constraint desc="" exp="" field="statusaltlv"/>
+        <constraint desc="" exp="" field="ersteintrag"/>
+        <constraint desc="" exp="" field="letzteanpassung"/>
+        <constraint desc="" exp="" field="url_kbs_auszug"/>
+        <constraint desc="" exp="" field="bemerkung"/>
+        <constraint desc="" exp="" field="bemerkung_de"/>
+        <constraint desc="" exp="" field="bemerkung_fr"/>
+        <constraint desc="" exp="" field="bemerkung_rm"/>
+        <constraint desc="" exp="" field="bemerkung_it"/>
+        <constraint desc="" exp="" field="bemerkung_en"/>
+        <constraint desc="" exp="" field="zustaendigkeitkataster"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="katasternummer" showLabel="1" index="2"/>
+          <attributeEditorField name="url_standort" showLabel="1" index="3"/>
+          <attributeEditorField name="geo_lage_polygon" showLabel="1" index="-1"/>
+          <attributeEditorField name="standorttyp" showLabel="1" index="4"/>
+          <attributeEditorField name="inbetrieb" showLabel="1" index="5"/>
+          <attributeEditorField name="nachsorge" showLabel="1" index="6"/>
+          <attributeEditorField name="statusaltlv" showLabel="1" index="7"/>
+          <attributeEditorField name="ersteintrag" showLabel="1" index="8"/>
+          <attributeEditorField name="letzteanpassung" showLabel="1" index="9"/>
+          <attributeEditorField name="url_kbs_auszug" showLabel="1" index="10"/>
+          <attributeEditorField name="bemerkung" showLabel="1" index="11"/>
+          <attributeEditorField name="bemerkung_de" showLabel="1" index="12"/>
+          <attributeEditorField name="bemerkung_fr" showLabel="1" index="13"/>
+          <attributeEditorField name="bemerkung_rm" showLabel="1" index="14"/>
+          <attributeEditorField name="bemerkung_it" showLabel="1" index="15"/>
+          <attributeEditorField name="bemerkung_en" showLabel="1" index="16"/>
+          <attributeEditorField name="zustaendigkeitkataster" showLabel="1" index="17"/>
+        </attributeEditorContainer>
+        <attributeEditorContainer name="deponietyp_" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="1">
+          <attributeEditorRelation name="deponietyp__belasteter_standort_deponietyp_belasteter_standort_T_Id" showLabel="1" showLinkButton="1" showUnlinkButton="1" relation="deponietyp__belasteter_standort_deponietyp_belasteter_standort_T_Id"/>
+        </attributeEditorContainer>
+        <attributeEditorContainer name="egrid_" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="1">
+          <attributeEditorRelation name="egrid__belasteter_standort_egrid_belasteter_standort_T_Id" showLabel="1" showLinkButton="1" showUnlinkButton="1" relation="egrid__belasteter_standort_egrid_belasteter_standort_T_Id"/>
+        </attributeEditorContainer>
+        <attributeEditorContainer name="untersmassn_" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="1">
+          <attributeEditorRelation name="untersmassn__belasteter_standort_untersuchungsmassnahmen_belasteter_standort_T_Id" showLabel="1" showLinkButton="1" showUnlinkButton="1" relation="untersmassn__belasteter_standort_untersuchungsmassnahmen_belasteter_standort_T_Id"/>
+        </attributeEditorContainer>
+        <attributeEditorContainer name="parzellenidentifikation" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="1">
+          <attributeEditorRelation name="parzellenidentifikation_belasteter_standort_parzellenverweis_belasteter_standort_T_Id" showLabel="1" showLinkButton="1" showUnlinkButton="1" relation="parzellenidentifikation_belasteter_standort_parzellenverweis_belasteter_standort_T_Id"/>
+        </attributeEditorContainer>
+        <attributeEditorContainer name="belasteter_standort_geo_lage_punkt" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="1">
+          <attributeEditorRelation name="belasteter_standort_geo_lage_punkt_T_Id_belasteter_standort_T_Id" showLabel="1" showLinkButton="1" showUnlinkButton="1" relation="belasteter_standort_geo_lage_punkt_T_Id_belasteter_standort_T_Id"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" simplifyAlgorithm="0" simplifyLocal="1" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" simplifyDrawingTol="1" simplifyDrawingHints="1" geometry="Point" autoRefreshEnabled="0" simplifyMaxScale="1" autoRefreshTime="0" labelsEnabled="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <extent>
+        <xmin>2460000</xmin>
+        <ymin>1045000</ymin>
+        <xmax>2870000</xmax>
+        <ymax>1310000</ymax>
+      </extent>
+      <id>belasteter_standort_geo_lage_punkt_f6ed4e73_358b_4839_b221_a60bf2d14fae</id>
+      <datasource>./kbs.gpkg|layername=belasteter_standort_geo_lage_punkt</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>belasteter_standort_geo_lage_punkt</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs</proj4>
+          <srsid>47</srsid>
+          <srid>2056</srid>
+          <authid>EPSG:2056</authid>
+          <description>CH1903+ / LV95</description>
+          <projectionacronym>somerc</projectionacronym>
+          <ellipsoidacronym>bessel</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 enableorderby="0" symbollevels="0" forceraster="0" type="singleSymbol">
+        <symbols>
+          <symbol name="0" force_rhr="0" clip_to_extent="1" type="marker" alpha="1">
+            <layer pass="0" enabled="1" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="164,113,88,255"/>
+              <prop k="horizontal_anchor_point" v="1"/>
+              <prop k="joinstyle" v="bevel"/>
+              <prop k="name" v="circle"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_color" v="35,35,35,255"/>
+              <prop k="outline_style" v="solid"/>
+              <prop k="outline_width" v="0"/>
+              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="diameter"/>
+              <prop k="size" v="2"/>
+              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+              <prop k="size_unit" v="MM"/>
+              <prop k="vertical_anchor_point" v="1"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option name="name" value="" type="QString"/>
+                  <Option name="properties"/>
+                  <Option name="type" value="collection" type="QString"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale/>
+      </renderer-v2>
+      <customproperties/>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="belasteter_standort_geo_lage_punkt_T_Id_belasteter_standort_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="geo_lage_punkt" showLabel="1" index="-1"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>deponietyp__d26c7560_76b2_48cb_a762_703b87c4d618</id>
+      <datasource>./kbs.gpkg|layername=deponietyp_</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>deponietyp_</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="avalue">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="deponietyp__avalue_deponietyp_iliCode" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="belasteter_standort_deponietyp">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="deponietyp__belasteter_standort_deponietyp_belasteter_standort_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="avalue" index="2"/>
+        <alias name="" field="belasteter_standort_deponietyp" index="3"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="avalue"/>
+        <default expression="" applyOnUpdate="0" field="belasteter_standort_deponietyp"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="avalue" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="belasteter_standort_deponietyp" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="avalue"/>
+        <constraint desc="" exp="" field="belasteter_standort_deponietyp"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="avalue" showLabel="1" index="2"/>
+          <attributeEditorField name="belasteter_standort_deponietyp" showLabel="1" index="3"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="1" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>deponietyp_a1651ee2_7cc4_4ddb_8845_4f03dbc425dd</id>
+      <datasource>./kbs.gpkg|layername=deponietyp</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>deponietyp</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="itfCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="iliCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="inactive">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="dispName">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="description">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="itfCode" index="0"/>
+        <alias name="" field="iliCode" index="1"/>
+        <alias name="" field="seq" index="2"/>
+        <alias name="" field="inactive" index="3"/>
+        <alias name="" field="dispName" index="4"/>
+        <alias name="" field="description" index="5"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="" applyOnUpdate="0" field="itfCode"/>
+        <default expression="" applyOnUpdate="0" field="iliCode"/>
+        <default expression="" applyOnUpdate="0" field="seq"/>
+        <default expression="" applyOnUpdate="0" field="inactive"/>
+        <default expression="" applyOnUpdate="0" field="dispName"/>
+        <default expression="" applyOnUpdate="0" field="description"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="itfCode" constraints="3"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="iliCode" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="inactive" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="dispName" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="description" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="itfCode"/>
+        <constraint desc="" exp="" field="iliCode"/>
+        <constraint desc="" exp="" field="seq"/>
+        <constraint desc="" exp="" field="inactive"/>
+        <constraint desc="" exp="" field="dispName"/>
+        <constraint desc="" exp="" field="description"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="itfCode" showLabel="1" index="0"/>
+        <attributeEditorField name="iliCode" showLabel="1" index="1"/>
+        <attributeEditorField name="seq" showLabel="1" index="2"/>
+        <attributeEditorField name="inactive" showLabel="1" index="3"/>
+        <attributeEditorField name="dispName" showLabel="1" index="4"/>
+        <attributeEditorField name="description" showLabel="1" index="5"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>egrid__bc39e05c_3f3b_4c37_8aad_bce146d34025</id>
+      <datasource>./kbs.gpkg|layername=egrid_</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>egrid_</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="avalue">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="belasteter_standort_egrid">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="egrid__belasteter_standort_egrid_belasteter_standort_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="avalue" index="2"/>
+        <alias name="" field="belasteter_standort_egrid" index="3"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="avalue"/>
+        <default expression="" applyOnUpdate="0" field="belasteter_standort_egrid"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="avalue" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="belasteter_standort_egrid" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="avalue"/>
+        <constraint desc="" exp="" field="belasteter_standort_egrid"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="avalue" showLabel="1" index="2"/>
+          <attributeEditorField name="belasteter_standort_egrid" showLabel="1" index="3"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="1" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>languagecode_iso639_1_2f56d0b8_3dfb_4632_8db3_b077d77021e2</id>
+      <datasource>./kbs.gpkg|layername=languagecode_iso639_1</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>languagecode_iso639_1</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="itfCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="iliCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="inactive">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="dispName">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="description">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="itfCode" index="0"/>
+        <alias name="" field="iliCode" index="1"/>
+        <alias name="" field="seq" index="2"/>
+        <alias name="" field="inactive" index="3"/>
+        <alias name="" field="dispName" index="4"/>
+        <alias name="" field="description" index="5"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="" applyOnUpdate="0" field="itfCode"/>
+        <default expression="" applyOnUpdate="0" field="iliCode"/>
+        <default expression="" applyOnUpdate="0" field="seq"/>
+        <default expression="" applyOnUpdate="0" field="inactive"/>
+        <default expression="" applyOnUpdate="0" field="dispName"/>
+        <default expression="" applyOnUpdate="0" field="description"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="itfCode" constraints="3"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="iliCode" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="inactive" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="dispName" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="description" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="itfCode"/>
+        <constraint desc="" exp="" field="iliCode"/>
+        <constraint desc="" exp="" field="seq"/>
+        <constraint desc="" exp="" field="inactive"/>
+        <constraint desc="" exp="" field="dispName"/>
+        <constraint desc="" exp="" field="description"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="itfCode" showLabel="1" index="0"/>
+        <attributeEditorField name="iliCode" showLabel="1" index="1"/>
+        <attributeEditorField name="seq" showLabel="1" index="2"/>
+        <attributeEditorField name="inactive" showLabel="1" index="3"/>
+        <attributeEditorField name="dispName" showLabel="1" index="4"/>
+        <attributeEditorField name="description" showLabel="1" index="5"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>localisationch_v1_localisedmtext_11b91799_c2cb_41ac_8fde_b9f25e8d7db9</id>
+      <datasource>./kbs.gpkg|layername=localisationch_v1_localisedmtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>localisationch_v1_localisedmtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="alanguage">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="atext">
+          <editWidget type="TextEdit">
+            <config>
+              <Option type="Map">
+                <Option name="IsMultiline" value="true" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="alanguage" index="2"/>
+        <alias name="" field="atext" index="3"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="alanguage"/>
+        <default expression="" applyOnUpdate="0" field="atext"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="alanguage" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="atext" constraints="1"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="alanguage"/>
+        <constraint desc="" exp="" field="atext"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="alanguage" showLabel="1" index="2"/>
+        <attributeEditorField name="atext" showLabel="1" index="3"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>localisationch_v1_localisedtext_2994a3b2_4d85_4327_9d9a_21b55e82d5ef</id>
+      <datasource>./kbs.gpkg|layername=localisationch_v1_localisedtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>localisationch_v1_localisedtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="alanguage">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="atext">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="alanguage" index="2"/>
+        <alias name="" field="atext" index="3"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="alanguage"/>
+        <default expression="" applyOnUpdate="0" field="atext"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="alanguage" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="atext" constraints="1"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="alanguage"/>
+        <constraint desc="" exp="" field="atext"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="alanguage" showLabel="1" index="2"/>
+        <attributeEditorField name="atext" showLabel="1" index="3"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>localisationch_v1_multilingualmtext_8b40f7a0_6617_474b_a8b8_f5ee80c9d342</id>
+      <datasource>./kbs.gpkg|layername=localisationch_v1_multilingualmtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>localisationch_v1_multilingualmtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>localisationch_v1_multilingualtext_a73b3600_8f18_4cc8_93cd_a8e19605c779</id>
+      <datasource>./kbs.gpkg|layername=localisationch_v1_multilingualtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>localisationch_v1_multilingualtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>localisedmtext_f42380e8_cf8f_49bd_8b18_d656351669e1</id>
+      <datasource>./kbs.gpkg|layername=localisedmtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>localisedmtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="alanguage">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="atext">
+          <editWidget type="TextEdit">
+            <config>
+              <Option type="Map">
+                <Option name="IsMultiline" value="true" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="multilingualmtext_localisedtext">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="localisedmtext_multilingualmtext_localisedtext_multilingualmtext_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="loclstnch_vltlnglmtext_localisedtext">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="localisedmtext_loclstnch_vltlnglmtext_localisedtext_localisationch_v1_multilingualmtext_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="alanguage" index="2"/>
+        <alias name="" field="atext" index="3"/>
+        <alias name="" field="multilingualmtext_localisedtext" index="4"/>
+        <alias name="" field="loclstnch_vltlnglmtext_localisedtext" index="5"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="alanguage"/>
+        <default expression="" applyOnUpdate="0" field="atext"/>
+        <default expression="" applyOnUpdate="0" field="multilingualmtext_localisedtext"/>
+        <default expression="" applyOnUpdate="0" field="loclstnch_vltlnglmtext_localisedtext"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="alanguage" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="atext" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="multilingualmtext_localisedtext" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="loclstnch_vltlnglmtext_localisedtext" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="alanguage"/>
+        <constraint desc="" exp="" field="atext"/>
+        <constraint desc="" exp="" field="multilingualmtext_localisedtext"/>
+        <constraint desc="" exp="" field="loclstnch_vltlnglmtext_localisedtext"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="alanguage" showLabel="1" index="2"/>
+          <attributeEditorField name="atext" showLabel="1" index="3"/>
+          <attributeEditorField name="multilingualmtext_localisedtext" showLabel="1" index="4"/>
+          <attributeEditorField name="loclstnch_vltlnglmtext_localisedtext" showLabel="1" index="5"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>localisedtext_a894d49d_ed2b_4e60_a701_7c894c85427e</id>
+      <datasource>./kbs.gpkg|layername=localisedtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>localisedtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="alanguage">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="atext">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="multilingualtext_localisedtext">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="localisedtext_multilingualtext_localisedtext_multilingualtext_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="loclstnch_vmltlngltext_localisedtext">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="localisedtext_loclstnch_vmltlngltext_localisedtext_localisationch_v1_multilingualtext_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="alanguage" index="2"/>
+        <alias name="" field="atext" index="3"/>
+        <alias name="" field="multilingualtext_localisedtext" index="4"/>
+        <alias name="" field="loclstnch_vmltlngltext_localisedtext" index="5"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="alanguage"/>
+        <default expression="" applyOnUpdate="0" field="atext"/>
+        <default expression="" applyOnUpdate="0" field="multilingualtext_localisedtext"/>
+        <default expression="" applyOnUpdate="0" field="loclstnch_vmltlngltext_localisedtext"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="alanguage" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="atext" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="multilingualtext_localisedtext" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="loclstnch_vmltlngltext_localisedtext" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="alanguage"/>
+        <constraint desc="" exp="" field="atext"/>
+        <constraint desc="" exp="" field="multilingualtext_localisedtext"/>
+        <constraint desc="" exp="" field="loclstnch_vmltlngltext_localisedtext"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="alanguage" showLabel="1" index="2"/>
+          <attributeEditorField name="atext" showLabel="1" index="3"/>
+          <attributeEditorField name="multilingualtext_localisedtext" showLabel="1" index="4"/>
+          <attributeEditorField name="loclstnch_vmltlngltext_localisedtext" showLabel="1" index="5"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>multilingualmtext_359ccd38_5875_41b1_b807_88d1c02e0d10</id>
+      <datasource>./kbs.gpkg|layername=multilingualmtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>multilingualmtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>multilingualtext_5c53b1c9_e62a_4916_b65c_75f150826891</id>
+      <datasource>./kbs.gpkg|layername=multilingualtext</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>multilingualtext</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>parzellenidentifikation_58a1a5f5_c79f_4f70_818b_c6f8797887c6</id>
+      <datasource>./kbs.gpkg|layername=parzellenidentifikation</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>parzellenidentifikation</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="nbident">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="parzellennummer">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="belasteter_standort_parzellenverweis">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="parzellenidentifikation_belasteter_standort_parzellenverweis_belasteter_standort_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="nbident" index="2"/>
+        <alias name="" field="parzellennummer" index="3"/>
+        <alias name="" field="belasteter_standort_parzellenverweis" index="4"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="nbident"/>
+        <default expression="" applyOnUpdate="0" field="parzellennummer"/>
+        <default expression="" applyOnUpdate="0" field="belasteter_standort_parzellenverweis"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="nbident" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="parzellennummer" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="belasteter_standort_parzellenverweis" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="nbident"/>
+        <constraint desc="" exp="" field="parzellennummer"/>
+        <constraint desc="" exp="" field="belasteter_standort_parzellenverweis"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="nbident" showLabel="1" index="2"/>
+          <attributeEditorField name="parzellennummer" showLabel="1" index="3"/>
+          <attributeEditorField name="belasteter_standort_parzellenverweis" showLabel="1" index="4"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="1" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>standorttyp_7d0e040f_edc7_4c27_a2da_8ee51efbddd0</id>
+      <datasource>./kbs.gpkg|layername=standorttyp</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>standorttyp</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="itfCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="iliCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="inactive">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="dispName">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="description">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="itfCode" index="0"/>
+        <alias name="" field="iliCode" index="1"/>
+        <alias name="" field="seq" index="2"/>
+        <alias name="" field="inactive" index="3"/>
+        <alias name="" field="dispName" index="4"/>
+        <alias name="" field="description" index="5"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="" applyOnUpdate="0" field="itfCode"/>
+        <default expression="" applyOnUpdate="0" field="iliCode"/>
+        <default expression="" applyOnUpdate="0" field="seq"/>
+        <default expression="" applyOnUpdate="0" field="inactive"/>
+        <default expression="" applyOnUpdate="0" field="dispName"/>
+        <default expression="" applyOnUpdate="0" field="description"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="itfCode" constraints="3"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="iliCode" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="inactive" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="dispName" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="description" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="itfCode"/>
+        <constraint desc="" exp="" field="iliCode"/>
+        <constraint desc="" exp="" field="seq"/>
+        <constraint desc="" exp="" field="inactive"/>
+        <constraint desc="" exp="" field="dispName"/>
+        <constraint desc="" exp="" field="description"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="itfCode" showLabel="1" index="0"/>
+        <attributeEditorField name="iliCode" showLabel="1" index="1"/>
+        <attributeEditorField name="seq" showLabel="1" index="2"/>
+        <attributeEditorField name="inactive" showLabel="1" index="3"/>
+        <attributeEditorField name="dispName" showLabel="1" index="4"/>
+        <attributeEditorField name="description" showLabel="1" index="5"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="1" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>statusaltlv_70c1ba8d_8677_4a7d_aced_78eb11586423</id>
+      <datasource>./kbs.gpkg|layername=statusaltlv</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>statusaltlv</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="itfCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="iliCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="inactive">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="dispName">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="description">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="itfCode" index="0"/>
+        <alias name="" field="iliCode" index="1"/>
+        <alias name="" field="seq" index="2"/>
+        <alias name="" field="inactive" index="3"/>
+        <alias name="" field="dispName" index="4"/>
+        <alias name="" field="description" index="5"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="" applyOnUpdate="0" field="itfCode"/>
+        <default expression="" applyOnUpdate="0" field="iliCode"/>
+        <default expression="" applyOnUpdate="0" field="seq"/>
+        <default expression="" applyOnUpdate="0" field="inactive"/>
+        <default expression="" applyOnUpdate="0" field="dispName"/>
+        <default expression="" applyOnUpdate="0" field="description"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="itfCode" constraints="3"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="iliCode" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="inactive" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="dispName" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="description" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="itfCode"/>
+        <constraint desc="" exp="" field="iliCode"/>
+        <constraint desc="" exp="" field="seq"/>
+        <constraint desc="" exp="" field="inactive"/>
+        <constraint desc="" exp="" field="dispName"/>
+        <constraint desc="" exp="" field="description"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="itfCode" showLabel="1" index="0"/>
+        <attributeEditorField name="iliCode" showLabel="1" index="1"/>
+        <attributeEditorField name="seq" showLabel="1" index="2"/>
+        <attributeEditorField name="inactive" showLabel="1" index="3"/>
+        <attributeEditorField name="dispName" showLabel="1" index="4"/>
+        <attributeEditorField name="description" showLabel="1" index="5"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="1" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>untersmassn_11fa5ae9_3e36_425d_a8a2_4969a1543dbf</id>
+      <datasource>./kbs.gpkg|layername=untersmassn</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>untersmassn</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="itfCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="iliCode">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="inactive">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="dispName">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="description">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="itfCode" index="0"/>
+        <alias name="" field="iliCode" index="1"/>
+        <alias name="" field="seq" index="2"/>
+        <alias name="" field="inactive" index="3"/>
+        <alias name="" field="dispName" index="4"/>
+        <alias name="" field="description" index="5"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="" applyOnUpdate="0" field="itfCode"/>
+        <default expression="" applyOnUpdate="0" field="iliCode"/>
+        <default expression="" applyOnUpdate="0" field="seq"/>
+        <default expression="" applyOnUpdate="0" field="inactive"/>
+        <default expression="" applyOnUpdate="0" field="dispName"/>
+        <default expression="" applyOnUpdate="0" field="description"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="itfCode" constraints="3"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="iliCode" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="inactive" constraints="1"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="dispName" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="description" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="itfCode"/>
+        <constraint desc="" exp="" field="iliCode"/>
+        <constraint desc="" exp="" field="seq"/>
+        <constraint desc="" exp="" field="inactive"/>
+        <constraint desc="" exp="" field="dispName"/>
+        <constraint desc="" exp="" field="description"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="itfCode" showLabel="1" index="0"/>
+        <attributeEditorField name="iliCode" showLabel="1" index="1"/>
+        <attributeEditorField name="seq" showLabel="1" index="2"/>
+        <attributeEditorField name="inactive" showLabel="1" index="3"/>
+        <attributeEditorField name="dispName" showLabel="1" index="4"/>
+        <attributeEditorField name="description" showLabel="1" index="5"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>untersmassn__eb961a65_2d7d_4943_9db3_5cd223088248</id>
+      <datasource>./kbs.gpkg|layername=untersmassn_</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>untersmassn_</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Seq">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="avalue">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="untersmassn__avalue_untersmassn_iliCode" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+        <field name="belasteter_standort_untersuchungsmassnahmen">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="true" type="bool"/>
+                <Option name="OrderByValue" value="true" type="bool"/>
+                <Option name="Relation" value="untersmassn__belasteter_standort_untersuchungsmassnahmen_belasteter_standort_T_Id" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="false" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Seq" index="1"/>
+        <alias name="" field="avalue" index="2"/>
+        <alias name="" field="belasteter_standort_untersuchungsmassnahmen" index="3"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Seq"/>
+        <default expression="" applyOnUpdate="0" field="avalue"/>
+        <default expression="" applyOnUpdate="0" field="belasteter_standort_untersuchungsmassnahmen"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Seq" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="avalue" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="belasteter_standort_untersuchungsmassnahmen" constraints="0"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Seq"/>
+        <constraint desc="" exp="" field="avalue"/>
+        <constraint desc="" exp="" field="belasteter_standort_untersuchungsmassnahmen"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorContainer name="General" showLabel="1" visibilityExpressionEnabled="0" groupBox="0" visibilityExpression="" columnCount="2">
+          <attributeEditorField name="avalue" showLabel="1" index="2"/>
+          <attributeEditorField name="belasteter_standort_untersuchungsmassnahmen" showLabel="1" index="3"/>
+        </attributeEditorContainer>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer maxScale="0" refreshOnNotifyMessage="" readOnly="0" refreshOnNotifyEnabled="0" styleCategories="AllStyleCategories" minScale="1e+8" geometry="No geometry" autoRefreshEnabled="0" autoRefreshTime="0" type="vector" hasScaleBasedVisibilityFlag="0">
+      <id>zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17</id>
+      <datasource>./kbs.gpkg|layername=zustaendigkeitkataster</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>zustaendigkeitkataster</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <customproperties/>
+      <geometryOptions removeDuplicateNodes="0" geometryPrecision="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="T_Id">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="T_Ili_Tid">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="zustaendige_behoerde">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="zustaendige_behoerde_de">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="zustaendige_behoerde_fr">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="zustaendige_behoerde_rm">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="zustaendige_behoerde_it">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="zustaendige_behoerde_en">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="url_behoerde">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="uid">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="katastername">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="katastername_de">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="katastername_fr">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="katastername_rm">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="katastername_it">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="katastername_en">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="url_kataster">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias name="" field="T_Id" index="0"/>
+        <alias name="" field="T_Ili_Tid" index="1"/>
+        <alias name="" field="zustaendige_behoerde" index="2"/>
+        <alias name="" field="zustaendige_behoerde_de" index="3"/>
+        <alias name="" field="zustaendige_behoerde_fr" index="4"/>
+        <alias name="" field="zustaendige_behoerde_rm" index="5"/>
+        <alias name="" field="zustaendige_behoerde_it" index="6"/>
+        <alias name="" field="zustaendige_behoerde_en" index="7"/>
+        <alias name="" field="url_behoerde" index="8"/>
+        <alias name="" field="uid" index="9"/>
+        <alias name="" field="katastername" index="10"/>
+        <alias name="" field="katastername_de" index="11"/>
+        <alias name="" field="katastername_fr" index="12"/>
+        <alias name="" field="katastername_rm" index="13"/>
+        <alias name="" field="katastername_it" index="14"/>
+        <alias name="" field="katastername_en" index="15"/>
+        <alias name="" field="url_kataster" index="16"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="sqlite_fetch_and_increment(@layer, 'T_KEY_OBJECT', 'T_LastUniqueId', 'T_Key', 'T_Id', map('T_LastChange','date(''now'')','T_CreateDate','date(''now'')','T_User','''' || @user_account_name || ''''))" applyOnUpdate="0" field="T_Id"/>
+        <default expression="" applyOnUpdate="0" field="T_Ili_Tid"/>
+        <default expression="" applyOnUpdate="0" field="zustaendige_behoerde"/>
+        <default expression="" applyOnUpdate="0" field="zustaendige_behoerde_de"/>
+        <default expression="" applyOnUpdate="0" field="zustaendige_behoerde_fr"/>
+        <default expression="" applyOnUpdate="0" field="zustaendige_behoerde_rm"/>
+        <default expression="" applyOnUpdate="0" field="zustaendige_behoerde_it"/>
+        <default expression="" applyOnUpdate="0" field="zustaendige_behoerde_en"/>
+        <default expression="" applyOnUpdate="0" field="url_behoerde"/>
+        <default expression="" applyOnUpdate="0" field="uid"/>
+        <default expression="" applyOnUpdate="0" field="katastername"/>
+        <default expression="" applyOnUpdate="0" field="katastername_de"/>
+        <default expression="" applyOnUpdate="0" field="katastername_fr"/>
+        <default expression="" applyOnUpdate="0" field="katastername_rm"/>
+        <default expression="" applyOnUpdate="0" field="katastername_it"/>
+        <default expression="" applyOnUpdate="0" field="katastername_en"/>
+        <default expression="" applyOnUpdate="0" field="url_kataster"/>
+      </defaults>
+      <constraints>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="1" field="T_Id" constraints="3"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="T_Ili_Tid" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="zustaendige_behoerde" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="zustaendige_behoerde_de" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="zustaendige_behoerde_fr" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="zustaendige_behoerde_rm" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="zustaendige_behoerde_it" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="zustaendige_behoerde_en" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="url_behoerde" constraints="1"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="uid" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="katastername" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="katastername_de" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="katastername_fr" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="katastername_rm" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="katastername_it" constraints="0"/>
+        <constraint notnull_strength="0" exp_strength="0" unique_strength="0" field="katastername_en" constraints="0"/>
+        <constraint notnull_strength="1" exp_strength="0" unique_strength="0" field="url_kataster" constraints="1"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="T_Id"/>
+        <constraint desc="" exp="" field="T_Ili_Tid"/>
+        <constraint desc="" exp="" field="zustaendige_behoerde"/>
+        <constraint desc="" exp="" field="zustaendige_behoerde_de"/>
+        <constraint desc="" exp="" field="zustaendige_behoerde_fr"/>
+        <constraint desc="" exp="" field="zustaendige_behoerde_rm"/>
+        <constraint desc="" exp="" field="zustaendige_behoerde_it"/>
+        <constraint desc="" exp="" field="zustaendige_behoerde_en"/>
+        <constraint desc="" exp="" field="url_behoerde"/>
+        <constraint desc="" exp="" field="uid"/>
+        <constraint desc="" exp="" field="katastername"/>
+        <constraint desc="" exp="" field="katastername_de"/>
+        <constraint desc="" exp="" field="katastername_fr"/>
+        <constraint desc="" exp="" field="katastername_rm"/>
+        <constraint desc="" exp="" field="katastername_it"/>
+        <constraint desc="" exp="" field="katastername_en"/>
+        <constraint desc="" exp="" field="url_kataster"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions>
+        <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+      </attributeactions>
+      <attributetableconfig actionWidgetStyle="dropDown" sortOrder="0" sortExpression="">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>tablayout</editorlayout>
+      <attributeEditorForm>
+        <attributeEditorField name="zustaendige_behoerde" showLabel="1" index="2"/>
+        <attributeEditorField name="zustaendige_behoerde_de" showLabel="1" index="3"/>
+        <attributeEditorField name="zustaendige_behoerde_fr" showLabel="1" index="4"/>
+        <attributeEditorField name="zustaendige_behoerde_rm" showLabel="1" index="5"/>
+        <attributeEditorField name="zustaendige_behoerde_it" showLabel="1" index="6"/>
+        <attributeEditorField name="zustaendige_behoerde_en" showLabel="1" index="7"/>
+        <attributeEditorField name="url_behoerde" showLabel="1" index="8"/>
+        <attributeEditorField name="uid" showLabel="1" index="9"/>
+        <attributeEditorField name="katastername" showLabel="1" index="10"/>
+        <attributeEditorField name="katastername_de" showLabel="1" index="11"/>
+        <attributeEditorField name="katastername_fr" showLabel="1" index="12"/>
+        <attributeEditorField name="katastername_rm" showLabel="1" index="13"/>
+        <attributeEditorField name="katastername_it" showLabel="1" index="14"/>
+        <attributeEditorField name="katastername_en" showLabel="1" index="15"/>
+        <attributeEditorField name="url_kataster" showLabel="1" index="16"/>
+      </attributeEditorForm>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression></previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+  </projectlayers>
+  <layerorder>
+    <layer id="belasteter_standort_32c10a71_9629_4ccd_8be2_dd9cc37f7ced"/>
+    <layer id="belasteter_standort_geo_lage_punkt_f6ed4e73_358b_4839_b221_a60bf2d14fae"/>
+    <layer id="localisationch_v1_multilingualtext_a73b3600_8f18_4cc8_93cd_a8e19605c779"/>
+    <layer id="localisationch_v1_localisedtext_2994a3b2_4d85_4327_9d9a_21b55e82d5ef"/>
+    <layer id="localisationch_v1_multilingualmtext_8b40f7a0_6617_474b_a8b8_f5ee80c9d342"/>
+    <layer id="localisationch_v1_localisedmtext_11b91799_c2cb_41ac_8fde_b9f25e8d7db9"/>
+    <layer id="multilingualtext_5c53b1c9_e62a_4916_b65c_75f150826891"/>
+    <layer id="multilingualmtext_359ccd38_5875_41b1_b807_88d1c02e0d10"/>
+    <layer id="zustaendigkeitkataster_2b5bb693_3151_4c82_967f_b49d4d348a17"/>
+    <layer id="localisedtext_a894d49d_ed2b_4e60_a701_7c894c85427e"/>
+    <layer id="localisedmtext_f42380e8_cf8f_49bd_8b18_d656351669e1"/>
+    <layer id="deponietyp__d26c7560_76b2_48cb_a762_703b87c4d618"/>
+    <layer id="egrid__bc39e05c_3f3b_4c37_8aad_bce146d34025"/>
+    <layer id="untersmassn__eb961a65_2d7d_4943_9db3_5cd223088248"/>
+    <layer id="parzellenidentifikation_58a1a5f5_c79f_4f70_818b_c6f8797887c6"/>
+    <layer id="standorttyp_7d0e040f_edc7_4c27_a2da_8ee51efbddd0"/>
+    <layer id="languagecode_iso639_1_2f56d0b8_3dfb_4632_8db3_b077d77021e2"/>
+    <layer id="deponietyp_a1651ee2_7cc4_4ddb_8845_4f03dbc425dd"/>
+    <layer id="statusaltlv_70c1ba8d_8677_4a7d_aced_78eb11586423"/>
+    <layer id="untersmassn_11fa5ae9_3e36_425d_a8a2_4969a1543dbf"/>
+  </layerorder>
+  <properties>
+    <Measurement>
+      <AreaUnits type="QString">m2</AreaUnits>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+    </Measurement>
+    <PAL>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <SearchMethod type="int">0</SearchMethod>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <TextFormat type="int">0</TextFormat>
+    </PAL>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+    <Measure>
+      <Ellipsoid type="QString">WGS84</Ellipsoid>
+    </Measure>
+    <PositionPrecision>
+      <Automatic type="bool">true</Automatic>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+    </PositionPrecision>
+    <Gui>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+    </Gui>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+  </properties>
+  <visibility-presets/>
+  <transformContext/>
+  <projectMetadata>
+    <identifier></identifier>
+    <parentidentifier></parentidentifier>
+    <language></language>
+    <type></type>
+    <title></title>
+    <abstract></abstract>
+    <links/>
+    <author>Matthias Kuhn</author>
+    <creation>2019-01-09T15:08:26</creation>
+  </projectMetadata>
+  <Annotations/>
+  <Layouts/>
+</qgis>

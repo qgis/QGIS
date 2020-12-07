@@ -12,38 +12,46 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSEXTENTGROUPBOX_H
 #define QGSEXTENTGROUPBOX_H
 
 #include "qgscollapsiblegroupbox.h"
-#include "qgis.h"
-
-#include "ui_qgsextentgroupboxwidget.h"
+#include "qgis_sip.h"
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 
-class QgsCoordinateReferenceSystem;
-class QgsMapLayerModel;
-class QgsMapLayer;
+#include <memory>
 
-/** \ingroup gui
+class QgsCoordinateReferenceSystem;
+class QgsMapLayer;
+class QgsExtentWidget;
+class QgsMapCanvas;
+
+/**
+ * \ingroup gui
  * Collapsible group box for configuration of extent, typically for a save operation.
  *
  * Besides allowing the user to enter the extent manually, it comes with options to use
  * original extent or extent defined by the current view in map canvas.
  *
- * When using the widget, make sure to call setOriginalExtent(), setCurrentExtent() and setOutputCrs() during initialization.
+ * When using the group box, make sure to call setOriginalExtent(), setCurrentExtent() and setOutputCrs() during initialization.
+ *
+ *
+ * \see QgsExtentWidget
  *
  * \since QGIS 2.4
  */
-class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::QgsExtentGroupBoxWidget
+class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
 {
     Q_OBJECT
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
+
+    // TODO QGIS 4.0 -- use QgsExtentWidget enum instead
 
     //! Available states for the current extent selection in the widget
     enum ExtentState
@@ -52,12 +60,13 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
       CurrentExtent,   //!< Map canvas extent
       UserExtent,      //!< Extent manually entered/modified by the user
       ProjectLayerExtent, //!< Extent taken from a layer within the project
+      DrawOnCanvas, //!< Extent taken from a rectangled drawn onto the map canvas
     };
 
     /**
      * Constructor for QgsExtentGroupBox.
      */
-    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
@@ -71,14 +80,14 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      * \see setOriginalExtent()
      * \see originalCrs()
      */
-    QgsRectangle originalExtent() const { return mOriginalExtent; }
+    QgsRectangle originalExtent() const;
 
     /**
      * Returns the original coordinate reference system set for the widget.
      * \see originalExtent()
      * \see setOriginalExtent()
      */
-    QgsCoordinateReferenceSystem originalCrs() const { return mOriginalCrs; }
+    QgsCoordinateReferenceSystem originalCrs() const;
 
     /**
      * Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
@@ -94,7 +103,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      * \see setCurrentExtent()
      * \see currentCrs()
      */
-    QgsRectangle currentExtent() const { return mCurrentExtent; }
+    QgsRectangle currentExtent() const;
 
     /**
      * Returns the coordinate reference system for the current extent set for the widget. The current
@@ -102,7 +111,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      * \see setCurrentExtent()
      * \see currentExtent()
      */
-    QgsCoordinateReferenceSystem currentCrs() const { return mCurrentCrs; }
+    QgsCoordinateReferenceSystem currentCrs() const;
 
     /**
      * Sets the output CRS - may need to be used for transformation from original/current extent.
@@ -113,27 +122,50 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     /**
      * Returns the extent shown in the widget - in output CRS coordinates.
+     * \see outputCrs
      */
     QgsRectangle outputExtent() const;
 
     /**
+     * Returns the current output CRS, used in the display.
+     * \see outputExtent
+     * \since QGIS 3.0
+     */
+    QgsCoordinateReferenceSystem outputCrs() const;
+
+    /**
      * Returns the currently selected state for the widget's extent.
      */
-    QgsExtentGroupBox::ExtentState extentState() const { return mExtentState; }
+    QgsExtentGroupBox::ExtentState extentState() const;
 
     /**
      * Sets the base part of \a title of the group box (will be appended with extent state)
-     * \since QGIS 2.12
      * \see titleBase()
+     * \since QGIS 2.12
      */
     void setTitleBase( const QString &title );
 
     /**
      * Returns the base part of title of the group box (will be appended with extent state).
-     * \since QGIS 2.12
      * \see setTitleBase()
+     * \since QGIS 2.12
      */
     QString titleBase() const;
+
+    /**
+     * Sets the map canvas to enable dragging of extent on a canvas.
+     * \param canvas the map canvas
+     * \param drawOnCanvasOption set to false to disable to draw on canvas option
+     * \since QGIS 3.0
+     */
+    void setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption = true );
+
+    /**
+     * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+     * If the aspect ratio isn't fixed, the width and height will be set to zero.
+     * \since QGIS 3.0
+     */
+    QSize ratio() const;
 
   public slots:
 
@@ -158,6 +190,20 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      */
     void setOutputExtentFromLayer( const QgsMapLayer *layer );
 
+    /**
+     * Sets the output extent by dragging on the canvas.
+     * \since QGIS 3.0
+     */
+    void setOutputExtentFromDrawOnCanvas();
+
+    /**
+     * Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+     * To unset a fixed aspect ratio, set the width and height to zero.
+     * \param ratio aspect ratio's width and height
+     * \since QGIS 3.0
+     */
+    void setRatio( QSize ratio );
+
   signals:
 
     /**
@@ -167,39 +213,19 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
   private slots:
 
-    void on_mXMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mXMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-
     void groupBoxClicked();
-    void layerMenuAboutToShow();
+
+    void widgetExtentChanged();
+
+    void validationChanged( bool valid );
 
   private:
-    void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentGroupBox::ExtentState state );
-    void setOutputExtentFromLineEdit();
     void updateTitle();
+
+    QgsExtentWidget *mWidget = nullptr;
 
     //! Base part of the title used for the extent
     QString mTitleBase;
-
-    ExtentState mExtentState;
-
-    QgsCoordinateReferenceSystem mOutputCrs;
-
-    QgsRectangle mCurrentExtent;
-    QgsCoordinateReferenceSystem mCurrentCrs;
-
-    QgsRectangle mOriginalExtent;
-    QgsCoordinateReferenceSystem mOriginalCrs;
-
-    QMenu *mLayerMenu = nullptr;
-    QgsMapLayerModel *mMapLayerModel = nullptr;
-    QList< QAction * > mMenuActions;
-    QPointer< const QgsMapLayer > mExtentLayer;
-    QString mExtentLayerName;
-
-    void setExtentToLayerExtent( const QString &layerId );
 
 };
 

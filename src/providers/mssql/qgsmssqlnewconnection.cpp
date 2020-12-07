@@ -23,14 +23,27 @@
 
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
-#include "qgscontexthelp.h"
 #include "qgssettings.h"
+#include "qgsmssqlconnection.h"
+#include "qgsgui.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  connect( btnListDatabase, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnListDatabase_clicked );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnConnect_clicked );
+  connect( cb_trustedConnection, &QCheckBox::clicked, this, &QgsMssqlNewConnection::cb_trustedConnection_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlNewConnection::showHelp );
+
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+  connect( txtService, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+  connect( listDatabase, &QListWidget::currentItemChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
 
   lblWarning->hide();
 
@@ -45,9 +58,10 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     txtHost->setText( settings.value( key + "/host" ).toString() );
     listDatabase->addItem( settings.value( key + "/database" ).toString() );
     listDatabase->setCurrentRow( 0 );
-    cb_geometryColumns->setChecked( settings.value( key + "/geometryColumns", true ).toBool() );
-    cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", true ).toBool() );
-    cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
+    cb_geometryColumns->setChecked( QgsMssqlConnection::geometryColumnsOnly( connName ) );
+    cb_allowGeometrylessTables->setChecked( QgsMssqlConnection::allowGeometrylessTables( connName ) );
+    cb_useEstimatedMetadata->setChecked( QgsMssqlConnection::useEstimatedMetadata( connName ) );
+    mCheckNoInvalidGeometryHandling->setChecked( QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connName ) );
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
@@ -65,9 +79,9 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     txtName->setText( connName );
   }
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
-  on_cb_trustedConnection_clicked();
+  cb_trustedConnection_clicked();
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsMssqlNewConnection::accept()
 {
   QgsSettings settings;
@@ -79,7 +93,7 @@ void QgsMssqlNewConnection::accept()
        ( settings.contains( baseKey + txtName->text() + "/service" ) ||
          settings.contains( baseKey + txtName->text() + "/host" ) ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -93,7 +107,8 @@ void QgsMssqlNewConnection::accept()
     settings.sync();
   }
 
-  baseKey += txtName->text();
+  const QString connName = txtName->text();
+  baseKey += connName;
   QString database;
   QListWidgetItem *item = listDatabase->currentItem();
   if ( item && item->text() != QLatin1String( "(from service)" ) )
@@ -104,35 +119,36 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "/service", txtService->text() );
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/database", database );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QString() );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QString() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
-  settings.setValue( baseKey + "/geometryColumns", cb_geometryColumns->isChecked() );
-  settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
-  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
+  QgsMssqlConnection::setGeometryColumnsOnly( connName, cb_geometryColumns->isChecked() );
+  QgsMssqlConnection::setAllowGeometrylessTables( connName, cb_allowGeometrylessTables->isChecked() );
+  QgsMssqlConnection::setUseEstimatedMetadata( connName, cb_useEstimatedMetadata->isChecked() );
+  QgsMssqlConnection::setInvalidGeometryHandlingDisabled( connName, mCheckNoInvalidGeometryHandling->isChecked() );
 
   QDialog::accept();
 }
 
-void QgsMssqlNewConnection::on_btnConnect_clicked()
+void QgsMssqlNewConnection::btnConnect_clicked()
 {
   testConnection();
 }
 
-void QgsMssqlNewConnection::on_btnListDatabase_clicked()
+void QgsMssqlNewConnection::btnListDatabase_clicked()
 {
   listDatabases();
 }
 
-void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
+void QgsMssqlNewConnection::cb_trustedConnection_clicked()
 {
   if ( cb_trustedConnection->checkState() == Qt::Checked )
   {
     txtUsername->setEnabled( false );
-    txtUsername->setText( QLatin1String( "" ) );
+    txtUsername->clear();
     txtPassword->setEnabled( false );
-    txtPassword->setText( QLatin1String( "" ) );
+    txtPassword->clear();
   }
   else
   {
@@ -141,22 +157,18 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
   }
 }
 
-//! End  Autoconnected SLOTS *
-
-QgsMssqlNewConnection::~QgsMssqlNewConnection()
-{
-}
+//! End  Autoconnected SLOTS
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {
-  bar->pushMessage( QStringLiteral( "Testing connection" ), QStringLiteral( "....." ) );
+  bar->pushMessage( tr( "Testing connection" ), tr( "……" ) );
   // Gross but needed to show the last message.
   qApp->processEvents();
 
   if ( txtService->text().isEmpty() && txtHost->text().isEmpty() )
   {
     bar->clearWidgets();
-    bar->pushWarning( tr( "Connection Failed" ), tr( "Host name hasn't been specified" ) );
+    bar->pushWarning( tr( "Connection Failed" ), tr( "Host name hasn't been specified." ) );
     return false;
   }
 
@@ -171,7 +183,7 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
     database = item->text();
   }
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
                     txtHost->text().trimmed(),
                     database,
                     txtUsername->text().trimmed(),
@@ -204,7 +216,7 @@ void QgsMssqlNewConnection::listDatabases()
   listDatabase->clear();
   QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
                     txtHost->text().trimmed(),
                     QStringLiteral( "master" ),
                     txtUsername->text().trimmed(),
@@ -233,3 +245,14 @@ void QgsMssqlNewConnection::listDatabases()
   }
 }
 
+void QgsMssqlNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-mssql-spatial" ) );
+}
+
+void QgsMssqlNewConnection::updateOkButtonState()
+{
+  QListWidgetItem *item = listDatabase->currentItem();
+  bool disabled = txtName->text().isEmpty() || ( txtService->text().isEmpty() && txtHost->text().isEmpty() ) || !item;
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( disabled );
+}

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgspainting.cpp
+    ---------------------
+    begin                : July 2016
+    copyright            : (C) 2016 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgspainting.h"
 
@@ -57,7 +71,7 @@ QPainter::CompositionMode QgsPainting::getCompositionMode( QgsPainting::BlendMod
     case QgsPainting::BlendXor:
       return QPainter::CompositionMode_Xor;
     default:
-      QgsDebugMsg( QString( "Blend mode %1 mapped to SourceOver" ).arg( blendMode ) );
+      QgsDebugMsg( QStringLiteral( "Blend mode %1 mapped to SourceOver" ).arg( blendMode ) );
       return QPainter::CompositionMode_SourceOver;
   }
 }
@@ -117,7 +131,7 @@ QgsPainting::BlendMode QgsPainting::getBlendModeEnum( QPainter::CompositionMode 
     case QPainter::CompositionMode_Xor:
       return QgsPainting::BlendXor;
     default:
-      QgsDebugMsg( QString( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
+      QgsDebugMsg( QStringLiteral( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
       return QgsPainting::BlendNormal;
   }
 }

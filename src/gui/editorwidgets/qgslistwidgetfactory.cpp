@@ -35,14 +35,14 @@ QgsEditorWidgetWrapper *QgsListWidgetFactory::create( QgsVectorLayer *vl, int fi
 
 QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
-  Q_UNUSED( vl );
-  Q_UNUSED( fieldIdx );
-  Q_UNUSED( parent );
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  Q_UNUSED( parent )
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "List field" ) );
 }
 
 unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  return ( field.type() == QVariant::List || field.type() == QVariant::StringList ) && field.subType() != QVariant::Invalid ? 20 : 0;
+  return ( field.type() == QVariant::List || field.type() == QVariant::StringList || field.type() == QVariant::Map ) && field.subType() != QVariant::Invalid ? 20 : 0;
 }

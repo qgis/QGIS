@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Martin Dobias'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -57,7 +55,7 @@ class TestQgsGeometryAvoidIntersections(unittest.TestCase):
             features.append(f)
 
         l.dataProvider().addFeatures(features)
-        assert l.pendingFeatureCount() == 7
+        assert l.featureCount() == 7
 
         # create a geometry and remove its intersections with other geometries
 

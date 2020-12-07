@@ -21,15 +21,29 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
+from processing.tools.dataobjects import *  # NOQA
+from processing.tools.dataobjects import createContext
+from processing.tools.general import *  # NOQA
+from processing.tools.general import (
+    algorithmHelp,
+    run,
+    runAndLoadResults,
+    createAlgorithmDialog,
+    execAlgorithmDialog
+)
+from processing.tools.vector import *  # NOQA
+from processing.tools.raster import *  # NOQA
+from processing.tools.system import *  # NOQA
 
-__revision__ = '$Format:%H$'
+# monkey patch Python specific Processing API into stable qgis.processing module
+import qgis.processing
 
-from processing.tools.dataobjects import *          # NOQA
-from processing.tools.general import *              # NOQA
-from processing.tools.vector import *               # NOQA
-from processing.tools.raster import *               # NOQA
-from processing.tools.system import *               # NOQA
+qgis.processing.algorithmHelp = algorithmHelp
+qgis.processing.run = run
+qgis.processing.runAndLoadResults = runAndLoadResults
+qgis.processing.createAlgorithmDialog = createAlgorithmDialog
+qgis.processing.execAlgorithmDialog = execAlgorithmDialog
+qgis.processing.createContext = createContext
 
 
 def classFactory(iface):

@@ -26,7 +26,8 @@ QgsLayerTreeEmbeddedWidgetRegistry::QgsLayerTreeEmbeddedWidgetRegistry()
 
 QgsLayerTreeEmbeddedWidgetRegistry::~QgsLayerTreeEmbeddedWidgetRegistry()
 {
-  Q_FOREACH ( QgsLayerTreeEmbeddedWidgetProvider *provider, mProviders )
+  const auto constMProviders = mProviders;
+  for ( QgsLayerTreeEmbeddedWidgetProvider *provider : constMProviders )
   {
     removeProvider( provider->id() );
   }

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    package.sh
 #    ---------------------
@@ -27,12 +27,10 @@ cmake -D BUILDNAME="cygwin" \
         -D WITH_SPATIALITE=TRUE \
         -D WITH_QSPATIALITE=TRUE \
         -D WITH_SERVER=TRUE \
-        -D WITH_GLOBE=TRUE \
         -D WITH_ORACLE=FALSE \
 	-D CMAKE_LEGACY_CYGWIN_WIN32=0 \
 	-D PYUIC4_PROGRAM=/usr/lib/python2.7/site-packages/PyQt4/pyuic4 \
 	-D PYRCC4_PROGRAM=/usr/lib/python2.7/site-packages/PyQt4/pyrcc4.exe \
-	-D WITH_GLOBE=NO \
 	-D ENABLE_TESTS=YES \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D WITH_CUSTOM_WIDGETS=TRUE \

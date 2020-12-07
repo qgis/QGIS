@@ -17,36 +17,36 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 import os
 import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
-                       QgsMapLayer,
+                       QgsMapLayerType,
                        QgsWkbTypes,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsProviderRegistry,
+                       QgsExpressionContext,
+                       QgsExpressionContextScope)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
 
 
-def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
+def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parameters={}):
     wrongLayers = []
     if feedback is None:
         feedback = QgsProcessingFeedback()
     feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
+
     for l, details in context.layersToLoadOnCompletion().items():
         if feedback.isCanceled():
             return False
@@ -54,17 +54,36 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
         if len(context.layersToLoadOnCompletion()) > 2:
             # only show progress feedback if we're loading a bunch of layers
             feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
-
         try:
-            layer = QgsProcessingUtils.mapLayerFromString(l, context)
+            layer = QgsProcessingUtils.mapLayerFromString(l, context, typeHint=details.layerTypeHint)
             if layer is not None:
-                layer.setName(details.name)
+                details.setOutputLayerName(layer)
 
-                style = RenderingStyles.getStyle(alg.id(), layer.name())
-                if style is None:
-                    if layer.type() == QgsMapLayer.RasterLayer:
-                        style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
+                '''If running a model, the execution will arrive here when an algorithm that is part of
+                that model is executed. We check if its output is a final otuput of the model, and
+                adapt the output name accordingly'''
+                outputName = details.outputName
+                expcontext = QgsExpressionContext()
+                scope = QgsExpressionContextScope()
+                expcontext.appendScope(scope)
+                for out in alg.outputDefinitions():
+                    if out.name() not in parameters:
+                        continue
+                    outValue = parameters[out.name()]
+                    if hasattr(outValue, "sink"):
+                        outValue = outValue.sink.valueAsString(expcontext)[0]
                     else:
+                        outValue = str(outValue)
+                    if outValue == l:
+                        outputName = out.name()
+                        break
+                style = None
+                if outputName:
+                    style = RenderingStyles.getStyle(alg.id(), outputName)
+                if style is None:
+                    if layer.type() == QgsMapLayerType.RasterLayer:
+                        style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
+                    elif layer.type() == QgsMapLayerType.VectorLayer:
                         if layer.geometryType() == QgsWkbTypes.PointGeometry:
                             style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
                         elif layer.geometryType() == QgsWkbTypes.LineGeometry:
@@ -73,17 +92,39 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
                             style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
                 if style:
                     layer.loadNamedStyle(style)
-                details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+
+                # Load layer to layer tree root or to a specific group
+                mapLayer = context.temporaryLayerStore().takeMapLayer(layer)
+                group_name = ProcessingConfig.getSetting(ProcessingConfig.RESULTS_GROUP_NAME)
+                if group_name:
+                    group = details.project.layerTreeRoot().findGroup(group_name)
+                    if not group:
+                        group = details.project.layerTreeRoot().insertGroup(0, group_name)
+
+                    details.project.addMapLayer(mapLayer, False)
+                    group.addLayer(mapLayer)
+                else:
+                    details.project.addMapLayer(mapLayer)
+
+                if details.postProcessor():
+                    details.postProcessor().postProcessLayer(layer, context, feedback)
+
+            else:
+                wrongLayers.append(str(l))
         except Exception:
-            QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing',
+                                                                "Error loading result layer:") + "\n" + traceback.format_exc(),
+                                     'Processing', Qgis.Critical)
             wrongLayers.append(str(l))
         i += 1
 
-    QApplication.restoreOverrideCursor()
+    feedback.setProgress(100)
+
     if wrongLayers:
-        msg = "The following layers were not correctly generated.<ul>"
-        msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
-        msg += "You can check the log messages to find more information about the execution of the algorithm"
+        msg = QCoreApplication.translate('Postprocessing', "The following layers were not correctly generated.")
+        msg += "\n" + "\n".join(["• {}".format(lay) for lay in wrongLayers]) + '\n'
+        msg += QCoreApplication.translate('Postprocessing',
+                                          "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
         feedback.reportError(msg)
 
     return len(wrongLayers) == 0

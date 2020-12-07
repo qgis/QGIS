@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsAttributeTypeDialog</class>
+ <widget class="QWidget" name="QgsAttributeTypeDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>751</width>
+    <height>620</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Edit Widget Properties</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>General</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="2">
+       <widget class="QLabel" name="laComment">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Alias</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="isFieldEditableCheckBox">
+        <property name="text">
+         <string>Editable</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="labelOnTopCheckBox">
+        <property name="text">
+         <string>Label on top</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="mAlias"/>
+      </item>
+      <item row="0" column="3">
+       <widget class="QgsPropertyOverrideButton" name="mAliasExpressionButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Comment</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Widget Type</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="1" column="1">
+       <widget class="QStackedWidget" name="stackedWidget"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mWidgetTypeComboBox"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="title">
+      <string>Constraints</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mUniqueCheckBox">
+        <property name="text">
+         <string>Unique</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="notNullCheckBox">
+        <property name="text">
+         <string>Not null</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="mCheckBoxEnforceUnique">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>&lt;p&gt;Enforcing the unique constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</string>
+        </property>
+        <property name="text">
+         <string>Enforce unique constraint</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsFieldExpressionWidget" name="constraintExpressionWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Expression description</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="leConstraintExpressionDescription">
+        <property name="toolTip">
+         <string>Optional descriptive name for expression constraint</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="mCheckBoxEnforceNotNull">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>&lt;p&gt;Enforcing the not null constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</string>
+        </property>
+        <property name="text">
+         <string>Enforce not null constraint</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Expression</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxEnforceExpression">
+        <property name="toolTip">
+         <string>&lt;p&gt;Enforcing the expression constraint prevents committing features which do not meet the constraint.&lt;/p&gt;&lt;p&gt;Unenforced constraints display a warning to users, but do not prevent committing the feature.&lt;/p&gt;</string>
+        </property>
+        <property name="text">
+         <string>Enforce expression constraint</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Defaults</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Default value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Preview</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="mDefaultPreviewLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2">
+       <widget class="QWidget" name="mWarnDefaultValueHasFieldsWidget" native="true">
+        <layout class="QHBoxLayout" name="mWarnDefaultValueHasFields">
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../../../images/images.qrc">:/images/themes/default/mIconWarning.svg</pixmap>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Using fields in a default value expression only works if &quot;Apply default value on update&quot; is checked.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QCheckBox" name="mApplyDefaultValueOnUpdateCheckBox">
+        <property name="toolTip">
+         <string>&lt;p&gt;With this option checked, the default value will not only be used when the feature is first created, but also whenever a feature's attribute or geometry is changed.&lt;/p&gt;&lt;p&gt;This is often useful for a last_modified timestamp or to record the username that last modified the feature.&lt;/p&gt;</string>
+        </property>
+        <property name="text">
+         <string>Apply default value on update</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExpressionLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>isFieldEditableCheckBox</tabstop>
+  <tabstop>labelOnTopCheckBox</tabstop>
+  <tabstop>mWidgetTypeComboBox</tabstop>
+  <tabstop>notNullCheckBox</tabstop>
+  <tabstop>mCheckBoxEnforceNotNull</tabstop>
+  <tabstop>mUniqueCheckBox</tabstop>
+  <tabstop>mCheckBoxEnforceUnique</tabstop>
+  <tabstop>constraintExpressionWidget</tabstop>
+  <tabstop>leConstraintExpressionDescription</tabstop>
+  <tabstop>mCheckBoxEnforceExpression</tabstop>
+  <tabstop>mExpressionWidget</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

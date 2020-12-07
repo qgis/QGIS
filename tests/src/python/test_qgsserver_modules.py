@@ -1,3 +1,26 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    test_qgsserver_modules.py
+    ---------------------
+    Date                 : December 2016
+    Copyright            : (C) 2016 by David Marteau
+    Email                : david at innophi dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'David Marteau'
+__date__ = 'December 2016'
+__copyright__ = '(C) 2016, David Marteau'
+
 """ QGIS test for server services
 """
 import os

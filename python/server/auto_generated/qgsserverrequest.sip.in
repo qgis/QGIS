@@ -1,0 +1,197 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverrequest.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsServerRequest
+{
+
+%TypeHeaderCode
+#include "qgsserverrequest.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    typedef QMap<QString, QString> Parameters;
+    typedef QMap<QString, QString> Headers;
+
+    enum Method
+    {
+      HeadMethod,
+      PutMethod,
+      GetMethod,
+      PostMethod,
+      DeleteMethod,
+      PatchMethod
+    };
+
+
+    QgsServerRequest();
+%Docstring
+Constructor
+%End
+
+    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
+%Docstring
+Constructor
+
+:param url: the url string
+:param method: the request method
+:param headers:
+%End
+
+    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
+%Docstring
+Constructor
+
+:param url: QUrl
+:param method: the request method
+:param headers:
+%End
+
+    virtual ~QgsServerRequest();
+
+    static QString methodToString( const Method &method );
+%Docstring
+Returns a string representation of an HTTP request ``method``.
+
+.. versionadded:: 3.12
+%End
+
+
+    QUrl url() const;
+%Docstring
+
+:return: the request url as seen by QGIS server
+
+.. seealso:: :py:func:`originalUrl`
+server, by default the two are equal
+%End
+
+    QgsServerRequest::Method method() const;
+%Docstring
+
+:return: the request method
+%End
+
+    QgsServerRequest::Parameters parameters() const;
+%Docstring
+Returns a map of query parameters with keys converted
+to uppercase
+%End
+
+    QgsServerParameters serverParameters() const;
+%Docstring
+Returns parameters
+%End
+
+    void setParameter( const QString &key, const QString &value );
+%Docstring
+Set a parameter
+%End
+
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
+%Docstring
+Gets a parameter value
+%End
+
+    void removeParameter( const QString &key );
+%Docstring
+Remove a parameter
+%End
+
+    QString header( const QString &name ) const;
+%Docstring
+Returns the header value
+
+:param name: of the header
+
+:return: the header value or an empty string
+%End
+
+    void setHeader( const QString &name, const QString &value );
+%Docstring
+Set an header
+
+:param name:
+:param value:
+%End
+
+    QMap<QString, QString> headers() const;
+%Docstring
+Returns the header map
+
+:return: the headers map
+%End
+
+    void removeHeader( const QString &name );
+%Docstring
+Remove an header
+
+:param name:
+%End
+
+    virtual QByteArray data() const;
+%Docstring
+Returns post/put data
+Check for QByteArray.isNull() to check if data
+is available.
+%End
+
+    void setUrl( const QUrl &url );
+%Docstring
+Set the request url
+%End
+
+    QUrl originalUrl() const;
+%Docstring
+Returns the request url as seen by the web server,
+by default this is equal to the url seen by QGIS server
+
+.. seealso:: :py:func:`url`
+
+.. versionadded:: 3.6
+%End
+
+    void setMethod( QgsServerRequest::Method method );
+%Docstring
+Set the request method
+%End
+
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+%Docstring
+Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
+
+.. versionadded:: 3.10
+%End
+
+  protected:
+
+    void setOriginalUrl( const QUrl &url );
+%Docstring
+Set the request original ``url`` (the request url as seen by the web server)
+
+.. seealso:: :py:func:`setUrl`
+
+.. versionadded:: 3.6
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverrequest.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -22,6 +22,8 @@
 #include "qgscodeeditorsql.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -29,12 +31,7 @@
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )
-  , mLineEdit( nullptr )
-  , mCodeEditor( nullptr )
-  , mExpressionDialogTitle( tr( "Expression dialog" ) )
-  , mDa( nullptr )
-  , mExpressionContextGenerator( nullptr )
-  , mLayer( nullptr )
+  , mExpressionDialogTitle( tr( "Expression Dialog" ) )
 {
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -49,6 +46,8 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
+QgsExpressionLineEdit::~QgsExpressionLineEdit() = default;
+
 void QgsExpressionLineEdit::setExpressionDialogTitle( const QString &title )
 {
   mExpressionDialogTitle = title;
@@ -60,7 +59,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
 
   if ( multiLine && !mCodeEditor )
   {
-    mCodeEditor = new QgsCodeEditorSQL();
+    mCodeEditor = new QgsCodeEditorExpression();
     mCodeEditor->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     delete mLineEdit;
     mLineEdit = nullptr;
@@ -106,6 +105,16 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
 
     setExpression( exp );
   }
+}
+
+QString QgsExpressionLineEdit::expectedOutputFormat() const
+{
+  return mExpectedOutputFormat;
+}
+
+void QgsExpressionLineEdit::setExpectedOutputFormat( const QString &expected )
+{
+  mExpectedOutputFormat = expected;
 }
 
 void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
@@ -156,6 +165,7 @@ void QgsExpressionLineEdit::editExpression()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
+  dlg.setExpectedOutputFormat( mExpectedOutputFormat );
   if ( mDa )
   {
     dlg.setGeomCalculator( *mDa );
@@ -193,7 +203,7 @@ void QgsExpressionLineEdit::updateLineEditStyle( const QString &expression )
   if ( !mLineEdit )
     return;
 
-  QPalette palette;
+  QPalette palette = mLineEdit->palette();
   if ( !isEnabled() )
   {
     palette.setColor( QPalette::Text, Qt::gray );

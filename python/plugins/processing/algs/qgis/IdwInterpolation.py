@@ -21,44 +21,36 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+import math
 
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRectangle,
                        QgsProcessingUtils,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingException)
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
-                           QgsGridFileWriter
-                           )
+                           QgsGridFileWriter)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import (Parameter,
-                                        ParameterNumber,
-                                        ParameterExtent,
-                                        _splitParameterOptions,
-                                        _createDescriptiveName)
-from processing.core.outputs import OutputRaster
+from processing.algs.qgis.ui.InterpolationWidgets import ParameterInterpolationData, ParameterPixelSize
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class IdwInterpolation(QgisAlgorithm):
-
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
+    PIXEL_SIZE = 'PIXEL_SIZE'
     COLUMNS = 'COLUMNS'
     ROWS = 'ROWS'
-    CELLSIZE_X = 'CELLSIZE_X'
-    CELLSIZE_Y = 'CELLSIZE_Y'
     EXTENT = 'EXTENT'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
@@ -66,81 +58,46 @@ class IdwInterpolation(QgisAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
+    def groupId(self):
+        return 'interpolation'
+
     def __init__(self):
         super().__init__()
 
-        class ParameterInterpolationData(Parameter):
-            default_metadata = {
-                'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
-            }
-
-            def __init__(self, name='', description=''):
-                Parameter.__init__(self, name, description)
-
-            def setValue(self, value):
-                if value is None:
-                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                        return False
-                    self.value = None
-                    return True
-
-                if value == '':
-                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                        return False
-
-                if isinstance(value, str):
-                    self.value = value if value != '' else None
-                else:
-                    self.value = ParameterInterpolationData.dataToString(value)
-                return True
-
-            def getValueAsCommandLineParameter(self):
-                return '"{}"'.format(self.value)
-
-            def getAsScriptCode(self):
-                param_type = ''
-                param_type += 'interpolation data '
-                return '##' + self.name + '=' + param_type
-
-            @classmethod
-            def fromScriptCode(self, line):
-                isOptional, name, definition = _splitParameterOptions(line)
-                descName = _createDescriptiveName(name)
-                parent = definition.lower().strip()[len('interpolation data') + 1:]
-                return ParameterInterpolationData(name, descName, parent)
-
-            @staticmethod
-            def dataToString(data):
-                s = ''
-                for c in data:
-                    s += '{}, {}, {:d}, {:d};'.format(c[0],
-                                                      c[1],
-                                                      c[2],
-                                                      c[3])
-                return s[:-1]
+    def initAlgorithm(self, config=None):
 
         self.addParameter(ParameterInterpolationData(self.INTERPOLATION_DATA,
                                                      self.tr('Input layer(s)')))
-        self.addParameter(ParameterNumber(self.DISTANCE_COEFFICIENT,
-                                          self.tr('Distance coefficient P'),
-                                          0.0, 99.99, 2.0))
-        self.addParameter(ParameterNumber(self.COLUMNS,
-                                          self.tr('Number of columns'),
-                                          0, 10000000, 300))
-        self.addParameter(ParameterNumber(self.ROWS,
-                                          self.tr('Number of rows'),
-                                          0, 10000000, 300))
-        self.addParameter(ParameterNumber(self.CELLSIZE_X,
-                                          self.tr('Cell Size X'),
-                                          0.0, 999999.000000, 0.0))
-        self.addParameter(ParameterNumber(self.CELLSIZE_Y,
-                                          self.tr('Cell Size Y'),
-                                          0.0, 999999.000000, 0.0))
-        self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Extent'),
-                                          optional=False))
-        self.addOutput(OutputRaster(self.OUTPUT_LAYER,
-                                    self.tr('Interpolated')))
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE_COEFFICIENT,
+                                                       self.tr('Distance coefficient P'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=99.99, defaultValue=2.0))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Extent'),
+                                                       optional=False))
+        pixel_size_param = ParameterPixelSize(self.PIXEL_SIZE,
+                                              self.tr('Output raster size'),
+                                              layersData=self.INTERPOLATION_DATA,
+                                              extent=self.EXTENT,
+                                              minValue=0.0,
+                                              default=0.1)
+        self.addParameter(pixel_size_param)
+
+        cols_param = QgsProcessingParameterNumber(self.COLUMNS,
+                                                  self.tr('Number of columns'),
+                                                  optional=True,
+                                                  minValue=0, maxValue=10000000)
+        cols_param.setFlags(cols_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        self.addParameter(cols_param)
+
+        rows_param = QgsProcessingParameterNumber(self.ROWS,
+                                                  self.tr('Number of rows'),
+                                                  optional=True,
+                                                  minValue=0, maxValue=10000000)
+        rows_param.setFlags(rows_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        self.addParameter(rows_param)
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
+                                                                  self.tr('Interpolated')))
 
     def name(self):
         return 'idwinterpolation'
@@ -149,44 +106,46 @@ class IdwInterpolation(QgisAlgorithm):
         return self.tr('IDW interpolation')
 
     def processAlgorithm(self, parameters, context, feedback):
-        interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
-        coefficient = self.getParameterValue(self.DISTANCE_COEFFICIENT)
-        columns = self.getParameterValue(self.COLUMNS)
-        rows = self.getParameterValue(self.ROWS)
-        cellsizeX = self.getParameterValue(self.CELLSIZE_X)
-        cellsizeY = self.getParameterValue(self.CELLSIZE_Y)
-        extent = self.getParameterValue(self.EXTENT).split(',')
-        output = self.getOutputValue(self.OUTPUT_LAYER)
+        interpolationData = ParameterInterpolationData.parseValue(parameters[self.INTERPOLATION_DATA])
+        coefficient = self.parameterAsDouble(parameters, self.DISTANCE_COEFFICIENT, context)
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        pixel_size = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
+        output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+
+        columns = self.parameterAsInt(parameters, self.COLUMNS, context)
+        rows = self.parameterAsInt(parameters, self.ROWS, context)
+        if columns == 0:
+            columns = max(math.ceil(bbox.width() / pixel_size), 1)
+        if rows == 0:
+            rows = max(math.ceil(bbox.height() / pixel_size), 1)
 
         if interpolationData is None:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('You need to specify at least one input layer.'))
-
-        xMin = float(extent[0])
-        xMax = float(extent[1])
-        yMin = float(extent[2])
-        yMax = float(extent[3])
-        bbox = QgsRectangle(xMin, yMin, xMax, yMax)
 
         layerData = []
         layers = []
-        for row in interpolationData.split(';'):
-            v = row.split(',')
+        for i, row in enumerate(interpolationData.split('::|::')):
+            v = row.split('::~::')
             data = QgsInterpolator.LayerData()
 
             # need to keep a reference until interpolation is complete
-            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
-            data.vectorLayer = layer
+            layer = QgsProcessingUtils.variantToSource(v[0], context)
+            data.source = layer
+            data.transformContext = context.transformContext()
             layers.append(layer)
 
-            data.zCoordInterpolation = bool(v[1])
+            data.valueSource = int(v[1])
             data.interpolationAttribute = int(v[2])
+            if data.valueSource == QgsInterpolator.ValueAttribute and data.interpolationAttribute == -1:
+                raise QgsProcessingException(self.tr('Layer {} is set to use a value attribute, but no attribute was set'.format(i + 1)))
+
             if v[3] == '0':
-                data.mInputType = QgsInterpolator.POINTS
+                data.sourceType = QgsInterpolator.SourcePoints
             elif v[3] == '1':
-                data.mInputType = QgsInterpolator.STRUCTURE_LINES
+                data.sourceType = QgsInterpolator.SourceStructureLines
             else:
-                data.mInputType = QgsInterpolator.BREAK_LINES
+                data.sourceType = QgsInterpolator.SourceBreakLines
             layerData.append(data)
 
         interpolator = QgsIDWInterpolator(layerData)
@@ -196,8 +155,7 @@ class IdwInterpolation(QgisAlgorithm):
                                    output,
                                    bbox,
                                    columns,
-                                   rows,
-                                   cellsizeX,
-                                   cellsizeY)
+                                   rows)
 
-        writer.writeFile()
+        writer.writeFile(feedback)
+        return {self.OUTPUT: output}

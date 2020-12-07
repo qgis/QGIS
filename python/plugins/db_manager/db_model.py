@@ -31,12 +31,25 @@ from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+from qgis.core import (
+    QgsApplication,
+    QgsDataSourceUri,
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsMimeDataUtils,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsAbstractDatabaseProviderConnection,
+    QgsMessageLog,
+)
+
+from qgis.utils import OverrideCursor
 
 from . import resources_rc  # NOQA
 
 try:
     from qgis.core import QgsVectorLayerExporter  # NOQA
+
     isImportVectorAvail = True
 except:
     isImportVectorAvail = False
@@ -155,6 +168,9 @@ class ConnectionItem(TreeItem):
             return self.getItemData().connectionName()
         return None
 
+    def icon(self):
+        return self.getItemData().connectionIcon()
+
     def populate(self):
         if self.populated:
             return True
@@ -233,13 +249,13 @@ class TableItem(TreeItem):
 
         # load (shared) icon with first instance of table item
         if not hasattr(TableItem, 'tableIcon'):
-            TableItem.tableIcon = QIcon(":/db_manager/icons/table.png")
+            TableItem.tableIcon = QgsApplication.getThemeIcon("/mIconTableLayer.svg")
             TableItem.viewIcon = QIcon(":/db_manager/icons/view.png")
             TableItem.viewMaterializedIcon = QIcon(":/db_manager/icons/view_materialized.png")
-            TableItem.layerPointIcon = QIcon(":/db_manager/icons/layer_point.png")
-            TableItem.layerLineIcon = QIcon(":/db_manager/icons/layer_line.png")
-            TableItem.layerPolygonIcon = QIcon(":/db_manager/icons/layer_polygon.png")
-            TableItem.layerRasterIcon = QIcon(":/db_manager/icons/layer_raster.png")
+            TableItem.layerPointIcon = QgsApplication.getThemeIcon("/mIconPointLayer.svg")
+            TableItem.layerLineIcon = QgsApplication.getThemeIcon("/mIconLineLayer.svg")
+            TableItem.layerPolygonIcon = QgsApplication.getThemeIcon("/mIconPolygonLayer.svg")
+            TableItem.layerRasterIcon = QgsApplication.getThemeIcon("/mIconRasterLayer.svg")
             TableItem.layerUnknownIcon = QIcon(":/db_manager/icons/layer_unknown.png")
 
     def data(self, column):
@@ -458,17 +474,15 @@ class DBModel(QAbstractItemModel):
             if new_value == obj.name:
                 return False
 
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            try:
-                obj.rename(new_value)
-                self._onDataChanged(index)
-            except BaseError as e:
-                DlgDbError.showError(e, self.treeView)
-                return False
-            finally:
-                QApplication.restoreOverrideCursor()
-
-            return True
+            with OverrideCursor(Qt.WaitCursor):
+                try:
+                    obj.rename(new_value)
+                    self._onDataChanged(index)
+                except BaseError as e:
+                    DlgDbError.showError(e, self.treeView)
+                    return False
+                else:
+                    return True
 
         return False
 
@@ -480,27 +494,23 @@ class DBModel(QAbstractItemModel):
         self.endRemoveRows()
 
     def _refreshIndex(self, index, force=False):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            item = index.internalPointer() if index.isValid() else self.rootItem
-            prevPopulated = item.populated
-            if prevPopulated:
-                self.removeRows(0, self.rowCount(index), index)
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                item = index.internalPointer() if index.isValid() else self.rootItem
+                prevPopulated = item.populated
+                if prevPopulated:
+                    self.removeRows(0, self.rowCount(index), index)
+                    item.populated = False
+                if prevPopulated or force:
+                    if item.populate():
+                        for child in item.childItems:
+                            child.changed.connect(partial(self.refreshItem, child))
+                        self._onDataChanged(index)
+                    else:
+                        self.notPopulated.emit(index)
+
+            except BaseError:
                 item.populated = False
-            if prevPopulated or force:
-                if item.populate():
-                    for child in item.childItems:
-                        child.changed.connect(partial(self.refreshItem, child))
-                    self._onDataChanged(index)
-                else:
-                    self.notPopulated.emit(index)
-
-        except BaseError:
-            item.populated = False
-            return
-
-        finally:
-            QApplication.restoreOverrideCursor()
 
     def _onDataChanged(self, indexFrom, indexTo=None):
         if indexTo is None:

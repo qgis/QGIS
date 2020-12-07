@@ -18,10 +18,6 @@
  ***************************************************************************/
 
 #include "qgsbufferserverrequest.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-
-#include <QDebug>
 
 QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method method, const QgsServerRequest::Headers &headers, QByteArray *data )
   : QgsServerRequest( url, method, headers )
@@ -39,9 +35,4 @@ QgsBufferServerRequest::QgsBufferServerRequest( const QUrl &url, Method method, 
   {
     mData = *data;
   }
-}
-
-QgsBufferServerRequest::~QgsBufferServerRequest()
-{
-
 }

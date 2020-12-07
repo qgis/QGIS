@@ -19,17 +19,22 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QPushButton>
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mItem( item )
-  , mEmbeddedWidget( nullptr )
+
 {
   setupUi( this );
-  setWindowTitle( tr( "HTML annotation" ) );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsHtmlAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsHtmlAnnotationDialog::mButtonBox_clicked );
+  setWindowTitle( tr( "HTML Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
@@ -41,14 +46,12 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
   }
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsHtmlAnnotationDialog::applySettingsToItem );
+  QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsHtmlAnnotationDialog::showHelp );
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsHtmlAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
-}
 
-QgsHtmlAnnotationDialog::~QgsHtmlAnnotationDialog()
-{
-
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsHtmlAnnotationDialog::applySettingsToItem()
@@ -67,7 +70,7 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
   }
 }
 
-void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -90,7 +93,7 @@ void QgsHtmlAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsHtmlAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {
@@ -98,3 +101,7 @@ void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
   }
 }
 
+void QgsHtmlAnnotationDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
+}

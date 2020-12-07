@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # 
 
@@ -23,7 +23,7 @@ if [[ ${FILEPATH:(-1)} = "/" ]]; then
   PATH="${FILEPATH::-1}"
 fi
 
-FILES=`git ls-tree --name-only -r HEAD | grep ".*\.\(sip\|cpp\|h\|txt\)$"`
+FILES=$(git ls-tree --name-only -r HEAD | grep ".*\.\(sip\|cpp\|h\|txt\)$")
 
 for f in $FILES
 do

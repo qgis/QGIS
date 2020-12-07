@@ -26,17 +26,28 @@
 #include "qgsdb2newconnection.h"
 #include "qgsdb2dataitems.h"
 #include "qgsdb2provider.h"
-#include "qgscontexthelp.h"
+#include "qgsgui.h"
 
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
-  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
-  mAuthConfigSelect = new QgsAuthConfigSelect( this, QStringLiteral( "db2" ) );
-  tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsDb2NewConnection::btnConnect_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );
+
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtService, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtDriver, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+
+  mAuthSettings->setDataprovider( QStringLiteral( "db2" ) );
+  mAuthSettings->showStoreCheckboxes( true );
 
   if ( !connName.isEmpty() )
   {
@@ -53,40 +64,36 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
-      txtUsername->setText( settings.value( key + "/username" ).toString() );
-      chkStoreUsername->setChecked( true );
+      mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
+      mAuthSettings->setStoreUsernameChecked( true );
     }
 
     if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
     {
-      txtPassword->setText( settings.value( key + "/password" ).toString() );
-      chkStorePassword->setChecked( true );
+      mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
+      mAuthSettings->setStorePasswordChecked( true );
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();
-    QgsDebugMsg( QString( "authcfg: %1" ).arg( authcfg ) );
-    mAuthConfigSelect->setConfigId( authcfg );
-    if ( !authcfg.isEmpty() )
-    {
-      tabAuthentication->setCurrentIndex( tabAuthentication->indexOf( mAuthConfigSelect ) );
-    }
+    QgsDebugMsg( QStringLiteral( "authcfg: %1" ).arg( authcfg ) );
+    mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
   }
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 }
 
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsDb2NewConnection::accept()
 {
   QgsSettings settings;
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
-  bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
-  QgsDebugMsg( QString( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
-  if ( !hasAuthConfigID && chkStorePassword->isChecked() &&
+  bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  QgsDebugMsg( QStringLiteral( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
+  if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
-                              tr( "Saving passwords" ),
+                              tr( "Saving Passwords" ),
                               tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -98,7 +105,7 @@ void QgsDb2NewConnection::accept()
        ( settings.contains( baseKey + txtName->text() + "/service" ) ||
          settings.contains( baseKey + txtName->text() + "/host" ) ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -119,21 +126,21 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() && !hasAuthConfigID ? txtUsername->text() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() && !hasAuthConfigID ? txtPassword->text() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
-  settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
-  settings.setValue( baseKey + "/authcfg", mAuthConfigSelect->configId() );
+  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username( ) : QString() );
+  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password( ) : QString() );
+  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( )  && !hasAuthConfigID ? "true" : "false" );
+  settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
 
   QDialog::accept();
 }
 
-void QgsDb2NewConnection::on_btnConnect_clicked()
+void QgsDb2NewConnection::btnConnect_clicked()
 {
   testConnection();
 }
 
-void QgsDb2NewConnection::on_btnListDatabase_clicked()
+void QgsDb2NewConnection::btnListDatabase_clicked()
 {
   listDatabases();
 }
@@ -143,11 +150,7 @@ void QgsDb2NewConnection::on_cb_trustedConnection_clicked()
 
 }
 
-//! End  Autoconnected SLOTS *
-
-QgsDb2NewConnection::~QgsDb2NewConnection()
-{
-}
+//! End  Autoconnected SLOTS
 
 bool QgsDb2NewConnection::testConnection()
 {
@@ -156,21 +159,26 @@ bool QgsDb2NewConnection::testConnection()
   QString authcfg;
   QString connInfo;
   QString errMsg;
+  // If the configuration tab is selected, test the authcfg in the connection
+  if ( mAuthSettings->configurationTabIsSelected( ) )
+  {
+    authcfg = mAuthSettings->configId( );
+  }
   bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
               txtService->text().trimmed(),
               txtDriver->text().trimmed(),
               txtHost->text().trimmed(),
               txtPort->text().trimmed(),
               txtDatabase->text().trimmed(),
-              txtUsername->text().trimmed(),
-              txtPassword->text().trimmed(),
+              mAuthSettings->username().trimmed(),
+              mAuthSettings->password().trimmed(),
               authcfg,
               connInfo, errMsg );
 
   if ( !rc )
   {
     bar->pushMessage( tr( "Error: %1." ).arg( errMsg ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
     QgsDebugMsg( "errMsg: " + errMsg );
     return false;
   }
@@ -179,19 +187,32 @@ bool QgsDb2NewConnection::testConnection()
   if ( errMsg.isEmpty() )
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
-    bar->pushMessage( tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ),
-                      QgsMessageBar::INFO );
+    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
+                      Qgis::Info );
     return true;
   }
   else
   {
     QgsDebugMsg( "connection open failed: " + errMsg );
     bar->pushMessage( tr( "Connection failed: %1." ).arg( errMsg ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
     return false;
   }
 }
 
 void QgsDb2NewConnection::listDatabases()
 {
+}
+
+void QgsDb2NewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-db2-spatial" ) );
+}
+
+void QgsDb2NewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && (
+                   ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
+                   ( !txtDriver->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

@@ -36,7 +36,7 @@ IF(WIN32)
   #MESSAGE("Searching for QGIS in $ENV{PROGRAMFILES}/QGIS")
   IF (MINGW)
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES libspatialqueryplugin.dll
+      NAMES libofflineeditingplugin.dll
       PATHS
         "$ENV{PROGRAMFILES}/QGIS/plugins"
     )
@@ -59,7 +59,7 @@ IF(WIN32)
 
   IF (MSVC)
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES spatialqueryplugin.dll
+      NAMES offlineeditingplugin.dll
       PATHS
         "$ENV{OSGEO4W_ROOT}/apps/${OSGEO4W_QGIS_SUBDIR}/plugins"
         "$ENV{PROGRAMFILES}/QGIS/plugins"
@@ -105,7 +105,7 @@ ELSE(WIN32)
   IF(UNIX)
     #MESSAGE("Searching for QGIS in /usr/bin; /usr/local/bin")
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES libspatialqueryplugin.so
+      NAMES libofflineeditingplugin.so
       PATHS
         ${QGIS_BUILD_PATH}/PlugIns/qgis
         ${QGIS_MAC_PATH}/PlugIns/qgis
@@ -122,7 +122,7 @@ ELSE(WIN32)
       PATHS
         ${QGIS_BUILD_PATH}/output/lib/qgis_core.framework/Headers
         ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
-        {QGIS_PREFIX_PATH}/include/qgis
+        ${QGIS_PREFIX_PATH}/include/qgis
         /usr/include/qgis
         /usr/local/include/qgis
         /Library/Frameworks/qgis_core.framework/Headers
@@ -133,7 +133,7 @@ ELSE(WIN32)
       PATHS
         ${QGIS_BUILD_PATH}/src/ui
         ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
-        {QGIS_PREFIX_PATH}/include/qgis
+        ${QGIS_PREFIX_PATH}/include/qgis
         /usr/include/qgis
         /usr/local/include/qgis
         /Library/Frameworks/qgis_gui.framework/Headers

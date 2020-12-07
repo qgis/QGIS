@@ -19,44 +19,47 @@
 #include "qgssettings.h"
 
 #include "qgsprojectionselectiondialog.h"
+#include "qgshelp.h"
 #include <QApplication>
+#include "qgsgui.h"
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
     Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ProjectionSelector/geometry" ) ).toByteArray() );
+  QgsGui::enableAutoGeometryRestore( this );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectionSelectionDialog::showHelp );
 
   //we will show this only when a message is set
   textEdit->hide();
 
-  //apply selected projection upon double click on item
+  //apply selected projection upon double-click on item
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, &QgsProjectionSelectionDialog::accept );
+
+  QgsSettings settings;
+  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/ProjectionSelectorDialog/splitterState" ) ).toByteArray() );
+}
+
+QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ProjectionSelectorDialog/splitterState" ), mSplitter->saveState() );
 }
 
 void QgsProjectionSelectionDialog::setMessage( const QString &message )
 {
-  QString m = message;
-  //short term kludge to make the layer selector default to showing
-  //a layer projection selection message. If you want the selector
-  if ( m.isEmpty() )
-  {
-    // Set up text edit pane
-    QString format( QStringLiteral( "<h1>%1</h1>%2 %3" ) );
-    QString header = tr( "Define this layer's coordinate reference system:" );
-    QString sentence1 = tr( "This layer appears to have no projection specification." );
-    QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
-                            "but you may override this by selecting a different projection below." );
-    m = format.arg( header, sentence1, sentence2 );
-  }
-
-  QString myStyle = QgsApplication::reportStyleSheet();
-  m = "<head><style>" + myStyle + "</style></head><body>" + m + "</body>";
-  textEdit->setHtml( m );
+  textEdit->setHtml( QStringLiteral( "<head><style>%1</style></head><body>%2</body>" ).arg( QgsApplication::reportStyleSheet(),
+                     message ) );
   textEdit->show();
+}
+
+void QgsProjectionSelectionDialog::showNoCrsForLayerMessage()
+{
+  setMessage( tr( "This layer appears to have no projection specification." )
+              + ' '
+              + tr( "By default, this layer will now have its projection set to that of the project, "
+                    "but you may override this by selecting a different projection below." ) );
 }
 
 void QgsProjectionSelectionDialog::setShowNoProjection( bool show )
@@ -69,10 +72,9 @@ bool QgsProjectionSelectionDialog::showNoProjection() const
   return projectionSelector->showNoProjection();
 }
 
-QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
+void QgsProjectionSelectionDialog::setNotSetText( const QString &text )
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ProjectionSelector/geometry" ), saveGeometry() );
+  projectionSelector->setNotSetText( text );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const
@@ -88,4 +90,9 @@ void QgsProjectionSelectionDialog::setCrs( const QgsCoordinateReferenceSystem &c
 void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
+}
+
+void QgsProjectionSelectionDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
 }

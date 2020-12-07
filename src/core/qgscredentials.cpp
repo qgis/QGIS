@@ -24,7 +24,7 @@ void QgsCredentials::setInstance( QgsCredentials *instance )
 {
   if ( sInstance )
   {
-    QgsDebugMsg( "already registered an instance of QgsCredentials" );
+    QgsDebugMsg( QStringLiteral( "already registered an instance of QgsCredentials" ) );
   }
 
   sInstance = instance;
@@ -38,38 +38,38 @@ QgsCredentials *QgsCredentials::instance()
   return new QgsCredentialsNone();
 }
 
-QgsCredentials::QgsCredentials()
-{
-}
-
 bool QgsCredentials::get( const QString &realm, QString &username, QString &password, const QString &message )
 {
-  if ( mCredentialCache.contains( realm ) )
   {
-    QPair<QString, QString> credentials = mCredentialCache.take( realm );
-    username = credentials.first;
-    password = credentials.second;
-    QgsDebugMsg( QString( "retrieved realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+    QMutexLocker locker( &mCacheMutex );
+    if ( mCredentialCache.contains( realm ) )
+    {
+      QPair<QString, QString> credentials = mCredentialCache.take( realm );
+      username = credentials.first;
+      password = credentials.second;
+      QgsDebugMsgLevel( QStringLiteral( "retrieved realm:%1 username:%2" ).arg( realm, username ), 2 );
 
-    if ( !password.isNull() )
-      return true;
+      if ( !password.isNull() )
+        return true;
+    }
   }
 
   if ( request( realm, username, password, message ) )
   {
-    QgsDebugMsg( QString( "requested realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+    QgsDebugMsgLevel( QStringLiteral( "requested realm:%1 username:%2" ).arg( realm, username ), 2 );
     return true;
   }
   else
   {
-    QgsDebugMsg( QString( "unset realm:%1" ).arg( realm ) );
+    QgsDebugMsgLevel( QStringLiteral( "unset realm:%1" ).arg( realm ), 4 );
     return false;
   }
 }
 
 void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
-  QgsDebugMsg( QString( "inserting realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
+  QMutexLocker locker( &mCacheMutex );
+  QgsDebugMsgLevel( QStringLiteral( "inserting realm:%1 username:%2" ).arg( realm, username ), 2 );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
@@ -77,7 +77,7 @@ bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 {
   if ( requestMasterPassword( password, stored ) )
   {
-    QgsDebugMsg( "requested master password" );
+    QgsDebugMsgLevel( QStringLiteral( "requested master password" ), 2 );
     return true;
   }
   return false;
@@ -85,12 +85,12 @@ bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 
 void QgsCredentials::lock()
 {
-  mMutex.lock();
+  mAuthMutex.lock();
 }
 
 void QgsCredentials::unlock()
 {
-  mMutex.unlock();
+  mAuthMutex.unlock();
 }
 
 
@@ -131,9 +131,17 @@ bool QgsCredentialsConsole::request( const QString &realm, QString &username, QS
   QTextStream in( stdin, QIODevice::ReadOnly );
   QTextStream out( stdout, QIODevice::WriteOnly );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   out << "credentials for " << realm << endl;
+#else
+  out << "credentials for " << realm << Qt::endl;
+#endif
   if ( !message.isEmpty() )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     out << "message: " << message << endl;
+#else
+    out << "message: " << message << Qt::endl;
+#endif
   out << "username: ";
   in >> username;
   out << "password: ";

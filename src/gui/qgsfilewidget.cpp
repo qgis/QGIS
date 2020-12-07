@@ -19,33 +19,27 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QLabel>
-#include <QFileDialog>
 #include <QGridLayout>
 #include <QUrl>
+#include <QDropEvent>
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"
+#include "qgsfocuskeeper.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
+#include "qgsmimedatautils.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
-  , mFilePath( QString() )
-  , mButtonVisible( true )
-  , mUseLink( false )
-  , mFullUrl( false )
-  , mDialogTitle( QString() )
-  , mFilter( QString() )
-  , mDefaultRoot( QString() )
-  , mStorageMode( GetFile )
-  , mRelativeStorage( Absolute )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
 
-  QGridLayout *layout = new QGridLayout();
-  layout->setMargin( 0 );
+  mLayout = new QHBoxLayout();
+  mLayout->setContentsMargins( 0, 0, 0, 0 );
 
   // If displaying a hyperlink, use a QLabel
   mLinkLabel = new QLabel( this );
@@ -56,20 +50,26 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkLabel->setEnabled( true );
   mLinkLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   mLinkLabel->setTextFormat( Qt::RichText );
-  layout->addWidget( mLinkLabel, 0, 0 );
   mLinkLabel->hide(); // do not show by default
+  mLinkEditButton = new QToolButton( this );
+  mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+  connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
+  mLinkEditButton->hide(); // do not show by default
 
-  // otherwise, use the traditional QLineEdit
-  mLineEdit = new QgsFilterLineEdit( this );
+  // otherwise, use the traditional QLineEdit subclass
+  mLineEdit = new QgsFileDropEdit( this );
+  mLineEdit->setDragEnabled( true );
+  mLineEdit->setToolTip( tr( "Full path to the file(s), including name and extension" ) );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
-  layout->addWidget( mLineEdit, 1, 0 );
+  mLayout->addWidget( mLineEdit );
 
   mFileWidgetButton = new QToolButton( this );
-  mFileWidgetButton->setText( QStringLiteral( "…" ) );
+  mFileWidgetButton->setText( QChar( 0x2026 ) );
+  mFileWidgetButton->setToolTip( tr( "Browse" ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
-  layout->addWidget( mFileWidgetButton, 0, 1, 2, 1 );
+  mLayout->addWidget( mFileWidgetButton );
 
-  setLayout( layout );
+  setLayout( mLayout );
 }
 
 QString QgsFileWidget::filePath()
@@ -77,21 +77,33 @@ QString QgsFileWidget::filePath()
   return mFilePath;
 }
 
+QStringList QgsFileWidget::splitFilePaths( const QString &path )
+{
+  QStringList paths;
+  const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts );
+  for ( const auto &pathsPart : pathParts )
+  {
+    QString cleaned = pathsPart;
+    cleaned.remove( QRegExp( "(^\\s*\")|(\"\\s*)" ) );
+    paths.append( cleaned );
+  }
+  return paths;
+}
+
 void QgsFileWidget::setFilePath( QString path )
 {
-  if ( path == QgsApplication::nullRepresentation() )
-  {
-    path = QLatin1String( "" );
-  }
-
   //will trigger textEdited slot
   mLineEdit->setValue( path );
 }
 
 void QgsFileWidget::setReadOnly( bool readOnly )
 {
-  mFileWidgetButton->setEnabled( !readOnly );
-  mLineEdit->setEnabled( !readOnly );
+  if ( mReadOnly == readOnly )
+    return;
+
+  mReadOnly = readOnly;
+
+  updateLayout();
 }
 
 QString QgsFileWidget::dialogTitle() const
@@ -112,6 +124,17 @@ QString QgsFileWidget::filter() const
 void QgsFileWidget::setFilter( const QString &filters )
 {
   mFilter = filters;
+  mLineEdit->setFilters( filters );
+}
+
+QFileDialog::Options QgsFileWidget::options() const
+{
+  return mOptions;
+}
+
+void QgsFileWidget::setOptions( QFileDialog::Options options )
+{
+  mOptions = options;
 }
 
 bool QgsFileWidget::fileWidgetButtonVisible() const
@@ -129,7 +152,25 @@ void QgsFileWidget::textEdited( const QString &path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
+  // Show tooltip if multiple files are selected
+  if ( path.contains( QStringLiteral( "\" \"" ) ) )
+  {
+    mLineEdit->setToolTip( tr( "Selected files:<br><ul><li>%1</li></ul><br>" ).arg( splitFilePaths( path ).join( QLatin1String( "</li><li>" ) ) ) );
+  }
+  else
+  {
+    mLineEdit->setToolTip( QString() );
+  }
   emit fileChanged( mFilePath );
+}
+
+void QgsFileWidget::editLink()
+{
+  if ( !mUseLink || mReadOnly )
+    return;
+
+  mIsLinkEdited = !mIsLinkEdited;
+  updateLayout();
 }
 
 bool QgsFileWidget::useLink() const
@@ -139,9 +180,11 @@ bool QgsFileWidget::useLink() const
 
 void QgsFileWidget::setUseLink( bool useLink )
 {
+  if ( mUseLink == useLink )
+    return;
+
   mUseLink = useLink;
-  mLinkLabel->setVisible( mUseLink );
-  mLineEdit->setVisible( !mUseLink );
+  updateLayout();
 }
 
 bool QgsFileWidget::fullUrl() const
@@ -172,6 +215,7 @@ QgsFileWidget::StorageMode QgsFileWidget::storageMode() const
 void QgsFileWidget::setStorageMode( QgsFileWidget::StorageMode storageMode )
 {
   mStorageMode = storageMode;
+  mLineEdit->setStorageMode( storageMode );
 }
 
 QgsFileWidget::RelativeStorage QgsFileWidget::relativeStorage() const
@@ -184,69 +228,170 @@ void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeS
   mRelativeStorage = relativeStorage;
 }
 
+QgsFilterLineEdit *QgsFileWidget::lineEdit()
+{
+  return mLineEdit;
+}
+
+void QgsFileWidget::updateLayout()
+{
+  mLayout->removeWidget( mLineEdit );
+  mLayout->removeWidget( mLinkLabel );
+  mLayout->removeWidget( mLinkEditButton );
+
+  mLinkEditButton->setVisible( mUseLink && !mReadOnly );
+
+  mFileWidgetButton->setEnabled( !mReadOnly );
+  mLineEdit->setEnabled( !mReadOnly );
+
+  if ( mUseLink && !mIsLinkEdited )
+  {
+    mLayout->insertWidget( 0, mLinkLabel );
+    mLineEdit->setVisible( false );
+    mLinkLabel->setVisible( true );
+
+    if ( !mReadOnly )
+    {
+      mLayout->insertWidget( 1, mLinkEditButton );
+      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+    }
+  }
+  else
+  {
+    mLayout->insertWidget( 0, mLineEdit );
+    mLineEdit->setVisible( true );
+    mLinkLabel->setVisible( false );
+
+    if ( mIsLinkEdited )
+    {
+      mLayout->insertWidget( 1, mLinkEditButton );
+      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+    }
+  }
+}
+
 void QgsFileWidget::openFileDialog()
 {
   QgsSettings settings;
   QString oldPath;
 
-  // If we use fixed default path
-  if ( !mDefaultRoot.isEmpty() )
-  {
-    oldPath = QDir::cleanPath( mDefaultRoot );
-  }
   // if we use a relative path option, we need to obtain the full path
-  else if ( !mFilePath.isEmpty() )
+  // first choice is the current file path, if one is entered
+  if ( !mFilePath.isEmpty() )
   {
     oldPath = relativePath( mFilePath, false );
+  }
+  // If we use fixed default path
+  // second choice is the default root
+  else if ( !mDefaultRoot.isEmpty() )
+  {
+    oldPath = QDir::cleanPath( mDefaultRoot );
   }
 
   // If there is no valid value, find a default path to use
   QUrl url = QUrl::fromUserInput( oldPath );
   if ( !url.isValid() )
   {
-    QString defPath = QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() );
+    QString defPath = QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() );
     if ( defPath.isEmpty() )
     {
       defPath = QDir::homePath();
     }
-    oldPath = settings.value( QStringLiteral( "UI/lastExternalResourceWidgetDefaultPath" ), defPath ).toString();
+    oldPath = settings.value( QStringLiteral( "UI/lastFileNameWidgetDir" ), defPath ).toString();
   }
 
   // Handle Storage
   QString fileName;
+  QStringList fileNames;
   QString title;
-  if ( mStorageMode == GetFile )
+
   {
-    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-    fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
-  }
-  else if ( mStorageMode == GetDirectory )
-  {
-    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-    fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
+    QgsFocusKeeper focusKeeper;
+    switch ( mStorageMode )
+    {
+      case GetFile:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
+        fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        break;
+      case GetMultipleFiles:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
+        fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        break;
+      case GetDirectory:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
+        fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions | QFileDialog::ShowDirsOnly );
+        break;
+      case SaveFile:
+      {
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
+        if ( !confirmOverwrite() )
+        {
+          fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions | QFileDialog::DontConfirmOverwrite );
+        }
+        else
+        {
+          fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        }
+
+        // make sure filename ends with filter. This isn't automatically done by
+        // getSaveFileName on some platforms (e.g. gnome)
+        fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
+      }
+      break;
+    }
   }
 
-  if ( fileName.isEmpty() )
+  if ( fileName.isEmpty() && fileNames.isEmpty( ) )
     return;
 
-
-  fileName = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
-  // Store the last used path:
-
-  if ( mStorageMode == GetFile )
+  if ( mStorageMode != GetMultipleFiles )
   {
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+    fileName = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
   }
-  else if ( mStorageMode == GetDirectory )
+  else
   {
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
+    for ( int i = 0; i < fileNames.length(); i++ )
+    {
+      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
+    }
+  }
+
+  // Store the last used path:
+  switch ( mStorageMode )
+  {
+    case GetFile:
+    case SaveFile:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+      break;
+    case GetDirectory:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
+      break;
+    case GetMultipleFiles:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileNames.first( ) ).absolutePath() );
+      break;
   }
 
   // Handle relative Path storage
-  fileName = relativePath( fileName, true );
-
-  // Keep the new value
-  setFilePath( fileName );
+  if ( mStorageMode != GetMultipleFiles )
+  {
+    fileName = relativePath( fileName, true );
+    setFilePath( fileName );
+  }
+  else
+  {
+    for ( int i = 0; i < fileNames.length(); i++ )
+    {
+      fileNames.replace( i, relativePath( fileNames.at( i ), true ) );
+    }
+    if ( fileNames.length() > 1 )
+    {
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QLatin1String( "\" \"" ) ) ) );
+    }
+    else
+    {
+      setFilePath( fileNames.first( ) );
+    }
+  }
 }
 
 
@@ -255,7 +400,7 @@ QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelativ
   QString RelativePath;
   if ( mRelativeStorage == RelativeProject )
   {
-    RelativePath = QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) );
+    RelativePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() ) );
   }
   else if ( mRelativeStorage == RelativeDefaultPath && !mDefaultRoot.isEmpty() )
   {
@@ -290,8 +435,8 @@ QString QgsFileWidget::toUrl( const QString &path ) const
   QUrl url = QUrl::fromUserInput( urlStr );
   if ( !url.isValid() || !url.isLocalFile() )
   {
-    QgsDebugMsg( QString( "URL: %1 is not valid or not a local file!" ).arg( path ) );
-    rep =  path;
+    QgsDebugMsg( QStringLiteral( "URL: %1 is not valid or not a local file!" ).arg( path ) );
+    rep = path;
   }
 
   QString pathStr = url.toString();
@@ -307,3 +452,140 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
   return rep;
 }
+
+
+
+///@cond PRIVATE
+
+
+QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
+  : QgsHighlightableLineEdit( parent )
+{
+  setAcceptDrops( true );
+}
+
+void QgsFileDropEdit::setFilters( const QString &filters )
+{
+  mAcceptableExtensions.clear();
+
+  if ( filters.contains( QStringLiteral( "*.*" ) ) )
+    return; // everything is allowed!
+
+  QRegularExpression rx( QStringLiteral( "\\*\\.(\\w+)" ) );
+  QRegularExpressionMatchIterator i = rx.globalMatch( filters );
+  while ( i.hasNext() )
+  {
+    QRegularExpressionMatch match = i.next();
+    if ( match.hasMatch() )
+    {
+      mAcceptableExtensions << match.captured( 1 ).toLower();
+    }
+  }
+}
+
+QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
+{
+  QStringList rawPaths;
+  QStringList paths;
+  if ( event->mimeData()->hasUrls() )
+  {
+    const QList< QUrl > urls = event->mimeData()->urls();
+    rawPaths.reserve( urls.count() );
+    for ( const QUrl &url : urls )
+    {
+      const QString local =  url.toLocalFile();
+      if ( !rawPaths.contains( local ) )
+        rawPaths.append( local );
+    }
+  }
+
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+  for ( const QgsMimeDataUtils::Uri &u : lst )
+  {
+    if ( !rawPaths.contains( u.uri ) )
+      rawPaths.append( u.uri );
+  }
+
+  if ( !event->mimeData()->text().isEmpty() && !rawPaths.contains( event->mimeData()->text() ) )
+    rawPaths.append( event->mimeData()->text() );
+
+  paths.reserve( rawPaths.count() );
+  for ( const QString &path : qgis::as_const( rawPaths ) )
+  {
+    QFileInfo file( path );
+    switch ( mStorageMode )
+    {
+      case QgsFileWidget::GetFile:
+      case QgsFileWidget::GetMultipleFiles:
+      case QgsFileWidget::SaveFile:
+      {
+        if ( file.isFile() && ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
+          paths.append( file.filePath() );
+
+        break;
+      }
+
+      case QgsFileWidget::GetDirectory:
+      {
+        if ( file.isDir() )
+          paths.append( file.filePath() );
+        else if ( file.isFile() )
+        {
+          // folder mode, but a file dropped. So get folder name from file
+          paths.append( file.absolutePath() );
+        }
+
+        break;
+      }
+    }
+  }
+
+  if ( paths.size() > 1 )
+  {
+    return QStringLiteral( "\"%1\"" ).arg( paths.join( QLatin1String( "\" \"" ) ) );
+  }
+  else if ( paths.size() == 1 )
+  {
+    return paths.first();
+  }
+  else
+  {
+    return QString();
+  }
+}
+
+void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
+{
+  QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
+  {
+    event->acceptProposedAction();
+    setHighlighted( true );
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  QgsFilterLineEdit::dragLeaveEvent( event );
+  event->accept();
+  setHighlighted( false );
+}
+
+void QgsFileDropEdit::dropEvent( QDropEvent *event )
+{
+  QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
+  {
+    setText( filePath );
+    selectAll();
+    setFocus( Qt::MouseFocusReason );
+    event->acceptProposedAction();
+    setHighlighted( false );
+  }
+}
+
+///@endcond

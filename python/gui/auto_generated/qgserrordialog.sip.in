@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgserrordialog.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsErrorDialog: QDialog
+{
+
+%TypeHeaderCode
+#include "qgserrordialog.h"
+%End
+  public:
+
+    QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor for QgsErrorDialog
+%End
+
+    static void show( const QgsError &error, const QString &title, QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Show dialog with error
+
+:param error: error
+:param title: title
+:param parent: parent object
+:param fl: widget flags
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgserrordialog.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

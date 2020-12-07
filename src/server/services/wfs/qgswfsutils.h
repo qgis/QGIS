@@ -4,7 +4,7 @@
   Define WFS service utility functions
   ------------------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswfshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswfshandler)
                          (C) 2012 by René-Luc D'Hont    ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswfshandler)
                          (C) 2017 by David Marteau
@@ -37,7 +37,8 @@
 namespace QgsWfs
 {
 
-  /** Return the highest version supported by this implementation
+  /**
+   * Returns the highest version supported by this implementation
    */
   QString implementationVersion();
 
@@ -46,15 +47,34 @@ namespace QgsWfs
    */
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
-  /** Transform a Filter element to a feature request
+  /**
+   * Returns typename from vector layer
    */
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem );
+  QString layerTypeName( const QgsMapLayer *layer );
+
+  /**
+   * Retrieve a layer by typename
+   */
+  QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName );
+
+  /**
+   * Transform a Filter element to a feature request
+   */
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QgsProject *project = nullptr );
+
+  /**
+   * Transform a Filter element to a feature request and update server feature ids
+   */
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project = nullptr, const QgsMapLayer *layer = nullptr );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc" );
   const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" );
+
+  // Define clean tagName regExp
+  const QRegExp cleanTagNameRegExp( "(?![\\w\\d\\.-])." );
 
 } // namespace QgsWfs
 

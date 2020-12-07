@@ -26,13 +26,12 @@ import stat
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from shutil import rmtree
 
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
+    QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
@@ -51,7 +50,6 @@ try:
 except:
     QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
 
-
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
@@ -64,7 +62,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
         cls.sslcert = os.path.join(cls.certsdata_path, 'gerardus_cert.pem')
@@ -130,7 +128,7 @@ class TestAuthManager(unittest.TestCase):
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ, stdout=subprocess.PIPE)
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(b':(\d+)', line)[0])
+        cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
         assert waitServer('%s://%s:%s' % (cls.protocol, cls.hostname, cls.port)), "Server is not responding! %s://%s:%s" % (cls.protocol, cls.hostname, cls.port)

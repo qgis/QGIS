@@ -29,11 +29,13 @@ QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
 {
   setupUi( this );
 
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::ResizeToContents );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::ResizeToContents );
 
   mOrderByTableWidget->installEventFilter( this );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOrderByDialog::showHelp );
 }
 
 void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
@@ -41,7 +43,8 @@ void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
   mOrderByTableWidget->setRowCount( orderBy.length() + 1 );
 
   int i = 0;
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderByClause, orderBy )
+  const auto constOrderBy = orderBy;
+  for ( const QgsFeatureRequest::OrderByClause &orderByClause : constOrderBy )
   {
     setRow( i, orderByClause );
 
@@ -49,7 +52,7 @@ void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
   }
 
   // Add an empty widget at the end
-  setRow( i, QgsFeatureRequest::OrderByClause( QLatin1String( "" ) ) );
+  setRow( i, QgsFeatureRequest::OrderByClause( QString() ) );
 }
 
 QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
@@ -104,7 +107,7 @@ void QgsOrderByDialog::onExpressionChanged( const QString &expression )
   else if ( !expression.isEmpty() && row == mOrderByTableWidget->rowCount() - 1 )
   {
     mOrderByTableWidget->insertRow( mOrderByTableWidget->rowCount() );
-    setRow( row + 1, QgsFeatureRequest::OrderByClause( QLatin1String( "" ) ) );
+    setRow( row + 1, QgsFeatureRequest::OrderByClause( QString() ) );
   }
 }
 
@@ -121,8 +124,8 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause &
   ascComboBox->setCurrentIndex( orderByClause.ascending() ? 0 : 1 );
 
   QComboBox *nullsFirstComboBox = new QComboBox();
-  nullsFirstComboBox->addItem( tr( "NULLs last" ) );
-  nullsFirstComboBox->addItem( tr( "NULLs first" ) );
+  nullsFirstComboBox->addItem( tr( "NULLs Last" ) );
+  nullsFirstComboBox->addItem( tr( "NULLs First" ) );
   nullsFirstComboBox->setCurrentIndex( orderByClause.nullsFirst() ? 1 : 0 );
 
   mOrderByTableWidget->setCellWidget( row, 0, fieldExpression );
@@ -147,6 +150,10 @@ bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
     }
   }
 
-  return false;
+  return QDialog::eventFilter( obj, e );
 }
 
+void QgsOrderByDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#layer-rendering" ) );
+}

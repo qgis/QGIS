@@ -16,6 +16,8 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 
 #ifdef WITH_QTWEBKIT
@@ -27,7 +29,8 @@
 #include <QUrl>
 #include <QVariant>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QWebFrame class is a collection of stubs to mimic the API of a QWebFrame on systems
  * where QtWebkit is not available.
  */
@@ -37,7 +40,7 @@ class CORE_EXPORT QWebFrame : public QObject
     Q_OBJECT
 
   public:
-    QWebFrame( QObject *parent = 0 )
+    QWebFrame( QObject *parent = nullptr )
       : QObject( parent )
     {
 
@@ -45,19 +48,19 @@ class CORE_EXPORT QWebFrame : public QObject
 
     void setZoomFactor( qreal factor )
     {
-      Q_UNUSED( factor );
+      Q_UNUSED( factor )
     }
 
     void setScrollBarPolicy( Qt::Orientation orientation, Qt::ScrollBarPolicy scrollbarpolicy )
     {
-      Q_UNUSED( orientation );
-      Q_UNUSED( scrollbarpolicy );
+      Q_UNUSED( orientation )
+      Q_UNUSED( scrollbarpolicy )
     }
 
     void setHtml( const QString &html, const QUrl &url = QUrl() )
     {
-      Q_UNUSED( html );
-      Q_UNUSED( url );
+      Q_UNUSED( html )
+      Q_UNUSED( url )
     }
 
     QSize contentsSize() const

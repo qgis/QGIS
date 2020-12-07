@@ -41,9 +41,13 @@ class CORE_EXPORT QgsTicksScaleBarRenderer: public QgsScaleBarRenderer
     /**
      * Constructor for QgsTicksScaleBarRenderer.
      */
-    QgsTicksScaleBarRenderer() = default;
+    QgsTicksScaleBarRenderer( TickPosition position = TicksMiddle );
 
-    QString name() const override;
+    QString id() const override;
+    QString visibleName() const override;
+    int sortKey() const override;
+    Flags flags() const override;
+    QgsTicksScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

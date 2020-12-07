@@ -21,15 +21,22 @@
 #include "qgis_core.h"
 #include "qgsgpsconnection.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Evaluates NMEA sentences coming from a GPS device
-*/
-class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
+ * \since QGIS 1.4
+ */
+class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
 {
     Q_OBJECT
   public:
-    QgsNMEAConnection( QIODevice *dev );
-    ~QgsNMEAConnection();
+
+    /**
+     * Constructs a QgsNmeaConnection with given \a device.
+     *
+     * Ownership of \a device is transferred to the connection.
+     */
+    QgsNmeaConnection( QIODevice *device SIP_TRANSFER );
 
   protected slots:
     //! Parse available data source content
@@ -41,11 +48,24 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
     //! Splits mStringBuffer into sentences and calls libnmea
     void processStringBuffer();
     //handle the different sentence type
-    void processGGASentence( const char *data, int len );
-    void processRMCSentence( const char *data, int len );
-    void processGSVSentence( const char *data, int len );
-    void processVTGSentence( const char *data, int len );
-    void processGSASentence( const char *data, int len );
+    //! process GGA sentence
+    void processGgaSentence( const char *data, int len );
+    //! process RMC sentence
+    void processRmcSentence( const char *data, int len );
+    //! process GSV sentence
+    void processGsvSentence( const char *data, int len );
+    //! process VTG sentence
+    void processVtgSentence( const char *data, int len );
+    //! process GSA sentence
+    void processGsaSentence( const char *data, int len );
+    //! process GST sentence
+    void processGstSentence( const char *data, int len );
+    //! process HDT sentence
+    void processHdtSentence( const char *data, int len );
+    //! process HCHDG sentence
+    void processHchdgSentence( const char *data, int len );
+    //! process HCHDT sentence
+    void processHchdtSentence( const char *data, int len );
 };
 
 #endif // QGSNMEACONNECTION_H

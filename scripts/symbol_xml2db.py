@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 /***************************************************************************
                                symbol_xml2db.py
@@ -25,8 +25,8 @@ import sqlite3
 
 from xml.dom.minidom import parse, parseString
 
-xmlfile = "../resources/symbology-ng-style.xml"
-dbfile = "../resources/symbology-ng-style.db"
+xmlfile = "../resources/symbology-style.xml"
+dbfile = "../resources/symbology-style.db"
 
 _symbol = "CREATE TABLE symbol("\
           "id INTEGER PRIMARY KEY,"\
@@ -62,11 +62,11 @@ create_tables = [_symbol, _colorramp, _tag, _tagmap, _ctagmap, _smartgroup]
 # Create the DB with required Schema
 conn = sqlite3.connect(dbfile)
 c = conn.cursor()
-print "Creating tables in the Database\n"
+print("Creating tables in the Database\n")
 for table in create_tables:
     try:
         c.execute(table)
-        print table
+        print(table)
     except sqlite3.OperationalError as e:
         pass
     conn.commit()

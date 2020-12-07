@@ -26,7 +26,8 @@
 #include "qgslinestring.h"
 #include "qgsrectangle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsEllipse
  * \brief Ellipse geometry type.
  *
@@ -39,86 +40,106 @@ class CORE_EXPORT QgsEllipse
 {
 
   public:
-    QgsEllipse();
 
-    /** Constructs an ellipse by defining all the members.
+    /**
+     * Constructor for QgsEllipse.
+     */
+    QgsEllipse() SIP_HOLDGIL = default;
+
+    virtual ~QgsEllipse() = default;
+
+    /**
+     * Constructs an ellipse by defining all the members.
      * \param center The center of the ellipse.
      * \param semiMajorAxis Semi-major axis of the ellipse.
      * \param semiMinorAxis Semi-minor axis of the ellipse.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by foci (\a pt1 and \a pt2) and a point \a pt3.
-     * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
+     * The center point can have m value which is the result from the midpoint
+     * operation between \a pt1 and \a pt2. Z dimension is also supported and
+     * is retrieved from the first 3D point amongst \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance with the third point \a pt3.
      * The azimuth is the angle between \a pt1 and \a pt2.
      * \param pt1 First focus.
      * \param pt2 Second focus.
      * \param pt3 A point to calculate the axes.
      */
-    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 );
+    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by an extent (aka bounding box / QgsRectangle).
-     * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
+     * The center point can have m value which is the result from the midpoint
+     * operation between \a pt1 and \a pt2. Z dimension is also supported and
+     * is retrieved from the first 3D point amongst \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance between \a pt1 and \a pt2.
      * The azimuth always takes the default value.
      * \param pt1 First corner.
      * \param pt2 Second corner.
      */
-    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by a center point and a another point.
-     * The center point keeps z and m values from \a ptc.
+     * The center point keeps m value from \a ptc. Z dimension is also
+     * supported and is retrieved from the first 3D point amongst \a ptc and
+     * \a pt1.
      * Axes are calculated from the 2D distance between \a ptc and \a pt1.
      * The azimuth always takes the default value.
      * \param ptc Center point.
      * \param pt1 First point.
      */
-    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 );
+    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by a central point and two other points.
-     * The center point keeps z and m values from \a ptc.
+     * The center point keeps m value from \a ptc. Z dimension is also
+     * supported and is retrieved from the first 3D point amongst \a ptc,
+     * \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance between \a ptc and \a pt1 and \a pt2.
      * The azimuth is the angle between \a ptc and \a pt1.
      * \param ptc Center point.
      * \param pt1 First point.
      * \param pt2 Second point.
      */
-    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     virtual bool operator ==( const QgsEllipse &elp ) const;
     virtual bool operator !=( const QgsEllipse &elp ) const;
 
     //! An ellipse is empty if axes are equal to 0
-    virtual bool isEmpty() const;
+    virtual bool isEmpty() const SIP_HOLDGIL;
 
-    /** Returns the center point.
+    /**
+     * Returns the center point.
      * \see setCenter()
      * \see rcenter()
      */
-    QgsPoint center() const {return mCenter; }
+    QgsPoint center() const SIP_HOLDGIL {return mCenter; }
 
-    /** Returns the semi-major axis.
+    /**
+     * Returns the semi-major axis.
      * \see setSemiMajorAxis()
      */
-    double semiMajorAxis() const {return mSemiMajorAxis; }
+    double semiMajorAxis() const SIP_HOLDGIL {return mSemiMajorAxis; }
 
-    /** Returns the semi-minor axis.
+    /**
+     * Returns the semi-minor axis.
      * \see setSemiMinorAxis()
      */
-    double semiMinorAxis() const {return mSemiMinorAxis; }
+    double semiMinorAxis() const SIP_HOLDGIL {return mSemiMinorAxis; }
 
-    /** Returns the azimuth.
+    /**
+     * Returns the azimuth.
      * \see setAzimuth()
      */
-    double azimuth() const {return mAzimuth; }
+    double azimuth() const SIP_HOLDGIL {return mAzimuth; }
 
-    /** Returns a reference to the center point of this ellipse.
+    /**
+     * Returns a reference to the center point of this ellipse.
      * Using a reference makes it possible to directly manipulate center in place.
      * \see center()
      * \see setCenter()
@@ -126,77 +147,90 @@ class CORE_EXPORT QgsEllipse
      */
     QgsPoint &rcenter() SIP_SKIP { return mCenter; }
 
-    /** Sets the center point.
+    /**
+     * Sets the center point.
      * \see center()
      * \see rcenter()
      */
-    void setCenter( const QgsPoint &center ) {mCenter = center; }
+    void setCenter( const QgsPoint &center ) SIP_HOLDGIL {mCenter = center; }
 
-    /** Sets the semi-major axis.
+    /**
+     * Sets the semi-major axis.
      * \see semiMajorAxis()
      */
-    virtual void setSemiMajorAxis( const double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis ) SIP_HOLDGIL;
 
-    /** Sets the semi-minor axis.
+    /**
+     * Sets the semi-minor axis.
      * \see semiMinorAxis()
      */
-    virtual void setSemiMinorAxis( const double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis ) SIP_HOLDGIL;
 
-    /** Sets the azimuth (orientation).
+    /**
+     * Sets the azimuth (orientation).
      * \see azimuth()
      */
-    void setAzimuth( const double azimuth );
+    void setAzimuth( double azimuth ) SIP_HOLDGIL;
 
-    /** The distance between the center and each foci.
+    /**
+     * The distance between the center and each foci.
      * \see fromFoci()
      * \see foci()
      * \return The distance between the center and each foci.
      */
-    virtual double focusDistance() const;
+    virtual double focusDistance() const SIP_HOLDGIL;
 
-    /** Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
+    /**
+     * Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
      * \see fromFoci()
      * \see focusDistance()
      * \return the two foci.
      */
     virtual QVector<QgsPoint> foci() const;
 
-    /** The eccentricity of the ellipse.
+    /**
+     * The eccentricity of the ellipse.
      * nan is returned if the ellipse is empty.
      */
-    virtual double eccentricity() const;
+    virtual double eccentricity() const SIP_HOLDGIL;
     //! The area of the ellipse.
-    virtual double area() const;
+    virtual double area() const SIP_HOLDGIL;
     //! The circumference of the ellipse using first approximation of Ramanujan.
-    virtual double perimeter() const;
+    virtual double perimeter() const SIP_HOLDGIL;
 
-    /** The four quadrants of the ellipse.
+    /**
+     * The four quadrants of the ellipse.
      * They are oriented and started always from semi-major axis.
      * \return quadrants defined by four points.
      */
     virtual QVector<QgsPoint> quadrant() const;
 
-    /** Returns a list of points with segmentation from \a segments.
+    /**
+     * Returns a list of points with segmentation from \a segments.
      * \param segments Number of segments used to segment geometry.
      */
     virtual QgsPointSequence points( unsigned int segments = 36 ) const;
 
-    /** Returns a segmented polygon.
+    /**
+     * Returns a segmented polygon.
      * \param segments Number of segments used to segment geometry.
      */
-    virtual QgsPolygonV2 *toPolygon( unsigned int segments = 36 ) const SIP_FACTORY;
+    virtual QgsPolygon *toPolygon( unsigned int segments = 36 ) const SIP_FACTORY;
 
-    /** Returns a segmented linestring.
+    /**
+     * Returns a segmented linestring.
      * \param segments Number of segments used to segment geometry.
      */
     virtual QgsLineString *toLineString( unsigned int segments = 36 ) const SIP_FACTORY;
     //virtual QgsCurvePolygon toCurvePolygon() const;
 
-    /** Returns the oriented minimal bounding box for the ellipse.
+    /**
+     * Returns the oriented minimal bounding box for the ellipse.
      */
-    virtual QgsPolygonV2 *orientedBoundingBox() const SIP_FACTORY;
+    virtual QgsPolygon *orientedBoundingBox() const SIP_FACTORY;
 
-    /** Returns the minimal bounding box for the ellipse.
+    /**
+     * Returns the minimal bounding box for the ellipse.
      */
     virtual QgsRectangle boundingBox() const;
 
@@ -206,11 +240,19 @@ class CORE_EXPORT QgsEllipse
      */
     virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsEllipse: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   protected:
     QgsPoint mCenter;
-    double mSemiMajorAxis;
-    double mSemiMinorAxis;
-    double mAzimuth;
+    double mSemiMajorAxis = 0.0;
+    double mSemiMinorAxis = 0.0;
+    double mAzimuth = 90.0;
 
   private:
     //! The semi-minor axis is always smaller than the semi-major axis. If it is set larger, it will be swapped and the azimuth will increase by 90 degrees.

@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgsvectorfilewriter.h"
 #include "qgstaskmanager.h"
-#include "qgsvectorlayer.h"
 
 /**
  * \class QgsVectorFileWriterTask
@@ -29,9 +28,9 @@
  * QgsTask task which performs a QgsVectorFileWriter layer saving operation as a background
  * task. This can be used to save a vector layer out to a file without blocking the
  * QGIS interface.
- * \since QGIS 3.0
  * \see QgsVectorLayerExporterTask
  * \see QgsRasterFileWriterTask
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 {
@@ -47,15 +46,23 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
                              const QString &fileName,
                              const QgsVectorFileWriter::SaveVectorOptions &options );
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
     /**
      * Emitted when writing the layer is successfully completed. The \a newFilename
      * parameter indicates the file path for the written file.
+     * \note this signal is deprecated in favor of completed().
      */
     void writeComplete( const QString &newFilename );
+
+    /**
+     * Emitted when writing the layer is successfully completed. The \a newFilename
+     * parameter indicates the file path for the written file. When applicable, the
+     * \a newLayer parameter indicates the layer name used.
+     */
+    void completed( const QString &newFilename, const QString &newLayer ) SIP_SKIP;
 
     /**
      * Emitted when an error occurs which prevented the file being written (or if
@@ -65,24 +72,25 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
-
-    QPointer< QgsVectorLayer > mLayer = nullptr;
 
     QString mDestFileName;
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
-
     QgsVectorFileWriter::WriterError mError = QgsVectorFileWriter::NoError;
 
     QString mNewFilename;
+    QString mNewLayer;
     QString mErrorMessage;
 
     QgsVectorFileWriter::SaveVectorOptions mOptions;
+    QgsVectorFileWriter::PreparedWriterDetails mWriterDetails;
     std::unique_ptr< QgsVectorFileWriter::FieldValueConverter > mFieldValueConverter;
+
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif

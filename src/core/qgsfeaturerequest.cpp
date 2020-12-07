@@ -23,28 +23,24 @@
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
-  : mFlags( nullptr )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
   : mFilter( FilterFid )
   , mFilterFid( fid )
-  , mFlags( nullptr )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
   : mFilter( FilterFids )
   , mFilterFids( fids )
-  , mFlags( nullptr )
 {
 
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
   : mFilterRect( rect )
-  , mFlags( nullptr )
 {
 }
 
@@ -52,7 +48,6 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpres
   : mFilter( FilterExpression )
   , mFilterExpression( new QgsExpression( expr ) )
   , mExpressionContext( context )
-  , mFlags( nullptr )
 {
 }
 
@@ -63,6 +58,9 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
 
 QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 {
+  if ( &rh == this )
+    return *this;
+
   mFlags = rh.mFlags;
   mFilter = rh.mFilter;
   mFilterRect = rh.mFilterRect;
@@ -84,7 +82,10 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mLimit = rh.mLimit;
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
+  mTransformContext = rh.mTransformContext;
   mTransformErrorCallback = rh.mTransformErrorCallback;
+  mTimeout = rh.mTimeout;
+  mRequestMayBeNested = rh.mRequestMayBeNested;
   return *this;
 }
 
@@ -114,7 +115,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( QgsFeatureRequest
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( std::function<void ( const QgsFeature & )> callback )
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void ( const QgsFeature & )> &callback )
 {
   mInvalidGeometryCallback = callback;
   return *this;
@@ -188,6 +189,11 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
   return *this;
 }
 
+QgsFeatureRequest &QgsFeatureRequest::setNoAttributes()
+{
+  return setSubsetOfAttributes( QgsAttributeList() );
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields )
 {
   if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
@@ -199,7 +205,8 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString &attrName, attrNames )
+  const auto constAttrNames = attrNames;
+  for ( const QString &attrName : constAttrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -220,7 +227,8 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString &attrName, attrNames )
+  const auto constAttrNames = attrNames;
+  for ( const QString &attrName : constAttrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -242,13 +250,19 @@ QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
   return mCrs;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
+QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const
+{
+  return mTransformContext;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
 {
   mCrs = crs;
+  mTransformContext = context;
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( std::function<void ( const QgsFeature & )> callback )
+QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void ( const QgsFeature & )> &callback )
 {
   mTransformErrorCallback = callback;
   return *this;
@@ -258,7 +272,13 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
   if ( !mFilterRect.isNull() )
   {
-    if ( !feature.hasGeometry() || !feature.geometry().intersects( mFilterRect ) )
+    if ( !feature.hasGeometry() ||
+         (
+           ( mFlags & ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
+           ||
+           ( !( mFlags & ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
+         )
+       )
       return false;
   }
 
@@ -281,6 +301,39 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
   return true;
 }
 
+int QgsFeatureRequest::connectionTimeout() const
+{
+  return mTimeout;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
+{
+  mTimeout = connectionTimeout;
+  return *this;
+}
+
+int QgsFeatureRequest::timeout() const
+{
+  return mTimeout;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setTimeout( int timeout )
+{
+  mTimeout = timeout;
+  return *this;
+}
+
+bool QgsFeatureRequest::requestMayBeNested() const
+{
+  return mRequestMayBeNested;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
+{
+  mRequestMayBeNested = requestMayBeNested;
+  return *this;
+}
+
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -290,7 +343,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   while ( !mActiveIterators.empty() )
   {
     QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
+    QgsDebugMsgLevel( QStringLiteral( "closing active iterator" ), 2 );
     it->close();
   }
 }
@@ -376,9 +429,12 @@ bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context )
   return mExpression.prepare( context );
 }
 
+QgsFeatureRequest::OrderBy::OrderBy() = default;
+
 QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other )
 {
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, other )
+  const auto constOther = other;
+  for ( const QgsFeatureRequest::OrderByClause &clause : constOther )
   {
     append( clause );
   }
@@ -437,6 +493,24 @@ QSet<QString> QgsFeatureRequest::OrderBy::usedAttributes() const
   return usedAttributes;
 }
 
+QSet<int> QgsFeatureRequest::OrderBy::usedAttributeIndices( const QgsFields &fields ) const
+{
+  QSet<int> usedAttributeIdx;
+  for ( const OrderByClause &clause : *this )
+  {
+    const auto referencedColumns = clause.expression().referencedColumns();
+    for ( const QString &fieldName : referencedColumns )
+    {
+      int idx = fields.lookupField( fieldName );
+      if ( idx >= 0 )
+      {
+        usedAttributeIdx.insert( idx );
+      }
+    }
+  }
+  return usedAttributeIdx;
+}
+
 QString QgsFeatureRequest::OrderBy::dump() const
 {
   QStringList results;
@@ -449,5 +523,5 @@ QString QgsFeatureRequest::OrderBy::dump() const
     results << clause.dump();
   }
 
-  return results.join( QStringLiteral( ", " ) );
+  return results.join( QLatin1String( ", " ) );
 }

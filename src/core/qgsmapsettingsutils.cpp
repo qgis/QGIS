@@ -18,32 +18,42 @@
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
 #include "qgspallabeling.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgsvectorlayer.h"
+#include "qgsabstractgeopdfexporter.h"
 
 #include <QString>
 
-const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings )
+QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags )
 {
   QSet< QString > layers;
 
   QgsTextFormat layerFormat;
-  Q_FOREACH ( QgsMapLayer *layer, mapSettings.layers() )
+  const auto constLayers = mapSettings.layers();
+  for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer )
+    if ( layer && layer->isInScaleRange( mapSettings.scale() ) )
     {
+      bool layerHasAdvancedBlendMode = false;
       if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
+      {
+        if ( flags & EffectsCheckFlag::IgnoreGeoPdfSupportedEffects )
+        {
+          layerHasAdvancedBlendMode = !QgsAbstractGeoPdfExporter::compositionModeSupported( layer->blendMode() );
+        }
+        else
+        {
+          layerHasAdvancedBlendMode = true;
+        }
+      }
+
+      if ( layerHasAdvancedBlendMode )
       {
         layers << layer->name();
       }
       // if vector layer, check labels and feature blend mode
-      QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( currentVectorLayer )
+      if ( QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer ) )
       {
-        if ( !qgsDoubleNear( currentVectorLayer->opacity(), 1.0 ) )
-        {
-          layers << layer->name();
-        }
         if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
         {
           layers << layer->name();
@@ -62,10 +72,10 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
     }
   }
 
-  return layers.toList();
+  return qgis::setToList( layers );
 }
 
-QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings )
+void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings, double &a, double &b, double &c, double &d, double &e, double &f )
 {
   QgsMapSettings ms = mapSettings;
 
@@ -87,25 +97,33 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   s[1] = 0;
   s[2] = xOrigin;
   s[3] = 0;
-  s[4] = ms.mapUnitsPerPixel();
+  s[4] = -ms.mapUnitsPerPixel();
   s[5] = yOrigin;
 
   // rotation matrix
   double r[6];
-  r[0] = cos( alpha );
-  r[1] = -sin( alpha );
-  r[2] = xCenter * ( 1 - cos( alpha ) ) + yCenter * sin( alpha );
-  r[3] = sin( alpha );
-  r[4] = cos( alpha );
-  r[5] = - xCenter * sin( alpha ) + yCenter * ( 1 - cos( alpha ) );
+  r[0] = std::cos( alpha );
+  r[1] = -std::sin( alpha );
+  r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
+  r[3] = std::sin( alpha );
+  r[4] = std::cos( alpha );
+  r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
-  double a = r[0] * s[0] + r[1] * s[3];
-  double b = r[0] * s[1] + r[1] * s[4];
-  double c = r[0] * s[2] + r[1] * s[5] + r[2];
-  double d = r[3] * s[0] + r[4] * s[3];
-  double e = r[3] * s[1] + r[4] * s[4];
-  double f = r[3] * s[2] + r[4] * s[5] + r[5];
+  a = r[0] * s[0] + r[1] * s[3];
+  b = r[0] * s[1] + r[1] * s[4];
+  c = r[0] * s[2] + r[1] * s[5] + r[2];
+  d = r[3] * s[0] + r[4] * s[3];
+  // Pixel YDim - almost always negative
+  // See https://en.wikipedia.org/wiki/World_file#cite_ref-3, https://github.com/qgis/QGIS/issues/26379
+  e = r[3] * s[1] + r[4] * s[4];
+  f = r[3] * s[2] + r[4] * s[5] + r[5];
+}
+
+QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings )
+{
+  double a, b, c, d, e, f;
+  worldFileParameters( mapSettings, a, b, c, d, e, f );
 
   QString content;
   // Pixel XDim
@@ -113,13 +131,12 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
   // Rotation on y axis
   content += qgsDoubleToString( d ) + "\r\n";
   // Rotation on x axis
-  content += qgsDoubleToString( -b ) + "\r\n";
-  // Pixel YDim - almost always negative
-  // See https://en.wikipedia.org/wiki/World_file#cite_ref-3
-  content += "-" + qgsDoubleToString( e ) + "\r\n";
-  // Origin X (center of top left cell)
+  content += qgsDoubleToString( b ) + "\r\n";
+  // Pixel YDim
+  content += qgsDoubleToString( e ) + "\r\n";
+  // Origin X (top left cell)
   content += qgsDoubleToString( c ) + "\r\n";
-  // Origin Y (center of top left cell)
+  // Origin Y (top left cell)
   content += qgsDoubleToString( f ) + "\r\n";
 
   return content;

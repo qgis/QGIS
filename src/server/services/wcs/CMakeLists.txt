@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (wcs_SRCS
+set (wcs_SRCS
   qgswcs.cpp
   qgswcsutils.cpp
   qgswcsgetcapabilities.cpp
@@ -13,39 +13,42 @@ SET (wcs_SRCS
 ########################################################
 # Build
 
-ADD_LIBRARY (wcs MODULE ${wcs_SRCS})
+add_library (wcs MODULE ${wcs_SRCS})
 
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/server
+  ${CMAKE_SOURCE_DIR}/src/server/services
+  ${CMAKE_SOURCE_DIR}/src/server/services/wcs
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
+
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../../core 
-  ../../../core/dxf
-  ../../../core/expression
-  ../../../core/geometry 
-  ../../../core/metadata
-  ../../../core/raster
-  ../../../core/symbology-ng
-  ../../../core/composer
-  ../../../core/layertree
-  ../..
-  ..
-  .
+
 )
 
 
-#endif
-TARGET_LINK_LIBRARIES(wcs
+target_link_libraries(wcs
   qgis_core
   qgis_server
 )
@@ -54,7 +57,7 @@ TARGET_LINK_LIBRARIES(wcs
 ########################################################
 # Install
 
-INSTALL(TARGETS wcs
+install(TARGETS wcs
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

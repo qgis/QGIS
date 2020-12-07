@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>390</height>
+    <width>465</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,13 +62,17 @@
          <property name="floatable">
           <bool>false</bool>
          </property>
+         <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
          <addaction name="mExpandAction"/>
          <addaction name="mCollapseAction"/>
          <addaction name="mExpandNewAction"/>
-         <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
          <addaction name="mClearResultsAction"/>
+         <addaction name="separator"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
+         <addaction name="separator"/>
         </widget>
        </item>
        <item>
@@ -113,30 +117,16 @@
          <item>
           <widget class="QComboBox" name="cmbIdentifyMode">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_43">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbxAutoFeatureForm">
-           <property name="text">
-            <string>Auto open form</string>
+           <property name="minimumContentsLength">
+            <number>6</number>
            </property>
           </widget>
          </item>
@@ -285,13 +275,13 @@
     <string>Expand New Results</string>
    </property>
    <property name="toolTip">
-    <string>New results will be expanded by default.</string>
+    <string>Expand New Results by Default</string>
    </property>
   </action>
   <action name="mOpenFormAction">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPropertyItem.svg</normaloff>:/images/themes/default/mActionPropertyItem.svg</iconset>
+     <normaloff>:/images/themes/default/mActionFormView.svg</normaloff>:/images/themes/default/mActionFormView.svg</iconset>
    </property>
    <property name="text">
     <string>Open Form</string>
@@ -321,7 +311,7 @@
     <string>Copy Feature</string>
    </property>
    <property name="toolTip">
-    <string>Copy selected feature to clipboard.</string>
+    <string>Copy the Identified Feature to Clipboard</string>
    </property>
   </action>
   <action name="mActionPrint">
@@ -333,7 +323,65 @@
     <string>Print Response</string>
    </property>
    <property name="toolTip">
-    <string>Print selected HTML response.</string>
+    <string>Print Selected HTML Response</string>
+   </property>
+  </action>
+  <action name="mActionSelectFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Identify Features by area or single click</string>
+   </property>
+  </action>
+  <action name="mActionSelectPolygon">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Polygon</string>
+   </property>
+  </action>
+  <action name="mActionSelectFreehand">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Freehand</string>
+   </property>
+  </action>
+  <action name="mActionSelectRadius">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Radius</string>
+   </property>
+  </action>
+  <action name="mActionAutoFeatureForm">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto open form for single feature results</string>
+   </property>
+  </action>
+  <action name="mActionHideDerivedAttributes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide Derived Attributes from Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide derived attributes from results</string>
    </property>
   </action>
  </widget>
@@ -347,6 +395,34 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

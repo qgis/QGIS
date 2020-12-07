@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgstextpreview.h"
+#include "qgsapplication.h"
+#include "qgstextrenderer.h"
 #include <QDesktopWidget>
 #include <QPainter>
 
 QgsTextPreview::QgsTextPreview( QWidget *parent )
   : QLabel( parent )
-  , mMapUnits( QgsUnitTypes::DistanceMeters )
 {
   // initially use a basic transform with no scale
   QgsMapToPixel newCoordXForm;
@@ -28,12 +29,16 @@ QgsTextPreview::QgsTextPreview( QWidget *parent )
 
   mContext.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
   mContext.setUseAdvancedEffects( true );
+
+  mContext.setFlag( QgsRenderContext::Antialiasing, true );
+
+  mContext.setIsGuiPreview( true );
 }
 
 
 void QgsTextPreview::paintEvent( QPaintEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   QPainter p( this );
 
   p.setRenderHint( QPainter::Antialiasing );
@@ -43,14 +48,14 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
   if ( mFormat.buffer().enabled() )
     xtrans = mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() );
   if ( mFormat.background().enabled() && mFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
-    xtrans = qMax( xtrans, mContext.convertToPainterUnits( mFormat.background().size().width(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
+    xtrans = std::max( xtrans, mContext.convertToPainterUnits( mFormat.background().size().width(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
   xtrans += 4;
 
   double ytrans = 0.0;
   if ( mFormat.buffer().enabled() )
-    ytrans = qMax( ytrans, mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() ) );
+    ytrans = std::max( ytrans, mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() ) );
   if ( mFormat.background().enabled() )
-    ytrans = qMax( ytrans, mContext.convertToPainterUnits( mFormat.background().size().height(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
+    ytrans = std::max( ytrans, mContext.convertToPainterUnits( mFormat.background().size().height(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
   ytrans += 4;
 
   QRectF textRect = rect();

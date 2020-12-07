@@ -29,10 +29,11 @@
 #include <qgsproject.h>
 #include "qgslayertree.h"
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the vector layer join buffer
  *
- * @see QgsVectorLayerJoinBuffer
+ * \see QgsVectorLayerJoinBuffer
  */
 class TestVectorLayerJoinBuffer : public QObject
 {
@@ -64,6 +65,7 @@ class TestVectorLayerJoinBuffer : public QObject
     void testCacheUpdate();
     void testRemoveJoinOnLayerDelete();
     void testResolveReferences();
+    void testSignals();
 
   private:
     QgsProject mProject;
@@ -114,7 +116,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
   QString dbConn = getenv( "QGIS_PGTEST_DB" );
   if ( dbConn.isEmpty() )
   {
-    dbConn = "dbname='qgis_test'";
+    dbConn = "service=qgis_test";
   }
   QgsVectorLayer *vlA_PG = new QgsVectorLayer( QString( "%1 sslmode=disable key='id_a' table=\"qgis_test\".\"table_a\" sql=" ).arg( dbConn ), "A_PG", "postgres" );
   QgsVectorLayer *vlB_PG = new QgsVectorLayer( QString( "%1 sslmode=disable key='id_b' table=\"qgis_test\".\"table_b\" sql=" ).arg( dbConn ), "B_PG", "postgres" );
@@ -510,7 +512,8 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   mProject.removeAllMapLayers();
 
   // Load QLR
-  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, &mProject, mProject.layerTreeRoot(), errorMessage, QgsReadWriteContext() );
+  QgsReadWriteContext context = QgsReadWriteContext();
+  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, &mProject, mProject.layerTreeRoot(), errorMessage, context );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Get layer
@@ -662,6 +665,75 @@ void TestVectorLayerJoinBuffer::testResolveReferences()
   QCOMPARE( vlA->vectorJoins()[0].joinLayerId(), vlB->id() );
 
   delete vlA;
+}
+
+void TestVectorLayerJoinBuffer::testSignals()
+{
+  mProject.clear();
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "cacheA" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlA->isValid() );
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b" ), QStringLiteral( "cacheB" ), QStringLiteral( "memory" ) );
+  QVERIFY( vlB->isValid() );
+  mProject.addMapLayer( vlA );
+  mProject.addMapLayer( vlB );
+
+  QgsFeature fA1( vlA->dataProvider()->fields(), 1 );
+  fA1.setAttribute( QStringLiteral( "id_a" ), 1 );
+  QgsFeature fA2( vlA->dataProvider()->fields(), 2 );
+  fA2.setAttribute( QStringLiteral( "id_a" ), 2 );
+
+  vlA->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 );
+
+  QgsVectorLayerJoinInfo joinInfo;
+  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setJoinLayer( vlB );
+  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setPrefix( QStringLiteral( "B_" ) );
+  joinInfo.setEditable( true );
+  joinInfo.setUpsertOnEdit( true );
+  vlA->addJoin( joinInfo );
+
+  QgsFeatureIterator fi = vlA->getFeatures();
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QVERIFY( !fA1.attribute( "B_value_b" ).isValid() );
+  fi.nextFeature( fA2 );
+  QCOMPARE( fA2.attribute( "id_a" ).toInt(), 2 );
+  QVERIFY( !fA2.attribute( "B_value_b" ).isValid() );
+
+  // change value in join target layer, check for signals
+  QSignalSpy spy( vlA, &QgsVectorLayer::attributeValueChanged );
+  vlA->startEditing();
+  vlB->startEditing();
+  // adds new feature to second layer
+  QVERIFY( vlA->changeAttributeValue( 1, 1, 111 ) );
+  fi = vlA->getFeatures();
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "B_value_b" ).toInt(), 111 );
+  fi.nextFeature( fA2 );
+  QCOMPARE( fA2.attribute( "id_a" ).toInt(), 2 );
+  QVERIFY( !fA2.attribute( "B_value_b" ).isValid() );
+  QCOMPARE( spy.count(), 1 );
+  QVERIFY( vlA->changeAttributeValue( 2, 1, 222 ) );
+  fi = vlA->getFeatures();
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "B_value_b" ).toInt(), 111 );
+  fi.nextFeature( fA2 );
+  QCOMPARE( fA2.attribute( "id_a" ).toInt(), 2 );
+  QCOMPARE( fA2.attribute( "B_value_b" ).toInt(), 222 );
+  QCOMPARE( spy.count(), 2 );
+  // changes existing feature in second layer
+  QVERIFY( vlA->changeAttributeValue( 1, 1, 112 ) );
+  fi = vlA->getFeatures();
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "B_value_b" ).toInt(), 112 );
+  fi.nextFeature( fA2 );
+  QCOMPARE( fA2.attribute( "id_a" ).toInt(), 2 );
+  QCOMPARE( fA2.attribute( "B_value_b" ).toInt(), 222 );
+  QCOMPARE( spy.count(), 3 );
 }
 
 

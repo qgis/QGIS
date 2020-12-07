@@ -91,6 +91,25 @@ void QgsVertexMarker::paint( QPainter *p )
     case ICON_CIRCLE:
       p->drawEllipse( QPointF( 0, 0 ), s, s );
       break;
+
+    case ICON_DOUBLE_TRIANGLE:
+      p->drawLine( QLineF( -s, -s,  s, -s ) );
+      p->drawLine( QLineF( -s,  s,  s,  s ) );
+      p->drawLine( QLineF( -s, -s,  s,  s ) );
+      p->drawLine( QLineF( s, -s, -s,  s ) );
+      break;
+
+    case ICON_TRIANGLE:
+      p->drawLine( QLineF( -s,  s,  s,  s ) );
+      p->drawLine( QLineF( s,  s,  0, -s ) );
+      p->drawLine( QLineF( 0, -s, -s,  s ) );
+      break;
+    case ICON_RHOMBUS:
+      p->drawLine( QLineF( 0, -s, -s,  0 ) );
+      p->drawLine( QLineF( -s,  0,  0,  s ) );
+      p->drawLine( QLineF( 0,  s,  s,  0 ) );
+      p->drawLine( QLineF( s,  0,  0, -s ) );
+      break;
   }
 }
 

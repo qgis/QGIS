@@ -20,7 +20,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
@@ -28,7 +28,8 @@ class QgsMapLayer;
 class QgsProject;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Listens to the updates in map layer registry and does changes in layer tree.
  *
  * When connected to a layer tree, any layers added to the map layer registry
@@ -44,6 +45,22 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * A structure to define the insertion point to the layer tree.
+     * This represents the current layer tree group and index where newly added map layers should be inserted into.
+     * \since QGIS 3.10
+     */
+    struct InsertionPoint
+    {
+      //! Constructs an insertion point as layer tree group with its corresponding position.
+      InsertionPoint( QgsLayerTreeGroup *group, int position )
+        : group( group ), position( position ) {}
+
+      QgsLayerTreeGroup *group = nullptr;
+      int position = 0;
+    };
+
     //! Create the instance that synchronizes given project with a layer tree root
     explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -53,13 +70,26 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     void setNewLayersVisible( bool enabled ) { mNewLayersVisible = enabled; }
     bool newLayersVisible() const { return mNewLayersVisible; }
 
-    //! Set where the new layers should be inserted - can be used to follow current selection.
-    //! By default it is root group with zero index.
-    void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
+    /**
+     * Set where the new layers should be inserted - can be used to follow current selection.
+     * By default it is root group with zero index.
+     * \deprecated since QGIS 3.10 use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead
+     */
+    Q_DECL_DEPRECATED void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) SIP_DEPRECATED;
+
+    /**
+     * Set where the new layers should be inserted - can be used to follow current selection.
+     * By default it is root group with zero index.
+     * \since QGIS 3.10
+     */
+    void setLayerInsertionPoint( const InsertionPoint &insertionPoint );
 
   signals:
-    //! Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
-    //! \since QGIS 2.6
+
+    /**
+     * Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
+     * \since QGIS 2.6
+     */
     void addedLayersToLayerTree( const QList<QgsMapLayer *> &layers );
 
   protected slots:
@@ -79,8 +109,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     bool mEnabled;
     bool mNewLayersVisible;
 
-    QgsLayerTreeGroup *mInsertionPointGroup = nullptr;
-    int mInsertionPointIndex;
+    InsertionPoint mInsertionPoint;
 };
 
 #endif // QGSLAYERTREEREGISTRYBRIDGE_H

@@ -17,6 +17,9 @@
 #ifndef QGSCOORDINATETRANSFORMPRIVATE_H
 #define QGSCOORDINATETRANSFORMPRIVATE_H
 
+#define SIP_NO_FILE
+#include "qgsconfig.h"
+
 /// @cond PRIVATE
 
 //
@@ -29,9 +32,24 @@
 //
 
 #include <QSharedData>
-#include "qgscoordinatereferencesystem.h"
 
+#if PROJ_VERSION_MAJOR<6
 typedef void *projPJ;
+#ifndef USE_THREAD_LOCAL
+#include <QThreadStorage>
+#endif
+typedef QPair< projPJ, projPJ > ProjData;
+#else
+struct PJconsts;
+typedef struct PJconsts PJ;
+typedef PJ *ProjData;
+#endif
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+
+#if PROJ_VERSION_MAJOR<6
+
 typedef void *projCtx;
 
 /**
@@ -52,6 +70,8 @@ class QgsProjContextStore
     projCtx context;
 };
 
+#endif
+
 class QgsCoordinateTransformPrivate : public QSharedData
 {
 
@@ -60,25 +80,47 @@ class QgsCoordinateTransformPrivate : public QSharedData
     explicit QgsCoordinateTransformPrivate();
 
     QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
-                                   const QgsCoordinateReferenceSystem &destination );
+                                   const QgsCoordinateReferenceSystem &destination,
+                                   const QgsCoordinateTransformContext &context );
+
+    QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
+                                   const QgsCoordinateReferenceSystem &destination,
+                                   int sourceDatumTransform,
+                                   int destDatumTransform );
 
     QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other );
 
     ~QgsCoordinateTransformPrivate();
 
+    bool checkValidity();
+
+    void invalidate();
+
     bool initialize();
 
-    QPair< projPJ, projPJ > threadLocalProjData();
+    void calculateTransforms( const QgsCoordinateTransformContext &context );
 
-    //! Flag to indicate whether the transform is valid (ie has a valid
-    //! source and destination crs)
-    bool mIsValid;
+    ProjData threadLocalProjData();
+
+#if PROJ_VERSION_MAJOR>=6
+    int mAvailableOpCount = -1;
+    ProjData threadLocalFallbackProjData();
+
+    // Only meant to be called by QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread()
+    bool removeObjectsBelongingToCurrentThread( void *pj_context );
+#endif
+
+    /**
+     * Flag to indicate whether the transform is valid (ie has a valid
+     * source and destination crs)
+     */
+    bool mIsValid = false;
 
     /**
      * Flag to indicate that the source and destination coordinate systems are
      * equal and not transformation needs to be done
      */
-    bool mShortCircuit;
+    bool mShortCircuit = false;
 
     //! QgsCoordinateReferenceSystem of the source (layer) coordinate system
     QgsCoordinateReferenceSystem mSourceCRS;
@@ -86,34 +128,115 @@ class QgsCoordinateTransformPrivate : public QSharedData
     //! QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
     QgsCoordinateReferenceSystem mDestCRS;
 
-    QString mSourceProjString;
-    QString mDestProjString;
+    Q_DECL_DEPRECATED QString mSourceProjString;
+    Q_DECL_DEPRECATED QString mDestProjString;
 
-    int mSourceDatumTransform;
-    int mDestinationDatumTransform;
+    Q_DECL_DEPRECATED int mSourceDatumTransform = -1;
+    Q_DECL_DEPRECATED int mDestinationDatumTransform = -1;
+    QString mProjCoordinateOperation;
+    bool mShouldReverseCoordinateOperation = false;
+    bool mAllowFallbackTransforms = true;
+
+    //! True if the proj transform corresponds to the reverse direction, and must be flipped when transforming...
+    bool mIsReversed = false;
+
+#if PROJ_VERSION_MAJOR<6
 
     /**
      * Thread local proj context storage. A new proj context will be created
      * for every thread.
      */
+#ifdef USE_THREAD_LOCAL
     static thread_local QgsProjContextStore mProjContext;
+#else
+    static QThreadStorage< QgsProjContextStore * > mProjContext;
+#endif
+#endif
+
 
     QReadWriteLock mProjLock;
-    QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;
+    QMap < uintptr_t, ProjData > mProjProjections;
+    QMap < uintptr_t, ProjData > mProjFallbackProjections;
 
-    static QString datumTransformString( int datumTransform );
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation requires a transform \a grid which is not present
+     * on the system.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::GridDetails &grid )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
+     * \a destinationCrs, yet a preferred (more accurate?) operation is available which could not
+     * be created on the system (e.g. due to missing transform grids).
+     *
+     * \a preferredOperation gives the details of the preferred coordinate operation, and
+     * \a availableOperation gives the details of the actual operation to be used during the
+     * transform.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &preferredOperation,
+        const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate transform was required between \a sourceCrs and
+     * \a destinationCrs, yet the coordinate operation could not be created. The \a error argument
+     * specifies the error message obtained.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QString &error )> &handler );
+
+    /**
+     * Sets a custom handler to use when a coordinate operation was specified for use between \a sourceCrs and
+     * \a destinationCrs by the transform context, yet the coordinate operation could not be created. The \a desiredOperation argument
+     * specifies the desired transform details as specified by the context.
+     *
+     * \since QGIS 3.8
+     */
+    static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 
   private:
 
+#if PROJ_VERSION_MAJOR<6
     //! Removes +nadgrids and +towgs84 from proj4 string
-    QString stripDatumTransform( const QString &proj4 ) const;
+    Q_DECL_DEPRECATED  QString stripDatumTransform( const QString &proj4 ) const;
 
     //! In certain situations, null grid shifts have to be added to src / dst proj string
-    void addNullGridShifts( QString &srcProjString, QString &destProjString ) const;
-
-    void setFinder();
+    Q_DECL_DEPRECATED void addNullGridShifts( QString &srcProjString, QString &destProjString, int sourceDatumTransform, int destinationDatumTransform ) const;
+#endif
 
     void freeProj();
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QgsDatumTransform::GridDetails &grid )> sMissingRequiredGridHandler;
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QgsDatumTransform::TransformDetails &preferredOperation,
+                                const QgsDatumTransform::TransformDetails &availableOperation )> sMissingPreferredGridHandler;
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QString &error )> sCoordinateOperationCreationErrorHandler;
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QgsDatumTransform::TransformDetails &desiredOperation )> sMissingGridUsedByContextHandler;
+
+    QgsCoordinateTransformPrivate &operator= ( const QgsCoordinateTransformPrivate & ) = delete;
 };
 
 /// @endcond

@@ -19,16 +19,12 @@
 
 #include "qgsconfig.h"
 #include "qgsfilterresponsedecorator.h"
+#include "qgsserverexception.h"
 
 QgsFilterResponseDecorator::QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response )
   : mFilters( filters )
   , mResponse( response )
 {
-}
-
-QgsFilterResponseDecorator::~QgsFilterResponseDecorator()
-{
-
 }
 
 void QgsFilterResponseDecorator::start()

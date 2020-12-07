@@ -62,7 +62,7 @@ bool QgsOpacityWidgetPlugin::isInitialized() const
 
 void QgsOpacityWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

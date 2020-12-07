@@ -54,7 +54,8 @@ typedef QMap<QgsFeatureId SIP_PYALTERNATIVETYPE( qint64 ), QgsAttributeMap SIP_P
 typedef QMap<QgsFeatureId, QgsAttributeMap> SIP_PYALTERNATIVETYPE( 'QMap<qint64, QMap<int, QVariant> >' ) QgsChangedAttributesMap;
 typedef QMap<QgsFeatureId, QPair<QMap<Something, Complex> >>  SIP_PYALTERNATIVETYPE( 'QMap<qint64, QMap<int, QVariant>>' ) QgsChangedAttributesMap;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A super QGIS class
  */
 #ifndef SIP_RUN // following will be hidden
@@ -84,12 +85,13 @@ typedef QVector<QVariant> QgsSuperClass;
 }
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Documentation goes here
  *
  * Here's some comment mentioning another class QgsAutoAwesomemater::makeAwesome.
- * \since QGIS 3.0
  * \note some other note
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBaseClass
 {
@@ -132,6 +134,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       QString mName;
       int mCount = 100;
       QgsMapLayer *mLayer = nullptr;
+      QList<QAction *> contextMenuActions = QList<QAction *>();
     };
 
     static const int MONTHS = 60 * 60 * 24 * 30; // something
@@ -214,7 +217,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void LongDocStringMethodWithBrief();
 
     /**
-     * I return a pointer. If something bad happens, I return nullptr.
+     * I return a pointer. If something bad happens, I return NULLPTR.
     * \returns pointer to something cool
      */
     MyPointer *pointerReturnValue();
@@ -333,7 +336,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     //! remove argument
     void simple( bool test SIP_PYARGREMOVE );
-    void method( bool myArg SIP_PYARGREMOVE =  test );
+    void method( bool myArg SIP_PYARGREMOVE = test );
     void test( QgsMapLayer *vl SIP_PYARGREMOVE = nullptr );
     void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
                              const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );

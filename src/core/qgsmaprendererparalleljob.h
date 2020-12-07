@@ -20,7 +20,8 @@
 #include "qgis_sip.h"
 #include "qgsmaprendererjob.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Job implementation that renders all layers in parallel.
  *
  * The resulting map image can be retrieved with renderedImage() function.
@@ -33,23 +34,25 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     Q_OBJECT
   public:
     QgsMapRendererParallelJob( const QgsMapSettings &settings );
-    ~QgsMapRendererParallelJob();
+    ~QgsMapRendererParallelJob() override;
 
-    virtual void start() override;
-    virtual void cancel() override;
-    virtual void cancelWithoutBlocking() override;
-    virtual void waitForFinished() override;
-    virtual bool isActive() const override;
+    void start() override;
+    void cancel() override;
+    void cancelWithoutBlocking() override;
+    void waitForFinished() override;
+    bool isActive() const override;
 
-    virtual bool usedCachedLabels() const override;
-    virtual QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
+    bool usedCachedLabels() const override;
+    QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     // from QgsMapRendererJobWithPreview
-    virtual QImage renderedImage() override;
+    QImage renderedImage() override;
 
   private slots:
     //! layers are rendered, labeling is still pending
     void renderLayersFinished();
+    //! the second pass of layer rendering is finished
+    void renderLayersSecondPassFinished();
     //! all rendering is finished, including labeling
     void renderingFinished();
 
@@ -63,13 +66,17 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QImage mFinalImage;
 
     //! \note not available in Python bindings
-    enum { Idle, RenderingLayers, RenderingLabels } mStatus SIP_SKIP;
+    enum { Idle, RenderingLayers, RenderingSecondPass, RenderingLabels } mStatus SIP_SKIP;
 
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
 
     LayerRenderJobs mLayerJobs;
     LabelRenderJob mLabelJob;
+
+    LayerRenderJobs mSecondPassLayerJobs;
+    QFuture<void> mSecondPassFuture;
+    QFutureWatcher<void> mSecondPassFutureWatcher;
 
     //! New labeling engine
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;

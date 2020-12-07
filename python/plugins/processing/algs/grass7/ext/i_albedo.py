@@ -16,24 +16,20 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from .i import verifyRasterNum
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    if alg.getParameterValue('-m'):
-        return verifyRasterNum(alg, 'input', 7)
-    elif alg.getParameterValue('-n'):
-        return verifyRasterNum(alg, 'input', 2)
-    elif alg.getParameterValue('-l') or alg.getParameterValue('-a'):
-        return verifyRasterNum(alg, 'input', 6)
-    return None
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    if alg.parameterAsBoolean(parameters, '-m', context):
+        return verifyRasterNum(alg, parameters, context, 'input', 7)
+    elif alg.parameterAsBoolean(parameters, '-n', context):
+        return verifyRasterNum(alg, parameters, context, 'input', 2)
+    elif (alg.parameterAsBoolean(parameters, '-l', context)
+          or alg.parameterAsBoolean(parameters, '-a', context)):
+        return verifyRasterNum(alg, parameters, context, 'input', 6)
+    return True, None

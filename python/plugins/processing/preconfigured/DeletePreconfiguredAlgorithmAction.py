@@ -21,11 +21,8 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import QgsApplication
 from processing.gui.ContextAction import ContextAction
@@ -35,14 +32,15 @@ from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorit
 class DeletePreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Delete preconfigured algorithm', 'DeletePreconfiguredAlgorithmAction')
+        super().__init__()
+        self.name = QCoreApplication.translate('DeletePreconfiguredAlgorithmAction', 'Delete Preconfigured Algorithm…')
 
     def isEnabled(self):
         return isinstance(self.itemData, PreconfiguredAlgorithm)
 
     def execute(self):
         reply = QMessageBox.question(None,
-                                     self.tr('Confirmation', 'DeletePreconfiguredAlgorithmAction'),
+                                     self.tr('Delete Algorithm', 'DeletePreconfiguredAlgorithmAction'),
                                      self.tr('Are you sure you want to delete this algorithm?',
                                              'DeletePreconfiguredAlgorithmAction'),
                                      QMessageBox.Yes | QMessageBox.No,

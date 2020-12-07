@@ -26,18 +26,16 @@ from builtins import range
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from qgis.PyQt.QtCore import Qt, QRegExp
+from qgis.PyQt.QtCore import Qt, QRegExp, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
-from qgis.core import QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
     TableField, TableConstraint, TableIndex, TableTrigger, TableRule
 
 import re
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -48,7 +46,7 @@ class PostGisDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/postgis/icon")
+        return QgsApplication.getThemeIcon("/mIconPostgis.svg")
 
     @classmethod
     def typeName(self):
@@ -56,7 +54,7 @@ class PostGisDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'PostGIS'
+        return QCoreApplication.translate('db_manager', 'PostGIS')
 
     @classmethod
     def providerName(self):
@@ -85,7 +83,10 @@ class PostGisDBPlugin(DBPlugin):
         service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-        sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+        try:
+            sslmode = settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer)
+        except TypeError:
+            sslmode = QgsDataSourceUri.SslPrefer
 
         settings.endGroup()
 
@@ -111,7 +112,7 @@ class PGDatabase(Database):
         Database.__init__(self, connection, uri)
 
     def connectorsFactory(self, uri):
-        return PostGisDBConnector(uri)
+        return PostGisDBConnector(uri, self.connection())
 
     def dataTablesFactory(self, row, db, schema=None):
         return PGTable(row, db, schema)
@@ -134,6 +135,11 @@ class PGDatabase(Database):
 
         return PGSqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import PGSqlResultModelAsync
+
+        return PGSqlResultModelAsync(self, sql, parent)
+
     def registerDatabaseActions(self, mainWindow):
         Database.registerDatabaseActions(self, mainWindow)
 
@@ -152,7 +158,7 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), QgsMessageBar.INFO,
+                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), Qgis.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
@@ -164,7 +170,7 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, PGTable) or item._relationType != 'm':
-                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), QgsMessageBar.INFO,
+                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), Qgis.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
@@ -174,6 +180,12 @@ class PGDatabase(Database):
 
     def hasLowercaseFieldNamesOption(self):
         return True
+
+    def supportsComment(self):
+        return True
+
+    def executeSql(self, sql):
+        return self.connector._executeSql(sql)
 
 
 class PGSchema(Schema):
@@ -260,6 +272,9 @@ class PGTable(Table):
 
         return PGTableInfo(self)
 
+    def crs(self):
+        return self.database().connector.getCrs(self.srid)
+
     def tableDataModel(self, parent):
         from .data_model import PGTableDataModel
 
@@ -307,47 +322,48 @@ class PGRasterTable(PGTable, RasterTable):
 
         return PGRasterTableInfo(self)
 
-    def gdalUri(self, uri=None):
+    def uri(self, uri=None):
+        """Returns the datasource URI for postgresraster provider"""
+
         if not uri:
             uri = self.database().uri()
-        service = (u'service=%s' % uri.service()) if uri.service() else ''
-        schema = (u'schema=%s' % self.schemaName()) if self.schemaName() else ''
-        dbname = (u'dbname=%s' % uri.database()) if uri.database() else ''
+        service = (u'service=\'%s\'' % uri.service()) if uri.service() else ''
+        dbname = (u'dbname=\'%s\'' % uri.database()) if uri.database() else ''
         host = (u'host=%s' % uri.host()) if uri.host() else ''
         user = (u'user=%s' % uri.username()) if uri.username() else ''
         passw = (u'password=%s' % uri.password()) if uri.password() else ''
         port = (u'port=%s' % uri.port()) if uri.port() else ''
 
+        schema = self.schemaName() if self.schemaName() else 'public'
+        table = '"%s"."%s"' % (schema, self.name)
+
         if not dbname:
-            # GDAL postgisraster driver *requires* ad dbname
-            # See: https://trac.osgeo.org/gdal/ticket/6910
-            # TODO: cache this ?
+            # postgresraster provider *requires* a dbname
             connector = self.database().connector
             r = connector._execute(None, "SELECT current_database()")
-            dbname = (u'dbname=%s' % connector._fetchone(r)[0])
+            dbname = (u'dbname=\'%s\'' % connector._fetchone(r)[0])
             connector._close_cursor(r)
 
         # Find first raster field
         col = ''
         for fld in self.fields():
             if fld.dataType == "raster":
-                col = u'column=%s' % fld.name
+                col = u'column=\'%s\'' % fld.name
                 break
 
-        gdalUri = u'PG: %s %s %s %s %s %s mode=2 %s %s table=%s' % \
-                  (service, dbname, host, user, passw, port, schema, col, self.name)
+        uri = u'%s %s %s %s %s %s %s table=%s' % \
+            (service, dbname, host, user, passw, port, col, table)
 
-        return gdalUri
+        return uri
 
     def mimeUri(self):
-        # QGIS has no provider for PGRasters, let's use GDAL
-        uri = u"raster:gdal:%s:%s" % (self.name, re.sub(":", "\:", self.gdalUri()))
+        uri = u"raster:postgresraster:{}:{}".format(self.name, re.sub(":", r"\:", self.uri()))
         return uri
 
     def toMapLayer(self):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement, QgsDataSourceUri, QgsCredentials
 
-        rl = QgsRasterLayer(self.gdalUri(), self.name)
+        rl = QgsRasterLayer(self.uri(), self.name, "postgresraster")
         if not rl.isValid():
             err = rl.error().summary()
             uri = QgsDataSourceUri(self.database().uri())
@@ -360,7 +376,7 @@ class PGRasterTable(PGTable, RasterTable):
                 if ok:
                     uri.setUsername(username)
                     uri.setPassword(password)
-                    rl = QgsRasterLayer(self.gdalUri(uri), self.name)
+                    rl = QgsRasterLayer(self.uri(uri), self.name)
                     if rl.isValid():
                         break
 
@@ -378,7 +394,7 @@ class PGTableField(TableField):
 
         # get modifier (e.g. "precision,scale") from formatted type string
         trimmedTypeStr = typeStr.strip()
-        regex = QRegExp("\((.+)\)$")
+        regex = QRegExp("\\((.+)\\)$")
         startpos = regex.indexIn(trimmedTypeStr)
         if startpos >= 0:
             self.modifier = regex.cap(1).strip()
@@ -390,6 +406,24 @@ class PGTableField(TableField):
             if con.type == TableConstraint.TypePrimaryKey and self.num in con.columns:
                 self.primaryKey = True
                 break
+
+    def getComment(self):
+        """Returns the comment for a field"""
+        tab = self.table()
+        # SQL Query checking if a comment exists for the field
+        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
+        # SQL Query that return the comment of the field
+        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
+        c = tab.database().connector._execute(None, sql_cpt)  # Execute Check query
+        res = tab.database().connector._fetchone(c)[0]  # Store result
+        if res == 1:
+            # When a comment exists
+            c = tab.database().connector._execute(None, sql)  # Execute query
+            res = tab.database().connector._fetchone(c)[0]  # Store result
+            tab.database().connector._close_cursor(c)  # Close cursor
+            return res  # Return comment
+        else:
+            return ''
 
 
 class PGTableConstraint(TableConstraint):

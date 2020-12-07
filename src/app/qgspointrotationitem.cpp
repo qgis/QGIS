@@ -16,6 +16,7 @@
 #include "qgspointrotationitem.h"
 #include <QPainter>
 #include <cmath>
+#include "qgsguiutils.h"
 
 QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   : QgsMapCanvasItem( canvas )
@@ -25,19 +26,10 @@ QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   //setup font
   mFont.setPointSize( 12 );
   mFont.setBold( true );
-}
 
-QgsPointRotationItem::QgsPointRotationItem()
-  : QgsMapCanvasItem( nullptr )
-  , mOrientation( Clockwise )
-  , mRotation( 0.0 )
-{
-
-}
-
-QgsPointRotationItem::~QgsPointRotationItem()
-{
-
+  QImage im( 24, 24, QImage::Format_ARGB32 );
+  im.fill( Qt::transparent );
+  setSymbol( im );
 }
 
 void QgsPointRotationItem::paint( QPainter *painter )
@@ -46,6 +38,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   {
     return;
   }
+  painter->setRenderHint( QPainter::Antialiasing, true );
   painter->save();
 
   //do a bit of trigonometry to find out how to transform a rotated item such that the center point is at the point feature
@@ -54,22 +47,45 @@ void QgsPointRotationItem::paint( QPainter *painter )
   double h, dAngel;
   if ( mPixmap.width() > 0 && mPixmap.height() > 0 )
   {
-    h = sqrt( ( double ) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
-    dAngel = acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
-    x = h * cos( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
-    y = h * sin( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
+    h = std::sqrt( ( double ) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
+    dAngel = std::acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
+    x = h * std::cos( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
+    y = h * std::sin( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
   }
 
   painter->rotate( painterRotation( mRotation ) );
   painter->translate( x - mPixmap.width() / 2.0, -y - mPixmap.height() / 2.0 );
   painter->drawPixmap( 0, 0, mPixmap );
 
-  //draw numeric value beside the symbol
+  //draw arrow, using a red line over a thicker white line so that the arrow is visible against a range of backgrounds
+  QPen pen;
+  pen.setWidth( QgsGuiUtils::scaleIconSize( 4 ) );
+  pen.setColor( QColor( Qt::white ) );
+  painter->setPen( pen );
+  painter->drawPath( mArrowPath );
+  pen.setWidth( QgsGuiUtils::scaleIconSize( 1 ) );
+  pen.setColor( QColor( Qt::red ) );
+  painter->setPen( pen );
+  painter->drawPath( mArrowPath );
   painter->restore();
+
+  //draw numeric value beside the symbol
+  painter->save();
+
+  QPen bufferPen;
+  bufferPen.setColor( Qt::white );
+  bufferPen.setWidthF( QgsGuiUtils::scaleIconSize( 4 ) );
   QFontMetricsF fm( mFont );
-  painter->fillRect( mPixmap.width(), 0, mItemSize.width() - mPixmap.width(), mItemSize.height(), QColor( Qt::white ) );
-  painter->setFont( mFont );
-  painter->drawText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, QString::number( mRotation ) );
+  QPainterPath label;
+  label.addText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, mFont, QString::number( mRotation ) );
+  painter->setPen( bufferPen );
+  painter->setBrush( Qt::NoBrush );
+  painter->drawPath( label );
+  painter->setPen( Qt::NoPen );
+  painter->setBrush( QBrush( Qt::black ) );
+  painter->drawPath( label );
+
+  painter->restore();
 }
 
 void QgsPointRotationItem::setPointLocation( const QgsPointXY &p )
@@ -83,21 +99,13 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
   mPixmap = QPixmap::fromImage( symbolImage );
   QFontMetricsF fm( mFont );
 
-  //draw arrow
-  QPainter p( &mPixmap );
-  QPen pen;
-  pen.setWidth( 1 );
-  pen.setColor( QColor( Qt::red ) );
-  p.setPen( pen );
-  int halfItemWidth = mPixmap.width() / 2;
-  int quarterItemHeight = mPixmap.height() / 4;
-  p.drawLine( halfItemWidth, mPixmap.height(), halfItemWidth, 0 );
-  p.drawLine( halfItemWidth, 0, mPixmap.width() / 4, quarterItemHeight );
-  p.drawLine( halfItemWidth, 0, mPixmap.width() * 0.75, quarterItemHeight );
-
   //set item size
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mItemSize.setWidth( mPixmap.width() + fm.width( QStringLiteral( "360" ) ) );
-  double pixmapHeight = mPixmap.height();
+#else
+  mItemSize.setWidth( mPixmap.width() + fm.horizontalAdvance( QStringLiteral( "360" ) ) );
+#endif
+  const double pixmapHeight = mPixmap.height();
   double fontHeight = fm.height();
   if ( pixmapHeight >= fontHeight )
   {
@@ -107,6 +115,14 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
   {
     mItemSize.setHeight( fm.height() );
   }
+
+  const double halfItemWidth = mPixmap.width() / 2.0;
+  mArrowPath = QPainterPath();
+  mArrowPath.moveTo( halfItemWidth, pixmapHeight );
+  mArrowPath.lineTo( halfItemWidth, 0 );
+  mArrowPath.moveTo( mPixmap.width() * 0.25, pixmapHeight * 0.25 );
+  mArrowPath.lineTo( halfItemWidth, 0 );
+  mArrowPath.lineTo( mPixmap.width() * 0.75, pixmapHeight * 0.25 );
 }
 
 int QgsPointRotationItem::painterRotation( int rotation ) const

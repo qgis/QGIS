@@ -21,12 +21,14 @@
 #include "qgsfieldproxymodel.h"
 #include "qgis_gui.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsFields;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsFieldComboBox is a combo box which displays the list of fields of a given layer.
  * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  * If expression must be used, QgsFieldExpressionWidget shall be used instead.
@@ -36,7 +38,6 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
 {
     Q_OBJECT
-    Q_FLAGS( QgsFieldProxyModel::Filters )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEmptyFieldName READ allowEmptyFieldName WRITE setAllowEmptyFieldName )
 
@@ -48,7 +49,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      */
     explicit QgsFieldComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! setFilters allows fitering according to the type of field
+    //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
     //! currently used filter on list of fields
@@ -62,13 +63,13 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
-     * Returns true if the combo box allows the empty field ("not set") choice.
+     * Returns TRUE if the combo box allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
      * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const;
 
-    //! return the currently selected field
+    //! Returns the currently selected field
     QString currentField() const;
 
     /**
@@ -77,8 +78,30 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      */
     QgsVectorLayer *layer() const;
 
+    /**
+     * Manually sets the \a fields to use for the combo box.
+     *
+     * This method should only be used when the combo box ISN'T associated with a layer()
+     * and needs to show the fields from an arbitrary field collection instead. Calling
+     * setFields() will automatically clear any existing layer().
+     *
+     * \see fields()
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
+
+    /**
+     * Returns the fields currently shown in the combobox.
+     *
+     * This will either be fields from the associated layer() or the fields
+     * manually set by a call to setFields().
+     *
+     * \since QGIS 3.14
+     */
+    QgsFields fields() const;
+
   signals:
-    //! the signal is emitted when the currently selected field changes
+    //! Emitted when the currently selected field changes.
     void fieldChanged( const QString &fieldName );
 
   public slots:

@@ -19,10 +19,11 @@
 #include <QVector>
 #include <QVariant>
 
-#include <qgspoint.h>
-#include <qgscoordinatereferencesystem.h>
-#include <qgsdistancearea.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
 #include "qgis_analysis.h"
+
+class QgsPoint;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -57,17 +58,10 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * \param topologyTolerance sqrt distance between source point as one graph vertex
      * \param ellipsoidID ellipsoid for edge measurement
      */
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" )
-      : mCrs( crs )
-      , mCtfEnabled( ctfEnabled )
-      , mTopologyTolerance( topologyTolerance )
-    {
-      mDa.setSourceCrs( mCrs );
-      mDa.setEllipsoid( ellipsoidID );
-    }
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true,
+                              double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 
-    virtual ~QgsGraphBuilderInterface()
-    { }
+    virtual ~QgsGraphBuilderInterface() = default;
 
     //! Returns destinaltion CRS
     QgsCoordinateReferenceSystem destinationCrs() const
@@ -99,11 +93,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * \param pt vertex coordinates
      * \note id and pt are redundant. You can use pt or id to identify the vertex
      */
-    virtual void addVertex( int id, const QgsPointXY &pt )
-    {
-      Q_UNUSED( id );
-      Q_UNUSED( pt );
-    }
+    virtual void addVertex( int id, const QgsPointXY &pt );
 
     /**
      * Add edge to the graph
@@ -114,14 +104,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * \param strategies optimization strategies
      * \note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
      */
-    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &strategies )
-    {
-      Q_UNUSED( pt1id );
-      Q_UNUSED( pt1 );
-      Q_UNUSED( pt2id );
-      Q_UNUSED( pt2 );
-      Q_UNUSED( strategies );
-    }
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &strategies );
 
   private:
     QgsCoordinateReferenceSystem mCrs;
@@ -133,5 +116,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     double mTopologyTolerance;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGRAPHBUILDERINTERFACE_H

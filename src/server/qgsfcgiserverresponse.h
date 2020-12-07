@@ -19,6 +19,9 @@
 #ifndef QGSFCGISERVERRESPONSE_H
 #define QGSFCGISERVERRESPONSE_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 
@@ -26,15 +29,19 @@
 
 /**
  * \ingroup server
- * QgsFcgiServerResponse
- * Class defining fcgi response
+ * \class QgsFcgiServerResponse
+ * \brief Class defining fcgi response
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 {
   public:
 
+    /**
+     * Constructor for QgsFcgiServerResponse.
+     * \param method The HTTP method (Get by default)
+     */
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
-    ~QgsFcgiServerResponse();
 
     void setHeader( const QString &key, const QString &value ) override;
 
@@ -48,7 +55,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     void setStatusCode( int code ) override;
 
-    int statusCode( ) const override { return mStatusCode; }
+    int statusCode() const override { return mStatusCode; }
 
     void sendError( int code,  const QString &message ) override;
 

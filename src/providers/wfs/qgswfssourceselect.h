@@ -19,9 +19,12 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgswfscapabilities.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsoapifcollection.h"
 #include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -29,7 +32,7 @@
 
 class QgsProjectionSelectionDialog;
 class QgsWfsCapabilities;
-class QgsSQLComposerDialog;
+class QgsSubsetStringEditorInterface;
 
 class QgsWFSItemDelegate : public QItemDelegate
 {
@@ -38,64 +41,75 @@ class QgsWFSItemDelegate : public QItemDelegate
   public:
     explicit QgsWFSItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 
-class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
+class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
 {
     Q_OBJECT
 
   public:
 
-    QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode );
-    ~QgsWFSSourceSelect();
+    QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    ~QgsWFSSourceSelect() override;
 
-  signals:
-    void addWfsLayer( const QString &uri, const QString &layerName );
-    void connectionsChanged();
+    void reset() override;
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
 
-    /** Stores the available CRS for a server connections.
-     The first string is the typename, the corresponding list
-    stores the CRS for the typename in the form 'EPSG:XXXX'*/
+    /**
+     * Stores the available CRS for a server connections.
+     * The first string is the typename, the corresponding list
+     * stores the CRS for the typename in the form 'EPSG:XXXX'
+    */
     QMap<QString, QStringList > mAvailableCRS;
-    QgsWfsCapabilities *mCapabilities = nullptr;
+    std::unique_ptr<QgsWfsCapabilities> mCapabilities;
+    std::unique_ptr<QgsOapifLandingPageRequest> mOAPIFLandingPage;
+    std::unique_ptr<QgsOapifCollectionsRequest> mOAPIFCollections;
     QString mUri;            // data source URI
     QgsWFSItemDelegate *mItemDelegate = nullptr;
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
-    QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
-    //! Embedded mode, without 'Close'
-    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
+    QgsSubsetStringEditorInterface *mSQLComposerDialog = nullptr;
+    QString mVersion;
 
-    /** Returns the best suited CRS from a set of authority ids
-       1. project CRS if contained in the set
-       2. WGS84 if contained in the set
-       3. the first entry in the set else
-    \returns the authority id of the crs or an empty string in case of error*/
+    /**
+     * Returns the best suited CRS from a set of authority ids
+     * 1. project CRS if contained in the set
+     * 2. WGS84 if contained in the set
+     * 3. the first entry in the set else
+     * \returns the authority id of the crs or an empty string in case of error
+    */
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
+
+    void showHelp();
+
+  public slots:
+
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
+    void addButtonClicked() override;
 
   private slots:
     void addEntryToServerList();
     void modifyEntryOfServerList();
     void deleteEntryOfServerList();
     void connectToServer();
-    void addLayer();
     void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();
-    void on_cmbConnections_activated( int index );
+    void cmbConnections_activated( int index );
     void capabilitiesReplyFinished();
-    void on_btnSave_clicked();
-    void on_btnLoad_clicked();
+    void oapifLandingPageReplyFinished();
+    void oapifCollectionsReplyFinished();
+    void btnSave_clicked();
+    void btnLoad_clicked();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void buildQueryButtonClicked();
@@ -103,10 +117,11 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void updateSql();
 
     void populateConnectionList();
-
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
+    void changeConnection();
+    void startOapifLandingPageRequest();
+    void startOapifCollectionsRequest( const QString &url );
+    void resizeTreeViewAfterModelFill();
+    bool isOapif() const { return mVersion == QLatin1String( "OGC_API_FEATURES" ); }
 };
-
 
 #endif

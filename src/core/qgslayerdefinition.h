@@ -17,12 +17,12 @@
 
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include <QString>
 #include <QVector>
+#include <QDomNode>
 
-class QDomNode;
 class QDomDocument;
 
 class QgsLayerTreeGroup;
@@ -31,7 +31,8 @@ class QgsMapLayer;
 class QgsReadWriteContext;
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
  *
  * QLR files are an export of the layer xml including the style and datasource location.  There is no link
@@ -44,13 +45,14 @@ class CORE_EXPORT QgsLayerDefinition
     //! Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
     static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT );
     //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, const QgsReadWriteContext &context );
+    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context );
     //! Export the selected layer tree nodes to a QLR file
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT );
     //! Export the selected layer tree nodes to a QLR-XML document
     static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT, const QgsReadWriteContext &context );
 
-    /** Returns the given layer as a layer definition document
+    /**
+     * Returns the given layer as a layer definition document
      *  Layer definitions store the data source as well as styling and custom properties.
      *
      *  Layer definitions can be used to load a layer and styling all from a single file.
@@ -65,7 +67,7 @@ class CORE_EXPORT QgsLayerDefinition
      * This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
      * \see loadLayerDefinition()
      */
-    static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
      * Creates new layers from a layer definition file (.QLR)
@@ -82,20 +84,22 @@ class CORE_EXPORT QgsLayerDefinition
     {
       public:
 
-        /** Constructor
+        /**
+         * Constructor
          * \param doc The XML document containing maplayer elements
          */
         DependencySorter( const QDomDocument &doc );
 
-        /** Constructor
+        /**
+         * Constructor
          * \param fileName The filename where the XML document is stored
          */
         DependencySorter( const QString &fileName );
 
-        //! Get the layer nodes in an order where they can be loaded incrementally without dependency break
+        //! Gets the layer nodes in an order where they can be loaded incrementally without dependency break
         QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
 
-        //! Get the layer IDs in an order where they can be loaded incrementally without dependency break
+        //! Gets the layer IDs in an order where they can be loaded incrementally without dependency break
         QStringList sortedLayerIds() const { return mSortedLayerIds; }
 
         //! Whether some cyclic dependency has been detected

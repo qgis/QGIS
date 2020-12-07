@@ -24,8 +24,6 @@ email                : hugo dot mercier at oslandia dot com
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
   : mFilePath( filePath )
-  , mGeometryWkbType( QgsWkbTypes::Unknown )
-  , mGeometrySrid( 0 )
 {
 }
 
@@ -41,7 +39,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
   QgsFields fields;
 
   int layerIdx = 0;
-  QList<QPair<QByteArray, QByteArray> > items = url.encodedQueryItems();
+
+  const QList<QPair<QString, QString> > items = QUrlQuery( url ).queryItems( QUrl::FullyEncoded );
   for ( int i = 0; i < items.size(); i++ )
   {
     QString key = items.at( i ).first;
@@ -159,10 +158,94 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         }
       }
     }
+    else if ( key == QLatin1String( "lazy" ) )
+    {
+      def.setLazy( true );
+    }
+    else if ( key == QLatin1String( "subsetstring" ) )
+    {
+      def.setSubsetString( QUrl::fromPercentEncoding( value.toUtf8() ) );
+    }
   }
   def.setFields( fields );
 
   return def;
+}
+
+// Mega ewwww. all this is taken from Qt's QUrl::addEncodedQueryItem compatibility helper.
+// (I can't see any way to port the below code to NOT require this without breaking
+// existing projects.)
+
+inline char toHexUpper( uint value ) noexcept
+{
+  return "0123456789ABCDEF"[value & 0xF];
+}
+
+static inline ushort encodeNibble( ushort c )
+{
+  return ushort( toHexUpper( c ) );
+}
+
+static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
+{
+  while ( ptr + 4 <= end )
+  {
+    quint32 data = qFromUnaligned<quint32>( ptr );
+    if ( data &= 0x80808080U )
+    {
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN
+      uint idx = qCountLeadingZeroBits( data );
+#else
+      uint idx = qCountTrailingZeroBits( data );
+#endif
+      ptr += idx / 8;
+      return false;
+    }
+    ptr += 4;
+  }
+  while ( ptr != end )
+  {
+    if ( quint8( *ptr ) & 0x80 )
+      return false;
+    ++ptr;
+  }
+  return true;
+}
+
+QString fromEncodedComponent_helper( const QByteArray &ba )
+{
+  if ( ba.isNull() )
+    return QString();
+  // scan ba for anything above or equal to 0x80
+  // control points below 0x20 are fine in QString
+  const char *in = ba.constData();
+  const char *const end = ba.constEnd();
+  if ( qt_is_ascii( in, end ) )
+  {
+    // no non-ASCII found, we're safe to convert to QString
+    return QString::fromLatin1( ba, ba.size() );
+  }
+  // we found something that we need to encode
+  QByteArray intermediate = ba;
+  intermediate.resize( ba.size() * 3 - ( in - ba.constData() ) );
+  uchar *out = reinterpret_cast<uchar *>( intermediate.data() + ( in - ba.constData() ) );
+  for ( ; in < end; ++in )
+  {
+    if ( *in & 0x80 )
+    {
+      // encode
+      *out++ = '%';
+      *out++ = encodeNibble( uchar( *in ) >> 4 );
+      *out++ = encodeNibble( uchar( *in ) & 0xf );
+    }
+    else
+    {
+      // keep
+      *out++ = uchar( *in );
+    }
+  }
+  // now it's safe to call fromLatin1
+  return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
 }
 
 QUrl QgsVirtualLayerDefinition::toUrl() const
@@ -171,45 +254,64 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   if ( !filePath().isEmpty() )
     url = QUrl::fromLocalFile( filePath() );
 
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, sourceLayers() )
+  QUrlQuery urlQuery( url );
+
+  const auto constSourceLayers = sourceLayers();
+  for ( const QgsVirtualLayerDefinition::SourceLayer &l : constSourceLayers )
   {
     if ( l.isReferenced() )
-      url.addQueryItem( QStringLiteral( "layer_ref" ), QStringLiteral( "%1:%2" ).arg( l.reference(), l.name() ) );
+      urlQuery.addQueryItem( QStringLiteral( "layer_ref" ), QStringLiteral( "%1:%2" ).arg( l.reference(), l.name() ) );
     else
-      url.addEncodedQueryItem( "layer", QStringLiteral( "%1:%4:%2:%3" ) // the order is important, since the 4th argument may contain '%2' as well
-                               .arg( l.provider(),
-                                     QString( QUrl::toPercentEncoding( l.name() ) ),
-                                     l.encoding(),
-                                     QString( QUrl::toPercentEncoding( l.source() ) ) ).toUtf8() );
+      // if you can find a way to port this away from fromEncodedComponent_helper without breaking existing projects,
+      // please do so... this is GROSS!
+      urlQuery.addQueryItem( fromEncodedComponent_helper( "layer" ),
+                             fromEncodedComponent_helper( QStringLiteral( "%1:%4:%2:%3" ) // the order is important, since the 4th argument may contain '%2' as well
+                                 .arg( l.provider(),
+                                       QString( QUrl::toPercentEncoding( l.name() ) ),
+                                       l.encoding(),
+                                       QString( QUrl::toPercentEncoding( l.source() ) ) ).toUtf8() ) );
   }
 
   if ( !query().isEmpty() )
   {
-    url.addQueryItem( QStringLiteral( "query" ), query() );
+    urlQuery.addQueryItem( QStringLiteral( "query" ), query() );
   }
 
   if ( !uid().isEmpty() )
-    url.addQueryItem( QStringLiteral( "uid" ), uid() );
+    urlQuery.addQueryItem( QStringLiteral( "uid" ), uid() );
 
   if ( geometryWkbType() == QgsWkbTypes::NoGeometry )
-    url.addQueryItem( QStringLiteral( "nogeometry" ), QLatin1String( "" ) );
+    urlQuery.addQueryItem( QStringLiteral( "nogeometry" ), QString() );
   else if ( !geometryField().isEmpty() )
   {
     if ( hasDefinedGeometry() )
-      url.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( geometryWkbType() ).arg( geometrySrid() ).toUtf8() );
+      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( geometryWkbType() ).arg( geometrySrid() ).toUtf8() );
     else
-      url.addQueryItem( QStringLiteral( "geometry" ), geometryField() );
+      urlQuery.addQueryItem( QStringLiteral( "geometry" ), geometryField() );
   }
 
-  Q_FOREACH ( const QgsField &f, fields() )
+  const auto constFields = fields();
+  for ( const QgsField &f : constFields )
   {
     if ( f.type() == QVariant::Int )
-      url.addQueryItem( QStringLiteral( "field" ), f.name() + ":int" );
+      urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":int" );
     else if ( f.type() == QVariant::Double )
-      url.addQueryItem( QStringLiteral( "field" ), f.name() + ":real" );
+      urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":real" );
     else if ( f.type() == QVariant::String )
-      url.addQueryItem( QStringLiteral( "field" ), f.name() + ":text" );
+      urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":text" );
   }
+
+  if ( isLazy() )
+  {
+    urlQuery.addQueryItem( QStringLiteral( "lazy" ), QString() );
+  }
+
+  if ( ! subsetString().isEmpty() )
+  {
+    urlQuery.addQueryItem( QStringLiteral( "subsetstring" ), QUrl::toPercentEncoding( subsetString() ) );
+  }
+
+  url.setQuery( urlQuery );
 
   return url;
 }
@@ -231,7 +333,8 @@ void QgsVirtualLayerDefinition::addSource( const QString &name, const QString &s
 
 bool QgsVirtualLayerDefinition::hasSourceLayer( const QString &name ) const
 {
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, sourceLayers() )
+  const auto constSourceLayers = sourceLayers();
+  for ( const QgsVirtualLayerDefinition::SourceLayer &l : constSourceLayers )
   {
     if ( l.name() == name )
     {
@@ -243,7 +346,8 @@ bool QgsVirtualLayerDefinition::hasSourceLayer( const QString &name ) const
 
 bool QgsVirtualLayerDefinition::hasReferencedLayers() const
 {
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, sourceLayers() )
+  const auto constSourceLayers = sourceLayers();
+  for ( const QgsVirtualLayerDefinition::SourceLayer &l : constSourceLayers )
   {
     if ( l.isReferenced() )
     {
@@ -251,4 +355,14 @@ bool QgsVirtualLayerDefinition::hasReferencedLayers() const
     }
   }
   return false;
+}
+
+QString QgsVirtualLayerDefinition::subsetString() const
+{
+  return mSubsetString;
+}
+
+void QgsVirtualLayerDefinition::setSubsetString( const QString &subsetString )
+{
+  mSubsetString = subsetString;
 }

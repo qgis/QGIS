@@ -1,0 +1,120 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudattributebyramprenderer.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointCloudAttributeByRampRenderer : QgsPointCloudRenderer
+{
+%Docstring
+An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudattributebyramprenderer.h"
+%End
+  public:
+
+    QgsPointCloudAttributeByRampRenderer();
+%Docstring
+Constructor for QgsPointCloudAttributeByRampRenderer.
+%End
+
+    virtual QString type() const;
+
+    virtual QgsPointCloudRenderer *clone() const;
+
+    virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context );
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates an RGB renderer from an XML ``element``.
+%End
+
+    QString attribute() const;
+%Docstring
+Returns the attribute to use for the renderer.
+
+.. seealso:: :py:func:`setAttribute`
+%End
+
+    void setAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the renderer.
+
+.. seealso:: :py:func:`attribute`
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns the color ramp shader function used to visualize the attribute.
+
+.. seealso:: :py:func:`setColorRampShader`
+%End
+
+    void setColorRampShader( const QgsColorRampShader &shader );
+%Docstring
+Sets the color ramp ``shader`` function used to visualize the attribute.
+
+.. seealso:: :py:func:`colorRampShader`
+%End
+
+    double minimum() const;
+%Docstring
+Returns the minimum value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`setMinimum`
+
+.. seealso:: :py:func:`maximum`
+%End
+
+    void setMinimum( double minimum );
+%Docstring
+Sets the ``minimum`` value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`minimum`
+
+.. seealso:: :py:func:`setMaximum`
+%End
+
+    double maximum() const;
+%Docstring
+Returns the maximum value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`setMaximum`
+
+.. seealso:: :py:func:`minimum`
+%End
+
+    void setMaximum( double maximum );
+%Docstring
+Sets the ``maximum`` value for attributes which will be used by the color ramp shader.
+
+.. seealso:: :py:func:`maximum`
+
+.. seealso:: :py:func:`setMinimum`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudattributebyramprenderer.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -16,42 +16,34 @@
  ***************************************************************************/
 
 #include "qgsidwinterpolator.h"
+#include "qgis.h"
 #include <cmath>
 #include <limits>
 
-QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData> &layerData ): QgsInterpolator( layerData ), mDistanceCoefficient( 2.0 )
-{
+QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData> &layerData )
+  : QgsInterpolator( layerData )
+{}
 
-}
-
-QgsIDWInterpolator::QgsIDWInterpolator(): QgsInterpolator( QList<LayerData>() ), mDistanceCoefficient( 2.0 )
-{
-
-}
-
-int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result )
+int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback *feedback )
 {
   if ( !mDataIsCached )
   {
-    cacheBaseData();
+    cacheBaseData( feedback );
   }
-
-  double currentWeight;
-  double distance;
 
   double sumCounter = 0;
   double sumDenominator = 0;
 
-  Q_FOREACH ( const vertexData &vertex_it, mCachedBaseData )
+  for ( const QgsInterpolatorVertexData &vertex : qgis::as_const( mCachedBaseData ) )
   {
-    distance = sqrt( ( vertex_it.x - x ) * ( vertex_it.x - x ) + ( vertex_it.y - y ) * ( vertex_it.y - y ) );
-    if ( ( distance - 0 ) < std::numeric_limits<double>::min() )
+    double distance = std::sqrt( ( vertex.x - x ) * ( vertex.x - x ) + ( vertex.y - y ) * ( vertex.y - y ) );
+    if ( qgsDoubleNear( distance, 0.0 ) )
     {
-      result = vertex_it.z;
+      result = vertex.z;
       return 0;
     }
-    currentWeight = 1 / ( pow( distance, mDistanceCoefficient ) );
-    sumCounter += ( currentWeight * vertex_it.z );
+    double currentWeight = 1 / ( std::pow( distance, mDistanceCoefficient ) );
+    sumCounter += ( currentWeight * vertex.z );
     sumDenominator += currentWeight;
   }
 

@@ -21,78 +21,74 @@
 #include "qgslogger.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
- * Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to it.
+ * \note Not available in Python bindings
+*/
 class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 {
   protected:
 
   public:
     //! Default constructor
-    Bezier3D();
+    Bezier3D() = default;
     //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
     Bezier3D( ParametricLine *par, QVector<QgsPoint *> *controlpoly );
 
-    virtual ~Bezier3D();
     //! Do not use this method, since a Bezier curve does not consist of other curves
-    virtual void add( ParametricLine *pl ) override;
+    void add( ParametricLine *pl SIP_TRANSFER ) override;
     //! Calculates the first derivative and assigns it to v
-    virtual void calcFirstDer( float t, Vector3D *v ) override;
+    void calcFirstDer( float t, Vector3D *v SIP_OUT ) override;
     //! Calculates the second derivative and assigns it to v
-    virtual void calcSecDer( float t, Vector3D *v ) override;
+    void calcSecDer( float t, Vector3D *v SIP_OUT ) override;
     //virtual QgsPoint calcPoint(float t);
     //! Calculates the point on the curve and assigns it to p
-    virtual void calcPoint( float t, QgsPoint *p ) override;
+    void calcPoint( float t, QgsPoint *p SIP_OUT ) override;
     //! Changes the order of control points
-    virtual void changeDirection() override;
+    void changeDirection() override;
     //virtual void draw(QPainter* p);
     //virtual bool intersects(ParametricLine* pal);
     //! Do not use this method, since a Bezier curve does not consist of other curves
-    virtual void remove( int i ) override;
+    void remove( int i ) override;
     //! Returns a control point
-    virtual const QgsPoint *getControlPoint( int number ) const override;
+    const QgsPoint *getControlPoint( int number ) const override;
     //! Returns a pointer to the control polygon
-    virtual const QVector<QgsPoint *> *getControlPoly() const override;
+    const QVector<QgsPoint *> *getControlPoly() const override;
     //! Returns the degree of the curve
-    virtual int getDegree() const override;
+    int getDegree() const override;
     //! Returns the parent
-    virtual ParametricLine *getParent() const override;
+    ParametricLine *getParent() const override;
     //! Sets the parent
-    virtual void setParent( ParametricLine *par ) override;
+    void setParent( ParametricLine *par ) override;
     //! Sets the control polygon
-    virtual void setControlPoly( QVector<QgsPoint *> *cp ) override;
+    void setControlPoly( QVector<QgsPoint *> *cp ) override;
 
 };
 
+#ifndef SIP_RUN
+
 //-----------------------------------------------constructors, destructor and assignment operator------------------------------
-
-inline Bezier3D::Bezier3D() : ParametricLine()//default constructor
-{
-
-}
 
 inline Bezier3D::Bezier3D( ParametricLine *parent, QVector<QgsPoint *> *controlpoly ) : ParametricLine( parent, controlpoly )
 {
   mDegree = mControlPoly->count() - 1;
 }
 
-inline Bezier3D::~Bezier3D()
-{
-
-}
-
 //----------------------------------------------invalid methods add and remove (because of inheritance from ParametricLine)
 
 inline void Bezier3D::add( ParametricLine *pl )
 {
-  Q_UNUSED( pl );
-  QgsDebugMsg( "Error!!!!! A Bezier-curve can not be parent of a ParametricLine." );
+  Q_UNUSED( pl )
+  QgsDebugMsg( QStringLiteral( "Error!!!!! A Bezier-curve can not be parent of a ParametricLine." ) );
 }
 
 inline void Bezier3D::remove( int i )
 {
-  Q_UNUSED( i );
-  QgsDebugMsg( "Error!!!!! A Bezier-curve has no children to remove." );
+  Q_UNUSED( i )
+  QgsDebugMsg( QStringLiteral( "Error!!!!! A Bezier-curve has no children to remove." ) );
 }
 
 //-----------------------------------------------setters and getters---------------------------------------------------------------
@@ -127,6 +123,8 @@ inline void Bezier3D::setControlPoly( QVector<QgsPoint *> *cp )
   mControlPoly = cp;
   mDegree = mControlPoly->count() - 1;
 }
+
+#endif
 
 #endif
 

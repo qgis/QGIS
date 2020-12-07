@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/devtools/qgsdevtoolwidgetfactory.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDevToolWidgetFactory
+{
+%Docstring
+Factory class for creating custom developer/debugging tool pages
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdevtoolwidgetfactory.h"
+%End
+  public:
+
+    QgsDevToolWidgetFactory( const QString &title = QString(), const QIcon &icon = QIcon() );
+%Docstring
+Constructor for a QgsDevToolWidgetFactory with the specified ``title`` and ``icon``.
+%End
+
+    virtual ~QgsDevToolWidgetFactory();
+
+    virtual QIcon icon() const;
+%Docstring
+Returns the icon that will be shown in the tool in the panel.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+    void setIcon( const QIcon &icon );
+%Docstring
+Sets the ``icon`` for the factory object, which will be shown for the tool in the panel.
+
+.. seealso:: :py:func:`icon`
+%End
+
+    virtual QString title() const;
+%Docstring
+Returns the (translated) title of the tool.
+
+.. seealso:: :py:func:`setTitle`
+%End
+
+    void setTitle( const QString &title );
+%Docstring
+Set the translated ``title`` for the tool.
+%End
+
+    virtual QgsDevToolWidget *createWidget( QWidget *parent = 0 ) const = 0 /Factory/;
+%Docstring
+Factory function to create the widget on demand as needed by the dock.
+
+The ``parent`` argument gives the correct parent for the newly created widget.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/devtools/qgsdevtoolwidgetfactory.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

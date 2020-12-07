@@ -21,8 +21,10 @@
 #include "qgsvectorlayer.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
+#include "qgsapplication.h"
 
 // Editors
+#include "qgsbinarywidgetfactory.h"
 #include "qgsclassificationwidgetwrapperfactory.h"
 #include "qgscheckboxwidgetfactory.h"
 #include "qgscolorwidgetfactory.h"
@@ -40,6 +42,11 @@
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
 
+QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
+{
+  mFallbackWidgetFactory.reset( new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+}
+
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
   registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
@@ -49,7 +56,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
   registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
   registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
-  registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
+  registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Checkbox" ) ) );
   registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
   registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
   registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
@@ -58,10 +65,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
   registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
-}
-
-QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
-{
+  registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
@@ -76,7 +80,7 @@ QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer *vl
 
   if ( index > -1 )
   {
-    QgsEditorWidgetSetup setup = vl->fields().at( index ).editorWidgetSetup();
+    QgsEditorWidgetSetup setup = fields.at( index ).editorWidgetSetup();
     if ( !setup.isNull() )
       return setup;
   }
@@ -167,26 +171,26 @@ QMap<QString, QgsEditorWidgetFactory *> QgsEditorWidgetRegistry::factories()
 
 QgsEditorWidgetFactory *QgsEditorWidgetRegistry::factory( const QString &widgetId )
 {
-  return mWidgetFactories.value( widgetId );
+  return mWidgetFactories.value( widgetId, mFallbackWidgetFactory.get() );
 }
 
 bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory )
 {
   if ( !widgetFactory )
   {
-    QgsApplication::messageLog()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory not valid." ) );
+    QgsApplication::messageLog()->logMessage( tr( "QgsEditorWidgetRegistry: Factory not valid." ) );
     return false;
   }
   else if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsApplication::messageLog()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
+    QgsApplication::messageLog()->logMessage( tr( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
     return false;
   }
   else
   {
     mWidgetFactories.insert( widgetId, widgetFactory );
 
-    // Use this factory as default where it provides the heighest priority
+    // Use this factory as default where it provides the highest priority
     QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
     QHash<const char *, int>::ConstIterator it;
     it = types.constBegin();

@@ -21,13 +21,10 @@ from builtins import str
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
 __copyright__ = '(C) 2012, Giuseppe Sucameli'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from .db_plugins.plugin import TableField
-
 from .ui.ui_DlgFieldProperties import Ui_DbManagerDlgFieldProperties as Ui_Dialog
 
 
@@ -42,7 +39,13 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
 
         for item in self.db.connector.fieldTypes():
             self.cboType.addItem(item)
-        self.setField(self.fld)
+
+        supportCom = self.db.supportsComment()
+        if not supportCom:
+            self.label_6.setVisible(False)
+            self.editCom.setVisible(False)
+
+        self.setField(fld)
 
         self.buttonBox.accepted.connect(self.onOK)
 
@@ -56,6 +59,10 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         self.chkNull.setChecked(not fld.notNull)
         if fld.hasDefault:
             self.editDefault.setText(fld.default)
+        tab = self.table.name
+        field = fld.name
+        res = self.db.connector.getComment(tab, field)
+        self.editCom.setText(res)  # Set comment value
 
     def getField(self, newCopy=False):
         fld = TableField(self.table) if not self.fld or newCopy else self.fld
@@ -64,23 +71,23 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         fld.notNull = not self.chkNull.isChecked()
         fld.default = self.editDefault.text()
         fld.hasDefault = fld.default != ""
-        try:
-            modifier = int(self.editLength.text())
-        except ValueError:
-            ok = False
+        fld.comment = self.editCom.text()
+        # length field also used for geometry definition, so we should
+        # not cast its value to int
+        if self.editLength.text() != "":
+            fld.modifier = self.editLength.text()
         else:
-            ok = True
-        fld.modifier = modifier if ok else None
+            fld.modifier = None
         return fld
 
     def onOK(self):
         """ first check whether everything's fine """
         fld = self.getField(True)  # don't change the original copy
         if fld.name == "":
-            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field name must not be empty"))
+            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("Field name must not be empty."))
             return
         if fld.dataType == "":
-            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field type must not be empty"))
+            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("Field type must not be empty."))
             return
 
         self.accept()

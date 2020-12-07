@@ -17,7 +17,7 @@
 #define QGSSCROLLAREA_H
 
 #include <QScrollArea>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include <QTimer>
 class ScrollAreaFilter;
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     /**
      * Constructor for QgsScrollArea.
      */
-    explicit QgsScrollArea( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsScrollArea( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Should be called when a scroll occurs on with the
@@ -56,17 +56,30 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     void scrollOccurred();
 
     /**
-     * Returns true if a scroll recently occurred within
+     * Returns TRUE if a scroll recently occurred within
      * the QScrollArea or its child viewport()
      */
     bool hasScrolled() const;
 
+    /**
+     * Sets whether the scroll area only applies vertical.
+     *
+     * If set to TRUE, then scroll area children will resize horizontally to match the width of
+     * the scroll area widget.
+     *
+     * \since QGIS 3.8
+     */
+    void setVerticalOnly( bool verticalOnly );
+
   protected:
     void wheelEvent( QWheelEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   private:
     QTimer mTimer;
     ScrollAreaFilter *mFilter = nullptr;
+    bool mVerticalOnly = false;
+
 };
 
 #ifndef SIP_RUN

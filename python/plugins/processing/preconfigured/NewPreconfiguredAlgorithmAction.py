@@ -17,17 +17,13 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from processing.gui.ContextAction import ContextAction
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.gui.ContextAction import ContextAction
 from processing.preconfigured.PreconfiguredAlgorithmDialog import PreconfiguredAlgorithmDialog
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 
@@ -35,7 +31,8 @@ from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorit
 class NewPreconfiguredAlgorithmAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Create preconfigured algorithm', 'NewPreconfiguredAlgorithmAction')
+        super().__init__()
+        self.name = QCoreApplication.translate('NewPreconfiguredAlgorithmAction', 'Create Preconfigured Algorithm…')
 
     def isEnabled(self):
         return (isinstance(self.itemData, GeoAlgorithm) and

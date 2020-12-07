@@ -1,0 +1,278 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexpressiontreeview.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsExpressionItem : QStandardItem
+{
+%Docstring
+An expression item that can be used in the QgsExpressionBuilderWidget tree.
+%End
+
+%TypeHeaderCode
+#include "qgsexpressiontreeview.h"
+%End
+  public:
+    enum ItemType
+    {
+      Header,
+      Field,
+      ExpressionNode
+    };
+
+    QgsExpressionItem( const QString &label,
+                       const QString &expressionText,
+                       const QString &helpText,
+                       QgsExpressionItem::ItemType itemType = ExpressionNode );
+
+    QgsExpressionItem( const QString &label,
+                       const QString &expressionText,
+                       QgsExpressionItem::ItemType itemType = ExpressionNode );
+
+    QString getExpressionText() const;
+
+    QString getHelpText() const;
+%Docstring
+Gets the help text that is associated with this expression item.
+
+:return: The help text.
+%End
+
+    void setHelpText( const QString &helpText );
+%Docstring
+Set the help text for the current item
+
+.. note::
+
+   The help text can be set as a html string.
+%End
+
+    QgsExpressionItem::ItemType getItemType() const;
+%Docstring
+Gets the type of expression item, e.g., header, field, ExpressionNode.
+
+:return: The QgsExpressionItem.ItemType
+%End
+
+    static const int CUSTOM_SORT_ROLE;
+    static const int ITEM_TYPE_ROLE;
+    static const int SEARCH_TAGS_ROLE;
+    static const int ITEM_NAME_ROLE;
+
+};
+
+
+class QgsExpressionItemSearchProxy : QSortFilterProxyModel
+{
+%Docstring
+Search proxy used to filter the QgsExpressionBuilderWidget tree.
+The default search for a tree model only searches top level this will handle one
+level down
+%End
+
+%TypeHeaderCode
+#include "qgsexpressiontreeview.h"
+%End
+  public:
+    QgsExpressionItemSearchProxy();
+
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+
+  protected:
+
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+};
+
+class QgsExpressionTreeView : QTreeView
+{
+%Docstring
+QgsExpressionTreeView is a tree view to list all expressions
+functions, variables and fields that can be used in an expression.
+
+.. seealso:: :py:class:`QgsExpressionBuilderWidget`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsexpressiontreeview.h"
+%End
+  public:
+
+    class MenuProvider
+{
+%Docstring
+Implementation of this interface can be implemented to allow QgsExpressionTreeView
+instance to provide custom context menus (opened upon right-click).
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsexpressiontreeview.h"
+%End
+      public:
+        explicit MenuProvider();
+%Docstring
+Constructor
+%End
+        virtual ~MenuProvider();
+
+        virtual QMenu *createContextMenu( QgsExpressionItem *item ) /Factory/;
+%Docstring
+Returns a newly created menu instance
+%End
+    };
+
+    QgsExpressionTreeView( QWidget *parent = 0 );
+%Docstring
+Constructor
+%End
+
+    void setLayer( QgsVectorLayer *layer );
+%Docstring
+Sets layer in order to get the fields and values
+%End
+
+    void loadFieldNames( const QgsFields &fields );
+%Docstring
+This allows loading fields without specifying a layer
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression context for the tree view. The context is used
+to populate the list of available functions and variables.
+
+:param context: expression context
+
+.. seealso:: :py:func:`expressionContext`
+%End
+
+    QgsExpressionContext expressionContext() const;
+%Docstring
+Returns the expression context for the widget. The context is used for the expression
+preview result and for populating the list of available functions and variables.
+
+.. seealso:: :py:func:`setExpressionContext`
+%End
+
+    QgsProject *project();
+%Docstring
+Returns the project currently associated with the widget.
+
+.. seealso:: :py:func:`setProject`
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` currently associated with the widget. This
+controls which layers and relations and other project-specific items are shown in the widget.
+
+.. seealso:: :py:func:`project`
+%End
+
+    void setMenuProvider( MenuProvider *provider );
+%Docstring
+Sets the menu provider.
+This does not take ownership of the provider
+%End
+
+    void refresh();
+%Docstring
+Refreshes the content of the tree
+%End
+
+    QgsExpressionItem *currentItem() const;
+%Docstring
+Returns the current item or a None
+%End
+
+
+    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
+%Docstring
+Loads the recent expressions from the given ``collection``.
+By default it is loaded from the collection "generic".
+%End
+
+    void saveToRecent( const QString &expressionText, const QString &collection = "generic" );
+%Docstring
+Adds the current expression to the given ``collection``.
+By default it is saved to the collection "generic".
+%End
+
+    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText );
+%Docstring
+Stores the user ``expression`` with given ``label`` and ``helpText``.
+%End
+
+    void removeFromUserExpressions( const QString &label );
+%Docstring
+Removes the expression ``label`` from the user stored expressions.
+%End
+
+    void loadUserExpressions( );
+%Docstring
+Loads the user expressions.
+This is done on request since it can be very slow if there are thousands of user expressions
+%End
+
+    const QList<QgsExpressionItem *> findExpressions( const QString &label );
+%Docstring
+Returns the list of expression items matching a ``label``.
+%End
+
+
+    QJsonDocument exportUserExpressions();
+%Docstring
+Create the expressions JSON document storing all the user expressions to be exported.
+
+:return: the created expressions JSON file
+%End
+
+    void loadExpressionsFromJson( const QJsonDocument &expressionsDocument );
+%Docstring
+Load and permanently store the expressions from the expressions JSON document.
+
+:param expressionsDocument: the parsed expressions JSON file
+%End
+
+  signals:
+    void expressionItemDoubleClicked( const QString &text );
+%Docstring
+Emitted when a expression item is double clicked
+%End
+
+    void currentExpressionItemChanged( QgsExpressionItem *item );
+%Docstring
+Emitter when the current expression item changed
+%End
+
+  public slots:
+    void setSearchText( const QString &text );
+%Docstring
+Sets the text to filter the expression tree
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsexpressiontreeview.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

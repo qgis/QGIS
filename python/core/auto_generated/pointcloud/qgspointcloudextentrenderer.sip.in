@@ -1,0 +1,89 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudextentrenderer.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPointCloudExtentRenderer : QgsPointCloudRenderer
+{
+%Docstring
+A renderer for 2d visualisation of point clouds which shows the dataset's extents using a fill symbol.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudextentrenderer.h"
+%End
+  public:
+
+    QgsPointCloudExtentRenderer( QgsFillSymbol *symbol /Transfer/ = 0 );
+%Docstring
+Constructor for QgsPointCloudExtentRenderer.
+
+Optionally the ``symbol`` to use for showing the extent can be specified. If specified, ownership is
+transferred to the renderer. If no ``symbol`` is specified a default one will be created instead.
+%End
+
+    virtual QString type() const;
+
+    virtual QgsPointCloudRenderer *clone() const;
+
+    virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context );
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+    virtual void startRender( QgsPointCloudRenderContext &context );
+
+    virtual void stopRender( QgsPointCloudRenderContext &context );
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates an extent renderer from an XML ``element``.
+%End
+
+    void renderExtent( const QgsGeometry &extent, QgsPointCloudRenderContext &context );
+%Docstring
+Renders a polygon ``extent`` geometry to the specified render ``context``.
+%End
+
+    static QgsFillSymbol *defaultFillSymbol() /Factory/;
+%Docstring
+Returns a new instance of the default fill symbol to use for showing point cloud extents.
+%End
+
+    QgsFillSymbol *fillSymbol() const;
+%Docstring
+Returns the symbol used to render the cloud's extent.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the cloud's extent.
+
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`fillSymbol`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudextentrenderer.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

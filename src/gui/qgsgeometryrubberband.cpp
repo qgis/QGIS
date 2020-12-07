@@ -22,7 +22,7 @@
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
-  mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
+  mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );
@@ -30,7 +30,6 @@ QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTyp
 
 QgsGeometryRubberBand::~QgsGeometryRubberBand()
 {
-  delete mGeometry;
 }
 
 void QgsGeometryRubberBand::paint( QPainter *painter )
@@ -40,7 +39,7 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
     return;
   }
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->translate( -pos() );
 
   if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
@@ -54,10 +53,13 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
   painter->setPen( mPen );
 
 
-  QgsAbstractGeometry *paintGeom = mGeometry->clone();
+  std::unique_ptr< QgsAbstractGeometry > paintGeom( mGeometry->clone() );
 
   paintGeom->transform( mMapCanvas->getCoordinateTransform()->transform() );
   paintGeom->draw( *painter );
+
+  if ( !mDrawVertices )
+    return;
 
   //draw vertices
   QgsVertexId vertexId;
@@ -66,9 +68,16 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
   {
     drawVertex( painter, vertex.x(), vertex.y() );
   }
+}
 
-  delete paintGeom;
-  painter->restore();
+QgsWkbTypes::GeometryType QgsGeometryRubberBand::geometryType() const
+{
+  return mGeometryType;
+}
+
+void QgsGeometryRubberBand::setGeometryType( const QgsWkbTypes::GeometryType &geometryType )
+{
+  mGeometryType = geometryType;
 }
 
 void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )
@@ -109,8 +118,7 @@ void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )
 
 void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry *geom )
 {
-  delete mGeometry;
-  mGeometry = geom;
+  mGeometry.reset( geom );
 
   if ( mGeometry )
   {
@@ -152,10 +160,15 @@ void QgsGeometryRubberBand::setBrushStyle( Qt::BrushStyle brushStyle )
   mBrush.setStyle( brushStyle );
 }
 
+void QgsGeometryRubberBand::setVertexDrawingEnabled( bool isVerticesDrawn )
+{
+  mDrawVertices = isVerticesDrawn;
+}
+
 QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
 {
   qreal scale = mMapCanvas->mapUnitsPerPixel();
   qreal s = ( mIconSize - 1 ) / 2.0 * scale;
   qreal p = mPen.width() * scale;
-  return mGeometry->boundingBox().buffer( s + p );
+  return mGeometry->boundingBox().buffered( s + p );
 }

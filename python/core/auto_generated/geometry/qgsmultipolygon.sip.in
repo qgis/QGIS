@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultipolygon.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMultiPolygon: QgsMultiSurface
+{
+%Docstring
+Multi polygon geometry collection.
+
+.. versionadded:: 2.10
+%End
+
+%TypeHeaderCode
+#include "qgsmultipolygon.h"
+%End
+  public:
+
+    QgsMultiPolygon() /HoldGIL/;
+%Docstring
+Constructor for an empty multipolygon geometry.
+%End
+
+
+
+    SIP_PYOBJECT polygonN( int index ) /TypeHint="QgsPolygon"/;
+%Docstring
+Returns the polygon with the specified ``index``.
+
+An IndexError will be raised if no polygon with the specified index exists.
+
+.. versionadded:: 3.16
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->polygonN( a0 ), sipType_QgsPolygon, NULL );
+    }
+%End
+
+
+    virtual QString geometryType() const /HoldGIL/;
+
+    virtual void clear();
+
+    virtual QgsMultiPolygon *clone() const /Factory/;
+
+    virtual bool fromWkt( const QString &wkt );
+
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
+
+    virtual QgsMultiSurface *toCurveType() const /Factory/;
+
+%Docstring
+Returns the geometry converted to the more generic curve type :py:class:`QgsMultiSurface`
+
+:return: the converted geometry. Caller takes ownership
+%End
+
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+
+    virtual QgsMultiPolygon *createEmptyWithSameType() const /Factory/;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsMultiPolygon: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  protected:
+
+    virtual bool wktOmitChildType() const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultipolygon.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

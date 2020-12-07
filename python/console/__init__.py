@@ -20,7 +20,6 @@
 __author__ = 'Salvatore Larosa'
 __date__ = 'September 2012'
 __copyright__ = '(C) 2012, Salvatore Larosa'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from .console import show_console  # NOQA
+from .console import init_options_widget

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# MetaSearch Catalogue Client
+# MetaSearch Catalog Client
 #
 # Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
 #
@@ -55,4 +55,8 @@ AMS_LINK_TYPES = [
 AFS_LINK_TYPES = [
     'ESRI:ArcGIS:FeatureServer',
     'Esri REST: Feature Service'
+]
+
+GIS_FILE_LINK_TYPES = [
+    'FILE:GEO'
 ]

@@ -19,7 +19,10 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsTextEditWidgetFactory
  * \note not available in Python bindings
  */
@@ -27,7 +30,13 @@
 class GUI_EXPORT QgsTextEditWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
+    /**
+     * Constructor for QgsTextEditWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
     QgsTextEditWidgetFactory( const QString &name );
+
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
     QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;

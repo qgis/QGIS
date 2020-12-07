@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Abstract base class for the edit widget of authentication method plugins
  */
 class GUI_EXPORT QgsAuthMethodEdit : public QWidget
@@ -65,7 +66,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
       : QWidget( parent )
     {}
 
-    virtual ~QgsAuthMethodEdit() = default;
+    ~QgsAuthMethodEdit() override = default;
 };
 
 #endif // QGSAUTHMETHODEDIT_H

@@ -1,0 +1,131 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingmaplayercombobox.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingMapLayerComboBox : QWidget
+{
+%Docstring
+Processing map layer combo box.
+
+.. warning::
+
+   Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmaplayercombobox.h"
+%End
+  public:
+
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = 0 );
+%Docstring
+Constructor for QgsProcessingMapLayerComboBox, with the specified ``parameter`` definition.
+%End
+
+    ~QgsProcessingMapLayerComboBox();
+
+    void setLayer( QgsMapLayer *layer );
+%Docstring
+Sets the combo box to the specified ``layer``, if ``layer`` is compatible with the
+widget's parameter definition.
+%End
+
+    QgsMapLayer *currentLayer();
+%Docstring
+Returns the current layer selected in the combobox, or ``None`` if the selection cannot
+be represented as a map layer.
+
+.. warning::
+
+   Prefer calling :py:func:`~QgsProcessingMapLayerComboBox.value` instead, as it correctly encapsulates all valid
+   values which can be represented by the widget.
+
+.. seealso:: :py:func:`currentText`
+%End
+
+    QString currentText();
+%Docstring
+Returns the current text of the selected item in the combobox.
+
+.. warning::
+
+   Prefer calling :py:func:`~QgsProcessingMapLayerComboBox.value` instead, as it correctly encapsulates all valid
+   values which can be represented by the widget.
+
+.. seealso:: :py:func:`currentLayer`
+%End
+
+    void setValue( const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Sets the ``value`` shown in the widget.
+
+.. seealso:: :py:func:`value`
+%End
+
+    QVariant value() const;
+%Docstring
+Returns the current value of the widget.
+
+.. seealso:: :py:func:`setValue`
+%End
+
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown.
+
+.. versionadded:: 3.14
+%End
+
+    void setEditable( bool editable );
+%Docstring
+Sets whether the combo box value can be freely edited.
+
+.. seealso:: :py:func:`isEditable`
+
+.. versionadded:: 3.14
+%End
+
+    bool isEditable() const;
+%Docstring
+Returns whether the combo box value can be freely edited.
+
+.. seealso:: :py:func:`setEditable`
+
+.. versionadded:: 3.14
+%End
+
+  signals:
+
+    void valueChanged();
+%Docstring
+Emitted whenever the value is changed in the widget.
+%End
+
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingmaplayercombobox.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -19,7 +19,8 @@
 #include "qgis_core.h"
 #include <QVariantMap>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Holder for the widget type and its configuration for a field.
  *
  * \since QGIS 3.0
@@ -36,7 +37,8 @@ class CORE_EXPORT QgsEditorWidgetSetup
       , mConfig( config )
     {}
 
-    QgsEditorWidgetSetup() {}
+    //! Constructor for QgsEditorWidgetSetup
+    QgsEditorWidgetSetup() = default;
 
     /**
      * \returns the widget type to use
@@ -49,7 +51,7 @@ class CORE_EXPORT QgsEditorWidgetSetup
     QVariantMap config() const { return mConfig; }
 
     /**
-     * \returns true if there is no widget configured.
+     * \returns TRUE if there is no widget configured.
      */
     bool isNull() const { return mType.isEmpty(); }
 

@@ -20,16 +20,10 @@
 #include "qgis.h"
 #include "qgsrequesthandler.h"
 #include "qgsmessagelog.h"
-#include "qgsserverexception.h"
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
-#include <QBuffer>
 #include <QByteArray>
 #include <QDomDocument>
-#include <QFile>
-#include <QImage>
-#include <QTextStream>
-#include <QStringList>
 #include <QUrl>
 #include <QUrlQuery>
 
@@ -37,10 +31,6 @@ QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerRespon
   : mExceptionRaised( false )
   , mRequest( request )
   , mResponse( response )
-{
-}
-
-QgsRequestHandler::~QgsRequestHandler()
 {
 }
 
@@ -76,7 +66,7 @@ QString QgsRequestHandler::responseHeader( const QString &name ) const
 
 QMap<QString, QString> QgsRequestHandler::responseHeaders() const
 {
-  return mResponse.headers( );
+  return mResponse.headers();
 }
 
 void QgsRequestHandler::setRequestHeader( const QString &name, const QString &value )
@@ -97,7 +87,7 @@ QString QgsRequestHandler::requestHeader( const QString &name ) const
 
 QMap<QString, QString> QgsRequestHandler::requestHeaders() const
 {
-  return mRequest.headers( );
+  return mRequest.headers();
 }
 
 
@@ -123,12 +113,17 @@ QByteArray QgsRequestHandler::body() const
 
 QByteArray QgsRequestHandler::data() const
 {
-  return mRequest.data( );
+  return mRequest.data();
 }
 
 QString QgsRequestHandler::url() const
 {
-  return mRequest.url( ).toString( );
+  return mRequest.url().toString();
+}
+
+QString QgsRequestHandler::path() const
+{
+  return mRequest.url().path();
 }
 
 void QgsRequestHandler::setStatusCode( int code )
@@ -158,20 +153,6 @@ void QgsRequestHandler::setupParameters()
 {
   const QgsServerRequest::Parameters parameters = mRequest.parameters();
 
-  // SLD
-  QString value = parameters.value( QStringLiteral( "SLD" ) );
-  if ( !value.isEmpty() )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "http and ftp methods not supported with Qt5." ) );
-  }
-
-  // SLD_BODY
-  value = parameters.value( QStringLiteral( "SLD_BODY" ) );
-  if ( ! value.isEmpty() )
-  {
-    mRequest.setParameter( QStringLiteral( "SLD" ), value );
-  }
-
   //feature info format?
   QString infoFormat = parameters.value( QStringLiteral( "INFO_FORMAT" ) );
   if ( !infoFormat.isEmpty() )
@@ -184,8 +165,6 @@ void QgsRequestHandler::setupParameters()
     QString formatString = mFormatString;
     if ( !formatString.isEmpty() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "formatString is: %1" ).arg( formatString ) );
-
       //remove the image/ in front of the format
       if ( formatString.contains( QLatin1String( "image/png" ), Qt::CaseInsensitive ) || formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
       {
@@ -213,61 +192,90 @@ void QgsRequestHandler::setupParameters()
 
 void QgsRequestHandler::parseInput()
 {
-  if ( mRequest.method() == QgsServerRequest::PostMethod )
+  if ( mRequest.method() == QgsServerRequest::PostMethod ||
+       mRequest.method() == QgsServerRequest::PutMethod ||
+       mRequest.method() == QgsServerRequest::PatchMethod )
   {
-    QString inputString( mRequest.data() );
-
-    QDomDocument doc;
-    QString errorMsg;
-    int line = -1;
-    int column = -1;
-    if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
+    if ( mRequest.header( QStringLiteral( "Content-Type" ) ).contains( QStringLiteral( "json" ) ) )
     {
-      // XXX Output error but continue processing request ?
-      QgsMessageLog::logMessage( QStringLiteral( "Warning: error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." )
-                                 .arg( line ).arg( column ).arg( errorMsg ) );
-
-      // Process input string as a simple query text
-
-      typedef QPair<QString, QString> pair_t;
-      QUrlQuery query( inputString );
-      QList<pair_t> items = query.queryItems();
-      Q_FOREACH ( const pair_t &pair, items )
-      {
-        mRequest.setParameter( pair.first.toUpper(), pair.second );
-      }
       setupParameters();
     }
     else
     {
-      // we have an XML document
-
-      setupParameters();
-
-      QDomElement docElem = doc.documentElement();
-      if ( docElem.hasAttribute( QStringLiteral( "version" ) ) )
+      QString inputString( mRequest.data() );
+      QDomDocument doc;
+      QString errorMsg;
+      int line = -1;
+      int column = -1;
+      if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
       {
-        mRequest.setParameter( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
+        // XXX Output error but continue processing request ?
+        QgsMessageLog::logMessage( QStringLiteral( "Warning: error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." )
+                                   .arg( line ).arg( column ).arg( errorMsg ) );
+
+        // Process input string as a simple query text
+
+        typedef QPair<QString, QString> pair_t;
+        QUrlQuery query( inputString );
+        const QList<pair_t> items = query.queryItems();
+        for ( const pair_t &pair : items )
+        {
+          // QUrl::fromPercentEncoding doesn't replace '+' with space
+          const QString key = QUrl::fromPercentEncoding( QString( pair.first ).replace( '+', ' ' ).toUtf8() );
+          const QString value = QUrl::fromPercentEncoding( QString( pair.second ).replace( '+', ' ' ).toUtf8() );
+          mRequest.setParameter( key.toUpper(), value );
+        }
+        setupParameters();
       }
-      if ( docElem.hasAttribute( QStringLiteral( "service" ) ) )
+      else
       {
-        mRequest.setParameter( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
+        // we have an XML document
+
+        setupParameters();
+
+        QDomElement docElem = doc.documentElement();
+        // the document element tag name is the request
+        mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
+        // loop through the attributes which are the parameters
+        // excepting the attributes started by xmlns or xsi
+        QDomNamedNodeMap map = docElem.attributes();
+        for ( int i = 0 ; i < map.length() ; ++i )
+        {
+          if ( map.item( i ).isNull() )
+            continue;
+
+          const QDomNode attrNode = map.item( i );
+          const QDomAttr attr = attrNode.toAttr();
+          if ( attr.isNull() )
+            continue;
+
+          const QString attrName = attr.name();
+          if ( attrName.startsWith( "xmlns" ) || attrName.startsWith( "xsi:" ) )
+            continue;
+
+          mRequest.setParameter( attrName.toUpper(), attr.value() );
+        }
+        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString.replace( '+', QLatin1String( "%2B" ) ) );
       }
-      mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
-      mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString );
     }
   }
   else
   {
     setupParameters();
   }
-
 }
 
 void QgsRequestHandler::setParameter( const QString &key, const QString &value )
 {
   if ( !( key.isEmpty() || value.isEmpty() ) )
   {
+    // Warn for potential breaking change if plugin set the MAP parameter
+    // expecting changing the config file path, see PR #9773
+    if ( key.compare( QLatin1String( "MAP" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Changing the 'MAP' parameter will have no effect on config path: use QgsSerververInterface::setConfigFilePath instead" ),
+                                 "Server", Qgis::Warning );
+    }
     mRequest.setParameter( key, value );
   }
 }

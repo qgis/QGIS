@@ -2,6 +2,7 @@
   <GMLFeatureClass>
     <Name>lines_bounds</Name>
     <ElementPath>lines_bounds</ElementPath>
+    <!--POLYGON-->
     <GeometryType>3</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>

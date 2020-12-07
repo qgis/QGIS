@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '07/06/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -19,7 +17,8 @@ from qgis.core import (QgsRendererAbstractMetadata,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint
+                       QgsPoint,
+                       QgsPointXY
                        )
 from qgis.testing import start_app, unittest
 
@@ -31,13 +30,13 @@ def createReferencingLayer():
                            "referencinglayer", "memory")
     pr = layer.dataProvider()
     f1 = QgsFeature()
-    f1.setFields(layer.pendingFields())
+    f1.setFields(layer.fields())
     f1.setAttributes(["test1", 123])
-    f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
+    f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     f2 = QgsFeature()
-    f2.setFields(layer.pendingFields())
+    f2.setFields(layer.fields())
     f2.setAttributes(["test2", 123])
-    f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(101, 201)))
+    f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(101, 201)))
     assert pr.addFeatures([f1, f2])
     return layer
 
@@ -100,7 +99,7 @@ class TestQgsRendererV2Registry(unittest.TestCase):
         self.assertTrue(QgsApplication.rendererRegistry().addRenderer(TestRenderer('test3')))
         self.assertTrue('test3' in QgsApplication.rendererRegistry().renderersList())
 
-        # try removing it again - should be ok this time
+        # try removing it again - should be OK this time
         self.assertTrue(QgsApplication.rendererRegistry().removeRenderer('test3'))
         self.assertFalse('test3' in QgsApplication.rendererRegistry().renderersList())
 

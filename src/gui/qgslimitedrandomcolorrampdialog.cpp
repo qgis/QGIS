@@ -17,6 +17,7 @@
 
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgshelp.h"
 
 #include <QColorDialog>
 #include <QDialogButtonBox>
@@ -27,6 +28,13 @@ QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimit
   , mRamp( ramp )
 {
   setupUi( this );
+  spinCount->setClearValue( 10 );
+  spinHue1->setClearValue( 0 );
+  spinHue2->setClearValue( 359 );
+  spinSat1->setClearValue( 100 );
+  spinSat2->setClearValue( 240 );
+  spinVal1->setClearValue( 200 );
+  spinVal2->setClearValue( 240 );
 
   updateUi();
 
@@ -120,11 +128,26 @@ QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimit
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsLimitedRandomColorRampWidget( ramp );
+
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
-  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  vLayout->addWidget( bbox );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLimitedRandomColorRampDialog::showHelp );
+  vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
+  setWindowTitle( tr( "Random Color Ramp" ) );
   connect( mWidget, &QgsLimitedRandomColorRampWidget::changed, this, &QgsLimitedRandomColorRampDialog::changed );
+}
+
+QDialogButtonBox *QgsLimitedRandomColorRampDialog::buttonBox() const
+{
+  return mButtonBox;
+}
+
+void QgsLimitedRandomColorRampDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#setting-a-color-ramp" ) );
 }

@@ -17,11 +17,11 @@
  ***************************************************************************/
 
 #include "qgsunitselectionwidget.h"
+#include "qgshelp.h"
 #include <QDialogButtonBox>
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-  , mBlockSignals( true )
 {
   setupUi( this );
   mComboBoxMinScale->setScale( 10000000.0 );
@@ -125,7 +125,7 @@ QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 
 QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   : QWidget( parent )
-  , mCanvas( nullptr )
+
 {
   mMapUnitIdx = -1;
 
@@ -137,7 +137,7 @@ QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   setFocusProxy( mUnitCombo );
 
   connect( mUnitCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::toggleUnitRangeButton );
-  connect( mMapScaleButton, &QPushButton::clicked, this, &QgsUnitSelectionWidget::showDialog );
+  connect( mMapScaleButton, &QToolButton::clicked, this, &QgsUnitSelectionWidget::showDialog );
   connect( mUnitCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::changed );
 }
 
@@ -160,7 +160,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   mMapUnitIdx = -1;
   if ( units.contains( QgsUnitTypes::RenderMillimeters ) )
   {
-    mUnitCombo->addItem( tr( "Millimeter" ), QgsUnitTypes::RenderMillimeters );
+    mUnitCombo->addItem( tr( "Millimeters" ), QgsUnitTypes::RenderMillimeters );
   }
   if ( units.contains( QgsUnitTypes::RenderPoints ) )
   {
@@ -170,9 +170,13 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   {
     mUnitCombo->addItem( tr( "Pixels" ), QgsUnitTypes::RenderPixels );
   }
+  if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
+  {
+    mUnitCombo->addItem( tr( "Meters at Scale" ), QgsUnitTypes::RenderMetersInMapUnits );
+  }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Map unit" ), QgsUnitTypes::RenderMapUnits );
+    mUnitCombo->addItem( tr( "Map Units" ), QgsUnitTypes::RenderMapUnits );
   }
   if ( units.contains( QgsUnitTypes::RenderPercentage ) )
   {
@@ -193,7 +197,7 @@ QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
   QVariant currentData = mUnitCombo->currentData();
   if ( currentData.isValid() )
   {
-    return ( QgsUnitTypes::RenderUnit ) currentData.toInt();
+    return static_cast< QgsUnitTypes::RenderUnit >( currentData.toInt() );
   }
   //unknown
   return QgsUnitTypes::RenderUnknownUnit;
@@ -208,7 +212,7 @@ void QgsUnitSelectionWidget::setUnit( int unitIndex )
 
 void QgsUnitSelectionWidget::setUnit( QgsUnitTypes::RenderUnit unit )
 {
-  int idx = mUnitCombo->findData( QVariant( ( int ) unit ) );
+  int idx = mUnitCombo->findData( QVariant( static_cast< int >( unit ) ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
@@ -223,7 +227,7 @@ void QgsUnitSelectionWidget::showDialog()
   if ( panel && panel->dockMode() )
   {
     QgsMapUnitScaleWidget *widget = new QgsMapUnitScaleWidget( panel );
-    widget->setPanelTitle( tr( "Adjust scaling range" ) );
+    widget->setPanelTitle( tr( "Adjust Scaling Range" ) );
     widget->setMapCanvas( mCanvas );
     widget->setMapUnitScale( mMapUnitScale );
     connect( widget, &QgsMapUnitScaleWidget::mapUnitScaleChanged, this, &QgsUnitSelectionWidget::widgetChanged );
@@ -265,16 +269,18 @@ void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale &scale )
 
 QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget *parent )
   : QDialog( parent )
-  , mWidget( nullptr )
+
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsMapUnitScaleWidget();
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsMapUnitScaleDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsMapUnitScaleDialog::reject );
+  connect( bbox, &QDialogButtonBox::helpRequested, this, &QgsMapUnitScaleDialog::showHelp );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
+  setWindowTitle( tr( "Adjust Scaling Range" ) );
 }
 
 QgsMapUnitScale QgsMapUnitScaleDialog::getMapUnitScale() const
@@ -290,4 +296,9 @@ void QgsMapUnitScaleDialog::setMapUnitScale( const QgsMapUnitScale &scale )
 void QgsMapUnitScaleDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mWidget->setMapCanvas( canvas );
+}
+
+void QgsMapUnitScaleDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#unit-selector" ) );
 }

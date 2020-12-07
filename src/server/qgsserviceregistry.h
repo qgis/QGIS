@@ -29,6 +29,8 @@
 #include <memory>
 
 class QgsService;
+class QgsServerRequest;
+class QgsServerApi;
 class QgsServerInterface;
 
 /**
@@ -50,7 +52,7 @@ class SERVER_EXPORT QgsServiceRegistry
   public:
 
     //! Constructor
-    QgsServiceRegistry();
+    QgsServiceRegistry() = default;
 
     //! Destructor
     ~QgsServiceRegistry();
@@ -71,16 +73,55 @@ class SERVER_EXPORT QgsServiceRegistry
      * This method is intended to  be called by modules for registering
      * services. A module may register multiple services.
      *
-     * The registry gain ownership of services and will call 'delete' on cleanup
+     * The registry takes ownership of services and will call 'delete' on cleanup
      *
-     * \param service a QgsServerResponse to be registered
+     * \param service a QgsService to be registered
      */
     void registerService( QgsService *service SIP_TRANSFER );
 
     /**
+     * Registers the QgsServerApi \a api
+     *
+     * The registry takes ownership of services and will call 'delete' on cleanup
+     * \since QGIS 3.10
+     */
+    bool registerApi( QgsServerApi *api SIP_TRANSFER );
+
+    /**
+     * Unregisters API from its name and version
+     *
+     * \param name the name of the service
+     * \param version (optional) the specific version to unload
+     * \returns the number of APIs unregistered
+     *
+     * If the version is not specified then all versions from the specified API
+     * are unloaded
+     * \since QGIS 3.10
+     */
+    int unregisterApi( const QString &name, const QString &version = QString() );
+
+    /**
+     * Searches the API register for an API matching the \a request and returns a (possibly NULL) pointer to it.
+     * \since QGIS 3.10
+     */
+    QgsServerApi *apiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
+
+    /**
+     * Retrieves an API from its name
+     *
+     * If the version is not provided the higher version of the service is returned
+     *
+     * \param name the name of the API
+     * \param version the version string (optional)
+     * \returns QgsServerApi
+     * \since QGIS 3.10
+     */
+    QgsServerApi *getApi( const QString &name, const QString &version = QString() );
+
+    /**
      * Unregister service from its name and version
      *
-     * \param name the tame of the service
+     * \param name the name of the service
      * \param version (optional) the specific version to unload
      * \returns the number of services unregistered
      *
@@ -102,15 +143,20 @@ class SERVER_EXPORT QgsServiceRegistry
     void cleanUp();
 
   private:
+
     // XXX consider using QMap because of the few numbers of
     // elements to handle
     typedef QHash<QString, std::shared_ptr<QgsService> > ServiceTable;
+    typedef QHash<QString, std::shared_ptr<QgsServerApi> > ApiTable;
     typedef QHash<QString, QPair<QString, QString> > VersionTable;
 
     QgsServiceNativeLoader mNativeLoader;
 
     ServiceTable mServices;
-    VersionTable mVersions;
+    VersionTable mServiceVersions;
+    ApiTable mApis;
+    VersionTable mApiVersions;
+
 };
 
 #endif

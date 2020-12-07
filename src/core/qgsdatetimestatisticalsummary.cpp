@@ -48,7 +48,8 @@ void QgsDateTimeStatisticalSummary::calculate( const QVariantList &values )
 {
   reset();
 
-  Q_FOREACH ( const QVariant &variant, values )
+  const auto constValues = values;
+  for ( const QVariant &variant : constValues )
   {
     addValue( variant );
   }
@@ -103,7 +104,7 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime )
   {
     if ( mMin.isValid() && dateTime.isValid() )
     {
-      mMin = qMin( mMin, dateTime );
+      mMin = std::min( mMin, dateTime );
     }
     else if ( !mMin.isValid() && dateTime.isValid() )
     {
@@ -114,7 +115,7 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime )
   {
     if ( mMax.isValid() && dateTime.isValid() )
     {
-      mMax = qMax( mMax, dateTime );
+      mMax = std::max( mMax, dateTime );
     }
     else if ( !mMax.isValid() && dateTime.isValid() )
     {

@@ -1,0 +1,82 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectservervalidator.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProjectServerValidator
+{
+%Docstring
+Validates the server specific parts of the configuration of a QGIS project.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprojectservervalidator.h"
+%End
+  public:
+
+    QgsProjectServerValidator();
+%Docstring
+Constructor for QgsProjectServerValidator.
+%End
+
+    enum ValidationError
+    {
+      DuplicatedNames,
+      LayerShortName,
+      LayerEncoding,
+      ProjectShortName,
+      ProjectRootNameConflict,
+    };
+
+    static QString displayValidationError( QgsProjectServerValidator::ValidationError error );
+%Docstring
+Returns a human readable string for a given error.
+
+:param error: the error.
+
+:return: the human readable error.
+%End
+
+    struct ValidationResult
+    {
+
+      ValidationResult( const QgsProjectServerValidator::ValidationError error, const QVariant &identifier );
+%Docstring
+Constructor for ValidationResult.
+%End
+
+      QgsProjectServerValidator::ValidationError error;
+
+      QVariant identifier;
+    };
+
+    static bool validate( QgsProject *project, QList< QgsProjectServerValidator::ValidationResult > &results /Out/ );
+%Docstring
+Validates a project to detect problems on QGIS Server, and returns ``True`` if it's considered valid.
+If validation fails, the ``results`` list will be filled with a list of
+items describing why the validation failed and what needs to be rectified
+
+:param project: input project to check
+
+:return: - bool
+         - results: results of the validation
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectservervalidator.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

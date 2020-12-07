@@ -1,0 +1,316 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgis.h                                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+%ModuleHeaderCode
+#include <qgis.h>
+%End
+
+%ModuleCode
+int QgisEvent = QEvent::User + 1;
+%End
+
+
+class Qgis
+{
+%Docstring
+The Qgis class provides global constants for use throughout the application.
+%End
+
+%TypeHeaderCode
+#include "qgis.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    static QString version();
+%Docstring
+Version string.
+
+.. versionadded:: 3.12
+%End
+
+    static int versionInt();
+%Docstring
+Version number used for comparing versions using the "Check QGIS Version" function
+
+.. versionadded:: 3.12
+%End
+
+    static QString releaseName();
+%Docstring
+Release name
+
+.. versionadded:: 3.12
+%End
+
+    static const char *QGIS_DEV_VERSION;
+
+    static QString devVersion();
+%Docstring
+The development version
+
+.. versionadded:: 3.12
+%End
+
+
+    enum MessageLevel
+    {
+      Info,
+      Warning,
+      Critical,
+      Success,
+      None
+    };
+
+    enum DataType
+    {
+      UnknownDataType,
+      Byte,
+      UInt16,
+      Int16,
+      UInt32,
+      Int32,
+      Float32,
+      Float64,
+      CInt16,
+      CInt32,
+      CFloat32,
+      CFloat64,
+      ARGB32,
+      ARGB32_Premultiplied
+    };
+
+    enum PythonMacroMode
+    {
+      Never,
+      Ask,
+      SessionOnly,
+      Always,
+      NotForThisSession,
+    };
+
+    static const double DEFAULT_SEARCH_RADIUS_MM;
+
+    static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
+
+    static const QColor DEFAULT_HIGHLIGHT_COLOR;
+
+    static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
+
+    static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+
+    static const double SCALE_PRECISION;
+
+    static const double DEFAULT_Z_COORDINATE;
+
+    static const double UI_SCALE_FACTOR;
+
+    static const double DEFAULT_SNAP_TOLERANCE;
+
+    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+
+    static QString defaultProjectScales();
+%Docstring
+A string with default project scales.
+
+.. versionadded:: 3.12
+%End
+};
+
+
+
+
+
+uint qHash( const QVariant &variant );
+%Docstring
+Hash for QVariant
+%End
+
+QString qgsDoubleToString( double a, int precision = 17 );
+%Docstring
+Returns a string representation of a double
+
+:param a: double value
+:param precision: number of decimal places to retain
+%End
+
+bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
+%Docstring
+Compare two doubles (but allow some difference)
+
+:param a: first double
+:param b: second double
+:param epsilon: maximum difference allowable between doubles
+%End
+
+bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON );
+%Docstring
+Compare two floats (but allow some difference)
+
+:param a: first float
+:param b: second float
+:param epsilon: maximum difference allowable between floats
+%End
+
+bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 );
+%Docstring
+Compare two doubles using specified number of significant digits
+%End
+
+double qgsRound( double number, int places );
+%Docstring
+Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
+
+.. versionadded:: 3.0
+%End
+
+
+
+
+
+
+
+
+
+double qgsPermissiveToDouble( QString string, bool &ok );
+%Docstring
+Converts a string to a double in a permissive way, e.g., allowing for incorrect
+numbers of digits between thousand separators
+
+:param string: string to convert
+:param ok: will be set to ``True`` if conversion was successful
+
+:return: string converted to double if possible
+
+.. seealso:: :py:func:`permissiveToInt`
+
+.. versionadded:: 2.9
+%End
+
+int qgsPermissiveToInt( QString string, bool &ok );
+%Docstring
+Converts a string to an integer in a permissive way, e.g., allowing for incorrect
+numbers of digits between thousand separators
+
+:param string: string to convert
+:param ok: will be set to ``True`` if conversion was successful
+
+:return: string converted to int if possible
+
+.. seealso:: :py:func:`permissiveToDouble`
+
+.. versionadded:: 2.9
+%End
+
+qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
+%Docstring
+Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
+numbers of digits between thousand separators
+
+:param string: string to convert
+:param ok: will be set to ``True`` if conversion was successful
+
+:return: string converted to int if possible
+
+.. seealso:: :py:func:`permissiveToInt`
+
+.. versionadded:: 3.4
+%End
+
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+Compares two QVariant values and returns whether the first is less than the second.
+Useful for sorting lists of variants, correctly handling sorting of the various
+QVariant data types (such as strings, numeric values, dates and times)
+
+Invalid < NULL < Values
+
+.. seealso:: :py:func:`qgsVariantGreaterThan`
+%End
+
+bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+Compares two QVariant values and returns whether they are equal, two NULL values are
+always treated as equal and 0 is not treated as equal with NULL
+
+:param lhs: first value
+:param rhs: second value
+
+:return: ``True`` if values are equal
+%End
+
+
+bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+Compares two QVariant values and returns whether the first is greater than the second.
+Useful for sorting lists of variants, correctly handling sorting of the various
+QVariant data types (such as strings, numeric values, dates and times)
+
+.. seealso:: :py:func:`qgsVariantLessThan`
+%End
+
+
+
+QString qgsVsiPrefix( const QString &path );
+
+
+
+
+
+const long GEOSRID;
+
+const long GEOCRS_ID;
+
+const long GEO_EPSG_CRS_ID;
+
+const int USER_CRS_START_ID;
+
+
+const double DEFAULT_POINT_SIZE;
+const double DEFAULT_LINE_WIDTH;
+
+const double DEFAULT_SEGMENT_EPSILON;
+
+
+typedef unsigned long long qgssize;
+
+
+
+
+
+
+
+
+QString geoWkt();
+%Docstring
+Wkt string that represents a geographic coord sys
+\since QGIS GEOWkt
+%End
+
+//! PROJ4 string that represents a geographic coord sys
+QString geoProj4();
+
+//! Geographic coord sys from EPSG authority
+QString geoEpsgCrsAuthId();
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+QString geoNone();
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgis.h                                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
