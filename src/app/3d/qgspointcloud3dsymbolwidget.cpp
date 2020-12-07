@@ -103,9 +103,9 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 
   rampAttributeChanged();
 
-  mClassifiedRenderer = new QgsPointCloudClassifiedRendererWidget( layer, nullptr );
-  mClassifiedRenderer->setParent( this );
-  mClassifiedRenderingLayout->addWidget( mClassifiedRenderer );
+  mClassifiedRendererWidget = new QgsPointCloudClassifiedRendererWidget( layer, nullptr );
+  mClassifiedRendererWidget->setParent( this );
+  mClassifiedRenderingLayout->addWidget( mClassifiedRendererWidget );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -160,7 +160,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   {
     mStackedWidget->setCurrentIndex( 4 );
     QgsClassificationPointCloud3DSymbol *symb = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( symbol );
-    mClassifiedRenderer->setFromCategories( symb->categoriesList(), symb->renderingParameter() );
+    mClassifiedRendererWidget->setFromCategories( symb->categoriesList(), symb->renderingParameter() );
   }
   else
   {
@@ -208,8 +208,8 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     QgsClassificationPointCloud3DSymbol *symb = new QgsClassificationPointCloud3DSymbol;
     symb->setPointSize( mPointSizeSpinBox->value() );
 
-    symb->setRenderingParameter( mClassifiedRenderer->attribute() );
-    symb->setCategoriesList( mClassifiedRenderer->categoriesList() );
+    symb->setRenderingParameter( mClassifiedRendererWidget->attribute() );
+    symb->setCategoriesList( mClassifiedRendererWidget->categoriesList() );
     retSymb = symb;
   }
 
