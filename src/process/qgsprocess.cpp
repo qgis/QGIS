@@ -74,6 +74,18 @@ void ConsoleFeedback::reportError( const QString &error, bool )
   }
 }
 
+void ConsoleFeedback::pushWarning( const QString &warning )
+{
+  if ( !mUseJson )
+    std::cout << "WARNING:\t" << warning.toLocal8Bit().constData() << '\n';
+  else
+  {
+    if ( !mJsonLog.contains( QStringLiteral( "warning" ) ) )
+      mJsonLog.insert( QStringLiteral( "warning" ), QStringList() );
+    mJsonLog[ QStringLiteral( "warning" )] = mJsonLog.value( QStringLiteral( "warning" ) ).toStringList() << warning;
+  }
+}
+
 void ConsoleFeedback::pushInfo( const QString &info )
 {
   if ( !mUseJson )

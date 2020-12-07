@@ -51,11 +51,30 @@ Reports that the algorithm encountered an ``error`` while executing.
 If ``fatalError`` is ``True`` then the error prevented the algorithm from executing.
 %End
 
+    virtual void pushWarning( const QString &warning );
+%Docstring
+Pushes a warning informational message from the algorithm. This
+should only be used sparsely as to maintain the importance of visual
+queues associated to this type of message.
+
+.. seealso:: :py:func:`pushInfo`
+
+.. seealso:: :py:func:`pushCommandInfo`
+
+.. seealso:: :py:func:`pushDebugInfo`
+
+.. seealso:: :py:func:`pushConsoleInfo`
+
+.. versionadded:: 3.16.2
+%End
+
     virtual void pushInfo( const QString &info );
 %Docstring
 Pushes a general informational message from the algorithm. This can
 be used to report feedback which is neither a status report or an
 error, such as "Found 47 matching features".
+
+.. seealso:: :py:func:`pushWarning`
 
 .. seealso:: :py:func:`pushCommandInfo`
 
@@ -70,6 +89,8 @@ Pushes an informational message containing a command from the algorithm.
 This is usually used to report commands which are executed in an external
 application or as subprocesses.
 
+.. seealso:: :py:func:`pushWarning`
+
 .. seealso:: :py:func:`pushInfo`
 
 .. seealso:: :py:func:`pushDebugInfo`
@@ -82,6 +103,8 @@ application or as subprocesses.
 Pushes an informational message containing debugging helpers from
 the algorithm.
 
+.. seealso:: :py:func:`pushWarning`
+
 .. seealso:: :py:func:`pushInfo`
 
 .. seealso:: :py:func:`pushCommandInfo`
@@ -93,6 +116,8 @@ the algorithm.
 %Docstring
 Pushes a console feedback message from the algorithm. This is used to
 report the output from executing an external command or subprocess.
+
+.. seealso:: :py:func:`pushWarning`
 
 .. seealso:: :py:func:`pushInfo`
 
@@ -163,6 +188,8 @@ to scale the current progress to account for progress through the overall proces
     virtual void setProgressText( const QString &text );
 
     virtual void reportError( const QString &error, bool fatalError = false );
+
+    virtual void pushWarning( const QString &warning );
 
     virtual void pushInfo( const QString &info );
 
