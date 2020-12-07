@@ -22,6 +22,7 @@ __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
 import os
+from os.path import exists
 from datetime import datetime
 
 from qgis.core import (QgsFeature,
@@ -173,7 +174,7 @@ class PointsToPaths(QgisAlgorithm):
             f.setAttributes(attributes)
             line = [node[1] for node in vertices]
 
-            if text_dir:
+            if text_dir and exists(text_dir):
                 fileName = os.path.join(text_dir, '%s.txt' % group)
 
                 with open(fileName, 'w') as fl:
