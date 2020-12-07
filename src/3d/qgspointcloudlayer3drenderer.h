@@ -82,12 +82,12 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 
     /**
      * Sets the list of categories of the classification that won't be rendered
-     * \see isFilteredOut()
+     * \see getFilteredOutValues()
      */
     void setFilteredOutCategories( const QgsPointCloudCategoryList &categories );
 
     /**
-     * Checks whether \a value shouldn't be rendered and is filtered out
+     * Returns a set containing the filtered out values
      * \see setFilteredOutCategories()
      */
     QSet<int> getFilteredOutValues() const;
