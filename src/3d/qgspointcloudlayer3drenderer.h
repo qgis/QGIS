@@ -90,7 +90,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * Checks whether \a value shouldn't be rendered and is filtered out
      * \see setFilteredOutCategories()
      */
-    bool isFilteredOut( int value ) const;
+    QSet<int> getFilteredOutValues() const;
 
     /**
      * Retrieves the attribute \a value from \a data at the specified \a offset, where

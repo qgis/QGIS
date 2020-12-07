@@ -595,7 +595,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();
-
+  QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )
   {
     qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
@@ -618,7 +618,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     else
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
 
-    if ( context.isFilteredOut( ( int ) iParam ) )
+    if ( filteredOutValues.contains( ( int ) iParam ) )
       continue;
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
     outNormal.parameter.push_back( iParam );
