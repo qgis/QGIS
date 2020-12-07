@@ -208,10 +208,25 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setMaximumScreenError( double error );
 
+    /**
+     * Returns whether bounding boxes will be visible when rendering the point cloud.
+     *
+     * \see setShowBoundingBoxes()
+     */
+    bool showBoundingBoxes() const;
+
+    /**
+     * Sets whether bounding boxes will be visible when rendering the point cloud.
+     *
+     * \see showBoundingBoxes()
+     */
+    void setShowBoundingBoxes( bool showBoundingBoxes );
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mMaximumScreenError = 1.0;
+    bool mShowBoundingBoxes = true;
 
   private:
 #ifdef SIP_RUN

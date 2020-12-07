@@ -41,13 +41,6 @@
       <property name="rightMargin">
        <number>3</number>
       </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblTransparency_4">
-        <property name="text">
-         <string>Point size</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
         <property name="maximum">
@@ -55,6 +48,13 @@
         </property>
         <property name="value">
          <double>2.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblTransparency_4">
+        <property name="text">
+         <string>Point size</string>
         </property>
        </widget>
       </item>
@@ -72,6 +72,13 @@
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Maximum screen space error</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
+        <property name="text">
+         <string>Show point cloud bounding boxes</string>
         </property>
        </widget>
       </item>
@@ -462,14 +469,14 @@ enhancement</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPointCloudAttributeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspointcloudattributecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPointCloudAttributeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspointcloudattributecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorRampShaderWidget</class>

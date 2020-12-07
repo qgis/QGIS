@@ -112,7 +112,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError() );
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes() );
 }
 
 void QgsPointCloudLayer3DRenderer::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -128,6 +128,7 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
 
   elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
   elem.setAttribute( QStringLiteral( "max-screen-error" ), maximumScreenError() );
+  elem.setAttribute( QStringLiteral( "show-bounding-boxes" ), showBoundingBoxes() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
   if ( mSymbol )
@@ -146,6 +147,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 
   const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
   mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "1.0" ) ).toDouble();
+  mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), "0" ).toInt();
 
   if ( symbolType == QLatin1String( "single-color" ) )
     mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
@@ -176,3 +178,14 @@ void QgsPointCloudLayer3DRenderer::setMaximumScreenError( double error )
 {
   mMaximumScreenError = error;
 }
+
+bool QgsPointCloudLayer3DRenderer::showBoundingBoxes() const
+{
+  return mShowBoundingBoxes;
+}
+
+void QgsPointCloudLayer3DRenderer::setShowBoundingBoxes( bool showBoundingBoxes )
+{
+  mShowBoundingBoxes = showBoundingBoxes;
+}
+

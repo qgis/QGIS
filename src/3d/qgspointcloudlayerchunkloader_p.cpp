@@ -196,12 +196,12 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes )
   : QgsChunkedEntity( maxScreenError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol ), true )
 {
   setUsingAdditiveStrategy( true );
-  setShowBoundingBoxes( false );
+  setShowBoundingBoxes( showBoundingBoxes );
 }
 
 QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()

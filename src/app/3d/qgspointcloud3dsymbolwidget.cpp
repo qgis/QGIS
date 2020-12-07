@@ -100,6 +100,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
   connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::maximumScreenErrorChanged );
+  connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, this, &QgsPointCloud3DSymbolWidget::showBoundingBoxesChanged );
 
   rampAttributeChanged();
 
@@ -569,5 +570,24 @@ void QgsPointCloud3DSymbolWidget::maximumScreenErrorChanged( double maxScreenErr
   if ( maxScreenError == mMaximumScreenError )
     return;
   mMaximumScreenError = maxScreenError;
+  emitChangedSignal();
+}
+
+void QgsPointCloud3DSymbolWidget::showBoundingBoxesChanged( int checkBoxState )
+{
+  Q_UNUSED( checkBoxState );
+  bool showBoundingBoxes = mShowBoundingBoxesCheckBox->isChecked();
+  if ( showBoundingBoxes == mShowBoundingBoxes )
+    return;
+  mShowBoundingBoxes = showBoundingBoxes;
+  emitChangedSignal();
+}
+
+void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
+{
+  if ( showBoundingBoxes == mShowBoundingBoxes )
+    return;
+  mShowBoundingBoxesCheckBox->setChecked( showBoundingBoxes );
+  mShowBoundingBoxes = showBoundingBoxes;
   emitChangedSignal();
 }
