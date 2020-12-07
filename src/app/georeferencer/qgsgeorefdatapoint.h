@@ -17,6 +17,7 @@
 #define QGSGEOREFDATAPOINT_H
 
 #include "qgsmapcanvasitem.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsGCPCanvasItem;
 
@@ -28,7 +29,7 @@ class QgsGeorefDataPoint : public QObject
     //! constructor
     QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
                         const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
-                        bool enable );
+                        const QgsCoordinateReferenceSystem proj, bool enable );
     QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
     ~QgsGeorefDataPoint() override;
 
@@ -38,6 +39,9 @@ class QgsGeorefDataPoint : public QObject
 
     QgsPointXY mapCoords() const { return mMapCoords; }
     void setMapCoords( const QgsPointXY &p );
+
+    QgsPointXY transCoords() const;
+    void setTransCoords( const QgsPointXY &p );
 
     bool isEnabled() const { return mEnabled; }
     void setEnabled( bool enabled );
@@ -53,6 +57,8 @@ class QgsGeorefDataPoint : public QObject
     QPointF residual() const { return mResidual; }
     void setResidual( QPointF r );
 
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+
   public slots:
     void moveTo( QPoint, bool isMapPlugin );
     void updateCoords();
@@ -64,8 +70,10 @@ class QgsGeorefDataPoint : public QObject
     QgsGCPCanvasItem *mGCPDestinationItem = nullptr;
     QgsPointXY mPixelCoords;
     QgsPointXY mMapCoords;
+    QgsPointXY mTransCoords;
 
     int mId;
+    QgsCoordinateReferenceSystem mCrs;
     bool mEnabled;
     QPointF mResidual;
 

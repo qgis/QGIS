@@ -22,6 +22,8 @@
 #include "qgsmapmouseevent.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgsproject.h"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
@@ -59,6 +61,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
 
   connect( leXCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
   connect( leYCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
+  connect( mProjSelect, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMapCoordsDialog::updateCrs );
   updateOK();
 }
 
@@ -93,7 +96,14 @@ void QgsMapCoordsDialog::buttonBox_accepted()
   if ( !ok )
     y = dmsToDD( leYCoord->text() );
 
-  emit pointAdded( mPixelCoords, QgsPointXY( x, y ) );
+  if ( !mCrs.isValid() )
+  {
+    if ( mProjSelect->crs().isValid() )
+      mCrs = mProjSelect->crs();
+    else
+      mCrs = mQgisCanvas->mapSettings().destinationCrs();
+  }
+  emit pointAdded( mPixelCoords, QgsPointXY( x, y ), mCrs );
   close();
 }
 
@@ -116,6 +126,8 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton butto
   parentWidget()->activateWindow();
   parentWidget()->raise();
 
+  if ( !mProjSelect->crs().isValid() )
+    mProjSelect->setCrs( mQgisCanvas->mapSettings().destinationCrs() );
   mPointFromCanvasPushButton->setChecked( false );
   buttonBox->button( QDialogButtonBox::Ok )->setFocus();
   activateWindow();
@@ -162,6 +174,12 @@ double QgsMapCoordsDialog::dmsToDD( const QString &dms )
     return -res;
   else
     return res;
+}
+
+void QgsMapCoordsDialog::updateCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  if ( crs.isValid() )
+    mCrs =  QgsCoordinateReferenceSystem( crs );
 }
 
 QgsGeorefMapToolEmitPoint::QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
