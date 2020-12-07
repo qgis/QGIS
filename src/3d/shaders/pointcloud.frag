@@ -83,7 +83,7 @@ vec4 exactColorRamp()
     if ( abs( parameter - value ) < 0.01 )
       return vec4( color, 1.0f );
   }
-  return vec4(0.0, 0.0, 0.0, 0.0f);
+  return vec4(0.0, 0.0, 0.0, 1.0f);
 }
 
 vec4 colorRamp()
@@ -91,7 +91,7 @@ vec4 colorRamp()
   if (u_colorRampCount<=0)
     return vec4(0.0,0.0,0.0,1);
 
-  vec4 colorRampResult = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+  vec4 colorRampResult = vec4(0.0f, 0.0f, 0.0f, 1.0f);
   switch (u_colorRampType)
   {
   case 0:
@@ -113,7 +113,7 @@ void main(void)
   switch (u_renderingStyle)
   {
   case 0: //  no rendering
-    color = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     break;
   case 1: // single color
     color = vec4(u_singleColor, 1.0f);
