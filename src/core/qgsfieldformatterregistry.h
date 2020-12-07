@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 
+#include <QReadWriteLock>
+
 class QgsFieldFormatter;
 class QgsVectorLayer;
 
@@ -94,6 +96,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
   private:
     QHash<QString, QgsFieldFormatter *> mFieldFormatters;
     QgsFieldFormatter *mFallbackFieldFormatter = nullptr;
+    mutable QReadWriteLock mLock;
 };
 
 #endif // QGSFIELDKITREGISTRY_H
