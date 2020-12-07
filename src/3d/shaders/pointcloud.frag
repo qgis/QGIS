@@ -48,7 +48,7 @@ vec4 linearColorRamp()
     }
   }
 
-  //last color if no value is found
+  //last color   if no value is found
   vec4 colorRampLine=texelFetch(u_colorRampTexture,colorRampSize-1,0);
   return vec4( colorRampLine.yzw, 1.0f );
 }

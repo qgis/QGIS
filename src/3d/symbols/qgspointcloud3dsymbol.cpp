@@ -475,7 +475,6 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
   for ( const QgsPointCloudCategory &category : mCategoriesList )
   {
     QColor color = category.color();
-    color.setAlphaF( category.renderState() ? 1.0f : 0.0f );
     QgsColorRampShader::ColorRampItem item( category.value(), color, category.label() );
     colorRampItemList.push_back( item );
   }
