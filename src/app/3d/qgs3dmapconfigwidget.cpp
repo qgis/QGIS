@@ -144,6 +144,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
   chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
+  mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
@@ -326,6 +327,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
   mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
   mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
+  mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
 
   std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );

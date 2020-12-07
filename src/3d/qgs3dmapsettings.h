@@ -529,6 +529,20 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setIsSkyboxEnabled( bool enabled ) { mIsSkyboxEnabled = enabled; }
 
+    /**
+     * Returns whether FPS counter label is enabled
+     * \see setIsFpsCounterEnabled()
+     * \since QGIS 3.18
+     */
+    bool isFpsCounterEnabled() const { return mIsFpsCounterEnabled; }
+
+    /**
+     * Sets whether FPS counter label is enabled
+     * \see isFpsCounterEnabled()
+     * \since QGIS 3.18
+     */
+    void setIsFpsCounterEnabled( bool fpsCounterEnabled );
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -676,6 +690,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void shadowSettingsChanged();
 
+    /**
+     * Emitted when the FPS counter is enabled or disabled
+     *
+     * \since QGIS 3.18
+     */
+    void fpsCounterEnabledChanged( bool fpsCounterEnabled );
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -713,6 +734,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsPathResolver mPathResolver;
     QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
     double mDpi = 96;  //!< Dot per inch value for the screen / painter
+    bool mIsFpsCounterEnabled = false;
 
     bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
     QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
