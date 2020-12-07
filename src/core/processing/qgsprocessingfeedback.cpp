@@ -45,6 +45,15 @@ void QgsProcessingFeedback::reportError( const QString &error, bool )
   mTextLog.append( error + '\n' );
 }
 
+void QgsProcessingFeedback::pushWarning( const QString &warning )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( warning, tr( "Processing" ), Qgis::Warning );
+
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:#b85a20;\">%1</span><br/>" ).arg( warning.toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "<br/>" ) );
+  mTextLog.append( warning + '\n' );
+}
+
 void QgsProcessingFeedback::pushInfo( const QString &info )
 {
   if ( mLogFeedback )
@@ -137,6 +146,11 @@ void QgsProcessingMultiStepFeedback::setProgressText( const QString &text )
 void QgsProcessingMultiStepFeedback::reportError( const QString &error, bool fatalError )
 {
   mFeedback->reportError( error, fatalError );
+}
+
+void QgsProcessingMultiStepFeedback::pushWarning( const QString &warning )
+{
+  mFeedback->pushWarning( warning );
 }
 
 void QgsProcessingMultiStepFeedback::pushInfo( const QString &info )
