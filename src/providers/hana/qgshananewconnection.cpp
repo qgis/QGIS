@@ -30,7 +30,7 @@ namespace
 {
   bool isStringEmpty( const QString &input )
   {
-    return ( input.isEmpty() || QString( input ).replace( " ", "" ).isEmpty() );
+    return ( input.isEmpty() || QString( input ).replace( " ", QString() ).isEmpty() );
   }
 }
 
@@ -145,9 +145,9 @@ void QgsHanaNewConnection::accept()
 
   readSettingsFromControls( settings );
   if ( !mAuthSettings->storeUsernameIsChecked() )
-    settings.setUserName( QString( "" ) );
+    settings.setUserName( QString( ) );
   if ( !( mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ) )
-    settings.setPassword( QString( "" ) );
+    settings.setPassword( QString( ) );
   settings.setSaveUserName( mAuthSettings->storeUsernameIsChecked() );
   settings.setSavePassword( mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID );
 
@@ -341,7 +341,7 @@ QString QgsHanaNewConnection::getDatabaseName() const
       return QStringLiteral( "SYSTEMDB" );
   }
   else
-    return QString( "" );
+    return QString( );
 }
 
 void QgsHanaNewConnection::showHelp()

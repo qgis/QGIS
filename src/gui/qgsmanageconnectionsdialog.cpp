@@ -702,34 +702,34 @@ QDomDocument QgsManageConnectionsDialog::saveHanaConnections( const QStringList 
     path = "/HANA/connections/" + connections[i];
     QDomElement el = doc.createElement( QStringLiteral( "hana" ) );
     el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "driver" ), settings.value( path + "/driver", "" ).toString() );
-    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", "" ).toString() );
-    el.setAttribute( QStringLiteral( "identifierType" ), settings.value( path + "/identifierType", "" ).toString() );
-    el.setAttribute( QStringLiteral( "identifier" ), settings.value( path + "/identifier", "" ).toString() );
-    el.setAttribute( QStringLiteral( "multitenant" ), settings.value( path + "/multitenant", "" ).toString() );
-    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema", "" ).toString() );
-    el.setAttribute( QStringLiteral( "userTablesOnly" ), settings.value( path + "/userTablesOnly", "0" ).toString() );
-    el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "driver" ), settings.value( path + "/driver", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "identifierType" ), settings.value( path + "/identifierType", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "identifier" ), settings.value( path + "/identifier", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "multitenant" ), settings.value( path + "/multitenant", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "userTablesOnly" ), settings.value( path + "/userTablesOnly", QStringLiteral( "0" ) ).toString() );
+    el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", QStringLiteral( "0" ) ).toString() );
 
-    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", QStringLiteral( "false" ) ).toString() );
     if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", "" ).toString() );
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", QString() ).toString() );
     }
 
-    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", QStringLiteral( "false" ) ).toString() );
     if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
     {
-      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", "" ).toString() );
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", QString() ).toString() );
     }
 
-    el.setAttribute( QStringLiteral( "sslEnabled" ), settings.value( path + "/sslEnabled", "false" ).toString() );
-    el.setAttribute( QStringLiteral( "sslCryptoProvider" ), settings.value( path + "/sslCryptoProvider", "openssl" ).toString() );
-    el.setAttribute( QStringLiteral( "sslKeyStore" ), settings.value( path + "/sslKeyStore", "" ).toString() );
-    el.setAttribute( QStringLiteral( "sslTrustStore" ), settings.value( path + "/sslTrustStore", "" ).toString() );
-    el.setAttribute( QStringLiteral( "sslValidateCertificate" ), settings.value( path + "/sslValidateCertificate", "false" ).toString() );
-    el.setAttribute( QStringLiteral( "sslHostNameInCertificate" ), settings.value( path + "/sslHostNameInCertificate", "" ).toString() );
+    el.setAttribute( QStringLiteral( "sslEnabled" ), settings.value( path + "/sslEnabled", QStringLiteral( "false" ) ).toString() );
+    el.setAttribute( QStringLiteral( "sslCryptoProvider" ), settings.value( path + "/sslCryptoProvider", QStringLiteral( "openssl" ) ).toString() );
+    el.setAttribute( QStringLiteral( "sslKeyStore" ), settings.value( path + "/sslKeyStore", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "sslTrustStore" ), settings.value( path + "/sslTrustStore", QString() ).toString() );
+    el.setAttribute( QStringLiteral( "sslValidateCertificate" ), settings.value( path + "/sslValidateCertificate", QStringLiteral( "false" ) ).toString() );
+    el.setAttribute( QStringLiteral( "sslHostNameInCertificate" ), settings.value( path + "/sslHostNameInCertificate", QString() ).toString() );
 
     root.appendChild( el );
   }

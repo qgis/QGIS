@@ -62,7 +62,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
   QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
   QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
   QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
-  QStandardItem *sridItem = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : "" );
+  QStandardItem *sridItem = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QString() );
   sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid < 0 );
   if ( sridItem->isEditable() )
   {
@@ -91,7 +91,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem( QString( "" ) );
+  QStandardItem *selItem = new QStandardItem( QString( ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping "
@@ -116,7 +116,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
     if ( tip.isEmpty() )
     {
       item->setFlags( item->flags() | Qt::ItemIsSelectable );
-      item->setToolTip( QString( "" ) );
+      item->setToolTip( QString( ) );
     }
     else
     {
@@ -262,7 +262,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
         }
 
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QString( "" ) );
+        item->setToolTip( QString( ) );
       }
       else
       {

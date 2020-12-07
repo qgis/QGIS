@@ -82,7 +82,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     const QVersionNumber mDatabaseVersion;
     QgsHanaConnectionRef mConnection;
     QgsHanaResultSetRef mResultSet;
-    QString mSqlQuery = QString( "" );
+    QString mSqlQuery;
     QgsRectangle mFilterRect;
     const QgsRectangle mSrsExtent;
     QgsAttributeList mAttributesToFetch;

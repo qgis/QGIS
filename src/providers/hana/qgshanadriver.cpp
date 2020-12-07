@@ -53,9 +53,9 @@ QgsHanaDriver::QgsHanaDriver()
   QgsDebugCall;
 #if defined(Q_OS_WIN)
 #if defined(Q_OS_WIN64)
-  mDriver = mEnv->isDriverInstalled( "HDBODBC" ) ? "HDBODBC" : "";
+  mDriver = mEnv->isDriverInstalled( "HDBODBC" ) ? "HDBODBC" : QString();
 #else
-  mDriver = mEnv->isDriverInstalled( "HDBODBC32" ) ? "HDBODBC32" : "";
+  mDriver = mEnv->isDriverInstalled( "HDBODBC32" ) ? "HDBODBC32" : QString();
 #endif
 #elif defined(Q_OS_MAC)
   mDriver = detectDriverPath( mEnv, "libodbcHDB.dylib", "/Applications/sap/hdbclient" );

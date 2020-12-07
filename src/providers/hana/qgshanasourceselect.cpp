@@ -400,7 +400,7 @@ void QgsHanaSourceSelect::mSearchGroupBox_toggled( bool checked )
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString( ) );
 }
 
 void QgsHanaSourceSelect::mSearchTableEdit_textChanged( const QString &text )

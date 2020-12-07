@@ -60,11 +60,11 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
   mPassword = uri.password();
 
   mSslEnabled = false;
-  mSslCryptoProvider = "";
+  mSslCryptoProvider = QString();
   mSslValidateCertificate = false;
-  mSslHostNameInCertificate = "";
-  mSslKeyStore = "";
-  mSslTrustStore = "";
+  mSslHostNameInCertificate = QString();
+  mSslKeyStore = QString();
+  mSslTrustStore = QString();
   if ( uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
     mSslEnabled = QVariant( uri.param( "sslEnabled" ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
@@ -82,7 +82,7 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
   mAllowGeometrylessTables = false;
   mSaveUserName = false;
   mSavePassword = false;
-  mAuthcfg = "";
+  mAuthcfg = QString();
 
   if ( uri.hasParam( QStringLiteral( "userTablesOnly" ) ) )
     mUserTablesOnly = QVariant( uri.param( QStringLiteral( "userTablesOnly" ) ) ).toBool();
@@ -160,9 +160,9 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/schema", mSchema );
   settings.setValue( key + "/authcfg", mAuthcfg );
   settings.setValue( key + "/saveUsername", mSaveUserName );
-  settings.setValue( key + "/username", mSaveUserName ? mUserName : QString( "" ) );
+  settings.setValue( key + "/username", mSaveUserName ? mUserName : QString( ) );
   settings.setValue( key + "/savePassword", mSavePassword );
-  settings.setValue( key + "/password", mSavePassword ? mPassword : QString( "" ) );
+  settings.setValue( key + "/password", mSavePassword ? mPassword : QString( ) );
   settings.setValue( key + "/userTablesOnly", mUserTablesOnly );
   settings.setValue( key + "/allowGeometrylessTables", mAllowGeometrylessTables );
   settings.setValue( key + "/sslEnabled", mSslEnabled );

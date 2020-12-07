@@ -48,8 +48,6 @@ static const int GEOMETRIES_SELECT_LIMIT = 10;
 QgsHanaConnection::QgsHanaConnection( odbc::ConnectionRef connection,  const QgsDataSourceUri &uri )
   : mConnection( connection )
   , mUri( uri )
-  , mDatabaseVersion( "" )
-  , mUserName( "" )
 {
 }
 
@@ -91,7 +89,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
   {
     ConnectionRef conn = QgsHanaDriver::instance()->createConnection();
     conn->setAutoCommit( false );
-    QString message = "";
+    QString message;
 
     auto connect = []( odbc::ConnectionRef & conn,
                        const QgsDataSourceUri & uri,
@@ -101,7 +99,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
       {
         QgsHanaConnectionStringBuilder sb( uri );
         conn->connect( sb.toString().toStdString().c_str() );
-        errorMessage = "";
+        errorMessage = QString();
       }
       catch ( const Exception &ex )
       {
@@ -486,7 +484,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layer.tableName = rsLayers->getString( 2 );
       QString geomColumnType = rsLayers->getString( 4 );
       bool isGeometryColumn = ( geomColumnType == "ST_GEOMETRY" || geomColumnType == "ST_POINT" );
-      layer.geometryColName = isGeometryColumn ? rsLayers->getString( 3 ) : "";
+      layer.geometryColName = isGeometryColumn ? rsLayers->getString( 3 ) : QString();
       layer.tableComment = rsLayers->getString( 5 );
       layer.isView = isView;
 

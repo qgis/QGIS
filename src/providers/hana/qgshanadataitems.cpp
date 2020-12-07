@@ -41,7 +41,7 @@ QgsHanaConnectionItem::QgsHanaConnectionItem(
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
 
-  updateToolTip( QString( "" ), QString( "" ) );
+  updateToolTip( QString( ), QString( ) );
 }
 
 QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
@@ -61,7 +61,7 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
   {
     QgsHanaSettings settings( mName, true );
     QVector<QgsHanaSchemaProperty> schemas =
-      conn->getSchemas( settings.getUserTablesOnly() ? settings.getUserName() : "" );
+      conn->getSchemas( settings.getUserTablesOnly() ? settings.getUserName() : QString() );
 
     if ( schemas.isEmpty() )
     {
