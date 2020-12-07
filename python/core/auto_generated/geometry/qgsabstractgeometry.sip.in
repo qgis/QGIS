@@ -26,7 +26,7 @@ Abstract base class for all geometries
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
    of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
-   geodesic calculations. Accordingly, properties like length() and area() and spatial operations like centroid()
+   geodesic calculations. Accordingly, properties like :py:func:`~length` and :py:func:`~area` and spatial operations like :py:func:`~centroid`
    are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
@@ -130,7 +130,7 @@ Returns a unique string representing the geometry type.
 .. seealso:: :py:func:`wktTypeStr`
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    QgsWkbTypes::Type wkbType() const /HoldGIL/;
 %Docstring
 Returns the WKB type of the geometry.
 
@@ -148,14 +148,14 @@ Returns the WKT type string of the geometry.
 .. seealso:: :py:func:`wkbType`
 %End
 
-    bool is3D() const;
+    bool is3D() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is 3D and contains a z-value.
 
 .. seealso:: :py:func:`isMeasure`
 %End
 
-    bool isMeasure() const;
+    bool isMeasure() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry contains m values.
 
@@ -196,7 +196,16 @@ Sets the geometry from a WKT string.
     typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
 
 
-    virtual QByteArray asWkb( WkbFlags flags = 0 ) const = 0;
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
+%Docstring
+Returns the length of the QByteArray returned by :py:func:`~QgsAbstractGeometry.asWkb`
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior
+
+.. versionadded:: 3.16
+%End
+
+    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
 
@@ -318,6 +327,18 @@ Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate
 Draws the geometry using the specified QPainter.
 
 :param p: destination QPainter
+%End
+
+    virtual QPainterPath asQPainterPath() const = 0;
+%Docstring
+Returns the geometry represented as a QPainterPath.
+
+.. warning::
+
+   not all geometry subclasses can be represented by a QPainterPath, e.g.
+   points and multipoint geometries will return an empty path.
+
+.. versionadded:: 3.16
 %End
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
@@ -529,8 +550,11 @@ If the gridified geometry could not be calculated ``None`` will be returned.
 It may generate an invalid geometry (in some corner cases).
 It can also be thought as rounding the edges and it may be useful for removing errors.
 
-Example
--------
+Example:
+
+.. code-block:: python
+
+       geometry.snappedToGrid(1, 1)
 
 In this case we use a 2D grid of 1x1 to gridify.
 In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
@@ -690,7 +714,6 @@ Returns Java-style iterator for traversal of parts of the geometry. This iterato
 can safely be used to modify parts of the geometry.
 
 Example
--------
 
 .. code-block:: python
 
@@ -728,10 +751,9 @@ Returns a read-only, Java-style iterator for traversal of vertices of all the ge
 .. warning::
 
    The iterator returns a copy of individual vertices, and accordingly geometries cannot be
-   modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+   modified using the iterator. See :py:func:`~QgsAbstractGeometry.transformVertices` for a safe method to modify vertices "in-place".
 
 Example
--------
 
 .. code-block:: python
 
@@ -829,29 +851,54 @@ Clears any cached parameters associated with the geometry, e.g., bounding boxes
 
 struct QgsVertexId
 {
+
   enum VertexType
   {
     SegmentVertex,
-    CurveVertex
+    CurveVertex,
   };
 
-  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
+  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex ) /HoldGIL/;
+%Docstring
+Constructor for QgsVertexId.
+%End
 
-  bool isValid() const;
+  bool isValid() const  /HoldGIL/;
 %Docstring
 Returns ``True`` if the vertex id is valid
 %End
 
-  bool operator==( QgsVertexId other ) const;
-  bool operator!=( QgsVertexId other ) const;
-  bool partEqual( QgsVertexId o ) const;
-  bool ringEqual( QgsVertexId o ) const;
-  bool vertexEqual( QgsVertexId o ) const;
-  bool isValid( const QgsAbstractGeometry *geom ) const;
+  bool operator==( QgsVertexId other ) const /HoldGIL/;
+  bool operator!=( QgsVertexId other ) const /HoldGIL/;
+
+  bool partEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID belongs to the same part as another vertex ID.
+%End
+
+  bool ringEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
+and ring number are equal).
+%End
+
+  bool vertexEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
+ring number and vertex number are equal).
+%End
+
+  bool isValid( const QgsAbstractGeometry *geom ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID is valid for the specified ``geom``.
+%End
 
   int part;
+
   int ring;
+
   int vertex;
+
   VertexType type;
 
   SIP_PYOBJECT __repr__();
@@ -893,7 +940,7 @@ Find out whether there are more vertices
 
     QgsPoint next();
 %Docstring
-Returns next vertex of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next vertex of the geometry (undefined behavior if :py:func:`~QgsVertexIterator.hasNext` returns ``False`` before calling :py:func:`~QgsVertexIterator.next`)
 %End
 
     QgsVertexIterator *__iter__();
@@ -933,14 +980,14 @@ Constructor for QgsGeometryPartIterator
 Constructs iterator for the given geometry
 %End
 
-    bool hasNext() const;
+    bool hasNext() const /HoldGIL/;
 %Docstring
 Find out whether there are more parts
 %End
 
     QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryPartIterator.hasNext` returns ``False`` before calling :py:func:`~QgsGeometryPartIterator.next`)
 %End
 
     QgsGeometryPartIterator *__iter__();
@@ -981,14 +1028,14 @@ Constructor for QgsGeometryConstPartIterator
 Constructs iterator for the given geometry
 %End
 
-    bool hasNext() const;
+    bool hasNext() const /HoldGIL/;
 %Docstring
 Find out whether there are more parts
 %End
 
     const QgsAbstractGeometry *next();
 %Docstring
-Returns next part of the geometry (undefined behavior if hasNext() returns ``False`` before calling next())
+Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryConstPartIterator.hasNext` returns ``False`` before calling :py:func:`~QgsGeometryConstPartIterator.next`)
 %End
 
     QgsGeometryConstPartIterator *__iter__();

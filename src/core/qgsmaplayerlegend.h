@@ -27,6 +27,7 @@ class QgsLayerTreeModelLegendNode;
 class QgsMeshLayer;
 class QgsPluginLayer;
 class QgsRasterLayer;
+class QgsPointCloudLayer;
 class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsLegendPatchShape;
@@ -80,6 +81,12 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 
     //! Create new legend implementation for mesh layer
     static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) SIP_FACTORY;
+
+    /**
+     * Create new legend implementation for a point cloud \a layer.
+     * \since QGIS 3.18
+     */
+    static QgsMapLayerLegend *defaultPointCloudLegend( QgsPointCloudLayer *layer ) SIP_FACTORY;
 
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
@@ -295,6 +302,25 @@ class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
 
   private:
     QgsMeshLayer *mLayer = nullptr;
+};
+
+/**
+ * \ingroup core
+ * Default legend implementation for point cloud layers
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsDefaultPointCloudLayerLegend : public QgsMapLayerLegend
+{
+    Q_OBJECT
+
+  public:
+    //! Creates an instance for the given point cloud layer
+    explicit QgsDefaultPointCloudLayerLegend( QgsPointCloudLayer *layer );
+
+    QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
+
+  private:
+    QgsPointCloudLayer *mLayer = nullptr;
 };
 
 

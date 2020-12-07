@@ -56,7 +56,7 @@ class QgsGeoNodeServiceItem : public QgsDataCollectionItem
     bool layerCollection() const override;
 };
 
-class QgsGeoNodeRootItem : public QgsDataCollectionItem
+class QgsGeoNodeRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

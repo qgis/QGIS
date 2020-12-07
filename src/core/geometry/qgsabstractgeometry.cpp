@@ -318,7 +318,7 @@ QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, Segmenta
 QgsAbstractGeometry::vertex_iterator::vertex_iterator( const QgsAbstractGeometry *g, int index )
   : depth( 0 )
 {
-  ::memset( levels, 0, sizeof( Level ) * 3 );  // make sure we clean up also the padding areas (for memcmp test in operator==)
+  levels.fill( Level() );
   levels[0].g = g;
   levels[0].index = index;
 
@@ -399,8 +399,7 @@ bool QgsAbstractGeometry::vertex_iterator::operator==( const QgsAbstractGeometry
 {
   if ( depth != other.depth )
     return false;
-  int res = ::memcmp( levels, other.levels, sizeof( Level ) * ( depth + 1 ) );
-  return res == 0;
+  return std::equal( std::begin( levels ), std::begin( levels ) + depth + 1, std::begin( other.levels ) );
 }
 
 void QgsAbstractGeometry::vertex_iterator::digDown()
@@ -536,4 +535,9 @@ const QgsAbstractGeometry *QgsGeometryConstPartIterator::next()
 {
   n = i++;
   return *n;
+}
+
+bool QgsAbstractGeometry::vertex_iterator::Level::operator==( const QgsAbstractGeometry::vertex_iterator::Level &other ) const
+{
+  return g == other.g && index == other.index;
 }

@@ -75,6 +75,8 @@ class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
 class QgsProjectTimeSettings;
+class QgsAnnotationLayer;
+
 
 /**
  * \ingroup core
@@ -118,6 +120,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     {
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
       FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
+      FlagTrustLayerMetadata = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
+      FlagDontStoreOriginalStyles = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -161,6 +165,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
+
+    /**
+     * Set the current project singleton instance to \a project
+     *
+     * \note this method is provided mainly for the server, which caches the projects and (potentially) needs to switch the current instance on every request.
+     * \warning calling this method can have serious, unintended consequences, including instability, data loss and undefined behavior. Use with EXTREME caution!
+     * \see instance()
+     * \since QGIS 3.10.11
+     */
+    static void setInstance( QgsProject *project ) ;
+
 
     /**
      * Create a new QgsProject.
@@ -214,6 +229,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.14
      */
     QDateTime lastSaveDateTime() const;
+
+    /**
+     * Returns the QGIS version which the project was last saved using.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProjectVersion lastSaveVersion() const;
 
     /**
      * Returns TRUE if the project has been modified since the last write()
@@ -379,7 +401,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param flags optional flags which control the read behavior of projects
      * \returns TRUE if project file has been read successfully
      */
-    bool read( const QString &filename, QgsProject::ReadFlags flags = nullptr );
+    bool read( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     /**
      * Reads the project from its currently associated file (see fileName() ).
@@ -389,7 +411,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \returns TRUE if project file has been read successfully
      */
-    bool read( QgsProject::ReadFlags flags = nullptr );
+    bool read( QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     /**
      * Reads the layer described in the associated DOM node.
@@ -420,94 +442,158 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool write();
 
     /**
-     * Write a boolean entry to the project file.
+     * Write a boolean \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryBool
+     *
+     * \see readBoolEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, bool value ) SIP_PYNAME( writeEntryBool );
 
     /**
-     * Write a double entry to the project file.
+     * Write a double \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryDouble
+     *
+     * \see readDoubleEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, double value ) SIP_PYNAME( writeEntryDouble );
 
     /**
-     * Write an integer entry to the project file.
+     * Write an integer \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
+     *
+     * \see readNumEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, int value );
 
     /**
-     * Write a string entry to the project file.
+     * Write a string \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
+     *
+     * \see readEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, const QString &value );
 
     /**
-     * Write a string list entry to the project file.
+     * Write a string list \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
+     *
+     * \see readListEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 
     /**
-     * Key value accessors
+     * Reads a string list from the specified \a scope and \a key.
      *
-     * keys would be the familiar QgsSettings-like '/' delimited entries,
-     * implying a hierarchy of keys and corresponding values
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a string list
+     *
+     * \returns entry value as a string list
      */
-    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = nullptr ) const;
-
-    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = nullptr ) const;
-    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = nullptr ) const;
-    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
-    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
-
-    //! Remove the given key
-    bool removeEntry( const QString &scope, const QString &key );
-
+    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
-     * Returns keys with values -- do not return keys that contain other keys
+     * Reads a string from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a string value
+     *
+     * \returns entry value as string from \a scope given its \a key
+     */
+    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * Reads an integer from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as an integer
+     *
+     * \returns entry value as integer from \a scope given its \a key
+     */
+    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * Reads a double from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a double
+     *
+     * \returns entry value as double from \a scope given its \a key
+     */
+    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * Reads a boolean from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a boolean
+     *
+     * \returns entry value as boolean from \a scope given its \a key
+     */
+    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * Remove the given \a key from the specified \a scope.
+     */
+    bool removeEntry( const QString &scope, const QString &key );
+
+    /**
+     * Returns a list of child keys with values which exist within the the specified \a scope and \a key.
+     *
+     * This method does not return keys that contain other keys. See subkeyList() to retrieve keys
+     * which contain other keys.
      *
      * \note equivalent to QgsSettings entryList()
      */
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /**
-     * Returns keys with keys -- do not return keys that contain only values
+     * Returns a list of child keys which contain other keys that exist within the the specified \a scope and \a key.
+     *
+     * This method only returns keys with keys, it will not return keys that contain only values. See
+     * entryList() to retrieve keys with values.
      *
      * \note equivalent to QgsSettings subkeyList()
      */
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 
+    // TODO Now slightly broken since re-factoring.  Won't print out top-level key
+    //           and redundantly prints sub-keys.
 
     /**
      * Dump out current project properties to stderr
      */
-    // TODO Now slightly broken since re-factoring.  Won't print out top-level key
-    //           and redundantly prints sub-keys.
     void dumpProperties() const;
 
     /**
@@ -524,7 +610,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     QString writePath( const QString &filename ) const;
 
-    //! Turn filename read from the project file to an absolute path
+    /**
+     * Transforms a \a filename read from the project file to an absolute path.
+     */
     QString readPath( const QString &filename ) const;
 
     //! Returns error message from previous read/write
@@ -536,7 +624,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setBadLayerHandler( QgsProjectBadLayerHandler *handler SIP_TRANSFER );
 
-    //! Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
+    /**
+     * Returns the source project file path if the layer with matching \a id is embedded from other project file.
+     *
+     * Returns an empty string if the matching layer is not embedded.
+     */
     QString layerIsEmbedded( const QString &id ) const;
 
     /**
@@ -548,7 +640,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
-                              bool saveFlag = true, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+                              bool saveFlag = true, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     /**
      * Create layer group instance defined in an arbitrary project file.
@@ -557,7 +649,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 2.4
      */
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = nullptr );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
@@ -1145,6 +1237,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) SIP_TRANSFERBACK;
+
+    /**
+     * Returns the main annotation layer associated with the project.
+     *
+     * This layer is always present in projects, and will always be rendered
+     * above any other map layers during map render jobs.
+     *
+     * It forms the default location to place new annotation items which
+     * should appear above all map layers.
+     *
+     * \since QGIS 3.16
+     */
+    QgsAnnotationLayer *mainAnnotationLayer();
 
     /**
      * Removes all registered layers. If the registry has ownership
@@ -1814,15 +1919,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     static QgsProject *sProject;
 
-    /**
-     * Set the current project instance to \a project
-     *
-     * \note this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
-     * \see instance()
-     * \note not available in Python bindings
-     * \since QGIS 3.2
-     */
-    static void setInstance( QgsProject *project ) SIP_SKIP;
 
     /**
      * Read map layers from project file.
@@ -1832,7 +1928,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param flags optional project reading flags
      * \returns TRUE if function worked; else is FALSE
     */
-    bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags = nullptr );
+    bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     /**
      * Set error message from read/write operation
@@ -1853,29 +1949,29 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \note not available in Python bindings
      */
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     /**
      * The optional \a flags argument can be used to control layer reading behavior.
      *
      * \note not available in Python bindings
     */
-    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     /**
      * The optional \a flags argument can be used to control layer reading behavior.
      * \note not available in Python bindings
      */
-    bool loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    bool loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = QgsProject::ReadFlags() ) SIP_SKIP;
 
     //! Read .qgs file
-    bool readProjectFile( const QString &filename, QgsProject::ReadFlags flags = nullptr );
+    bool readProjectFile( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     //! Write .qgs file
     bool writeProjectFile( const QString &filename );
 
     //! Unzip .qgz file then read embedded .qgs file
-    bool unzip( const QString &filename, QgsProject::ReadFlags flags = nullptr );
+    bool unzip( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 
     //! Zip project
     bool zip( const QString &filename );
@@ -1919,6 +2015,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsLayerTreeRegistryBridge *mLayerTreeRegistryBridge = nullptr;
 
+    QgsAnnotationLayer *mMainAnnotationLayer = nullptr;
+
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup *> mTransactionGroups;
 
@@ -1939,6 +2037,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString mSaveUser;              // last saved user.
     QString mSaveUserFull;          // last saved user full name.
     QDateTime mSaveDateTime;
+    QgsProjectVersion mSaveVersion;
 
     /**
      * Manual override for project home path - if empty, home path is automatically
@@ -1976,9 +2075,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     friend class QgsProviderRegistry;
 
     // Required by QGIS Server for switching the current project instance
-    friend class QgsConfigCache;
+    friend class QgsServer;
 
     friend class TestQgsProject;
+
+    Q_DISABLE_COPY( QgsProject )
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProject::ReadFlags )
@@ -2040,8 +2141,8 @@ class CORE_EXPORT QgsProjectDirtyBlocker
 
 /**
  * Returns the version string found in the given DOM document
-   \returns the version string or an empty string if none found
-   \note not available in Python bindings.
+ * \returns the version string or an empty string if none found
+ * \note not available in Python bindings.
  */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
 

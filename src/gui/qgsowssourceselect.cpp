@@ -389,13 +389,16 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
   }
 
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
   QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setCrs( defaultCRS );
+  }
+  else
+  {
+    mySelector->showNoCrsForLayerMessage();
   }
 
   if ( !mySelector->exec() )
@@ -421,7 +424,7 @@ void QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 void QgsOWSSourceSelect::populateCrs()
 {
   clearCrs();
-  mSelectedLayersCRSs = selectedLayersCrses().toSet();
+  mSelectedLayersCRSs = qgis::listToSet( selectedLayersCrses() );
   mCRSLabel->setText( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) + ':' );
 
   mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );

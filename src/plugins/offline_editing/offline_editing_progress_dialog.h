@@ -27,7 +27,7 @@ class QgsOfflineEditingProgressDialog : public QDialog, private Ui::QgsOfflineEd
     Q_OBJECT
 
   public:
-    QgsOfflineEditingProgressDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsOfflineEditingProgressDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     void setTitle( const QString &title );
     void setCurrentLayer( int layer, int numLayers );

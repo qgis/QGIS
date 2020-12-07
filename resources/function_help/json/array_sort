@@ -1,6 +1,7 @@
 {
   "name": "array_sort",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns the provided array with its elements sorted.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"ascending","optional":true,"default":"true","description":"set this parameter to false to sort the array in descending order"}],

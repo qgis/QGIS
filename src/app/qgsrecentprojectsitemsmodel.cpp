@@ -113,7 +113,7 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
     if ( storage )
     {
       path = storage->filePath( projectData.path );
-      if ( storage->type() == QStringLiteral( "geopackage" ) && path.isEmpty() )
+      if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
         projectData.exists = false;
       else
         projectData.exists = true;
@@ -155,7 +155,7 @@ void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
   if ( storage )
   {
     path = storage->filePath( projectData.path );
-    if ( storage->type() == QStringLiteral( "geopackage" ) && path.isEmpty() )
+    if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
       projectData.exists = false;
     else
       projectData.exists = true;

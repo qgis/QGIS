@@ -26,7 +26,8 @@ class QgsExpression;
 
 /**
  * \ingroup core
- * A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
+ * A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
+*/
 class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 {
   public:
@@ -63,12 +64,14 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
     /**
      * Gets stroke join style.
-     * \since QGIS 2.16 */
+     * \since QGIS 2.16
+     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /**
      * Set stroke join style.
-     * \since QGIS 2.16 */
+     * \since QGIS 2.16
+    */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     void setStrokeWidth( double w ) { mStrokeWidth = w; }
@@ -159,14 +162,18 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
     QPen mPen;
     QBrush mBrush;
+    //! QPen to use as stroke of selected symbols
+    QPen mSelPen;
+    //! QBrush to use as fill of selected symbols
+    QBrush mSelBrush;
 
     /**
      * Setup mPainterPath
-      \param symbolName name of symbol
-      \param context render context
-      \param scaledWidth optional width
-      \param scaledHeight optional height
-      \param f optional feature to render (0 if no data defined rendering)
+     * \param symbolName name of symbol
+     * \param context render context
+     * \param scaledWidth optional width
+     * \param scaledHeight optional height
+     * \param f optional feature to render (0 if no data defined rendering)
      */
     void preparePath( const QString &symbolName, QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr, const QgsFeature *f = nullptr );
     QSizeF calculateSize( QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr );

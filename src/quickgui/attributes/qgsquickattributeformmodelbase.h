@@ -56,8 +56,10 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     //! Whether use tabs layout
     Q_PROPERTY( bool hasTabs READ hasTabs WRITE setHasTabs NOTIFY hasTabsChanged )
 
-    //! Returns TRUE if all constraints defined on fields are satisfied with the current attribute values
-    Q_PROPERTY( bool constraintsValid READ constraintsValid NOTIFY constraintsValidChanged )
+    //! Returns TRUE if all hard constraints defined on fields are satisfied with the current attribute values
+    Q_PROPERTY( bool constraintsHardValid READ constraintsHardValid NOTIFY constraintsHardValidChanged )
+    //! Returns TRUE if all soft constraints defined on fields are satisfied with the current attribute values
+    Q_PROPERTY( bool constraintsSoftValid READ constraintsSoftValid NOTIFY constraintsSoftValidChanged )
 
   public:
     //! Constructor
@@ -83,8 +85,11 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     //! Creates a new feature
     void create();
 
-    //! \copydoc QgsQuickAttributeFormModelBase::constraintsValid
-    bool constraintsValid() const;
+    //! \copydoc QgsQuickAttributeFormModelBase::constraintsHardValid
+    bool constraintsHardValid() const;
+
+    //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
+    bool constraintsSoftValid() const;
 
     /**
      * Gets the value of attribute of the feature in the model
@@ -93,13 +98,24 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
      */
     QVariant attribute( const QString &name ) const;
 
+    //! \copydoc QgsQuickAttributeFormModelBase::constraintsHardValid
+    void setConstraintsHardValid( bool constraintsHardValid );
+
+    //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
+    void setConstraintsSoftValid( bool constraintsSoftValid );
+
+    //! Resets the model
+    Q_INVOKABLE void forceClean();
+
   signals:
     //! \copydoc QgsQuickAttributeFormModelBase::attributeModel
     void attributeModelChanged();
     //! \copydoc QgsQuickAttributeFormModelBase::hasTabs
     void hasTabsChanged();
-    //! \copydoc QgsQuickAttributeFormModelBase::constraintsValid
-    void constraintsValidChanged();
+    //! \copydoc QgsQuickAttributeFormModelBase::constraintsHardValid
+    void constraintsHardValidChanged();
+    //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
+    void constraintsSoftValidChanged();
 
   private slots:
     void onFeatureChanged();
@@ -112,7 +128,6 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     void updateAttributeValue( QStandardItem *item );
     void flatten( QgsAttributeEditorContainer *container, QStandardItem *parent, const QString &parentVisibilityExpressions, QVector<QStandardItem *> &items );
     void updateVisibility( int fieldIndex = -1 );
-    void setConstraintsValid( bool constraintsValid );
 
     QgsQuickAttributeModel *mAttributeModel = nullptr; // not owned
     QgsVectorLayer *mLayer = nullptr; // not owned
@@ -121,10 +136,11 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
 
     typedef QPair<QgsExpression, QVector<QStandardItem *> > VisibilityExpression;
     QList<VisibilityExpression> mVisibilityExpressions;
-    QMap<QStandardItem *, QgsExpression> mConstraints;
+    QMap<QStandardItem *, QgsFieldConstraints> mConstraints;
 
     QgsExpressionContext mExpressionContext;
-    bool mConstraintsValid = false;
+    bool mConstraintsHardValid = false;
+    bool mConstraintsSoftValid = false;
 };
 
 /// @endcond

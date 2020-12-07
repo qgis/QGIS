@@ -39,7 +39,6 @@
  * QgsVectorTileWriter::Layer representation and QVariant representation.
  *
  * \ingroup core
- * \note This class is not a part of public API.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProcessingParameterDefinition
@@ -66,6 +65,8 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
 
 };
 
+#ifndef SIP_RUN
+///@cond PRIVATE
 
 /**
  * Parameter type definition for QgsProcessingParameterVectorTileWriterLayers.
@@ -113,5 +114,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileWriterLayers : public QgsP
     }
 };
 
+///@endcond
+#endif
 
 #endif // QGSPROCESSINGPARAMETERVECTORTILEWRITERLAYERS_H

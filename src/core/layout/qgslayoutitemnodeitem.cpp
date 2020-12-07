@@ -28,6 +28,7 @@ void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
 {
   mPolygon = nodes;
   updateSceneRect();
+  emit clipPathChanged();
 }
 
 QRectF QgsLayoutNodesItem::boundingRect() const
@@ -156,6 +157,7 @@ bool QgsLayoutNodesItem::addNode( QPointF pt,
   {
     rc = _addNode( idx, start, maxDistance );
     updateSceneRect();
+    emit clipPathChanged();
   }
 
   return rc;
@@ -246,7 +248,10 @@ bool QgsLayoutNodesItem::removeNode( const int index )
 {
   bool rc = _removeNode( index );
   if ( rc )
+  {
     updateSceneRect();
+    emit clipPathChanged();
+  }
   return rc;
 }
 
@@ -259,7 +264,7 @@ bool QgsLayoutNodesItem::moveNode( const int index, QPointF pt )
     QPointF nodeItem = mapFromScene( pt );
     mPolygon.replace( index, nodeItem );
     updateSceneRect();
-
+    emit clipPathChanged();
     rc = true;
   }
 
@@ -287,6 +292,7 @@ bool QgsLayoutNodesItem::readPropertiesFromElement( const QDomElement &itemElem,
   }
 
   emit changed();
+  emit clipPathChanged();
   return true;
 }
 
@@ -305,6 +311,7 @@ void QgsLayoutNodesItem::rescaleToFitBoundingBox()
   QTransform trans;
   trans = trans.scale( ratioX, ratioY );
   mPolygon = trans.map( mPolygon );
+  emit clipPathChanged();
 }
 
 bool QgsLayoutNodesItem::setSelectedNode( const int index )

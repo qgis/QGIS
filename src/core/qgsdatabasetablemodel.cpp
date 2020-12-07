@@ -122,18 +122,19 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
           {
             return QgsLayerItem::iconPoint();
           }
-          case QgsWkbTypes::PolygonGeometry :
+          case QgsWkbTypes::PolygonGeometry:
           {
             return QgsLayerItem::iconPolygon();
           }
-          case QgsWkbTypes::LineGeometry :
+          case QgsWkbTypes::LineGeometry:
           {
             return QgsLayerItem::iconLine();
           }
           default:
-            return QgsLayerItem::iconTable();
+            break;
         }
-        return QVariant();
+
+        return QgsLayerItem::iconTable();
       }
       else if ( role == RoleWkbType )
         return table.geometryColumnTypes().at( 0 ).wkbType;

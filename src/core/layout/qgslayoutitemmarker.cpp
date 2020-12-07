@@ -64,20 +64,20 @@ QIcon QgsLayoutItemMarker::icon() const
 
 void QgsLayoutItemMarker::refreshSymbol()
 {
-  if ( layout() )
+  if ( auto *lLayout = layout() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->renderContext().dpi() );
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( lLayout, nullptr, lLayout->renderContext().dpi() );
 
     std::unique_ptr< QgsMarkerSymbol > sym( mShapeStyleSymbol->clone() );
     sym->setAngle( sym->angle() + mNorthArrowRotation );
     sym->startRender( rc );
     QRectF bounds = sym->bounds( QPointF( 0, 0 ), rc );
     sym->stopRender( rc );
-    mPoint = QPointF( -bounds.left() * 25.4 / layout()->renderContext().dpi(),
-                      -bounds.top() * 25.4 / layout()->renderContext().dpi() );
+    mPoint = QPointF( -bounds.left() * 25.4 / lLayout->renderContext().dpi(),
+                      -bounds.top() * 25.4 / lLayout->renderContext().dpi() );
     bounds.translate( mPoint );
 
-    QgsLayoutSize newSizeMm = QgsLayoutSize( bounds.size()  * 25.4 / layout()->renderContext().dpi(), QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutSize newSizeMm = QgsLayoutSize( bounds.size()  * 25.4 / lLayout->renderContext().dpi(), QgsUnitTypes::LayoutMillimeters );
     mFixedSize = mLayout->renderContext().measurementConverter().convert( newSizeMm, sizeWithUnits().units() );
 
     attemptResize( mFixedSize );

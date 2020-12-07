@@ -17,6 +17,7 @@
 
 #include "qgslayertree.h"
 
+#include "qgsrasterlayer.h"
 #include "qgswmsrendercontext.h"
 #include "qgswmsserviceexception.h"
 #include "qgsserverprojectutils.h"
@@ -29,6 +30,12 @@ QgsWmsRenderContext::QgsWmsRenderContext( const QgsProject *project, QgsServerIn
   , mInterface( interface )
   , mFlags()
 {
+}
+
+QgsWmsRenderContext::~QgsWmsRenderContext()
+{
+  qDeleteAll( mExternalLayers );
+  mExternalLayers.clear();
 }
 
 void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
@@ -490,7 +497,18 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
     const QString nickname = param.mNickname;
     const QString style = param.mStyle;
 
-    if ( mNicknameLayers.contains( nickname ) )
+    if ( ! param.mExternalUri.isEmpty() && ( mFlags & AddExternalLayers ) )
+    {
+      std::unique_ptr<QgsMapLayer> layer = qgis::make_unique< QgsRasterLayer >( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
+
+      if ( layer->isValid() )
+      {
+        // to delete later
+        mExternalLayers.append( layer.release() );
+        mLayersToRender.append( mExternalLayers.last() );
+      }
+    }
+    else if ( mNicknameLayers.contains( nickname ) )
     {
       if ( !style.isEmpty() )
       {
@@ -743,23 +761,26 @@ void QgsWmsRenderContext::removeUnwantedLayers()
   {
     const QString nickname = layerNickname( *layer );
 
-    if ( !layerScaleVisibility( nickname ) )
-      continue;
-
-    if ( mRestrictedLayers.contains( nickname ) )
-      continue;
-
-    if ( mFlags & UseWfsLayersOnly )
+    if ( ! isExternalLayer( nickname ) )
     {
-      if ( layer->type() != QgsMapLayerType::VectorLayer )
-      {
+      if ( !layerScaleVisibility( nickname ) )
         continue;
-      }
 
-      const QStringList wfsLayers = QgsServerProjectUtils::wfsLayerIds( *mProject );
-      if ( ! wfsLayers.contains( layer->id() ) )
-      {
+      if ( mRestrictedLayers.contains( nickname ) )
         continue;
+
+      if ( mFlags & UseWfsLayersOnly )
+      {
+        if ( layer->type() != QgsMapLayerType::VectorLayer )
+        {
+          continue;
+        }
+
+        const QStringList wfsLayers = QgsServerProjectUtils::wfsLayerIds( *mProject );
+        if ( ! wfsLayers.contains( layer->id() ) )
+        {
+          continue;
+        }
       }
     }
 
@@ -767,6 +788,17 @@ void QgsWmsRenderContext::removeUnwantedLayers()
   }
 
   mLayersToRender = layers;
+}
+
+bool QgsWmsRenderContext::isExternalLayer( const QString &name ) const
+{
+  for ( const auto &layer : mExternalLayers )
+  {
+    if ( layer->name().compare( name ) == 0 )
+      return true;
+  }
+
+  return false;
 }
 
 void QgsWmsRenderContext::checkLayerReadPermissions()

@@ -266,7 +266,7 @@ Constructor for QgsProcessingToolboxModel, with the given ``parent`` object.
 
 If ``registry`` is specified then the model will show providers and algorithms
 from the given registry. If no registry is specified, then the processing
-registry attached to QgsApplication.processingRegistry() will be used
+registry attached to :py:func:`QgsApplication.processingRegistry()` will be used
 by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
@@ -394,7 +394,7 @@ Constructor for QgsProcessingToolboxProxyModel, with the given ``parent`` object
 
 If ``registry`` is specified then the model will show providers and algorithms
 from the given registry. If no registry is specified, then the processing
-registry attached to QgsApplication.processingRegistry() will be used
+registry attached to :py:func:`QgsApplication.processingRegistry()` will be used
 by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top

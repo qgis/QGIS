@@ -27,6 +27,7 @@
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include "qgspoint.h"
+#include "qgsogrproxytextcodec.h"
 
 class TestQgsOgrUtils: public QObject
 {
@@ -47,6 +48,7 @@ class TestQgsOgrUtils: public QObject
     void readOgrFields();
     void stringToFeatureList();
     void stringToFields();
+    void textCodec();
 
   private:
 
@@ -111,55 +113,63 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "Point (1.1 2.2)" ) );
-
+  OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
+
   wkt = QByteArray( "point z ( 1.1 2.2 3)" );
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointZ (1.1 2.2 3)" ) );
-
+  OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
+
   wkt = QByteArray( "point m ( 1.1 2.2 3)" );
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointM (1.1 2.2 3)" ) );
-
+  OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
+
   wkt = QByteArray( "point zm ( 1.1 2.2 3 4)" );
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "PointZM (1.1 2.2 3 4)" ) );
-
+  OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
+
   wkt = QByteArray( "multipoint( 1.1 2.2, 3.3 4.4)" );
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPoint ((1.1 2.2),(3.3 4.4))" ) );
-
+  OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
+
   wkt = QByteArray( "multipoint z ((1.1 2.2 3), (3.3 4.4 4))" );
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointZ ((1.1 2.2 3),(3.3 4.4 4))" ) );
-
+  OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
+
   wkt = QByteArray( "multipoint m ((1.1 2.2 3), (3.3 4.4 4))" );
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointM ((1.1 2.2 3),(3.3 4.4 4))" ) );
-
+  OGR_G_DestroyGeometry( ogrGeom );
   ogrGeom = nullptr;
+
   wkt = QByteArray( "multipoint zm ((1.1 2.2 3 4), (3.3 4.4 4 5))" );
   wktChar = wkt.data();
   OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "MultiPointZM ((1.1 2.2 3 4),(3.3 4.4 4 5))" ) );
+  OGR_G_DestroyGeometry( ogrGeom );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
@@ -203,9 +213,10 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
   // back again!
   QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( static_cast< int >( geom.wkbType() ), type );
+  OGR_G_DestroyGeometry( ogrGeom );
 
   // bit of trickiness here - QGIS wkt conversion changes 25D -> Z, so account for that
-  wkt.replace( QStringLiteral( "25D" ), QStringLiteral( "Z" ) );
+  wkt.replace( QLatin1String( "25D" ), QLatin1String( "Z" ) );
   QCOMPARE( geom.asWkt( 3 ), wkt );
 }
 
@@ -489,7 +500,17 @@ void TestQgsOgrUtils::stringToFields()
   QCOMPARE( fields.at( 1 ).type(), QVariant::Double );
 }
 
+void TestQgsOgrUtils::textCodec()
+{
+  QVERIFY( QgsOgrProxyTextCodec::supportedCodecs().contains( QStringLiteral( "CP852" ) ) );
+  QVERIFY( !QgsOgrProxyTextCodec::supportedCodecs().contains( QStringLiteral( "xxx" ) ) );
 
+  // The QTextCodec should always be constructed on the heap. Qt takes ownership and will delete it when the application terminates.
+  QgsOgrProxyTextCodec *codec = new QgsOgrProxyTextCodec( "CP852" );
+  QCOMPARE( codec->toUnicode( codec->fromUnicode( "abcŐ" ) ), QStringLiteral( "abcŐ" ) );
+  QCOMPARE( codec->toUnicode( codec->fromUnicode( "" ) ), QString() );
+  // cppcheck-suppress memleak
+}
 
 QGSTEST_MAIN( TestQgsOgrUtils )
 #include "testqgsogrutils.moc"

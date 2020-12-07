@@ -1,6 +1,7 @@
 {
   "name": "iqr",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the calculated inter quartile range from a field or expression.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

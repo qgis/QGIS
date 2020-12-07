@@ -62,7 +62,10 @@ class QgsMeshVectorValueInterpolator
     //! Destructor
     virtual ~QgsMeshVectorValueInterpolator() = default;
 
-    //! Returns the interpolated vector
+    /**
+     * Returns the interpolated vector
+     * \param point point in map coordinates
+     */
     virtual QgsVector vectorValue( const QgsPointXY &point ) const;
 
     //! Assignment operator

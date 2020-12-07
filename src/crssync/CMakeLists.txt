@@ -1,45 +1,45 @@
-ADD_EXECUTABLE(crssync main.cpp)
+add_executable(crssync main.cpp)
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ../core
   ../core/geometry
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_BINARY_DIR}/src/core
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
 )
 
-TARGET_LINK_LIBRARIES(crssync
+target_link_libraries(crssync
   qgis_core
   ${PROJ_LIBRARY}
   ${GDAL_LIBRARY}
 )
 
-IF(MSVC AND NOT USING_NMAKE)
-  ADD_CUSTOM_TARGET(synccrsdb
+if(MSVC AND NOT USING_NMAKE)
+  add_custom_target(synccrsdb
     COMMENT "Running crssync"
     COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/crssync.exe
     DEPENDS crssync
   )
-ELSEIF(CMAKE_CROSSCOMPILING AND NOT MXE)
-  SET(NATIVE_CRSSYNC_BIN CACHE PATH "Path to a natively compiled synccrsdb binary")
-  IF(NOT NATIVE_CRSSYNC_BIN)
-    MESSAGE(FATAL_ERROR "NATIVE_CRSSYNC_BIN needs to be defined when cross-compiling")
-  ENDIF()
-  ADD_CUSTOM_TARGET(synccrsdb
+elseif()
+  set(NATIVE_CRSSYNC_BIN CACHE PATH "Path to a natively compiled synccrsdb binary")
+  if(NOT NATIVE_CRSSYNC_BIN)
+    message(FATAL_ERROR "NATIVE_CRSSYNC_BIN needs to be defined when cross-compiling")
+  endif()
+  add_custom_target(synccrsdb
     COMMENT "Running native crssync"
     COMMAND ${NATIVE_CRSSYNC_BIN}
     DEPENDS crssync
   )
-ELSE()
-  ADD_CUSTOM_TARGET(synccrsdb
+else()
+  add_custom_target(synccrsdb
     COMMENT "Running crssync"
     COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/crssync
     DEPENDS crssync
   )
-ENDIF()
+endif()
 
-INSTALL(CODE "MESSAGE(\"Installing crssync ...\")")
-INSTALL(TARGETS crssync RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR})
+install(CODE "message(\"Installing crssync ...\")")
+install(TARGETS crssync RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR})

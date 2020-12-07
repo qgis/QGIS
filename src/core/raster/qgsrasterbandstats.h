@@ -76,18 +76,21 @@ class CORE_EXPORT QgsRasterBandStats
     //! \brief The gdal band number (starts at 1)
     int bandNumber;
 
-    //! \brief The number of not no data cells in the band.
     // TODO: check if no data are excluded in stats calculation
+
+    //! \brief The number of not no data cells in the band.
     qgssize elementCount;
 
     /**
      * \brief The maximum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMaximmum function. */
+     * are ignored. This does not use the gdal GetMaximmum function.
+    */
     double maximumValue;
 
     /**
      * \brief The minimum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMinimum function. */
+     * are ignored. This does not use the gdal GetMinimum function.
+    */
     double minimumValue;
 
     //! \brief The mean cell value for the band. NO_DATA values are excluded.

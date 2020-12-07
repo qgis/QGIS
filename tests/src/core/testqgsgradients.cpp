@@ -62,7 +62,10 @@ class TestQgsGradients : public QObject
     void gradientSymbolReflectSpread();
     void gradientSymbolRepeatSpread();
     void gradientSymbolRotate();
+    void opacityWithDataDefinedColor();
+    void dataDefinedOpacity();
     void gradientSymbolFromQml();
+
   private:
     bool mTestHasError =  false ;
     bool setQml( const QString &type );
@@ -244,6 +247,27 @@ void TestQgsGradients::gradientSymbolRotate()
   mGradientFill->setAngle( 0 );
 }
 
+void TestQgsGradients::opacityWithDataDefinedColor()
+{
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mFillSymbol->setOpacity( 0.5 );
+
+  bool result = imageCheck( QStringLiteral( "gradient_opacityddcolor" ) );
+  QVERIFY( result );
+}
+
+void TestQgsGradients::dataDefinedOpacity()
+{
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mFillSymbol->setOpacity( 1.0 );
+  mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+
+  bool result = imageCheck( QStringLiteral( "gradient_ddopacity" ) );
+  QVERIFY( result );
+}
+
 void TestQgsGradients::gradientSymbolFromQml()
 {
   mReport += QLatin1String( "<h2>Gradient symbol from QML test</h2>\n" );
@@ -253,8 +277,6 @@ void TestQgsGradients::gradientSymbolFromQml()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QVERIFY( imageCheck( "gradient_from_qml" ) );
 }
-
-
 
 //
 // Private helper functions not called directly by CTest

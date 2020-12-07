@@ -31,7 +31,7 @@ Simple constructor
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
 
-:param properties: A property map to deserialize saved information from properties()
+:param properties: A property map to deserialize saved information from :py:func:`~QgsMaskMarkerSymbolLayer.properties`
 
 :return: A new QgsMaskMarkerSymbolLayer
 %End

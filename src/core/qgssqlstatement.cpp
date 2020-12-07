@@ -22,7 +22,7 @@
 
 
 // from parser
-extern QgsSQLStatement::Node *parse( const QString &str, QString &parserErrorMsg );
+extern QgsSQLStatement::Node *parse( const QString &str, QString &parserErrorMsg, bool allowFragments );
 
 ///////////////////////////////////////////////
 // operators
@@ -106,6 +106,16 @@ QString QgsSQLStatement::stripQuotedIdentifier( QString text )
   return text;
 }
 
+QString QgsSQLStatement::stripMsQuotedIdentifier( QString text )
+{
+  if ( text.length() >= 2 && text[0] == '[' && text[text.length() - 1] == ']' )
+  {
+    // strip square brackets on start,end
+    text = text.mid( 1, text.length() - 2 );
+  }
+  return text;
+}
+
 QString QgsSQLStatement::quotedString( QString text )
 {
   text.replace( '\'', QLatin1String( "''" ) );
@@ -116,14 +126,20 @@ QString QgsSQLStatement::quotedString( QString text )
 }
 
 QgsSQLStatement::QgsSQLStatement( const QString &expr )
+  : QgsSQLStatement( expr, false )
 {
-  mRootNode = ::parse( expr, mParserErrorString );
+}
+
+QgsSQLStatement::QgsSQLStatement( const QString &expr, bool allowFragments )
+  : mAllowFragments( allowFragments )
+{
+  mRootNode = ::parse( expr, mParserErrorString, mAllowFragments );
   mStatement = expr;
 }
 
 QgsSQLStatement::QgsSQLStatement( const QgsSQLStatement &other )
 {
-  mRootNode = ::parse( other.mStatement, mParserErrorString );
+  mRootNode = ::parse( other.mStatement, mParserErrorString, other.mAllowFragments );
   mStatement = other.mStatement;
 }
 
@@ -133,7 +149,7 @@ QgsSQLStatement &QgsSQLStatement::operator=( const QgsSQLStatement &other )
   {
     delete mRootNode;
     mParserErrorString.clear();
-    mRootNode = ::parse( other.mStatement, mParserErrorString );
+    mRootNode = ::parse( other.mStatement, mParserErrorString, other.mAllowFragments );
     mStatement = other.mStatement;
   }
   return *this;
@@ -144,7 +160,7 @@ QgsSQLStatement::~QgsSQLStatement()
   delete mRootNode;
 }
 
-bool QgsSQLStatement::hasParserError() const { return !mParserErrorString.isNull(); }
+bool QgsSQLStatement::hasParserError() const { return !mParserErrorString.isNull() || ( !mRootNode && !mAllowFragments ); }
 
 QString QgsSQLStatement::parserErrorString() const { return mParserErrorString; }
 
@@ -245,8 +261,8 @@ bool QgsSQLStatement::doBasicValidationChecks( QString &errorMsgOut ) const
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {
       if ( !errorMsgOut.isEmpty() )
-        errorMsgOut += QLatin1String( " " );
-      errorMsgOut += QString( tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ) ).arg( pair.first, pair.second );
+        errorMsgOut += QLatin1Char( ' ' );
+      errorMsgOut += tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ).arg( pair.first, pair.second );
     }
   }
 
@@ -667,7 +683,7 @@ QString QgsSQLStatement::NodeJoin::dump() const
   if ( mType != jtDefault )
   {
     ret += JOIN_TYPE_TEXT[mType];
-    ret += QLatin1String( " " );
+    ret += QLatin1Char( ' ' );
   }
   ret += QLatin1String( "JOIN " );
   ret += mTableDef->dump();
@@ -688,7 +704,7 @@ QString QgsSQLStatement::NodeJoin::dump() const
       first = false;
       ret += quotedIdentifierIfNeeded( column );
     }
-    ret += QLatin1String( ")" );
+    ret += QLatin1Char( ')' );
   }
   return ret;
 }
@@ -742,4 +758,14 @@ QString QgsSQLStatement::NodeCast::dump() const
 QgsSQLStatement::Node *QgsSQLStatement::NodeCast::clone() const
 {
   return new NodeCast( mNode->clone(), mType );
+}
+
+//
+// QgsSQLStatementFragment
+//
+
+QgsSQLStatementFragment::QgsSQLStatementFragment( const QString &fragment )
+  : QgsSQLStatement( fragment, true )
+{
+
 }

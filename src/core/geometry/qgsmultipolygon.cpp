@@ -30,6 +30,16 @@ QgsMultiPolygon::QgsMultiPolygon()
   mWkbType = QgsWkbTypes::MultiPolygon;
 }
 
+QgsPolygon *QgsMultiPolygon::polygonN( int index )
+{
+  return qgsgeometry_cast< QgsPolygon * >( geometryN( index ) );
+}
+
+const QgsPolygon *QgsMultiPolygon::polygonN( int index ) const
+{
+  return qgsgeometry_cast< const QgsPolygon * >( geometryN( index ) );
+}
+
 QString QgsMultiPolygon::geometryType() const
 {
   return QStringLiteral( "MultiPolygon" );

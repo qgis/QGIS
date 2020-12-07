@@ -23,7 +23,7 @@
 #include "qgsdataitemprovider.h"
 
 
-class QgsAmsRootItem : public QgsDataCollectionItem
+class QgsAmsRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

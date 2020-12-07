@@ -321,7 +321,7 @@ QPair<QString, QString> Qgs2To3Migration::transformKey( QString fullOldKey, QStr
   QString newKey = newKeyPart;
   QString oldKey = fullOldKey;
 
-  if ( newKeyPart == QStringLiteral( "*" ) )
+  if ( newKeyPart == QLatin1String( "*" ) )
   {
     newKey = fullOldKey;
   }

@@ -100,8 +100,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * An additional expression to further restrict the available features.
      * This can be used to integrate additional spatial or other constraints.
-     *
-     * TODO!
      */
     void setFilterExpression( const QString &filterExpression );
 

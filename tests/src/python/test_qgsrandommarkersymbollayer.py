@@ -23,6 +23,7 @@ __copyright__ = '(C) 2019, Nyall Dawson'
 
 import qgis  # NOQA
 
+import os
 from utilities import unitTestDataPath
 
 from qgis.PyQt.QtCore import QDir, Qt, QSize
@@ -40,7 +41,14 @@ from qgis.core import (QgsGeometry,
                        QgsSimpleMarkerSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsMarkerSymbol,
-                       QgsRandomMarkerFillSymbolLayer
+                       QgsRandomMarkerFillSymbolLayer,
+                       QgsVectorLayer,
+                       QgsSingleSymbolRenderer,
+                       QgsProperty,
+                       QgsSymbolLayer,
+                       QgsRectangle,
+                       QgsMultiRenderChecker,
+                       QgsSymbol
                        )
 
 from qgis.testing import unittest, start_app
@@ -198,6 +206,88 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
             'MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.imageCheck('randommarkerfill_multilayer', 'randommarkerfill_multilayer', rendered_image))
+
+    def testOpacityWithDataDefinedColor(self):
+        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_shp, 'Polys', 'ogr')
+        self.assertTrue(poly_layer.isValid())
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        random_fill = QgsRandomMarkerFillSymbolLayer(1, seed=481523)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 6)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeWidth(1)
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'red', 'green')"))
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'magenta', 'blue')"))
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_symbol.setOpacity(0.5)
+        random_fill.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(random_fill.clone())
+
+        s.setOpacity(0.5)
+
+        poly_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([poly_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_randommarkerfill')
+        renderchecker.setControlName('expected_randommarker_opacityddcolor')
+        res = renderchecker.runTest('expected_randommarker_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def testDataDefinedOpacity(self):
+        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_shp, 'Polys', 'ogr')
+        self.assertTrue(poly_layer.isValid())
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        random_fill = QgsRandomMarkerFillSymbolLayer(1, seed=481523)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 6)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeWidth(1)
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'red', 'green')"))
+        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'magenta', 'blue')"))
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_symbol.setOpacity(0.5)
+        random_fill.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(random_fill.clone())
+
+        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
+
+        poly_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([poly_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_randommarkerfill')
+        renderchecker.setControlName('expected_randommarker_ddopacity')
+        res = renderchecker.runTest('expected_randommarker_ddopacity')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()

@@ -33,10 +33,12 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsogrproxytextcodec.h"
 #include <mutex>
 
-QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
-  : QgsDataProvider( uri, options )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( uri, options, flags )
   , mTemporalCapabilities( qgis::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
 {
 }
@@ -87,6 +89,11 @@ bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   Q_UNUSED( flist )
   Q_UNUSED( flags )
   return false;
+}
+
+QString QgsVectorDataProvider::lastError() const
+{
+  return mErrors.isEmpty() ? QString() : mErrors.last();
 }
 
 bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
@@ -149,7 +156,7 @@ QgsFieldConstraints::Constraints QgsVectorDataProvider::fieldConstraints( int fi
 {
   QgsFields f = fields();
   if ( fieldIndex < 0 || fieldIndex >= f.count() )
-    return nullptr;
+    return QgsFieldConstraints::Constraints();
 
   return f.at( fieldIndex ).constraints().constraints();
 }
@@ -193,16 +200,27 @@ QgsVectorDataProvider::Capabilities QgsVectorDataProvider::capabilities() const
   return QgsVectorDataProvider::NoCapabilities;
 }
 
-
 void QgsVectorDataProvider::setEncoding( const QString &e )
 {
   mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
-
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
     if ( !e.isEmpty() )
-      QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
-    mEncoding = QTextCodec::codecForName( "System" );
+    {
+      // can we use the OGR proxy codec?
+      if ( QgsOgrProxyTextCodec::supportedCodecs().contains( e, Qt::CaseInsensitive ) )
+      {
+        //from the Qt docs (https://doc.qt.io/qt-5/qtextcodec.html#QTextCodec-1)
+        // "The QTextCodec should always be constructed on the heap (i.e. with new).
+        // Qt takes ownership and will delete it when the application terminates."
+        mEncoding = new QgsOgrProxyTextCodec( e.toLocal8Bit() );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+        mEncoding = QTextCodec::codecForName( "System" );
+      }
+    }
   }
 
   if ( !mEncoding )
@@ -303,7 +321,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
     abilitiesList += tr( "Curved Geometries" );
   }
 
-  return abilitiesList.join( QStringLiteral( ", " ) );
+  return abilitiesList.join( QLatin1String( ", " ) );
 }
 
 
@@ -634,7 +652,7 @@ QStringList QgsVectorDataProvider::availableEncodings()
   std::call_once( initialized, [ = ]
   {
     const auto codecs { QTextCodec::availableCodecs() };
-    for ( const QString &codec : codecs )
+    for ( const QByteArray &codec : codecs )
     {
       sEncodings << codec;
     }

@@ -143,7 +143,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   const bool splitAntimeridian = parameterAsBoolean( parameters, QStringLiteral( "ANTIMERIDIAN_SPLIT" ), context );
   QgsDistanceArea da;
   da.setSourceCrs( hubSource->sourceCrs(), context.transformContext() );
-  da.setEllipsoid( context.project()->ellipsoid() );
+  da.setEllipsoid( context.ellipsoid() );
 
   QgsFields hubOutFields;
   QgsAttributeList hubFieldIndices;

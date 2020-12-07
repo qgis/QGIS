@@ -34,7 +34,7 @@ Processing toolbox tree view, showing algorithms and providers in a tree structu
 Constructor for QgsProcessingToolboxTreeView, with the specified ``parent`` widget.
 
 If ``registry`` is set, then the view will automatically be populated with algorithms
-and providers from the registry. Otherwise, users must manually call setRegistry()
+and providers from the registry. Otherwise, users must manually call :py:func:`~QgsProcessingToolboxTreeView.setRegistry`
 to associate a registry with the view.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top

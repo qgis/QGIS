@@ -300,7 +300,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it : geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == linesLayer->id() && it.group == QStringLiteral( "test preset2" ) )
+    if ( it.mapLayerId == linesLayer->id() && it.group == QLatin1String( "test preset2" ) )
       vectorDetail = it;
   }
 
@@ -312,7 +312,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it : geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == linesLayer->id() && it.group == QStringLiteral( "test preset" ) )
+    if ( it.mapLayerId == linesLayer->id() && it.group == QLatin1String( "test preset" ) )
       vectorDetail = it;
   }
 
@@ -324,7 +324,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it :  geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == pointsLayer->id() && it.group == QStringLiteral( "test preset2" ) )
+    if ( it.mapLayerId == pointsLayer->id() && it.group == QLatin1String( "test preset2" ) )
       vectorDetail = it;
   }
   layer2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
@@ -344,7 +344,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it :  geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == polygonLayer->id() && it.group == QStringLiteral( "test preset3" ) )
+    if ( it.mapLayerId == polygonLayer->id() && it.group == QLatin1String( "test preset3" ) )
       vectorDetail = it;
   }
   layer3 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),

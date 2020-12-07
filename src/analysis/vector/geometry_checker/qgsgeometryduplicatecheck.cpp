@@ -35,7 +35,7 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
     }
     str.back() += ids.join( ',' );
   }
-  return str.join( QStringLiteral( "; " ) );
+  return str.join( QLatin1String( "; " ) );
 }
 
 

@@ -20,10 +20,10 @@ Abstract base class for long running background tasks. Tasks can be controlled d
 or added to a QgsTaskManager for automatic management.
 
 Derived classes should implement the process they want to execute in the background
-within the run() method. This method will be called when the
-task commences (ie via calling run() ).
+within the :py:func:`~run` method. This method will be called when the
+task commences (ie via calling :py:func:`~run` ).
 
-Long running tasks should periodically check the isCanceled() flag to detect if the task
+Long running tasks should periodically check the :py:func:`~isCanceled` flag to detect if the task
 has been canceled via some external event. If this flag is ``True`` then the task should
 clean up and terminate at the earliest possible convenience.
 
@@ -114,7 +114,7 @@ The value is undefined for tasks which have not begun.
     virtual void cancel();
 %Docstring
 Notifies the task that it should terminate. Calling this is not guaranteed
-to immediately end the task, rather it sets the isCanceled() flag which
+to immediately end the task, rather it sets the :py:func:`~QgsTask.isCanceled` flag which
 task subclasses can check and terminate their operations at an appropriate
 time. Any subtasks owned by this task will also be canceled.
 Derived classes must ensure that the base class implementation is called
@@ -209,7 +209,7 @@ Will be emitted by task when its progress changes.
 .. note::
 
    derived classes should not emit this signal directly, instead they should call
-   setProgress()
+   :py:func:`~QgsTask.setProgress`
 %End
 
     void statusChanged( int status );
@@ -261,7 +261,7 @@ an internal error).
     virtual bool run() = 0;
 %Docstring
 Performs the task's operation. This method will be called when the task commences
-(ie via calling start() ), and subclasses should implement the operation they
+(ie via calling :py:func:`~QgsTask.start` ), and subclasses should implement the operation they
 wish to perform in the background within this method.
 
 A task must return a boolean value to indicate whether the
@@ -283,7 +283,7 @@ lengthy operations here.
     bool isCanceled() const;
 %Docstring
 Will return ``True`` if task should terminate ASAP. If the task reports the CanCancel
-flag, then derived classes' run() methods should periodically check this and
+flag, then derived classes' :py:func:`~QgsTask.run` methods should periodically check this and
 terminate in a safe manner.
 %End
 
@@ -307,7 +307,7 @@ class QgsTaskManager : QObject
 {
 %Docstring
 Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
-or accessed via :py:func:`QgsApplication.taskManager()`
+or accessed via :py:func:`QgsApplication.taskManager()`.
 
 .. versionadded:: 3.0
 %End

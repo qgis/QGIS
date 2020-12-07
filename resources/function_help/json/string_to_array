@@ -1,6 +1,7 @@
 {
   "name": "string_to_array",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Splits string into an array using supplied delimiter and optional string for empty values.",
   "arguments": [
     {"arg":"string", "description":"the input string"},

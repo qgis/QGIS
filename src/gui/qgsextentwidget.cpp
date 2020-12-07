@@ -420,16 +420,17 @@ QgsRectangle QgsExtentWidget::outputExtent() const
                        mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
 }
 
-void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption )
 {
   if ( canvas )
   {
     mCanvas = canvas;
-    mButtonDrawOnCanvas->setVisible( true );
+    mButtonDrawOnCanvas->setVisible( drawOnCanvasOption );
     mCurrentExtentButton->setVisible( true );
 
     mMenu->addAction( mUseCanvasExtentAction );
-    mMenu->addAction( mDrawOnCanvasAction );
+    if ( drawOnCanvasOption )
+      mMenu->addAction( mDrawOnCanvasAction );
   }
   else
   {

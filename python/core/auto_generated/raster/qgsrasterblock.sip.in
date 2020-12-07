@@ -45,14 +45,14 @@ Reset block
 %End
 
 
-    bool isValid() const;
+    bool isValid() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the block is valid (correctly filled with data).
 An empty block may still be valid (if zero size block was requested).
-If the block is not valid, error may be retrieved by error() method.
+If the block is not valid, error may be retrieved by :py:func:`~QgsRasterBlock.error` method.
 %End
 
-    void setValid( bool valid );
+    void setValid( bool valid ) /HoldGIL/;
 %Docstring
 Mark block as valid or invalid
 %End
@@ -64,9 +64,15 @@ This method does not return ``True`` if size is not zero and all values are
 'no data' (null).
 %End
 
-    static int typeSize( int dataType );
+    static int typeSize( int dataType ) /HoldGIL/;
+%Docstring
+Returns the size in bytes for the specified ``dataType``.
+%End
 
-    int dataTypeSize() const;
+    int dataTypeSize() const /HoldGIL/;
+%Docstring
+Data type size in bytes.
+%End
 
     static bool typeIsNumeric( Qgis::DataType type );
 %Docstring
@@ -78,7 +84,7 @@ Returns ``True`` if data type is numeric
 Returns ``True`` if data type is color
 %End
 
-    Qgis::DataType dataType() const;
+    Qgis::DataType dataType() const  /HoldGIL/;
 %Docstring
 Returns data type
 %End
@@ -88,7 +94,7 @@ Returns data type
 For given data type returns wider type and sets no data value
 %End
 
-    bool hasNoDataValue() const;
+    bool hasNoDataValue() const /HoldGIL/;
 %Docstring
 ``True`` if the block has no data value.
 
@@ -97,16 +103,16 @@ For given data type returns wider type and sets no data value
 .. seealso:: :py:func:`noDataValue`
 %End
 
-    bool hasNoData() const;
+    bool hasNoData() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the block may contain no data. It does not guarantee
 that it really contains any no data. It can be used to speed up processing.
-Not the difference between this method and hasNoDataValue().
+Not the difference between this method and :py:func:`~QgsRasterBlock.hasNoDataValue`.
 
 :return: ``True`` if the block may contain no data
 %End
 
-    void setNoDataValue( double noDataValue );
+    void setNoDataValue( double noDataValue ) /HoldGIL/;
 %Docstring
 Sets cell value that will be considered as "no data".
 
@@ -115,7 +121,7 @@ Sets cell value that will be considered as "no data".
 .. versionadded:: 3.0
 %End
 
-    void resetNoDataValue();
+    void resetNoDataValue() /HoldGIL/;
 %Docstring
 Reset no data value: if there was a no data value previously set,
 it will be discarded.
@@ -125,7 +131,7 @@ it will be discarded.
 .. versionadded:: 3.0
 %End
 
-    double noDataValue() const;
+    double noDataValue() const /HoldGIL/;
 %Docstring
 Returns no data value. If the block does not have a no data value the
 returned value is undefined.
@@ -145,7 +151,7 @@ Gets byte array representing a value.
 :return: byte array representing the value
 %End
 
-    double value( int row, int column ) const;
+    double value( int row, int column ) const /HoldGIL/;
 %Docstring
 Read a single value if type of block is numeric. If type is color,
 returned value is undefined.
@@ -159,7 +165,7 @@ returned value is undefined.
 %End
 
 
-    double value( qgssize index ) const;
+    double value( qgssize index ) const /HoldGIL/;
 %Docstring
 Reads a single value if type of block is numeric. If type is color,
 returned value is undefined.
@@ -173,7 +179,7 @@ returned value is undefined.
 
 
 
-    QRgb color( int row, int column ) const;
+    QRgb color( int row, int column ) const /HoldGIL/;
 %Docstring
 Read a single color
 
@@ -183,7 +189,7 @@ Read a single color
 :return: color
 %End
 
-    QRgb color( qgssize index ) const;
+    QRgb color( qgssize index ) const /HoldGIL/;
 %Docstring
 Read a single value
 
@@ -192,7 +198,7 @@ Read a single value
 :return: color
 %End
 
-    bool isNoData( int row, int column ) const;
+    bool isNoData( int row, int column ) const /HoldGIL/;
 %Docstring
 Checks if value at position is no data
 
@@ -204,7 +210,7 @@ Checks if value at position is no data
 .. seealso:: :py:func:`valueAndNoData`
 %End
 
-    bool isNoData( qgssize row, qgssize column ) const;
+    bool isNoData( qgssize row, qgssize column ) const /HoldGIL/;
 %Docstring
 Check if value at position is no data
 
@@ -216,7 +222,7 @@ Check if value at position is no data
 .. seealso:: :py:func:`valueAndNoData`
 %End
 
-    bool isNoData( qgssize index ) const;
+    bool isNoData( qgssize index ) const /HoldGIL/;
 %Docstring
 Check if value at position is no data
 
@@ -227,7 +233,7 @@ Check if value at position is no data
 .. seealso:: :py:func:`valueAndNoData`
 %End
 
-    bool setValue( int row, int column, double value );
+    bool setValue( int row, int column, double value ) /HoldGIL/;
 %Docstring
 Set value on position
 
@@ -238,7 +244,7 @@ Set value on position
 :return: ``True`` on success
 %End
 
-    bool setValue( qgssize index, double value );
+    bool setValue( qgssize index, double value ) /HoldGIL/;
 %Docstring
 Set value on index (indexed line by line)
 
@@ -248,7 +254,7 @@ Set value on index (indexed line by line)
 :return: ``True`` on success
 %End
 
-    bool setColor( int row, int column, QRgb color );
+    bool setColor( int row, int column, QRgb color ) /HoldGIL/;
 %Docstring
 Set color on position
 
@@ -259,7 +265,7 @@ Set color on position
 :return: ``True`` on success
 %End
 
-    bool setColor( qgssize index, QRgb color );
+    bool setColor( qgssize index, QRgb color ) /HoldGIL/;
 %Docstring
 Set color on index (indexed line by line)
 
@@ -270,7 +276,7 @@ Set color on index (indexed line by line)
 %End
 
 
-    bool setIsNoData( int row, int column );
+    bool setIsNoData( int row, int column ) /HoldGIL/;
 %Docstring
 Set no data on pixel
 
@@ -280,7 +286,7 @@ Set no data on pixel
 :return: ``True`` on success
 %End
 
-    bool setIsNoData( qgssize index );
+    bool setIsNoData( qgssize index ) /HoldGIL/;
 %Docstring
 Set no data on pixel
 
@@ -303,7 +309,7 @@ Set the whole block to no data except specified rectangle
 :return: ``True`` on success
 %End
 
-    void setIsData( int row, int column );
+    void setIsData( int row, int column ) /HoldGIL/;
 %Docstring
 Remove no data flag on pixel. If the raster block does not have an explicit
 no data value set then an internal map of no data pixels is maintained for the block.
@@ -316,7 +322,7 @@ method. This method has no effect for raster blocks with an explicit no data val
 .. versionadded:: 2.10
 %End
 
-    void setIsData( qgssize index );
+    void setIsData( qgssize index ) /HoldGIL/;
 %Docstring
 Remove no data flag on pixel. If the raster block does not have an explicit
 no data value set then an internal map of no data pixels is maintained for the block.
@@ -365,7 +371,7 @@ It is ensured that conversion back to double gives the same number.
 
 :param value: the value to be printed
 
-:return: string representing the value*
+:return: string representing the value
 %End
 
 
@@ -427,7 +433,7 @@ The output rect has x oriented from left to right and y from top to bottom
 :return: the rectangle covered by sub extent
 %End
 
-    int width() const;
+    int width() const /HoldGIL/;
 %Docstring
 Returns the width (number of columns) of the raster block.
 
@@ -436,7 +442,7 @@ Returns the width (number of columns) of the raster block.
 .. versionadded:: 2.10
 %End
 
-    int height() const;
+    int height() const /HoldGIL/;
 %Docstring
 Returns the height (number of rows) of the raster block.
 

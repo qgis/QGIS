@@ -315,7 +315,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinAngle">
+         <widget class="QgsSpinBox" name="spinAngle">
           <property name="maximum">
            <number>360</number>
           </property>

@@ -1,6 +1,7 @@
 {
   "name": "current_value",
   "type": "function",
+  "groups": ["Form"],
   "description": "Returns the current, unsaved value of a field in the form or table row currently being edited. This will differ from the feature's actual attribute values for features which are currently being edited or have not yet been added to a layer.",
   "arguments": [ {"arg":"field_name","description":"a field name in the current form or table row"}],
   "examples": [ { "expression":"current_value( 'FIELD_NAME' )","returns":"The current value of field 'FIELD_NAME'."} ]

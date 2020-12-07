@@ -34,14 +34,14 @@ Constructor for QgsMapLayerLegend
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
-Reads configuration from a DOM element previously written by writeXml()
+Reads configuration from a DOM element previously written by :py:func:`~QgsMapLayerLegend.writeXml`
 
 .. versionadded:: 3.2
 %End
 
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Writes configuration to a DOM element, to be used later with readXml()
+Writes configuration to a DOM element, to be used later with :py:func:`~QgsMapLayerLegend.readXml`
 
 .. versionadded:: 3.2
 %End
@@ -66,6 +66,13 @@ Create new legend implementation for raster layer
     static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) /Factory/;
 %Docstring
 Create new legend implementation for mesh layer
+%End
+
+    static QgsMapLayerLegend *defaultPointCloudLegend( QgsPointCloudLayer *layer ) /Factory/;
+%Docstring
+Create new legend implementation for a point cloud ``layer``.
+
+.. versionadded:: 3.18
 %End
 
   signals:
@@ -209,7 +216,7 @@ Default legend implementation for vector layers
 %Docstring
 Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
 may have extra text rendered on top. The content of labels and their style is controlled
-by textOnSymbolContent() and textOnSymbolTextFormat().
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End
@@ -218,7 +225,7 @@ by textOnSymbolContent() and textOnSymbolTextFormat().
 %Docstring
 Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
 may have extra text rendered on top. The content of labels and their style is controlled
-by textOnSymbolContent() and textOnSymbolTextFormat().
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End
@@ -298,6 +305,28 @@ Default legend implementation for mesh layers
     explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
 %Docstring
 Creates an instance for the given mesh layer
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+class QgsDefaultPointCloudLayerLegend : QgsMapLayerLegend
+{
+%Docstring
+Default legend implementation for point cloud layers
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultPointCloudLayerLegend( QgsPointCloudLayer *layer );
+%Docstring
+Creates an instance for the given point cloud layer
 %End
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;

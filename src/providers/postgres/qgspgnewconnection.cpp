@@ -115,7 +115,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
 }
 
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsPgNewConnection::accept()
 {
   QgsSettings settings;
@@ -189,7 +189,7 @@ void QgsPgNewConnection::cb_geometryColumnsOnly_clicked()
     cb_publicSchemaOnly->setEnabled( true );
 }
 
-//! End  Autoconnected SLOTS *
+//! End  Autoconnected SLOTS
 
 void QgsPgNewConnection::testConnection()
 {

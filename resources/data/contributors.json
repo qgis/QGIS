@@ -975,6 +975,40 @@
           -15.814729
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Stefanos Natsis",
+        "Committer": "No",
+        "First Commit Message": "Quick fix for a bug in QgsGeos::reshapeLine that causes QGIS to crash because of an unhandled geos exception.",
+        "First Commit Date": "23-02-2019",
+        "GIT Nickname": "uclaros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.74146,
+          38.00278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Vincent Cloarec",
+        "Committer": "No",
+        "First Commit Message": "fix the QgsMeshLayerProperties constructor",
+        "First Commit Date": "15-04-2019",
+        "GIT Nickname": "vcloarec"
+        },
+        "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.52506,
+          16.26555
+        ]
+      }
     }
   ]
 }

@@ -213,7 +213,7 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
          .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
                err.errorString() );
   }
-  teSslErrors->setPlainText( errs.join( QStringLiteral( "\n" ) ) );
+  teSslErrors->setPlainText( errs.join( QLatin1Char( '\n' ) ) );
 }
 
 QPushButton *QgsAuthSslErrorsDialog::ignoreButton()

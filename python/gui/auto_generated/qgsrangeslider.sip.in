@@ -1,0 +1,278 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrangeslider.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsRangeSlider : QWidget
+{
+%Docstring
+A slider control with two interactive endpoints, for interactive selection of a range of values.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrangeslider.h"
+%End
+  public:
+
+    QgsRangeSlider( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRangeSlider, with the specified ``parent`` widget.
+%End
+
+    QgsRangeSlider( Qt::Orientation orientation, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRangeSlider, with the specified ``parent`` widget.
+
+The ``orientation`` parameter determines whether the slider is horizontal or vertical.
+%End
+
+    int minimum() const;
+%Docstring
+Returns the minimum value allowed by the widget.
+
+.. seealso:: :py:func:`setMinimum`
+
+.. seealso:: :py:func:`maximum`
+%End
+
+    int maximum() const;
+%Docstring
+Returns the maximum value allowed by the widget.
+
+.. seealso:: :py:func:`setMaximum`
+
+.. seealso:: :py:func:`minimum`
+%End
+
+    int lowerValue() const;
+%Docstring
+Returns the lower value for the range selected in the widget.
+
+.. seealso:: :py:func:`upperValue`
+
+.. seealso:: :py:func:`setLowerValue`
+%End
+
+    int upperValue() const;
+%Docstring
+Returns the upper value for the range selected in the widget.
+
+.. seealso:: :py:func:`lowerValue`
+
+.. seealso:: :py:func:`setUpperValue`
+%End
+
+    void setTickPosition( QSlider::TickPosition position );
+%Docstring
+Sets the ``position`` of the tick marks shown in the widget.
+
+.. seealso:: :py:func:`tickPosition`
+%End
+
+    QSlider::TickPosition tickPosition() const;
+%Docstring
+Returns the position of the tick marks shown in the widget.
+
+.. seealso:: :py:func:`setTickPosition`
+%End
+
+    void setTickInterval( int interval );
+%Docstring
+Sets the ``interval`` for tick marks shown in the widget.
+
+.. seealso:: :py:func:`tickInterval`
+%End
+
+    int tickInterval() const;
+%Docstring
+Returns the interval for tick marks shown in the widget.
+
+.. seealso:: :py:func:`setTickInterval`
+%End
+
+    void setOrientation( Qt::Orientation orientation );
+%Docstring
+Sets the ``orientation`` of the slider.
+
+.. seealso:: :py:func:`orientation`
+%End
+
+    Qt::Orientation orientation() const;
+%Docstring
+Returns the orientation of the slider.
+
+.. seealso:: :py:func:`setOrientation`
+%End
+
+    bool flippedDirection() const;
+%Docstring
+Returns ``True`` if the slider has its values flipped.
+
+If this property is ``False`` (the default), the minimum and maximum will be shown in its classic
+position for the widget. If the value is ``True``, the minimum and maximum appear at their opposite location.
+
+.. seealso:: :py:func:`setFlippedDirection`
+%End
+
+    void setFlippedDirection( bool flipped );
+%Docstring
+Sets whether the slider has its values ``flipped``.
+
+If this property is ``False`` (the default), the minimum and maximum will be shown in its classic
+position for the widget. If the value is ``True``, the minimum and maximum appear at their opposite location.
+(i.e. minimum at the bottom of a vertical slider, maximum at the top of a vertical slider).
+
+.. seealso:: :py:func:`flippedDirection`
+%End
+
+    virtual void paintEvent( QPaintEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual QSize sizeHint() const;
+
+    virtual QSize minimumSizeHint() const;
+
+
+    int singleStep() const;
+%Docstring
+Returns the single step value for the widget.
+
+This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+
+.. seealso:: :py:func:`setSingleStep`
+
+.. seealso:: :py:func:`pageStep`
+%End
+
+    int pageStep() const;
+%Docstring
+Returns the page step value for the widget.
+
+This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+
+.. seealso:: :py:func:`setPageStep`
+
+.. seealso:: :py:func:`singleStep`
+%End
+
+  public slots:
+
+    void setMaximum( int maximum );
+%Docstring
+Sets the ``maximum`` value allowed in the widget.
+
+.. seealso:: :py:func:`maximum`
+
+.. seealso:: :py:func:`setMinimum`
+%End
+
+    void setMinimum( int minimum );
+%Docstring
+Sets the ``minimum`` value allowed in the widget.
+
+.. seealso:: :py:func:`minimum`
+
+.. seealso:: :py:func:`setMaximum`
+%End
+
+    void setRangeLimits( int minimum, int maximum );
+%Docstring
+Sets the ``minimum`` and ``maximum`` range limits for values allowed in the widget.
+
+.. seealso:: :py:func:`setMinimum`
+
+.. seealso:: :py:func:`setMaximum`
+%End
+
+    void setLowerValue( int value );
+%Docstring
+Sets the lower ``value`` for the range currently selected in the widget.
+
+.. seealso:: :py:func:`lowerValue`
+
+.. seealso:: :py:func:`setRange`
+
+.. seealso:: :py:func:`setUpperValue`
+%End
+
+    void setUpperValue( int value );
+%Docstring
+Sets the upper ``value`` for the range currently selected in the widget.
+
+.. seealso:: :py:func:`upperValue`
+
+.. seealso:: :py:func:`setRange`
+
+.. seealso:: :py:func:`setLowerValue`
+%End
+
+    void setRange( int lower, int upper );
+%Docstring
+Sets the current range selected in the widget.
+
+.. seealso:: :py:func:`setLowerValue`
+
+.. seealso:: :py:func:`setUpperValue`
+%End
+
+    void setSingleStep( int step );
+%Docstring
+Sets the single ``step`` value for the widget.
+
+This corresponds to the smaller increment or decrement applied when the user presses an arrow key.
+
+.. seealso:: :py:func:`singleStep`
+
+.. seealso:: :py:func:`pageStep`
+%End
+
+    void setPageStep( int step );
+%Docstring
+Sets the page ``step`` value for the widget.
+
+This corresponds to the larger increment or decrement applied when the user presses the page increment key (usually PageUp or PageDown).
+
+.. seealso:: :py:func:`pageStep`
+
+.. seealso:: :py:func:`setSingleStep`
+%End
+
+    virtual bool event( QEvent *event );
+
+
+  signals:
+
+    void rangeChanged( int minimum, int maximum );
+%Docstring
+Emitted when the range selected in the widget is changed.
+%End
+
+    void rangeLimitsChanged( int minimum, int maximum );
+%Docstring
+Emitted when the limits of values allowed in the widget is changed.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrangeslider.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

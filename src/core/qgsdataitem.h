@@ -33,6 +33,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmimedatautils.h"
 #include "qgswkbtypes.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 class QgsDataProvider;
 class QgsDataItem;
@@ -82,6 +83,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       Favorites, //!< Represents a favorite item
       Project, //!< Represents a QGIS project
       Custom, //!< Custom item type
+      Fields, //!< Collection of fields
+      Field, //!< Vector layer field
     };
 
     Q_ENUM( Type )
@@ -114,8 +117,33 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Create children. Children are not expected to have parent set.
-     * This method MUST BE THREAD SAFE. */
-    virtual QVector<QgsDataItem *> createChildren() SIP_FACTORY;
+     * \warning This method MUST BE THREAD SAFE.
+    */
+    virtual QVector<QgsDataItem *> createChildren() SIP_TRANSFERBACK;
+#ifdef SIP_RUN
+    SIP_VIRTUAL_CATCHER_CODE
+    PyObject *sipResObj = sipCallMethod( 0, sipMethod, "" );
+    // H = Convert a Python object to a mapped type instance.
+    // 5 = 1 (disallows the conversion of Py_None to NULL) + 4 (returns a copy of the C/C++ instance)
+    sipIsErr = !sipResObj || sipParseResult( 0, sipMethod, sipResObj, "H5", sipType_QVector_0101QgsDataItem, &sipRes ) < 0;
+    if ( !sipIsErr )
+    {
+      for ( QgsDataItem *item : sipRes )
+      {
+        PyObject *pyItem = sipGetPyObject( item, sipType_QgsDataItem );
+        if ( pyItem != NULL )
+        {
+          // pyItem is given an extra reference which is removed when the C++ instance’s destructor is called.
+          sipTransferTo( pyItem, Py_None );
+        }
+      }
+    }
+    if ( sipResObj != NULL )
+    {
+      Py_DECREF( sipResObj );
+    }
+    SIP_END
+#endif
 
     enum State
     {
@@ -300,12 +328,14 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
-     *  QObject hierarchy. */
+     * QObject hierarchy.
+    */
     QgsDataItem *parent() const { return mParent; }
 
     /**
      * Set item parent and connect / disconnect parent to / from item signals.
-     *  It does not add itself to parents children (mChildren) */
+     * It does not add itself to parents children (mChildren)
+    */
     void setParent( QgsDataItem *parent );
     QVector<QgsDataItem *> children() const { return mChildren; }
     virtual QIcon icon();
@@ -399,7 +429,8 @@ class CORE_EXPORT QgsDataItem : public QObject
      * the deferredDelete() returns TRUE and item will be deleted once Populating finished.
      * Items with slow reateChildren() (for example network or database based) may
      * check during createChildren() if deferredDelete() returns TRUE and return from
-     * createChildren() immediately because result will be useless. */
+     * createChildren() immediately because result will be useless.
+    */
     bool deferredDelete() { return mDeferredDelete; }
 
     Type mType;
@@ -514,7 +545,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Table,
       Plugin,    //!< Added in 2.10
       Mesh,      //!< Added in 3.2
-      VectorTile //!< Added in 3.14
+      VectorTile, //!< Added in 3.14
+      PointCloud //!< Added in 3.18
     };
 
     Q_ENUM( LayerType )
@@ -595,6 +627,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QStringList mSupportFormats;
 
   public:
+
+    /**
+     * Returns the icon for a vector layer whose geometry type is provided.
+     * \since QGIS 3.18
+     */
+    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+
     static QIcon iconPoint();
     static QIcon iconLine();
     static QIcon iconPolygon();
@@ -605,7 +644,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconMesh();
     //! Returns icon for vector tile layer
     static QIcon iconVectorTile();
-
+    //! Returns icon for point cloud layer
+    static QIcon iconPointCloudLayer();
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
 };
@@ -663,6 +703,70 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      */
     static QIcon homeDirIcon();
 };
+
+
+/**
+ * \ingroup core
+ * A Collection that represents a database schema item
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsDatabaseSchemaItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsSchemaItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsDatabaseSchemaItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
+    ~QgsDatabaseSchemaItem() override;
+
+
+    /**
+     * Returns the standard browser data collection icon.
+     * \see iconDir()
+     */
+    static QIcon iconDataCollection();
+
+};
+
+
+
+/**
+ * \ingroup core
+ * A Collection that represents a root group of connections from a single data provider
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsConnectionsRootItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsSchemaItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsConnectionsRootItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
+    ~QgsConnectionsRootItem() override = default;
+};
+
 
 /**
  * \ingroup core
@@ -778,11 +882,13 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 // ---------
 
+// TODO: move to qgis_gui for QGIS 4
+
 /**
  * \ingroup core
  * \class QgsDirectoryParamWidget
  *
- * TODO: move to qgis_gui for QGIS 4
+ * Browser parameter widget implementation for directory items.
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {
@@ -891,6 +997,112 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
   private:
     void init();
 };
+
+
+/**
+ * \ingroup core
+ * A collection of field items with some internal logic to retrieve
+ * the fields and a the vector layer instance from a connection URI,
+ * the schema and the table name.
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsFieldsItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsFieldsItem, with the specified \a parent item.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
+     * The \a connectionUri argument is the connection part of the layer URI that it is used internally to create
+     * a connection and retrieve fields information.
+     * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     * The \a schema and \a tableName are used to retrieve the layer and field information from the \a connectionUri.
+     */
+    QgsFieldsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                   const QString &path,
+                   const QString &connectionUri,
+                   const QString &providerKey,
+                   const QString &schema,
+                   const QString &tableName );
+
+    ~QgsFieldsItem() override;
+
+    QVector<QgsDataItem *> createChildren() override;
+
+    QIcon icon() override;
+
+    /**
+     * Returns the schema name
+     */
+    QString schema() const;
+
+    /**
+     * Returns the table name
+     */
+    QString tableName() const;
+
+    /**
+     * Returns the connection URI
+     */
+    QString connectionUri() const;
+
+    /**
+     * Creates and returns a (possibly NULL) layer from the connection URI and schema/table information
+     */
+    QgsVectorLayer *layer() SIP_FACTORY;
+
+    /**
+     * Returns the (possibly NULL) properties of the table this fields belong to.
+     * \since QGIS 3.16
+     */
+    QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
+
+  private:
+
+    QString mSchema;
+    QString mTableName;
+    QString mConnectionUri;
+    std::unique_ptr<QgsAbstractDatabaseProviderConnection::TableProperty> mTableProperty;
+
+};
+
+
+/**
+ * \ingroup core
+ * A layer field item, information about the connection URI, the schema and the
+ * table as well as the layer instance the field belongs to can be retrieved
+ * from the parent QgsFieldsItem object.
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsFieldItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsFieldItem, with the specified \a parent item and \a field.
+     * \note parent item must be a QgsFieldsItem
+     */
+    QgsFieldItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                  const QgsField &field );
+
+    ~QgsFieldItem() override;
+
+    QIcon icon() override;
+
+    //QgsField field() const;
+
+
+  private:
+
+    const QgsField mField;
+
+};
+
 
 
 ///@cond PRIVATE

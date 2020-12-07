@@ -118,7 +118,7 @@ Example - replace stored database credentials with new ones:
 %Docstring
 Removes the custom pre-processor function with matching ``id``.
 
-The ``id`` must correspond to a pre-processor previously added via a call to setPathPreprocessor().
+The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
 An KeyError will be raised if no processor with the specified ``id`` exists.
 
 .. seealso:: :py:func:`setPathPreprocessor`

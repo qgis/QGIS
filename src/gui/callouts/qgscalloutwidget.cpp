@@ -24,8 +24,8 @@
 
 QgsExpressionContext QgsCalloutWidget::createExpressionContext() const
 {
-  if ( mContext.expressionContext() )
-    return *mContext.expressionContext();
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
 
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( vectorLayer() ) );
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );

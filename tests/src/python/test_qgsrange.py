@@ -14,6 +14,7 @@ import qgis  # NOQA
 
 from qgis.testing import unittest
 from qgis.core import (QgsIntRange,
+                       QgsDoubleRange,
                        QgsDateRange)
 from qgis.PyQt.QtCore import QDate
 
@@ -32,6 +33,21 @@ class TestQgsIntRange(unittest.TestCase):
         self.assertEqual(range.upper(), 3)
         self.assertFalse(range.includeLower())
         self.assertFalse(range.includeUpper())
+
+    def testIsInfinite(self):
+        range = QgsIntRange()
+        self.assertTrue(range.isInfinite())
+        range2 = QgsIntRange(range.lower(), 5)
+        self.assertFalse(range2.isInfinite())
+        range2 = QgsIntRange(5, range.upper())
+        self.assertFalse(range2.isInfinite())
+
+    def testEquality(self):
+        self.assertEqual(QgsIntRange(1, 10), QgsIntRange(1, 10))
+        self.assertNotEqual(QgsIntRange(1, 10), QgsIntRange(1, 11))
+        self.assertNotEqual(QgsIntRange(1, 10), QgsIntRange(2, 10))
+        self.assertNotEqual(QgsIntRange(1, 10, False), QgsIntRange(1, 10))
+        self.assertNotEqual(QgsIntRange(1, 10, True, False), QgsIntRange(1, 10))
 
     def testIsEmpty(self):
         range = QgsIntRange(1, 1)
@@ -186,6 +202,37 @@ class TestQgsIntRange(unittest.TestCase):
         self.assertFalse(range.overlaps(QgsIntRange(-1, 0)))
         self.assertFalse(range.overlaps(QgsIntRange(-10, -1)))
         self.assertFalse(range.overlaps(QgsIntRange(11, 12)))
+
+
+class TestQgsDoubleRange(unittest.TestCase):
+
+    def testGetters(self):
+        range = QgsDoubleRange(1.0, 11.0)
+        self.assertEqual(range.lower(), 1)
+        self.assertEqual(range.upper(), 11)
+        self.assertTrue(range.includeLower())
+        self.assertTrue(range.includeUpper())
+
+        range = QgsDoubleRange(-1.0, 3.0, False, False)
+        self.assertEqual(range.lower(), -1)
+        self.assertEqual(range.upper(), 3)
+        self.assertFalse(range.includeLower())
+        self.assertFalse(range.includeUpper())
+
+    def testEquality(self):
+        self.assertEqual(QgsDoubleRange(1, 10), QgsDoubleRange(1, 10))
+        self.assertNotEqual(QgsDoubleRange(1, 10), QgsDoubleRange(1, 11))
+        self.assertNotEqual(QgsDoubleRange(1, 10), QgsDoubleRange(2, 10))
+        self.assertNotEqual(QgsDoubleRange(1, 10, False), QgsDoubleRange(1, 10))
+        self.assertNotEqual(QgsDoubleRange(1, 10, True, False), QgsDoubleRange(1, 10))
+
+    def testIsInfinite(self):
+        range = QgsDoubleRange()
+        self.assertTrue(range.isInfinite())
+        range2 = QgsDoubleRange(range.lower(), 5)
+        self.assertFalse(range2.isInfinite())
+        range2 = QgsDoubleRange(5, range.upper())
+        self.assertFalse(range2.isInfinite())
 
 
 class TestQgsDateRange(unittest.TestCase):

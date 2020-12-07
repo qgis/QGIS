@@ -67,7 +67,7 @@ this child algorithm within its parent model.
 
     void generateChildId( const QgsProcessingModelAlgorithm &model );
 %Docstring
-Automatically generates a unique childId() for the algorithm,
+Automatically generates a unique :py:func:`~QgsProcessingModelChildAlgorithm.childId` for the algorithm,
 avoiding child IDs which are already present in ``model``.
 
 .. seealso:: :py:func:`childId`
@@ -248,7 +248,7 @@ must be called on the parent model.
 %Docstring
 Removes an existing output from the final model outputs.
 
-QgsProcessingModelAlgorithm.updateDestinationParameters() must be called on the parent model.
+:py:func:`QgsProcessingModelAlgorithm.updateDestinationParameters()` must be called on the parent model.
 
 .. seealso:: :py:func:`modelOutputs`
 

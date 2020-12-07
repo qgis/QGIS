@@ -1,4 +1,4 @@
-language: python # This lets us use newer python versions from virtualenv
+language: python
 python: "3.7"
 compiler: clang
 dist: bionic
@@ -8,8 +8,6 @@ cache:
   pip: true
   directories:
     - ${HOME}/.ccache_testing
-    - ${HOME}/.ccache_docker_build_focal
-    - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
 if: NOT branch =~ /^(cherry-pick-)?backport-\d+-/ AND NOT branch =~ /-patch-\d+$/
 
@@ -48,64 +46,6 @@ matrix:
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
         # Label ID can be found here https://api.github.com/repos/qgis/QGIS/labels
         - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184)
-
-
-##########################################################
-#
-#  DOCKER IMAGE BUILD JOBS ON CRON OR TAG
-#
-##########################################################
-
-
-      ##########################################################
-      # BIONIC DOCKER BUILD ON CRON OR TAG
-      ##########################################################
-    - os: linux
-      name: bionic docker build 🐳
-      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
-      services: docker
-      sudo: required # required to restart Docker Daemon with experimental features
-      env:
-        - TRAVIS_CONFIG=docker_image
-        - CCACHE_DIR=${HOME}/.ccache_docker_build_bionic
-        - TRIGGER_PYQGIS_DOC=FALSE
-        - DOCKER_TAG=$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )
-        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps.dockerfile
-        - CC=/usr/lib/ccache/clang
-        - CXX=/usr/lib/ccache/clang++
-
-      ##########################################################
-      # FOCAL DOCKER BUILD ON CRON OR TAG
-      ##########################################################
-    - os: linux
-      name: focal docker build 🔭
-      if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
-      services: docker
-      sudo: required # required to restart Docker Daemon with experimental features
-      env:
-        - TRAVIS_CONFIG=docker_image
-        - CCACHE_DIR=${HOME}/.ccache_docker_build_focal
-        - TRIGGER_PYQGIS_DOC=TRUE
-        - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_focal"
-        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
-        - CC=/usr/lib/ccache/gcc
-        - CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
-
-
-
-    # OSX based build with QT4 and Python 2
-#    - os: osx
-#      osx_image: xcode8.3 # MacOS 10.12: Sierra
-#      cache:
-#        pip: true
-#        directories:
-#          - $HOME/.ccache
-#      env:
-#        - TRAVIS_CONFIG=macos
-#        - IGNORE_BUILD_FAILURES=YES
-#
-#  allow_failures:
-#    - os: osx
 
 git:
   depth: 120

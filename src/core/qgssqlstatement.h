@@ -29,10 +29,9 @@
 
 /**
  * \ingroup core
-Class for parsing SQL statements.
+  Class for parsing SQL statements.
 * \since QGIS 2.16
 */
-
 class CORE_EXPORT QgsSQLStatement
 {
     Q_DECLARE_TR_FUNCTIONS( QgsSQLStatement )
@@ -52,7 +51,7 @@ class CORE_EXPORT QgsSQLStatement
      * Create a copy of this statement.
      */
     QgsSQLStatement &operator=( const QgsSQLStatement &other );
-    ~QgsSQLStatement();
+    virtual ~QgsSQLStatement();
 
     //! Returns TRUE if an error occurred when parsing the input statement
     bool hasParserError() const;
@@ -107,6 +106,12 @@ class CORE_EXPORT QgsSQLStatement
      * \see quotedIdentifier()
      */
     static QString stripQuotedIdentifier( QString text );
+
+    /**
+     * Remove double quotes from an Microsoft style identifier.
+     * \see quotedIdentifier()
+     */
+    static QString stripMsQuotedIdentifier( QString text );
 
     /**
      * Returns a quoted version of a string (in single quotes)
@@ -830,10 +835,38 @@ class CORE_EXPORT QgsSQLStatement
 
   protected:
     QgsSQLStatement::Node *mRootNode = nullptr;
+    bool mAllowFragments = false;
     QString mStatement;
     QString mParserErrorString;
+
+    /**
+     * Constructor for QgsSQLStatement, with the specified \a statement.
+     *
+     * If \a allowFragments is TRUE then the parser will allow SQL fragments,
+     * such as a expression or filter where clause alone.
+     *
+     * \since QGIS 3.16
+     */
+    QgsSQLStatement( const QString &statement, bool allowFragments );
 };
 
 Q_DECLARE_METATYPE( QgsSQLStatement::Node * )
+
+/**
+ * \ingroup core
+ * Class for parsing fragments of SQL statements, such as an expression or where clause.
+ * \since QGIS 3.16
+*/
+class CORE_EXPORT QgsSQLStatementFragment : public QgsSQLStatement
+{
+  public:
+
+    /**
+     * Constructor for QgsSQLStatementFragment of the specified \a fragment.
+     */
+    QgsSQLStatementFragment( const QString &fragment );
+
+};
+
 
 #endif // QGSSQLSTATEMENT_H

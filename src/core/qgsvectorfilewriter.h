@@ -233,7 +233,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * Edition capability flags
-      * \since QGIS 3.0 */
+     * \since QGIS 3.0
+    */
     enum EditionCapability
     {
       //! Flag to indicate that a new layer can be added to the dataset
@@ -251,12 +252,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
-      * \since QGIS 3.0 */
+     * \since QGIS 3.0.
+    */
     Q_DECLARE_FLAGS( EditionCapabilities, EditionCapability )
 
     /**
      * Enumeration to describe how to handle existing files
-        \since QGIS 3.0
+     * \since QGIS 3.0
      */
     enum ActionOnExistingFile
     {
@@ -462,7 +464,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         /**
          * Transform to reproject exported geometries with, or invalid transform
-         * for no transformation */
+         * for no transformation
+        */
         QgsCoordinateTransform ct;
 
         //! Write only selected features of layer
@@ -491,7 +494,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         /**
          * Set to a valid geometry type to override the default geometry type for the layer. This parameter
-         * allows for conversion of geometryless tables to null geometries, etc */
+         * allows for conversion of geometryless tables to null geometries, etc.
+        */
         QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
         //! Sets to TRUE to force creation of multi* geometries
@@ -563,7 +567,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QStringList &layerOptions = QStringList(),
                                            QString *newFilename = nullptr,
                                            QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
-                                           QgsFeatureSink::SinkFlags sinkFlags = nullptr
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
 #ifndef SIP_RUN
                                                , QString *newLayer = nullptr,
                                            QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext()
@@ -606,7 +610,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QgsVectorFileWriter::ActionOnExistingFile action,
                                            QString *newLayer = nullptr,
                                            QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
-                                           QgsFeatureSink::SinkFlags sinkFlags = nullptr
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
                                          ) SIP_SKIP;
 
     //! QgsVectorFileWriter cannot be copied.
@@ -633,9 +637,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                         const QgsCoordinateReferenceSystem &srs,
                                         const QgsCoordinateTransformContext &transformContext,
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
-                                        QgsFeatureSink::SinkFlags sinkFlags = nullptr,
+                                        QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = nullptr,
-                                        QString *newLayer = nullptr );
+                                        QString *newLayer = nullptr ) SIP_FACTORY;
 
     /**
      * Writes a layer out to a vector file.
@@ -760,8 +764,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Retrieves error message
     QString errorMessage();
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    QString lastError() const override;
 
     /**
      * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.

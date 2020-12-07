@@ -127,7 +127,7 @@ void QgsGeometryCheckerResultTab::finalize()
     QDialog dialog;
     dialog.setLayout( new QVBoxLayout() );
     dialog.layout()->addWidget( new QLabel( tr( "The following checks reported errors:" ) ) );
-    dialog.layout()->addWidget( new QPlainTextEdit( mChecker->getMessages().join( QStringLiteral( "\n" ) ) ) );
+    dialog.layout()->addWidget( new QPlainTextEdit( mChecker->getMessages().join( QLatin1Char( '\n' ) ) ) );
     QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
     dialog.layout()->addWidget( bbox );
     connect( bbox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
@@ -455,14 +455,14 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
     {
       mAttribTableDialogs[layerId]->close();
     }
-    mAttribTableDialogs[layerId] = mIface->showAttributeTable( mChecker->featurePools()[layerId]->layer(), expr.join( QStringLiteral( " or " ) ) );
+    mAttribTableDialogs[layerId] = mIface->showAttributeTable( mChecker->featurePools()[layerId]->layer(), expr.join( QLatin1String( " or " ) ) );
   }
 }
 
 void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
 {
 
-  //! Collect errors to fix *
+  //! Collect errors to fix
   QModelIndexList rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   if ( rows.isEmpty() )
   {
@@ -490,13 +490,13 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   // Disable sorting while fixing errors
   ui.tableWidgetErrors->setSortingEnabled( false );
 
-  //! Reset statistics, clear rubberbands *
+  //! Reset statistics, clear rubberbands
   mStatistics = QgsGeometryCheckerFixSummaryDialog::Statistics();
   qDeleteAll( mCurrentRubberBands );
   mCurrentRubberBands.clear();
 
 
-  //! Fix errors *
+  //! Fix errors
   mCloseable = false;
   if ( prompt )
   {

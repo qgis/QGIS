@@ -55,9 +55,10 @@ Returns the results format.
     QMap<int, QVariant> results() const;
 %Docstring
 Returns the identify results. Results are different for each format:
-QgsRaster.IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
-QgsRaster.IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
-QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+
+- QgsRaster.IdentifyFormatValue: a map of values for each band, where keys are band numbers (from 1).
+- QgsRaster.IdentifyFormatFeature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
+- QgsRaster.IdentifyFormatHtml: a map of WMS sublayer keys and HTML strings.
 %End
 
     void setParams( const QMap<QString, QVariant> &params );

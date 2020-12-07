@@ -309,12 +309,20 @@ class QgsPluginInstaller(QObject):
         dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
+        plugin_path = qgis.utils.home_plugin_path + "/" + key
         if dlg.result():
             error = True
             infoString = (self.tr("Plugin installation failed"), dlg.result())
-        elif not QDir(qgis.utils.home_plugin_path + "/" + key).exists():
+        elif not QDir(plugin_path).exists():
             error = True
-            infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
+            infoString = (
+                self.tr("Plugin has disappeared"),
+                self.tr(
+                    "The plugin seems to have been installed but it's not possible to know where. The directory \"{}\" "
+                    "has not been found. Probably the plugin package contained a wrong named directory.\nPlease search "
+                    "the list of installed plugins. You should find the plugin there, but it's not possible to "
+                    "determine which of them it is and it's also not possible to inform you about available updates. "
+                    "Please contact the plugin author and submit this issue.").format(plugin_path))
             QApplication.setOverrideCursor(Qt.WaitCursor)
             plugins.getAllInstalled()
             plugins.rebuild()

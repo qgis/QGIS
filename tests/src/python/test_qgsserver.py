@@ -64,7 +64,7 @@ class QgsServerTestBase(unittest.TestCase):
     # Set to True in child classes to re-generate reference files for this class
     regenerate_reference = False
 
-    def assertXMLEqual(self, response, expected, msg=''):
+    def assertXMLEqual(self, response, expected, msg='', raw=False):
         """Compare XML line by line and sorted attributes"""
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
@@ -80,7 +80,7 @@ class QgsServerTestBase(unittest.TestCase):
             response_line = response_lines[line_no - 1].strip()
             response_line = response_line.replace(b'e+6', br'e+06')
             # Compare tag
-            if re.match(RE_ELEMENT, expected_line):
+            if re.match(RE_ELEMENT, expected_line) and not raw:
                 expected_elements = re.findall(RE_ELEMENT, expected_line)
                 response_elements = re.findall(RE_ELEMENT, response_line)
                 self.assertEqual(expected_elements[0],
@@ -137,6 +137,18 @@ class QgsServerTestBase(unittest.TestCase):
                 pass
         self.server = QgsServer()
 
+        # Disable landing page API to test standard legacy XML responses in case of errors
+        os.environ["QGIS_SERVER_DISABLED_APIS"] = "Landing Page"
+
+    def tearDown(self):
+        """"Cleanup env"""
+
+        super().tearDown()
+        try:
+            del os.environ["QGIS_SERVER_DISABLED_APIS"]
+        except KeyError:
+            pass
+
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
         return text.replace(b'version="1.3.0"', b'').replace(b'xmlns="http://www.opengis.net/ogc"', b'')
@@ -174,19 +186,24 @@ class QgsServerTestBase(unittest.TestCase):
 
         return data[1], headers
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG'):
 
-        extFile = 'png'
-        if outputJpg:
+        if outputFormat == 'PNG':
+            extFile = 'png'
+        elif outputFormat == 'JPG':
             extFile = 'jpg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
+        else:
+            raise RuntimeError('Yeah, new format implemented')
 
         temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 
         with open(temp_image, "wb") as f:
             f.write(image)
 
-        if outputJpg:
-            return (True, "QgsRenderChecker can't be used for JPG images")
+        if outputFormat != 'PNG':
+            return (True, "QgsRenderChecker can only be used for PNG")
 
         control = QgsMultiRenderChecker()
         control.setControlPathPrefix("qgis_server")
@@ -196,13 +213,22 @@ class QgsServerTestBase(unittest.TestCase):
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.runTest(control_image, max_diff), control.report()
 
-    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputJpg=False):
+    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputFormat='PNG'):
+        """
+        :param outputFormat: PNG, JPG or WEBP
+        """
 
-        extFile = 'png'
-        contentType = 'image/png'
-        if outputJpg:
+        if outputFormat == 'PNG':
+            extFile = 'png'
+            contentType = 'image/png'
+        elif outputFormat == 'JPG':
             extFile = 'jpg'
             contentType = 'image/jpeg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
+            contentType = 'image/webp'
+        else:
+            raise RuntimeError('Yeah, new format implemented')
 
         reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.' + extFile
         self.store_reference(reference_path, response)
@@ -211,7 +237,7 @@ class QgsServerTestBase(unittest.TestCase):
             headers.get("Content-Type"), contentType,
             "Content type is wrong: %s instead of %s\n%s" % (headers.get("Content-Type"), contentType, response))
 
-        test, report = self._img_diff(response, image, max_diff, max_size_diff, outputJpg)
+        test, report = self._img_diff(response, image, max_diff, max_size_diff, outputFormat)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())

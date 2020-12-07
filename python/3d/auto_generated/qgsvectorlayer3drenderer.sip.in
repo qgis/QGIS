@@ -13,7 +13,6 @@
 
 
 
-
 class QgsVectorLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
 %Docstring

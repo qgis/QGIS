@@ -121,6 +121,16 @@ bool QgsLayoutItemComboBox::allowEmptyItem() const
   return mProxyModel->allowEmptyItem();
 }
 
+void QgsLayoutItemComboBox::setItemFlags( QgsLayoutItem::Flags flags )
+{
+  mProxyModel->setItemFlags( flags );
+}
+
+QgsLayoutItem::Flags QgsLayoutItemComboBox::itemFlags() const
+{
+  return mProxyModel->itemFlags();
+}
+
 QgsLayoutItem *QgsLayoutItemComboBox::item( int index ) const
 {
   const QModelIndex proxyIndex = mProxyModel->index( index, 0 );

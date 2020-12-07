@@ -50,7 +50,6 @@
 class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
-class QgsAttributeRelationEdit;
 class QgsAttributeWidgetEdit;
 
 class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
@@ -63,15 +62,15 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     {
       DnDTreeRole = Qt::UserRole,
       FieldConfigRole,
-      RelationConfigRole,
       FieldNameRole
     };
 
     struct RelationEditorConfiguration
     {
-      bool showLinkButton = true;
-      bool showUnlinkButton = true;
-      bool showSaveChildEditsButton = true;
+      QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
+      QVariant nmRelationId;
+      bool forceSuppressFormPopup = false;
+      QString label;
     };
 
     struct QmlElementEditorConfiguration
@@ -179,25 +178,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       operator QVariant();
     };
 
-
-    /**
-     * Holds the configuration for a relation
-     */
-    struct RelationConfig
-    {
-      RelationConfig();
-      RelationConfig( QgsVectorLayer *layer, const QString &relationId );
-
-      QVariant mCardinality;
-
-      /**
-       * Force suppress form popup open overriding other options.
-       */
-      bool mForceSuppressFormPopup;
-
-      operator QVariant();
-    };
-
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
@@ -220,8 +200,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
   protected:
     void updateButtons();
 
-    RelationConfig configForRelation( const QString &relationName );
-
     //QList<QgsRelation> mRelations;
     QgsVectorLayer *mLayer = nullptr;
 
@@ -230,8 +208,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
-    QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
     QgsAttributeFormContainerEdit *mAttributeContainerEdit = nullptr;
+    QLabel *mInfoTextWidget = nullptr;
 
   private slots:
 
@@ -250,11 +228,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
 
-    void loadAttributeRelationEdit();
-    void storeAttributeRelationEdit( );
-
     void storeAttributeContainerEdit();
     void loadAttributeContainerEdit();
+
+    void loadInfoWidget( const QString &infoText );
 
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     QString mInitFunction;
@@ -296,7 +273,7 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
      * Adds a new item to a \a parent. If \a index is -1, the item is added to the end of the parent's existing children.
      * Otherwise it is inserted at the specified \a index.
      */
-    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index = -1 );
+    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index = -1, const QIcon &icon = QIcon() );
     QTreeWidgetItem *addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount );
 
     enum Type
@@ -334,7 +311,6 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
 
 
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::FieldConfig )
-Q_DECLARE_METATYPE( QgsAttributesFormProperties::RelationConfig )
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::DnDTreeItemData )
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H

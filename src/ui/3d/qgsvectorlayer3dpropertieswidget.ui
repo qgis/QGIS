@@ -42,7 +42,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinZoomLevelsCount">
+         <widget class="QgsSpinBox" name="spinZoomLevelsCount">
           <property name="minimum">
            <number>1</number>
           </property>
@@ -74,6 +74,11 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

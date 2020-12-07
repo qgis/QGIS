@@ -166,7 +166,7 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
   ds.setParam( QStringLiteral( "layer" ), layerId );
   ds.setParam( QStringLiteral( "crs" ), crs );
   ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
-  return ds.uri();
+  return ds.uri( false );
 }
 
 void QgsAmsSourceSelect::addServiceLayer( QString uri, QString typeName )

@@ -22,6 +22,7 @@
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
+#include "qgsprojectviewsettings.h"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -47,6 +48,8 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCa
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsMapOverviewCanvas::transformContextChanged );
+
+  connect( QgsProject::instance()->viewSettings(), &QgsProjectViewSettings::presetFullExtentChanged, this, &QgsMapOverviewCanvas::refresh );
 }
 
 void QgsMapOverviewCanvas::resizeEvent( QResizeEvent *e )
@@ -250,10 +253,27 @@ void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 void QgsMapOverviewCanvas::updateFullExtent()
 {
   QgsRectangle rect;
-  if ( mSettings.hasValidSettings() )
-    rect = mSettings.fullExtent();
-  else
-    rect = mMapCanvas->fullExtent();
+  if ( !QgsProject::instance()->viewSettings()->presetFullExtent().isNull() )
+  {
+    QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+    QgsCoordinateTransform ct( extent.crs(), mSettings.destinationCrs(), QgsProject::instance()->transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
+    try
+    {
+      rect = ct.transformBoundingBox( extent );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+  }
+
+  if ( rect.isNull() )
+  {
+    if ( mSettings.hasValidSettings() )
+      rect = mSettings.fullExtent();
+    else
+      rect = mMapCanvas->fullExtent();
+  }
 
   // expand a bit to keep features on margin
   rect.scale( 1.1 );

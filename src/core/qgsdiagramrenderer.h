@@ -685,9 +685,9 @@ class CORE_EXPORT QgsDiagramRenderer
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
+    if ( sipCpp->rendererName() == QLatin1String( "SingleCategory" ) )
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
-    else if ( sipCpp->rendererName() == QStringLiteral( "LinearlyInterpolated" ) )
+    else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
     else
       sipType = NULL;
@@ -704,7 +704,8 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /**
      * Returns new instance that is equivalent to this one
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     virtual QgsDiagramRenderer *clone() const = 0 SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error

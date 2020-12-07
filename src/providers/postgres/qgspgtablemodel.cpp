@@ -87,7 +87,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
     else
     {
-      typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+      typeItem = new QStandardItem( QgsLayerItem::iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     }
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
@@ -105,7 +105,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       QString commentText { layerProperty.tableComment };
       commentText.replace( QRegularExpression( QStringLiteral( "^\n*" ) ), QString() );
       commentItem->setText( commentText );
-      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QStringLiteral( "<br/>" ) ) ) );
+      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QLatin1String( "<br/>" ) ) ) );
       commentItem->setTextAlignment( Qt::AlignTop );
     }
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
@@ -310,23 +310,6 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 }
 
-QIcon QgsPgTableModel::iconForWkbType( QgsWkbTypes::Type type )
-{
-  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
-  switch ( geomType )
-  {
-    case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    default:
-      break;
-  }
-  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
-}
-
 bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
   if ( !QStandardItemModel::setData( idx, value, role ) )
@@ -353,8 +336,8 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
     if ( tip.isEmpty() && !pkCols.isEmpty() )
     {
-      QSet<QString> s0( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
-      QSet<QString> s1( pkCols.toSet() );
+      QSet<QString> s0( qgis::listToSet( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList() ) );
+      QSet<QString> s1( qgis::listToSet( pkCols ) );
       if ( !s0.intersects( s1 ) )
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
@@ -430,8 +413,8 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   }
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
-  QSet<QString> s0( pkItem->data( Qt::UserRole + 1 ).toStringList().toSet() );
-  QSet<QString> s1( pkItem->data( Qt::UserRole + 2 ).toStringList().toSet() );
+  QSet<QString> s0( qgis::listToSet( pkItem->data( Qt::UserRole + 1 ).toStringList() ) );
+  QSet<QString> s1( qgis::listToSet( pkItem->data( Qt::UserRole + 2 ).toStringList() ) );
   if ( !s0.isEmpty() && !s0.intersects( s1 ) )
   {
     // no valid primary candidate selected
@@ -471,7 +454,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
 
-  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( s1.toList() ) );
+  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( qgis::setToList( s1 ) ) );
 
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( ',' ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );

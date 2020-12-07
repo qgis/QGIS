@@ -1,6 +1,7 @@
 
 {
   "name": "to_base64",
+  "groups": ["Conversions"],
   "type": "function",
   "description": "Encodes a binary value into a string, using the Base64 encoding.",
   "arguments": [

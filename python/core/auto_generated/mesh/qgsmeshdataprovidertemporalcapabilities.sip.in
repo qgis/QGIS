@@ -36,7 +36,7 @@ Constructor for QgsMeshDataProviderTemporalCapabilities
 
     QgsMeshDatasetIndex datasetIndexClosestBeforeRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
 %Docstring
-Returns the last dataset whith time less than or equal to ``timeSinceGlobalReference``
+Returns the last dataset with time less than or equal to ``timeSinceGlobalReference``
 
 Returns invalid dataset index if ``timeSinceGlobalReference`` is outside the time extent of the dataset group
 

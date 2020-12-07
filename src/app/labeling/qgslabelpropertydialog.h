@@ -38,7 +38,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
                             bool isPinned,
                             const QgsPalLayerSettings &layerSettings,
                             QWidget *parent = nullptr,
-                            Qt::WindowFlags f = nullptr );
+                            Qt::WindowFlags f = Qt::WindowFlags() );
 
     //! Returns properties changed by the user
     const QgsAttributeMap &changedProperties() const { return mChangedProperties; }

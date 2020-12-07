@@ -408,12 +408,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * be used when data defined properties are present
      */
     bool mUsingCache = false;
+
     //! Maximum width/height of cache image
     static const int MAXIMUM_CACHE_WIDTH = 3000;
 
   private:
 
     void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
+
+    double mCachedOpacity = 1.0;
+
 };
 
 /**
@@ -624,14 +628,16 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double mFixedAspectRatio = 0.0;
     //param(fill), param(stroke), param(stroke-width) are going
     //to be replaced in memory
+    bool mHasFillParam = false;
     QColor mStrokeColor;
     double mStrokeWidth;
+
     QgsUnitTypes::RenderUnit mStrokeWidthUnit;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
   private:
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, QPointF &offset, double &angle ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const;
 
 };
 

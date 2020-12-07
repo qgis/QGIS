@@ -114,7 +114,7 @@ Emitted when ``entries`` have fetched from the feed.
     void entryAdded( const QgsNewsFeedParser::Entry &entry );
 %Docstring
 Emitted whenever a new ``entry`` is available from the feed (as a result
-of a call to fetch()).
+of a call to :py:func:`~QgsNewsFeedParser.fetch`).
 
 .. seealso:: :py:func:`fetch`
 %End
@@ -122,7 +122,7 @@ of a call to fetch()).
     void entryDismissed( const QgsNewsFeedParser::Entry &entry );
 %Docstring
 Emitted whenever an ``entry`` is dismissed (as a result of a call
-to dismissEntry()).
+to :py:func:`~QgsNewsFeedParser.dismissEntry`).
 
 .. seealso:: :py:func:`dismissEntry`
 %End

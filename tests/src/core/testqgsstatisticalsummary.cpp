@@ -249,7 +249,7 @@ void TestQgsStatisticSummary::individualStatCalculations()
   QFETCH( double, expected );
 
   //start with a summary which calculates NO statistics
-  QgsStatisticalSummary s( QgsStatisticalSummary::Statistics( nullptr ) );
+  QgsStatisticalSummary s{ QgsStatisticalSummary::Statistics() };
   //set it to calculate just a single statistic
   s.setStatistics( stat );
   QCOMPARE( s.statistics(), stat );
@@ -258,7 +258,7 @@ void TestQgsStatisticSummary::individualStatCalculations()
   QGSCOMPARENEAR( s.statistic( stat ), expected, 0.00001 );
 
   //also test using values added one-at-a-time
-  QgsStatisticalSummary s2( QgsStatisticalSummary::Statistics( nullptr ) );
+  QgsStatisticalSummary s2{ QgsStatisticalSummary::Statistics() };
   s2.setStatistics( stat );
   s2.addValue( 4 );
   s2.addValue( 4 );

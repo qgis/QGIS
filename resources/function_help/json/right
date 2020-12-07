@@ -1,6 +1,7 @@
 {
   "name": "right",
   "type": "function",
+  "groups": ["String"],
   "description": "Returns a substring that contains the <i>n</i> rightmost characters of the string.",
   "arguments": [ {"arg":"string","description":"a string"},
                  {"arg":"length","description":"integer. The number of characters from the right of the string to return."}],

@@ -95,6 +95,8 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
     static const int ITEM_TYPE_ROLE = Qt::UserRole + 2;
     //! Search tags role
     static const int SEARCH_TAGS_ROLE = Qt::UserRole + 3;
+    //! Item name role
+    static const int ITEM_NAME_ROLE = Qt::UserRole + 4;
 
   private:
     QString mExpressionText;
@@ -302,13 +304,15 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \param sortOrder sort ranking for item
      * \param icon custom icon to show for item
      * \param tags tags to find function
+     * \param name name of the item
      */
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
                        const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1,
                        QIcon icon = QIcon(),
-                       const QStringList &tags = QStringList() );
+                       const QStringList &tags = QStringList(),
+                       const QString &name = QString() );
 
     /**
      * Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups

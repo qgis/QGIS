@@ -53,7 +53,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   // create material
 
   const Qgs3DMapSettings &map = terrain()->map3D();
-  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
+  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial(), !map.terrainLayers().empty() );
 
   // create transform
 
@@ -116,6 +116,7 @@ void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
   elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
   elemExtent.setAttribute( QStringLiteral( "ymin" ), QString::number( r.yMinimum() ) );
   elemExtent.setAttribute( QStringLiteral( "ymax" ), QString::number( r.yMaximum() ) );
+  elem.appendChild( elemExtent );
 
   // crs is not read/written - it should be the same as destination crs of the map
 }
@@ -141,8 +142,13 @@ void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 void QgsFlatTerrainGenerator::setExtent( const QgsRectangle &extent )
 {
+  if ( mExtent == extent )
+    return;
+
   mExtent = extent;
   updateTilingScheme();
+
+  emit extentChanged();
 }
 
 void QgsFlatTerrainGenerator::updateTilingScheme()

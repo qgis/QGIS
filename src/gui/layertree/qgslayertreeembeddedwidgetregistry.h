@@ -94,12 +94,14 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 
     /**
      * Register a provider, takes ownership of the object.
-     * Returns TRUE on success, FALSE if the provider is already registered. */
+     * Returns TRUE on success, FALSE if the provider is already registered.
+    */
     bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider SIP_TRANSFER );
 
     /**
      * Unregister a provider, the provider object is deleted.
-     * Returns TRUE on success, FALSE if the provider was not registered. */
+     * Returns TRUE on success, FALSE if the provider was not registered.
+    */
     bool removeProvider( const QString &providerId );
 
   protected:

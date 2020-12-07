@@ -71,7 +71,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void copySymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey );
     void pasteSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey );
     void setSymbolLegendNodeColor( const QColor &color );
-
+    void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
   private:
     bool removeActionEnabled();
 };

@@ -52,7 +52,7 @@ QString QgsAccessControl::resolveFilterFeatures( const QgsVectorLayer *layer ) c
   QString expression;
   if ( !expressions.isEmpty() )
   {
-    expression = QStringLiteral( "((" ).append( expressions.join( QStringLiteral( ") AND (" ) ) ).append( "))" );
+    expression = QStringLiteral( "((" ).append( expressions.join( QLatin1String( ") AND (" ) ) ).append( "))" );
   }
 
   return expression;
@@ -98,7 +98,7 @@ QString QgsAccessControl::extraSubsetString( const QgsVectorLayer *layer ) const
       sqls.append( sql );
     }
   }
-  return sqls.isEmpty() ? QString() : QStringLiteral( "((" ).append( sqls.join( QStringLiteral( ") AND (" ) ) ).append( "))" );
+  return sqls.isEmpty() ? QString() : QStringLiteral( "((" ).append( sqls.join( QLatin1String( ") AND (" ) ) ).append( "))" );
 }
 
 //! Returns the layer read right

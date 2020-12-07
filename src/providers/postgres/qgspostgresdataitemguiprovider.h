@@ -43,12 +43,14 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void editConnection( QgsDataItem *item );
     static void deleteConnection( QgsDataItem *item );
     static void refreshConnection( QgsDataItem *item );
-    static void createSchema( QgsDataItem *item );
-    static void deleteSchema( QgsPGSchemaItem *schemaItem );
-    static void renameSchema( QgsPGSchemaItem *schemaItem );
-    static void renameLayer( QgsPGLayerItem *layerItem );
-    static void truncateTable( QgsPGLayerItem *layerItem );
-    static void refreshMaterializedView( QgsPGLayerItem *layerItem );
+    static void createSchema( QgsDataItem *item, QgsDataItemGuiContext context );
+    static void deleteSchema( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
+    static void renameSchema( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
+    static void renameLayer( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context );
+    static void truncateTable( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context );
+    static void refreshMaterializedView( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context );
+    static void saveConnections();
+    static void loadConnections( QgsDataItem *item );
 
 };
 

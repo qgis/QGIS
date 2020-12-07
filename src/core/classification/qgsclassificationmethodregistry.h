@@ -43,7 +43,7 @@ class CORE_EXPORT QgsClassificationMethodRegistry
 
     /**
      * Adds a method to the registry
-     * Returns false if a method with same id already exists.
+     * Returns FALSE if a method with same id already exists.
      */
     bool addMethod( QgsClassificationMethod *method SIP_TRANSFER );
 

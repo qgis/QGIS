@@ -54,6 +54,8 @@ Copy constructor
 %End
 
 
+    bool operator==( const QgsColorRampShader &other ) const;
+
     struct ColorRampItem
     {
       ColorRampItem();
@@ -70,6 +72,8 @@ convenience constructor
       QColor color;
 
       bool operator<( const QgsColorRampShader::ColorRampItem &other ) const;
+
+      bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const;
     };
 
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const;

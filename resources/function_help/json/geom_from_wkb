@@ -1,6 +1,7 @@
 {
   "name": "geom_from_wkb",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a geometry created from a Well-Known Binary (WKB) representation.",
   "arguments": [ {"arg":"binary","description":"Well-Known Binary (WKB) representation of a geometry (as a binary blob)"}],
   "examples": [ { "expression":"geom_from_wkb( geom_to_wkb( make_point(4,5) ) )", "returns":"a point geometry object"}]

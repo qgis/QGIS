@@ -278,18 +278,17 @@ int point2vertex( const QgsTracerGraph &g, const QgsPointXY &pt, double epsilon 
 
 int point2edge( const QgsTracerGraph &g, const QgsPointXY &pt, int &lineVertexAfter, double epsilon = 1e-6 )
 {
-  int vertexAfter;
-
   for ( int i = 0; i < g.e.count(); ++i )
   {
     if ( g.inactiveEdges.contains( i ) )
       continue;  // ignore temporarily disabled edges
 
     const QgsTracerGraph::E &e = g.e.at( i );
+    int vertexAfter = -1;
     double dist = closestSegment( e.coords, pt, vertexAfter, epsilon );
     if ( dist == 0 )
     {
-      lineVertexAfter = vertexAfter; //NOLINT
+      lineVertexAfter = vertexAfter;
       return i;
     }
   }
@@ -591,8 +590,8 @@ bool QgsTracer::initGraph()
   Q_UNUSED( timeNoding )
   Q_UNUSED( timeNodingCall )
   Q_UNUSED( timeMake )
-  QgsDebugMsg( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
-               .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ) );
+  QgsDebugMsgLevel( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
+                    .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ), 2 );
 
   return true;
 }
@@ -769,7 +768,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
 
   Q_UNUSED( tPrep )
   Q_UNUSED( tPath )
-  QgsDebugMsg( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
+  QgsDebugMsgLevel( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ), 2 );
 
   resetGraph( *mGraph );
 

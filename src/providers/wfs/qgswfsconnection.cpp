@@ -53,6 +53,13 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
                    settings.value( key + "/" + QgsWFSConstants::SETTINGS_PAGING_ENABLED, true ).toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   }
 
+  if ( settings.contains( key + "/" + QgsWFSConstants::SETTINGS_WFST_1_1_PREFER_COORDINATES ) )
+  {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ); // setParam allow for duplicates!
+    mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
+                   settings.value( key + "/" + QgsWFSConstants::SETTINGS_WFST_1_1_PREFER_COORDINATES, true ).toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  }
+
   QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ), 4 );
 }
 

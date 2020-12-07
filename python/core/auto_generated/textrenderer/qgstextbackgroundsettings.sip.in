@@ -63,6 +63,9 @@ Copy constructor.
 
     ~QgsTextBackgroundSettings();
 
+    bool operator==( const QgsTextBackgroundSettings &other ) const;
+    bool operator!=( const QgsTextBackgroundSettings &other ) const;
+
     bool enabled() const;
 %Docstring
 Returns whether the background is enabled.
@@ -104,7 +107,7 @@ Returns the absolute path to the background SVG file, if set.
 
     void setSvgFile( const QString &file );
 %Docstring
-Sets the path to the background SVG file. This is only used if type() is set to
+Sets the path to the background SVG file. This is only used if :py:func:`~QgsTextBackgroundSettings.type` is set to
 QgsTextBackgroundSettings.ShapeSVG. The path must be absolute.
 
 :param file: Absolute SVG file path
@@ -119,7 +122,7 @@ the background settings.
 
 .. note::
 
-   This is only used when the type() is QgsTextBackgroundSettings.ShapeMarkerSymbol.
+   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeMarkerSymbol.
 
 .. seealso:: :py:func:`setMarkerSymbol`
 
@@ -133,7 +136,7 @@ to the background settings.
 
 .. note::
 
-   This is only used when the type() is QgsTextBackgroundSettings.ShapeMarkerSymbol.
+   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeMarkerSymbol.
 
 .. seealso:: :py:func:`markerSymbol`
 
@@ -164,7 +167,7 @@ around text).
 
     QSizeF size() const;
 %Docstring
-Returns the size of the background shape. The meaning of the size depends on the current sizeType(),
+Returns the size of the background shape. The meaning of the size depends on the current :py:func:`~QgsTextBackgroundSettings.sizeType`,
 e.g., for size types of QgsTextBackgroundSettings.SizeFixed the size will represent the actual width and
 height of the shape, for QgsTextBackgroundSettings.SizeBuffer the size will represent the horizontal
 and vertical margins to add to the text when calculating the size of the shape.
@@ -176,7 +179,7 @@ and vertical margins to add to the text when calculating the size of the shape.
 
     void setSize( QSizeF size );
 %Docstring
-Sets the size of the background shape. The meaning of the size depends on the current sizeType(),
+Sets the size of the background shape. The meaning of the size depends on the current :py:func:`~QgsTextBackgroundSettings.sizeType`,
 e.g., for size types of QgsTextBackgroundSettings.SizeFixed the size will represent the actual width and
 height of the shape, for QgsTextBackgroundSettings.SizeBuffer the size will represent the horizontal
 and vertical margins to add to the text when calculating the size of the shape.
@@ -190,7 +193,7 @@ and vertical margins to add to the text when calculating the size of the shape.
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
 %Docstring
-Returns the units used for the shape's size. This value has no meaning if the sizeType() is set to
+Returns the units used for the shape's size. This value has no meaning if the :py:func:`~QgsTextBackgroundSettings.sizeType` is set to
 QgsTextBackgroundSettings.SizePercent.
 
 .. seealso:: :py:func:`setSizeUnit`
@@ -202,7 +205,7 @@ QgsTextBackgroundSettings.SizePercent.
 
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units used for the shape's size. This value has no meaning if the sizeType() is set to
+Sets the units used for the shape's size. This value has no meaning if the :py:func:`~QgsTextBackgroundSettings.sizeType` is set to
 QgsTextBackgroundSettings.SizePercent.
 
 :param unit: size units
@@ -217,7 +220,7 @@ QgsTextBackgroundSettings.SizePercent.
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape size. This is only used if the
-sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -227,7 +230,7 @@ sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape size. This is only used if the
-sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.sizeUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 :param scale: scale for shape size
 
@@ -277,7 +280,7 @@ Sets the ``rotation`` for the background shape, in degrees clockwise.
     QPointF offset() const;
 %Docstring
 Returns the offset used for drawing the background shape. Units are determined
-via offsetUnit().
+via :py:func:`~QgsTextBackgroundSettings.offsetUnit`.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -287,7 +290,7 @@ via offsetUnit().
     void setOffset( QPointF offset );
 %Docstring
 Sets the offset used for drawing the background shape. Units are specified using
-setOffsetUnit().
+:py:func:`~QgsTextBackgroundSettings.setOffsetUnit`.
 
 :param offset: offset for shape
 
@@ -319,7 +322,7 @@ Sets the units used for the shape's offset.
     QgsMapUnitScale offsetMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape offset. This is only used if the
-offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 
@@ -329,7 +332,7 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape offset. This is only used if the
-offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.offsetUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 :param scale: scale for shape offset
 
@@ -341,7 +344,7 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
     QSizeF radii() const;
 %Docstring
 Returns the radii used for rounding the corners of shapes. Units are retrieved
-through radiiUnit().
+through :py:func:`~QgsTextBackgroundSettings.radiiUnit`.
 
 .. seealso:: :py:func:`setRadii`
 
@@ -351,10 +354,10 @@ through radiiUnit().
     void setRadii( QSizeF radii );
 %Docstring
 Sets the radii used for rounding the corners of shapes. This is only used if
-type() is set to QgsTextBackgroundSettings.ShapeRectangle or QgsTextBackgroundSettings.ShapeSquare.
+:py:func:`~QgsTextBackgroundSettings.type` is set to QgsTextBackgroundSettings.ShapeRectangle or QgsTextBackgroundSettings.ShapeSquare.
 
 :param radii: QSizeF representing horizontal and vertical radii for rounded corners. Units are
-              specified through setRadiiUnit()
+              specified through :py:func:`~QgsTextBackgroundSettings.setRadiiUnit`
 
 .. seealso:: :py:func:`radii`
 
@@ -384,7 +387,7 @@ Sets the units used for the shape's radii.
     QgsMapUnitScale radiiMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape radii. This is only used if the
-radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.radiiUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`setRadiiMapUnitScale`
 
@@ -394,7 +397,7 @@ radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
     void setRadiiMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape radii. This is only used if the
-radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.radiiUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 :param scale: scale for shape radii
 
@@ -480,7 +483,7 @@ Sets the color used for outlining the background shape.
     double strokeWidth() const;
 %Docstring
 Returns the width of the shape's stroke (stroke). Units are retrieved through
-strokeWidthUnit().
+:py:func:`~QgsTextBackgroundSettings.strokeWidthUnit`.
 
 .. seealso:: :py:func:`setStrokeWidth`
 
@@ -490,7 +493,7 @@ strokeWidthUnit().
     void setStrokeWidth( double width );
 %Docstring
 Sets the width of the shape's stroke (stroke). Units are specified through
-setStrokeWidthUnit().
+:py:func:`~QgsTextBackgroundSettings.setStrokeWidthUnit`.
 
 .. seealso:: :py:func:`strokeWidth`
 
@@ -520,7 +523,7 @@ Sets the units used for the shape's stroke width.
     QgsMapUnitScale strokeWidthMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the shape stroke width. This is only used if the
-strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.strokeWidthUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 
@@ -530,7 +533,7 @@ strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the shape stroke width. This is only used if the
-strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
+:py:func:`~QgsTextBackgroundSettings.strokeWidthUnit` is set to QgsUnitTypes.RenderMapUnit.
 
 :param scale: scale for shape stroke width
 
@@ -555,7 +558,7 @@ Sets the join style used for drawing the background shape.
 .. seealso:: :py:func:`joinStyle`
 %End
 
-    QgsPaintEffect *paintEffect() const;
+    const QgsPaintEffect *paintEffect() const;
 %Docstring
 Returns the current paint effect for the background shape.
 

@@ -1,6 +1,7 @@
 {
   "name": "ascii",
   "type": "function",
+  "groups": ["String"],
   "description": "Returns the unicode code associated with the first character of a string.",
   "arguments": [ {"arg":"string","description":"the string to convert to unicode code"}],
   "examples": [ { "expression":"ascii('Q')", "returns":"81"} ]

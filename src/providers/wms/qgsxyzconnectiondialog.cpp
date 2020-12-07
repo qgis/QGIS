@@ -28,6 +28,7 @@ QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
+  mSpinZMax->setClearValue( 18 );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );

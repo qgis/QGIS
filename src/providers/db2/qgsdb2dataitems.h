@@ -30,7 +30,7 @@ class QgsDb2LayerItem;
  * \class QgsDb2RootItem
  * \brief Browser Panel DB2 root object.
  */
-class QgsDb2RootItem : public QgsDataCollectionItem
+class QgsDb2RootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
 

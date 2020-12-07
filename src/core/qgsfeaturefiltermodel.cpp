@@ -40,7 +40,7 @@ QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
 {
   setFetchGeometry( false );
   setFetchLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
-  setExtraIdentifierValueUnguarded( nullIentifier() );
+  setExtraIdentifierValueUnguarded( nullIdentifier() );
 }
 
 QString QgsFeatureFilterModel::identifierField() const
@@ -62,7 +62,7 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
       conditions << QgsExpression::createFieldEqualityExpression( mIdentifierFields.at( i ), mExtraIdentifierValue.toList().at( i ) );
     }
   }
-  request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+  request.setFilterExpression( conditions.join( QLatin1String( " AND " ) ) );
 }
 
 QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
@@ -83,7 +83,7 @@ QgsFeatureExpressionValuesGatherer::Entry QgsFeatureFilterModel::createEntry( co
   for ( const QVariant &v : constValues )
     values << QStringLiteral( "(%1)" ).arg( v.toString() );
 
-  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QStringLiteral( " " ) ), QgsFeature( sourceLayer()->fields() ) );
+  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QLatin1Char( ' ' ) ), QgsFeature( sourceLayer()->fields() ) );
 }
 
 bool QgsFeatureFilterModel::compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const
@@ -104,7 +104,7 @@ bool QgsFeatureFilterModel::identifierIsNull( const QVariant &identifier ) const
   return true;
 }
 
-QVariant QgsFeatureFilterModel::nullIentifier() const
+QVariant QgsFeatureFilterModel::nullIdentifier() const
 {
   QVariantList nullValues;
   for ( int i = 0; i < mIdentifierFields.count(); i++ )
@@ -139,7 +139,7 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
   QVariantList values = mExtraIdentifierValue.toList();
   if ( values.count() != mIdentifierFields.count() )
   {
-    return nullIentifier().toList();
+    return nullIdentifier().toList();
   }
   return values;
 }
@@ -151,6 +151,6 @@ void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraI
 
 void QgsFeatureFilterModel::setExtraIdentifierValueToNull()
 {
-  setExtraIdentifierValue( QVariantList() );
+  setExtraIdentifierValue( nullIdentifier() );
 }
 

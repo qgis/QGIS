@@ -144,10 +144,10 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     void setLayerType( QgsMapLayerType type );
 
     /**
-     * Sets a filter to hide data items based on on item's data item provider key.
+     * Sets a filter to hide data items based on QgsDataItem::providerKey() associated with the item.
      *
      * By default browser model shows all items from all available data item providers and few special
-     * items (e.g. Favourites).
+     * items (e.g. Favorites).
      * To customize the behavior, set the filter to not load certain data items.
      * The items that are not based on data item providers have prefix "special:", for example
      * "special:Favorites", "special:Home", "PostGIS", "MSSQL"
@@ -162,10 +162,10 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     void setHiddenDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
 
     /**
-     * Sets a filter to show data items based on on item's data item provider key.
+     * Sets a filter to show data items based on QgsDataItem::providerKey() associated with the item.
      *
      * By default browser model shows all items from all available data item providers and few special
-     * items (e.g. Favourites).
+     * items (e.g. Favorites).
      * To customize the behavior, set the filter to load only certain data items.
      * The items that are not based on data item providers have prefix "special:", for example
      * "special:Favorites", "special:Home", "PostGIS", "MSSQL"

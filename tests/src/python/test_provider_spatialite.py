@@ -153,7 +153,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
 
         # simple table with a geometry column named 'Geometry'
-        sql = "CREATE TABLE test_n (Id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        sql = "CREATE TABLE test_n (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_n', 'Geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
@@ -165,7 +165,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
 
         # table with different array types, stored as JSON
-        sql = "CREATE TABLE test_arrays (Id INTEGER NOT NULL PRIMARY KEY, strings JSONSTRINGLIST NOT NULL, ints JSONINTEGERLIST NOT NULL, reals JSONREALLIST NOT NULL)"
+        sql = "CREATE TABLE test_arrays (id INTEGER NOT NULL PRIMARY KEY, strings JSONSTRINGLIST NOT NULL, ints JSONINTEGERLIST NOT NULL, reals JSONREALLIST NOT NULL)"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_arrays', 'Geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
@@ -174,7 +174,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
 
         # table with different array types, stored as JSON
-        sql = "CREATE TABLE test_arrays_write (Id INTEGER NOT NULL PRIMARY KEY, array JSONARRAY NOT NULL, strings JSONSTRINGLIST NOT NULL, ints JSONINTEGERLIST NOT NULL, reals JSONREALLIST NOT NULL)"
+        sql = "CREATE TABLE test_arrays_write (id INTEGER NOT NULL PRIMARY KEY, array JSONARRAY NOT NULL, strings JSONSTRINGLIST NOT NULL, ints JSONINTEGERLIST NOT NULL, reals JSONREALLIST NOT NULL)"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_arrays_write', 'Geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
@@ -279,6 +279,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         (2, NULL),
         (3, X'53514C697465')
         """
+        cur.execute(sql)
+
+        # Transaction tables
+        sql = "CREATE TABLE \"test_transactions1\"(pkuid integer primary key autoincrement)"
+        cur.execute(sql)
+        sql = "CREATE TABLE \"test_transactions2\"(pkuid integer primary key autoincrement)"
+        cur.execute(sql)
+        sql = "INSERT INTO \"test_transactions2\" VALUES (NULL)"
         cur.execute(sql)
 
         # Commit all test data
@@ -957,10 +965,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """Check that the provider URI decoding returns expected values"""
 
         filename = '/home/to/path/test.db'
-        uri = 'dbname=\'{}\' table="test" (geometry) sql='.format(filename)
+        uri = 'dbname=\'{}\' table="test" (geometry) key=testkey sql=1=1'.format(filename)
         registry = QgsProviderRegistry.instance()
         components = registry.decodeUri('spatialite', uri)
         self.assertEqual(components['path'], filename)
+        self.assertEqual(components['layerName'], 'test')
+        self.assertEqual(components['subset'], '1=1')
+        self.assertEqual(components['geometryColumn'], 'geometry')
+        self.assertEqual(components['keyColumn'], 'testkey')
 
     def testEncodeUri(self):
         """Check that the provider URI encoding returns expected values"""
@@ -968,9 +980,13 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         filename = '/home/to/path/test.db'
         registry = QgsProviderRegistry.instance()
 
-        parts = {'path': filename, 'layerName': 'test'}
+        parts = {'path': filename,
+                 'layerName': 'test',
+                 'subset': '1=1',
+                 'geometryColumn': 'geometry',
+                 'keyColumn': 'testkey'}
         uri = registry.encodeUri('spatialite', parts)
-        self.assertEqual(uri, 'dbname=\'{}\' table="test"'.format(filename))
+        self.assertEqual(uri, 'dbname=\'{}\' key=\'testkey\' table="test" (geometry) sql=1=1'.format(filename))
 
     def testPKNotInt(self):
         """ Check when primary key is not an integer """
@@ -1591,6 +1607,32 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(
             len([f for f in vl2_external.getFeatures(QgsFeatureRequest())]), 1)
         del vl2_external
+
+    def testTransactions(self):
+        """Test autogenerate"""
+
+        vl = QgsVectorLayer("dbname=%s table=test_transactions1 ()" %
+                            self.dbname, "test_transactions1", "spatialite")
+        self.assertTrue(vl.isValid())
+        vl2 = QgsVectorLayer("dbname=%s table=test_transactions2 ()" %
+                             self.dbname, "test_transactions2", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl2.isValid())
+        self.assertEqual(vl.featureCount(), 0)
+        self.assertEqual(vl2.featureCount(), 1)
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        project.addMapLayers([vl, vl2])
+        project.setEvaluateDefaultValues(True)
+
+        self.assertTrue(vl.startEditing())
+
+        self.assertEqual(vl2.dataProvider().defaultValueClause(0), '')
+        self.assertEqual(vl2.dataProvider().defaultValue(0), 2)
+
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), '')
+        self.assertEqual(vl.dataProvider().defaultValue(0), 1)
 
 
 if __name__ == '__main__':

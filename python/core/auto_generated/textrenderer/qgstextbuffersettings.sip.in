@@ -39,6 +39,9 @@ Copy constructor.
 
     ~QgsTextBufferSettings();
 
+    bool operator==( const QgsTextBufferSettings &other ) const;
+    bool operator!=( const QgsTextBufferSettings &other ) const;
+
     bool enabled() const;
 %Docstring
 Returns whether the buffer is enabled.
@@ -66,7 +69,7 @@ Returns the size of the buffer.
 
     void setSize( double size );
 %Docstring
-Sets the size of the buffer. The size units are specified using setSizeUnit().
+Sets the size of the buffer. The size units are specified using :py:func:`~QgsTextBufferSettings.setSizeUnit`.
 
 :param size: buffer size
 
@@ -223,7 +226,7 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
-    QgsPaintEffect *paintEffect() const;
+    const QgsPaintEffect *paintEffect() const;
 %Docstring
 Returns the current paint effect for the buffer.
 

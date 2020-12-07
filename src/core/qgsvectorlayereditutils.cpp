@@ -296,10 +296,17 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
 
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
+  QgsLineString lineString( splitLine );
+  QgsPointSequence topologyTestPoints;
+  bool preserveCircular = false;
+  return splitFeatures( &lineString, topologyTestPoints, preserveCircular, topologicalEditing );
+}
+
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints, bool preserveCircular, bool topologicalEditing )
+{
   if ( !mLayer->isSpatial() )
     return QgsGeometry::InvalidBaseGeometry;
 
-  double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
   QgsGeometry::OperationResult returnCode = QgsGeometry::OperationResult::Success;
   QgsGeometry::OperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
@@ -308,23 +315,17 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
   QgsFeatureIterator features;
   const QgsFeatureIds selectedIds = mLayer->selectedFeatureIds();
 
+  // deactivate preserving circular if the curve contains only straight segments to avoid transforming Polygon to CurvePolygon
+  preserveCircular &= curve->hasCurvedSegments();
+
   if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {
     features = mLayer->getSelectedFeatures();
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
-    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) )
-    {
-      bBox.setXMinimum( xMin );
-      bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax );
-      bBox.setYMaximum( yMax );
-    }
-    else
-    {
-      return QgsGeometry::OperationResult::InvalidInputGeometryType;
-    }
+
+    bBox = curve->boundingBox();
 
     if ( bBox.isEmpty() )
     {
@@ -363,9 +364,10 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
       continue;
     }
     QVector<QgsGeometry> newGeometries;
-    QgsPointSequence topologyTestPoints;
+    QgsPointSequence featureTopologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
-    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, featureTopologyTestPoints );
+    topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == QgsGeometry::OperationResult::Success )
     {
       //change this geometry
@@ -381,8 +383,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
 
       if ( topologicalEditing )
       {
-        QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
-        for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+        QgsPointSequence::const_iterator topol_it = featureTopologyTestPoints.constBegin();
+        for ( ; topol_it != featureTopologyTestPoints.constEnd(); ++topol_it )
         {
           addTopologicalPoints( *topol_it );
         }
@@ -395,10 +397,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
     }
   }
 
-  if ( numberOfSplitFeatures == 0 && !selectedIds.isEmpty() )
+  if ( numberOfSplitFeatures == 0 )
   {
-    //There is a selection but no feature has been split.
-    //Maybe user forgot that only the selected features are split
     returnCode = QgsGeometry::OperationResult::NothingHappened;
   }
 
@@ -543,7 +543,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     {
       returnVal = 2;
     }
-    it++;
+    ++it;
   }
 
   return returnVal;
@@ -601,6 +601,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   if ( segments.isEmpty() )
     return 2;
 
+  bool pointsAdded = false;
   for ( QMap<QgsFeatureId, int>::const_iterator it = segments.constBegin(); it != segments.constEnd(); ++it )
   {
     QgsFeatureId fid = it.key();
@@ -618,9 +619,38 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
     {
       QgsDebugMsg( QStringLiteral( "failed to insert topo point" ) );
     }
+    else
+    {
+      pointsAdded = true;
+    }
   }
 
-  return 0;
+  return pointsAdded ? 0 : 2;
+}
+
+int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointSequence &ps )
+{
+  if ( !mLayer->isSpatial() )
+    return 1;
+
+  if ( ps.isEmpty() )
+  {
+    return 1;
+  }
+
+  bool pointsAdded = false;
+
+  QgsPointSequence::const_iterator it = ps.constBegin();
+  while ( it != ps.constEnd() )
+  {
+    if ( addTopologicalPoints( *it ) == 0 )
+    {
+      pointsAdded = true;
+    }
+    ++it;
+  }
+
+  return pointsAdded ? 0 : 2;
 }
 
 int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )

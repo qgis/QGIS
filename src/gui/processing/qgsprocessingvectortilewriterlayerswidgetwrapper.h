@@ -18,6 +18,7 @@
 
 #define SIP_NO_FILE
 
+#include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsvectortilewriter.h"
@@ -41,6 +42,7 @@ class QgsProcessingVectorTileWriteLayerDetailsWidget : public QgsPanelWidget, pr
 
   private:
     QgsVectorLayer *mLayer = nullptr;
+    QgsProcessingContext mContext;
 };
 
 
@@ -68,6 +70,7 @@ class QgsProcessingVectorTileWriterLayersPanelWidget : public QgsProcessingMulti
     QString titleForLayer( const QgsVectorTileWriter::Layer &layer );
 
     QgsProject *mProject = nullptr;
+    QgsProcessingContext mContext;
 };
 
 

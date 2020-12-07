@@ -24,6 +24,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsvectordataproviderfeaturepool.h"
 
+#include "qgsdataitem.h"
 #include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
 #include "qgsproject.h"
@@ -114,16 +115,16 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     bool supportedGeometryType = true;
     if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
     {
-      item->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ) );
+      item->setIcon( QgsLayerItem::iconPoint() );
     }
     else if ( layer->geometryType() == QgsWkbTypes::LineGeometry )
     {
-      item->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ) );
+      item->setIcon( QgsLayerItem::iconLine() );
       ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
     }
     else if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
-      item->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ) );
+      item->setIcon( QgsLayerItem::iconPolygon() );
       ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
       ui.comboBoxFollowBoundaries->addItem( layer->name(), layer->id() );
     }

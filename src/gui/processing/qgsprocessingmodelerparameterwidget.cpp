@@ -91,7 +91,6 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
 
   mModelInputCombo = new QComboBox();
   QHBoxLayout *hLayout2 = new QHBoxLayout();
-  hLayout2->setMargin( 0 );
   hLayout2->setContentsMargins( 0, 0, 0, 0 );
   hLayout2->addWidget( new QLabel( tr( "Using model input" ) ) );
   hLayout2->addWidget( mModelInputCombo, 1 );
@@ -101,7 +100,6 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
 
   mChildOutputCombo = new QComboBox();
   QHBoxLayout *hLayout3 = new QHBoxLayout();
-  hLayout3->setMargin( 0 );
   hLayout3->setContentsMargins( 0, 0, 0, 0 );
   hLayout3->addWidget( new QLabel( tr( "Using algorithm output" ) ) );
   hLayout3->addWidget( mChildOutputCombo, 1 );
@@ -114,7 +112,6 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
     mModelOutputName = new QgsFilterLineEdit();
     mModelOutputName->setPlaceholderText( tr( "[Enter name if this is a final result]" ) );
     QHBoxLayout *hLayout4 = new QHBoxLayout();
-    hLayout4->setMargin( 0 );
     hLayout4->setContentsMargins( 0, 0, 0, 0 );
     hLayout4->addWidget( mModelOutputName );
     QWidget *hWidget4 = new QWidget();
@@ -122,7 +119,6 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
     mStackedWidget->addWidget( hWidget4 );
   }
 
-  hLayout->setMargin( 0 );
   hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mStackedWidget, 1 );
 

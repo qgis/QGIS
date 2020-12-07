@@ -72,13 +72,13 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
   protected:
 
     /**
-     * Check if CaptureMode matches layer type. Default is true.
+     * Check if CaptureMode matches layer type. Default is TRUE.
      * \since QGIS 3.0
      */
     bool checkGeometryType() const;
 
     /**
-     * Check if CaptureMode matches layer type. Default is true.
+     * Check if CaptureMode matches layer type. Default is TRUE.
      * \since QGIS 3.0
      */
     void setCheckGeometryType( bool checkGeometryType );
@@ -93,17 +93,20 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 
     /**
      * individual layer per digitizing session
-     * \since QGIS 3.0 */
+     * \since QGIS 3.0
+    */
     QgsMapLayer *mLayer = nullptr;
 
     /**
      * layer used before digitizing session
-     * \since QGIS 3.0 */
+     * \since QGIS 3.0
+    */
     QgsMapLayer *mCurrentLayer = nullptr;
 
     /**
-     * Check if CaptureMode matches layer type. Default is true.
-     * \since QGIS 2.12 */
+     * Check if CaptureMode matches layer type. Default is TRUE.
+     * \since QGIS 2.12
+    */
     bool mCheckGeometryType;
 
     friend class TestQgsRelationReferenceWidget;

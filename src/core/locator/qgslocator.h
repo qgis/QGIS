@@ -145,6 +145,13 @@ class CORE_EXPORT QgsLocator : public QObject
      */
     void clearPreviousResults();
 
+    /**
+     * Returns the list for auto completion
+     * This list is updated when preparing the search
+     * \since QGIS 3.16
+     */
+    QStringList completionList() const {return mAutocompletionList;}
+
   signals:
 
     /**
@@ -152,6 +159,13 @@ class CORE_EXPORT QgsLocator : public QObject
      * is called.
      */
     void foundResult( const QgsLocatorResult &result );
+
+    /**
+     * Emitted when locator has prepared the search (\see QgsLocatorFilter::prepare)
+     * before the search is actually performed
+     * \since QGIS 3.16
+     */
+    void searchPrepared();
 
     /**
      * Emitted when locator has finished a query, either as a result
@@ -170,6 +184,8 @@ class CORE_EXPORT QgsLocator : public QObject
 
     QList< QgsLocatorFilter * > mFilters;
     QList< QThread * > mActiveThreads;
+
+    QStringList mAutocompletionList;
 
     void cancelRunningQuery();
 

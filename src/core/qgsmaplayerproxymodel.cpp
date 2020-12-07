@@ -53,6 +53,7 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
        ( filters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
        ( filters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
        ( filters.testFlag( VectorTileLayer ) && layer->type() == QgsMapLayerType::VectorTileLayer ) ||
+       ( filters.testFlag( PointCloudLayer ) && layer->type() == QgsMapLayerType::PointCloudLayer ) ||
        ( filters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
     return true;
 

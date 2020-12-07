@@ -36,7 +36,7 @@ the components related to the GUI behavior of a layout item.
     typedef QFlags<QgsLayoutItemAbstractGuiMetadata::Flag> Flags;
 
 
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = 0 );
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags() );
 %Docstring
 Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type``.
 
@@ -159,7 +159,7 @@ class QgsLayoutItemGuiRegistry : QObject
 Registry of available layout item GUI behavior.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.layoutItemGuiRegistry()`
+:py:func:`QgsGui.layoutItemGuiRegistry()`.
 
 This acts as a companion to :py:class:`QgsLayoutItemRegistry`, handling only
 the components related to the GUI behavior of layout items.
@@ -177,7 +177,7 @@ the components related to the GUI behavior of layout items.
 Creates a new empty item GUI registry.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.layoutItemGuiRegistry()`
+:py:func:`QgsGui.layoutItemGuiRegistry()`.
 %End
 
     ~QgsLayoutItemGuiRegistry();
@@ -197,7 +197,7 @@ Registers the gui metadata for a new layout item type. Takes ownership of the me
     bool addItemGroup( const QgsLayoutItemGuiGroup &group );
 %Docstring
 Registers a new item group with the registry. This must be done before calling
-addLayoutItemGuiMetadata() for any item types associated with the group.
+:py:func:`~QgsLayoutItemGuiRegistry.addLayoutItemGuiMetadata` for any item types associated with the group.
 
 Returns ``True`` if group was added, or ``False`` if group could not be added (e.g. due to
 duplicate id value).

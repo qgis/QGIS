@@ -17,10 +17,12 @@ from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsValueMapSearchWidgetWrapper,
                       QgsValueRelationSearchWidgetWrapper,
                       QgsCheckboxSearchWidgetWrapper,
-                      QgsDateTimeSearchWidgetWrapper)
+                      QgsDateTimeSearchWidgetWrapper,
+                      QgsRelationReferenceSearchWidgetWrapper)
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsProject,
+                       QgsRelation
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.PyQt.QtWidgets import QWidget
@@ -337,6 +339,63 @@ class PyQgsDateTimeSearchWidgetWrapper(unittest.TestCase):
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.LessThan), '"datetime"<\'2013-04-05 13:14:15\'')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.GreaterThanOrEqualTo), '"datetime">=\'2013-04-05 13:14:15\'')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.LessThanOrEqualTo), '"datetime"<=\'2013-04-05 13:14:15\'')
+
+
+class PyQgsRelationReferenceSearchWidgetWrapper(unittest.TestCase):
+
+    def testCreateExpression(self):
+        """ Test creating an expression using the widget"""
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "test", "memory")
+        # setup value relation
+        parent_layer = QgsVectorLayer("Point?field=stringkey:string&field=intkey:integer&field=display:string", "parent", "memory")
+        f1 = QgsFeature(parent_layer.fields(), 1)
+        f1.setAttributes(['a', 1, 'value a'])
+        f2 = QgsFeature(parent_layer.fields(), 2)
+        f2.setAttributes(['b', 2, 'value b'])
+        f3 = QgsFeature(parent_layer.fields(), 3)
+        f3.setAttributes(['c', 3, 'value c'])
+        parent_layer.dataProvider().addFeatures([f1, f2, f3])
+        QgsProject.instance().addMapLayers([layer, parent_layer])
+
+        relationManager = QgsProject.instance().relationManager()
+        relation = QgsRelation()
+        relation.setId('relation')
+        relation.setReferencingLayer(layer.id())
+        relation.setReferencedLayer(parent_layer.id())
+        relation.addFieldPair('fldtxt', 'stringkey')
+        self.assertTrue(relation.isValid())
+
+        relationManager.addRelation(relation)
+
+        # Everything valid
+        config = {'Relation': relation.id(), 'AllowNULL': True}
+
+        w = QgsRelationReferenceSearchWidgetWrapper(layer, 0, None)
+        w.setConfig(config)
+
+        w.widget().setForeignKey('a')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'a\'')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt"<>\'a\'')
+
+        w.widget().setForeignKey('b')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'b\'')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt"<>\'b\'')
+
+        w.widget().setForeignKey('c')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt"=\'c\'')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt"<>\'c\'')
+
+        w.widget().setForeignKey(None)
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '"fldtxt" IS NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '"fldtxt" IS NOT NULL')
 
 
 if __name__ == '__main__':

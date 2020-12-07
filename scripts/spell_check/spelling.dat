@@ -967,7 +967,7 @@ begginings:beginnings
 beggins:begins
 begining:beginning
 beginnig:beginning
-behaviour:behavior
+behaviour:behavior:%
 behavoir:behavior
 behavoirs:behaviors
 behavour:behavior
@@ -2590,6 +2590,7 @@ elliminate:eliminate
 elliminated:eliminated
 elliminates:eliminates
 elliminating:eliminating
+ellipoid:ellipsoid
 elment:element
 elments:elements
 elminate:eliminate
@@ -3035,6 +3036,7 @@ fatc:fact
 fatser:faster
 fature:feature
 faught:fought
+favourite:favorite*
 favoutrable:favourable
 feasable:feasible
 featre:feature
@@ -3127,7 +3129,7 @@ foreing:foreign
 foreward:forward
 forfiet:forfeit
 forground:foreground
-forhead:forehead
+forhead:forehead:*
 foriegn:foreign
 Formalhaut:Fomalhaut
 formallize:formalize
@@ -3179,7 +3181,7 @@ frequentily:frequently
 frequncies:frequencies
 frequncy:frequency
 frist:first
-frome:from
+frome:from:*
 fromed:formed:*
 fron:from
 froniter:frontier
@@ -4393,6 +4395,7 @@ malicously:maliciously
 malplace:misplace:*
 malplaced:misplaced
 maltesian:Maltese
+mame:name
 mamal:mammal
 mamalian:mammalian
 mamory:memory
@@ -4889,6 +4892,7 @@ occure:occur
 occured:occurred
 occurence:occurrence
 occurences:occurrences
+occurrances:occurrences
 occures:occurs
 occuring:occurring
 occurr:occur

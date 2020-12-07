@@ -74,10 +74,16 @@ class CORE_EXPORT QgsProcessingContext
       mTransformContext = other.mTransformContext;
       mExpressionContext = other.mExpressionContext;
       mInvalidGeometryCallback = other.mInvalidGeometryCallback;
+      mUseDefaultInvalidGeometryCallback = other.mUseDefaultInvalidGeometryCallback;
       mInvalidGeometryCheck = other.mInvalidGeometryCheck;
       mTransformErrorCallback = other.mTransformErrorCallback;
       mDefaultEncoding = other.mDefaultEncoding;
       mFeedback = other.mFeedback;
+      mPreferredVectorFormat = other.mPreferredVectorFormat;
+      mPreferredRasterFormat = other.mPreferredRasterFormat;
+      mEllipsoid = other.mEllipsoid;
+      mDistanceUnit = other.mDistanceUnit;
+      mAreaUnit = other.mAreaUnit;
     }
 
     /**
@@ -101,8 +107,8 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Sets the \a project in which the algorithm will be executed.
      *
-     * This also automatically sets the transformContext() to match
-     * the project's transform context.
+     * This also automatically sets the transformContext(), ellipsoid(), distanceUnit() and
+     * areaUnit() to match the project's settings.
      *
      * \see project()
      */
@@ -110,7 +116,15 @@ class CORE_EXPORT QgsProcessingContext
     {
       mProject = project;
       if ( mProject )
+      {
         mTransformContext = mProject->transformContext();
+        if ( mEllipsoid.isEmpty() )
+          mEllipsoid = mProject->ellipsoid();
+        if ( mDistanceUnit == QgsUnitTypes::DistanceUnknownUnit )
+          mDistanceUnit = mProject->distanceUnits();
+        if ( mAreaUnit == QgsUnitTypes::AreaUnknownUnit )
+          mAreaUnit = mProject->areaUnits();
+      }
     }
 
     /**
@@ -143,6 +157,80 @@ class CORE_EXPORT QgsProcessingContext
      * \see transformContext()
      */
     void setTransformContext( const QgsCoordinateTransformContext &context ) { mTransformContext = context; }
+
+    /**
+     * Returns the ellipsoid to use for distance and area calculations.
+     *
+     * \see setEllipsoid()
+     * \since QGIS 3.16
+     */
+    QString ellipsoid() const;
+
+    /**
+     * Sets a specified \a ellipsoid to use for distance and area calculations.
+     *
+     * If not explicitly set, the ellipsoid will default to the project()'s ellipsoid setting.
+     *
+     * \see ellipsoid()
+     * \since QGIS 3.16
+     */
+    void setEllipsoid( const QString &ellipsoid );
+
+    /**
+     * Returns the distance unit to use for distance calculations.
+     *
+     * \see setDistanceUnit()
+     * \see areaUnit()
+     * \since QGIS 3.16
+     */
+    QgsUnitTypes::DistanceUnit distanceUnit() const;
+
+    /**
+     * Sets the \a unit to use for distance calculations.
+     *
+     * If not explicitly set, the unit will default to the project()'s distance unit setting.
+     *
+     * \see distanceUnit()
+     * \see setAreaUnit()
+     * \since QGIS 3.16
+     */
+    void setDistanceUnit( QgsUnitTypes::DistanceUnit unit );
+
+    /**
+     * Returns the area unit to use for area calculations.
+     *
+     * \see setAreaUnit()
+     * \see distanceUnit()
+     * \since QGIS 3.16
+     */
+    QgsUnitTypes::AreaUnit areaUnit() const;
+
+    /**
+     * Sets the \a unit to use for area calculations.
+     *
+     * If not explicitly set, the unit will default to the project()'s area unit setting.
+     *
+     * \see areaUnit()
+     * \see setDistanceUnit()
+     * \since QGIS 3.16
+     */
+    void setAreaUnit( QgsUnitTypes::AreaUnit areaUnit );
+
+    /**
+     * Returns the current time range to use for temporal operations.
+     *
+     * \see setCurrentTimeRange()
+     * \since QGIS 3.18
+     */
+    QgsDateTimeRange currentTimeRange() const;
+
+    /**
+     * Sets the \a current time range to use for temporal operations.
+     *
+     * \see currentTimeRange()
+     * \since QGIS 3.18
+     */
+    void setCurrentTimeRange( const QgsDateTimeRange &currentTimeRange );
 
     /**
      * Returns a reference to the layer store used for storing temporary layers during
@@ -179,6 +267,13 @@ class CORE_EXPORT QgsProcessingContext
          * generate a layer name which respects the user's local Processing settings.
          */
         QString name;
+
+        /**
+         * Set to TRUE if LayerDetails::name should always be used as the loaded layer name, regardless
+         * of the user's local Processing settings.
+         * \since QGIS 3.16
+         */
+        bool forceName = false;
 
         /**
          * Associated output name from algorithm which generated the layer.
@@ -311,7 +406,7 @@ class CORE_EXPORT QgsProcessingContext
      * \since QGIS 3.0
      */
 #ifndef SIP_RUN
-    void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; }
+    void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; mUseDefaultInvalidGeometryCallback = false; }
 #else
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -335,14 +430,14 @@ class CORE_EXPORT QgsProcessingContext
      * \see setInvalidGeometryCallback()
      * \since QGIS 3.0
      */
-    SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
+    SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback( QgsFeatureSource *source = nullptr ) const;
 
     /**
      * Returns the default callback function to use for a particular invalid geometry \a check
      * \note not available in Python bindings
      * \since QGIS 3.14
      */
-    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check ) const;
+    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check, QgsFeatureSource *source = nullptr ) const;
 
     /**
      * Sets a callback function to use when encountering a transform error when iterating
@@ -532,14 +627,24 @@ class CORE_EXPORT QgsProcessingContext
 
   private:
 
-    QgsProcessingContext::Flags mFlags = nullptr;
+    QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
     QPointer< QgsProject > mProject;
     QgsCoordinateTransformContext mTransformContext;
+
+    QString mEllipsoid;
+    QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
+    QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
+
+    QgsDateTimeRange mCurrentTimeRange;
+
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;
     QgsExpressionContext mExpressionContext;
+
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
+    bool mUseDefaultInvalidGeometryCallback = true;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QString mDefaultEncoding;
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;

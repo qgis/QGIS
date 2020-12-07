@@ -21,7 +21,10 @@
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
+#include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
+#include "qgsprocessingtininputlayerswidget.h"
+#include "qgsprocessingmeshdatasetwidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
 #include "qgslogger.h"
@@ -46,6 +49,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingLayoutWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingLayoutItemWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingPointWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingGeometryWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingColorWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingCoordinateOperationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFieldWidgetWrapper() );
@@ -70,6 +74,10 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFieldMapWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingTinInputLayersWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDxfLayersWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshDatasetGroupsWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshDatasetTimeWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

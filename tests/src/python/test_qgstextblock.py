@@ -16,7 +16,8 @@ import qgis  # NOQA
 
 from qgis.core import (
     QgsTextBlock,
-    QgsTextFragment
+    QgsTextFragment,
+    QgsStringUtils
 )
 from qgis.testing import start_app, unittest
 
@@ -35,6 +36,7 @@ class TestQgsTextBlock(unittest.TestCase):
         block = QgsTextBlock(fragment)
         self.assertEqual(len(block), 1)
         self.assertEqual(block[0].text(), fragment.text())
+        self.assertEqual(block.toPlainText(), 'ludicrous gibs!')
 
     def testAppend(self):
         block = QgsTextBlock()
@@ -49,6 +51,8 @@ class TestQgsTextBlock(unittest.TestCase):
         self.assertEqual(len(block), 2)
         self.assertEqual(block[0].text(), 'a')
         self.assertEqual(block[1].text(), 'b')
+
+        self.assertEqual(block.toPlainText(), 'ab')
 
     def testAt(self):
         block = QgsTextBlock()
@@ -81,6 +85,13 @@ class TestQgsTextBlock(unittest.TestCase):
         block.clear()
         self.assertEqual(len(block), 0)
         self.assertTrue(block.empty())
+
+    def testCapitalize(self):
+        fragment = QgsTextFragment('ludicrous gibs!')
+        block = QgsTextBlock(fragment)
+        block.append(QgsTextFragment('another part'))
+        block.applyCapitalization(QgsStringUtils.TitleCase)
+        self.assertEqual(block.toPlainText(), 'Ludicrous Gibs!Another Part')
 
 
 if __name__ == '__main__':

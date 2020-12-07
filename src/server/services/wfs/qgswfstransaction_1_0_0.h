@@ -37,7 +37,7 @@ namespace QgsWfs
 
       QStringList insertFeatureIds;
 
-      bool error;
+      bool error = false;
 
       QString errorMsg;
     };
@@ -56,7 +56,7 @@ namespace QgsWfs
 
       QStringList serverFids;
 
-      bool error;
+      bool error = false;
 
       QString errorMsg;
     };
@@ -71,7 +71,7 @@ namespace QgsWfs
 
       QStringList serverFids;
 
-      bool error;
+      bool error = false;
 
       QString errorMsg;
     };

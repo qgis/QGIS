@@ -68,7 +68,7 @@ Returns a color selection from a color dialog.
 :param title: the title of the dialog.
 :param allowOpacity: set to ``True`` to allow modification of color opacity value (transparency)
 
-:return: Selected color on accepted() or initialColor on rejected().
+:return: Selected color on :py:func:`~QgsColorDialog.accepted` or initialColor on :py:func:`~QgsColorDialog.rejected`.
 %End
 
   signals:

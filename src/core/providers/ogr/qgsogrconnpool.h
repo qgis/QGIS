@@ -39,8 +39,18 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn *c )
 inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrConn *&c )
 {
   c = new QgsOgrConn;
-  QString filePath = connInfo.left( connInfo.indexOf( QLatin1String( "|" ) ) );
-  c->ds = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), false, nullptr, nullptr );
+
+  QVariantMap parts = QgsOgrProviderMetadata().decodeUri( connInfo );
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  char **papszOpenOptions = nullptr;
+  for ( const QString &option : openOptions )
+  {
+    papszOpenOptions = CSLAddString( papszOpenOptions,
+                                     option.toUtf8().constData() );
+  }
+  c->ds = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), false, papszOpenOptions, nullptr );
+  CSLDestroy( papszOpenOptions );
   c->path = connInfo;
   c->valid = true;
 }

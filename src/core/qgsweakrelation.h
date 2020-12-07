@@ -40,6 +40,17 @@ class CORE_EXPORT QgsWeakRelation
   public:
 
     /**
+     * Enum to distinguish if the layer is referenced or referencing
+     * \since QGIS 3.16
+     */
+    enum WeakRelationType
+    {
+      Referencing, //!< The layer is referencing
+      Referenced //!< The layer is referenced
+    };
+
+
+    /**
      * Creates a QgsWeakRelation
      */
     QgsWeakRelation( const QString &relationId,
@@ -84,6 +95,28 @@ class CORE_EXPORT QgsWeakRelation
      * Returns the list of field pairs
      */
     QList<QgsRelation::FieldPair> fieldPairs() const;
+
+    /**
+     * Returns a weak relation for the given layer
+     * \param layer the layer of the weak relation
+     * \param type determines if the layer is referencing or referenced
+     * \param node the QDomNode
+     * \param resolver the path resolver
+     * \since QGIS 3.16
+     */
+    static QgsWeakRelation readXml( const QgsVectorLayer *layer, WeakRelationType type, const QDomNode &node, const QgsPathResolver resolver );
+
+    /**
+     * Writes a weak relation infoto an XML structure. Used for saving .qgs projects
+     *
+     * \param layer the layer which we save the weak relation for
+     * \param type determines if the layer is referencing or referenced
+     * \param relation the relation to save as a weak relation
+     * \param node The parent node in which the relation will be created
+     * \param doc  The document in which the relation will be saved
+     * \since QGIS 3.16
+     */
+    static void writeXml( const QgsVectorLayer *layer, WeakRelationType type, const QgsRelation &relation, QDomNode &node, QDomDocument &doc );
 
   private:
 

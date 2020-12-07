@@ -23,6 +23,7 @@ __copyright__ = '(C) 2019, Nyall Dawson'
 
 import qgis  # NOQA
 
+import os
 from utilities import unitTestDataPath
 
 from qgis.PyQt.QtCore import QDir, Qt, QSize
@@ -44,7 +45,7 @@ from qgis.core import (QgsGeometry,
                        QgsGeometryGeneratorSymbolLayer,
                        QgsSymbol,
                        QgsFontMarkerSymbolLayer,
-                       QgsFontUtils,
+                       QgsMultiRenderChecker,
                        QgsLineSymbol,
                        QgsSymbolLayer,
                        QgsProperty,
@@ -52,7 +53,9 @@ from qgis.core import (QgsGeometry,
                        QgsUnitTypes,
                        QgsSimpleLineSymbolLayer,
                        QgsTemplatedLineSymbolLayerBase,
-                       QgsHashedLineSymbolLayer
+                       QgsHashedLineSymbolLayer,
+                       QgsVectorLayer,
+                       QgsSingleSymbolRenderer
                        )
 
 from qgis.testing import unittest, start_app
@@ -354,6 +357,89 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 0 10)')
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('line_hash_segmentcenter', 'line_hash_segmentcenter', rendered_image)
+
+    def testOpacityWithDataDefinedColor(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+        hash_line = QgsHashedLineSymbolLayer(True)
+        simple_line = QgsSimpleLineSymbolLayer()
+        simple_line.setColor(QColor(0, 255, 0))
+        simple_line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+
+        simple_line.setWidth(1)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, simple_line)
+        line_symbol.setOpacity(0.5)
+        hash_line.setSubSymbol(line_symbol)
+        hash_line.setHashLength(10)
+        hash_line.setAverageAngleLength(0)
+        s.appendSymbolLayer(hash_line.clone())
+
+        # set opacity on both the symbol and subsymbol, to test that they get combined
+        s.setOpacity(0.5)
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_hashline')
+        renderchecker.setControlName('expected_hashline_opacityddcolor')
+        res = renderchecker.runTest('expected_hashline_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def testDataDefinedOpacity(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+        hash_line = QgsHashedLineSymbolLayer(True)
+        simple_line = QgsSimpleLineSymbolLayer()
+        simple_line.setColor(QColor(0, 255, 0))
+        simple_line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+
+        simple_line.setWidth(1)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, simple_line)
+        line_symbol.setOpacity(0.5)
+        hash_line.setSubSymbol(line_symbol)
+        hash_line.setHashLength(10)
+        hash_line.setAverageAngleLength(0)
+        s.appendSymbolLayer(hash_line.clone())
+
+        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_hashline')
+        renderchecker.setControlName('expected_hashline_ddopacity')
+        res = renderchecker.runTest('expected_hashline_ddopacity')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()

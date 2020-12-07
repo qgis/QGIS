@@ -112,7 +112,7 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
       QTableWidgetItem *item =  mStatisticsTable->item( i, j );
       columns += item->text();
     }
-    rows += columns.join( QStringLiteral( "\t" ) );
+    rows += columns.join( QLatin1Char( '\t' ) );
     columns.clear();
   }
 
@@ -120,9 +120,9 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
   {
     QString text = QStringLiteral( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(),
                    mStatisticsTable->horizontalHeaderItem( 1 )->text(),
-                   rows.join( QStringLiteral( "\n" ) ) );
+                   rows.join( QLatin1Char( '\n' ) ) );
     QString html = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
-    html.replace( QStringLiteral( "\t" ), QStringLiteral( "</td><td>" ) ).replace( QStringLiteral( "\n" ), QStringLiteral( "</td></tr><tr><td>" ) );
+    html.replace( QLatin1String( "\t" ), QLatin1String( "</td><td>" ) ).replace( QLatin1String( "\n" ), QLatin1String( "</td></tr><tr><td>" ) );
 
     QgsClipboard clipboard;
     clipboard.setData( QStringLiteral( "text/html" ), html.toUtf8(), text );
@@ -236,7 +236,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
-  QgsStatisticalSummary::Statistics statsToCalc = nullptr;
+  QgsStatisticalSummary::Statistics statsToCalc = QgsStatisticalSummary::Statistics();
   const auto displayStats = *sDisplayStats();
   for ( QgsStatisticalSummary::Statistic stat : displayStats )
   {
@@ -293,7 +293,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
   QVariantList values = mGatherer->values();
 
   QList< QgsStringStatisticalSummary::Statistic > statsToDisplay;
-  QgsStringStatisticalSummary::Statistics statsToCalc = nullptr;
+  QgsStringStatisticalSummary::Statistics statsToCalc = QgsStringStatisticalSummary::Statistics();
   const auto displayStringStats = *sDisplayStringStats();
   for ( QgsStringStatisticalSummary::Statistic stat : displayStringStats )
   {
@@ -418,7 +418,7 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
   QVariantList values = mGatherer->values();
 
   QList< QgsDateTimeStatisticalSummary::Statistic > statsToDisplay;
-  QgsDateTimeStatisticalSummary::Statistics statsToCalc = nullptr;
+  QgsDateTimeStatisticalSummary::Statistics statsToCalc = QgsDateTimeStatisticalSummary::Statistics();
   const auto displayDateTimeStats = *sDisplayDateTimeStats();
   for ( QgsDateTimeStatisticalSummary::Statistic stat : displayDateTimeStats )
   {

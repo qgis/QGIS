@@ -44,12 +44,36 @@
 #include <gdal.h>
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
-                                  const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer )
+                                  const QString &name,
+                                  const QString &path,
+                                  const QString &uri,
+                                  LayerType layerType,
+                                  const QString &driverName,
+                                  bool isSubLayer )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
+  , mDriverName( driverName )
+  , mIsSubLayer( isSubLayer )
 {
   mIsSubLayer = isSubLayer;
   mToolTip = uri;
-  setState( Populated ); // children are not expected
+  const bool isIndex { QRegularExpression( R"(=idx_[^_]+_[^_]+.*$)" ).match( uri ).hasMatch() };
+  setState( ( driverName ==  QStringLiteral( "SQLite" ) && ! isIndex ) ? NotPopulated : Populated ); // children are accepted except for sqlite
+}
+
+
+QVector<QgsDataItem *> QgsOgrLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  // Geopackage is handled by QgsGeoPackageVectorLayerItem and QgsGeoPackageRasterLayerItem
+  // Proxy to spatialite provider data items because it implements the connections API
+  if ( mDriverName == QLatin1String( "SQLite" ) )
+  {
+    children.push_back( new QgsFieldsItem( this,
+                                           path() + QStringLiteral( "/columns/ " ),
+                                           QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', QLatin1String( R"(\")" ) ) ),
+                                           QStringLiteral( "spatialite" ), QString(), name() ) );
+  }
+  return children;
 }
 
 
@@ -109,6 +133,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ), layerOptions );
   if ( layer.isValid( ) )
   {
+    QVariantMap oriParts = QgsOgrProviderMetadata().decodeUri( path );
+
     // Collect mixed-geom layers
     QMultiMap<int, QStringList> subLayersMap;
     QgsOgrProvider *ogrProvider = qobject_cast<QgsOgrProvider *>( layer.dataProvider() );
@@ -153,7 +179,6 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
         // example URI for mixed-geoms geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
         // example URI for mixed-geoms attr table:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layername=MyLayer|layerid=7'
         // example URI for single geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=6'
-        QString uri;
         if ( layerType != QgsLayerItem::LayerType::NoType )
         {
           if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
@@ -162,25 +187,29 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
           }
           else
           {
+            QVariantMap parts( oriParts );
             if ( uniqueNames )
-              uri = QStringLiteral( "%1|layername=%2" ).arg( path, name );
+              parts.insert( QStringLiteral( "layerName" ), name );
             else
-              uri = QStringLiteral( "%1|layerid=%2" ).arg( path, layerId );
+              parts.insert( QStringLiteral( "layerId" ), layerId );
             if ( values.size() > 1 )
             {
-              uri += QStringLiteral( "|geometrytype=" ) + geometryType;
+              parts.insert( QStringLiteral( "geometryType" ), geometryType );
             }
+            QString uri = QgsOgrProviderMetadata().encodeUri( parts );
             QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
-            children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, layerType ) );
+            children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, layerType, driver ) );
           }
         }
         else
         {
           QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported %1 Vector layer %2" ).arg( driver, path ), 3 );
-          uri = QStringLiteral( "%1|layerid=%2|layername=%3" ).arg( path, layerId, name );
-          children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, QgsLayerItem::LayerType::TableLayer ) );
+          QVariantMap parts( oriParts );
+          parts.insert( QStringLiteral( "layerId" ), layerId );
+          parts.insert( QStringLiteral( "layerName" ), name );
+          QString uri = QgsOgrProviderMetadata().encodeUri( parts );
+          children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, QgsLayerItem::LayerType::TableLayer, driver ) );
         }
-        QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
       }
     }
   }
@@ -198,7 +227,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       QStringList pieces = uri.split( ':' );
       QString name = pieces.value( pieces.length() - 1 );
       QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2" ).arg( name, uri ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
+      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
     }
   }
   else if ( rlayer.isValid( ) )
@@ -232,19 +261,19 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       }
 
       QgsDebugMsgLevel( QStringLiteral( "Adding %1 Raster item %2 %3" ).arg( driver, name, path ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
+      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
     }
   }
 
   // There were problems in reading the file: throw
-  if ( ! layer.isValid() && ! rlayer.isValid() )
+  if ( ! layer.isValid() && ! rlayer.isValid() && children.isEmpty() )
   {
     QString errorMessage;
     // If it is file based and the file exists, there might be a permission error, let's change
-    // the message to give the user a hint about this possiblity.
+    // the message to give the user a hint about this possibility.
     if ( QFile::exists( path ) )
     {
-      errorMessage = tr( "Error opening file, check file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
+      errorMessage = tr( "The file does not contain any layer or there was an error opening the file.\nCheck file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
     }
     else
     {
@@ -321,7 +350,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
 
   QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
 
-  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType, isSubLayer );
+  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType, driverName, isSubLayer );
 }
 
 // ----
@@ -342,8 +371,8 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   CSLDestroy( papszOptions );
 
   GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource.get() );
-  QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
-  if ( driverName == QStringLiteral( "SQLite" ) )
+  const QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
+  if ( driverName == QLatin1String( "SQLite" ) )
   {
     skippedLayerNames = QgsSqliteUtils::systemTables();
   }
@@ -367,7 +396,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
       uniqueNames = false;
       break;
     }
-    if ( ( driverName == QStringLiteral( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geometry($|_.*)" ) ) ) )
+    if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geometry($|_.*)" ) ) ) )
          || skippedLayerNames.contains( layerName ) )
     {
       skippedLayers << i;
@@ -418,6 +447,20 @@ bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QStr
   return saveConnection( path, ogrDriverName );
 }
 
+bool QgsOgrDataCollectionItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::Uri QgsOgrDataCollectionItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.providerKey = QStringLiteral( "ogr" );
+  u.uri = path();
+  u.layerType = QStringLiteral( "vector" );
+  return u;
+}
+
 // ---------------------------------------------------------------------------
 
 QString QgsOgrDataItemProvider::name()
@@ -439,6 +482,19 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
 {
   QString path( pathIn );
   if ( path.isEmpty() )
+    return nullptr;
+
+  // if another provider has preference for this path, let it win. This allows us to hide known files
+  // more strongly associated with another provider from showing duplicate entries for the ogr provider.
+  // e.g. in particular this hides "ept.json" files from showing as a non-functional ogr data item, and
+  // instead ONLY shows them as the functional EPT point cloud provider items
+  if ( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( path, QStringLiteral( "ogr" ) ) )
+  {
+    return nullptr;
+  }
+
+  // hide blocklisted URIs, such as .aux.xml files
+  if ( QgsProviderRegistry::instance()->uriIsBlocklisted( path ) )
     return nullptr;
 
   QgsDebugMsgLevel( "thePath: " + path, 2 );
@@ -504,19 +560,6 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix.isEmpty() )
     return nullptr;
 
-  // skip *.aux.xml files (GDAL auxiliary metadata files),
-  // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
-  // unless that extension is in the list (*.xml might be though)
-  if ( path.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
-       !myExtensions.contains( QStringLiteral( "aux.xml" ) ) )
-    return nullptr;
-  if ( path.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) &&
-       !myExtensions.contains( QStringLiteral( "shp.xml" ) ) )
-    return nullptr;
-  if ( path.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
-       !myExtensions.contains( QStringLiteral( "tif.xml" ) ) )
-    return nullptr;
-
   // skip QGIS style xml files
   if ( path.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) &&
        QgsStyle::isXmlStyleFile( path ) )
@@ -580,10 +623,19 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "gdb" ),
       QStringLiteral( "kml" ),
       QStringLiteral( "osm" ),
+      QStringLiteral( "mdb" ),
+      QStringLiteral( "accdb" ),
+      QStringLiteral( "xls" ),
+      QStringLiteral( "xlsx" ),
+      QStringLiteral( "gpx" ),
+      QStringLiteral( "pdf" ),
       QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
-      QStringLiteral( "gdb" ) };
+      QStringLiteral( "gdb" ),
+      QStringLiteral( "xlsx" ),
+      QStringLiteral( "xls" ),
+      QStringLiteral( "pgdb" )};
 
   // these extensions are trivial to read, so there's no need to rely on
   // the extension only scan here -- avoiding it always gives us the correct data type

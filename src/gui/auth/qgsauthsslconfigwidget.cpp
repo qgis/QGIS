@@ -591,7 +591,7 @@ QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent, const QSslCerti
 {
   setWindowTitle( tr( "Custom Certificate Configuration" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );
-  layout->setMargin( 6 );
+  layout->setContentsMargins( 6, 6, 6, 6 );
 
   mSslConfigWdgt = new QgsAuthSslConfigWidget( this, cert, hostport );
   connect( mSslConfigWdgt, &QgsAuthSslConfigWidget::readyToSaveChanged,

@@ -33,7 +33,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QSpinBox" name="mFontSizeSpinBox"/>
+      <widget class="QgsSpinBox" name="mFontSizeSpinBox"/>
      </item>
      <item>
       <widget class="QPushButton" name="mBoldPushButton">
@@ -120,6 +120,11 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

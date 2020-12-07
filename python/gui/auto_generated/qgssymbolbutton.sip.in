@@ -145,7 +145,7 @@ button.
 
     void setColor( const QColor &color );
 %Docstring
-Sets the current ``color`` for the symbol. Will emit a changed() signal if the color is different
+Sets the current ``color`` for the symbol. Will emit a :py:func:`~QgsSymbolButton.changed` signal if the color is different
 to the previous symbol color.
 %End
 

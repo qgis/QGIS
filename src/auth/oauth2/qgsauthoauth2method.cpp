@@ -28,6 +28,8 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
+#include <algorithm>
+
 #include <QDateTime>
 #include <QInputDialog>
 #include <QDesktopServices>
@@ -139,7 +141,10 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     if ( o2->expires() > 0 )  // QStringLiteral("").toInt() result for tokens with no expiration
     {
       int cursecs = static_cast<int>( QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000 );
-      expired = ( ( o2->expires() - cursecs ) < 120 ); // try refresh with expired or two minutes to go
+      const int lExpirationDelay = o2->expirationDelay();
+      // try refresh with expired or two minutes to go (or a fraction of the initial expiration delay if it is short)
+      const int refreshThreshold = lExpirationDelay > 0 ? std::min( 120, std::max( 2, lExpirationDelay / 10 ) ) : 120;
+      expired = ( ( o2->expires() - cursecs ) < refreshThreshold );
     }
 
     if ( expired )
@@ -157,32 +162,11 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
         // Try to get a refresh token first
-        // go into local event loop and wait for a fired refresh-related slot
-        QEventLoop rloop( nullptr );
-        connect( o2, &QgsO2::refreshFinished, &rloop, &QEventLoop::quit );
-
-        // add single shot timer to quit refresh after an allotted timeout
-        // this should keep the local event loop from blocking forever
-        QTimer r_timer( nullptr );
-        int r_reqtimeout = o2->oauth2config()->requestTimeout() * 1000;
-        r_timer.setInterval( r_reqtimeout );
-        r_timer.setSingleShot( true );
-        connect( &r_timer, &QTimer::timeout, &rloop, &QEventLoop::quit );
-        r_timer.start();
-
-        // Asynchronously attempt the refresh
-        // TODO: This already has a timed reply setup in O2 base class (and in QgsNetworkAccessManager!)
-        //       May need to address this or app crashes will occur!
-        o2->refresh();
-
-        // block request update until asynchronous linking loop is quit
-        rloop.exec();
-        if ( r_timer.isActive() )
-        {
-          r_timer.stop();
-        }
+        o2->refreshSynchronous();
 
         // refresh result should set o2 to (un)linked
+        if ( o2->linked() )
+          o2->computeExpirationDelay();
       }
     }
   }
@@ -249,6 +233,8 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
       QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
       return false;
     }
+
+    o2->computeExpirationDelay();
   }
 
   if ( o2->token().isEmpty() )
@@ -267,12 +253,15 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   switch ( accessmethod )
   {
     case QgsAuthOAuth2Config::Header:
-      request.setRawHeader( O2_HTTP_AUTHORIZATION_HEADER, QStringLiteral( "Bearer %1" ).arg( o2->token() ).toLatin1() );
+    {
+      const QString header = o2->oauth2config()->customHeader().isEmpty() ? QString( O2_HTTP_AUTHORIZATION_HEADER ) : o2->oauth2config()->customHeader();
+      request.setRawHeader( header.toLatin1(), QStringLiteral( "Bearer %1" ).arg( o2->token() ).toLatin1() );
 #ifdef QGISDEBUG
       msg = QStringLiteral( "Updated request HEADER with access token for authcfg: %1" ).arg( authcfg );
       QgsDebugMsgLevel( msg, 2 );
 #endif
       break;
+    }
     case QgsAuthOAuth2Config::Form:
       // FIXME: what to do here if the parent request is not POST?
       //        probably have to skip this until auth system support is moved into QgsNetworkAccessManager
@@ -408,7 +397,7 @@ void QgsAuthOAuth2Method::onCloseBrowser()
     const QList<QWidget *> widgets = QgsApplication::topLevelWidgets();
     for ( QWidget *topwdgt : widgets )
     {
-      if ( topwdgt->objectName() == QStringLiteral( "MainWindow" ) )
+      if ( topwdgt->objectName() == QLatin1String( "MainWindow" ) )
       {
         topwdgt->raise();
         topwdgt->activateWindow();

@@ -23,6 +23,7 @@
 #include "qgswkbtypes.h"
 
 #include <memory>
+#include <QSortFilterProxyModel>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -32,6 +33,7 @@ class QgsVectorTileBasicLabelingListModel;
 class QgsVectorTileLayer;
 class QgsMapCanvas;
 class QgsMessageBar;
+class QgsVectorTileBasicLabelingProxyModel;
 
 /**
  * \ingroup gui
@@ -65,6 +67,8 @@ class GUI_EXPORT QgsVectorTileBasicLabelingWidget : public QgsMapLayerConfigWidg
     QgsVectorTileLayer *mVTLayer = nullptr;
     std::unique_ptr<QgsVectorTileBasicLabeling> mLabeling;
     QgsVectorTileBasicLabelingListModel *mModel = nullptr;
+    QgsVectorTileBasicLabelingProxyModel *mProxyModel = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 };
 
@@ -102,6 +106,13 @@ class QgsVectorTileBasicLabelingListModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
+
+    enum Role
+    {
+      MinZoom = Qt::UserRole + 1,
+      MaxZoom,
+    };
+
     QgsVectorTileBasicLabelingListModel( QgsVectorTileBasicLabeling *r, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -124,6 +135,24 @@ class QgsVectorTileBasicLabelingListModel : public QAbstractListModel
   private:
     QgsVectorTileBasicLabeling *mLabeling = nullptr;
 };
+
+class QgsVectorTileBasicLabelingProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+    QgsVectorTileBasicLabelingProxyModel( QgsVectorTileBasicLabelingListModel *source, QObject *parent = nullptr );
+
+    void setCurrentZoom( int zoom );
+    void setFilterVisible( bool enabled );
+
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+
+    bool mFilterVisible = false;
+    int mCurrentZoom = -1;
+};
+
 
 ///@endcond
 

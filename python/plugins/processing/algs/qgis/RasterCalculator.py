@@ -118,7 +118,7 @@ class RasterCalculator(QgisAlgorithm):
         if not bbox.isNull():
             bboxCrs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
             if bboxCrs != crs:
-                transform = QgsCoordinateTransform(bboxCrs, crs, context.project())
+                transform = QgsCoordinateTransform(bboxCrs, crs, context.transformContext())
                 bbox = transform.transformBoundingBox(bbox)
 
         if bbox.isNull() and layers:
@@ -131,7 +131,7 @@ class RasterCalculator(QgisAlgorithm):
         def _cellsize(layer):
             ext = layer.extent()
             if layer.crs() != crs:
-                transform = QgsCoordinateTransform(layer.crs(), crs, context.project())
+                transform = QgsCoordinateTransform(layer.crs(), crs, context.transformContext())
                 ext = transform.transformBoundingBox(ext)
             return (ext.xMaximum() - ext.xMinimum()) / layer.width()
 
@@ -144,8 +144,9 @@ class RasterCalculator(QgisAlgorithm):
             expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
 
         # check for layers available in the project
-        for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
-            expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
+        if context.project():
+            for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
+                expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
 
         # create the list of layers to be passed as inputs to RasterCalculaltor
         # at this phase expression has been modified to match available layers

@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmapexportsettings.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class Qgs3DMapExportSettings
+{
+%Docstring
+The Qgs3DMapExportSettings class
+Manages the various settings the user can choose from when exporting a 3D scene
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgs3dmapexportsettings.h"
+%End
+  public:
+    Qgs3DMapExportSettings();
+%Docstring
+Constructor
+%End
+
+    ~Qgs3DMapExportSettings();
+
+    QString sceneName() const;
+%Docstring
+Returns the scene name
+%End
+    QString sceneFolderPath() const;
+%Docstring
+Returns the scene folder path
+%End
+    int terrrainResolution() const;
+%Docstring
+Returns the terrain resolution
+%End
+    bool smoothEdges() const;
+%Docstring
+Returns whether triangles edges will look smooth
+%End
+    bool exportNormals() const;
+%Docstring
+Returns whether normals will be exported
+%End
+    bool exportTextures() const;
+%Docstring
+Returns whether textures will be exported
+%End
+    int terrainTextureResolution() const;
+%Docstring
+Returns the terrain texture resolution
+%End
+    float scale() const;
+%Docstring
+Returns the scale of the exported model
+%End
+
+    void setSceneName( const QString &sceneName );
+%Docstring
+Sets the scene name
+%End
+    void setSceneFolderPath( const QString &sceneFolderPath );
+%Docstring
+Sets the scene's .obj file folder path
+%End
+    void setTerrainResolution( int resolution );
+%Docstring
+Sets the terrain resolution
+%End
+    void setSmoothEdges( bool smoothEdges );
+%Docstring
+Sets whether triangles edges will look smooth
+%End
+    void setExportNormals( bool exportNormals );
+%Docstring
+Sets whether normals should be exported
+%End
+    void setExportTextures( bool exportTextures );
+%Docstring
+Sets whether textures will be exported
+%End
+    void setTerrainTextureResolution( int resolution );
+%Docstring
+Sets the terrain texture resolution
+%End
+    void setScale( float scale );
+%Docstring
+Sets the scale of exported model
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmapexportsettings.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

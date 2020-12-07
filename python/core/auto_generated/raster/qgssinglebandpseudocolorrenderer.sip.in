@@ -30,7 +30,7 @@ Note: takes ownership of :py:class:`QgsRasterShader`
     virtual QgsSingleBandPseudoColorRenderer *clone() const /Factory/;
 
 %Docstring
-QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
+QgsSingleBandPseudoColorRenderer cannot be copied. Use :py:func:`~QgsSingleBandPseudoColorRenderer.clone` instead.
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
@@ -75,7 +75,7 @@ Creates a color ramp shader
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     virtual QList<int> usesBands() const;
 

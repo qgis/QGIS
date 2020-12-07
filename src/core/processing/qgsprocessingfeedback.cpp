@@ -26,6 +26,10 @@
 #include <proj_api.h>
 #endif
 
+#ifdef HAVE_PDAL
+#include <pdal/pdal.hpp>
+#endif
+
 QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
   : mLogFeedback( logFeedback )
 {
@@ -41,8 +45,17 @@ void QgsProcessingFeedback::reportError( const QString &error, bool )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
 
-  mHtmlLog.append( QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QStringLiteral( "<br>" ) ) );
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) ) );
   mTextLog.append( error + '\n' );
+}
+
+void QgsProcessingFeedback::pushWarning( const QString &warning )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( warning, tr( "Processing" ), Qgis::Warning );
+
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:#b85a20;\">%1</span><br/>" ).arg( warning.toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "<br/>" ) );
+  mTextLog.append( warning + '\n' );
 }
 
 void QgsProcessingFeedback::pushInfo( const QString &info )
@@ -50,7 +63,7 @@ void QgsProcessingFeedback::pushInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) + QStringLiteral( "<br/>" ) );
+  mHtmlLog.append( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "<br/>" ) );
   mTextLog.append( info + '\n' );
 }
 
@@ -59,7 +72,7 @@ void QgsProcessingFeedback::pushCommandInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( QStringLiteral( "<code>%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mHtmlLog.append( QStringLiteral( "<code>%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
 }
 
@@ -68,7 +81,7 @@ void QgsProcessingFeedback::pushDebugInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( QStringLiteral( "<span style=\"color:#777\">%1</span><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:#777\">%1</span><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
 }
 
@@ -77,7 +90,7 @@ void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( QStringLiteral( "<code style=\"color:#777\">%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mHtmlLog.append( QStringLiteral( "<code style=\"color:#777\">%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
 }
 
@@ -98,6 +111,15 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
 #else
   pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
 #endif
+
+#ifdef HAVE_PDAL
+#if PDAL_VERSION_MAJOR_INT > 1 || (PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7)
+  pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) ) );
+#else
+  pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::GetFullVersionString() ) ) );
+#endif
+#endif
+
   if ( provider && !provider->versionInfo().isEmpty() )
   {
     pushDebugInfo( tr( "%1 version: %2" ).arg( provider->name(), provider->versionInfo() ) );
@@ -137,6 +159,11 @@ void QgsProcessingMultiStepFeedback::setProgressText( const QString &text )
 void QgsProcessingMultiStepFeedback::reportError( const QString &error, bool fatalError )
 {
   mFeedback->reportError( error, fatalError );
+}
+
+void QgsProcessingMultiStepFeedback::pushWarning( const QString &warning )
+{
+  mFeedback->pushWarning( warning );
 }
 
 void QgsProcessingMultiStepFeedback::pushInfo( const QString &info )

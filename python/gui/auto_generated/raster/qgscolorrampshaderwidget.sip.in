@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorRampShaderWidget: QWidget, protected Ui::QgsColorRampShaderWidgetBase
 {
 %Docstring
@@ -111,6 +112,7 @@ Loads min and max values from color ramp tree
 %End
 
   protected:
+
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 %Docstring
 Populates color ramp tree from ramp items

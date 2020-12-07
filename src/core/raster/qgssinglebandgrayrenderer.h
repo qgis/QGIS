@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
+    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
 
     QList<int> usesBands() const override;
 

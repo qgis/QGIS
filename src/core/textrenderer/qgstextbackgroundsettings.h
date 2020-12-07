@@ -91,6 +91,9 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     ~QgsTextBackgroundSettings();
 
+    bool operator==( const QgsTextBackgroundSettings &other ) const;
+    bool operator!=( const QgsTextBackgroundSettings &other ) const;
+
     /**
      * Returns whether the background is enabled.
      * \see setEnabled()
@@ -475,7 +478,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \returns paint effect
      * \see setPaintEffect()
      */
-    QgsPaintEffect *paintEffect() const;
+    const QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint \a effect for the background shape.

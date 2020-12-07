@@ -50,6 +50,7 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGe
  */
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometrySelfIntersectionCheck )
   public:
     enum ResolutionMethod
     {

@@ -18,15 +18,17 @@
 #ifndef QGSCOLORRAMPSHADERWIDGET_H
 #define QGSCOLORRAMPSHADERWIDGET_H
 
+#include <QStyledItemDelegate>
+
 #include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
-#include "qgscolorschemelist.h"
 #include "ui_qgscolorrampshaderwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgsrasterrendererwidget.h"
 
 class QgsRasterDataProvider;
+class QgsLocaleAwareNumericLineEditDelegate;
 
 /**
  * \ingroup gui
@@ -100,6 +102,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void loadMinimumMaximumFromTree();
 
   protected:
+
     //! Populates color ramp tree from ramp items
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 
@@ -118,6 +121,9 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
      * Text of generated labels is made gray
      */
     void autoLabel();
+
+    //! Extracts the minimal and maximal value from the colormapTreeWidget
+    bool colormapMinMax( double &min, double &max ) const;
 
     //! Extract the unit out of the current labels and set the unit field.
     void setUnitFromLabels();
@@ -145,7 +151,12 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
 
-    QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
+    QString createLabel( QTreeWidgetItem *item, int row, const QString unit );
+
+#ifdef QGISDEBUG
+    //! Dump all the classes for debugging purposes
+    void dumpClasses();
+#endif
 
     double mMin = std::numeric_limits<double>::quiet_NaN();
     double mMax = std::numeric_limits<double>::quiet_NaN();
@@ -154,6 +165,8 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     QgsRasterDataProvider *mRasterDataProvider = nullptr;
     int mBand = -1;
     QgsRectangle mExtent;
+    QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
+
 
 };
 

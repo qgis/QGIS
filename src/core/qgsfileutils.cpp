@@ -56,6 +56,47 @@ QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
   return extensions;
 }
 
+QString QgsFileUtils::wildcardsFromFilter( const QString &filter )
+{
+  const QRegularExpression globPatternsRx( QStringLiteral( ".*\\((.*?)\\)$" ) );
+  const QRegularExpressionMatch matches = globPatternsRx.match( filter );
+  if ( matches.hasMatch() )
+    return matches.captured( 1 );
+  else
+    return QString();
+}
+
+bool QgsFileUtils::fileMatchesFilter( const QString &fileName, const QString &filter )
+{
+  QFileInfo fi( fileName );
+  const QString name = fi.fileName();
+  const QStringList parts = filter.split( QStringLiteral( ";;" ) );
+  for ( const QString &part : parts )
+  {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QStringList globPatterns = wildcardsFromFilter( part ).split( ' ', QString::SkipEmptyParts );
+#else
+    const QStringList globPatterns = wildcardsFromFilter( part ).split( ' ', Qt::SkipEmptyParts );
+#endif
+    for ( const QString &glob : globPatterns )
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+      const QString re = QRegularExpression::wildcardToRegularExpression( glob );
+
+      const QRegularExpression globRx( re );
+      if ( globRx.match( name ).hasMatch() )
+        return true;
+#else
+      QRegExp rx( glob );
+      rx.setPatternSyntax( QRegExp::Wildcard );
+      if ( rx.indexIn( name ) != -1 )
+        return true;
+#endif
+    }
+  }
+  return false;
+}
+
 QString QgsFileUtils::ensureFileNameHasExtension( const QString &f, const QStringList &extensions )
 {
   if ( extensions.empty() || f.isEmpty() )
@@ -116,7 +157,7 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
     if ( visited.contains( parentPath ) )
       return QString(); // break circular links
 
-    if ( parentPath.isEmpty() || parentPath == QStringLiteral( "." ) )
+    if ( parentPath.isEmpty() || parentPath == QLatin1String( "." ) )
       return QString();
     currentPath = QDir( parentPath );
     visited << parentPath;
@@ -127,7 +168,7 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
   if ( res == QDir::currentPath() )
     return QString(); // avoid default to binary folder if a filename alone is specified
 
-  return res == QStringLiteral( "." ) ? QString() : res;
+  return res == QLatin1String( "." ) ? QString() : res;
 }
 
 QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath, int maxClimbs, int searchCeilling, const QString &currentDir )
@@ -191,7 +232,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
 
 
     const QFileInfoList subdirs = folder.entryInfoList( QDir::AllDirs );
-    for ( const QFileInfo subdir : subdirs )
+    for ( const QFileInfo &subdir : subdirs )
     {
       if ( ! searchedFolder.contains( subdir.absolutePath() ) )
       {

@@ -53,9 +53,9 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
 {
   mClassificationMin = min;
-  if ( shader() )
+  if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMinimumValue( min );
@@ -66,9 +66,9 @@ void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
 void QgsSingleBandPseudoColorRenderer::setClassificationMax( double max )
 {
   mClassificationMax = max;
-  if ( shader() )
+  if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMaximumValue( max );
@@ -313,8 +313,9 @@ void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument &doc, QDomElement 
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
+QList< QPair< QString, QColor > > QgsSingleBandPseudoColorRenderer::legendSymbologyItems() const
 {
+  QList< QPair< QString, QColor > > symbolItems;
   if ( mShader )
   {
     QgsRasterShaderFunction *shaderFunction = mShader->rasterShaderFunction();
@@ -323,6 +324,7 @@ void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QStri
       shaderFunction->legendSymbologyItems( symbolItems );
     }
   }
+  return symbolItems;
 }
 
 QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const

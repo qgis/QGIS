@@ -273,7 +273,7 @@ QString QgsGeoPackageProjectStorage::encodeUri( const QgsGeoPackageProjectUri &g
 
   // Check for windows network shares: github issue #31310
   QString database { gpkgUri.database };
-  if ( database.startsWith( QStringLiteral( "//" ) ) )
+  if ( database.startsWith( QLatin1String( "//" ) ) )
   {
     u.setPath( database.replace( '/', '\\' ) );
   }
@@ -301,7 +301,7 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
   const QRegularExpression winLocalPath { R"(^[A-Za-z]:)" };
   // Check for windows network shares: github issue #31310
   const QString path { ( winLocalPath.match( urlAsString ).hasMatch() ||
-                         urlAsString.startsWith( QStringLiteral( "//" ) ) ) ?
+                         urlAsString.startsWith( QLatin1String( "//" ) ) ) ?
                        urlAsString :
                        url.path() };
 
@@ -341,7 +341,7 @@ QString QgsGeoPackageProjectStorage::_executeSql( const QString &uri, const QStr
   char *errmsg = nullptr;
   ( void )sqlite3_exec(
     db.get(),                            /* An open database */
-    sql.toLocal8Bit(),                   /* SQL to be evaluated */
+    sql.toUtf8(),                        /* SQL to be evaluated */
     nullptr,                             /* Callback function */
     nullptr,                             /* 1st argument to callback */
     &errmsg                              /* Error msg written here */

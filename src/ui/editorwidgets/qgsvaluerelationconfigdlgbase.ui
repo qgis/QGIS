@@ -124,7 +124,7 @@
     </widget>
    </item>
    <item row="9" column="1">
-    <widget class="QSpinBox" name="mNofColumns"/>
+    <widget class="QgsSpinBox" name="mNofColumns"/>
    </item>
    <item row="2" column="1">
     <widget class="QgsFieldComboBox" name="mKeyColumn"/>
@@ -156,6 +156,11 @@
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>

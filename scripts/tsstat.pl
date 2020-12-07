@@ -52,14 +52,14 @@ my $translators= {
 	'eu' => 'Asier Sarasua Garmendia, Irantzu Alvarez',
 	'fa' => 'Mola Pahnadayan, Masoud Pashotan , Masoud Erfanyan',
 	'fi' => 'Kari Mikkonen, Matti Mäntynen',
-	'fr' => 'Arnaud Morvan, Augustin Roche, Didier Vanden Berghe, Dofabien, Etienne Trimaille, Harrissou Sant-anna, Jean-Roc Morreale, Jérémy Garniaux, Loïc Buscoz, Lsam, Marc-André Saia, Marie Silvestre, Mathieu Bossaert, Mathieu Lattes, Mayeul Kauffmann, Médéric Ribreux, Mehdi Semchaoui, Michael Douchin, Nicolas Boisteault, Nicolas Rochard, Pascal Obstetar, Robin Prest, Rod Bera, Stéphane Henriod, Stéphane Possamai, sylther, Sylvain Badey, Sylvain Maillard, Vincent Picavet, Xavier Tardieu, Yann Leveille-Menez, yoda89',
+	'fr' => 'Arnaud Morvan, Augustin Roche, Didier Vanden Berghe, Dofabien, Etienne Trimaille, Harrissou Sant-anna, Jean-Roc Morreale, Jérémy Garniaux, Loïc Buscoz, Lsam, Marc-André Saia, Marie Silvestre, Mathieu Bossaert, Mathieu Lattes, Mayeul Kauffmann, Médéric Ribreux, Mehdi Semchaoui, Michael Douchin, Nicolas Boisteault, Nicolas Rochard, Pascal Obstetar, Robin Prest, Rod Bera, Stéphane Henriod, Stéphane Possamai, sylther, Sylvain Badey, Sylvain Maillard, Vincent Picavet, Xavier Tardieu, Yann Leveille-Menez, yoda89, Vincent Bré',
 	'gl' => 'Xan Vieiro',
 	'hi' => 'Harish Kumar Solanki',
 	'hu' => 'Zoltan Siki, Zoltan Toldi',
 	'hr' => 'Zoran Jankovic',
 	'is' => 'Ásta Kristín Óladóttir, Thordur Ivarsson, Sveinn í Felli',
 	'id' => 'Emir Hartato, Muhammad Iqnaul Haq Siregar, Trias Aditya, Januar V. Simarmata, I Made Anombawa',  #spellok
-	'it' => 'Marco Grisolia, Roberto Angeletti, Michele Beneventi, Marco Braida, Stefano Campus, Luca Casagrande, Paolo Cavallini, Giuliano Curti, Luca Delucchi, Alessandro Fanna, Michele Ferretti, Matteo Ghetta, Anne Gishla, Maurizio Napolitano, Flavio Rigolon',
+	'it' => 'Marco Braida, Stefano Campus, Roberta Castelli, Francesco D\'Amore, Eleonora D\'Elia, Simone Falceri, Giulio Fattori, Matteo Ghetta, Federico Gianoli, Marco Grisolia, Italang, Luca76, Pipep, Valerio Pinna, Alberto Vallortigara, Giuseppe Mattiozzi (documentation)',
 	'ja' => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate, Kohei Tomita',
 	'ka' => 'Shota Murtskhvaladze, George Machitidze',
 	'km' => 'Khoem Sokhem',
@@ -78,6 +78,7 @@ my $translators= {
 	'pt_PT' => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar, José Macau',
 	'ro' => 'Sorin Călinică, Tudor Bărăscu, Georgiana Ioanovici, Alex Bădescu, Lonut Losifescu-Enescu, Bogdan Pacurar',
 	'ru' => 'Alexander Bruy, Artem Popov',
+	'sc' => 'Valerio Pinna',
 	'sk' => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	'sl' => 'Jože Detečnik, Dejan Gregor, Jaka Kranjc',
 	'sq' => '',
@@ -209,8 +210,8 @@ rename "i18n/CMakeLists.txt", "i18n/CMakeLists.txt.temp" || die "cannot rename i
 open I, "i18n/CMakeLists.txt.temp";
 open O, ">i18n/CMakeLists.txt";
 while(<I>) {
-	if( /^SET\(TS_FILES / || /^FILE \(GLOB TS_FILES \*\.ts\)/ ) {
-		print O "SET(TS_FILES " . join( " ", map { "qgis_$_\.ts"; } @ts ) . ")\n";
+	if( /^SET\(TS_FILES /i ) {
+		print O "set(TS_FILES " . join( " ", map { "qgis_$_\.ts"; } @ts ) . ")\n";
 	} else {
 		print O;
 	}

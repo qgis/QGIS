@@ -34,8 +34,6 @@
 
 #include <QProgressDialog>
 
-#define FEATURE_BUFFER_SIZE 200
-
 typedef QgsVectorLayerExporter::ExportError createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,
@@ -62,11 +60,54 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 {
   mProvider = nullptr;
 
+  QMap<QString, QVariant> modifiedOptions( options );
+
+  if ( providerKey == QLatin1String( "ogr" ) &&
+       options.contains( QStringLiteral( "driverName" ) ) &&
+       ( options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "GPKG" ), Qt::CaseInsensitive ) == 0 ||
+         options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "SQLite" ), Qt::CaseInsensitive ) == 0 ) )
+  {
+    if ( geometryType != QgsWkbTypes::NoGeometry )
+    {
+      // For GPKG/Spatialite, we explicitly ask not to create a spatial index at
+      // layer creation since this would slow down inserts. Defer its creation
+      // to end of exportLayer() or destruction of this object.
+      QStringList modifiedLayerOptions;
+      if ( options.contains( QStringLiteral( "layerOptions" ) ) )
+      {
+        QStringList layerOptions = options.value( QStringLiteral( "layerOptions" ) ).toStringList();
+        for ( const QString &layerOption : layerOptions )
+        {
+          if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=YES" ), Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( QLatin1String( "SPATIAL_INDEX=ON" ), Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( QLatin1String( "SPATIAL_INDEX=TRUE" ), Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( QLatin1String( "SPATIAL_INDEX=1" ), Qt::CaseInsensitive ) == 0 )
+          {
+            // do nothing
+          }
+          else if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=NO" ), Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=OFF" ), Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=FALSE" ), Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=0" ), Qt::CaseInsensitive ) == 0 )
+          {
+            mCreateSpatialIndex = false;
+          }
+          else
+          {
+            modifiedLayerOptions << layerOption;
+          }
+        }
+      }
+      modifiedLayerOptions << QStringLiteral( "SPATIAL_INDEX=FALSE" );
+      modifiedOptions[ QStringLiteral( "layerOptions" ) ] = modifiedLayerOptions;
+    }
+  }
+
   // create an empty layer
   QString errMsg;
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   mError = pReg->createEmptyLayer( providerKey, uri, fields, geometryType, crs, overwrite, mOldToNewAttrIdx,
-                                   errMsg, !options.isEmpty() ? &options : nullptr );
+                                   errMsg, !modifiedOptions.isEmpty() ? &modifiedOptions : nullptr );
   if ( errorCode() )
   {
     mErrorMessage = errMsg;
@@ -132,6 +173,12 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 QgsVectorLayerExporter::~QgsVectorLayerExporter()
 {
   flushBuffer();
+
+  if ( mCreateSpatialIndex )
+  {
+    createSpatialIndex();
+  }
+
   delete mProvider;
 }
 
@@ -179,8 +226,9 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   }
 
   mFeatureBuffer.append( newFeat );
+  mFeatureBufferMemoryUsage += newFeat.approximateMemoryUsage();
 
-  if ( mFeatureBuffer.count() >= FEATURE_BUFFER_SIZE )
+  if ( mFeatureBufferMemoryUsage >= 100 * 1000 * 1000 )
   {
     return flushBuffer();
   }
@@ -188,8 +236,14 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   return true;
 }
 
+QString QgsVectorLayerExporter::lastError() const
+{
+  return mErrorMessage;
+}
+
 bool QgsVectorLayerExporter::flushBuffer()
 {
+  mFeatureBufferMemoryUsage = 0;
   if ( mFeatureBuffer.count() <= 0 )
     return true;
 
@@ -201,7 +255,7 @@ bool QgsVectorLayerExporter::flushBuffer()
     mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2. Provider errors was: \n%3" )
                     .arg( mFeatureBuffer.first().id() )
                     .arg( mFeatureBuffer.last().id() )
-                    .arg( errors.join( QStringLiteral( "\n" ) ) );
+                    .arg( errors.join( QLatin1Char( '\n' ) ) );
 
     mError = ErrFeatureWriteFailed;
     mErrorCount += mFeatureBuffer.count();
@@ -217,6 +271,7 @@ bool QgsVectorLayerExporter::flushBuffer()
 
 bool QgsVectorLayerExporter::createSpatialIndex()
 {
+  mCreateSpatialIndex = false;
   if ( mProvider && ( mProvider->capabilities() & QgsVectorDataProvider::CreateSpatialIndex ) != 0 )
   {
     return mProvider->createSpatialIndex();
@@ -428,7 +483,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   }
   int errors = writer->errorCount();
 
-  if ( !writer->createSpatialIndex() )
+  if ( writer->mCreateSpatialIndex && !writer->createSpatialIndex() )
   {
     if ( writer->errorCode() && errorMessage )
     {

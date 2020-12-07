@@ -77,7 +77,8 @@ class QgsBackgroundCachedSharedData
 
     /**
      * Used by provider's reloadData(). The effect is to invalid
-        all the caching state, so that a new request results in fresh download */
+     * all the caching state, so that a new request results in fresh download.
+    */
     void invalidateCache();
 
     //! Give a feature id, find the correspond fid/gml.id. Used for edition.
@@ -133,17 +134,20 @@ class QgsBackgroundCachedSharedData
 
     /**
      * Used by a QgsBackgroundCachedFeatureIterator to start a downloader and get the
-        generation counter. */
+     * generation counter.
+    */
     int registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect = QgsRectangle() );
 
     /**
      * Used by the rewind() method of an iterator so as to get the up-to-date
-        generation counter. */
+     * generation counter.
+    */
     int getUpdatedCounter();
 
     /**
      * Used by the background downloader to serialize downloaded features into
-        the cache. Also used by a insert operation */
+     * the cache. Also used by a insert operation.
+    */
     void serializeFeatures( QVector<QgsFeatureUniqueIdPair> &featureList );
 
     //! Called by QgsFeatureDownloader::run() at the end of the download process.
@@ -164,7 +168,7 @@ class QgsBackgroundCachedSharedData
     //////// Pure virtual methods
 
     //! Instantiate a new feature downloader implementation.
-    virtual std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) = 0;
+    virtual std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestMadeFromMainThread ) = 0;
 
     //! Return whether the GetFeature request should include the request bounding box.
     virtual bool isRestrictedToRequestBBOX() const = 0;
@@ -233,10 +237,11 @@ class QgsBackgroundCachedSharedData
 
     /**
      * The generation counter. When a iterator is built or rewind, it gets the
-        current value of the generation counter to query the features in the cache
-        whose generation counter is <= the current value. That way the iterator
-        can consume first cached features, and then deal with the features that are
-        notified in live by the downloader. */
+     * current value of the generation counter to query the features in the cache
+     * whose generation counter is <= the current value. That way the iterator
+     * can consume first cached features, and then deal with the features that are
+     * notified in live by the downloader.
+    */
     int mGenCounter = 0;
 
     //! Extent computed from downloaded features
@@ -301,12 +306,14 @@ class QgsBackgroundCachedSharedData
 
     /**
      * Returns the set of unique ids that have already been downloaded and
-        cached, so as to avoid to cache duplicates. */
+     * cached, so as to avoid to cache duplicates.
+    */
     QSet<QString> getExistingCachedUniqueIds( const QVector<QgsFeatureUniqueIdPair> &featureList );
 
     /**
      * Returns the set of md5 of features that have already been downloaded and
-        cached, so as to avoid to cache duplicates. */
+     * cached, so as to avoid to cache duplicates.
+    */
     QSet<QString> getExistingCachedMD5( const QVector<QgsFeatureUniqueIdPair> &featureList );
 
     ///////////////// PURE VIRTUAL METHODS ////////////////////////

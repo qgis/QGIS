@@ -49,13 +49,14 @@ class QgsOptionsDialogHighlightWidget;
  * and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
  *
  * To use:
- * 1) Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
- * 2) In source file for dialog, inherit this class instead of QDialog, then in constructor:
- *    ...
- *    setupUi( this ); // set up .ui file objects
- *    initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui
- *    ...
- *    restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
+ *
+ * # Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+ * # In source file for dialog, inherit this class instead of QDialog, then in constructor:
+ *   ...
+ *   setupUi( this ); // set up .ui file objects
+ *   initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui
+ *   ...
+ *   restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
  */
 
 class GUI_EXPORT QgsOptionsDialogBase : public QDialog
@@ -71,7 +72,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \param fl widget flags
      * \param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = nullptr, QgsSettings *settings = nullptr );
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr );
     ~QgsOptionsDialogBase() override;
 
     /**

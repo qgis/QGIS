@@ -21,6 +21,7 @@ QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *par
   : QWidget( parent )
 {
   setupUi( this );
+  spinZoomLevelsCount->setClearValue( 3 );
 
   groupLayerRendering->setCollapsed( true );
 

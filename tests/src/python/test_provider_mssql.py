@@ -19,16 +19,16 @@ from qgis.core import (QgsSettings,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsWkbTypes,
-                       QgsField,
                        QgsGeometry,
                        QgsPointXY,
                        QgsRectangle,
+                       QgsProviderRegistry,
                        NULL,
                        QgsVectorLayerExporter,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsDataProvider)
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
@@ -50,6 +50,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
             'test', 'mssql')
+        assert cls.vl.dataProvider() is not None, "No data provider for {}".format(cls.vl.source())
         assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
@@ -58,23 +59,13 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error().message()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
-        cls.conn = QSqlDatabase.addDatabase('QODBC')
-        cls.conn.setDatabaseName('testsqlserver')
-        if 'QGIS_MSSQLTEST_DB2' in os.environ:
-            print(os.environ['QGIS_MSSQLTEST_DB2'])
-            cls.conn.setDatabaseName(os.environ['QGIS_MSSQLTEST_DB2'])
-        elif 'QGIS_MSSQLTEST_DB' in os.environ:
-            print(os.environ['QGIS_MSSQLTEST_DB'])
-            cls.conn.setDatabaseName(os.environ['QGIS_MSSQLTEST_DB'])
-        else:
-            cls.conn.setUserName('SA')
-            cls.conn.setPassword('<YourStrong!Passw0rd>')
-
-        assert cls.conn.open(), cls.conn.lastError().text()
-
         # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
         if os.environ.get('TRAVIS', '') == 'true':
             del cls.getEditableLayer
+
+        # Use connections API
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        cls.conn_api = md.createConnection(cls.dbconn, {})
 
     @classmethod
     def tearDownClass(cls):
@@ -86,45 +77,44 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.[{}]'.format(t))
 
     def execSQLCommand(self, sql):
-        self.assertTrue(self.conn)
-        query = QSqlQuery(self.conn)
-        self.assertTrue(query.exec_(sql), sql + ': ' + query.lastError().text())
-        query.finish()
+        self.assertTrue(self.conn_api)
+        self.conn_api.executeSql(sql)
 
     def getSource(self):
         # create temporary table for edit tests
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.edit_data')
         self.execSQLCommand(
             """CREATE TABLE qgis_test.edit_data (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max), num_char nvarchar(max), dt datetime, [date] date, [time] time, geom geometry)""")
+        self.execSQLCommand("INSERT INTO [qgis_test].[edit_data] (pk, cnt, name, name2, num_char, dt, [date], [time], geom) VALUES "
+                            "(5, -200, NULL, 'NuLl', '5', '2020-05-04T12:13:14', '2020-05-02', '12:13:01', geometry::STGeomFromText('POINT(-71.123 78.23)', 4326)),"
+                            "(3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),"
+                            "(1, 100, 'Orange', 'oranGe', '1', '2020-05-03T12:13:14', '2020-05-03', '12:13:14', geometry::STGeomFromText('POINT(-70.332 66.33)', 4326)),"
+                            "(2, 200, 'Apple', 'Apple', '2', '2020-05-04T12:14:14', '2020-05-04', '12:14:14', geometry::STGeomFromText('POINT(-68.2 70.8)', 4326)),"
+                            "(4, 400, 'Honey', 'Honey', '4', '2021-05-04T13:13:14', '2021-05-04', '13:13:14', geometry::STGeomFromText('POINT(-65.32 78.3)', 4326))")
 
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
             'test', 'mssql')
-
-        self.assertTrue(vl.isValid(), vl.dataProvider().error().message())
-
-        f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
-        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
-
-        f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
-
-        f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
-        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
-
-        f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
-        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
-
-        f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
-        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
-
-        self.assertTrue(vl.dataProvider().addFeatures([f1, f2, f3, f4, f5]))
-
         return vl
+
+    def testDeleteFeaturesPktInt(self):
+        vl = self.getSource()
+        dp = vl.dataProvider()
+
+        self.assertEqual(dp.featureCount(), 5)
+
+        self.assertTrue(dp.deleteFeatures([1, 3, 4]))
+        self.assertEqual(dp.featureCount(), 2)
+
+        self.assertFalse(dp.deleteFeatures([3]))
+        self.assertFalse(dp.deleteFeatures([10]))
+        self.assertFalse(dp.deleteFeatures([3, 10]))
+
+        self.assertTrue(dp.deleteFeatures([5]))
+        self.assertEqual(dp.featureCount(), 1)
+
+        self.assertTrue(dp.deleteFeatures([2]))
+        self.assertEqual(dp.featureCount(), 0)
 
     def getEditableLayer(self):
         return self.getSource()
@@ -525,6 +515,169 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             (self.dbconn), "testinvalid", "mssql")
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().extent().toString(1), 'Empty')
+
+    def testEvaluateDefaultValueClause(self):
+
+        vl = QgsVectorLayer(
+            '%s table="qgis_test"."someData" sql=' %
+            (self.dbconn), "testdatetimes", "mssql")
+
+        # Activate EvaluateDefaultValues
+        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+
+        name_index = vl.fields().lookupField('name')
+        defaultValue = vl.dataProvider().defaultValue(name_index)
+        self.assertEqual(defaultValue, 'qgis')
+
+    def testPktComposite(self):
+        """
+        Check that tables with PKs composed of many fields of different types are correctly read and written to
+        """
+        vl = QgsVectorLayer('{} type=POINT estimatedmetadata=true key=\'"pk1","pk2"\' table="qgis_test"."tb_test_compound_pk" (geom)'.format(self.dbconn), "test_compound", "mssql")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk1 = 1 AND pk2 = 2')))
+        # first of all: we must be able to fetch a valid feature
+        self.assertTrue(f.isValid())
+        self.assertEqual(f['pk1'], 1)
+        self.assertEqual(f['pk2'], 2)
+        self.assertEqual(f['value'], 'test 2')
+
+        # can we edit a field?
+        vl.startEditing()
+        vl.changeAttributeValue(f.id(), fields.indexOf('value'), 'Edited Test 2')
+        self.assertTrue(vl.commitChanges())
+
+        # Did we get it right? Let's create a new QgsVectorLayer and try to read back our changes:
+        vl2 = QgsVectorLayer('{} type=POINT estimatedmetadata=true table="qgis_test"."tb_test_compound_pk" (geom) key=\'"pk1","pk2"\' '.format(self.dbconn), "test_compound2", "mssql")
+        self.assertTrue(vl2.isValid())
+        f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk1 = 1 AND pk2 = 2')))
+        self.assertTrue(f2.isValid())
+
+        # Then, making sure we really did change our value.
+        self.assertEqual(f2['value'], 'Edited Test 2')
+
+        # How about inserting a new field?
+        f3 = QgsFeature(vl2.fields())
+        f3['pk1'] = 4
+        f3['pk2'] = -9223372036854775800
+        f3['value'] = 'other test'
+        vl.startEditing()
+        res, f3 = vl.dataProvider().addFeatures([f3])
+        self.assertTrue(res)
+        self.assertTrue(vl.commitChanges())
+
+        # can we catch it on another layer?
+        f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk2 = -9223372036854775800')))
+
+        self.assertTrue(f4.isValid())
+        expected_attrs = [4, -9223372036854775800, 'other test']
+        self.assertEqual(f4.attributes(), expected_attrs)
+
+        # Finally, let's delete one of the features.
+        f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk1 = 2 AND pk2 = 1')))
+        vl2.startEditing()
+        vl2.deleteFeatures([f5.id()])
+        self.assertTrue(vl2.commitChanges())
+
+        # did we really delete? Let's try to get the deleted feature from the first layer.
+        f_iterator = vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk1 = 2 AND pk2 = 1'))
+        got_feature = True
+
+        try:
+            f6 = next(f_iterator)
+            got_feature = f6.isValid()
+        except StopIteration:
+            got_feature = False
+
+        self.assertFalse(got_feature)
+
+    def testPktCompositeFloat(self):
+        """
+        Check that tables with PKs composed of many fields of different types are correctly read and written to
+        """
+        vl = QgsVectorLayer('{} type=POINT key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)'.format(self.dbconn), "test_composite_float", "mssql")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.14159274')))
+        # first of all: we must be able to fetch a valid feature
+        self.assertTrue(f.isValid())
+        self.assertEqual(f['pk1'], 1)
+        self.assertEqual(f['pk2'], 2)
+
+        self.assertEqual(round(f['pk3'], 6), round(3.14159274, 6))
+        self.assertEqual(f['value'], 'test 2')
+
+        # can we edit a field?
+        vl.startEditing()
+        vl.changeAttributeValue(f.id(), fields.indexOf('value'), 'Edited Test 2')
+        self.assertTrue(vl.commitChanges())
+
+        # Did we get it right? Let's create a new QgsVectorLayer and try to read back our changes:
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)'.format(self.dbconn), "test_composite_float2", "mssql")
+        self.assertTrue(vl2.isValid())
+        f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.14159274')))
+        self.assertTrue(f2.isValid())
+
+        # just making sure we have the correct feature
+        # Only 6 decimals for PostgreSQL 11.
+        self.assertEqual(round(f2['pk3'], 6), round(3.14159274, 6))
+
+        # Then, making sure we really did change our value.
+        self.assertEqual(f2['value'], 'Edited Test 2')
+
+        # How about inserting a new field?
+        f3 = QgsFeature(vl2.fields())
+        f3['pk1'] = 4
+        f3['pk2'] = -9223372036854775800
+        f3['pk3'] = 7.29154
+        f3['value'] = 'other test'
+        vl.startEditing()
+        res, f3 = vl.dataProvider().addFeatures([f3])
+        self.assertTrue(res)
+        self.assertTrue(vl.commitChanges())
+
+        # can we catch it on another layer?
+        f4 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk2 = -9223372036854775800')))
+
+        self.assertTrue(f4.isValid())
+        expected_attrs = [4, -9223372036854775800, 7.29154, 'other test']
+        gotten_attrs = [f4['pk1'], f4['pk2'], round(f4['pk3'], 5), f4['value']]
+        self.assertEqual(gotten_attrs, expected_attrs)
+
+        # Finally, let's delete one of the features.
+        f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154')))
+        vl2.startEditing()
+        vl2.deleteFeatures([f5.id()])
+        self.assertTrue(vl2.commitChanges())
+
+        # did we really delete?
+        f_iterator = vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154'))
+        got_feature = True
+
+        try:
+            f6 = next(f_iterator)
+            got_feature = f6.isValid()
+        except StopIteration:
+            got_feature = False
+
+        self.assertFalse(got_feature)
+
+    def getSubsetString(self):
+        return '[cnt] > 100 and [cnt] < 410'
+
+    def getSubsetString2(self):
+        return '[cnt] > 100 and [cnt] < 400'
+
+    def getSubsetString3(self):
+        return '[name]=\'Apple\''
+
+    def getSubsetStringNoMatching(self):
+        return '[name]=\'AppleBearOrangePear\''
 
 
 if __name__ == '__main__':

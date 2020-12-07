@@ -79,7 +79,7 @@ class QgsLockedFeature: public QObject
     /**
      * Tells if vertex is selected
      * \param vertexNr number of vertex for which we are getting info
-     * \returns true if vertex is selected, false otherwise
+     * \returns TRUE if vertex is selected, FALSE otherwise
      */
     bool isSelected( int vertexNr );
 
@@ -138,16 +138,6 @@ class QgsLockedFeature: public QObject
      * the geometry of a feature from the layer was changed - might be the selected
      */
     void geometryChanged( QgsFeatureId, const QgsGeometry & );
-
-    /*
-     * the current layer changed - destroy
-     */
-    void currentLayerChanged( QgsMapLayer *layer );
-
-    /*
-     * the current layer changed - destroy
-     */
-    void canvasLayersChanged();
 
     /*
      * the changes are rolling back - stop monitoring the geometry

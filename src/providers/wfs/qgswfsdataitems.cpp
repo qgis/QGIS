@@ -102,7 +102,7 @@ void QgsWfsLayerItem::copyStyle()
   }
 
   QString url( connection->uri().encodedUri() );
-  QgsGeoNodeRequest geoNodeRequest( url.replace( QStringLiteral( "url=" ), QString() ), true );
+  QgsGeoNodeRequest geoNodeRequest( url.replace( QLatin1String( "url=" ), QString() ), true );
   QgsGeoNodeStyle style = geoNodeRequest.fetchDefaultStyleBlocking( this->name() );
   if ( style.name.isEmpty() )
   {
@@ -228,7 +228,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 //
 
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WFS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WFS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWfs.svg" );
@@ -253,7 +253,7 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
 
 QWidget *QgsWfsRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::onConnectionsChanged );
   return select;
 }

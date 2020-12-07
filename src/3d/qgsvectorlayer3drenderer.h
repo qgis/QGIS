@@ -31,7 +31,6 @@
 
 class QgsVectorLayer;
 
-
 /**
  * \ingroup core
  * Metadata for vector layer 3D renderer to allow creation of its instances from XML

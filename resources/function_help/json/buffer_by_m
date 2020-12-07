@@ -1,6 +1,7 @@
 {
   "name": "buffer_by_m",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a buffer along a line geometry where the buffer diameter varies according to the m-values at the line vertices.",
   "arguments": [ {"arg":"geometry","description":"input geometry. Must be a (multi)line geometry with m values."},
                  {"arg":"segments","optional":true,"default":"8","description":"number of segments to approximate quarter-circle curves in the buffer."}],

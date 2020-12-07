@@ -161,7 +161,7 @@ Sets the size ``mode`` for scale bar segments.
     double minimumBarWidth() const;
 %Docstring
 Returns the minimum width (in millimeters) for scale bar segments. This
-property is only effective if the segmentSizeMode() is set
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
 to SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`segmentSizeMode`
@@ -174,7 +174,7 @@ to SegmentSizeFitWidth.
     void setMinimumBarWidth( double minWidth );
 %Docstring
 Sets the minimum ``width`` (in millimeters) for scale bar segments. This
-property is only effective if the segmentSizeMode() is set
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
 to SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`minimumBarWidth`
@@ -187,7 +187,7 @@ to SegmentSizeFitWidth.
     double maximumBarWidth() const;
 %Docstring
 Returns the maximum width (in millimeters) for scale bar segments. This
-property is only effective if the segmentSizeMode() is set
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
 to SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`segmentSizeMode`
@@ -200,7 +200,7 @@ to SegmentSizeFitWidth.
     void setMaximumBarWidth( double maxWidth );
 %Docstring
 Sets the maximum ``width`` (in millimeters) for scale bar segments. This
-property is only effective if the segmentSizeMode() is set
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
 to SegmentSizeFitWidth.
 
 .. seealso:: :py:func:`minimumBarWidth`

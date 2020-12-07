@@ -10,8 +10,12 @@
 
 
 
+
 class QgsGridFileWriter
 {
+%Docstring
+A class that does interpolation to a grid and writes the results to an ascii grid.
+%End
 
 %TypeHeaderCode
 #include "qgsgridfilewriter.h"

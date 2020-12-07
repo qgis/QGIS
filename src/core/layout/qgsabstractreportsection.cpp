@@ -107,7 +107,7 @@ bool QgsAbstractReportSection::writeXml( QDomElement &parentElement, QDomDocumen
 
 bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( element.nodeName() != QStringLiteral( "Section" ) )
+  if ( element.nodeName() != QLatin1String( "Section" ) )
   {
     return false;
   }
@@ -135,7 +135,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   for ( int i = 0; i < sectionItemList.size(); ++i )
   {
     const QDomElement currentSectionElem = sectionItemList.at( i ).toElement();
-    if ( currentSectionElem.nodeName() != QStringLiteral( "Section" ) )
+    if ( currentSectionElem.nodeName() != QLatin1String( "Section" ) )
       continue;
 
     const QString sectionType = currentSectionElem.attribute( QStringLiteral( "type" ) );

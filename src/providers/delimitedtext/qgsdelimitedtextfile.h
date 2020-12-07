@@ -433,6 +433,7 @@ class QgsDelimitedTextFile : public QObject
     QString mBuffer;
     int mPosInBuffer = 0;
     int mMaxBufferSize = 0;
+    QChar mFirstEOLChar = 0; // '\r' if EOL is "\r" or "\r\n", or `\n' if EOL is "\n"
     QStringList mCurrentRecord;
     bool mHoldCurrentRecord = false;
     // Maximum number of record (ie maximum record number visited)

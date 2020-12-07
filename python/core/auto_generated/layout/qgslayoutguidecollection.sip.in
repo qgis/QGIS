@@ -26,7 +26,7 @@ Contains the configuration for a single snap guide used by a layout.
 Constructor for a new guide with the specified ``orientation`` and
 initial ``position``.
 
-A layout must be set by calling setLayout() before the guide can be used.
+A layout must be set by calling :py:func:`~QgsLayoutGuide.setLayout` before the guide can be used.
 Adding the guide to a QgsLayoutGuideCollection will automatically set
 the corresponding layout for you.
 %End
@@ -62,7 +62,7 @@ Returns the guide's orientation.
 Returns the guide's position within the page.
 
 The position indicates either the horizontal or vertical position
-of the guide, depending on the guide's orientation().
+of the guide, depending on the guide's :py:func:`~QgsLayoutGuide.orientation`.
 
 .. seealso:: :py:func:`setPosition`
 %End
@@ -72,7 +72,7 @@ of the guide, depending on the guide's orientation().
 Sets the guide's ``position`` within the page.
 
 The ``position`` argument indicates either the horizontal or vertical position
-of the guide, depending on the guide's orientation().
+of the guide, depending on the guide's :py:func:`~QgsLayoutGuide.orientation`.
 
 .. seealso:: :py:func:`position`
 %End

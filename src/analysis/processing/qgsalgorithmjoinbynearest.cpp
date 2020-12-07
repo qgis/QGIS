@@ -19,6 +19,8 @@
 #include "qgsprocessingoutputs.h"
 #include "qgslinestring.h"
 
+#include <algorithm>
+
 ///@cond PRIVATE
 
 QString QgsJoinByNearestAlgorithm::name() const
@@ -258,7 +260,11 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
     else
     {
       // note - if using same source as target, we have to get one extra neighbor, since the first match will be the input feature
-      const QList< QgsFeatureId > nearest = index.nearestNeighbor( f.geometry(), neighbors + ( sameSourceAndTarget ? 1 : 0 ), std::isnan( maxDistance ) ? 0 : maxDistance );
+
+      // if the user didn't specify a distance (isnan), then use 0 for nearestNeighbor() parameter
+      // if the user specified 0 exactly, then use the smallest positive double value instead
+      const double searchDistance = std::isnan( maxDistance ) ? 0 : std::max( std::numeric_limits<double>::min(), maxDistance );
+      const QList< QgsFeatureId > nearest = index.nearestNeighbor( f.geometry(), neighbors + ( sameSourceAndTarget ? 1 : 0 ), searchDistance );
 
       if ( nearest.count() > neighbors + ( sameSourceAndTarget ? 1 : 0 ) )
       {

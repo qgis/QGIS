@@ -132,8 +132,13 @@ QString QgsPathResolver::readPath( const QString &f ) const
   // Make sure the path is absolute (see GH #33200)
   projPath = QFileInfo( projPath ).absoluteFilePath();
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
   QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
+#else
+  QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
+  QStringList projElems = projPath.split( '/', Qt::SkipEmptyParts );
+#endif
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
@@ -152,7 +157,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
 
   // resolve ..
   int pos;
-  while ( ( pos = projElems.indexOf( QStringLiteral( ".." ) ) ) > 0 )
+  while ( ( pos = projElems.indexOf( QLatin1String( ".." ) ) ) > 0 )
   {
     // remove preceding element and ..
     projElems.removeAt( pos - 1 );
@@ -164,7 +169,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
   projElems.prepend( QString() );
 #endif
 
-  return vsiPrefix + projElems.join( QStringLiteral( "/" ) );
+  return vsiPrefix + projElems.join( QLatin1Char( '/' ) );
 }
 
 QString QgsPathResolver::setPathPreprocessor( const std::function<QString( const QString & )> &processor )
@@ -263,8 +268,13 @@ QString QgsPathResolver::writePath( const QString &src ) const
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
   QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
+#else
+  QStringList projElems = projPath.split( '/', Qt::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
+#endif
 
   projElems.removeAll( QStringLiteral( "." ) );
   srcElems.removeAll( QStringLiteral( "." ) );
@@ -302,7 +312,7 @@ QString QgsPathResolver::writePath( const QString &src ) const
   }
 
   // Append url query if any
-  QString returnPath { vsiPrefix + srcElems.join( QStringLiteral( "/" ) ) };
+  QString returnPath { vsiPrefix + srcElems.join( QLatin1Char( '/' ) ) };
   if ( ! urlQuery.isEmpty() )
   {
     returnPath.append( '?' );

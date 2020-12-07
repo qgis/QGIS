@@ -268,11 +268,13 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid,
     std::string &name,
     bool *is_vector,
     bool *isPolar,
+    bool *invertedDirection,
     bool *is_x )
 {
   *is_vector = false;
   *is_x = true;
   *isPolar = false;
+  MDAL_UNUSED( invertedDirection )
 
   std::string long_name = mNcFile->getAttrStr( "long_name", varid );
   if ( long_name.empty() )

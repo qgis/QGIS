@@ -21,7 +21,31 @@ Multi curve geometry collection.
 %End
   public:
     QgsMultiCurve();
-    virtual QString geometryType() const;
+
+
+
+    SIP_PYOBJECT curveN( int index ) /TypeHint="QgsCurve"/;
+%Docstring
+Returns the curve with the specified ``index``.
+
+An IndexError will be raised if no curve with the specified index exists.
+
+.. versionadded:: 3.16
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->curveN( a0 ), sipType_QgsCurve, NULL );
+    }
+%End
+
+
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsMultiCurve *clone() const /Factory/;
 

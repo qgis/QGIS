@@ -358,7 +358,7 @@ to the previous color.
 %Docstring
 Sets the background pixmap for the button based upon color and transparency.
 Call directly to update background after adding/removing QColorDialog.ShowAlphaChannel option
-but the color has not changed, i.e. setColor() wouldn't update button and
+but the color has not changed, i.e. :py:func:`~QgsColorButton.setColor` wouldn't update button and
 you want the button to retain the set color's alpha component regardless
 
 :param color: Color for button background. If no color is specified, the button's current

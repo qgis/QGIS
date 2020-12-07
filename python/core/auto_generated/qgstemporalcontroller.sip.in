@@ -10,6 +10,10 @@
 
 
 
+%ModuleHeaderCode
+#include <qgstemporalnavigationobject.h>
+%End
+
 class QgsTemporalController : QObject
 {
 %Docstring
@@ -21,6 +25,16 @@ updates of the objects temporal range.
 
 %TypeHeaderCode
 #include "qgstemporalcontroller.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsTemporalNavigationObject *>( sipCpp ) )
+    {
+      sipType = sipType_QgsTemporalNavigationObject;
+    }
+    else
+    {
+      sipType = 0;
+    }
 %End
   public:
 

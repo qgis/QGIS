@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgstextformat.h"
 #include <QVariant>
 #include <QColor>
 #include <memory>
@@ -95,6 +96,26 @@ class CORE_EXPORT QgsTableCell
     void setForegroundColor( const QColor &color ) { mForegroundColor = color; }
 
     /**
+     * Returns the cell's text format.
+     *
+     * \note The text format will only be used if hasTextFormat() returns TRUE.
+     *
+     * \see setTextFormat()
+     * \since QGIS 3.16
+     */
+    QgsTextFormat textFormat() const { return mTextFormat; }
+
+    /**
+     * Sets the cell's text \a format.
+     *
+     * \note The text format will only be used if hasTextFormat() returns TRUE.
+     *
+     * \see textFormat()
+     * \since QGIS 3.16
+     */
+    void setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
+
+    /**
      * Returns the numeric format used for numbers in the cell, or NULLPTR if no format is set.
      *
      * \see setNumericFormat()
@@ -109,6 +130,42 @@ class CORE_EXPORT QgsTableCell
      * \see numericFormat()
      */
     void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
+
+    /**
+     * Returns the horizontal alignment for text in the cell.
+     *
+     * \see setHorizontalAlignment()
+     * \see verticalAlignment()
+     * \since QGIS 3.16
+     */
+    Qt::Alignment horizontalAlignment() const;
+
+    /**
+     * Sets the horizontal \a alignment for text in the cell.
+     *
+     * \see horizontalAlignment()
+     * \see setVerticalAlignment()
+     * \since QGIS 3.16
+     */
+    void setHorizontalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Returns the vertical alignment for text in the cell.
+     *
+     * \see setVerticalAlignment()
+     * \see horizontalAlignment()
+     * \since QGIS 3.16
+     */
+    Qt::Alignment verticalAlignment() const;
+
+    /**
+     * Sets the vertical \a alignment for text in the cell.
+     *
+     * \see verticalAlignment()
+     * \see setHorizontalAlignment()
+     * \since QGIS 3.16
+     */
+    void setVerticalAlignment( Qt::Alignment alignment );
 
     /**
      * Returns the properties of the cell.
@@ -138,7 +195,12 @@ class CORE_EXPORT QgsTableCell
     QVariant mContent;
     QColor mBackgroundColor;
     QColor mForegroundColor;
+    QgsTextFormat mTextFormat;
     std::unique_ptr< QgsNumericFormat > mFormat;
+
+    Qt::Alignment mHAlign = Qt::AlignLeft;
+    Qt::Alignment mVAlign = Qt::AlignVCenter;
+
 };
 
 /**

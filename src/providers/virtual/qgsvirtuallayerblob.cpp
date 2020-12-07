@@ -67,7 +67,9 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 {
   const int header_len = SpatialiteBlobHeader::LENGTH;
 
-  QByteArray wkb( geom.asWkb() );
+  // we segment the geometry as spatialite doesn't support curves
+  std::unique_ptr < QgsAbstractGeometry > segmentized( geom.constGet()->segmentize() );
+  QByteArray wkb( segmentized->asWkb() );
 
   const int wkb_size = wkb.length();
   size = header_len + wkb_size;

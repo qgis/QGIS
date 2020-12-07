@@ -62,12 +62,14 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     /**
      * Original fields before editing started + topo field if edited.
      * Does not reflect add/delete column.
-     * Original fields must be returned by provider fields() */
+     * Original fields must be returned by provider fields()
+    */
     QgsFields &fields() { return mFields; }
 
     /**
      * Current fields, as modified during editing, it contains cat field, without topo field.
-     *  This fields are used by layers which are not editied to reflect current state of editing. */
+     * This fields are used by layers which are not editied to reflect current state of editing.
+    */
     QgsFields &tableFields() { return mTableFields; }
 
     static QStringList fieldNames( const QgsFields &fields );
@@ -76,7 +78,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     /**
      * Gets attribute for index corresponding to current fields(),
-     * if there is no table, returns cat */
+     * if there is no table, returns cat
+    */
     QVariant attribute( int cat, int index );
 
     bool hasTable() { return mHasTable; }
@@ -105,24 +108,28 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     /**
      * Execute SQL statement
-     *   \param sql */
+     * \param sql
+    */
     void executeSql( const QString &sql, QString &error );
 
     /**
      * Update attributes
      *   \param cat
-     *   \param index ields  index */
+     *   \param index ields  index
+     */
     void changeAttributeValue( int cat, const QgsField &field, const QVariant &value, QString &error );
 
     /**
      * Insert new attributes to the table (it does not check if attributes already exists)
-     *   \param cat */
+     *   \param cat
+     */
     void insertAttributes( int cat, const QgsFeature &feature, QString &error );
 
     /**
      * Restore previously deleted table record using data from mAttributes, if exists.
      *  If there the cat is not in mAttributes, nothing is inserted (to keep previous state).
-     *   \param cat */
+     *   \param cat
+    */
     void reinsertAttributes( int cat, QString &error );
 
     /**

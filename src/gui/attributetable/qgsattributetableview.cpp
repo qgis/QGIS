@@ -108,6 +108,8 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     i++;
   }
   mConfig = config;
+  if ( config.sortExpression().isEmpty() )
+    horizontalHeader()->setSortIndicatorShown( false );
 }
 
 QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
@@ -202,7 +204,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   {
     container = new QWidget();
     container->setLayout( new QHBoxLayout() );
-    container->layout()->setMargin( 0 );
+    container->layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 
   QList< QAction * > actionList;
@@ -237,7 +239,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     action->setData( "map_layer_action" );
     action->setToolTip( mapLayerAction->text() );
     action->setProperty( "fid", fid );
-    action->setProperty( "action", qVariantFromValue( qobject_cast<QObject *>( mapLayerAction ) ) );
+    action->setProperty( "action", QVariant::fromValue( qobject_cast<QObject *>( mapLayerAction ) ) );
     connect( action, &QAction::triggered, this, &QgsAttributeTableView::actionTriggered );
     actionList << action;
 
@@ -494,4 +496,21 @@ void QgsAttributeTableView::recreateActionWidgets()
     setIndexWidget( it.key(), nullptr );
   }
   mActionWidgets.clear();
+}
+
+void QgsAttributeTableView::scrollToFeature( const QgsFeatureId &fid, int col )
+{
+  QModelIndex index = mFilterModel->fidToIndex( fid );
+
+  if ( !index.isValid() )
+    return;
+
+  scrollTo( index );
+
+  QModelIndex selectionIndex = index.sibling( index.row(), col );
+
+  if ( !selectionIndex.isValid() )
+    return;
+
+  selectionModel()->setCurrentIndex( index, QItemSelectionModel::SelectCurrent );
 }

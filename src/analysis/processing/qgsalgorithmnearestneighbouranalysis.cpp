@@ -48,6 +48,7 @@ QString QgsNearestNeighbourAnalysisAlgorithm::groupId() const
 QString QgsNearestNeighbourAnalysisAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm performs nearest neighbor analysis for a point layer.\n\n"
+                      "The output describes how the data are distributed (clustered, randomly or distributed).\n\n"
                       "Output is generated as an HTML file with the computed statistical values." );
 }
 
@@ -89,7 +90,7 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
   QgsSpatialIndex spatialIndex( *source, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
   QgsDistanceArea da;
   da.setSourceCrs( source->sourceCrs(), context.transformContext() );
-  da.setEllipsoid( context.project()->ellipsoid() );
+  da.setEllipsoid( context.ellipsoid() );
 
   double step = source->featureCount() ? 100.0 / source->featureCount() : 1;
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ) );

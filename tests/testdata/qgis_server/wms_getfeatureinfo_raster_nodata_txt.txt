@@ -1,0 +1,8 @@
+*****
+Content-Type: text/plain; charset=utf-8
+
+GetFeatureInfo results
+
+Layer 'requires_warped_vrt'
+Band 1 = 'no data'
+

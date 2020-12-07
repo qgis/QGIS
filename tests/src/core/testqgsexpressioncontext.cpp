@@ -790,6 +790,7 @@ void TestQgsExpressionContext::layerScope()
 
   QCOMPARE( context.variable( "layer_name" ).toString(), vectorLayer->name() );
   QCOMPARE( context.variable( "layer_id" ).toString(), vectorLayer->id() );
+  QCOMPARE( context.variable( "layer_crs" ).toString(), vectorLayer->sourceCrs().authid() );
 
   QgsExpression expProject( QStringLiteral( "var('layer_name')" ) );
   QCOMPARE( expProject.evaluate( &context ).toString(), vectorLayer->name() );
@@ -939,7 +940,7 @@ void TestQgsExpressionContext::readWriteScope()
   // valid element
   s2.readXml( e, QgsReadWriteContext() );
   QCOMPARE( s2.variableCount(), 2 );
-  QCOMPARE( s2.variableNames().toSet(), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
+  QCOMPARE( qgis::listToSet( s2.variableNames() ), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v1" ) ).toString(), QStringLiteral( "t1" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v2" ) ).toInt(), 55 );
 }

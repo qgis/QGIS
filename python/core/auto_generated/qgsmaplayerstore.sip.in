@@ -116,7 +116,7 @@ Returns a map of all valid layers by layer ID.
 Add a list of ``layers`` to the store. Ownership of the layers is transferred
 to the store.
 
-The layersAdded() and layerWasAdded() signals will always be emitted.
+The :py:func:`~QgsMapLayerStore.layersAdded` and :py:func:`~QgsMapLayerStore.layerWasAdded` signals will always be emitted.
 
 :param layers: A list of layer which should be added to the store.
 
@@ -141,9 +141,9 @@ The layersAdded() and layerWasAdded() signals will always be emitted.
 Add a ``layer`` to the store. Ownership of the layer is transferred to the
 store.
 
-The layersAdded() and layerWasAdded() signals will always be emitted.
+The :py:func:`~QgsMapLayerStore.layersAdded` and :py:func:`~QgsMapLayerStore.layerWasAdded` signals will always be emitted.
 If you are adding multiple layers at once, you should use
-addMapLayers() instead.
+:py:func:`~QgsMapLayerStore.addMapLayers` instead.
 
 :param layer: A layer to add to the store
 
@@ -155,7 +155,7 @@ addMapLayers() instead.
 
 .. note::
 
-   Use addMapLayers() if adding more than one layer at a time.
+   Use :py:func:`~QgsMapLayerStore.addMapLayers` if adding more than one layer at a time.
 
 .. seealso:: :py:func:`addMapLayers`
 %End
@@ -241,7 +241,7 @@ Removes all registered layers. These layers will also be deleted.
 
 .. note::
 
-   Calling this method will cause the removeAll() signal to
+   Calling this method will cause the :py:func:`~QgsMapLayerStore.removeAll` signal to
    be emitted.
 
 .. seealso:: :py:func:`removeMapLayer`
@@ -288,7 +288,7 @@ Emitted when a layer is about to be removed from the store.
 
 .. note::
 
-   Consider using layersWillBeRemoved() instead.
+   Consider using :py:func:`~QgsMapLayerStore.layersWillBeRemoved` instead.
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 
@@ -303,7 +303,7 @@ Emitted when a layer is about to be removed from the store.
 
 .. note::
 
-   Consider using layersWillBeRemoved() instead.
+   Consider using :py:func:`~QgsMapLayerStore.layersWillBeRemoved` instead.
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 
@@ -327,16 +327,16 @@ Emitted after a layer was removed from the store.
 
 .. note::
 
-   Consider using layersRemoved() instead
+   Consider using :py:func:`~QgsMapLayerStore.layersRemoved` instead
 
 .. seealso:: :py:func:`layerWillBeRemoved`
 %End
 
     void allLayersRemoved();
 %Docstring
-Emitted when all layers are removed, before layersWillBeRemoved() and
-layerWillBeRemoved() signals are emitted. The layersWillBeRemoved() and
-layerWillBeRemoved() signals will still be emitted following this signal.
+Emitted when all layers are removed, before :py:func:`~QgsMapLayerStore.layersWillBeRemoved` and
+:py:func:`~QgsMapLayerStore.layerWillBeRemoved` signals are emitted. The :py:func:`~QgsMapLayerStore.layersWillBeRemoved` and
+:py:func:`~QgsMapLayerStore.layerWillBeRemoved` signals will still be emitted following this signal.
 You can use this signal to do easy (and fast) cleanup.
 %End
 
@@ -355,7 +355,7 @@ Emitted when a ``layer`` was added to the store.
 
 .. note::
 
-   Consider using layersAdded() instead
+   Consider using :py:func:`~QgsMapLayerStore.layersAdded` instead
 
 .. seealso:: :py:func:`layersAdded`
 %End

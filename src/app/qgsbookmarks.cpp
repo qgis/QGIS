@@ -50,7 +50,6 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
   connect( lstBookmarks, &QTreeView::doubleClicked, this, &QgsBookmarks::lstBookmarks_doubleClicked );
 
-  bookmarksDockContents->layout()->setMargin( 0 );
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast< QGridLayout * >( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
 

@@ -160,7 +160,7 @@ if(o2_WITH_KEYCHAIN)
         find_package(QtKeychain REQUIRED)
     endif()
     if(QTKEYCHAIN_FOUND OR QT5KEYCHAIN_FOUND)
-        MESSAGE("Found QTKeychain")
+        message("Found QTKeychain")
         list(APPEND LINK_TARGETS ${QTKEYCHAIN_LIBRARY})
         include_directories(${QTKEYCHAIN_INCLUDE_DIR})
         set( o2_SRCS
@@ -172,7 +172,7 @@ if(o2_WITH_KEYCHAIN)
                 o0keychainstore.h
                 )
     else()
-        MESSAGE("Qt5Keychain or QtKeychain is required")
+        message("Qt5Keychain or QtKeychain is required")
     endif()
 
 

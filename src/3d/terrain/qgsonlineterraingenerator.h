@@ -36,13 +36,11 @@ class QgsDemHeightMapGenerator;
  */
 class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 {
+    Q_OBJECT
   public:
     //! Constructor for QgsOnlineTerrainGenerator
     QgsOnlineTerrainGenerator();
     ~QgsOnlineTerrainGenerator() override;
-
-    //! Sets extent of the terrain
-    void setExtent( const QgsRectangle &extent );
 
     //! Sets CRS of the terrain
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
@@ -65,6 +63,7 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
     QgsRectangle extent() const override;
+    void setExtent( const QgsRectangle &extent ) override;
     float heightAt( double x, double y, const Qgs3DMapSettings &map ) const override;
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;

@@ -16,10 +16,28 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgsapplication.h"
 
-QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QObject *parent )
+QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QgsMapLayerType type, QObject *parent )
   : QAbstractListModel( parent )
 {
-  mCategoryList = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+  switch ( type )
+  {
+    case QgsMapLayerType::VectorLayer:
+      mCategoryList = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+      break;
+
+    case QgsMapLayerType::VectorTileLayer:
+      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::Labeling << QgsMapLayer::StyleCategory::AllStyleCategories;
+      break;
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      // not yet handled by the model
+      break;
+  }
+
   // move All categories to top
   mCategoryList.move( mCategoryList.indexOf( QgsMapLayer::AllStyleCategories ), 0 );
 }
@@ -83,7 +101,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DisplayRole:
           return tr( "Layer Configuration" );
         case Qt::ToolTipRole:
-          return tr( "Identifiable, removable, searchable, display expression, read-only" );
+          return tr( "Identifiable, removable, searchable, display expression, read-only, hidden" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/system.svg" ) );
       }
@@ -241,6 +259,30 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
           return tr( "Temporal properties" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/temporal.svg" ) );
+      }
+      break;
+
+    case QgsMapLayer::StyleCategory::Legend:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return tr( "Legend Settings" );
+        case Qt::ToolTipRole:
+          return tr( "Legend settings" );
+        case Qt::DecorationRole:
+          return QgsApplication::getThemeIcon( QStringLiteral( "/legend.svg" ) );
+      }
+      break;
+
+    case QgsMapLayer::StyleCategory::Elevation:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return tr( "Elevation Properties" );
+        case Qt::ToolTipRole:
+          return tr( "Elevation properties" );
+        case Qt::DecorationRole:
+          return QIcon(); // TODO
       }
       break;
 

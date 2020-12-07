@@ -1,6 +1,7 @@
 {
   "name": "array_cat",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array containing all the given arrays concatenated.",
   "variableLenArguments": true,
   "arguments": [

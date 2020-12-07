@@ -70,7 +70,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Axis orientation logic.
     typedef enum
     {
-      //! Honour EPSG axis order only if srsName is of the form urn:ogc:def:crs:EPSG: *
+      //! Honour EPSG axis order only if srsName is of the form urn:ogc:def:crs:EPSG:
       Honour_EPSG_if_urn,
       //! Honour EPSG axis order
       Honour_EPSG,
@@ -100,19 +100,22 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     /**
      * Process a new chunk of data. atEnd must be set to TRUE when this is
-        the last chunk of data. */
+     * the last chunk of data.
+    */
     bool processData( const QByteArray &data, bool atEnd, QString &errorMsg );
 
     /**
      * Process a new chunk of data. atEnd must be set to TRUE when this is
-        the last chunk of data. */
+     * the last chunk of data.
+    */
     bool processData( const QByteArray &data, bool atEnd );
 
     /**
      * Returns the list of features that have been completely parsed. This
-        can be called at any point. This will empty the list maintained internally
-        by the parser, so that features already returned will no longer be returned
-        by later calls. */
+     * can be called at any point. This will empty the list maintained internally
+     * by the parser, so that features already returned will no longer be returned
+     * by later calls.
+    */
     QVector<QgsGmlFeaturePtrGmlIdPair> getAndStealReadyFeatures();
 
     //! Returns the EPSG code, or 0 if unknown
@@ -191,17 +194,17 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     /**
      * Reads attribute srsName="EpsgCrsId:..."
-       \param epsgNr result
-       \param attr attribute strings
-       \returns 0 in case of success
+     * \param epsgNr result
+     * \param attr attribute strings
+     * \returns 0 in case of success
       */
     int readEpsgFromAttribute( int &epsgNr, const XML_Char **attr );
 
     /**
      * Reads attribute as string
-       \param attributeName
-       \param attr
-       \returns attribute value or an empty string if no such attribute
+     * \param attributeName
+     * \param attr
+     * \returns attribute value or an empty string if no such attribute
       */
     QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
     //! Creates a rectangle from a coordinate string.
@@ -209,18 +212,18 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     /**
      * Creates a set of points from a coordinate string.
-       \param points list that will contain the created points
-       \param coordString the text containing the coordinates
-       \returns 0 in case of success
-      */
+     * \param points list that will contain the created points
+     * \param coordString the text containing the coordinates
+     * \returns 0 in case of success
+     */
     int pointsFromCoordinateString( QList<QgsPointXY> &points, const QString &coordString ) const;
 
     /**
      * Creates a set of points from a gml:posList or gml:pos coordinate string.
-       \param points list that will contain the created points
-       \param coordString the text containing the coordinates
-       \param dimension number of dimensions
-       \returns 0 in case of success
+     * \param points list that will contain the created points
+     * \param coordString the text containing the coordinates
+     * \param dimension number of dimensions
+     * \returns 0 in case of success
       */
     int pointsFromPosListString( QList<QgsPointXY> &points, const QString &coordString, int dimension ) const;
 
@@ -301,7 +304,8 @@ class CORE_EXPORT QgsGmlStreamingParser
      * WKB intermediate storage during parsing. For points and lines, no
      * intermediate WKB is stored at all. For multipoints and multilines and
      * polygons, only one nested list is used. For multipolygons, both nested lists
-     * are used*/
+     * are used
+    */
     QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
     QString mAttributeName;
     char mEndian;
@@ -391,7 +395,8 @@ class CORE_EXPORT QgsGml : public QObject
 
     /**
      * Returns features spatial reference system
-      \since QGIS 2.1 */
+     * \since QGIS 2.1
+     */
     QgsCoordinateReferenceSystem crs() const;
 
   signals:

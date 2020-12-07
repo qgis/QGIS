@@ -180,7 +180,7 @@ class PointDistance(QgisAlgorithm):
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
-        distArea.setEllipsoid(context.project().ellipsoid())
+        distArea.setEllipsoid(context.ellipsoid())
 
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([inIdx]))
         total = 100.0 / source.featureCount() if source.featureCount() else 0
@@ -235,7 +235,7 @@ class PointDistance(QgisAlgorithm):
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
-        distArea.setEllipsoid(context.project().ellipsoid())
+        distArea.setEllipsoid(context.ellipsoid())
 
         inIdx = source.fields().lookupField(inField)
         targetIdx = target_source.fields().lookupField(targetField)

@@ -160,19 +160,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
   private:
 
-    class DependenciesLayerTreeModel : public QgsLayerTreeFilterProxyModel
-    {
-      public:
-        DependenciesLayerTreeModel( QgsVectorLayer *mainLayer, QObject *parent = nullptr )
-          : QgsLayerTreeFilterProxyModel( parent )
-          , mMainLayer( mainLayer )
-        {}
-
-      private:
-        QgsVectorLayer *mMainLayer = nullptr;
-        bool layerShown( QgsMapLayer *layer ) const override {return layer != mMainLayer;}
-    };
-
     enum PropertyType
     {
       Style = 0,
@@ -223,7 +210,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     /**
      * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled */
+     * was loaded but dialog is canceled.
+    */
     QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();
@@ -241,7 +229,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsExpressionContext createExpressionContext() const override;
 
-    DependenciesLayerTreeModel *mLayersDependenciesTreeModel;
+    QgsLayerTreeFilterProxyModel *mLayersDependenciesTreeModel;
 
     void showHelp();
 

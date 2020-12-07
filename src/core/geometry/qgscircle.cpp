@@ -371,3 +371,25 @@ QString QgsCircle::toString( int pointPrecision, int radiusPrecision, int azimut
   return rep;
 
 }
+
+QDomElement QgsCircle::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
+{
+  // Gml2 does not support curve. It will be converted to a linestring via CircularString
+  std::unique_ptr< QgsCircularString > circularString( toCircularString() );
+  QDomElement gml = circularString->asGml2( doc, precision, ns, axisOrder );
+  return gml;
+}
+
+QDomElement QgsCircle::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
+{
+  QgsPointSequence pts;
+  pts << northQuadrant().at( 0 ) << northQuadrant().at( 1 ) << northQuadrant().at( 2 );
+
+  QDomElement elemCircle = doc.createElementNS( ns, QStringLiteral( "Circle" ) );
+
+  if ( isEmpty() )
+    return elemCircle;
+
+  elemCircle.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, mCenter.is3D(), axisOrder ) );
+  return elemCircle;
+}

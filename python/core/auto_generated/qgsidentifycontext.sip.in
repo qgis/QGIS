@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsidentifycontext.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsIdentifyContext
+{
+%Docstring
+Identify contexts are used to encapsulate the settings to be used to perform
+an identify action.
+
+.. versionadded:: 3.16.1
+%End
+
+%TypeHeaderCode
+#include "qgsidentifycontext.h"
+%End
+  public:
+
+    QgsIdentifyContext();
+%Docstring
+Constructor for QgsIdentifyContext
+%End
+
+    void setTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Set datetime ``range`` to be used with the identify action.
+
+.. seealso:: :py:func:`temporalRange`
+
+.. seealso:: :py:func:`isTemporal`
+%End
+
+    const QgsDateTimeRange &temporalRange() const;
+%Docstring
+Returns the datetime range to be used with the identify action.
+
+.. seealso:: :py:func:`setTemporalRange`
+
+.. seealso:: :py:func:`isTemporal`
+%End
+
+    bool isTemporal() const;
+%Docstring
+Returns ``True`` if the temporal range setting is enabled.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsidentifycontext.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

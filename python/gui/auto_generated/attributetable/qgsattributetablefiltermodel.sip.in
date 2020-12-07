@@ -236,6 +236,13 @@ Emitted when the filtering of the features has been done
 Emitted when the the visible features on extend are reloaded (the list is created)
 %End
 
+    void filterError( const QString &errorMessage );
+%Docstring
+Emitted when an error occurred while filtering features
+
+.. versionadded:: 3.18
+%End
+
   protected:
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;

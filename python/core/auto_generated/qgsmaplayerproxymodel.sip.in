@@ -35,6 +35,7 @@ The QgsMapLayerProxyModel class provides an easy to use model to display the lis
       WritableLayer,
       MeshLayer,
       VectorTileLayer,
+      PointCloudLayer,
       All
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;

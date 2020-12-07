@@ -15,7 +15,7 @@ class QgsProcessingRecentAlgorithmLog : QObject
 A log for tracking recently used processing algorithms.
 
 QgsProcessingRecentAlgorithmLog is not usually directly created, instead
-use the instance accessible through :py:func:`QgsGui.processingRecentAlgorithmLog()`
+use the instance accessible through :py:func:`QgsGui.processingRecentAlgorithmLog()`.
 
 The log contents are saved and restored via QgsSettings.
 
@@ -48,7 +48,7 @@ first item in the list is the most recently used algorithm.
 Pushes the algorithm with matching ``id`` to the top of the recently used
 algorithm list.
 
-If this changes the list of recent algorithm IDs then the changed() signal
+If this changes the list of recent algorithm IDs then the :py:func:`~QgsProcessingRecentAlgorithmLog.changed` signal
 will be emitted.
 %End
 
@@ -57,7 +57,7 @@ will be emitted.
     void changed();
 %Docstring
 Emitted when the list of recently used algorithms is changed, e.g. when
-a new algorithm ID is pushed to the list (see push()).
+a new algorithm ID is pushed to the list (see :py:func:`~QgsProcessingRecentAlgorithmLog.push`).
 %End
 
 };

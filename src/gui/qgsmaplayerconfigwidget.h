@@ -47,7 +47,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 
     /**
      * Whether this config widget changes map layer properties in a way that triggerRepaint() should
-     * be called for the layer after applying changes. This is true by default, but some config widgets
+     * be called for the layer after applying changes. This is TRUE by default, but some config widgets
      * (for example 3D rendering config) do not need layer repaint as they do not modify 2D map rendering.
      * \since QGIS 3.8
      */

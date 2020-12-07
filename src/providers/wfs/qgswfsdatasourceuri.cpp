@@ -271,7 +271,7 @@ bool QgsWFSDataSourceURI::pagingEnabled() const
 {
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) )
     return true;
-  return mURI.param( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) == QStringLiteral( "true" );
+  return mURI.param( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) == QLatin1String( "true" );
 }
 
 void QgsWFSDataSourceURI::setTypeName( const QString &typeName )
@@ -373,6 +373,13 @@ bool QgsWFSDataSourceURI::hideDownloadProgressDialog() const
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG );
 }
 
+
+bool QgsWFSDataSourceURI::preferCoordinatesForWfst11() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ) &&
+         mURI.param( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ).toUpper() == QLatin1String( "TRUE" );
+}
+
 QString QgsWFSDataSourceURI::build( const QString &baseUri,
                                     const QString &typeName,
                                     const QString &crsString,
@@ -387,7 +394,7 @@ QString QgsWFSDataSourceURI::build( const QString &baseUri,
   uri.setFilter( filter );
   if ( restrictToCurrentViewExtent )
     uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
-  if ( uri.version() == QStringLiteral( "OGC_API_FEATURES" ) )
+  if ( uri.version() == QLatin1String( "OGC_API_FEATURES" ) )
   {
     uri.setVersion( QString() );
   }

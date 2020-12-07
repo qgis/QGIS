@@ -62,9 +62,9 @@ void TestQgsOgrProviderGui::providersRegistered()
   bool hasGpkgProvider = false;
   for ( QgsDataItemGuiProvider *provider : providers )
   {
-    if ( provider->name() == QStringLiteral( "ogr_items" ) )
+    if ( provider->name() == QLatin1String( "ogr_items" ) )
       hasOgrProvider = true;
-    if ( provider->name() == QStringLiteral( "geopackage_items" ) )
+    if ( provider->name() == QLatin1String( "geopackage_items" ) )
       hasGpkgProvider = true;
   }
   QVERIFY( hasOgrProvider );
@@ -93,7 +93,7 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
   QgsDataItem *itemLayer1 = nullptr;
   for ( QgsDataItem *item : items )
   {
-    if ( item->name() == QStringLiteral( "layer 1" ) )
+    if ( item->name() == QLatin1String( "layer 1" ) )
       itemLayer1 = item;
   }
   QVERIFY( itemLayer1 );

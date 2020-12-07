@@ -54,6 +54,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::joinedLayerChanged );
 
   mCacheInMemoryCheckBox->setChecked( true );
+  mCacheEnabled = mCacheInMemoryCheckBox->isChecked();
 
   QgsMapLayer *joinLayer = mJoinLayerComboBox->currentLayer();
   if ( joinLayer && joinLayer->isValid() )
@@ -75,7 +76,10 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
   mJoinLayerComboBox->setLayer( joinInfo.joinLayer() );
   mJoinFieldComboBox->setField( joinInfo.joinFieldName() );
   mTargetFieldComboBox->setField( joinInfo.targetFieldName() );
+
+  mCacheEnabled = joinInfo.isUsingMemoryCache();
   mCacheInMemoryCheckBox->setChecked( joinInfo.isUsingMemoryCache() );
+
   mDynamicFormCheckBox->setChecked( joinInfo.isDynamicFormEnabled() );
   mEditableJoinLayer->setChecked( joinInfo.isEditable() );
   mUpsertOnEditCheckBox->setChecked( joinInfo.hasUpsertOnEdit() );

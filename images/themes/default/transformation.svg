@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" enable-background="new 0 0 24 24" version="1.1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <linearGradient id="linearGradient1011" x1="8" x2="19" y1="16.66" y2="13" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#e6e6e6" offset="0"/>
+   <stop stop-color="#bfbfbf" offset="1"/>
+  </linearGradient>
+ </defs>
+ <linearGradient id="a" x1="3.0864" x2="20.912" y1="14.025" y2="10.882" gradientTransform="translate(0 .4535)" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#c8e6fa" offset="0"/>
+  <stop stop-color="#b7ddf6" offset=".2857"/>
+  <stop stop-color="#8ac7eb" offset=".8515"/>
+  <stop stop-color="#7dc1e8" offset="1"/>
+ </linearGradient>
+ <g transform="translate(0 -.4535)">
+  <g stroke="#4774b4" stroke-linecap="round" stroke-linejoin="round" stroke-width=".75">
+   <path d="m21.049 12.457c0 4.987-4.054 9.039-9.049 9.039-4.998 0-9.049-4.052-9.049-9.039 0-4.995 4.052-9.046 9.049-9.046 4.995 0 9.049 4.051 9.049 9.046z" fill="url(#a)"/>
+   <g fill="none">
+    <path d="m12 3.887c4.762 4.763 4.762 12.37 0 17.135"/>
+    <path d="m12 3.887c-4.763 4.763-4.763 12.37 0 17.135"/>
+    <path d="m3.427 12.457h17.146"/>
+    <path d="m18.667 6.745c-2.675 1.918-10.309 2.067-13.335 0"/>
+    <path d="m18.667 18.163c-3.447-1.867-9.708-1.995-13.335 0"/>
+   </g>
+  </g>
+ </g>
+ <path d="m12.071 11.929-5.5109 5.7538c5.4398-0.070571 11.44-0.17194 13.233-5.6827z" fill="url(#linearGradient1011)" opacity=".85162"/>
+ <g fill="#404040" stroke-linecap="round">
+  <circle cx="12" cy="12" r="1.5" stroke-width="4"/>
+  <g stroke="#404040" stroke-linejoin="round">
+   <g stroke-width=".75">
+    <path d="m12 11.498v-8"/>
+    <path d="m12.479 12h8"/>
+    <path d="m6.6588 17.307 5.4123-5.3783"/>
+   </g>
+   <path d="m14 5-2-2.75-2 2.75c1.331-0.75302 2.6643-0.75764 4 0z" stroke-width=".5"/>
+  </g>
+ </g>
+ <g stroke="#404040" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5">
+  <path d="m6.5602 17.683c3.0564 0.3173 11.224 0.80208 13.233-5.6827" fill="none" stroke-dasharray="0.5, 1"/>
+  <path d="m19 14 2.75-2-2.75-2c0.75302 1.331 0.75764 2.6643 0 4z" fill="#404040"/>
+  <path d="m5.7696 15.382-0.53033 3.3588 3.3588-0.53033c-1.4736-0.4087-2.4197-1.3482-2.8284-2.8284z" fill="#404040"/>
+ </g>
+</svg>

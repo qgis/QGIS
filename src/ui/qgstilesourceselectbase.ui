@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>558</width>
-    <height>155</height>
+    <height>166</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -17,42 +17,6 @@
       <string>Connections</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btnNew">
-        <property name="toolTip">
-         <string>Create a new service connection</string>
-        </property>
-        <property name="text">
-         <string>&amp;New</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btnEdit">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="toolTip">
-         <string>Edit selected service connection</string>
-        </property>
-        <property name="text">
-         <string>Edit</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="btnDelete">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="toolTip">
-         <string>Remove connection to selected service</string>
-        </property>
-        <property name="text">
-         <string>Remove</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="4">
        <spacer>
         <property name="orientation">
@@ -69,8 +33,37 @@
         </property>
        </spacer>
       </item>
+      <item row="0" column="0" colspan="7">
+       <widget class="QComboBox" name="cmbConnections"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QToolButton" name="btnEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Edit selected service connection</string>
+        </property>
+        <property name="text">
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QToolButton" name="btnDelete">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Remove connection to selected service</string>
+        </property>
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="5">
-       <widget class="QPushButton" name="btnLoad">
+       <widget class="QToolButton" name="btnLoad">
         <property name="toolTip">
          <string>Load connections from file</string>
         </property>
@@ -80,7 +73,7 @@
        </widget>
       </item>
       <item row="1" column="6">
-       <widget class="QPushButton" name="btnSave">
+       <widget class="QToolButton" name="btnSave">
         <property name="toolTip">
          <string>Save connections to file</string>
         </property>
@@ -89,8 +82,15 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="7">
-       <widget class="QComboBox" name="cmbConnections"/>
+      <item row="1" column="0" colspan="2">
+       <widget class="QToolButton" name="btnNew">
+        <property name="toolTip">
+         <string>Create a new service connection</string>
+        </property>
+        <property name="text">
+         <string>&amp;New</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

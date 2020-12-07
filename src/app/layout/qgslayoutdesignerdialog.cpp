@@ -274,7 +274,10 @@ class QgsAtlasExportGuard
       mDialog->mIsExportingAtlas = false;
 
       // need to update the GUI to reflect the final atlas feature
-      mDialog->atlasFeatureChanged( mDialog->currentLayout()->reportContext().feature() );
+      if ( mDialog->currentLayout() )
+      {
+        mDialog->atlasFeatureChanged( mDialog->currentLayout()->reportContext().feature() );
+      }
     }
 
   private:
@@ -309,10 +312,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //create layout view
   QGridLayout *viewLayout = new QGridLayout();
   viewLayout->setSpacing( 0 );
-  viewLayout->setMargin( 0 );
   viewLayout->setContentsMargins( 0, 0, 0, 0 );
   centralWidget()->layout()->setSpacing( 0 );
-  centralWidget()->layout()->setMargin( 0 );
   centralWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mMessageBar = new QgsMessageBar( centralWidget() );
@@ -551,14 +552,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->setPreviewModeEnabled( false );
   } );
-  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [ = ]
-  {
-    mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
-    mView->setPreviewModeEnabled( true );
-  } );
   connect( mActionPreviewModeMono, &QAction::triggered, this, [ = ]
   {
     mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
     mView->setPreviewModeEnabled( true );
   } );
   connect( mActionPreviewProtanope, &QAction::triggered, this, [ = ]
@@ -571,6 +572,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
     mView->setPreviewModeEnabled( true );
   } );
+  connect( mActionPreviewTritanope, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewTritanope );
+    mView->setPreviewModeEnabled( true );
+  } );
   QActionGroup *previewGroup = new QActionGroup( this );
   previewGroup->setExclusive( true );
   mActionPreviewModeOff->setActionGroup( previewGroup );
@@ -578,6 +584,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionPreviewModeMono->setActionGroup( previewGroup );
   mActionPreviewProtanope->setActionGroup( previewGroup );
   mActionPreviewDeuteranope->setActionGroup( previewGroup );
+  mActionPreviewTritanope->setActionGroup( previewGroup );
 
   connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveAsTemplate );
   connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::addItemsFromTemplate );
@@ -1464,51 +1471,6 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
   for ( i = urls.begin(); i != urls.end(); ++i )
   {
     QString fileName = i->toLocalFile();
-#ifdef Q_OS_MAC
-    // Mac OS X 10.10, under Qt4.8 ,changes dropped URL format
-    // https://bugreports.qt.io/browse/QTBUG-40449
-    // [pzion 20150805] Work around
-    if ( fileName.startsWith( "/.file/id=" ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Mac dropped URL with /.file/id= (converting)" ) );
-      CFStringRef relCFStringRef =
-        CFStringCreateWithCString(
-          kCFAllocatorDefault,
-          fileName.toUtf8().constData(),
-          kCFStringEncodingUTF8
-        );
-      CFURLRef relCFURL =
-        CFURLCreateWithFileSystemPath(
-          kCFAllocatorDefault,
-          relCFStringRef,
-          kCFURLPOSIXPathStyle,
-          false // isDirectory
-        );
-      CFErrorRef error = 0;
-      CFURLRef absCFURL =
-        CFURLCreateFilePathURL(
-          kCFAllocatorDefault,
-          relCFURL,
-          &error
-        );
-      if ( !error )
-      {
-        static const CFIndex maxAbsPathCStrBufLen = 4096;
-        char absPathCStr[maxAbsPathCStrBufLen];
-        if ( CFURLGetFileSystemRepresentation(
-               absCFURL,
-               true, // resolveAgainstBase
-               reinterpret_cast<UInt8 *>( &absPathCStr[0] ),
-               maxAbsPathCStrBufLen ) )
-        {
-          fileName = QString( absPathCStr );
-        }
-      }
-      CFRelease( absCFURL );
-      CFRelease( relCFURL );
-      CFRelease( relCFStringRef );
-    }
-#endif
     // seems that some drag and drop operations include an empty url
     // so we test for length to make sure we have something
     if ( !fileName.isEmpty() )
@@ -1880,7 +1842,7 @@ void QgsLayoutDesignerDialog::addItemsFromTemplate()
 void QgsLayoutDesignerDialog::duplicate()
 {
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, masterLayout()->layoutType(), tr( "%1 copy" ).arg( masterLayout()->name() ) ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, true, masterLayout()->layoutType(), tr( "%1 copy" ).arg( masterLayout()->name() ) ) )
   {
     return;
   }
@@ -1943,7 +1905,7 @@ void QgsLayoutDesignerDialog::renameLayout()
 {
   QString currentTitle = masterLayout()->name();
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, masterLayout()->layoutType(), currentTitle ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, true, masterLayout()->layoutType(), currentTitle ) )
   {
     return;
   }
@@ -2027,7 +1989,7 @@ void QgsLayoutDesignerDialog::print()
       }
       mMessageBar->pushMessage( tr( "Print layout" ),
                                 message,
-                                Qgis::Success, 0 );
+                                Qgis::Success );
       break;
     }
 
@@ -2639,7 +2601,7 @@ void QgsLayoutDesignerDialog::printAtlas()
       }
       mMessageBar->pushMessage( tr( "Print atlas" ),
                                 message,
-                                Qgis::Success, 0 );
+                                Qgis::Success );
       break;
     }
 
@@ -3734,7 +3696,7 @@ void QgsLayoutDesignerDialog::printReport()
       }
       mMessageBar->pushMessage( tr( "Print report" ),
                                 message,
-                                Qgis::Success, 0 );
+                                Qgis::Success );
       break;
     }
 
@@ -4338,12 +4300,14 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool simplify = true;
   bool geoPdf = false;
   bool useOgcBestPracticeFormat = false;
+  bool losslessImages = false;
   QStringList exportThemes;
   QStringList geoPdfLayerOrder;
   if ( mLayout )
   {
     settings.flags = mLayout->renderContext().flags();
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
+    losslessImages = mLayout->customProperty( QStringLiteral( "pdfLosslessImages" ), 0 ).toBool();
     appendGeoreference = mLayout->customProperty( QStringLiteral( "pdfAppendGeoreference" ), 1 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
@@ -4400,6 +4364,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setExportGeoPdf( geoPdf );
   dialog.setUseOgcBestPracticeFormat( useOgcBestPracticeFormat );
   dialog.setExportThemes( exportThemes );
+  dialog.setLosslessImageExport( losslessImages );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4414,6 +4379,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   useOgcBestPracticeFormat = dialog.useOgcBestPracticeFormat();
   exportThemes = dialog.exportThemes();
   geoPdfLayerOrder = dialog.geoPdfLayerOrder();
+  losslessImages = dialog.losslessImageExport();
 
   if ( mLayout )
   {
@@ -4426,8 +4392,9 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfSimplify" ), simplify ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfCreateGeoPdf" ), geoPdf ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), useOgcBestPracticeFormat ? 1 : 0 );
-    mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QStringLiteral( "~~~" ) ) );
-    mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geoPdfLayerOrder.join( QStringLiteral( "~~~" ) ) );
+    mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QLatin1String( "~~~" ) ) );
+    mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geoPdfLayerOrder.join( QLatin1String( "~~~" ) ) );
+    mLayout->setCustomProperty( QStringLiteral( "pdfLosslessImages" ), losslessImages ? 1 : 0 );
   }
 
   settings.forceVectorOutput = forceVector;
@@ -4445,6 +4412,11 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+
+  if ( losslessImages )
+    settings.flags = settings.flags | QgsLayoutRenderContext::FlagLosslessImageRendering;
+  else
+    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagLosslessImageRendering;
 
   return true;
 }
@@ -4645,6 +4617,7 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionExportAsPDF->setEnabled( layoutAvailable );
   mActionExportAsSVG->setEnabled( layoutAvailable );
   mActionPrint->setEnabled( layoutAvailable );
+  mActionPrintReport->setEnabled( layoutAvailable );
   mActionCut->setEnabled( layoutAvailable );
   mActionCopy->setEnabled( layoutAvailable );
   mActionPaste->setEnabled( layoutAvailable );
@@ -4766,7 +4739,7 @@ void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
   QgsSettings().setValue( QStringLiteral( "lastLayoutExportDir" ), savePath, QgsSettings::App );
 }
 
-bool QgsLayoutDesignerDialog::checkBeforeExport()
+bool QgsLayoutDesignerDialog::checkBeforeExport( )
 {
   if ( mLayout )
   {

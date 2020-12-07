@@ -76,7 +76,7 @@ bool QgsSetLayerEncodingAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
 
   if ( !layer )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
 
   const QString encoding = parameterAsString( parameters, QStringLiteral( "ENCODING" ), context );
 

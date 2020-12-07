@@ -25,8 +25,8 @@
 static QString PROVIDER_KEY = QStringLiteral( "ows" );
 static QString PROVIDER_DESCRIPTION = QStringLiteral( "OWS meta provider" );
 
-QgsOwsProvider::QgsOwsProvider( const QString &uri, const ProviderOptions &options )
-  : QgsDataProvider( uri, options )
+QgsOwsProvider::QgsOwsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( uri, options, flags )
 {
 }
 
@@ -46,9 +46,9 @@ QgsOwsProviderMetadata::QgsOwsProviderMetadata():
 {
 }
 
-QgsOwsProvider *QgsOwsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsOwsProvider *QgsOwsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsOwsProvider( uri, options );
+  return new QgsOwsProvider( uri, options, flags );
 }
 
 QList<QgsDataItemProvider *> QgsOwsProviderMetadata::dataItemProviders() const

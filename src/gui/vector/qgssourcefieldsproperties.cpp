@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsaddattrdialog.h"
+#include "qgscheckablecombobox.h"
 #include "qgssourcefieldsproperties.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
@@ -33,7 +34,6 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
 
   setupUi( this );
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   //button appearance
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
@@ -64,18 +64,16 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mFieldsList->setHorizontalHeaderItem( AttrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
-  const auto wmsWi = new QTableWidgetItem( QStringLiteral( "WMS" ) );
-  wmsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WMS service" ) );
-  mFieldsList->setHorizontalHeaderItem( AttrWMSCol, wmsWi );
-  const auto wfsWi = new QTableWidgetItem( QStringLiteral( "WFS" ) );
-  wfsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WFS (and OAPIF) service" ) );
-  mFieldsList->setHorizontalHeaderItem( AttrWFSCol, wfsWi );
+  const auto configurationFlagsWi = new QTableWidgetItem( QStringLiteral( "Configuration" ) );
+  configurationFlagsWi->setToolTip( tr( "Configures the field" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrConfigurationFlagsCol, configurationFlagsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   mFieldsList->setSortingEnabled( true );
   mFieldsList->sortByColumn( 0, Qt::AscendingOrder );
   mFieldsList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mFieldsList->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mFieldsList->horizontalHeader()->setStretchLastSection( true );
   mFieldsList->verticalHeader()->hide();
 
   //load buttons and field list
@@ -160,6 +158,9 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
 
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
+    if ( i == AttrConfigurationFlagsCol )
+      continue;
+
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
@@ -197,21 +198,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 {
   QTableWidgetItem *dataItem = new QTableWidgetItem();
   dataItem->setData( Qt::DisplayRole, idx );
-
-  switch ( mLayer->fields().fieldOrigin( idx ) )
-  {
-    case QgsFields::OriginExpression:
-      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
-      break;
-
-    case QgsFields::OriginJoin:
-      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
-      break;
-
-    default:
-      dataItem->setIcon( mLayer->fields().iconForField( idx ) );
-      break;
-  }
+  dataItem->setIcon( mLayer->fields().iconForField( idx, true ) );
   mFieldsList->setItem( row, AttrIdCol, dataItem );
 
   // in case we insert and not append reindex remaining widgets by 1
@@ -269,16 +256,19 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   else
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
 
-  //published WMS/WFS attributes
-  QTableWidgetItem *wmsAttrItem = new QTableWidgetItem();
-  wmsAttrItem->setCheckState( mLayer->excludeAttributesWms().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
-  wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  mFieldsList->setItem( row, AttrWMSCol, wmsAttrItem );
-  QTableWidgetItem *wfsAttrItem = new QTableWidgetItem();
-  wfsAttrItem->setCheckState( mLayer->excludeAttributesWfs().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
-  wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  mFieldsList->setItem( row, AttrWFSCol, wfsAttrItem );
+  // Flags
+  QgsCheckableComboBox *cb = new QgsCheckableComboBox( mFieldsList );
+  const QList<QgsField::ConfigurationFlag> flagList = qgsEnumMap<QgsField::ConfigurationFlag>().keys();
+  for ( const QgsField::ConfigurationFlag flag : flagList )
+  {
+    if ( flag == QgsField::ConfigurationFlag::None )
+      continue;
 
+    cb->addItemWithCheckState( QgsField::readableConfigurationFlag( flag ),
+                               mLayer->fieldConfigurationFlags( idx ).testFlag( flag ) ? Qt::Checked : Qt::Unchecked,
+                               QVariant::fromValue( flag ) );
+  }
+  mFieldsList->setCellWidget( row, AttrConfigurationFlagsCol, cb );
 }
 
 bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
@@ -300,22 +290,25 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 
 void QgsSourceFieldsProperties::apply()
 {
-  QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
-
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
-    if ( mFieldsList->item( i, AttrWMSCol )->checkState() == Qt::Unchecked )
+    int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
+    QgsField::ConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
+
+    QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
+    if ( cb )
     {
-      excludeAttributesWMS.insert( mFieldsList->item( i, AttrNameCol )->text() );
-    }
-    if ( mFieldsList->item( i, AttrWFSCol )->checkState() == Qt::Unchecked )
-    {
-      excludeAttributesWFS.insert( mFieldsList->item( i, AttrNameCol )->text() );
+      QgsCheckableItemModel *model = cb->model();
+      for ( int r = 0; r < model->rowCount(); ++r )
+      {
+        QModelIndex index = model->index( r, 0 );
+        QgsField::ConfigurationFlag flag = model->data( index, Qt::UserRole ).value<QgsField::ConfigurationFlag>();
+        bool active = model->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
+        flags.setFlag( flag, active );
+      }
+      mLayer->setFieldConfigurationFlags( idx, flags );
     }
   }
-
-  mLayer->setExcludeAttributesWms( excludeAttributesWMS );
-  mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
 }
 
 //SLOTS

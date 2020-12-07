@@ -29,6 +29,7 @@ QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *paren
   : QgsMapToolAddRectangle( parentTool, canvas, mode ),
     mCreateMode( createMode )
 {
+  mToolName = tr( "Add rectangle from 3 points" );
 }
 
 void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )

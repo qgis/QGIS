@@ -26,7 +26,7 @@ QgsMenuHeader::QgsMenuHeader( const QString &text, QWidget *parent )
 {
   int textMinWidth = fontMetrics().boundingRect( mText ).width();
   mTextHeight = fontMetrics().height();
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
 #else
   mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( '.' );

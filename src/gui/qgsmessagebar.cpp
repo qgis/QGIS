@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
+#include "qgssettings.h"
 
 #include <QWidget>
 #include <QPalette>
@@ -55,7 +56,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
                               " image: url(:/images/themes/default/%1) }"
                               "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
   mCountProgress->setObjectName( QStringLiteral( "mCountdown" ) );
   const int barWidth = std::max( 25.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.25 );
   const int barHeight = std::max( 14.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.7 );
@@ -114,12 +115,12 @@ void QgsMessageBar::mousePressEvent( QMouseEvent *e )
     if ( mCountdownTimer->isActive() )
     {
       mCountdownTimer->stop();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerContinue.svg" ) ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerContinue.svg" ) ) );
     }
     else
     {
       mCountdownTimer->start();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
     }
   }
 }
@@ -209,6 +210,26 @@ void QgsMessageBar::pushWarning( const QString &title, const QString &message )
 void QgsMessageBar::pushCritical( const QString &title, const QString &message )
 {
   pushMessage( title, message, Qgis::Critical );
+}
+
+int QgsMessageBar::defaultMessageTimeout( Qgis::MessageLevel level )
+{
+  // critical/warning messages don't auto dismiss by default
+  switch ( level )
+  {
+    case Qgis::Success:
+    case Qgis::Info:
+    case Qgis::None:
+    {
+      QgsSettings settings;
+      return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+    }
+
+    case Qgis::Warning:
+    case Qgis::Critical:
+      return 0;
+  }
+  return 0;
 }
 
 void QgsMessageBar::showItem( QgsMessageBarItem *item )
@@ -341,6 +362,11 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, cons
   connect( showMoreButton, &QToolButton::triggered, mv, &QDialog::exec );
   connect( showMoreButton, &QToolButton::triggered, showMoreButton, &QObject::deleteLater );
 
+  if ( duration < 0 )
+  {
+    duration = defaultMessageTimeout( level );
+  }
+
   QgsMessageBarItem *item = new QgsMessageBarItem(
     title,
     text,
@@ -403,15 +429,16 @@ void QgsMessageBar::resetCountdown()
   if ( mCountdownTimer->isActive() )
     mCountdownTimer->stop();
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QLatin1String( "mIconTimerPause.svg" ) ) );
   mCountProgress->setVisible( false );
 }
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( !mItems.isEmpty() ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
+  const bool moreMessages = mItems.count() > 1;
+  mItemCount->setText( moreMessages ? tr( "%n more", "unread messages", mItems.count() - 1 ) : QString() );
 
   // do not show the down arrow for opening menu with "close all" if there is just one message
-  mCloseBtn->setMenu( !mItems.isEmpty() ? mCloseMenu : nullptr );
-  mCloseBtn->setPopupMode( !mItems.isEmpty() ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
+  mCloseBtn->setMenu( moreMessages ? mCloseMenu : nullptr );
+  mCloseBtn->setPopupMode( moreMessages ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }

@@ -30,7 +30,7 @@ QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
 
 QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
 {
-  return nullptr;
+  return QgsLocatorFilter::Flags();
 }
 
 void QgsLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
@@ -100,3 +100,8 @@ void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel le
   QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), QStringLiteral( "Locator bar" ), level );
 }
 
+
+QVariant QgsLocatorResult::getUserData() const
+{
+  return userData;
+}

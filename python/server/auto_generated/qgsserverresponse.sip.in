@@ -72,8 +72,8 @@ Returns the http status code
 %Docstring
 Send error
 This method delegates error handling at the server level. This is different
-from calling setReturnCode() which let you return a specific response body.
-Calling sendError() will end the transaction and any attempt to write data
+from calling :py:func:`~QgsServerResponse.setReturnCode` which let you return a specific response body.
+Calling :py:func:`~QgsServerResponse.sendError` will end the transaction and any attempt to write data
 or set headers will be an error.
 
 :param code: HHTP return code value
@@ -118,8 +118,8 @@ Finish the response, ending the transaction. The default implementation does not
 %Docstring
 Flushes the current output buffer to the network
 
-'flush()' may be called multiple times. For HTTP transactions
-headers will be written on the first call to 'flush()'.
+':py:func:`~QgsServerResponse.flush`' may be called multiple times. For HTTP transactions
+headers will be written on the first call to ':py:func:`~QgsServerResponse.flush`'.
 The default implementation does nothing.
 %End
 

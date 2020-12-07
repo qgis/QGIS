@@ -77,8 +77,8 @@ Constructor for QgsReferencedRectangle.
 
     operator QVariant() const;
 
-    bool operator==( const QgsReferencedRectangle &other );
-    bool operator!=( const QgsReferencedRectangle &other );
+    bool operator==( const QgsReferencedRectangle &other ) const;
+    bool operator!=( const QgsReferencedRectangle &other ) const;
 
     SIP_PYOBJECT __repr__();
 %MethodCode
@@ -121,6 +121,52 @@ Constructor for QgsReferencedPointXY.
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+
+class QgsReferencedGeometry : QgsGeometry, QgsReferencedGeometryBase
+{
+%Docstring
+A QgsGeometry with associated coordinate reference system.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsreferencedgeometry.h"
+%End
+  public:
+
+    QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor for QgsReferencedGeometry, with the specified initial ``geometry``
+and ``crs``.
+%End
+
+    QgsReferencedGeometry();
+%Docstring
+Constructor for QgsReferencedGeometry.
+%End
+
+    operator QVariant() const;
+
+    static QgsReferencedGeometry fromReferencedPointXY( const QgsReferencedPointXY &point );
+%Docstring
+Construct a new QgsReferencedGeometry from referenced ``point``
+%End
+
+    static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
+%Docstring
+Construct a new QgsReferencedGeometry from referenced ``rectangle``
+%End
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

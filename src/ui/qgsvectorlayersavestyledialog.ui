@@ -179,6 +179,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mStyleTypeComboBox</tabstop>
+  <tabstop>mStylesWidget</tabstop>
   <tabstop>mStyleCategoriesListView</tabstop>
   <tabstop>mDbStyleNameEdit</tabstop>
   <tabstop>mDbStyleDescriptionEdit</tabstop>

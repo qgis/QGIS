@@ -40,6 +40,9 @@ class TestQgsTableEditor: public QObject
     void clearSelected();
     void foregroundColor();
     void backgroundColor();
+    void alignment();
+    void properties();
+    void textFormat();
     void numericFormat();
     void rowHeight();
     void columnWidth();
@@ -78,9 +81,16 @@ void TestQgsTableEditor::testData()
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
+  c3.setHorizontalAlignment( Qt::AlignJustify );
+  c3.setVerticalAlignment( Qt::AlignBottom );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat textFormat;
+  textFormat.setSize( 12.6 );
+  textFormat.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( textFormat );
+  c2.setHorizontalAlignment( Qt::AlignRight );
+  c2.setVerticalAlignment( Qt::AlignTop );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -88,18 +98,26 @@ void TestQgsTableEditor::testData()
   QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).horizontalAlignment(), Qt::AlignLeft );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).verticalAlignment(), Qt::AlignVCenter );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
+  QVERIFY( w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 12.6 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).horizontalAlignment(), Qt::AlignRight );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).verticalAlignment(), Qt::AlignTop );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).numericFormat()->id(), QStringLiteral( "currency" ) );
-
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).horizontalAlignment(), Qt::AlignJustify );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).verticalAlignment(), Qt::AlignBottom );
 }
 
 void TestQgsTableEditor::insertRowsBelow()
@@ -116,7 +134,9 @@ void TestQgsTableEditor::insertRowsBelow()
   c3.setNumericFormat( format.release() );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) ) ;
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -128,27 +148,27 @@ void TestQgsTableEditor::insertRowsBelow()
   QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).numericFormat()->id(), QStringLiteral( "currency" ) );
   QCOMPARE( w.tableContents().at( 1 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).textFormat().isValid() );
 
   // two rows selected = insert two rows, etc
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
@@ -160,47 +180,47 @@ void TestQgsTableEditor::insertRowsBelow()
   QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).numericFormat()->id(), QStringLiteral( "currency" ) );
   QCOMPARE( w.tableContents().at( 1 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 2 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 2 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 2 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 2 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 2 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 2 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 2 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 2 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 2 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 2 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 2 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 2 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 2 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 3 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 3 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 3 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 3 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 3 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 3 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 3 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 3 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 3 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 3 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 3 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 3 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 3 ).at( 2 ).textFormat().isValid() );
 
   // non consecutive selection = no action
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
@@ -224,7 +244,9 @@ void TestQgsTableEditor::insertRowsAbove()
   c3.setNumericFormat( format.release() );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -236,25 +258,25 @@ void TestQgsTableEditor::insertRowsAbove()
   QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 1 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 1 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 1 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 1 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 1 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 1 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 1 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 1 ).at( 2 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
@@ -268,45 +290,45 @@ void TestQgsTableEditor::insertRowsAbove()
   QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 1 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 1 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 2 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 2 ).at( 0 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 2 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 2 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 2 ).at( 0 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 2 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 2 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 2 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 2 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 2 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 2 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 2 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 2 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 3 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 3 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 3 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 3 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 3 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 3 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 3 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 3 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 3 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 3 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 3 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 3 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 3 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 3 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 3 ).at( 2 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 3 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 3 ).at( 2 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
@@ -332,7 +354,9 @@ void TestQgsTableEditor::insertColumnsBefore()
   c3.setNumericFormat( format.release() );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -344,18 +368,18 @@ void TestQgsTableEditor::insertColumnsBefore()
   QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 3 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
@@ -369,24 +393,24 @@ void TestQgsTableEditor::insertColumnsBefore()
   QCOMPARE( w.tableContents().at( 0 ).size(), 6 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 4 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 4 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 4 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 4 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 4 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 5 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 5 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 5 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 5 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 5 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 5 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
@@ -412,7 +436,9 @@ void TestQgsTableEditor::insertColumnsAfter()
   c3.setNumericFormat( format.release() );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -424,18 +450,18 @@ void TestQgsTableEditor::insertColumnsAfter()
   QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 3 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
@@ -449,24 +475,24 @@ void TestQgsTableEditor::insertColumnsAfter()
   QCOMPARE( w.tableContents().at( 0 ).size(), 6 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 4 ).content().toString(), QString() );
   QVERIFY( !w.tableContents().at( 0 ).at( 4 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 4 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 4 ).textFormat().isValid() );
   QCOMPARE( w.tableContents().at( 0 ).at( 5 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 5 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 5 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 5 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 5 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 5 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
@@ -492,7 +518,9 @@ void TestQgsTableEditor::deleteRows()
   QgsTableCell c2( 76 );
   c2.setNumericFormat( format.release() );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) )
                       << ( QgsTableRow() << c2 )
                       << ( QgsTableRow() << c3 )
@@ -512,15 +540,15 @@ void TestQgsTableEditor::deleteRows()
   QCOMPARE( w.tableContents().size(), 3 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 1 ).at( 0 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 0 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).numericFormat()->id(), QStringLiteral( "currency" ) );
   QCOMPARE( w.tableContents().at( 2 ).at( 0 ).content().toString(), QStringLiteral( "Jet3" ) );
   QVERIFY( !w.tableContents().at( 2 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 2 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 2 ).at( 0 ).textFormat().isValid() );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   w.selectionModel()->select( w.model()->index( 2, 0 ), QItemSelectionModel::Select );
@@ -531,7 +559,7 @@ void TestQgsTableEditor::deleteRows()
   QCOMPARE( w.tableContents().at( 0 ).size(), 1 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
   // last row can't be deleted
@@ -557,7 +585,9 @@ void TestQgsTableEditor::deleteColumns()
   QgsTableCell c2( 76 );
   c2.setNumericFormat( format.release() );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -576,15 +606,15 @@ void TestQgsTableEditor::deleteColumns()
   QCOMPARE( w.tableContents().at( 0 ).size(), 3 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).numericFormat()->id(), QStringLiteral( "currency" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "Jet3" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   w.selectionModel()->select( w.model()->index( 0, 2 ), QItemSelectionModel::Select );
@@ -595,7 +625,7 @@ void TestQgsTableEditor::deleteColumns()
   QCOMPARE( w.tableContents().at( 0 ).size(), 1 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).numericFormat()->id(), QStringLiteral( "currency" ) );
 
   // last column can't be deleted
@@ -731,7 +761,9 @@ void TestQgsTableEditor::foregroundColor()
   c3.setNumericFormat( format.release() );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat f = c2.textFormat();
+  f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -739,43 +771,45 @@ void TestQgsTableEditor::foregroundColor()
   QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).numericFormat()->id(), QStringLiteral( "currency" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).numericFormat() );
 
   w.selectionModel()->clearSelection();
-  w.setSelectionForegroundColor( QColor( 255, 255, 0 ) );
+  QgsTextFormat f2;
+  f2.setColor( QColor( 255, 255, 0 ) );
+  w.setSelectionTextFormat( f2 );
   QCOMPARE( spy.count(), 1 );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
-  QVERIFY( !w.selectionForegroundColor().isValid() );
+  QVERIFY( !w.selectionTextFormat().isValid() );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
-  QVERIFY( !w.selectionForegroundColor().isValid() );
+  QVERIFY( !w.selectionTextFormat().isValid() );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
-  QCOMPARE( w.selectionForegroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.selectionTextFormat().color(), QColor( 0, 255, 0 ) );
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::Select );
-  QVERIFY( !w.selectionForegroundColor().isValid() );
-  w.setSelectionForegroundColor( QColor( 255, 255, 0 ) );
+  QVERIFY( !w.selectionTextFormat().isValid() );
+  w.setSelectionTextFormat( f2 );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( w.selectionForegroundColor(), QColor( 255, 255, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).foregroundColor(), QColor( 255, 255, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 255, 255, 0 ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QCOMPARE( w.selectionTextFormat().color(), QColor( 255, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).textFormat().color(), QColor( 255, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 255, 255, 0 ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
-  QVERIFY( !w.selectionForegroundColor().isValid() );
+  QVERIFY( !w.selectionTextFormat().isValid() );
 }
 
 void TestQgsTableEditor::backgroundColor()
@@ -792,7 +826,9 @@ void TestQgsTableEditor::backgroundColor()
   c3.setNumericFormat( format.release() );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -800,20 +836,20 @@ void TestQgsTableEditor::backgroundColor()
   QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QVERIFY( w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).numericFormat()->id(), QStringLiteral( "currency" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).numericFormat() );
 
   w.selectionModel()->clearSelection();
@@ -839,6 +875,182 @@ void TestQgsTableEditor::backgroundColor()
   QVERIFY( !w.selectionBackgroundColor().isValid() );
 }
 
+void TestQgsTableEditor::alignment()
+{
+  QgsTableEditorWidget w;
+  QVERIFY( w.tableContents().isEmpty() );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  QgsTableCell c3;
+  c3.setContent( 87 );
+  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  format->setNumberDecimalPlaces( 2 );
+  format->setPrefix( QStringLiteral( "$" ) );
+  c3.setNumericFormat( format.release() );
+  QgsTableCell c2( 76 );
+  c2.setHorizontalAlignment( Qt::AlignRight );
+  c2.setVerticalAlignment( Qt::AlignBottom );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
+  QCOMPARE( spy.count(), 1 );
+
+  QCOMPARE( w.tableContents().size(), 1 );
+  QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).horizontalAlignment(), Qt::AlignLeft );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).verticalAlignment(), Qt::AlignVCenter );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).horizontalAlignment(), Qt::AlignRight );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).verticalAlignment(), Qt::AlignBottom );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).horizontalAlignment(), Qt::AlignLeft );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).verticalAlignment(), Qt::AlignVCenter );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).horizontalAlignment(), Qt::AlignLeft );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).verticalAlignment(), Qt::AlignVCenter );
+
+  w.selectionModel()->clearSelection();
+  w.setSelectionVerticalAlignment( Qt::AlignTop );
+  w.setSelectionHorizontalAlignment( Qt::AlignCenter );
+  QCOMPARE( spy.count(), 1 );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).horizontalAlignment(), Qt::AlignLeft );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).verticalAlignment(), Qt::AlignVCenter );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionHorizontalAlignment(), Qt::AlignLeft | Qt::AlignTop );
+  QCOMPARE( w.selectionVerticalAlignment(), Qt::AlignLeft | Qt::AlignTop );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.selectionHorizontalAlignment(), Qt::AlignRight );
+  QCOMPARE( w.selectionVerticalAlignment(), Qt::AlignBottom );
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionHorizontalAlignment(), Qt::AlignLeft | Qt::AlignTop );
+  QCOMPARE( w.selectionVerticalAlignment(), Qt::AlignLeft | Qt::AlignTop );
+  w.setSelectionHorizontalAlignment( Qt::AlignJustify );
+  w.setSelectionVerticalAlignment( Qt::AlignTop );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( w.selectionHorizontalAlignment(), Qt::AlignJustify );
+  QCOMPARE( w.selectionVerticalAlignment(), Qt::AlignTop );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).horizontalAlignment(), Qt::AlignJustify );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).verticalAlignment(), Qt::AlignTop );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).horizontalAlignment(), Qt::AlignJustify );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).verticalAlignment(), Qt::AlignTop );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).horizontalAlignment(), Qt::AlignLeft );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).verticalAlignment(), Qt::AlignVCenter );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).horizontalAlignment(), Qt::AlignLeft );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).verticalAlignment(), Qt::AlignVCenter );
+  w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
+  QCOMPARE( w.selectionHorizontalAlignment(), Qt::AlignLeft | Qt::AlignTop );
+  QCOMPARE( w.selectionVerticalAlignment(), Qt::AlignLeft | Qt::AlignTop );
+}
+
+void TestQgsTableEditor::properties()
+{
+  QgsTableEditorWidget w;
+  QVERIFY( w.tableContents().isEmpty() );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  QgsTableCell c3;
+  c3.setContent( 87 );
+  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  format->setNumberDecimalPlaces( 2 );
+  format->setPrefix( QStringLiteral( "$" ) );
+  c3.setNumericFormat( format.release() );
+  QgsTableCell c2( QVariant::fromValue( QgsProperty::fromExpression( "1+2" ) ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
+  QCOMPARE( spy.count(), 1 );
+
+  QCOMPARE( w.tableContents().size(), 1 );
+  QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).content().canConvert< QgsProperty >() );
+  QVERIFY( w.tableContents().at( 0 ).at( 1 ).content().canConvert< QgsProperty >() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "1+2" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).content().canConvert< QgsProperty >() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).content().canConvert< QgsProperty >() );
+
+  w.selectionModel()->clearSelection();
+  w.setSelectionCellProperty( QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
+  QCOMPARE( spy.count(), 1 );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).content().canConvert< QgsProperty >() );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
+  QVERIFY( !w.selectionCellProperty().isActive() );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
+  QVERIFY( w.selectionCellProperty().isActive() );
+  QCOMPARE( w.selectionCellProperty().asExpression(), QStringLiteral( "1+2" ) );
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::Select );
+  QVERIFY( !w.selectionCellProperty().isActive() );
+  w.setSelectionCellProperty( QgsProperty::fromExpression( QStringLiteral( "3+4" ) ) );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( w.selectionCellProperty().isActive() );
+  QCOMPARE( w.selectionCellProperty().asExpression(), QStringLiteral( "3+4" ) );
+  QVERIFY( w.tableContents().at( 0 ).at( 0 ).content().canConvert< QgsProperty >() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "3+4" ) );
+  QVERIFY( w.tableContents().at( 0 ).at( 1 ).content().canConvert< QgsProperty >() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "3+4" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).content().canConvert< QgsProperty >() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).content().canConvert< QgsProperty >() );
+  w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
+  QVERIFY( !w.selectionCellProperty().isActive() );
+}
+
+void TestQgsTableEditor::textFormat()
+{
+  QgsTableEditorWidget w;
+  QVERIFY( w.tableContents().isEmpty() );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  QgsTableCell c3;
+  c3.setContent( 87 );
+  QgsTextFormat format;
+  format.setSize( 12.6 );
+  c3.setTextFormat( format );
+  QgsTableCell c2( 76 );
+  c2.setTextFormat( format );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
+  QCOMPARE( spy.count(), 1 );
+
+  QCOMPARE( w.tableContents().size(), 1 );
+  QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 12.6 );
+  QVERIFY( w.tableContents().at( 0 ).at( 1 ).textFormat().isValid() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
+  QVERIFY( w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).textFormat().size(), 12.6 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
+
+  w.selectionModel()->clearSelection();
+  format.setSize( 21 );
+  w.setSelectionTextFormat( format );
+  QCOMPARE( spy.count(), 1 );
+
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
+  QVERIFY( w.selectionTextFormat().size() !=  21.0 );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
+  QVERIFY( w.selectionTextFormat().size() !=  21.0 );
+  w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( w.selectionTextFormat().size(), 12.6 );
+  w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::Select );
+  QVERIFY( w.selectionTextFormat().size() !=  21.0 );
+  w.setSelectionTextFormat( format );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( w.selectionTextFormat().isValid() );
+  QCOMPARE( w.selectionTextFormat().size(), 21.0 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).textFormat().size(), 21.0 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().size(), 21.0 );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).textFormat().size(), 12.6 );
+  QVERIFY( w.tableContents().at( 0 ).at( 3 ).textFormat().size() != 21 );
+}
+
 void TestQgsTableEditor::numericFormat()
 {
   QgsTableEditorWidget w;
@@ -853,7 +1065,9 @@ void TestQgsTableEditor::numericFormat()
   QgsTableCell c2( 76 );
   c2.setNumericFormat( format.release() );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
-  c2.setForegroundColor( QColor( 0, 255, 0 ) );
+  QgsTextFormat c2f;
+  c2f.setColor( QColor( 0, 255, 0 ) );
+  c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -861,20 +1075,20 @@ void TestQgsTableEditor::numericFormat()
   QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 0 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().toString(), QStringLiteral( "76" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).backgroundColor(), QColor( 255, 0, 0 ) );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).foregroundColor(), QColor( 0, 255, 0 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).textFormat().color(), QColor( 0, 255, 0 ) );
   QVERIFY( w.tableContents().at( 0 ).at( 1 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).numericFormat()->id(), QStringLiteral( "currency" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 2 ).numericFormat() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).backgroundColor().isValid() );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).foregroundColor().isValid() );
+  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).textFormat().isValid() );
   QVERIFY( !w.tableContents().at( 0 ).at( 3 ).numericFormat() );
 
   w.selectionModel()->clearSelection();

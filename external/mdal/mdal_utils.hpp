@@ -62,6 +62,8 @@ namespace MDAL
   bool contains( const std::string &str, const std::string &substr, ContainsBehaviour behaviour = CaseSensitive );
   bool contains( const std::vector<std::string> &list, const std::string &str );
   std::string replace( const std::string &str, const std::string &substr, const std::string &replacestr, ContainsBehaviour behaviour = CaseSensitive );
+  std::string removeFrom( const std::string &str, const std::string &substr );
+
   //! left justify and truncate, resulting string will always have width chars
   std::string leftJustified( const std::string &str, size_t width, char fill = ' ' );
 
@@ -137,7 +139,7 @@ namespace MDAL
   //! Adds altitude dataset group to mesh
   void addFaceScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector<double> &values, const std::string &name );
 
-  //! function used to read all of type of value. Option to change the endianness is provided
+  //! Reads all of type of value. Option to change the endianness is provided
   template<typename T>
   bool readValue( T &value, std::ifstream &in, bool changeEndianness = false )
   {
@@ -150,6 +152,19 @@ namespace MDAL
       std::reverse( p, p + sizeof( T ) );
 
     return true;
+  }
+
+  //! Writes all of type of value. Option to change the endianness is provided
+  template<typename T>
+  void writeValue( T &value, std::ofstream &out, bool changeEndianness = false )
+  {
+    T v = value;
+    char *const p = reinterpret_cast<char *>( &v );
+
+    if ( changeEndianness )
+      std::reverse( p, p + sizeof( T ) );
+
+    out.write( p, sizeof( T ) );
   }
 
   //! Prepend 0 to string to have n char

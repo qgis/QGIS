@@ -71,6 +71,9 @@ QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level,
 
 void QgsMessageBarItem::writeContent()
 {
+  if ( mDuration < 0 )
+    mDuration = QgsMessageBar::defaultMessageTimeout( mLevel );
+
   if ( !mLayout )
   {
     mLayout = new QHBoxLayout( this );
@@ -139,7 +142,7 @@ void QgsMessageBarItem::writeContent()
                                   "QLabel,QTextEdit { color: #2554a1; } " );
     contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>" );
   }
-  mStyleSheet += QStringLiteral( "QLabel#mItemCount { font-style: italic; }" );
+  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )

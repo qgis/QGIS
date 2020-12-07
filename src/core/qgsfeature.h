@@ -176,9 +176,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( qint64 id = 0 );
+    QgsFeature( qint64 id = FID_NULL );
 #endif
 
     /**
@@ -187,9 +187,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( const QgsFields &fields, QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+    QgsFeature( const QgsFields &fields, qint64 id = FID_NULL );
 #endif
 
     /**
@@ -535,6 +535,17 @@ class CORE_EXPORT QgsFeature
      *  \see setFields
      */
     int fieldNameIndex( const QString &fieldName ) const;
+
+    /**
+     * Returns the approximate RAM usage of the feature, in bytes.
+     *
+     * This method takes into account the size of variable elements (strings,
+     * geometry, ...), but the value returned should be considered as a lower
+     * bound estimation.
+     *
+     * \since QGIS 3.16
+     */
+    int approximateMemoryUsage() const;
 
     //! Allows direct construction of QVariants from features.
     operator QVariant() const

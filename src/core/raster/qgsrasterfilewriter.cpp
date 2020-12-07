@@ -24,6 +24,7 @@
 #include "qgsrasterprojector.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasternuller.h"
+#include "qgsreadwritelocker.h"
 
 #include <QCoreApplication>
 #include <QProgressDialog>
@@ -34,6 +35,7 @@
 
 #include <gdal.h>
 #include <cpl_string.h>
+#include <mutex>
 
 QgsRasterDataProvider *QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
@@ -1133,10 +1135,20 @@ QString QgsRasterFileWriter::filterForDriver( const QString &driverName )
 
 QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supportedFiltersAndFormats( RasterFormatOptions options )
 {
-  QList< FilterFormatDetails > results;
+  static QReadWriteLock sFilterLock;
+  static QMap< RasterFormatOptions, QList< QgsRasterFileWriter::FilterFormatDetails > > sFilters;
+
+  QgsReadWriteLocker locker( sFilterLock, QgsReadWriteLocker::Read );
+
+  const auto it = sFilters.constFind( options );
+  if ( it != sFilters.constEnd() )
+    return it.value();
 
   GDALAllRegister();
   int const drvCount = GDALGetDriverCount();
+
+  locker.changeMode( QgsReadWriteLocker::Write );
+  QList< QgsRasterFileWriter::FilterFormatDetails > results;
 
   FilterFormatDetails tifFormat;
 
@@ -1182,6 +1194,8 @@ QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supported
       results.insert( 0, tifFormat );
     }
   }
+
+  sFilters.insert( options, results );
 
   return results;
 }

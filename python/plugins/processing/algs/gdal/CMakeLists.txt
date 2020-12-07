@@ -1,5 +1,5 @@
-FILE(GLOB PY_FILES *.py)
+file(GLOB PY_FILES *.py)
 
-ADD_SUBDIRECTORY(ui)
+add_subdirectory(ui)
 
 PLUGIN_INSTALL(processing ./algs/gdal ${PY_FILES})

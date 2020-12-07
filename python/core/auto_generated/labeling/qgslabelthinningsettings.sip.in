@@ -45,7 +45,7 @@ Sets whether the the number of labels drawn for the layer should be limited.
     int maximumNumberLabels() const;
 %Docstring
 Returns the maximum number of labels which should be drawn for this layer.
-This only has an effect if limitNumberOfLabelsEnabled() is ``True``.
+This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is ``True``.
 
 .. seealso:: :py:func:`limitNumberOfLabelsEnabled`
 
@@ -55,7 +55,7 @@ This only has an effect if limitNumberOfLabelsEnabled() is ``True``.
     void setMaximumNumberLabels( int number );
 %Docstring
 Sets the maximum ``number`` of labels which should be drawn for this layer.
-This only has an effect if limitNumberOfLabelsEnabled() is ``True``.
+This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is ``True``.
 
 .. seealso:: :py:func:`setLimitNumberLabelsEnabled`
 

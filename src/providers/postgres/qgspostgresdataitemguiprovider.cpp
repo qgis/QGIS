@@ -15,23 +15,33 @@
 
 #include "qgspostgresdataitemguiprovider.h"
 
+#include "qgsmanageconnectionsdialog.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresprovider.h"
 #include "qgspgnewconnection.h"
 #include "qgsnewnamedialog.h"
 #include "qgspgsourceselect.h"
 
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 
 
-void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( QgsPGRootItem *rootItem = qobject_cast< QgsPGRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
+
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
+    menu->addAction( actionSaveServers );
+
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
+    menu->addAction( actionLoadServers );
   }
 
   if ( QgsPGConnectionItem *connItem = qobject_cast< QgsPGConnectionItem * >( item ) )
@@ -52,9 +62,10 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     menu->addSeparator();
 
-    QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), this );
-    connect( actionCreateSchema, &QAction::triggered, this, [connItem] { createSchema( connItem ); } );
+    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), this );
+    connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
     menu->addAction( actionCreateSchema );
+
   }
 
   if ( QgsPGSchemaItem *schemaItem = qobject_cast< QgsPGSchemaItem * >( item ) )
@@ -66,11 +77,11 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     menu->addSeparator();
 
     QAction *actionRename = new QAction( tr( "Rename Schema…" ), this );
-    connect( actionRename, &QAction::triggered, this, [schemaItem] { renameSchema( schemaItem ); } );
+    connect( actionRename, &QAction::triggered, this, [schemaItem, context] { renameSchema( schemaItem, context ); } );
     menu->addAction( actionRename );
 
-    QAction *actionDelete = new QAction( tr( "Delete Schema" ), this );
-    connect( actionDelete, &QAction::triggered, this, [schemaItem] { deleteSchema( schemaItem ); } );
+    QAction *actionDelete = new QAction( tr( "Delete Schema…" ), this );
+    connect( actionDelete, &QAction::triggered, this, [schemaItem, context] { deleteSchema( schemaItem, context ); } );
     menu->addAction( actionDelete );
   }
 
@@ -80,48 +91,48 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
 
     QAction *actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), this );
-    connect( actionRenameLayer, &QAction::triggered, this, [layerItem] { renameLayer( layerItem ); } );
+    connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
     menu->addAction( actionRenameLayer );
 
     if ( !layerInfo.isView )
     {
-      QAction *actionTruncateLayer = new QAction( tr( "Truncate %1" ).arg( typeName ), this );
-      connect( actionTruncateLayer, &QAction::triggered, this, [layerItem] { truncateTable( layerItem ); } );
+      QAction *actionTruncateLayer = new QAction( tr( "Truncate %1…" ).arg( typeName ), this );
+      connect( actionTruncateLayer, &QAction::triggered, this, [layerItem, context] { truncateTable( layerItem, context ); } );
       menu->addAction( actionTruncateLayer );
     }
 
     if ( layerInfo.isMaterializedView )
     {
-      QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View" ), this );
-      connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem] { refreshMaterializedView( layerItem ); } );
+      QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View…" ), this );
+      connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem, context] { refreshMaterializedView( layerItem, context ); } );
       menu->addAction( actionRefreshMaterializedView );
     }
   }
 }
 
 
-bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext )
+bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( QgsPGLayerItem *layerItem = qobject_cast< QgsPGLayerItem * >( item ) )
   {
     const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
-    QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
+    const QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
 
     if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
-                                QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( layerInfo.schemaName, layerInfo.tableName ),
+                                QObject::tr( "Are you sure you want to delete %1 '%2.%3'?" ).arg( typeName.toLower(), layerInfo.schemaName, layerInfo.tableName ),
                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return false;
 
     QString errCause;
-    bool res = QgsPostgresUtils::deleteLayer( layerItem->uri(), errCause );
+    const bool res = QgsPostgresUtils::deleteLayer( layerItem->uri(), errCause );
     if ( !res )
     {
-      QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
+      notify( tr( "Delete %1" ).arg( typeName ), errCause, context, Qgis::MessageLevel::Warning );
       return false;
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
+      notify( tr( "Delete %1" ).arg( typeName ), tr( "%1 '%2' deleted successfully." ).arg( typeName, layerInfo.tableName ), context, Qgis::MessageLevel::Success );
       if ( layerItem->parent() )
         layerItem->parent()->refresh();
       return true;
@@ -162,7 +173,7 @@ QWidget *QgsPostgresDataItemGuiProvider::createParamWidget( QgsDataItem *root, Q
   QgsPGRootItem *pgRootItem = qobject_cast<QgsPGRootItem *>( root );
   if ( pgRootItem != nullptr )
   {
-    QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+    QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode::Manager );
     connect( select, &QgsPgSourceSelect::connectionsChanged, pgRootItem, &QgsPGRootItem::onConnectionsChanged );
     return select;
   }
@@ -215,7 +226,7 @@ void QgsPostgresDataItemGuiProvider::refreshConnection( QgsDataItem *item )
     item->parent()->refreshConnections();
 }
 
-void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
+void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataItemGuiContext context )
 {
   QString schemaName = QInputDialog::getText( nullptr, tr( "Create Schema" ), tr( "Schema name:" ) );
   if ( schemaName.isEmpty() )
@@ -225,7 +236,7 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema." ) );
+    notify( tr( "New Schema" ), tr( "Unable to create schema." ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -235,13 +246,15 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
-                          result.PQresultErrorMessage() ) );
+    notify( tr( "New Schema" ), tr( "Unable to create schema '%1'\n%2" ).arg( schemaName,
+            result.PQresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
 
   conn->unref();
+
+  notify( tr( "New Schema" ), tr( "Schema '%1' created successfully." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
 
   item->refresh();
   // the parent should be updated
@@ -250,14 +263,14 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
 }
 
 
-void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem )
+void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
 {
   // check if schema contains tables/views
   QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Delete Schema" ), tr( "Unable to delete schema." ) );
+    notify( tr( "Delete Schema" ), tr( "Unable to delete schema." ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -265,7 +278,7 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem )
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Delete Schema" ), tr( "Unable to delete schema." ) );
+    notify( tr( "Delete Schema" ), tr( "Unable to delete schema." ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
@@ -283,7 +296,7 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem )
   int count = result.PQntuples();
   if ( count > 0 )
   {
-    QString objects = childObjects.join( QStringLiteral( "\n" ) );
+    QString objects = childObjects.join( QLatin1Char( '\n' ) );
     if ( count > maxListed )
     {
       objects += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( count - maxListed );
@@ -299,7 +312,7 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem )
   else
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ),
-                                QObject::tr( "Are you sure you want to delete the schema '%1'?" ).arg( schemaItem->name() ),
+                                QObject::tr( "Are you sure you want to delete schema '%1'?" ).arg( schemaItem->name() ),
                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return;
   }
@@ -308,17 +321,17 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem )
   bool res = QgsPostgresUtils::deleteSchema( schemaItem->name(), uri, errCause, count > 0 );
   if ( !res )
   {
-    QMessageBox::warning( nullptr, tr( "Delete Schema" ), errCause );
+    notify( tr( "Delete Schema" ), tr( "Unable to delete schema: '%1'." ).arg( errCause ), context, Qgis::MessageLevel::Warning );
   }
   else
   {
-    QMessageBox::information( nullptr, tr( "Delete Schema" ), tr( "Schema deleted successfully." ) );
+    notify( tr( "Delete Schema" ), tr( "Schema '%1' deleted successfully." ).arg( schemaItem->name() ), context, Qgis::MessageLevel::Success );
     if ( schemaItem->parent() )
-      schemaItem->parent()->refreshConnections();
+      schemaItem->parent()->refresh();
   }
 }
 
-void QgsPostgresDataItemGuiProvider::renameSchema( QgsPGSchemaItem *schemaItem )
+void QgsPostgresDataItemGuiProvider::renameSchema( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
 {
   QgsNewNameDialog dlg( tr( "schema '%1'" ).arg( schemaItem->name() ), schemaItem->name() );
   dlg.setWindowTitle( tr( "Rename Schema" ) );
@@ -330,7 +343,7 @@ void QgsPostgresDataItemGuiProvider::renameSchema( QgsPGSchemaItem *schemaItem )
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Rename Schema" ), tr( "Unable to rename schema." ) );
+    notify( tr( "Rename Schema" ), tr( "Unable to rename schema." ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -341,19 +354,21 @@ void QgsPostgresDataItemGuiProvider::renameSchema( QgsPGSchemaItem *schemaItem )
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Rename Schema" ), tr( "Unable to rename schema %1\n%2" ).arg( schemaName,
-                          result.PQresultErrorMessage() ) );
+    notify( tr( "Rename Schema" ), tr( "Unable to rename schema '%1'\n%2" ).arg( schemaItem->name(),
+            result.PQresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
 
+  notify( tr( "Rename Schema" ), tr( "Schema '%1' renamed correctly to '%2'." ).arg( schemaItem->name(),
+          dlg.name() ), context, Qgis::MessageLevel::Success );
+
   conn->unref();
-  QMessageBox::information( nullptr, tr( "Rename Schema" ), tr( "Schema renamed successfully." ) );
   if ( schemaItem->parent() )
-    schemaItem->parent()->refreshConnections();
+    schemaItem->parent()->refresh();
 }
 
-void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem )
+void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
   QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
@@ -378,7 +393,7 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem )
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename %1." ).arg( lowerTypeName ) );
+    notify( tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename '%1'." ).arg( lowerTypeName ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -397,22 +412,26 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem )
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename %1 %2\n%3" ).arg( lowerTypeName, layerItem->name(),
-                          result.PQresultErrorMessage() ) );
+    notify( tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename '%1' %2\n%3" ).arg( lowerTypeName, layerItem->name(),
+            result.PQresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
 
+  notify( tr( "Rename %1" ).arg( typeName ), tr( "%1 '%2' renamed correctly to '%3'." ).arg( typeName, oldName, newName ),
+          context, Qgis::MessageLevel::Success );
+
   conn->unref();
+
   if ( layerItem->parent() )
-    layerItem->parent()->refreshConnections();
+    layerItem->parent()->refresh();
 }
 
-void QgsPostgresDataItemGuiProvider::truncateTable( QgsPGLayerItem *layerItem )
+void QgsPostgresDataItemGuiProvider::truncateTable( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
   if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ),
-                              QObject::tr( "Are you sure you want to truncate %1.%2?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
+                              QObject::tr( "Are you sure you want to truncate \"%1.%2\"?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
@@ -420,7 +439,7 @@ void QgsPostgresDataItemGuiProvider::truncateTable( QgsPGLayerItem *layerItem )
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Truncate Table" ), tr( "Unable to truncate table." ) );
+    notify( tr( "Truncate Table" ), tr( "Unable to truncate table." ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -438,21 +457,21 @@ void QgsPostgresDataItemGuiProvider::truncateTable( QgsPGLayerItem *layerItem )
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Truncate Table" ), tr( "Unable to truncate %1\n%2" ).arg( layerItem->name(),
-                          result.PQresultErrorMessage() ) );
+    notify( tr( "Truncate Table" ), tr( "Unable to truncate '%1'\n%2" ).arg( tableName,
+            result.PQresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
 
   conn->unref();
-  QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
+  notify( tr( "Truncate Table" ), tr( "Table '%1' truncated successfully." ).arg( tableName ), context, Qgis::MessageLevel::Success );
 }
 
-void QgsPostgresDataItemGuiProvider::refreshMaterializedView( QgsPGLayerItem *layerItem )
+void QgsPostgresDataItemGuiProvider::refreshMaterializedView( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
   if ( QMessageBox::question( nullptr, QObject::tr( "Refresh Materialized View" ),
-                              QObject::tr( "Are you sure you want to refresh the materialized view %1.%2?\n\nThis will update all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
+                              QObject::tr( "Are you sure you want to refresh the materialized view \"%1.%2\"?\n\nThis will update all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
@@ -460,7 +479,7 @@ void QgsPostgresDataItemGuiProvider::refreshMaterializedView( QgsPGLayerItem *la
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Refresh View" ), tr( "Unable to refresh the view." ) );
+    notify( tr( "Refresh View" ), tr( "Unable to refresh the view." ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -478,12 +497,32 @@ void QgsPostgresDataItemGuiProvider::refreshMaterializedView( QgsPGLayerItem *la
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Refresh View" ), tr( "Unable to refresh view %1\n%2" ).arg( layerItem->name(),
-                          result.PQresultErrorMessage() ) );
+    notify( tr( "Refresh View" ), tr( "Unable to refresh the view '%1'\n%2" ).arg( tableRef,
+            result.PQresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
 
   conn->unref();
-  QMessageBox::information( nullptr, tr( "Refresh View" ), tr( "Materialized view refreshed successfully." ) );
+  notify( tr( "Refresh View" ), tr( "Materialized view '%1' refreshed successfully." ).arg( tableName ), context, Qgis::MessageLevel::Success );
+}
+
+void QgsPostgresDataItemGuiProvider::saveConnections()
+{
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::PostGIS );
+  dlg.exec();
+}
+
+void QgsPostgresDataItemGuiProvider::loadConnections( QgsDataItem *item )
+{
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::PostGIS, fileName );
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

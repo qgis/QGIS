@@ -141,5 +141,6 @@ QgsLocatorContext QgsLocatorModelBridge::createContext()
   QgsLocatorContext context;
   context.targetExtent = mCanvasExtent;
   context.targetExtentCrs = mCanvasCrs;
+  context.transformContext = mTransformContext;
   return context;
 }

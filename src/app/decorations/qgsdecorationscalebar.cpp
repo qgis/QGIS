@@ -168,7 +168,8 @@ void QgsDecorationScaleBar::setupScaleBar()
       lineSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
       lineSymbol->setWidth( 0.3 );
       lineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
-      mSettings.setLineSymbol( lineSymbol.release() );
+      mSettings.setLineSymbol( lineSymbol->clone() );
+      mSettings.setDivisionLineSymbol( lineSymbol.release() );
       mSettings.setHeight( 2.2 );
       break;
     }
@@ -434,8 +435,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->translate( originX, originY );
   mStyle->draw( context, mSettings, scaleContext );
-  context.painter()->restore();
 }

@@ -210,7 +210,7 @@ pattern.
 
     virtual bool isValid( QString *errorMsg = 0, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = 0 ) const = 0;
 %Docstring
-Returns true if the geometry is valid.
+Returns ``True`` if the geometry is valid.
 
 If the geometry is invalid, ``errorMsg`` will be filled with the reported geometry error.
 
@@ -240,7 +240,7 @@ Determines whether the geometry is simple (according to OGC definition).
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
         QVector<QgsGeometry > &newGeometries /Out/,
         bool topological,
-        QgsPointSequence &topologyTestPoints, QString *errorMsg = 0 ) const;
+        QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false ) const;
 %Docstring
 Splits this geometry according to a given line.
 
@@ -249,16 +249,38 @@ Splits this geometry according to a given line.
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
 \param[out] errorMsg error messages emitted, if any
+:param skipIntersectionCheck: set to ``True`` to skip the potentially expensive initial intersection check. Only set this flag if an intersection
+                              test has already been performed by the caller!
 
 :return: 0 in case of success, 1 if geometry has not been split, error else
 %End
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
 
+    void setLogErrors( bool enabled );
+%Docstring
+Sets whether warnings and errors encountered during the geometry operations should be logged.
+
+By default these errors are logged to the console and in the QGIS UI. But for some operations errors are expected and logging
+these just results in noise. In this case setting ``enabled`` to ``False`` will avoid the automatic error reporting.
+
+.. versionadded:: 3.16
+%End
+
   protected:
+
+    void logError( const QString &engineName, const QString &message ) const;
+%Docstring
+Logs an error ``message`` encountered during an operation.
+
+.. seealso:: :py:func:`setLogErrors`
+
+.. versionadded:: 3.16
+%End
 
     QgsGeometryEngine( const QgsAbstractGeometry *geometry );
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

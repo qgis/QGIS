@@ -40,14 +40,14 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     struct Class
     {
       //! Constructor for Class
-      Class( int value, const QColor &color = QColor(), const QString &label = QString() )
+      Class( double value, const QColor &color = QColor(), const QString &label = QString() )
         : value( value )
         , color( color )
         , label( label )
       {}
 
       //! Value
-      int value;
+      double value;
 
       //! Color to render value
       QColor color;
@@ -83,13 +83,15 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     /**
      * Returns optional category label
-     * \since QGIS 2.1 */
-    QString label( int idx ) const;
+     * \since QGIS 2.1
+    */
+    QString label( double idx ) const;
 
     /**
      * Set category label
-     *  \since QGIS 2.1 */
-    void setLabel( int idx, const QString &label );
+     * \since QGIS 2.1
+    */
+    void setLabel( double idx, const QString &label );
 
     /**
      * Returns the raster band used for rendering the raster.
@@ -98,7 +100,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     int band() const { return mBand; }
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
+    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<int> usesBands() const override;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
@@ -167,8 +169,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
 
     //! Premultiplied color map
-    QMap< int, QRgb > mColors;
+    QMap< double, QRgb > mColors;
     void updateArrays();
+
+    // Maximum number of allowed classes for float rasters
+    static const int MAX_FLOAT_CLASSES;
 };
 
 #endif // QGSPALETTEDRASTERRENDERER_H

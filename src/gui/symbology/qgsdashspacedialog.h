@@ -63,7 +63,7 @@ class GUI_EXPORT QgsDashSpaceDialog : public QDialog
   public:
 
     //! Constructor for QgsDashSpaceDialog
-    QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = nullptr );
+    QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     //! Returns the dash pattern as a list of numbers
     QVector<qreal> dashDotVector() const;

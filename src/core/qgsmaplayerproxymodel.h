@@ -52,7 +52,8 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
       WritableLayer = 64,
       MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
       VectorTileLayer = 256, //!< QgsVectorTileLayer \since QGIS 3.14
-      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer
+      PointCloudLayer = 512, //!< QgsPointCloudLayer \since QGIS 3.18
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )

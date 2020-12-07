@@ -112,10 +112,10 @@ Returns whether the specified ``page`` number should be included in exports of t
 %Docstring
 Adds a ``page`` to the collection. Ownership of the ``page`` is transferred
 to the collection, and the page will automatically be added to the collection's
-layout() (there is no need to manually add the page item to the layout).
+:py:func:`~QgsLayoutPageCollection.layout` (there is no need to manually add the page item to the layout).
 The page will be added after all pages currently contained in the collection.
 
-Calling addPage() automatically triggers a reflow() of pages.
+Calling :py:func:`~QgsLayoutPageCollection.addPage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`extendByNewPage`
 
@@ -140,13 +140,13 @@ Inserts a ``page`` into a specific position in the collection.
 
 Ownership of the ``page`` is transferred
 to the collection, and the page will automatically be added to the collection's
-layout() (there is no need to manually add the page item to the layout).
+:py:func:`~QgsLayoutPageCollection.layout` (there is no need to manually add the page item to the layout).
 
 The page will be added after before the page number specified by ``beforePage``.
 (Page numbers in collections begin at 0 - so a ``beforePage`` of 0 will insert
 the page before all existing pages).
 
-Calling insertPage() automatically triggers a reflow() of pages.
+Calling :py:func:`~QgsLayoutPageCollection.insertPage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`addPage`
 %End
@@ -154,12 +154,12 @@ Calling insertPage() automatically triggers a reflow() of pages.
     void deletePage( int pageNumber );
 %Docstring
 Deletes a page from the collection. The page will automatically be removed
-from the collection's layout().
+from the collection's :py:func:`~QgsLayoutPageCollection.layout`.
 
 Page numbers in collections begin at 0 - so a ``pageNumber`` of 0 will delete
 the first page in the collection.
 
-Calling deletePage() automatically triggers a reflow() of pages.
+Calling :py:func:`~QgsLayoutPageCollection.deletePage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`clear`
 %End
@@ -167,9 +167,9 @@ Calling deletePage() automatically triggers a reflow() of pages.
     void deletePage( QgsLayoutItemPage *page );
 %Docstring
 Deletes a page from the collection. The page will automatically be removed
-from the collection's layout().
+from the collection's :py:func:`~QgsLayoutPageCollection.layout`.
 
-Calling deletePage() automatically triggers a reflow() of pages.
+Calling :py:func:`~QgsLayoutPageCollection.deletePage` automatically triggers a :py:func:`~QgsLayoutPageCollection.reflow` of pages.
 
 .. seealso:: :py:func:`clear`
 %End
@@ -208,7 +208,7 @@ Returns the symbol to use for drawing pages in the collection.
     void beginPageSizeChange();
 %Docstring
 Should be called before changing any page item sizes, and followed by a call to
-endPageSizeChange(). If page size changes are wrapped in these calls, then items
+:py:func:`~QgsLayoutPageCollection.endPageSizeChange`. If page size changes are wrapped in these calls, then items
 will maintain their same relative position on pages after the page sizes are updated.
 
 .. seealso:: :py:func:`endPageSizeChange`
@@ -217,7 +217,7 @@ will maintain their same relative position on pages after the page sizes are upd
     void endPageSizeChange();
 %Docstring
 Should be called after changing any page item sizes, and preceded by a call to
-beginPageSizeChange(). If page size changes are wrapped in these calls, then items
+:py:func:`~QgsLayoutPageCollection.beginPageSizeChange`. If page size changes are wrapped in these calls, then items
 will maintain their same relative position on pages after the page sizes are updated.
 
 .. seealso:: :py:func:`beginPageSizeChange`
@@ -300,7 +300,7 @@ If no page exists at ``point``, ``None`` will be returned.
 
 .. note::
 
-   Unlike pageNumberForPoint(), this method only returns pages which
+   Unlike :py:func:`~QgsLayoutPageCollection.pageNumberForPoint`, this method only returns pages which
    directly intersect with the specified point.
 
 .. seealso:: :py:func:`pageNumberForPoint`

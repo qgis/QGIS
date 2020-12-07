@@ -52,6 +52,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
  */
 class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
+    Q_OBJECT
   public:
     //! Creates flat terrain generator object
     QgsFlatTerrainGenerator() = default;
@@ -61,12 +62,10 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
     QgsRectangle extent() const override;
+    void setExtent( const QgsRectangle &extent ) override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
-
-    //! Sets extent of the terrain
-    void setExtent( const QgsRectangle &extent );
 
     //! Sets CRS of the terrain
     void setCrs( const QgsCoordinateReferenceSystem &crs );

@@ -90,7 +90,11 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
       layerType = QStringLiteral( "mesh" );
       break;
     }
-
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      layerType = QStringLiteral( "pointcloud" );
+      break;
+    }
     case QgsMapLayerType::VectorTileLayer:
     {
       layerType = QStringLiteral( "vector-tile" );
@@ -98,6 +102,7 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
     {
       // plugin layers do not have a standard way of storing their URI...
       return;
@@ -272,7 +277,7 @@ QString QgsMimeDataUtils::encode( const QStringList &items )
   for ( const QString &item : constItems )
   {
     QString str = item;
-    str.replace( '\\', QStringLiteral( "\\\\" ) );
+    str.replace( '\\', QLatin1String( "\\\\" ) );
     str.replace( re, QStringLiteral( "\\:" ) );
     encoded += str + ':';
   }

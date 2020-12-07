@@ -57,7 +57,7 @@ void QgsOgrDbConnection::save( )
 
 bool QgsOgrDbConnection::allowProjectsInDatabase()
 {
-  return mSettingsKey == QStringLiteral( "GPKG" );
+  return mSettingsKey == QLatin1String( "GPKG" );
 }
 
 QString QgsOgrDbConnection::fullKey( const QString &settingsKey )

@@ -143,12 +143,12 @@ void TestQgsTemporalNavigationObject::temporalExtents()
 void TestQgsTemporalNavigationObject::navigationMode()
 {
   QgsDateTimeRange range = QgsDateTimeRange(
-                             QDateTime( QDate( 2010, 1, 1 ) ),
-                             QDateTime( QDate( 2020, 1, 1 ) ) );
+                             QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) ),
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ) );
 
   QgsDateTimeRange range2 = QgsDateTimeRange(
-                              QDateTime( QDate( 2015, 1, 1 ) ),
-                              QDateTime( QDate( 2020, 1, 1 ) ) );
+                              QDateTime( QDate( 2015, 1, 1 ), QTime( 0, 0, 0 ) ),
+                              QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ) );
 
   QgsDateTimeRange check;
   auto checkUpdateTemporalRange = [&check]( const QgsDateTimeRange range )
@@ -197,21 +197,41 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( navigationObject->frameDuration(), QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
+  QCOMPARE( temporalRangeSignal.count(), 2 );
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
   QCOMPARE( navigationObject->totalFrameCount(), 5 );
 
   navigationObject->setCurrentFrameNumber( 1 );
   QCOMPARE( navigationObject->currentFrameNumber(), 1 );
-  QCOMPARE( temporalRangeSignal.count(), 2 );
+  QCOMPARE( temporalRangeSignal.count(), 3 );
+
+  // Test Overflow
+  navigationObject->setCurrentFrameNumber( 100 );
+  QCOMPARE( navigationObject->currentFrameNumber(), navigationObject->totalFrameCount() - 1 );
+  QCOMPARE( temporalRangeSignal.count(), 4 );
+
+  // Test Underflow
+  navigationObject->setCurrentFrameNumber( -100 );
+  QCOMPARE( navigationObject->currentFrameNumber(), 0 );
+  QCOMPARE( temporalRangeSignal.count(), 5 );
 
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
 
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), lastRange );
 
+  // Test if changing the frame duration 'keeps' the current frameNumber
+  navigationObject->setCurrentFrameNumber( 4 ); // 12:00-...
+  QCOMPARE( navigationObject->currentFrameNumber(), 4 );
+  navigationObject->setFrameDuration( QgsInterval( 2, QgsUnitTypes::TemporalHours ) );
+  QCOMPARE( navigationObject->currentFrameNumber(), 2 ); // going from 1 hour to 2 hour frames, but stay on 12:00-...
+  QCOMPARE( temporalRangeSignal.count(), 7 );
+
+  // Test if, when changing to Cumulative mode, the dateTimeRange for frame 4 (with 2 hours frames) is indeed the full range
   navigationObject->setTemporalRangeCumulative( true );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), range );
+  QCOMPARE( temporalRangeSignal.count(), 7 );
 }
 
 void TestQgsTemporalNavigationObject::expressionContext()

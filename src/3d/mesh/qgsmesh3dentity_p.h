@@ -39,7 +39,6 @@
 #define SIP_NO_FILE
 
 class Qgs3DMapSettings;
-class QgsTessellatedPolygonGeometry;
 class QgsMesh3DSymbol;
 
 class QgsMeshLayer;
@@ -54,16 +53,14 @@ class QgsMesh3dEntity
   protected:
     //! Constructor
     QgsMesh3dEntity( const Qgs3DMapSettings &map,
-                     QgsMeshLayer *meshLayer,
-                     const QgsMesh3DSymbol &symbol );
+                     const QgsTriangularMesh &triangularMesh,
+                     const QgsMesh3DSymbol *symbol );
 
     virtual ~QgsMesh3dEntity() = default;
 
-    QgsMeshLayer *layer() const;
-
     Qgs3DMapSettings mMapSettings;
-    QgsMapLayerRef mLayerRef;
-    QgsMesh3DSymbol mSymbol;
+    QgsTriangularMesh mTriangularMesh;
+    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
 
   private:
     virtual void buildGeometry() = 0;
@@ -76,12 +73,16 @@ class QgsMeshDataset3dEntity: public QgsMesh3dEntity, public Qt3DCore::QEntity
   public:
     //! Constructor
     QgsMeshDataset3dEntity( const Qgs3DMapSettings &map,
+                            const QgsTriangularMesh &triangularMesh,
                             QgsMeshLayer *meshLayer,
-                            const QgsMesh3DSymbol &symbol );
+                            const QgsMesh3DSymbol *symbol );
 
   private:
     virtual void buildGeometry();
     virtual void applyMaterial();
+
+    QgsMeshLayer *layer() const;
+    QgsMapLayerRef mLayerRef;
 
 };
 
@@ -90,8 +91,8 @@ class QgsMesh3dTerrainTileEntity: public QgsMesh3dEntity, public QgsTerrainTileE
 {
   public:
     QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &map,
-                                QgsMeshLayer *meshLayer,
-                                const QgsMesh3DSymbol &symbol,
+                                const QgsTriangularMesh &triangularMesh,
+                                const QgsMesh3DSymbol *symbol,
                                 QgsChunkNodeId nodeId,
                                 Qt3DCore::QNode *parent = nullptr );
 

@@ -28,14 +28,14 @@ class QgisApp;
 class QgsVectorLayer;
 
 /**
- * @brief The QgsGeometryValidationDock class
+ * \brief The QgsGeometryValidationDock class
  */
 class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryValidationDockBase
 {
     Q_OBJECT
 
   public:
-    QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     QgsGeometryValidationModel *geometryValidationModel() const;
     void setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel );
@@ -57,6 +57,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void updateLayerTransform();
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
     void onRowsInserted();
+    void showErrorContextMenu( const QPoint &pos );
 
   private:
 
@@ -81,6 +82,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsRubberBand *mErrorLocationRubberband = nullptr;
     QgsVectorLayer *mCurrentLayer = nullptr;
     bool mPreventZoomToError = false;
+    QMenu *mGeometryErrorContextMenu = nullptr;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H

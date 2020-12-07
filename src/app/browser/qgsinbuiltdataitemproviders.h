@@ -25,6 +25,8 @@
 class QgsDirectoryItem;
 class QgsFavoriteItem;
 class QgsLayerItem;
+class QgsFieldsItem;
+class QgsFieldItem;
 
 class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -103,6 +105,55 @@ class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void deleteLayers( const QStringList &itemPath, QgsDataItemGuiContext context );
 
 };
+
+
+class QgsFieldsItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldsItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
+
+class QgsFieldItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
+
+class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsDatabaseItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
 
 
 class QgsProjectItemGuiProvider : public QObject, public QgsDataItemGuiProvider

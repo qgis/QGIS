@@ -23,8 +23,11 @@
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsdiagramrenderer.h"
 #include "qgssymbollayerutils.h"
+#include "qgspointcloudrenderer.h"
+#include "qgsrasterrenderer.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -59,6 +62,11 @@ QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml )
   return new QgsDefaultMeshLayerLegend( ml );
 }
 
+QgsMapLayerLegend *QgsMapLayerLegend::defaultPointCloudLegend( QgsPointCloudLayer *layer )
+{
+  return new QgsDefaultPointCloudLayerLegend( layer );
+}
+
 // -------------------------------------------------------------------------
 
 
@@ -68,7 +76,7 @@ void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, c
   const auto constOrder = order;
   for ( int id : constOrder )
     orderStr << QString::number( id );
-  QString str = orderStr.isEmpty() ? QStringLiteral( "empty" ) : orderStr.join( QStringLiteral( "," ) );
+  QString str = orderStr.isEmpty() ? QStringLiteral( "empty" ) : orderStr.join( QLatin1Char( ',' ) );
 
   nodeLayer->setCustomProperty( QStringLiteral( "legend/node-order" ), str );
 }
@@ -321,8 +329,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
   const auto constLegendSymbolItems = r->legendSymbolItems();
   for ( const QgsLegendSymbolItem &i : constLegendSymbolItems )
   {
-    if ( i.dataDefinedSizeLegendSettings() )
-      nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *i.dataDefinedSizeLegendSettings() );
+    if ( auto *lDataDefinedSizeLegendSettings = i.dataDefinedSizeLegendSettings() )
+      nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *lDataDefinedSizeLegendSettings );
     else
     {
       QgsSymbolLegendNode *legendNode = new QgsSymbolLegendNode( nodeLayer, i );
@@ -419,28 +427,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  QgsLegendColorList rasterItemList = mLayer->legendSymbologyItems();
-  if ( rasterItemList.isEmpty() )
-    return nodes;
-
-  // Paletted raster may have many colors, for example UInt16 may have 65536 colors
-  // and it is very slow, so we limit max count
-  int count = 0;
-  int max_count = 1000;
-
-  for ( QgsLegendColorList::const_iterator itemIt = rasterItemList.constBegin();
-        itemIt != rasterItemList.constEnd(); ++itemIt, ++count )
-  {
-    nodes << new QgsRasterSymbolLegendNode( nodeLayer, itemIt->second, itemIt->first );
-
-    if ( count == max_count )
-    {
-      QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
-      nodes << new QgsSimpleLegendNode( nodeLayer, label );
-      break;
-    }
-  }
-
+  if ( mLayer->renderer() )
+    nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
   return nodes;
 }
 
@@ -492,4 +480,23 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
   }
 
   return nodes;
+}
+
+//
+// QgsDefaultPointCloudLayerLegend
+//
+
+QgsDefaultPointCloudLayerLegend::QgsDefaultPointCloudLayerLegend( QgsPointCloudLayer *layer )
+  : mLayer( layer )
+{
+  connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsDefaultPointCloudLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QgsPointCloudRenderer *renderer = mLayer->renderer();
+  if ( !renderer )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  return renderer->createLegendNodes( nodeLayer );
 }

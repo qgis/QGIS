@@ -46,7 +46,7 @@ A non-translated short description representing the auth method for use in debug
 
     virtual QString displayDescription() const = 0;
 %Docstring
-Translatable display version of the 'description()'
+Translatable display version of the ':py:func:`~QgsAuthMethod.description`'
 %End
 
     int version() const;

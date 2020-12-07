@@ -14,7 +14,12 @@
  ***************************************************************************/
 
 #include "qgsdataitemguiprovider.h"
-
+#include "qgsdataitem.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsmessagebar.h"
+#include <QMessageBox>
 //
 // QgsDataItemGuiContext
 //
@@ -35,6 +40,7 @@ void QgsDataItemGuiContext::setMessageBar( QgsMessageBar *messageBar )
 
 void QgsDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
+
 }
 
 bool QgsDataItemGuiProvider::rename( QgsDataItem *, const QString &, QgsDataItemGuiContext )
@@ -65,4 +71,40 @@ bool QgsDataItemGuiProvider::handleDrop( QgsDataItem *, QgsDataItemGuiContext, c
 QWidget *QgsDataItemGuiProvider::createParamWidget( QgsDataItem *, QgsDataItemGuiContext )
 {
   return nullptr;
+}
+
+void QgsDataItemGuiProvider::notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level, int duration, QWidget *parent )
+{
+  if ( QgsMessageBar *bar = context.messageBar() )
+  {
+    bar->pushMessage( title, message, level, duration );
+  }
+  else
+  {
+    switch ( level )
+    {
+      case Qgis::MessageLevel::Info:
+      case Qgis::MessageLevel::None:
+      {
+        QMessageBox::information( parent, title, message );
+        break;
+      }
+      case Qgis::MessageLevel::Warning:
+      {
+        QMessageBox::warning( parent, title, message );
+        break;
+      }
+      case Qgis::MessageLevel::Critical:
+      {
+        QMessageBox::critical( parent, title, message );
+        break;
+      }
+      case Qgis::MessageLevel::Success:
+      {
+        // There is no "success" in message box, let's use information instead
+        QMessageBox::information( parent, title, message );
+        break;
+      }
+    }
+  }
 }

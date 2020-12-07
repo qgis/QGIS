@@ -1,7 +1,8 @@
 {
   "name": "try",
   "type": "function",
-  "description": "Tries an expression and returns its value if error-free. If the expression returns an error, an alternative value will be returned when provided otherwise the function will return null.",
+  "groups": ["Conditionals"],
+  "description": "Tries an expression and returns its value if error-free. If the expression returns an error, an alternative value will be returned when provided otherwise the function will return NULL.",
   "arguments": [
     {"arg":"expression","description":"the expression which should be run"},
     {"arg":"alternative","optional":true,"description":"the result which will be returned if the expression returns an error."}

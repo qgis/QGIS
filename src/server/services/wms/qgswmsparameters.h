@@ -53,6 +53,7 @@ namespace QgsWms
     QList<QgsWmsParametersFilter> mFilter; // list of filter
     QStringList mSelection; // list of string fid
     QString mStyle;
+    QString mExternalUri;
   };
 
   struct QgsWmsParametersExternalLayer
@@ -85,7 +86,6 @@ namespace QgsWms
     float mGridX = 0;
     float mGridY = 0;
     QList<QgsWmsParametersLayer> mLayers; // list of layers for this composer map
-    QList<QgsWmsParametersExternalLayer> mExternalLayers; // list of external layers for this composer map
     QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
   };
 

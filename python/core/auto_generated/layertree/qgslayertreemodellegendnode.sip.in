@@ -38,7 +38,19 @@ and customized look.
     enum LegendNodeRoles
     {
       RuleKeyRole,
-      ParentRuleKeyRole
+      ParentRuleKeyRole,
+      NodeTypeRole,
+    };
+
+    enum NodeTypes
+    {
+      SimpleLegend,
+      SymbolLegend,
+      RasterSymbolLegend,
+      ImageLegend,
+      WmsLegend,
+      DataDefinedSizeLegend,
+      EmbeddedWidget,
     };
 
     QgsLayerTreeLayer *layerNode() const;
@@ -119,7 +131,7 @@ Returns whether a forced column break should occur before the node.
     virtual void invalidateMapBasedData();
 %Docstring
 Notification from model that information from associated map view has changed.
-Default implementation does nothing. *
+Default implementation does nothing.
 %End
 
     struct ItemContext
@@ -155,7 +167,7 @@ Default implementation does nothing. *
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 %Docstring
 Entry point called from QgsLegendRenderer to do the rendering.
-Default implementation calls drawSymbol() and drawSymbolText() methods.
+Default implementation calls :py:func:`~QgsLayerTreeModelLegendNode.drawSymbol` and :py:func:`~QgsLayerTreeModelLegendNode.drawSymbolText` methods.
 
 If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
 %End
@@ -203,10 +215,52 @@ Draws label on the right side of the item
 :return: Size of the label (may span multiple lines)
 %End
 
+  public slots:
+
+    void checkAllItems();
+%Docstring
+Checks all checkable items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`uncheckAllItems`
+
+.. seealso:: :py:func:`toggleAllItems`
+
+.. versionadded:: 3.18
+%End
+
+    void uncheckAllItems();
+%Docstring
+Unchecks all checkable items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`checkAllItems`
+
+.. seealso:: :py:func:`toggleAllItems`
+
+.. versionadded:: 3.18
+%End
+
+    void toggleAllItems();
+%Docstring
+Toggle all checkable items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`checkAllItems`
+
+.. seealso:: :py:func:`uncheckAllItems`
+
+.. versionadded:: 3.18
+%End
+
   signals:
     void dataChanged();
 %Docstring
 Emitted on internal data change so the layer tree model can forward the signal to views
+%End
+
+    void sizeChanged();
+%Docstring
+Emitted when the size of this node changes.
+
+.. versionadded:: 3.16
 %End
 
   protected:
@@ -221,6 +275,7 @@ Returns a temporary context or ``None`` if legendMapViewData are not valid
 %End
 
   protected:
+
 };
 
 
@@ -296,7 +351,7 @@ argument.
 %Docstring
 Calculates the minimum icon size to prevent cropping. When evaluating
 the size for multiple icons it is more efficient to create a single
-render context in advance and call this method instead of minimumIconSize().
+render context in advance and call this method instead of :py:func:`~QgsSymbolLegendNode.minimumIconSize`.
 
 .. versionadded:: 2.18
 %End
@@ -380,7 +435,7 @@ Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
 Returns the node's custom symbol.
 
 If a non-``None`` value is returned, then this symbol will be used for rendering
-the legend node instead of the default symbol().
+the legend node instead of the default :py:func:`~QgsSymbolLegendNode.symbol`.
 
 .. seealso:: :py:func:`setCustomSymbol`
 
@@ -392,7 +447,7 @@ the legend node instead of the default symbol().
 Sets the node's custom ``symbol``.
 
 If a non-``None`` value is set, then this symbol will be used for rendering
-the legend node instead of the default symbol().
+the legend node instead of the default :py:func:`~QgsSymbolLegendNode.symbol`.
 
 Ownership of ``symbol`` is transferred.
 
@@ -409,41 +464,6 @@ Evaluates  and returns the text label of the current node
 :param label: text to evaluate instead of the layer layertree string
 
 .. versionadded:: 3.10
-%End
-
-  public slots:
-
-    void checkAllItems();
-%Docstring
-Checks all items belonging to the same layer as this node.
-
-.. seealso:: :py:func:`uncheckAllItems`
-
-.. seealso:: :py:func:`toggleAllItems`
-
-.. versionadded:: 2.14
-%End
-
-    void uncheckAllItems();
-%Docstring
-Unchecks all items belonging to the same layer as this node.
-
-.. seealso:: :py:func:`checkAllItems`
-
-.. seealso:: :py:func:`toggleAllItems`
-
-.. versionadded:: 2.14
-%End
-
-    void toggleAllItems();
-%Docstring
-Toggle all items belonging to the same layer as this node.
-
-.. seealso:: :py:func:`checkAllItems`
-
-.. seealso:: :py:func:`uncheckAllItems`
-
-.. versionadded:: 3.6
 %End
 
 };
@@ -525,7 +545,7 @@ Implementation of legend node interface for displaying raster legend entries
 %End
   public:
 
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0 );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0, bool isCheckable = false, const QString &ruleKey = QString() );
 %Docstring
 Constructor for QgsRasterSymbolLegendNode.
 
@@ -533,16 +553,34 @@ Constructor for QgsRasterSymbolLegendNode.
 :param color: color
 :param label: label
 :param parent: attach a parent QObject to the legend node.
+:param isCheckable: set to ``True`` to enable the checkbox for the node (since QGIS 3.18)
+:param ruleKey: optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
 %End
+
+    virtual Qt::ItemFlags flags() const;
 
     virtual QVariant data( int role ) const;
 
+    virtual bool setData( const QVariant &value, int role );
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
-
     virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
+
+    QString ruleKey() const;
+%Docstring
+Returns the unique identifier of node for identification of the item within renderer.
+
+.. versionadded:: 3.18
+%End
+
+    bool isCheckable() const;
+%Docstring
+Returns whether the item is user-checkable - whether renderer supports enabling/disabling it.
+
+.. versionadded:: 3.18
+%End
 
 };
 

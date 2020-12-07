@@ -170,6 +170,11 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
         bool mHasNamedNodes = false;
 
+        /**
+         * Cleans up and standardises the name of a named node.
+         */
+        static QString cleanNamedNodeName( const QString &name );
+
       public:
     };
 

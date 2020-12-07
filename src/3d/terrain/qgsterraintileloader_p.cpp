@@ -27,6 +27,7 @@
 
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QPhongMaterial>
 
 #include "quantizedmeshterraingenerator.h"
 
@@ -37,25 +38,20 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   , mTerrain( terrain )
 {
   const Qgs3DMapSettings &map = mTerrain->map3D();
-  int tx, ty, tz;
 #if 0
+  int tx, ty, tz;
   if ( map.terrainGenerator->type() == TerrainGenerator::QuantizedMesh )
   {
     // TODO: sort out - should not be here
     QuantizedMeshTerrainGenerator *generator = static_cast<QuantizedMeshTerrainGenerator *>( map.terrainGenerator.get() );
     generator->quadTreeTileToBaseTile( node->x, node->y, node->z, tx, ty, tz );
   }
-  else
 #endif
-  {
-    tx = node->tileX();
-    ty = node->tileY();
-    tz = node->tileZ();
-  }
 
-  QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( tx, ty, tz );
+  QgsChunkNodeId nodeId = node->tileId();
+  QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   mExtentMapCrs = terrain->terrainToMapTransform().transformBoundingBox( extentTerrainCrs );
-  mTileDebugText = QStringLiteral( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz );
+  mTileDebugText = nodeId.text();
 }
 
 void QgsTerrainTileLoader::loadTexture()
@@ -64,26 +60,38 @@ void QgsTerrainTileLoader::loadTexture()
   mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mNode->tileId(), mTileDebugText );
 }
 
-void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial )
+void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture )
 {
-  Qt3DRender::QTexture2D *texture = createTexture( entity );
+  Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity ) : nullptr;
 
   Qt3DRender::QMaterial *material = nullptr;
-  if ( isShadingEnabled )
+  if ( texture )
   {
-    Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial;
-    diffuseMapMaterial = new Qt3DExtras::QDiffuseMapMaterial;
-    diffuseMapMaterial->setDiffuse( texture );
-    diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
-    diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
-    diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
-    material = diffuseMapMaterial;
+    if ( isShadingEnabled )
+    {
+      Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial;
+      diffuseMapMaterial = new Qt3DExtras::QDiffuseMapMaterial;
+      diffuseMapMaterial->setDiffuse( texture );
+      diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
+      diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
+      diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
+      material = diffuseMapMaterial;
+    }
+    else
+    {
+      Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+      textureMaterial->setTexture( texture );
+      material = textureMaterial;
+    }
   }
   else
   {
-    Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
-    textureMaterial->setTexture( texture );
-    material = textureMaterial;
+    Qt3DExtras::QPhongMaterial *phongMaterial  = new Qt3DExtras::QPhongMaterial;
+    phongMaterial->setDiffuse( shadingMaterial.diffuse() );
+    phongMaterial->setAmbient( shadingMaterial.ambient() );
+    phongMaterial->setSpecular( shadingMaterial.specular() );
+    phongMaterial->setShininess( shadingMaterial.shininess() );
+    material = phongMaterial;
   }
 
   entity->addComponent( material ); // takes ownership if the component has no parent

@@ -187,7 +187,7 @@ namespace QgsWfs
     }
 
     QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
-    if ( !keywords.isEmpty() && !keywords.join( QStringLiteral( ", " ) ).isEmpty() )
+    if ( !keywords.isEmpty() && !keywords.join( QLatin1String( ", " ) ).isEmpty() )
     {
       QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
       for ( const QString &keyword : keywords )

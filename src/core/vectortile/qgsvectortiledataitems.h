@@ -22,7 +22,7 @@
 #define SIP_NO_FILE
 
 //! Root item for XYZ tile layers
-class CORE_EXPORT QgsVectorTileRootItem : public QgsDataCollectionItem
+class CORE_EXPORT QgsVectorTileRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

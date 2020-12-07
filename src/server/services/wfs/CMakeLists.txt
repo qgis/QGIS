@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-SET (WFS_SRCS
+set (WFS_SRCS
   qgswfs.cpp
   qgswfsutils.cpp
   qgswfsgetcapabilities.cpp
@@ -14,22 +14,22 @@ SET (WFS_SRCS
   qgswfsparameters.cpp
 )
 
-SET (WFS_HDRS
+set (WFS_HDRS
   qgswfsparameters.h
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wfs MODULE ${WFS_SRCS} ${WFS_HDRS})
+add_library (wfs MODULE ${WFS_SRCS} ${WFS_HDRS})
 
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
@@ -55,7 +55,7 @@ INCLUDE_DIRECTORIES(
 )
 
 
-TARGET_LINK_LIBRARIES(wfs
+target_link_libraries(wfs
   qgis_core
   qgis_server
 )
@@ -64,7 +64,7 @@ TARGET_LINK_LIBRARIES(wfs
 ########################################################
 # Install
 
-INSTALL(TARGETS wfs
+install(TARGETS wfs
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

@@ -127,18 +127,19 @@ void QgsBrowserModel::addRootItems()
 #ifdef Q_OS_MAC
   QString path = QString( "/Volumes" );
   QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Volumes" ) );
+  setupItemConnections( vols );
   mRootItems << vols;
 #endif
 
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
-  QMap<int, QgsDataItem *> providerMap;
+  QMultiMap<int, QgsDataItem *> providerMap;
 
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
   {
     if ( QgsDataItem *item = addProviderRootItem( pr ) )
     {
-      providerMap.insertMulti( pr->capabilities(), item );
+      providerMap.insert( pr->capabilities(), item );
     }
   }
 
@@ -776,7 +777,7 @@ QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
   QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
   if ( item )
   {
-    // make sure the top level key is set always
+    // make sure the top level key is always set
     item->setProviderKey( pr->name() );
     // Forward the signal from the root items to the model (and then to the app)
     connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::onConnectionsChanged );

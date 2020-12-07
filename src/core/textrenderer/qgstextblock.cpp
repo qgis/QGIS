@@ -21,6 +21,16 @@ QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
   mFragments.append( fragment );
 }
 
+QString QgsTextBlock::toPlainText() const
+{
+  QString res;
+  for ( const QgsTextFragment &fragment : mFragments )
+  {
+    res.append( fragment.text() );
+  }
+  return res;
+}
+
 void QgsTextBlock::append( const QgsTextFragment &fragment )
 {
   mFragments.append( fragment );
@@ -44,6 +54,14 @@ bool QgsTextBlock::empty() const
 int QgsTextBlock::size() const
 {
   return mFragments.size();
+}
+
+void QgsTextBlock::applyCapitalization( QgsStringUtils::Capitalization capitalization )
+{
+  for ( QgsTextFragment &fragment : mFragments )
+  {
+    fragment.applyCapitalization( capitalization );
+  }
 }
 
 const QgsTextFragment &QgsTextBlock::at( int index ) const

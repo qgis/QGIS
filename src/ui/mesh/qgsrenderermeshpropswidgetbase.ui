@@ -41,7 +41,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -60,7 +60,7 @@
      </property>
      <widget class="QWidget" name="mActiveDatasetTab">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.svg</normaloff>:/images/themes/default/propertyicons/general.svg</iconset>
       </attribute>
       <attribute name="title">
@@ -132,7 +132,7 @@
      </widget>
      <widget class="QWidget" name="mContoursTab">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/meshcontours.svg</normaloff>:/images/themes/default/propertyicons/meshcontours.svg</iconset>
       </attribute>
       <attribute name="title">
@@ -195,7 +195,7 @@
      </widget>
      <widget class="QWidget" name="mVectorsTab">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/meshvectors.svg</normaloff>:/images/themes/default/propertyicons/meshvectors.svg</iconset>
       </attribute>
       <attribute name="title">
@@ -253,7 +253,7 @@
      </widget>
      <widget class="QWidget" name="mMeshTab">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/meshframe.svg</normaloff>:/images/themes/default/propertyicons/meshframe.svg</iconset>
       </attribute>
       <attribute name="title">
@@ -391,7 +391,7 @@
      </widget>
      <widget class="QWidget" name="mAveragingTab">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/meshaveraging.svg</normaloff>:/images/themes/default/propertyicons/meshaveraging.svg</iconset>
       </attribute>
       <attribute name="title">
@@ -481,6 +481,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

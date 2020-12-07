@@ -104,7 +104,7 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModelBase: public QAbstractTableMo
     /**
      * Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
-     * \returns true if the move is allowed
+     * \returns TRUE if the move is allowed
      * \param row row in model representing attribute table column to move
      * \param direction direction to move the attribute table column
      */
@@ -282,7 +282,7 @@ class GUI_EXPORT QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::
     Q_OBJECT
   public:
     //! constructor
-    QgsLayoutAttributeSelectionDialog( QgsLayoutItemAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsLayoutAttributeSelectionDialog( QgsLayoutItemAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
   private slots:
     void mRemoveColumnPushButton_clicked();

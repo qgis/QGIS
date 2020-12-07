@@ -100,6 +100,26 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
     bool allowEmptyItem() const;
 
     /**
+     * Sets layout item flags to use for filtering the available items.
+     *
+     * Set \a flags to NULLPTR to clear the flag based filtering.
+     *
+     * \see itemFlags()
+     * \since QGIS 3.16
+     */
+    void setItemFlags( QgsLayoutItem::Flags flags );
+
+    /**
+     * Returns the layout item flags used for filtering the available items.
+     *
+     * Returns NULLPTR if no flag based filtering is occurring.
+     *
+     * \see setItemFlags()
+     * \since QGIS 3.16
+     */
+    QgsLayoutItem::Flags itemFlags() const;
+
+    /**
      * Returns the item currently shown at the specified \a index within the combo box.
      * \see currentItem()
      */

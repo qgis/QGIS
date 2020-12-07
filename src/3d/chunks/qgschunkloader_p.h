@@ -63,13 +63,50 @@ class QgsChunkLoader : public QgsChunkQueueJob
  * Factory for chunk loaders for a particular type of entity
  * \since QGIS 3.0
  */
-class QgsChunkLoaderFactory
+class QgsChunkLoaderFactory  : public QObject
 {
+    Q_OBJECT
   public:
     virtual ~QgsChunkLoaderFactory() = default;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;
+
+    //! Creates root node of the hierarchy. Ownership of the returned object is passed to the caller.
+    virtual QgsChunkNode *createRootNode() const = 0;
+    //! Creates child nodes for the given node. Ownership of the returned objects is passed to the caller.
+    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const = 0;
+};
+
+
+#include "qgsaabb.h"
+
+/**
+ * \ingroup 3d
+ * Base class for factories where the hierarchy is a quadtree where all leaves
+ * are in the same depth.
+ *
+ * \since QGIS 3.18
+ */
+class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
+{
+    Q_OBJECT
+  public:
+    QgsQuadtreeChunkLoaderFactory();
+    virtual ~QgsQuadtreeChunkLoaderFactory();
+
+    //! Initializes the root node setup (bounding box and error) and tree depth
+    void setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel );
+
+    virtual QgsChunkNode *createRootNode() const override;
+    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+
+  protected:
+    QgsAABB mRootBbox;
+    float mRootError;
+    //! maximum allowed depth of quad tree
+    int mMaxLevel;
+
 };
 
 /// @endcond

@@ -23,7 +23,11 @@ from qgis.core import (
     QgsTransactionGroup,
     QgsFeature,
     QgsGeometry,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsDataProvider,
+    QgsVectorLayerExporter,
+    QgsFields,
+    QgsCoordinateReferenceSystem
 )
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
@@ -769,6 +773,69 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             'test', 'oracle')
 
         self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0, 2])
+
+    def getGeneratedColumnsData(self):
+        """
+        return a tuple with the generated column test layer and the expected generated value
+        """
+        return (QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."GENERATED_COLUMNS"', 'test', 'oracle'),
+                """'test:'||TO_CHAR("pk")""")
+
+    def testEvaluateDefaultValues(self):
+        """
+        Test default values evaluation on with or without option EvaluateDefaultValues
+        see https://github.com/qgis/QGIS/issues/39504
+        """
+
+        self.execSQLCommand('DROP TABLE "QGIS"."TEST_EVAL_EXPR"', ignore_errors=True)
+        self.execSQLCommand("""CREATE TABLE "QGIS"."TEST_EVAL_EXPR" (pk INTEGER, "name" VARCHAR2(100) DEFAULT 'qgis')""")
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="QGIS"."TEST_EVAL_EXPR" sql=',
+            'test', 'oracle')
+
+        self.assertTrue(vl.isValid())
+
+        # feature with default evaluation clause (not yet evaluated)
+        feat1 = QgsFeature(vl.fields())
+        feat1.setAttributes([1, "'qgis'"])
+
+        feat2 = QgsFeature(vl.fields())
+        feat2.setAttributes([2, 'test'])
+
+        self.assertTrue(vl.dataProvider().addFeatures([feat1, feat2]))
+
+        attributes = [feat.attributes() for feat in vl.getFeatures()]
+        self.assertEqual(attributes, [[1, 'qgis'], [2, 'test']])
+
+        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+
+        # feature with already evaluated default value
+        feat1 = QgsFeature(vl.fields())
+        feat1.setAttributes([3, 'qgis'])
+
+        feat2 = QgsFeature(vl.fields())
+        feat2.setAttributes([4, 'test'])
+
+        self.assertTrue(vl.dataProvider().addFeatures([feat1, feat2]))
+
+        attributes = [feat.attributes() for feat in vl.getFeatures()]
+        self.assertEqual(attributes, [[1, 'qgis'], [2, 'test'], [3, 'qgis'], [4, 'test']])
+
+    def testCreateEmptyLayer(self):
+        uri = self.dbconn + "srid=4326 type=POINT table=\"EMPTY_LAYER\" (GEOM)"
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem(4326), overwrite=True)
+        self.assertEqual(exporter.errorCount(), 0)
+        self.assertEqual(exporter.errorCode(), 0)
+        # check IF there is an empty table (will throw error if the EMPTY_LAYER table does not excist)
+        self.execSQLCommand('SELECT count(*) FROM "QGIS"."EMPTY_LAYER"')
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="QGIS"."EMPTY_LAYER" sql=',
+            'test', 'oracle')
+        self.assertTrue(vl.isValid())
+        # cleanup
+        self.execSQLCommand('DROP TABLE "QGIS"."EMPTY_LAYER"')
+        self.execSQLCommand("DELETE FROM user_sdo_geom_metadata  where TABLE_NAME='EMPTY_LAYER'")
 
 
 if __name__ == '__main__':

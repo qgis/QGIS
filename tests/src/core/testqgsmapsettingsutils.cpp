@@ -93,8 +93,10 @@ void TestQgsMapSettingsUtils::containsAdvancedEffects()
   QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings ).size(), 0 );
   QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings, QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ).size(), 0 );
 
+  // changing an individual layer's opacity is OK -- we don't want to force the whole map to be rasterized just because of this setting!
+  // (just let that one layer get exported as raster instead)
   layer->setOpacity( 0.5 );
-  QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings ).size(), 1 );
+  QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings ).size(), 0 );
   QCOMPARE( QgsMapSettingsUtils::containsAdvancedEffects( mapSettings, QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ).size(), 0 );
 }
 

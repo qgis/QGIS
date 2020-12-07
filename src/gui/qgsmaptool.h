@@ -26,6 +26,7 @@
 #include <QGestureEvent>
 #include "qgis_gui.h"
 
+
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRenderContext;
@@ -133,7 +134,8 @@ class GUI_EXPORT QgsMapTool : public QObject
      * Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
-     * the previously used toolbutton to pop out. */
+     * the previously used toolbutton to pop out.
+    */
     void setAction( QAction *action );
 
     //! Returns associated action with map tool or NULLPTR if no action is associated
@@ -147,7 +149,8 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /**
      * Use this to associate a button to this maptool. It has the same meaning
-     * as setAction() function except it works with a button instead of an QAction. */
+     * as setAction() function except it works with a button instead of an QAction.
+    */
     void setButton( QAbstractButton *button );
 
     //! Returns associated button with map tool or NULLPTR if no button is associated
@@ -178,19 +181,22 @@ class GUI_EXPORT QgsMapTool : public QObject
      * Gets search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
      *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
-     *  \since QGIS 2.3 */
+     *  \since QGIS 2.3
+    */
     static double searchRadiusMM();
 
     /**
      * Gets search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
-     *  \since QGIS 2.3 */
+     *  \since QGIS 2.3
+    */
     static double searchRadiusMU( const QgsRenderContext &context );
 
     /**
      * Gets search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
-     *  \since QGIS 2.3 */
+     *  \since QGIS 2.3
+     */
     static double searchRadiusMU( QgsMapCanvas *canvas );
 
     /**
@@ -208,6 +214,26 @@ class GUI_EXPORT QgsMapTool : public QObject
      * \since QGIS 3.14
      */
     virtual void populateContextMenu( QMenu *menu );
+
+    /**
+     * Allows the tool to populate and customize the given \a menu,
+     * prior to showing it in response to a right-mouse button click.
+     *
+     * \a menu will be initially populated with a set of default, generic actions.
+     * Any new actions added to the menu should be correctly parented to \a menu.
+     *
+     * A pointer to the map mouse \a event can be provided to allow particular behavior depending on the map tool.
+     *
+     * This method can return true to inform the caller that the menu was effectively populated.
+     *
+     * The default implementation does nothing and returns false.
+     *
+     * \note The context menu is only shown when the ShowContextMenu flag
+     * is present in flags().
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
 
   signals:
     //! emit a message

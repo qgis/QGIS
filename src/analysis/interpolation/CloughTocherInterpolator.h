@@ -106,7 +106,7 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     CloughTocherInterpolator( NormVecDecorator *tin );
 
     //! Calculates the normal vector and assigns it to vec (not implemented at the moment)
-    bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcNormVec( double x, double y, QgsPoint &result SIP_OUT ) override;
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     virtual void setTriangulation( NormVecDecorator *tin );
 };

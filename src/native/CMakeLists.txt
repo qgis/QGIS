@@ -1,103 +1,103 @@
 #############################################################
 # locate native libs
 
-IF (IOS)
+if (IOS)
   # No native library for IOS
-  RETURN()
-ENDIF(IOS)
+  return()
+endif()
 
 
-SET(NATIVE_LINK_LIBS)
+set(NATIVE_LINK_LIBS)
 
-IF(UNIX AND NOT APPLE AND NOT ANDROID)
-  FIND_PACKAGE(Qt5DBus REQUIRED)
-ENDIF(UNIX AND NOT APPLE AND NOT ANDROID)
+if(UNIX AND NOT APPLE AND NOT ANDROID)
+  find_package(Qt5DBus REQUIRED)
+endif()
 
-IF(APPLE)
-  SET(APPLE_LIB_LIST ApplicationServices CoreFoundation IOKit AppKit)
-  FOREACH(_lib ${APPLE_LIB_LIST})
-    STRING(TOUPPER ${_lib} _lib_var)
+if(APPLE)
+  set(APPLE_LIB_LIST ApplicationServices CoreFoundation IOKit AppKit)
+  foreach(_lib ${APPLE_LIB_LIST})
+    string(TOUPPER ${_lib} _lib_var)
     # prefer /System/Library/Frameworks, in case CMAKE_FIND_FRAMEWORK=LAST, etc.
-    FIND_LIBRARY(APPLE_${_lib_var}_LIBRARY
+    find_library(APPLE_${_lib_var}_LIBRARY
       NAMES ${_lib}
       PATHS /System/Library/Frameworks
       NO_DEFAULT_PATH
     )
     # if not found, drop back to standard find paths
-    FIND_LIBRARY(APPLE_${_lib_var}_LIBRARY ${_lib})
+    find_library(APPLE_${_lib_var}_LIBRARY ${_lib})
 
-    IF(NOT APPLE_${_lib_var}_LIBRARY)
-      MESSAGE(FATAL_ERROR "Couldn't find Apple's '${_lib}' framework or library")
-    ENDIF(NOT APPLE_${_lib_var}_LIBRARY)
+    if(NOT APPLE_${_lib_var}_LIBRARY)
+      message(FATAL_ERROR "Couldn't find Apple's '${_lib}' framework or library")
+    endif()
 
-    LIST(APPEND NATIVE_LINK_LIBS "-weak_framework ${_lib}")
-  ENDFOREACH(_lib ${APPLE_LIB_LIST})
-ENDIF(APPLE)
+    list(APPEND NATIVE_LINK_LIBS "-weak_framework ${_lib}")
+  endforeach(_lib ${APPLE_LIB_LIST})
+endif()
 
 
 #############################################################
 # sources
 
-SET(QGIS_NATIVE_SRCS
+set(QGIS_NATIVE_SRCS
   qgsnative.cpp
 )
 
-SET(QGIS_NATIVE_HDRS
+set(QGIS_NATIVE_HDRS
   qgsnative.h
 )
 
-IF(APPLE)
-  SET(QGIS_APP_OBJC_SRCS
+if(APPLE)
+  set(QGIS_APP_OBJC_SRCS
     mac/cocoainitializer.mm
     mac/qgsmacnative.mm
   )
 
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_APP_OBJC_SRCS} PROPERTIES COMPILE_FLAGS "-x objective-c++")
+  set_source_files_properties(${QGIS_APP_OBJC_SRCS} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 
-  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+  set(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
     ${QGIS_APP_OBJC_SRCS}
   )
-  SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
+  set (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
     mac/qgsmacnative.h
     mac/cocoainitializer.h
   )
-ENDIF(APPLE)
+endif()
 
-IF(MSVC)
-  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+if(MSVC)
+  set(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
     ../../external/wintoast/src/wintoastlib.cpp
     win/qgswinnative.cpp
   )
-  SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
+  set (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
      win/qgswinnative.h
   )
-ENDIF(MSVC)
+endif()
 
-IF(UNIX AND NOT APPLE AND NOT ANDROID)
-  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+if(UNIX AND NOT APPLE AND NOT ANDROID)
+  set(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
     linux/qgslinuxnative.cpp
   )
-  SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
+  set (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
      linux/qgslinuxnative.h
   )
-ENDIF(UNIX AND NOT APPLE AND NOT ANDROID)
+endif()
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-IF(MSVC)
-  INCLUDE_DIRECTORIES(SYSTEM
+if(MSVC)
+  include_directories(SYSTEM
       ../../external/wintoast/src
   )
-ENDIF(MSVC)
+endif()
 
 #############################################################
 # qgis_native library
 
-ADD_LIBRARY(qgis_native SHARED ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_HDRS})
-SET_PROPERTY(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_library(qgis_native SHARED ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_HDRS})
+set_property(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 GENERATE_EXPORT_HEADER(
    qgis_native
@@ -105,12 +105,12 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_native.h
 )
 
-SET(QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_native.h)
+set(QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_native.h)
 
-IF(NOT APPLE)
-  INSTALL(FILES ${QGIS_NATIVE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-ELSE(NOT APPLE)
-  SET_TARGET_PROPERTIES(qgis_native PROPERTIES
+if(NOT APPLE)
+  install(FILES ${QGIS_NATIVE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+else()
+  set_target_properties(qgis_native PROPERTIES
     CLEAN_DIRECT_OUTPUT 1
     FRAMEWORK 1
     FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
@@ -121,42 +121,42 @@ ELSE(NOT APPLE)
     PUBLIC_HEADER "${QGIS_NATIVE_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
-ENDIF(NOT APPLE)
+endif()
 
 #generate unversioned libs for android
-IF(NOT ANDROID)
-  SET_TARGET_PROPERTIES(qgis_native PROPERTIES
+if(NOT ANDROID)
+  set_target_properties(qgis_native PROPERTIES
     VERSION ${COMPLETE_VERSION}
     SOVERSION ${COMPLETE_VERSION}
   )
-ENDIF(NOT ANDROID)
+endif()
 
-TARGET_LINK_LIBRARIES(qgis_native
+target_link_libraries(qgis_native
     ${Qt5Core_LIBRARIES}
     ${Qt5Gui_LIBRARIES}
     "${NATIVE_LINK_LIBS}"
     )
 
-IF (UNIX AND NOT APPLE AND NOT ANDROID)
-  TARGET_LINK_LIBRARIES(qgis_native Qt5::DBus)
-ENDIF (UNIX AND NOT APPLE AND NOT ANDROID)
+if (UNIX AND NOT APPLE AND NOT ANDROID)
+  target_link_libraries(qgis_native Qt5::DBus)
+endif()
 
-IF (APPLE)
-  FIND_PACKAGE(Qt5MacExtras)
+if (APPLE)
+  find_package(Qt5MacExtras)
 
-  TARGET_LINK_LIBRARIES(qgis_native Qt5::MacExtras)
-ENDIF (APPLE)
+  target_link_libraries(qgis_native Qt5::MacExtras)
+endif()
 
-IF (MSVC)
-  FIND_PACKAGE(Qt5WinExtras)
+if (MSVC)
+  find_package(Qt5WinExtras)
 
-  TARGET_LINK_LIBRARIES(qgis_native shell32)
-  TARGET_LINK_LIBRARIES(qgis_native ${Qt5Widget_LIBRARIES} ${QT_QTMAIN_LIBRARY})
-  TARGET_LINK_LIBRARIES(qgis_native Qt5::WinExtras)
-ENDIF (MSVC)
+  target_link_libraries(qgis_native shell32)
+  target_link_libraries(qgis_native ${Qt5Widget_LIBRARIES} ${QT_QTMAIN_LIBRARY})
+  target_link_libraries(qgis_native Qt5::WinExtras)
+endif()
 # install
 
-INSTALL(TARGETS qgis_native
+install(TARGETS qgis_native
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
@@ -166,7 +166,7 @@ INSTALL(TARGETS qgis_native
 
 # Mac dev frameworks
 
-IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  INSTALL(TARGETS qgis_native FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_native.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_native\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_native.framework/qgis_native\")")
-ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+  install(TARGETS qgis_native FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_native.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_native\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_native.framework/qgis_native\")")
+endif()

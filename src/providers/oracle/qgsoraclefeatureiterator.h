@@ -56,7 +56,8 @@ class QgsOracleFeatureSource final: public QgsAbstractFeatureSource
      * destroying the QgsOracleFeatureSource, to ensure that the transaction
      * connection remains valid during the life time of the feature source
      * even if the QgsOracleFeatureSource object which initially created the
-     * connection has since been destroyed. */
+     * connection has since been destroyed.
+    */
     QgsOracleConn *mTransactionConnection = nullptr;
 
 

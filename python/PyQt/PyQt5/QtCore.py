@@ -45,7 +45,7 @@ def __repr__(self):
 
 def __eq__(self, other):
     if self.isNull():
-        return (isinstance(other, QVariant) and other.isNull())or other is None
+        return (isinstance(other, QVariant) and other.isNull()) or other is None
     else:
         return _QVariant__eq__(self, other)
 

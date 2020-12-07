@@ -75,8 +75,7 @@ void QgsAttributeDialog::accept()
   {
     mMessageBar->pushMessage( QString(),
                               tr( "Your JSON value is invalid and has not been saved" ),
-                              Qgis::MessageLevel::Critical,
-                              5 );
+                              Qgis::MessageLevel::Critical );
   }
 }
 
@@ -101,7 +100,7 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   QgsAttributeEditorContext trackedContext = context;
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
-  layout()->setMargin( 0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
   mMessageBar = new QgsMessageBar( this );
   mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   layout()->addWidget( mMessageBar );
@@ -147,4 +146,9 @@ bool QgsAttributeDialog::event( QEvent *e )
     mHighlight->hide();
 
   return QDialog::event( e );
+}
+
+void QgsAttributeDialog::setExtraContextScope( QgsExpressionContextScope *extraScope )
+{
+  mAttributeForm->setExtraContextScope( extraScope );
 }

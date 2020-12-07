@@ -82,7 +82,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
   private slots:
     void onEditingStarted();
     void onLayerDeleted();
-    void onCommitChanges();
+    void onBeforeCommitChanges( bool stopEditing );
     void onRollback();
 
   private:
@@ -90,6 +90,8 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool mEditingStopping = false;
 
     void disableTransaction();
+
+    void restartTransaction( const QgsVectorLayer *layer );
 
     QSet<QgsVectorLayer *> mLayers;
     //! Only set while a transaction is active

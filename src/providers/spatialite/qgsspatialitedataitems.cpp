@@ -64,7 +64,7 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const 
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
   mCapabilities |= Delete;
-  setState( Populated ); // no children are expected
+  setState( NotPopulated );
 }
 
 // ------
@@ -162,7 +162,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 // ---------------------------------------------------------------------------
 
 QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "spatialite" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "spatialite" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconSpatialite.svg" );
@@ -184,7 +184,7 @@ QVector<QgsDataItem *> QgsSLRootItem::createChildren()
 
 QWidget *QgsSLRootItem::paramWidget()
 {
-  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsSpatiaLiteSourceSelect::connectionsChanged, this, &QgsSLRootItem::onConnectionsChanged );
   return select;
 }
@@ -299,4 +299,14 @@ QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathI
 bool QgsSLConnectionItem::layerCollection() const
 {
   return true;
+}
+
+QVector<QgsDataItem *> QgsSLLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this,
+                                         path() + QStringLiteral( "/columns/ " ),
+                                         uri(),
+                                         QStringLiteral( "spatialite" ), QString(), name() ) );
+  return children;
 }

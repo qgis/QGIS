@@ -1,16 +1,16 @@
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 QT5_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
 QT5_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
 
-SET(IMAGE_RCCS ../../images/images.qrc)
+set(IMAGE_RCCS ../../images/images.qrc)
 
 # -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
-SET_SOURCE_FILES_PROPERTIES(qgsstacktrace.cpp PROPERTIES COMPILE_FLAGS -wd4091)
+set_source_files_properties(qgsstacktrace.cpp PROPERTIES COMPILE_FLAGS -wd4091)
 
-ADD_EXECUTABLE(qgiscrashhandler WIN32
+add_executable(qgiscrashhandler WIN32
   main.cpp
   ${CRASH_UIS_H}
   ${CRASH_HDR_MOC}
@@ -21,12 +21,12 @@ ADD_EXECUTABLE(qgiscrashhandler WIN32
   ${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc
 )
 
-TARGET_LINK_LIBRARIES(qgiscrashhandler
+target_link_libraries(qgiscrashhandler
   ${Qt5Core_LIBRARIES}
   ${Qt5Gui_LIBRARIES}
   ${Qt5Widgets_LIBRARIES}
   dbghelp
 )
 
-INSTALL(CODE "MESSAGE(\"Installing crashhandler ...\")")
-INSTALL(TARGETS qgiscrashhandler RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR})
+install(CODE "message(\"Installing crashhandler ...\")")
+install(TARGETS qgiscrashhandler RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR})

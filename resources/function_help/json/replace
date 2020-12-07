@@ -1,6 +1,7 @@
 {
   "name": "replace",
   "type": "function",
+  "groups": ["String"],
   "description": "Returns a string with the supplied string, array, or map of strings replaced.",
   "variants": [
   { "variant": "String & array variant",

@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
      *
      * The optional \a flags argument can be used to control the staged render job behavior.
      */
-    QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags = nullptr );
+    QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags = Flags() );
     ~QgsMapRendererStagedRenderJob() override;
 
     void start() override;
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 
     bool mNextIsLabel = false;
     bool mExportedLabels = false;
-    Flags mFlags = nullptr;
+    Flags mFlags = Flags();
     bool mPreparedStagedLabelJob = false;
     QStringList mLabelingLayers;
     QStringList::iterator mLabelLayerIt;

@@ -93,7 +93,7 @@
       <item row="7" column="0" colspan="3">
        <widget class="QGroupBox" name="grpbxSslConfig">
         <property name="title">
-         <string>Custom SSL configuration</string>
+         <string>Custom SSL Configuration</string>
         </property>
         <property name="checkable">
          <bool>true</bool>

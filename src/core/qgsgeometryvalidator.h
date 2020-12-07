@@ -70,13 +70,13 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     void addError( const QgsGeometry::Error & );
 
   private:
-    void validatePolyline( int i, QgsPolylineXY polyline, bool ring = false );
-    void validatePolygon( int i, const QgsPolygonXY &polygon );
-    void checkRingIntersections( int p0, int i0, const QgsPolylineXY &ring0, int p1, int i1, const QgsPolylineXY &ring1 );
-    double distLine2Point( const QgsPointXY &p, QgsVector v, const QgsPointXY &q );
-    bool intersectLines( const QgsPointXY &p, QgsVector v, const QgsPointXY &q, QgsVector w, QgsPointXY &s );
-    bool ringInRing( const QgsPolylineXY &inside, const QgsPolylineXY &outside );
-    bool pointInRing( const QgsPolylineXY &ring, const QgsPointXY &p );
+    void validatePolyline( int i, const QgsLineString *line, bool ring = false );
+    void validatePolygon( int partIndex, const QgsPolygon *polygon );
+    void checkRingIntersections( int partIndex0, int ringIndex0, const QgsLineString *ring0, int partIndex1, int ringIndex1, const QgsLineString *ring1 );
+    double distLine2Point( double px, double py, QgsVector v, double qX, double qY );
+    bool intersectLines( double px, double py, QgsVector v, double qx, double qy, QgsVector w, double &sX, double &sY );
+    bool ringInRing( const QgsLineString *inside, const QgsLineString *outside );
+    bool pointInRing( const QgsLineString *ring, double pX, double pY );
 
     QgsGeometry mGeometry;
     QVector<QgsGeometry::Error> *mErrors;

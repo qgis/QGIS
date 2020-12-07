@@ -3,7 +3,7 @@
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(
+include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
 
@@ -36,7 +36,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/src/quickgui
 )
 
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
     ${PROJ_INCLUDE_DIR}
     ${GEOS_INCLUDE_DIR}
     ${LIBZIP_INCLUDE_DIRS}
@@ -58,11 +58,11 @@ INCLUDE_DIRECTORIES(SYSTEM
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST testname testsrc)
-  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  TARGET_LINK_LIBRARIES(qgis_${testname}
+macro (ADD_QGIS_TEST testname testsrc)
+  set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
+  add_custom_target(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
+  add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
+  target_link_libraries(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
@@ -74,8 +74,8 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     qgis_core
     qgis_quick)
 
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
-ENDMACRO (ADD_QGIS_TEST)
+  add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+endmacro (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
@@ -88,4 +88,4 @@ ADD_QGIS_TEST(qgsquickpositionkit testqgsquickpositionkit.cpp)
 
 #############################################################
 # Add also test application
-ADD_SUBDIRECTORY(app)
+add_subdirectory(app)

@@ -1,14 +1,16 @@
-INCLUDE_DIRECTORIES(
-        ${CMAKE_SOURCE_DIR}/src/core
-        ${CMAKE_SOURCE_DIR}/src/core/geometry
+include_directories(
+    ${CMAKE_SOURCE_DIR}/src/core
+    ${CMAKE_SOURCE_DIR}/src/core/geometry
 
-        ${CMAKE_BINARY_DIR}/src/core
-        ${CMAKE_BINARY_DIR}/src/core/geometry
-
-	${Qt5Core_INCLUDE_DIRS}
+    ${CMAKE_BINARY_DIR}/src/core
+    ${CMAKE_BINARY_DIR}/src/core/geometry
 )
 
-ADD_LIBRARY(libdxfrw STATIC
+include_directories(SYSTEM
+    ${Qt5Core_INCLUDE_DIRS}
+)
+
+add_library(libdxfrw STATIC
     drw_classes.cpp
     drw_entities.cpp
     drw_header.cpp
@@ -29,11 +31,11 @@ ADD_LIBRARY(libdxfrw STATIC
     intern/dxfwriter.cpp
     intern/rscodec.cpp
 )
-SET_PROPERTY(TARGET libdxfrw PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET libdxfrw PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-IF(FALSE)
-IF(DOXYGEN_FOUND)
-  ADD_CUSTOM_TARGET(doxygen-dxfrw ALL
+if(FALSE)
+if(DOXYGEN_FOUND)
+  add_custom_target(doxygen-dxfrw ALL
     COMMAND ${DOXYGEN_EXECUTABLE} libdxfrw.dox
       drw_base.h
       drw_classes.cpp
@@ -83,5 +85,5 @@ IF(DOXYGEN_FOUND)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS libdxfrw
     COMMENT "Generating libdxfrw documentation" VERBATIM)
-ENDIF(DOXYGEN_FOUND)
-ENDIF(FALSE)
+endif()
+endif()

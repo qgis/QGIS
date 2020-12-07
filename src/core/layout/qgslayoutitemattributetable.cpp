@@ -486,8 +486,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   QgsFeatureIterator fit = layer->getFeatures( req );
 
   mConditionalStyles.clear();
+  mFeatures.clear();
 
-  QVector< QVector< QPair< QVariant, QgsConditionalStyle > > > tempContents;
+  QVector< QVector< Cell > > tempContents;
   QgsLayoutTableContents existingContents;
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
@@ -539,7 +540,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     // correctly when this occurs
     // We also need a list of just the cell contents, so that we can do a quick check for row uniqueness (when the
     // corresponding option is enabled)
-    QVector< QPair< QVariant, QgsConditionalStyle > > currentRow;
+    QVector< Cell > currentRow;
     currentRow.reserve( mColumns.count() );
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
@@ -563,7 +564,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
         }
 
         QVariant v = replaceWrapChar( val );
-        currentRow << qMakePair( v, style );
+        currentRow << Cell( v, style, f );
         rowContents << v;
       }
       else
@@ -574,7 +575,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
 
-        currentRow << qMakePair( value, rowStyle );
+        currentRow << Cell( value, rowStyle, f );
         rowContents << value;
       }
     }
@@ -593,6 +594,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   // build final table contents
   contents.reserve( tempContents.size() );
   mConditionalStyles.reserve( tempContents.size() );
+  mFeatures.reserve( tempContents.size() );
   for ( auto it = tempContents.constBegin(); it != tempContents.constEnd(); ++it )
   {
     QgsLayoutTableRow row;
@@ -602,8 +604,10 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
     for ( auto cellIt = it->constBegin(); cellIt != it->constEnd(); ++cellIt )
     {
-      row << cellIt->first;
-      rowStyles << cellIt->second;
+      row << cellIt->content;
+      rowStyles << cellIt->style;
+      if ( cellIt == it->constBegin() )
+        mFeatures << cellIt->feature;
     }
     contents << row;
     mConditionalStyles << rowStyles;
@@ -619,6 +623,14 @@ QgsConditionalStyle QgsLayoutItemAttributeTable::conditionalCellStyle( int row, 
     return QgsConditionalStyle();
 
   return mConditionalStyles.at( row ).at( column );
+}
+
+QgsExpressionContextScope *QgsLayoutItemAttributeTable::scopeForCell( int row, int column ) const
+{
+  std::unique_ptr< QgsExpressionContextScope >scope( QgsLayoutTable::scopeForCell( row, column ) );
+  scope->setFeature( mFeatures.value( row ) );
+  scope->setFields( scope->feature().fields() );
+  return scope.release();
 }
 
 QgsExpressionContext QgsLayoutItemAttributeTable::createExpressionContext() const

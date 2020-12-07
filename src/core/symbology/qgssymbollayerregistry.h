@@ -26,10 +26,10 @@ class QgsSymbolLayerWidget SIP_EXTERNAL;
 
 /**
  * \ingroup core
- Stores metadata about one symbol layer class.
-
- \note It's necessary to implement createSymbolLayer() function.
-   In C++ you can use QgsSymbolLayerMetadata convenience class.
+ * Stores metadata about one symbol layer class.
+ *
+ * \note It's necessary to implement createSymbolLayer() function.
+ *   In C++ you can use QgsSymbolLayerMetadata convenience class.
  */
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 {

@@ -1,6 +1,7 @@
 {
   "name": "map_to_json",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Merge map elements into a json-formatted string.",
   "arguments": [
     {"arg":"map", "description":"the input map"}],

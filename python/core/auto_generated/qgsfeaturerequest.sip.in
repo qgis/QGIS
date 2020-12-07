@@ -283,8 +283,8 @@ construct a request with feature ID filter
 %Docstring
 Construct a request with ``rectangle`` bounding box filter.
 
-When a destination CRS is set using setDestinationCrs(), ``rectangle``
-is expected to be in the same CRS as the destinationCrs(). Otherwise, ``rectangle``
+When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, ``rectangle``
+is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
 should use the same CRS as the source layer/provider.
 %End
 
@@ -308,8 +308,8 @@ Returns the filter type which is currently set on this request
 %Docstring
 Sets the ``rectangle`` from which features will be taken. An empty rectangle removes the filter.
 
-When a destination CRS is set using setDestinationCrs(), ``rectangle``
-is expected to be in the same CRS as the destinationCrs(). Otherwise, ``rectangle``
+When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, ``rectangle``
+is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
 should use the same CRS as the source layer/provider.
 
 .. seealso:: :py:func:`filterRect`
@@ -320,8 +320,8 @@ should use the same CRS as the source layer/provider.
 Returns the rectangle from which features will be taken. If the returned
 rectangle is null, then no filter rectangle is set.
 
-When a destination CRS is set using setDestinationCrs(), the rectangle
-will be in the same CRS as the destinationCrs(). Otherwise, the rectangle
+When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the rectangle
+will be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the rectangle
 will use the same CRS as the source layer/provider.
 
 .. seealso:: :py:func:`setFilterRect`
@@ -371,7 +371,7 @@ Returns the invalid geometry checking behavior.
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a callback function to use when encountering an invalid geometry and
-invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
+:py:func:`~QgsFeatureRequest.invalidGeometryCheck` is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
 called using the feature with invalid geometry as a parameter.
 
 .. seealso:: :py:func:`invalidGeometryCallback`
@@ -583,7 +583,7 @@ and all features will be left with their original geometry.
 
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
-Returns the transform context, for use when a destinationCrs() has been set
+Returns the transform context, for use when a :py:func:`~QgsFeatureRequest.destinationCrs` has been set
 and reprojection is required
 
 .. seealso:: :py:func:`setDestinationCrs`
@@ -601,14 +601,14 @@ system to this desired reference system. If ``crs`` is an invalid
 QgsCoordinateReferenceSystem then no reprojection will be done
 and all features will be left with their original geometry.
 
-When a ``crs`` is set using setDestinationCrs(), then any filterRect()
+When a ``crs`` is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, then any :py:func:`~QgsFeatureRequest.filterRect`
 set on the request is expected to be in the same CRS as the destination
 CRS.
 
 The feature geometry transformation to the destination CRS is performed
 after all filter expressions are tested and any virtual fields are
 calculated. Accordingly, any geometric expressions used in
-filterExpression() will be performed in the original
+:py:func:`~QgsFeatureRequest.filterExpression` will be performed in the original
 source CRS. This ensures consistent results are returned regardless of the
 destination CRS. Similarly, virtual field values will be calculated using the
 original geometry in the source CRS, so these values are not affected by
@@ -622,7 +622,7 @@ any destination CRS transform present in the feature request.
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a callback function to use when encountering a transform error when iterating
-features and a destinationCrs() is set. This function will be
+features and a :py:func:`~QgsFeatureRequest.destinationCrs` is set. This function will be
 called using the feature which encountered the transform error as a parameter.
 
 .. seealso:: :py:func:`transformErrorCallback`

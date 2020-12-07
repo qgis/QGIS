@@ -45,6 +45,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfileutils.h"
+#include "qgsannotationlayer.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -301,7 +302,7 @@ bool QgsMapSaveDialog::saveWorldFile() const
 
 bool QgsMapSaveDialog::exportMetadata() const
 {
-  return mExportMetadataCheckBox->isChecked();;
+  return mExportMetadataCheckBox->isChecked();
 }
 
 bool QgsMapSaveDialog::saveAsRaster() const
@@ -334,7 +335,13 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mapSettings.setLayers( mMapCanvas->layers() );
+
+  QList< QgsMapLayer * > layers = mMapCanvas->layers();
+  if ( !QgsProject::instance()->mainAnnotationLayer()->isEmpty() )
+  {
+    layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  }
+  mapSettings.setLayers( layers );
   mapSettings.setLabelingEngineSettings( mMapCanvas->mapSettings().labelingEngineSettings() );
   mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
   mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
@@ -567,7 +574,7 @@ void QgsMapSaveDialog::onAccepted()
 
 void QgsMapSaveDialog::updatePdfExportWarning()
 {
-  QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : nullptr );
+  QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
   if ( !layers.isEmpty() )
   {
     mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(

@@ -101,7 +101,7 @@ class QgsFeature3DHandler
      * Called for every feature to extract information out of it into some
      * temporary variables in the derived handler class.
      */
-    virtual void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) = 0;
+    virtual void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) = 0;
 
     /**
      * When feature iteration has finished, finalize() is called to turn the extracted data

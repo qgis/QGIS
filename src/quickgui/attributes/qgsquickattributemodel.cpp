@@ -38,6 +38,12 @@ void QgsQuickAttributeModel::setFeatureLayerPair( const QgsQuickFeatureLayerPair
   setFeature( pair.feature() );
 }
 
+void QgsQuickAttributeModel::forceClean()
+{
+  mRememberedAttributes.clear();
+  mFeatureLayerPair = QgsQuickFeatureLayerPair();
+}
+
 
 void QgsQuickAttributeModel::setVectorLayer( QgsVectorLayer *layer )
 {
@@ -48,9 +54,9 @@ void QgsQuickAttributeModel::setVectorLayer( QgsVectorLayer *layer )
   mFeatureLayerPair = QgsQuickFeatureLayerPair( mFeatureLayerPair.feature(), layer );
 
 
-  if ( mFeatureLayerPair.layer() )
+  if ( const QgsVectorLayer *lLayer = mFeatureLayerPair.layer() )
   {
-    mRememberedAttributes.resize( mFeatureLayerPair.layer()->fields().size() );
+    mRememberedAttributes.resize( lLayer->fields().size() );
     mRememberedAttributes.fill( false );
   }
   else
@@ -200,12 +206,18 @@ bool QgsQuickAttributeModel::deleteFeature()
     rv = false;
   }
 
-  if ( !mFeatureLayerPair.layer()->deleteFeature( mFeatureLayerPair.feature().id() ) )
+  bool isDeleted = mFeatureLayerPair.layer()->deleteFeature( mFeatureLayerPair.feature().id() );
+  rv = commit();
+
+  if ( !isDeleted )
     QgsMessageLog::logMessage( tr( "Cannot delete feature" ),
                                QStringLiteral( "QgsQuick" ),
                                Qgis::Warning );
-
-  rv = commit();
+  else
+  {
+    mFeatureLayerPair = QgsQuickFeatureLayerPair();
+    emit featureLayerPairChanged();
+  }
 
   return rv;
 }

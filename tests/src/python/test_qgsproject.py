@@ -15,7 +15,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 import re
-import ogr
+from osgeo import ogr
 import codecs
 from io import BytesIO
 from zipfile import ZipFile
@@ -190,10 +190,22 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, 'labeling/test-labeling.qgs'))
 
-        # valid key, valid int value
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
+        # add a test entry list
+        prj.writeEntry("TestScope", "/TestListProperty", ["Entry1", "Entry2"])
+
+        # valid key, valid value
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1), (0, True))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/ProjectCrs"), ("EPSG:32613", True))
+        self.assertEqual(prj.readBoolEntry("PAL", "/ShowingCandidates"), (False, True))
+        self.assertEqual(prj.readNumEntry("PAL", "/CandidatesPolygon"), (8., True))
+        self.assertEqual(prj.readListEntry("TestScope", "/TestListProperty"), (["Entry1", "Entry2"], True))
+
         # invalid key
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1), (-1, False))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/InvalidKey", "wrong"), ("wrong", False))
+        self.assertEqual(prj.readBoolEntry("PAL", "/InvalidKey", True), (True, False))
+        self.assertEqual(prj.readDoubleEntry("PAL", "/InvalidKey", 42.), (42., False))
+        self.assertEqual(prj.readListEntry("TestScope", "/InvalidKey", ["Default1", "Default2"]), (["Default1", "Default2"], False))
 
     def testEmbeddedGroup(self):
         testdata_path = unitTestDataPath('embedded_groups') + '/'
@@ -860,7 +872,7 @@ class TestQgsProject(unittest.TestCase):
             zip_content = BytesIO(codecs.decode(f.GetFieldAsBinary(2), 'hex'))
             z = ZipFile(zip_content)
             qgs = z.read(z.filelist[0])
-            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[0],
+            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[1],
                              b'./relative_paths_gh30387.gpkg|layername=some_data')
 
         with TemporaryDirectory() as d:
@@ -1359,6 +1371,14 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(spy), 3)
         p.setUseProjectScales(False)
         self.assertEqual(len(spy), 4)
+
+    def testSetInstance(self):
+        """Test singleton API"""
+
+        p = QgsProject()
+        self.assertNotEqual(p, QgsProject.instance())
+        QgsProject.setInstance(p)
+        self.assertEqual(p, QgsProject.instance())
 
 
 if __name__ == '__main__':

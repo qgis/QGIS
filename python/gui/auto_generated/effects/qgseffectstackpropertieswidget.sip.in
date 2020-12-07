@@ -149,7 +149,7 @@ and reordering effects within the stack.
 %End
   public:
 
-    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = 0 );
+    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 QgsEffectStackPropertiesDialog constructor
 

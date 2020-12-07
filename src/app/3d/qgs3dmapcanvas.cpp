@@ -27,14 +27,18 @@
 #include "qgs3dmaptool.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dnavigationwidget.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
 #include "qgssettings.h"
 #include "qgstemporalcontroller.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsonlineterraingenerator.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
   QgsSettings setting;
-  mEngine = new QgsWindow3DEngine;
+  mEngine = new QgsWindow3DEngine( this );
 
   connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
   {
@@ -46,7 +50,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   mNavigationWidget = new Qgs3DNavigationWidget( this );
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
-  hLayout->setMargin( 0 );
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mContainer, 1 );
   hLayout->addWidget( mNavigationWidget );
   this->setOnScreenNavigationVisibility(
@@ -117,8 +121,37 @@ QgsCameraController *Qgs3DMapCanvas::cameraController()
   return mScene ? mScene->cameraController() : nullptr;
 }
 
-void Qgs3DMapCanvas::resetView()
+void Qgs3DMapCanvas::resetView( bool resetExtent )
 {
+  if ( resetExtent )
+  {
+    if ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
+         map()->terrainGenerator()->type() == QgsTerrainGenerator::Online )
+    {
+      const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+      QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
+      ct.setBallparkTransformsAreAppropriate( true );
+      QgsRectangle rect;
+      try
+      {
+        rect = ct.transformBoundingBox( extent );
+      }
+      catch ( QgsCsException & )
+      {
+        rect = extent;
+      }
+      map()->terrainGenerator()->setExtent( rect );
+
+      // reproject terrain's extent to map CRS
+      QgsRectangle te = map()->terrainGenerator()->extent();
+      QgsCoordinateTransform terrainToMapTransform( map()->terrainGenerator()->crs(), map()->crs(), QgsProject::instance() );
+      te = terrainToMapTransform.transformBoundingBox( te );
+
+      QgsPointXY center = te.center();
+      map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
+    }
+  }
+
   mScene->viewZoomFull();
 }
 

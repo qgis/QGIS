@@ -53,7 +53,7 @@ A dialog to enter a custom dash space pattern for lines
 %End
   public:
 
-    QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = 0 );
+    QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsDashSpaceDialog
 %End

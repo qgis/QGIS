@@ -284,13 +284,13 @@ my($major, $minor, $patch);
 
 open F, "../../CMakeLists.txt";
 while(<F>) {
-	if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/) {
+	if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/i) {
 		$major = $1;
-	} elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/) {
+	} elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/i) {
 		$minor = $1;
-	} elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/) {
+	} elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/i) {
 		$patch = $1;
-	} elsif(/SET\(RELEASE_NAME "(.+)"\)/) {
+	} elsif(/SET\(RELEASE_NAME "(.+)"\)/i) {
 		$releasename = $1 unless defined $releasename;
 	}
 }

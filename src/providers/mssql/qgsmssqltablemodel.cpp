@@ -76,7 +76,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
+  QStandardItem *typeItem = new QStandardItem( QgsLayerItem::iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting…" )
       : QgsWkbTypes::displayString( wkbType ) );
@@ -266,8 +266,8 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         // update existing row
         QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
 
-        row[ DbtmType ]->setIcon( iconForWkbType( wkbType ) );
-        row[ DbtmType ]->setText( QgsWkbTypes::displayString( wkbType ) );
+        row[ DbtmType ]->setIcon( QgsLayerItem::iconForWkbType( wkbType ) );
+        row[ DbtmType ]->setText( QgsWkbTypes::translatedDisplayString( wkbType ) );
         row[ DbtmType ]->setData( false, Qt::UserRole + 1 );
         row[ DbtmType ]->setData( wkbType, Qt::UserRole + 2 );
 
@@ -291,24 +291,6 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
       }
     }
   }
-}
-
-QIcon QgsMssqlTableModel::iconForWkbType( QgsWkbTypes::Type type )
-{
-  switch ( QgsWkbTypes::geometryType( type ) )
-  {
-    case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
-    case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
-    case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
-    case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
-    case QgsWkbTypes::UnknownGeometry:
-      break;
-  }
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
 }
 
 bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

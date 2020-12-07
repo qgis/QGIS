@@ -32,6 +32,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
     // only top level items can be tabs
     // i.e. it's always a group box if it's a nested container
     mShowAsGroupBoxCheckBox->hide();
+    mShowAsGroupBoxCheckBox->setEnabled( false );
   }
 
   mTitleLineEdit->setText( itemData.name() );
@@ -59,7 +60,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   itemData.setColumnCount( mColumnCountSpinBox->value() );
-  itemData.setShowAsGroupBox( mShowAsGroupBoxCheckBox->isVisible() ? mShowAsGroupBoxCheckBox->isChecked() : false );
+  itemData.setShowAsGroupBox( mShowAsGroupBoxCheckBox->isEnabled() ? mShowAsGroupBoxCheckBox->isChecked() : false );
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );

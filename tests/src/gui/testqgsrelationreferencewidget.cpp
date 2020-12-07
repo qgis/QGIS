@@ -66,6 +66,8 @@ class TestQgsRelationReferenceWidget : public QObject
     void testAddEntry();
     void testAddEntryNoGeom();
     void testDependencies(); // Test relation datasource, id etc. config storage
+    void testSetFilterExpression();
+    void testSetFilterExpressionWithOrClause();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -516,22 +518,27 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   w.setRelation( *mRelation, true );
   w.init();
 
-  QSignalSpy spy( &w, SIGNAL( foreignKeyChanged( QVariant ) ) );
+  QSignalSpy spy( &w, &QgsRelationReferenceWidget::foreignKeysChanged );
+
+  w.setForeignKeys( QVariantList() << 0 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 0 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(0)" ) );
+  QCOMPARE( spy.count(), 1 );
 
   w.setForeignKeys( QVariantList() << 11 );
   QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
-  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.count(), 2 );
 
   w.setForeignKeys( QVariantList() << 12 );
   QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.count(), 3 );
 
   w.setForeignKeys( QVariantList() << QVariant() );
   QVERIFY( w.foreignKeys().at( 0 ).isNull() );
   QVERIFY( w.foreignKeys().at( 0 ).isValid() );
-  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.count(), 4 );
 }
 
 // Test issue https://github.com/qgis/QGIS/issues/29884
@@ -707,6 +714,68 @@ void TestQgsRelationReferenceWidget::testDependencies()
   QCOMPARE( w.referencedLayerDataSource(), mLayer2.publicSource() );
   QCOMPARE( w.referencedLayerProviderKey(), mLayer2.providerType() );
 
+}
+
+void TestQgsRelationReferenceWidget::testSetFilterExpression()
+{
+
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.setFilterExpression( QStringLiteral( " \"material\" = 'iron' " ) );
+  w.init();
+
+  loop.exec();
+  QStringList items = getComboBoxItems( w.mComboBox );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
+  // in case there is no filter, the number of filtered features will be 4
+  QCOMPARE( w.mComboBox->count(), 3 );
+}
+
+
+
+void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
+{
+
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.setFilterExpression( QStringLiteral( " \"raccord\" = 'sleeve' OR FALSE " ) );
+  w.init();
+
+  QStringList items = getComboBoxItems( w.mComboBox );
+
+  loop.exec();
+
+  // in case there is no filter, the number of filtered features will be 4
+  QCOMPARE( w.mComboBox->count(), 2 );
+
+  QList<QComboBox *> cbs = w.mFilterComboBoxes;
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+
+  loop.exec();
+
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
+  // in case there is no field filter, the number of filtered features will be 2
+  QCOMPARE( w.mComboBox->count(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

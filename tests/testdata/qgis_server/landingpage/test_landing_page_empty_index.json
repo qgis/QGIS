@@ -1,0 +1,21 @@
+Content-Type: application/json
+
+{
+  "links": [
+    {
+      "href": "http://server.qgis.org/index.json",
+      "rel": "self",
+      "title": "Landing page as JSON",
+      "type": "application/json"
+    },
+    {
+      "href": "http://server.qgis.org/index.html",
+      "rel": "alternate",
+      "title": "Landing page as HTML",
+      "type": "text/html"
+    }
+  ],
+  "projects": [],
+  "projects_count": 0,
+  "timeStamp": "2019-07-05T12:27:07Z"
+}

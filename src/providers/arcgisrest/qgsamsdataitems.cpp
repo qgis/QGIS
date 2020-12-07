@@ -27,7 +27,7 @@
 #include <QImageReader>
 
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "AMS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconAms.svg" );
@@ -50,7 +50,7 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 #ifdef HAVE_GUI
 QWidget *QgsAmsRootItem::paramWidget()
 {
-  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::onConnectionsChanged );
   return select;
 }

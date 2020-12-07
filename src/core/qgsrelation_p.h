@@ -57,9 +57,10 @@ class QgsRelationPrivate : public QSharedData
 
     /**
      * A list of fields which define the relation.
-     *  In most cases there will be only one value, but multiple values
-     *  are supported for composited foreign keys.
-     *  The first field is on the referencing layer, the second on the referenced */
+     * In most cases there will be only one value, but multiple values
+     * are supported for composited foreign keys.
+     * The first field is on the referencing layer, the second on the referenced
+    */
     QList< QgsRelation::FieldPair > mFieldPairs;
 
     bool mValid = false;

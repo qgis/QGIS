@@ -511,7 +511,7 @@ QgsTask *QgsTaskManager::task( long id ) const
 QList<QgsTask *> QgsTaskManager::tasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  return mParentTasks.toList();
+  return qgis::setToList( mParentTasks );
 }
 
 int QgsTaskManager::count() const
@@ -654,7 +654,7 @@ QList<QgsTask *> QgsTaskManager::activeTasks() const
   QMutexLocker ml( mTaskMutex );
   QSet< QgsTask * > activeTasks = mActiveTasks;
   activeTasks.intersect( mParentTasks );
-  return activeTasks.toList();
+  return qgis::setToList( activeTasks );
 }
 
 int QgsTaskManager::countActiveTasks() const

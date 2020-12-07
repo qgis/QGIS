@@ -1,0 +1,193 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudrgbrenderer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPointCloudRgbRenderer : QgsPointCloudRenderer
+{
+%Docstring
+An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrgbrenderer.h"
+%End
+  public:
+
+    QgsPointCloudRgbRenderer();
+%Docstring
+Constructor for QgsPointCloudRgbRenderer.
+%End
+
+    virtual QString type() const;
+
+    virtual QgsPointCloudRenderer *clone() const;
+
+    virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context );
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+
+
+    static QgsPointCloudRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates an RGB renderer from an XML ``element``.
+%End
+
+    QString redAttribute() const;
+%Docstring
+Returns the attribute to use for the red channel.
+
+.. seealso:: :py:func:`greenAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+
+.. seealso:: :py:func:`setRedAttribute`
+%End
+
+    void setRedAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the red channel.
+
+.. seealso:: :py:func:`setGreenAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+
+.. seealso:: :py:func:`redAttribute`
+%End
+
+    QString greenAttribute() const;
+%Docstring
+Returns the attribute to use for the green channel.
+
+.. seealso:: :py:func:`redAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+
+.. seealso:: :py:func:`setGreenAttribute`
+%End
+
+    void setGreenAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the green channel.
+
+.. seealso:: :py:func:`setRedAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+
+.. seealso:: :py:func:`greenAttribute`
+%End
+
+    QString blueAttribute() const;
+%Docstring
+Returns the attribute to use for the blue channel.
+
+.. seealso:: :py:func:`greenAttribute`
+
+.. seealso:: :py:func:`redAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+%End
+
+    void setBlueAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the blue channel.
+
+.. seealso:: :py:func:`setRedAttribute`
+
+.. seealso:: :py:func:`setGreenAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+%End
+
+    const QgsContrastEnhancement *redContrastEnhancement() const;
+%Docstring
+Returns the contrast enhancement to use for the red channel.
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setRedContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the red channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    const QgsContrastEnhancement *greenContrastEnhancement() const;
+%Docstring
+Returns the contrast enhancement to use for the green channel.
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setGreenContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the green channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    const QgsContrastEnhancement *blueContrastEnhancement() const;
+%Docstring
+Returns the contrast enhancement to use for the blue channel.
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+%End
+
+    void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the blue channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudrgbrenderer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

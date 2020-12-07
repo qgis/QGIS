@@ -249,9 +249,9 @@ namespace QgsWfs
 
       //Using pending attributes and pending fields
       QgsAttributeList attrIndexes = vlayer->attributeList();
-      QgsFields fields = vlayer->fields();
+      const QgsFields fields = vlayer->fields();
       bool withGeom = true;
-      if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
+      if ( !propertyList.isEmpty() && propertyList.first() != QLatin1String( "*" ) )
       {
         withGeom = false;
         QStringList::const_iterator plstIt;
@@ -259,10 +259,10 @@ namespace QgsWfs
         // build corresponding propertyname
         QList<QString> propertynames;
         QList<QString> fieldnames;
-        for ( int idx = 0; idx < fields.count(); ++idx )
+        for ( const QgsField &field : fields )
         {
-          fieldnames.append( fields[idx].name() );
-          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
+          fieldnames.append( field.name() );
+          propertynames.append( field.name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         }
         QString fieldName;
         for ( plstIt = propertyList.constBegin(); plstIt != propertyList.constEnd(); ++plstIt )
@@ -277,7 +277,7 @@ namespace QgsWfs
           {
             idxList.append( fieldNameIdx );
           }
-          else if ( fieldName == QStringLiteral( "geometry" ) )
+          else if ( fieldName == QLatin1String( "geometry" ) )
           {
             withGeom = true;
           }
@@ -289,19 +289,20 @@ namespace QgsWfs
       }
 
       //excluded attributes for this layer
-      const QSet<QString> &layerExcludedAttributes = vlayer->excludeAttributesWfs();
-      if ( !attrIndexes.isEmpty() && !layerExcludedAttributes.isEmpty() )
+      if ( !attrIndexes.isEmpty() )
       {
-        foreach ( const QString &excludedAttribute, layerExcludedAttributes )
+        for ( const QgsField &field : fields )
         {
-          int fieldNameIdx = fields.indexOf( excludedAttribute );
-          if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
+          if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
           {
-            attrIndexes.removeOne( fieldNameIdx );
+            int fieldNameIdx = fields.indexOf( field.name() );
+            if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
+            {
+              attrIndexes.removeOne( fieldNameIdx );
+            }
           }
         }
       }
-
 
       // update request
       QgsFeatureRequest featureRequest = query.featureRequest;
@@ -469,7 +470,7 @@ namespace QgsWfs
   getFeatureRequest parseGetFeatureParameters( const QgsProject *project )
   {
     getFeatureRequest request;
-    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();;
+    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();
     request.startIndex = mWfsParameters.startIndexAsInt();
     request.outputFormat = mWfsParameters.outputFormat();
 
@@ -577,7 +578,7 @@ namespace QgsWfs
         query.srsName = mWfsParameters.srsName();
 
         // Parse PropertyName
-        if ( propertyName != QStringLiteral( "*" ) )
+        if ( propertyName != QLatin1String( "*" ) )
         {
           QStringList propertyList;
 
@@ -609,7 +610,7 @@ namespace QgsWfs
 
         query.featureRequest = featureRequest;
         request.queries.append( query );
-        fidsMapIt++;
+        ++fidsMapIt;
       }
       return request;
     }
@@ -652,7 +653,7 @@ namespace QgsWfs
       query.srsName = mWfsParameters.srsName();
 
       // Parse PropertyName
-      if ( propertyName != QStringLiteral( "*" ) )
+      if ( propertyName != QLatin1String( "*" ) )
       {
         QStringList propertyList;
 
@@ -767,7 +768,7 @@ namespace QgsWfs
       for ( ; qIt != request.queries.end(); ++qIt )
       {
         getFeatureQuery &query = *qIt;
-        query.featureRequest.setFilterRect( extent );
+        query.featureRequest.setFilterRect( extent ).setFlags( query.featureRequest.flags() | QgsFeatureRequest::ExactIntersect );
       }
       return request;
     }
@@ -856,7 +857,7 @@ namespace QgsWfs
   getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem, const QgsProject *project )
   {
     getFeatureRequest request;
-    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();;
+    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();
     request.startIndex = mWfsParameters.startIndexAsInt();
     request.outputFormat = mWfsParameters.outputFormat();
 
@@ -1009,7 +1010,7 @@ namespace QgsWfs
         fcString = QStringLiteral( "{\"type\": \"FeatureCollection\",\n" );
         fcString += QStringLiteral( " \"timeStamp\": \"%1\"\n" ).arg( now.toString( Qt::ISODate ) );
         fcString += QStringLiteral( " \"numberOfFeatures\": %1\n" ).arg( QString::number( numberOfFeatures ) );
-        fcString += QLatin1String( "}" );
+        fcString += QLatin1Char( '}' );
       }
       else
       {
@@ -1068,7 +1069,7 @@ namespace QgsWfs
         fcString += "\n timeStamp=\"" + now.toString( Qt::ISODate ) + "\"";
         fcString += "\n numberOfFeatures=\"" + QString::number( numberOfFeatures ) + "\"";
         fcString += QLatin1String( ">\n" );
-        fcString += QStringLiteral( "</wfs:FeatureCollection>" );
+        fcString += QLatin1String( "</wfs:FeatureCollection>" );
       }
 
       response.write( fcString.toUtf8() );
@@ -1254,7 +1255,7 @@ namespace QgsWfs
       if ( format == QgsWfsParameters::Format::GeoJSON )
       {
         fcString += QLatin1String( " ]\n" );
-        fcString += QLatin1String( "}" );
+        fcString += QLatin1Char( '}' );
       }
       else
       {

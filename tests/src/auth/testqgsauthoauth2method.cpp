@@ -120,6 +120,7 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
     config->setApiKey( "someapikey" );
     config->setPersistToken( false );
     config->setAccessMethod( QgsAuthOAuth2Config::Header );
+    config->setCustomHeader( QStringLiteral( "x-auth" ) );
     config->setRequestTimeout( 30 ); // in seconds
     QVariantMap queryPairs;
     queryPairs.insert( "pf.username", "myusername" );
@@ -141,6 +142,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "    \"clientId\": \"myclientid\",\n"
            "    \"clientSecret\": \"myclientsecret\",\n"
            "    \"configType\": 1,\n"
+           "    \"customHeader\": \"x-auth\",\n"
            "    \"description\": \"A test config\",\n"
            "    \"grantFlow\": 0,\n"
            "    \"id\": \"abc1234\",\n"
@@ -170,6 +172,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "\"clientId\":\"myclientid\","
            "\"clientSecret\":\"myclientsecret\","
            "\"configType\":1,"
+           "\"customHeader\":\"x-auth\","
            "\"description\":\"A test config\","
            "\"grantFlow\":0,"
            "\"id\":\"abc1234\","
@@ -206,6 +209,7 @@ QVariantMap TestQgsAuthOAuth2Method::baseVariantMap()
   vmap.insert( "objectName", "" );
   vmap.insert( "password", "mypassword" );
   vmap.insert( "persistToken", false );
+  vmap.insert( "customHeader", "x-auth" );
   QVariantMap qpairs;
   qpairs.insert( "pf.password", "mypassword" );
   qpairs.insert( "pf.username", "myusername" );

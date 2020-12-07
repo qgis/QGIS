@@ -334,7 +334,7 @@ inline qreal clampAngle( qreal a )
 
 /**
  * Compute the circumscribed circle from three points
- * \return false if the three points are colinear
+ * \return FALSE if the three points are colinear
  */
 bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &radius )
 {
@@ -693,6 +693,10 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
   context.renderContext().expressionContext().appendScope( mExpressionScope.get() );
   mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size() + 1, true ) );
   mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
+
+  const double prevOpacity = mSymbol->opacity();
+  mSymbol->setOpacity( prevOpacity * context.opacity() );
+
   if ( isCurved() )
   {
     _resolveDataDefined( context );
@@ -793,10 +797,13 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
         QPointF pd( points.at( pIdx + 1 ) );
 
         QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
+
         mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, context.selected() );
       }
     }
   }
+
+  mSymbol->setOpacity( prevOpacity );
   context.renderContext().expressionContext().popScope();
 }
 

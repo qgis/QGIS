@@ -23,13 +23,14 @@ switching vertical tabs between icon/text to icon-only modes (splitter collapsed
 and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
 
 To use:
-1) Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
-2) In source file for dialog, inherit this class instead of QDialog, then in constructor:
-...
-setupUi( this ); // set up .ui file objects
-initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
-...
-restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
+
+# Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+# In source file for dialog, inherit this class instead of QDialog, then in constructor:
+  ...
+  setupUi( this ); // set up .ui file objects
+  initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
+  ...
+  :py:func:`~restoreOptionsBaseUi`; // restore the base ui with initOptionsBase or use this later on
 %End
 
 %TypeHeaderCode
@@ -37,7 +38,7 @@ restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this 
 %End
   public:
 
-    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = 0, QgsSettings *settings = 0 );
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
 %Docstring
 Constructor
 
@@ -63,7 +64,7 @@ Set up the base ui connections for vertical tabs.
 Restore the base ui.
 Sometimes useful to do at end of subclass's constructor.
 
-:param title: the window title (it does not need to be defined if previously given to initOptionsBase();
+:param title: the window title (it does not need to be defined if previously given to :py:func:`~QgsOptionsDialogBase.initOptionsBase`;
 %End
 
     void restoreLastPage();

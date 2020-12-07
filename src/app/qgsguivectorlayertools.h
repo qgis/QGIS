@@ -58,7 +58,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     /**
      * Should be called, when an editing session is ended and the features should be committed.
      * An appropriate dialog asking the user if he wants to save the edits will be shown if
-     * allowCancel is set to true.
+     * allowCancel is set to TRUE.
      *
      * \param layer       The layer to commit
      * \param allowCancel TRUE if a cancel button should be offered

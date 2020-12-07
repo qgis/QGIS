@@ -1,6 +1,7 @@
 {
   "name": "simplify",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description":"Simplifies a geometry by removing nodes using a distance based threshold (ie, the Douglas Peucker algorithm). The algorithm preserves large deviations in geometries and reduces the number of vertices in nearly straight segments.",
   "arguments": [ {"arg":"geometry","description":"a geometry"},
                  {"arg":"tolerance","description":"maximum deviation from straight segments for points to be removed"} ],

@@ -1,6 +1,7 @@
 {
   "name": "make_polygon",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a polygon geometry from an outer ring and optional series of inner ring geometries.",
   "variableLenArguments": true,
   "arguments": [

@@ -28,22 +28,6 @@
 #include "qgsvectorlayerref.h"
 #include "qgsmaplayerlistutils.h"
 
-class TestSignalReceiver : public QObject
-{
-    Q_OBJECT
-
-  public:
-    TestSignalReceiver()
-      : QObject( nullptr )
-    {}
-    QPainter::CompositionMode blendMode =  QPainter::CompositionMode_SourceOver ;
-  public slots:
-    void onBlendModeChanged( const QPainter::CompositionMode blendMode )
-    {
-      this->blendMode = blendMode;
-    }
-};
-
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
@@ -131,15 +115,22 @@ void TestQgsMapLayer::formatName()
 
 void TestQgsMapLayer::setBlendMode()
 {
-  TestSignalReceiver receiver;
-  QObject::connect( mpLayer, SIGNAL( blendModeChanged( const QPainter::CompositionMode ) ),
-                    &receiver, SLOT( onBlendModeChanged( const QPainter::CompositionMode ) ) );
-  QCOMPARE( int( receiver.blendMode ), 0 );
+  QSignalSpy spy( mpLayer, &QgsMapLayer::blendModeChanged );
+
   mpLayer->setBlendMode( QPainter::CompositionMode_Screen );
   // check the signal has been correctly emitted
-  QCOMPARE( receiver.blendMode, QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Screen ) );
   // check accessor
   QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Screen );
+
+  mpLayer->setBlendMode( QPainter::CompositionMode_Screen );
+  QCOMPARE( spy.count(), 1 );
+
+  mpLayer->setBlendMode( QPainter::CompositionMode_Darken );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), static_cast< int >( QPainter::CompositionMode_Darken ) );
+  QCOMPARE( mpLayer->blendMode(), QPainter::CompositionMode_Darken );
 }
 
 void TestQgsMapLayer::isInScaleRange_data()

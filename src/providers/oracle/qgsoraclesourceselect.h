@@ -97,9 +97,6 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     //! String list containing the selected tables
     QStringList selectedTables();
 
-  signals:
-    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;

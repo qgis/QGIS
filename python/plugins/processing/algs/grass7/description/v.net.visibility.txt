@@ -3,6 +3,6 @@ Performs visibility graph construction.
 Vector (v.*)
 QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|-1|None|False
 QgsProcessingParameterPoint|coordinates|Coordinates|None|True
-#QgsProcessingParameterString|coordinates|Coordinates|None|False|True
+*QgsProcessingParameterString|coordinates|Coordinates|None|False|True
 QgsProcessingParameterFeatureSource|visibility|Input vector line layer containing visible points|0|None|True
 QgsProcessingParameterVectorDestination|output|Network Visibility

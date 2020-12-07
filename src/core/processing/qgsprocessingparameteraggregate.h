@@ -63,7 +63,7 @@ class CORE_EXPORT QgsProcessingParameterAggregate : public QgsProcessingParamete
 
 };
 
-
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /**
@@ -113,5 +113,6 @@ class CORE_EXPORT QgsProcessingParameterTypeAggregate : public QgsProcessingPara
 };
 
 ///@endcond
+#endif
 
 #endif // QGSPROCESSINGPARAMETERAGGREGATE_H

@@ -18,6 +18,7 @@ email                : sherman at mrcc.com
 
 #include "qgspgsourceselect.h"
 
+#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgspostgresprovider.h"
@@ -67,7 +68,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
         , QgsWkbTypes::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
-      cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
+      cb->addItem( QgsLayerItem::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
     return cb;
   }
@@ -162,7 +163,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
     {
       QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
-      model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, QgsLayerItem::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
@@ -177,7 +178,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QStringLiteral( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QLatin1String( ", " ) ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -295,7 +296,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 // Slot for adding a new connection
 void QgsPgSourceSelect::btnNew_clicked()
 {
@@ -354,7 +355,7 @@ void QgsPgSourceSelect::btnEdit_clicked()
   delete nc;
 }
 
-//! End Autoconnected SLOTS *
+//! End Autoconnected SLOTS
 
 // Remember which database is selected
 void QgsPgSourceSelect::cmbConnections_currentIndexChanged( const QString &text )
@@ -511,7 +512,7 @@ void QgsPgSourceSelect::addButtonClicked()
       continue;
 
     mSelectedTables << uri;
-    if ( uri.startsWith( QStringLiteral( "PG: " ) ) )
+    if ( uri.startsWith( QLatin1String( "PG: " ) ) )
     {
       rasterTables.append( QPair<QString, QString>( idx.data().toString(), uri ) );
     }

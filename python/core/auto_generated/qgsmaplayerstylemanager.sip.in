@@ -129,11 +129,11 @@ Set a different style as the current style - will apply it to the layer
 %Docstring
 Temporarily apply a different style to the layer. The argument
 can be either a style name or a full QML style definition.
-Each call must be paired with restoreOverrideStyle()
+Each call must be paired with :py:func:`~QgsMapLayerStyleManager.restoreOverrideStyle`
 %End
     bool restoreOverrideStyle();
 %Docstring
-Restore the original store after a call to setOverrideStyle()
+Restore the original store after a call to :py:func:`~QgsMapLayerStyleManager.setOverrideStyle`
 %End
 
     bool isDefault( const QString &styleName ) const;

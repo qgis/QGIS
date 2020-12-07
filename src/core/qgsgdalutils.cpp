@@ -145,7 +145,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image
   return hSrcDS;
 }
 
-void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg )
+bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation )
 {
   gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
   psWarpOptions->hSrcDS = hSrcDS;
@@ -160,19 +160,26 @@ void QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   psWarpOptions->eResampleAlg = resampleAlg;
 
   // Establish reprojection transformer.
-  psWarpOptions->pTransformerArg =
-    GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef( hSrcDS ),
-                                     hDstDS, GDALGetProjectionRef( hDstDS ),
-                                     FALSE, 0.0, 1 );
+  char **papszOptions = nullptr;
+  if ( pszCoordinateOperation != nullptr )
+    papszOptions = CSLSetNameValue( papszOptions, "COORDINATE_OPERATION", pszCoordinateOperation );
+  psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, papszOptions );
+  CSLDestroy( papszOptions );
+
+  if ( ! psWarpOptions->pTransformerArg )
+  {
+    return false;
+  }
+
   psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
   // Initialize and execute the warp operation.
   GDALWarpOperation oOperation;
   oOperation.Initialize( psWarpOptions.get() );
 
-  oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) );
-
+  const bool retVal { oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) != CE_None };
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
+  return retVal;
 }
 
 QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg )
@@ -488,6 +495,21 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
   }
 
   return GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
+}
+
+void *QgsGdalUtils::rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, char **papszOptions )
+{
+  char **opts = CSLDuplicate( papszOptions );
+  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
+  {
+    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
+    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
+    if ( heightOffStr )
+      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
+  }
+  void *transformer = GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, opts );
+  CSLDestroy( opts );
+  return transformer;
 }
 
 #ifndef QT_NO_NETWORKPROXY

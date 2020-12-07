@@ -102,6 +102,9 @@
           <property name="text">
            <string>Information</string>
           </property>
+          <property name="toolTip">
+           <string>Information</string>
+          </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
@@ -109,6 +112,9 @@
          </item>
          <item>
           <property name="text">
+           <string>Source</string>
+          </property>
+          <property name="toolTip">
            <string>Source</string>
           </property>
           <property name="icon">
@@ -130,15 +136,9 @@
          </item>
          <item>
           <property name="text">
-           <string>3D View</string>
+           <string>Rendering</string>
           </property>
-          <property name="icon">
-           <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
+          <property name="toolTip">
            <string>Rendering</string>
           </property>
           <property name="icon">
@@ -156,6 +156,18 @@
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Metadata</string>
+          </property>
+          <property name="toolTip">
+           <string>Metadata</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
         </widget>
@@ -248,8 +260,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>661</width>
-                <height>507</height>
+                <width>470</width>
+                <height>383</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -266,77 +278,122 @@
                 <number>0</number>
                </property>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_14">
-                 <item>
-                  <widget class="QLabel" name="label_8">
-                   <property name="text">
-                    <string>Layer name</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="mLayerOrigNameLineEd"/>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_9">
-                   <property name="text">
-                    <string>displayed as</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="leDisplayName">
-                   <property name="styleSheet">
-                    <string notr="true">color: #505050;
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_60">
+                 <property name="title">
+                  <string>Settings</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_260">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QLabel" name="label_7">
+                      <property name="text">
+                       <string>Layer name</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="mLayerOrigNameLineEd"/>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_13">
+                      <property name="text">
+                       <string>displayed as</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="leDisplayName">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">color: #505050;
 background-color: #F0F0F0;
 border: 1px solid #B0B0B0;
 border-radius: 2px;</string>
-                   </property>
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0">
-                 <property name="topMargin">
-                  <number>5</number>
-                 </property>
-                 <item>
-                  <widget class="QLabel" name="label_7">
-                   <property name="text">
-                    <string>Set source coordinate reference system</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="mDataSourceEncodingFrame">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QLabel" name="label">
-                   <property name="text">
-                    <string>Uri</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="mUriLabel">
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                <widget class="QgsCollapsibleGroupBox" name="mCrsGroupBox">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                 <property name="title">
+                  <string>Assigned Coordinate Reference System (CRS)</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">vectorgeneral</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_28">
+                  <property name="spacing">
+                   <number>6</number>
+                  </property>
+                  <item>
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_11">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Changing this option does not modify the original data source or perform any reprojection of the mesh. Rather, it can be used to override the layer's CRS within this project if it could not be detected or has been incorrectly detected.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="textFormat">
+                     <enum>Qt::RichText</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="Line" name="line_2">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <widget class="QgsMeshDatasetGroupTreeWidget" name="mDatasetGroupTreeWidget" native="true"/>
@@ -347,7 +404,7 @@ border-radius: 2px;</string>
                   <string>Static dataset even if the temporal navigation is on</string>
                  </property>
                  <property name="text">
-                  <string>Force Static Dataset with Temporal Navigation</string>
+                  <string>Always treat as a static dataset, regardless of temporal properties</string>
                  </property>
                 </widget>
                </item>
@@ -439,7 +496,6 @@ border-radius: 2px;</string>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptsPage_3DView"/>
          <widget class="QWidget" name="mOptsPage_Rendering">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="leftMargin">
@@ -469,19 +525,19 @@ border-radius: 2px;</string>
               <item row="0" column="0">
                <widget class="QLabel" name="label_5">
                 <property name="text">
-                 <string>Reduction Factor</string>
+                 <string>Reduction factor</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_2">
                 <property name="text">
-                 <string>Maximal Mesh Resolution</string>
+                 <string>Maximal mesh resolution</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QSpinBox" name="mSimplifyMeshResolutionSpinBox">
+               <widget class="QgsSpinBox" name="mSimplifyMeshResolutionSpinBox">
                 <property name="suffix">
                  <string> pixels/triangle</string>
                 </property>
@@ -497,7 +553,7 @@ border-radius: 2px;</string>
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
+               <widget class="QgsDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
                 <property name="decimals">
                  <number>1</number>
                 </property>
@@ -544,101 +600,16 @@ border-radius: 2px;</string>
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item row="4" column="2">
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="4">
-            <widget class="QPushButton" name="mTemporalReloadButton">
-             <property name="maximumSize">
-              <size>
-               <width>24</width>
-               <height>24</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Reload from provider</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../images/images.qrc">
-               <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
-             <property name="toolTip">
-              <string>Reference time used to render mesh dataset when using temporal range or temporal animation</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="calendarPopup">
-              <bool>true</bool>
-             </property>
-             <property name="timeSpec">
-              <enum>Qt::UTC</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="3">
-            <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="buttonSymbols">
-              <enum>QAbstractSpinBox::NoButtons</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="7" colspan="2">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>Layer Start Time</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2" colspan="7">
-            <widget class="QGroupBox" name="groupBox_2">
+           <item row="1" column="2" colspan="2">
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
              <property name="title">
               <string>Provider Time Settings</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_5">
+             <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,0">
               <item row="1" column="0">
                <widget class="QLabel" name="label_12">
                 <property name="text">
-                 <string>Time Unit</string>
+                 <string>Time unit</string>
                 </property>
                </widget>
               </item>
@@ -665,62 +636,160 @@ border-radius: 2px;</string>
              </layout>
             </widget>
            </item>
-           <item row="1" column="6">
-            <widget class="QDateTimeEdit" name="mTemporalDateTimeEnd">
-             <property name="enabled">
-              <bool>false</bool>
+           <item row="0" column="2" colspan="2">
+            <widget class="QgsCollapsibleGroupBox" name="groupBox">
+             <property name="title">
+              <string>Layer Temporal Settings</string>
              </property>
-             <property name="wrapping">
-              <bool>false</bool>
-             </property>
-             <property name="frame">
-              <bool>true</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="buttonSymbols">
-              <enum>QAbstractSpinBox::NoButtons</enum>
-             </property>
-             <property name="accelerated">
-              <bool>false</bool>
-             </property>
-             <property name="showGroupSeparator" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="timeSpec">
-              <enum>Qt::UTC</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Layer Reference Time</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="4" colspan="2">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Layer End Time</string>
-             </property>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Reference time</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
+                <property name="toolTip">
+                 <string>Reference time used to render mesh dataset when using temporal range or temporal animation</string>
+                </property>
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="mTemporalReloadButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Reload from provider</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Start time</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="2">
+               <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="buttonSymbols">
+                 <enum>QAbstractSpinBox::NoButtons</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>End time</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QDateTimeEdit" name="mTemporalDateTimeEnd">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="wrapping">
+                 <bool>false</bool>
+                </property>
+                <property name="frame">
+                 <bool>true</bool>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="buttonSymbols">
+                 <enum>QAbstractSpinBox::NoButtons</enum>
+                </property>
+                <property name="accelerated">
+                 <bool>false</bool>
+                </property>
+                <property name="showGroupSeparator" stdset="0">
+                 <bool>false</bool>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Dataset matching method</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1" colspan="2">
+               <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
+                <property name="toolTip">
+                 <string>Method for selection of temporal mesh dataset from a range time</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item row="2" column="2">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>Dataset Matching Method</string>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
-           <item row="2" column="3" colspan="4">
-            <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
-             <property name="toolTip">
-              <string>Method for selection of temporal mesh dataset from a range time</string>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptsPage_Metadata">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QFrame" name="metadataFrame">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
              </property>
             </widget>
            </item>
@@ -776,15 +845,20 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -797,6 +871,11 @@ border-radius: 2px;</string>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMeshStaticDatasetWidget</class>
@@ -822,8 +901,6 @@ border-radius: 2px;</string>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mInformationTextBrowser</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>mLayerOrigNameLineEd</tabstop>
-  <tabstop>leDisplayName</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
  </tabstops>

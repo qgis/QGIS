@@ -1,23 +1,23 @@
-IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  SET(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
-ENDIF()
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+endif()
 # override default path where built files are put to allow running qgis without installing
-SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
-SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
 
-ADD_SUBDIRECTORY(gps_importer)
-ADD_SUBDIRECTORY(topology)
-ADD_SUBDIRECTORY(offline_editing)
-ADD_SUBDIRECTORY(geometry_checker)
+add_subdirectory(gps_importer)
+add_subdirectory(topology)
+add_subdirectory(offline_editing)
+add_subdirectory(geometry_checker)
 
-IF (GRASS_FOUND)
-  ADD_SUBDIRECTORY(grass)
-ENDIF (GRASS_FOUND)
+if (GRASS_FOUND)
+  add_subdirectory(grass)
+endif()
 
-IF (CUSTOM_PLUGINS)
-  ADD_SUBDIRECTORY(${CUSTOM_PLUGINS})
-ENDIF (CUSTOM_PLUGINS)
+if (CUSTOM_PLUGINS)
+  add_subdirectory(${CUSTOM_PLUGINS})
+endif()
 
 
 # headers installed in qgis_core target

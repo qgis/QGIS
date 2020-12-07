@@ -56,9 +56,8 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
 
   QPainter *painter = context.painter();
 
-  painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+  QgsScopedQPainterState painterState( painter );
+  context.setPainterFlagsUsingContext( painter );
 
   double margin = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   //map scalebar alignment to Qt::AlignmentFlag type
@@ -80,8 +79,6 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   QRectF painterRect( margin, margin, context.convertToPainterUnits( scaleContext.size.width(), QgsUnitTypes::RenderMillimeters ) - 2 * margin,
                       context.convertToPainterUnits( scaleContext.size.height(), QgsUnitTypes::RenderMillimeters ) - 2 * margin );
   QgsTextRenderer::drawText( painterRect, 0, hAlign, QStringList() << scaleText( scaleContext.scale, settings ), context, settings.textFormat() );
-
-  painter->restore();
 }
 
 QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings,

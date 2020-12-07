@@ -59,7 +59,7 @@ painter device.
 %Docstring
 Creates a render context suitable for the specified ``layout`` and ``painter`` destination.
 This method returns a new QgsRenderContext which matches the scale and settings from the layout's
-:py:func:`QgsLayout.referenceMap()`
+:py:func:`QgsLayout.referenceMap()`.
 If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.
 
@@ -244,6 +244,13 @@ This method will return an optimal round number which falls within the given ran
 the largest "pretty" number possible.
 
 .. versionadded:: 3.10
+%End
+
+    static bool itemIsAClippingSource( const QgsLayoutItem *item );
+%Docstring
+Returns ``True`` if an ``item`` is a clipping item for another layout item.
+
+.. versionadded:: 3.16
 %End
 
 };

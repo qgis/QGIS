@@ -1,6 +1,7 @@
 {
         "name": "array_slice",
         "type": "function",
+  "groups": ["Arrays"],
         "description": "Returns a portion of the array. The slice is defined by the start_pos and end_pos arguments.",
         "arguments": [{
                         "arg": "array",
@@ -44,7 +45,7 @@
                         "returns": "[ 'Valmiera', 'Chugiak' ]"
                 },
                 {
-                        "expression": "array_slice(array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
+                        "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
                         "returns": "[ 'Chugiak', 'Brighton' ]"
                 }
         ]

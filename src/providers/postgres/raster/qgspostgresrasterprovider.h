@@ -36,8 +36,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
   public:
 
-    QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
-    explicit QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    explicit QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     virtual ~QgsPostgresRasterProvider() override = default;
 
@@ -55,7 +55,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     // QgsRasterInterface interface
     virtual Qgis::DataType dataType( int bandNo ) const override;
     virtual int bandCount() const override;
-    virtual QgsRasterInterface *clone() const override;
+    virtual QgsPostgresRasterProvider *clone() const override;
     virtual Qgis::DataType sourceDataType( int bandNo ) const override;
     virtual int xBlockSize() const override;
     virtual int yBlockSize() const override;
@@ -93,8 +93,6 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QString mSchemaName;
     //! SQL statement used to limit the features retrieved (subset string)
     QString mSqlWhereClause;
-    //! Rectangle that contains the extent (bounding box) of the layer
-    mutable QgsRectangle mExtent;
     //! Use estimated metadata. Uses fast table counts, geometry type and extent determination
     bool mUseEstimatedMetadata = true;
     //! Error information
@@ -234,7 +232,6 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
     QStringList parseUriKey( const QString &key );
 
-  public:
 };
 
 
@@ -251,9 +248,9 @@ class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsPostgresRasterProviderMetadata();
-    QVariantMap decodeUri( const QString &uri ) override;
-    QgsPostgresRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
-    QString encodeUri( const QVariantMap &parts ) override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QgsPostgresRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QString encodeUri( const QVariantMap &parts ) const override;
 };
 
 
