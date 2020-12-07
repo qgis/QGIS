@@ -112,7 +112,7 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
 
   double step = layers.size() > 0 ? 100.0 / layers.size() : 1;
   int i = 0;
-  for ( const auto &layer : mLayers )
+  for ( const std::unique_ptr< QgsMapLayer > &layer : mLayers )
   {
     i++;
     if ( feedback->isCanceled() )
@@ -138,7 +138,7 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     }
     else
     {
-      attributes << QString() << QString() << QString() << QString();
+      attributes << QVariant() << QVariant() << QVariant() << QVariant();
     }
     attributes << layer->metadata().rights().join( ';' )
                << layer->abstract();
