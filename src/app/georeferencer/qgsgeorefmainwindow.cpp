@@ -117,6 +117,7 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   {
     dockThisWindow( true );
   }
+  mPointSelectionDistance = settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/PointSelectionDistance" ), "10" ).toInt();
 }
 
 void QgsGeoreferencerMainWindow::dockThisWindow( bool dock )
@@ -519,7 +520,7 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
   // This is the manhattan length from mouse cursor point to GCP
   // We will use this distance to pick the closest GCP to the cursor
   // GCPs farther than the initial minDistance are too far and are ignored
-  qreal minDistance = mCanvas->physicalDpiX() / 10;
+  qreal minDistance = mPointSelectionDistance * mCanvas->devicePixelRatioF();
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
     qreal distance = ( *it )->distance( coords, true );
@@ -555,7 +556,7 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
   // This is the manhattan length from mouse cursor point to GCP
   // We will use this distance to pick the closest GCP to the cursor
   // GCPs farther than the initial minDistance are too far and are ignored
-  qreal minDistance = mCanvas->physicalDpiX() / 10;
+  qreal minDistance = mPointSelectionDistance * mCanvas->devicePixelRatioF();
   for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
     qreal distance = ( *it )->distance( p, isMapPlugin );
@@ -668,6 +669,7 @@ void QgsGeoreferencerMainWindow::showGeorefConfigDialog()
     mCanvas->refresh();
     QgisApp::instance()->mapCanvas()->refresh();
     QgsSettings s;
+    mPointSelectionDistance = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/PointSelectionDistance" ) ).toInt();
     //update dock state
     bool dock = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool();
     if ( dock && !mDock )

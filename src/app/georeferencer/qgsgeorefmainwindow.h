@@ -223,6 +223,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString mTranslatedRasterFileName;
     QString mGCPpointsFileName;
     QgsCoordinateReferenceSystem mProjection;
+    int mPointSelectionDistance;
     QString mPdfOutputFile;
     QString mPdfOutputMapFile;
     QString mSaveGcp;

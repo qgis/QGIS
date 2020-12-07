@@ -88,6 +88,8 @@ void QgsGeorefConfigDialog::readSettings()
   mShowIDsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool() );
   mShowCoordsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool() );
   mShowDockedCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() );
+  mPointSelectionDistanceSpinBox->setValue( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/PointSelectionDistance" ), "10" ).toInt() );
+  mPointSelectionDistanceSpinBox->setClearValue( 10 );
 
   if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ).toString() == QLatin1String( "mapUnits" ) )
   {
@@ -123,6 +125,7 @@ void QgsGeorefConfigDialog::writeSettings()
   QgsSettings s;
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ), mShowIDsCheckBox->isChecked() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ), mShowCoordsCheckBox->isChecked() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/PointSelectionDistance" ), mPointSelectionDistanceSpinBox->value() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ), mShowDockedCheckBox->isChecked() );
   if ( mPixelsButton->isChecked() )
   {
