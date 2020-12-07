@@ -24,6 +24,7 @@
 
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsmessagebaritem.h"
+#include "qgsfilterlineedit.h"
 
 #include "qgsoptionsdialoghighlightwidgetsimpl.h"
 
@@ -41,7 +42,9 @@ QgsOptionsDialogHighlightWidget *QgsOptionsDialogHighlightWidget::createWidget( 
   while ( ( parent = parent->parentWidget() ) )
   {
     // do not register message bar content, items disappear and causes QGIS to crash
-    if ( qobject_cast< QgsMessageBarItem * >( parent ) )
+    // do not register QgsFilterLineEdit's child widgets, the clear button might be deleted
+    if ( qobject_cast< QgsMessageBarItem * >( parent ) ||
+         qobject_cast< QgsFilterLineEdit * >( parent ) )
     {
       // return invalid widget
       return nullptr;
