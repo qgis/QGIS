@@ -35,7 +35,7 @@ QgsHanaSettings::QgsHanaSettings( const QString &name, bool autoLoad )
     load();
 }
 
-QString QgsHanaSettings::getPort() const
+QString QgsHanaSettings::port() const
 {
   if ( QgsHanaIdentifierType::fromInt( mIdentifierType ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
   {
@@ -99,7 +99,7 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 {
   QgsDataSourceUri uri;
-  uri.setConnection( mHost, getPort(), mDatabase, mUserName, mPassword );
+  uri.setConnection( mHost, port(), mDatabase, mUserName, mPassword );
   uri.setDriver( mDriver );
   uri.setSchema( mSchema );
   if ( mSslEnabled )
@@ -122,7 +122,7 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 void QgsHanaSettings::load()
 {
   QgsSettings settings;
-  QString key = getPath();
+  QString key = path();
   mDriver = settings.value( key + "/driver" ).toString();
   mHost = settings.value( key + "/host" ).toString();
   mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
@@ -149,7 +149,7 @@ void QgsHanaSettings::load()
 
 void QgsHanaSettings::save()
 {
-  QString key( getPath() );
+  QString key( path() );
   QgsSettings settings;
   settings.setValue( key + "/driver", mDriver );
   settings.setValue( key + "/host", mHost );

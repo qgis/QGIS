@@ -61,7 +61,7 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
   {
     QgsHanaSettings settings( mName, true );
     QVector<QgsHanaSchemaProperty> schemas =
-      conn->getSchemas( settings.getUserTablesOnly() ? settings.getUserName() : QString() );
+      conn->getSchemas( settings.userTablesOnly() ? settings.userName() : QString() );
 
     if ( schemas.isEmpty() )
     {
@@ -109,20 +109,20 @@ void QgsHanaConnectionItem::updateToolTip( const QString &userName, const QStrin
 {
   QgsHanaSettings settings( mName, true );
   QString tip;
-  if ( !settings.getDatabase().isEmpty() )
-    tip = QStringLiteral( "Database: " ) + settings.getDatabase();
+  if ( !settings.database().isEmpty() )
+    tip = QStringLiteral( "Database: " ) + settings.database();
   if ( !tip.isEmpty() )
     tip += '\n';
-  tip += QStringLiteral( "Host: " ) + settings.getHost() + QStringLiteral( " " );
-  if ( QgsHanaIdentifierType::fromInt( settings.getIdentifierType() ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
-    tip += settings.getIdentifier();
+  tip += QStringLiteral( "Host: " ) + settings.host() + QStringLiteral( " " );
+  if ( QgsHanaIdentifierType::fromInt( settings.identifierType() ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
+    tip += settings.identifier();
   else
-    tip += settings.getPort();
+    tip += settings.port();
   tip += '\n';
   if ( !dbmsVersion.isEmpty() )
     tip += QStringLiteral( "DB Version: " ) + dbmsVersion + '\n';
   tip += QStringLiteral( "User: " ) + userName + '\n';
-  tip += QStringLiteral( "Encrypted: " ) + QString( settings.getEnableSsl() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  tip += QStringLiteral( "Encrypted: " ) + QString( settings.enableSsl() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
   setToolTip( tip );
 }
 
@@ -287,7 +287,7 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
 
   QgsHanaSettings settings( mConnectionName, true );
   QVector<QgsHanaLayerProperty> layers = conn->getLayers( mSchemaName,
-                                         settings.getAllowGeometrylessTables(), settings.getUserTablesOnly() );
+                                         settings.allowGeometrylessTables(), settings.userTablesOnly() );
 
   for ( auto &layerProperty : layers )
   {

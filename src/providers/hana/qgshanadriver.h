@@ -29,7 +29,7 @@ class QgsHanaDriver
 
   public:
     odbc::ConnectionRef createConnection();
-    const QString &getDriver() const;
+    const QString &driver() const;
 
     static QgsHanaDriver *instance();
 

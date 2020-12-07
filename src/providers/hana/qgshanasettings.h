@@ -37,69 +37,69 @@ class QgsHanaSettings
   public:
     QgsHanaSettings( const QString &name, bool autoLoad = false );
 
-    const QString &getName() const { return mName; }
+    const QString &name() const { return mName; }
 
-    const QString &getDriver() const { return mDriver; }
+    const QString &driver() const { return mDriver; }
     void setDriver( const QString &driver ) { mDriver = driver; }
 
-    const QString &getHost() const { return mHost; }
+    const QString &host() const { return mHost; }
     void setHost( const QString &host ) { mHost = host; }
 
-    uint getIdentifierType() const { return mIdentifierType; }
+    uint identifierType() const { return mIdentifierType; }
     void setIdentifierType( uint identifierType ) { mIdentifierType = identifierType; }
 
-    const QString &getIdentifier() const { return mIdentifier; }
+    const QString &identifier() const { return mIdentifier; }
     void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
 
-    const QString &getDatabase() const { return mDatabase; }
+    const QString &database() const { return mDatabase; }
     void setDatabase( const QString &database ) { mDatabase = database; }
 
-    bool getMultitenant() const { return mMultitenant; }
+    bool multitenant() const { return mMultitenant; }
     void setMultitenant( bool value ) { mMultitenant = value; }
 
-    const QString &getSchema() const { return mSchema; }
+    const QString &schema() const { return mSchema; }
     void setSchema( const QString &schema ) { mSchema = schema; }
 
-    const QString &getAuthCfg() const { return mAuthcfg; }
+    const QString &authCfg() const { return mAuthcfg; }
     void setAuthCfg( const QString &authcfg ) { mAuthcfg = authcfg; }
 
-    const QString &getUserName() const { return mUserName; }
+    const QString &userName() const { return mUserName; }
     void setUserName( const QString &userName ) { mUserName = userName; }
 
-    bool getSaveUserName() const { return mSaveUserName; }
+    bool saveUserName() const { return mSaveUserName; }
     void setSaveUserName( bool saveUserName ) { mSaveUserName = saveUserName; }
 
-    const QString &getPassword() const { return mPassword; }
+    const QString &password() const { return mPassword; }
     void setPassword( const QString &password ) { mPassword = password; }
 
-    bool getSavePassword() const { return mSavePassword; }
+    bool savePassword() const { return mSavePassword; }
     void setSavePassword( bool savePassword ) { mSavePassword = savePassword; }
 
-    bool getUserTablesOnly() const { return mUserTablesOnly; }
+    bool userTablesOnly() const { return mUserTablesOnly; }
     void setUserTablesOnly( bool userTablesOnly ) { mUserTablesOnly = userTablesOnly; }
 
-    bool getAllowGeometrylessTables() const { return mAllowGeometrylessTables; }
+    bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
     void setAllowGeometrylessTables( bool allowGeometrylessTables )
     {
       mAllowGeometrylessTables = allowGeometrylessTables;
     }
 
-    bool getEnableSsl() const { return mSslEnabled; }
+    bool enableSsl() const { return mSslEnabled; }
     void setEnableSsl( bool value ) { mSslEnabled = value; }
 
-    const QString &getSslCryptoProvider() const { return mSslCryptoProvider; }
+    const QString &sslCryptoProvider() const { return mSslCryptoProvider; }
     void setSslCryptoProvider( const QString &value ) { mSslCryptoProvider = value; }
 
-    const QString &getSslKeyStore() const { return mSslKeyStore; }
+    const QString &sslKeyStore() const { return mSslKeyStore; }
     void setSslKeyStore( const QString &value ) { mSslKeyStore = value; }
 
-    const QString &getSslTrustStore() const { return mSslTrustStore; }
+    const QString &sslTrustStore() const { return mSslTrustStore; }
     void setSslTrustStore( const QString &value ) { mSslTrustStore = value; }
 
-    bool getSslValidateCertificate() const { return mSslValidateCertificate; }
+    bool sslValidateCertificate() const { return mSslValidateCertificate; }
     void setSslValidateCertificate( bool value ) { mSslValidateCertificate = value; }
 
-    const QString &getSslHostNameInCertificate() const
+    const QString &sslHostNameInCertificate() const
     {
       return mSslHostNameInCertificate;
     }
@@ -108,7 +108,7 @@ class QgsHanaSettings
       mSslHostNameInCertificate = value;
     }
 
-    QString getPort() const;
+    QString port() const;
     void setFromDataSourceUri( const QgsDataSourceUri &uri );
     QgsDataSourceUri toDataSourceUri() const ;
 
@@ -121,7 +121,7 @@ class QgsHanaSettings
     static void removeConnection( const QString &name );
 
   private:
-    QString getPath() const { return getBaseKey() + mName; }
+    QString path() const { return getBaseKey() + mName; }
     static QString getBaseKey() { return "/HANA/connections/"; }
 
   private:

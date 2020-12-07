@@ -80,7 +80,7 @@ ConnectionRef QgsHanaDriver::createConnection()
   return mEnv->createConnection();
 }
 
-const QString &QgsHanaDriver::getDriver() const
+const QString &QgsHanaDriver::driver() const
 {
   return mDriver;
 }

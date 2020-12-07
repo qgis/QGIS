@@ -367,7 +367,7 @@ void QgsHanaSourceSelect::cmbConnections_activated( int )
   cbxAllowGeometrylessTables->blockSignals( true );
   QgsHanaSettings settings( cmbConnections->currentText() );
   settings.load();
-  cbxAllowGeometrylessTables->setChecked( settings.getAllowGeometrylessTables() );
+  cbxAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
   cbxAllowGeometrylessTables->blockSignals( false );
 }
 
@@ -559,7 +559,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( settings.getName(), uri, settings.getAllowGeometrylessTables(), settings.getUserTablesOnly() );
+  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( settings.name(), uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
   mColumnTypeTask = qgis::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
 

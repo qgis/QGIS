@@ -55,7 +55,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   connect( btnConnect, &QPushButton::clicked, this, &QgsHanaNewConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaNewConnection::showHelp );
 
-  txtDriver->setText( QgsHanaDriver::instance()->getDriver() );
+  txtDriver->setText( QgsHanaDriver::instance()->driver() );
 
   cbxCryptoProvider->addItem( tr( "openssl" ), QStringLiteral( "openssl" ) );
   cbxCryptoProvider->addItem( tr( "commoncrypto" ), QStringLiteral( "commoncrypto" ) );
@@ -244,12 +244,12 @@ void QgsHanaNewConnection::readSettingsFromControls( QgsHanaSettings &settings )
 
 void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &settings )
 {
-  txtDriver->setText( settings.getDriver() );
-  txtHost->setText( settings.getHost() );
+  txtDriver->setText( settings.driver() );
+  txtHost->setText( settings.host() );
   cmbIdentifierType->setCurrentIndex( QgsHanaIdentifierType::INSTANCE_NUMBER );
-  cmbIdentifierType->setCurrentIndex( static_cast<int>( settings.getIdentifierType() ) );
-  txtIdentifier->setText( settings.getIdentifier() );
-  if ( !settings.getMultitenant() )
+  cmbIdentifierType->setCurrentIndex( static_cast<int>( settings.identifierType() ) );
+  txtIdentifier->setText( settings.identifier() );
+  if ( !settings.multitenant() )
   {
     rbtnSingleContainer->setChecked( true );
     frmMultitenantSettings->setEnabled( false );
@@ -257,40 +257,40 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   else
   {
     rbtnMultipleContainers->setChecked( true );
-    if ( settings.getDatabase() == QLatin1String( "SYSTEMDB" ) )
+    if ( settings.database() == QLatin1String( "SYSTEMDB" ) )
       rbtnSystemDatabase->setChecked( true );
     else
-      txtTenantDatabaseName->setText( settings.getDatabase() );
+      txtTenantDatabaseName->setText( settings.database() );
   }
-  txtSchema->setText( settings.getSchema() );
-  chkUserTablesOnly->setChecked( settings.getUserTablesOnly() );
-  chkAllowGeometrylessTables->setChecked( settings.getAllowGeometrylessTables() );
+  txtSchema->setText( settings.schema() );
+  chkUserTablesOnly->setChecked( settings.userTablesOnly() );
+  chkAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
 
-  chkEnableSSL->setChecked( settings.getEnableSsl() );
-  int idx = cbxCryptoProvider->findData( settings.getSslCryptoProvider() );
+  chkEnableSSL->setChecked( settings.enableSsl() );
+  int idx = cbxCryptoProvider->findData( settings.sslCryptoProvider() );
   if ( idx >= 0 )
     cbxCryptoProvider->setCurrentIndex( idx );
 
-  chkValidateCertificate->setChecked( settings.getSslValidateCertificate() );
-  txtOverrideHostName->setText( settings.getSslHostNameInCertificate() );
-  txtKeyStore->setText( settings.getSslKeyStore() );
-  txtTrustStore->setText( settings.getSslTrustStore() );
+  chkValidateCertificate->setChecked( settings.sslValidateCertificate() );
+  txtOverrideHostName->setText( settings.sslHostNameInCertificate() );
+  txtKeyStore->setText( settings.sslKeyStore() );
+  txtTrustStore->setText( settings.sslTrustStore() );
 
-  if ( settings.getSaveUserName() )
+  if ( settings.saveUserName() )
   {
-    mAuthSettings->setUsername( settings.getUserName() );
+    mAuthSettings->setUsername( settings.userName() );
     mAuthSettings->setStoreUsernameChecked( true );
   }
 
-  if ( settings.getSavePassword() )
+  if ( settings.savePassword() )
   {
-    mAuthSettings->setPassword( settings.getPassword() );
+    mAuthSettings->setPassword( settings.password() );
     mAuthSettings->setStorePasswordChecked( true );
   }
 
-  mAuthSettings->setConfigId( settings.getAuthCfg() );
+  mAuthSettings->setConfigId( settings.authCfg() );
 
-  txtName->setText( settings.getName() );
+  txtName->setText( settings.name() );
 }
 
 void QgsHanaNewConnection::testConnection()
