@@ -126,9 +126,9 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Emitted when the scene's state has changed
     void sceneStateChanged();
 
-    //! Emmited when the FPS count changes (at most every frame)
+    //! Emitted when the FPS count changes (at most every frame)
     void fpsCountChanged( float fpsCount );
-    //! Emmited when the FPS counter is activated or deactivated
+    //! Emitted when the FPS counter is activated or deactivated
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
 
   public slots:
