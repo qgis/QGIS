@@ -1395,9 +1395,9 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
   QDomAttr version = root.attributeNode( "version" );
   if ( version.value() != QLatin1String( "1.0" ) )
   {
-    QMessageBox::information( this,
-                              tr( "Loading Connections" ),
-                              tr( "The file version '%1' is not supported." ).arg( version.value() ) );
+    QMessageBox::warning( this,
+                          tr( "Loading Connections" ),
+                          tr( "The file version '%1' is not supported." ).arg( version.value() ) );
     return;
   }
 
