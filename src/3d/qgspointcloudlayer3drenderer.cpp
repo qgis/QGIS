@@ -50,14 +50,12 @@ void QgsPointCloud3DRenderContext::setFilteredOutCategories( const QgsPointCloud
   mFilteredOutCategories = categories;
 }
 
-bool QgsPointCloud3DRenderContext::isFilteredOut( int value ) const
+QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
 {
+  QSet<int> filteredOut;
   for ( QgsPointCloudCategory category : mFilteredOutCategories )
-  {
-    if ( category.value() == value )
-      return true;
-  }
-  return false;
+    filteredOut.insert( category.value() );
+  return filteredOut;
 }
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
