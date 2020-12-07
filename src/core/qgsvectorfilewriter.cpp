@@ -108,7 +108,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QgsFeatureSink::SinkFlags sinkFlags,
   QString *newLayer,
   QgsCoordinateTransformContext transformContext,
-  FieldNameSource fieldNameSouce
+  FieldNameSource fieldNameSource
 )
   : mError( NoError )
   , mWkbType( geometryType )
@@ -117,7 +117,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 {
   init( vectorFileName, fileEncoding, fields,  geometryType,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
-        QString(), CreateOrOverwriteFile, newLayer, sinkFlags, transformContext, fieldNameSouce );
+        QString(), CreateOrOverwriteFile, newLayer, sinkFlags, transformContext, fieldNameSource );
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter(

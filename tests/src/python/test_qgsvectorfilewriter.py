@@ -100,7 +100,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         writeShape(self.mMemoryLayer, 'writetest.shp')
 
     def testWritePreferAlias(self):
-        """Test prefering field alias."""
+        """Test preferring field alias."""
         layer = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=name:string(20)&'
              'field=age:integer&field=size:double&index=yes'),
