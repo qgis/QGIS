@@ -499,7 +499,19 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   }
 
   updateSceneState();
-  emit fpsCountChanged( 1.0f / dt );
+
+  // lock changing the FPS counter to 5 fps
+  static int frameCount = 0;
+  static float accumulatedTime = 0.0f;
+  frameCount++;
+  accumulatedTime += dt;
+  if ( accumulatedTime >= 0.2f )
+  {
+    float fps = ( float )frameCount / accumulatedTime;
+    frameCount = 0;
+    accumulatedTime = 0.0f;
+    emit fpsCountChanged( fps );
+  }
 }
 
 void Qgs3DMapScene::createTerrain()
