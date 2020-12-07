@@ -498,6 +498,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   }
 
   updateSceneState();
+  emit fpsCountChanged( 1.0f / dt );
 }
 
 void Qgs3DMapScene::createTerrain()
