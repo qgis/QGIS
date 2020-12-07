@@ -270,7 +270,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = offset.z() + scale.z() * iz;
-    QVector3D point( x, y, z );
+    QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
   }
@@ -370,7 +370,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = offset.z() + scale.z() * iz;
-    QVector3D point( x, y, z );
+    QgsVector3D point( x, y, z );
 
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
@@ -471,7 +471,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = offset.z() + scale.z() * iz;
-    QVector3D point( x, y, z );
+    QgsVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
@@ -605,7 +605,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
     double z = offset.z() + scale.z() * iz;
-    QVector3D point( x, y, z );
+    QgsVector3D point( x, y, z );
 
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     float iParam = 0.0f;
