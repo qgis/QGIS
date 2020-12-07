@@ -594,6 +594,24 @@ Sets whether the skybox is enabled.
 .. versionadded:: 3.16
 %End
 
+    bool isFpsCounterEnabled() const;
+%Docstring
+Returns whether FPS counter label is enabled
+
+.. seealso:: :py:func:`setIsFpsCounterEnabled`
+
+.. versionadded:: 3.18
+%End
+
+    void setIsFpsCounterEnabled( bool fpsCounterEnabled );
+%Docstring
+Sets whether FPS counter label is enabled
+
+.. seealso:: :py:func:`isFpsCounterEnabled`
+
+.. versionadded:: 3.18
+%End
+
   signals:
     void backgroundColorChanged();
 %Docstring
@@ -780,6 +798,13 @@ Emitted when skybox settings are changed
 Emitted when shadow rendering settings are changed
 
 .. versionadded:: 3.16
+%End
+
+    void fpsCounterEnabledChanged( bool fpsCounterEnabled );
+%Docstring
+Emitted when the FPS counter is enabled or disabled
+
+.. versionadded:: 3.18
 %End
 
   private:

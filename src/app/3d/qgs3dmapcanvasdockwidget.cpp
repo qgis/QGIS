@@ -168,6 +168,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   } );
 
   connect( mCanvas, &Qgs3DMapCanvas::fpsCountChanged, this, &Qgs3DMapCanvasDockWidget::updateFpsCount );
+  connect( mCanvas, &Qgs3DMapCanvas::fpsCounterEnabledChanged, this, &Qgs3DMapCanvasDockWidget::toggleFpsCounter );
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
@@ -262,10 +263,16 @@ void Qgs3DMapCanvasDockWidget::toggleNavigationWidget( bool visibility )
   mCanvas->setOnScreenNavigationVisibility( visibility );
 }
 
+void Qgs3DMapCanvasDockWidget::toggleFpsCounter( bool visibility )
+{
+  mLabelFpsCounter->setVisible( visibility );
+}
+
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mLabelFpsCounter )->setVisible( map->isFpsCounterEnabled() );
 
   mCanvas->setMap( map );
 

@@ -61,6 +61,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void measureLine();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
+    void toggleFpsCounter( bool visibility );
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
