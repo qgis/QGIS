@@ -111,7 +111,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
   childItemList << selItem;
   childItemList << sqlItem;
 
-  for ( QStandardItem *item : childItemList )
+  for ( QStandardItem *item :  qgis::as_const( childItemList ) )
   {
     if ( tip.isEmpty() )
     {

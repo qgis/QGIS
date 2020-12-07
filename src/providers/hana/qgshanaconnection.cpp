@@ -527,7 +527,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
     if ( values.size() == 1 )
       values[0].isUnique = true;
 
-    for ( const auto &lp : values )
+    for ( const QgsHanaLayerProperty &lp : values )
       list << lp;
   }
 

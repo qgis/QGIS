@@ -50,10 +50,6 @@ class QgsHanaConnection : public QObject
     void commit();
     void rollback();
 
-    /**
-     * Returns a list of supported native types for this connection.
-     * \since QGIS 3.16
-     */
     QList<QgsVectorDataProvider::NativeType> getNativeTypes();
     const QString &getDatabaseVersion();
     const QString &getUserName();

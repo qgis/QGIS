@@ -845,7 +845,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
   while ( !renameCandidates.empty() )
   {
     bool found = false;
-    for ( const QPair<QString, QString> &candidate : renameCandidates )
+    for ( const QPair<QString, QString> &candidate :  qgis::as_const( renameCandidates ) )
     {
       if ( resultFieldNames.contains( candidate.first ) && !resultFieldNames.contains( candidate.second ) )
       {
@@ -868,7 +868,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
 
   try
   {
-    for ( const QPair<QString, QString> &kv : fieldsToRename )
+    for ( const QPair<QString, QString> &kv :  qgis::as_const( fieldsToRename ) )
     {
       QString sql = QStringLiteral( "RENAME COLUMN %1.%2.%3 TO %4" ).arg(
                       QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),

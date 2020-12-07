@@ -25,43 +25,43 @@ class QgsHanaConnectionStringBuilder
     QgsHanaConnectionStringBuilder() = default;
     explicit QgsHanaConnectionStringBuilder( const QgsDataSourceUri &uri );
 
-    const QString &driver() const { return mDriver; }
+    QString driver() const { return mDriver; }
     void setDriver( const QString &driver ) { mDriver = driver; }
 
-    const QString &host() const { return mHost; }
+    QString host() const { return mHost; }
     void setHost( const QString &host ) { mHost = host; }
 
-    const QString &port() const { return mPort; }
+    QString port() const { return mPort; }
     void setPort( const QString &port ) { mPort = port; }
 
-    const QString &database() const { return mDatabase; }
+    QString database() const { return mDatabase; }
     void setDatabase( const QString &database ) { mDatabase = database; }
 
-    const QString &schema() const { return mSchema; }
+    QString schema() const { return mSchema; }
     void setSchema( const QString &schema ) { mSchema = schema; }
 
-    const QString &userName() const { return mUserName; }
+    QString userName() const { return mUserName; }
     void setUserName( const QString &userName ) { mUserName = userName; }
 
-    const QString &password() const { return mPassword; }
+    QString password() const { return mPassword; }
     void setPassword( const QString &password ) { mPassword = password; }
 
     bool enableSsl() const { return mSslEnabled; }
     void setEnableSsl( bool value ) { mSslEnabled = value; }
 
-    const QString &cryptoProvider() const { return mSslCryptoProvider; }
+    QString cryptoProvider() const { return mSslCryptoProvider; }
     void setCryptoProvider( const QString &value ) { mSslCryptoProvider = value; }
 
-    const QString &sslKeyStore() const { return mSslKeyStore; }
+    QString sslKeyStore() const { return mSslKeyStore; }
     void setSslKeyStore( const QString &value ) { mSslKeyStore = value; }
 
-    const QString &sslTrustStore() const { return mSslTrustStore; }
+    QString sslTrustStore() const { return mSslTrustStore; }
     void setSslTrustStore( const QString &value ) { mSslTrustStore = value; }
 
     bool sslValidateCertificate() const { return mSslValidateCertificate; }
     void setSslValidateCertificate( bool value ) { mSslValidateCertificate = value; }
 
-    const QString &sslHostNameInCertificate() const { return mSslHostNameInCertificate; }
+    QString sslHostNameInCertificate() const { return mSslHostNameInCertificate; }
     void setSslHostNameInCertificate( const QString &value ) { mSslHostNameInCertificate = value; }
 
     QString toString() const;

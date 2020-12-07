@@ -26,8 +26,10 @@
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgsmimedatautils.h"
 #include "qgsnewnamedialog.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerexporter.h"
 
 #include <QMessageBox>
 #include <climits>
@@ -60,7 +62,7 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
   try
   {
     QgsHanaSettings settings( mName, true );
-    QVector<QgsHanaSchemaProperty> schemas =
+    const QVector<QgsHanaSchemaProperty> schemas =
       conn->getSchemas( settings.userTablesOnly() ? settings.userName() : QString() );
 
     if ( schemas.isEmpty() )
@@ -98,7 +100,7 @@ bool QgsHanaConnectionItem::equal( const QgsDataItem *other )
 
 void QgsHanaConnectionItem::refreshSchema( const QString &schema )
 {
-  for ( QgsDataItem *child : mChildren )
+  for ( QgsDataItem *child : qgis::as_const( mChildren ) )
   {
     if ( child->name() == schema || schema.isEmpty() )
       child->refresh();
@@ -139,7 +141,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
 
   if ( !conn.isNull() )
   {
-    QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+    const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
     for ( const QgsMimeDataUtils::Uri &u : lst )
     {
       if ( u.layerType != QLatin1String( "vector" ) )
@@ -267,7 +269,7 @@ QgsHanaSchemaItem::QgsHanaSchemaItem(
   const QString &connectionName,
   const QString &name,
   const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "HANA" ) )
   , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
@@ -289,13 +291,13 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
   QVector<QgsHanaLayerProperty> layers = conn->getLayers( mSchemaName,
                                          settings.allowGeometrylessTables(), settings.userTablesOnly() );
 
-  for ( auto &layerProperty : layers )
+  for ( QgsHanaLayerProperty &layerProperty : layers )
   {
     conn->readLayerInfo( layerProperty );
     items.append( createLayer( layerProperty ) );
   }
 
-  this->setName( mSchemaName );
+  setName( mSchemaName );
 
   return items;
 }
@@ -350,7 +352,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
 }
 
 QgsHanaRootItem::QgsHanaRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "HANA" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconHana.svg" );
@@ -360,7 +362,8 @@ QgsHanaRootItem::QgsHanaRootItem( QgsDataItem *parent, const QString &name, cons
 QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  for ( const QString &connName : QgsHanaSettings::getConnectionNames() )
+  const QStringList connectionNames = QgsHanaSettings::getConnectionNames();
+  for ( const QString &connName : connectionNames )
   {
     connections << new QgsHanaConnectionItem( this, connName, mPath + '/' + connName );
   }

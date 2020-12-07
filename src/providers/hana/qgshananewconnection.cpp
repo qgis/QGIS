@@ -57,10 +57,10 @@ QgsHanaNewConnection::QgsHanaNewConnection(
 
   txtDriver->setText( QgsHanaDriver::instance()->driver() );
 
-  cbxCryptoProvider->addItem( tr( "openssl" ), QStringLiteral( "openssl" ) );
-  cbxCryptoProvider->addItem( tr( "commoncrypto" ), QStringLiteral( "commoncrypto" ) );
-  cbxCryptoProvider->addItem( tr( "sapcrypto" ), QStringLiteral( "sapcrypto" ) );
-  cbxCryptoProvider->addItem( tr( "mscrypto" ), QStringLiteral( "mscrypto" ) );
+  cbxCryptoProvider->addItem( QStringLiteral( "openssl" ), QStringLiteral( "openssl" ) );
+  cbxCryptoProvider->addItem( QStringLiteral( "commoncrypto" ), QStringLiteral( "commoncrypto" ) );
+  cbxCryptoProvider->addItem( QStringLiteral( "sapcrypto" ), QStringLiteral( "sapcrypto" ) );
+  cbxCryptoProvider->addItem( QStringLiteral( "mscrypto" ), QStringLiteral( "mscrypto" ) );
 
   mAuthSettings->setDataprovider( QStringLiteral( "hana" ) );
   mAuthSettings->showStoreCheckboxes( true );
@@ -85,21 +85,21 @@ void QgsHanaNewConnection::accept()
   if ( isStringEmpty( txtName->text() ) )
   {
     QMessageBox::warning( this,
-                          tr( "Save Connection" ), tr( "WARNING: Connection name cannot be empty." ), QMessageBox::Ok );
+                          tr( "Save Connection" ), tr( "Connection name cannot be empty." ), QMessageBox::Ok );
     return;
   }
 
   if ( isStringEmpty( txtDriver->text() ) )
   {
     QMessageBox::warning( this,
-                          tr( "Save Connection" ), tr( "WARNING: Driver field cannot be empty." ), QMessageBox::Ok );
+                          tr( "Save Connection" ), tr( "Driver field cannot be empty." ), QMessageBox::Ok );
     return;
   }
 
   if ( isStringEmpty( txtHost->text() ) )
   {
     QMessageBox::warning( this,
-                          tr( "Save Connection" ), tr( "WARNING: Host field cannot be empty." ), QMessageBox::Ok );
+                          tr( "Save Connection" ), tr( "Host field cannot be empty." ), QMessageBox::Ok );
     return;
   }
 
@@ -108,7 +108,7 @@ void QgsHanaNewConnection::accept()
     if ( isStringEmpty( txtTenantDatabaseName->text() ) )
     {
       QMessageBox::warning( this,
-                            tr( "Save Connection" ), tr( "WARNING: Tenant database name cannot be empty." ), QMessageBox::Ok );
+                            tr( "Save Connection" ), tr( "Tenant database name cannot be empty." ), QMessageBox::Ok );
       return;
     }
   }

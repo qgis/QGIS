@@ -305,10 +305,10 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
   try
   {
     QVector<QgsHanaLayerProperty> layers = conn->getLayers( schema, flags.testFlag( TableFlag::Aspatial ), false );
-    for ( auto &layerInfo : layers )
+    for ( QgsHanaLayerProperty &layerInfo : layers )
       conn->readLayerInfo( layerInfo );
 
-    for ( const auto &layerInfo : layers )
+    for ( const QgsHanaLayerProperty &layerInfo :  qgis::as_const( layers ) )
     {
       // Classify
       TableFlags prFlags;

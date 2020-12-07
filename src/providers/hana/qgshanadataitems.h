@@ -20,8 +20,6 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgshanatablemodel.h"
-#include "qgsmimedatautils.h"
-#include "qgsvectorlayerexporter.h"
 
 #include <QMainWindow>
 
@@ -30,7 +28,7 @@ class QgsHanaConnectionItem;
 class QgsHanaSchemaItem;
 class QgsHanaLayerItem;
 
-class QgsHanaRootItem : public QgsDataCollectionItem
+class QgsHanaRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
@@ -70,7 +68,7 @@ class QgsHanaConnectionItem : public QgsDataCollectionItem
     void refreshSchema( const QString &schema );
 };
 
-class QgsHanaSchemaItem : public QgsDataCollectionItem
+class QgsHanaSchemaItem : public QgsDatabaseSchemaItem
 {
     Q_OBJECT
   public:

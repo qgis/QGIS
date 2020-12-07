@@ -75,7 +75,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
 
   if ( index.column() == QgsHanaTableModel::DbtmPkCol )
   {
-    QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
+    const QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
     if ( !values.isEmpty() )
     {

@@ -187,7 +187,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
         // We only support IS NULL and IS NOT NULL if the operand on the left is a column
         case QgsExpressionNodeBinaryOperator::boIs:
         case QgsExpressionNodeBinaryOperator::boIsNot:
-          if ( "NULL" == opRight.toUpper() )
+          if ( QStringLiteral( "NULL" ) == opRight.toUpper() )
           {
             if ( binOp->opLeft()->nodeType() != QgsExpressionNode::ntColumnRef )
             {

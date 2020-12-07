@@ -449,9 +449,7 @@ QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
     mSrid = QgsHanaUtils::toPlanarSRID( p->mSrid );
 }
 
-QgsHanaFeatureSource::~QgsHanaFeatureSource()
-{
-}
+QgsHanaFeatureSource::~QgsHanaFeatureSource() = default;
 
 QgsFeatureIterator QgsHanaFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

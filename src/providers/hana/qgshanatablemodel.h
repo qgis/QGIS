@@ -18,7 +18,7 @@
 #define QGSHANATABLEMODEL_H
 
 #include "qgis.h"
-#include <qgswkbtypes.h>
+#include "qgswkbtypes.h"
 #include <QStandardItemModel>
 
 //! Schema properties structure
