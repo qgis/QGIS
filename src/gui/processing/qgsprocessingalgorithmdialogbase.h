@@ -56,6 +56,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
 
     void progressTextChanged( const QString &text );
     void errorReported( const QString &text, bool fatalError );
+    void warningPushed( const QString &text );
     void infoPushed( const QString &text );
     void commandInfoPushed( const QString &text );
     void debugInfoPushed( const QString &text );
@@ -65,6 +66,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
 
     void setProgressText( const QString &text ) override;
     void reportError( const QString &error, bool fatalError ) override;
+    void pushWarning( const QString &info ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
@@ -169,6 +171,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * If \a fatalError is TRUE, the error prevented the algorithm from executing.
      */
     void reportError( const QString &error, bool fatalError );
+
+    /**
+     * Pushes a warning information string to the dialog's log.
+     */
+    void pushWarning( const QString &warning );
 
     /**
      * Pushes an information string to the dialog's log.
@@ -288,7 +295,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     /**
      * Displays an info \a message in the dialog's log.
      */
-    void setInfo( const QString &message, bool isError = false, bool escapeHtml = true );
+    void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
 
     /**
      * Resets the dialog's gui, ready for another algorithm execution.

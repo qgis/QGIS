@@ -42,6 +42,7 @@ class ConsoleFeedback : public QgsProcessingFeedback
 
     void setProgressText( const QString &text ) override;
     void reportError( const QString &error, bool fatalError ) override;
+    void pushWarning( const QString &warning ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;

@@ -118,6 +118,11 @@ Reports an ``error`` string to the dialog's log.
 If ``fatalError`` is ``True``, the error prevented the algorithm from executing.
 %End
 
+    void pushWarning( const QString &warning );
+%Docstring
+Pushes a warning information string to the dialog's log.
+%End
+
     void pushInfo( const QString &info );
 %Docstring
 Pushes an information string to the dialog's log.
@@ -243,7 +248,7 @@ Sets the algorithm results.
 .. seealso:: :py:func:`setExecuted`
 %End
 
-    void setInfo( const QString &message, bool isError = false, bool escapeHtml = true );
+    void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
 %Docstring
 Displays an info ``message`` in the dialog's log.
 %End

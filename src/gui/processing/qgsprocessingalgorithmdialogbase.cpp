@@ -51,6 +51,12 @@ void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error, bo
   emit errorReported( error, fatalError );
 }
 
+void QgsProcessingAlgorithmDialogFeedback::pushWarning( const QString &warning )
+{
+  QgsProcessingFeedback::pushWarning( warning );
+  emit warningPushed( warning );
+}
+
 void QgsProcessingAlgorithmDialogFeedback::pushInfo( const QString &info )
 {
   QgsProcessingFeedback::pushInfo( info );
@@ -233,6 +239,7 @@ QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushConsoleInfo );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushDebugInfo );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmDialogBase::reportError );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::warningPushed, this, &QgsProcessingAlgorithmDialogBase::pushWarning );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmDialogBase::pushInfo );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmDialogBase::setProgressText );
   connect( buttonCancel, &QPushButton::clicked, feedback.get(), &QgsProcessingFeedback::cancel );
@@ -398,6 +405,12 @@ void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool f
   if ( fatalError )
     resetGui();
   showLog();
+  processEvents();
+}
+
+void QgsProcessingAlgorithmDialogBase::pushWarning( const QString &warning )
+{
+  setInfo( warning, false, true, true );
   processEvents();
 }
 
@@ -651,12 +664,12 @@ QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &str
   return s;
 }
 
-void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml )
+void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml, bool isWarning )
 {
   // note -- we have to wrap the message in a span block, or QTextEdit::append sometimes gets confused
   // and varies between treating it as a HTML string or a plain text string! (see https://github.com/qgis/QGIS/issues/37934)
-  if ( isError )
-    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
+  if ( isError || isWarning )
+    txtLog->append( QStringLiteral( "<span style=\"color:%1\">%2</span>" ).arg( isError ? QStringLiteral( "red" ) : QStringLiteral( "#b85a20" ), escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
   else if ( escapeHtml )
     txtLog->append( QStringLiteral( "<span>%1</span" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   else
