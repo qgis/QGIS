@@ -1,6 +1,7 @@
 include(CopyResources)
 
 set (SVG_DIRS
+ QGIS
  accommodation
  amenity
  arrows
