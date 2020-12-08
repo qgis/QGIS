@@ -78,7 +78,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
         <property name="text">
-         <string>Show point cloud bounding boxes</string>
+         <string>Show bounding boxes</string>
         </property>
        </widget>
       </item>
@@ -88,7 +88,7 @@
    <item row="2" column="0" colspan="3">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>4</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="noRendererPage"/>
      <widget class="QWidget" name="singleColorRendererPage">
