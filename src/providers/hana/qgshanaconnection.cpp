@@ -483,7 +483,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layer.schemaName = rsLayers->getString( 1 );
       layer.tableName = rsLayers->getString( 2 );
       QString geomColumnType = rsLayers->getString( 4 );
-      bool isGeometryColumn = ( geomColumnType == "ST_GEOMETRY" || geomColumnType == "ST_POINT" );
+      bool isGeometryColumn = ( geomColumnType == QLatin1String( "ST_GEOMETRY" ) || geomColumnType == QLatin1String( "ST_POINT" ) );
       layer.geometryColName = isGeometryColumn ? rsLayers->getString( 3 ) : QString();
       layer.tableComment = rsLayers->getString( 5 );
       layer.isView = isView;

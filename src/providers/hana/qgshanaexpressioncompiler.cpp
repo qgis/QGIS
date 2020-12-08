@@ -108,7 +108,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       }
       else if ( funcName.toLower() == QLatin1String( "pi" ) )
       {
-        result = "3.141592653589793238";
+        result = QStringLiteral( "3.141592653589793238" );
         return Complete;
       }
     }
@@ -119,7 +119,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       switch ( n->value().type() )
       {
         case QVariant::Bool:
-          result = n->value().toBool() ? "(1=1)" : "(1=0)";
+          result = n->value().toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
           return Complete;
         default:
           break;
@@ -134,12 +134,12 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
         case QgsExpressionNodeUnaryOperator::uoNot:
         {
           Result resRight = compileNode( unaryOp->operand(), result );
-          if ( "NULL" == result.toUpper() )
+          if ( QLatin1String( "NULL" ) == result.toUpper() )
           {
             result.clear();
             return Fail;
           }
-          result = "NOT " + result;
+          result = QStringLiteral( "NOT " ) + result;
           return resRight;
         }
         case QgsExpressionNodeUnaryOperator::uoMinus:
@@ -159,11 +159,11 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       if ( resLeft == Fail || resRight == Fail )
         return Fail;
       // NULL can not appear on the left, only as part of IS NULL or IS NOT NULL
-      if ( "NULL" == opLeft.toUpper() )
+      if ( QLatin1String( "NULL" ) == opLeft.toUpper() )
         return Fail;
 
       // NULL can only be on the right for IS and IS NOT
-      if ( "NULL" == opRight.toUpper() &&
+      if ( QLatin1String( "NULL" ) == opRight.toUpper() &&
            ( binOp->op() != QgsExpressionNodeBinaryOperator::boIs && binOp->op() != QgsExpressionNodeBinaryOperator::boIsNot ) )
         return Fail;
 
@@ -187,7 +187,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
         // We only support IS NULL and IS NOT NULL if the operand on the left is a column
         case QgsExpressionNodeBinaryOperator::boIs:
         case QgsExpressionNodeBinaryOperator::boIsNot:
-          if ( QStringLiteral( "NULL" ) == opRight.toUpper() )
+          if ( QLatin1String( "NULL" ) == opRight.toUpper() )
           {
             if ( binOp->opLeft()->nodeType() != QgsExpressionNode::ntColumnRef )
             {
