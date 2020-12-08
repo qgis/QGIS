@@ -392,6 +392,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
+    Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
 
   public:
 
@@ -1692,6 +1693,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool setReadOnly( bool readonly = true );
 
     /**
+     * Returns whether the layer supports editing or not
+     * \return FALSE if the layer is read only or the data provider has no editing capabilities
+     * \since QGIS 3.18
+     */
+    bool supportsEditing();
+
+    /**
      * Changes a feature's \a geometry within the layer's edit buffer
      * (but does not immediately commit the changes). The \a fid argument
      * specifies the ID of the feature to be changed.
@@ -2717,6 +2725,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.0
      */
     void readOnlyChanged();
+
+    /**
+     * Emitted when the read only state or the data provider of this layer is changed.
+     *
+     * \since QGIS 3.18
+     */
+    void supportsEditingChanged();
 
     /**
      * Emitted when the feature count for symbols on this layer has been recalculated.

@@ -1791,6 +1791,15 @@ Makes layer read-only (editing disabled) or not
 :return: ``False`` if the layer is in editing yet
 %End
 
+    bool supportsEditing();
+%Docstring
+Returns whether the layer supports editing or not
+
+:return: ``False`` if the layer is read only or the data provider has no editing capabilities
+
+.. versionadded:: 3.18
+%End
+
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 %Docstring
 Changes a feature's ``geometry`` within the layer's edit buffer
@@ -2921,6 +2930,13 @@ Emitted when the read only state of this layer is changed.
 Only applies to manually set readonly state, not to the edit mode.
 
 .. versionadded:: 3.0
+%End
+
+    void supportsEditingChanged();
+%Docstring
+Emitted when the read only state or the data provider of this layer is changed.
+
+.. versionadded:: 3.18
 %End
 
     void symbolFeatureCountMapChanged();
