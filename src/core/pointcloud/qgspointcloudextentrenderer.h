@@ -22,7 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-class QgsFillSymbol;
+#include "qgssymbol.h"
 
 /**
  * \ingroup core
