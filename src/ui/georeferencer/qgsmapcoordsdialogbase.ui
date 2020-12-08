@@ -54,7 +54,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QgsProjectionSelectionWidget" name="mProjSelect" native="true">
+      <widget class="QgsProjectionSelectionWidget" name="mProjectionSelector" native="true">
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>

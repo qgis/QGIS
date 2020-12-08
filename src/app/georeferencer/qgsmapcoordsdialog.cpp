@@ -25,9 +25,10 @@
 #include "qgsprojectionselectionwidget.h"
 #include "qgsproject.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
   , mQgisCanvas( qgisCanvas )
+  , mRasterCrs( rasterCrs )
   , mPixelCoords( pixelCoords )
 {
   setupUi( this );
@@ -61,7 +62,9 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
 
   connect( leXCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
   connect( leYCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
-  connect( mProjSelect, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMapCoordsDialog::updateCrs );
+
+  mProjectionSelector->setCrs( mRasterCrs );
+
   updateOK();
 }
 
@@ -96,14 +99,7 @@ void QgsMapCoordsDialog::buttonBox_accepted()
   if ( !ok )
     y = dmsToDD( leYCoord->text() );
 
-  if ( !mCrs.isValid() )
-  {
-    if ( mProjSelect->crs().isValid() )
-      mCrs = mProjSelect->crs();
-    else
-      mCrs = mQgisCanvas->mapSettings().destinationCrs();
-  }
-  emit pointAdded( mPixelCoords, QgsPointXY( x, y ), mCrs );
+  emit pointAdded( mPixelCoords, QgsPointXY( x, y ), mProjectionSelector->crs().isValid() ? mProjectionSelector->crs() : mRasterCrs );
   close();
 }
 
@@ -126,8 +122,9 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton butto
   parentWidget()->activateWindow();
   parentWidget()->raise();
 
-  if ( !mProjSelect->crs().isValid() )
-    mProjSelect->setCrs( mQgisCanvas->mapSettings().destinationCrs() );
+  // set CRS to match canvas' point coordinates
+  mProjectionSelector->setCrs( mQgisCanvas->mapSettings().destinationCrs() );
+
   mPointFromCanvasPushButton->setChecked( false );
   buttonBox->button( QDialogButtonBox::Ok )->setFocus();
   activateWindow();
@@ -174,12 +171,6 @@ double QgsMapCoordsDialog::dmsToDD( const QString &dms )
     return -res;
   else
     return res;
-}
-
-void QgsMapCoordsDialog::updateCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  if ( crs.isValid() )
-    mCrs =  QgsCoordinateReferenceSystem( crs );
 }
 
 QgsGeorefMapToolEmitPoint::QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
