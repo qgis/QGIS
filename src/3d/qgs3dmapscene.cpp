@@ -503,6 +503,14 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   // lock changing the FPS counter to 5 fps
   static int frameCount = 0;
   static float accumulatedTime = 0.0f;
+
+  if ( !mMap.isFpsCounterEnabled() )
+  {
+    frameCount = 0;
+    accumulatedTime = 0;
+    return;
+  }
+
   frameCount++;
   accumulatedTime += dt;
   if ( accumulatedTime >= 0.2f )
