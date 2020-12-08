@@ -48,6 +48,7 @@
 #include "qgsprojecttranslator.h"
 #include "qgsattributeeditorelement.h"
 #include "qgscolorscheme.h"
+#include "qgssettings.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -2066,6 +2067,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr< QTranslator > mTranslator;
 
     bool mIsBeingDeleted = false;
+
+    QgsSettings mSettings;
 
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
