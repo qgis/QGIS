@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>584</width>
-    <height>221</height>
+    <height>421</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,50 +30,31 @@
       </widget>
      </item>
      <item>
-      <widget class="QSplitter" name="splitter">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <widget class="QLabel" name="textLabel1">
-        <property name="text">
-         <string>X / East</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="leXCoord"/>
-       <widget class="QLabel" name="textLabel2">
-        <property name="text">
-         <string>Y / North</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="leYCoord"/>
-      </widget>
+      <layout class="QGridLayout" name="coordinatesLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel1">
+         <property name="text">
+          <string>X / East</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="leXCoord"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel2">
+         <property name="text">
+          <string>Y / North</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="leYCoord"/>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QgsProjectionSelectionWidget" name="mProjSelect" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>10</height>
-        </size>
-       </property>
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
@@ -85,6 +66,22 @@
         <string>Automatically hide georeferencer window </string>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>12</width>
+          <height>12</height>
+         </size>
+        </property>
+       </spacer>
      </item>
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
