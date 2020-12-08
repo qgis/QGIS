@@ -45,7 +45,6 @@
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
-#include "qgssettings.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
@@ -780,7 +779,6 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
-  QgsSettings settings;
 
   mProjectScope.reset();
   mFile.setFileName( QString() );
@@ -797,7 +795,7 @@ void QgsProject::clear()
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
   mMetadata = QgsProjectMetadata();
-  if ( !settings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
+  if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
     mMetadata.setAuthor( QgsApplication::userFullName() );
@@ -844,18 +842,18 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), settings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), settings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
-  int red = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
-  int green = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
-  int blue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  int red = mSettings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  int green = mSettings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  int blue = mSettings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   setBackgroundColor( QColor( red, green, blue ) );
 
-  red = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
-  green = settings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
-  blue = settings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
-  int alpha = settings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
+  red = mSettings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
+  green = mSettings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
+  blue = mSettings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
+  int alpha = mSettings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
   setSelectionColor( QColor( red, green, blue, alpha ) );
 
   removeAllMapLayers();
@@ -1291,9 +1289,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QgsApplication::profiler()->clear( QStringLiteral( "projectload" ) );
   QgsScopedRuntimeProfile profile( tr( "Setting up translations" ), QStringLiteral( "projectload" ) );
 
-  QgsSettings settings;
-
-  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() );
+  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), mSettings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() );
 
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
@@ -2176,8 +2172,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
   qgisNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
 
-  QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core ).toBool() )
+  if ( !mSettings.value( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core ).toBool() )
   {
     QString newSaveUser = QgsApplication::userLoginName();
     QString newSaveUserFull = QgsApplication::userFullName();
@@ -2978,9 +2973,8 @@ QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
     return QgsUnitTypes::decodeDistanceUnit( distanceUnitString );
 
   //fallback to QGIS default measurement unit
-  QgsSettings s;
   bool ok = false;
-  QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+  QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::DistanceMeters;
 }
 
@@ -2996,9 +2990,8 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
     return QgsUnitTypes::decodeAreaUnit( areaUnitString );
 
   //fallback to QGIS default area unit
-  QgsSettings s;
   bool ok = false;
-  QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
+  QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::AreaSquareMeters;
 }
 
@@ -3456,13 +3449,12 @@ QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, c
 
 QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
 {
-  QgsSettings settings;
   QgsCoordinateReferenceSystem defaultCrs;
 
   // TODO QGIS 4.0 -- remove this method, and place it somewhere in app (where it belongs)
   // in the meantime, we have a slightly hacky way to read the settings key using an enum which isn't available (since it lives in app)
-  if ( settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
-       || settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == 2 )
+  if ( mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
+       || mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == 2 )
   {
     // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
     defaultCrs = crs();
@@ -3470,7 +3462,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   else
   {
     // global crs
-    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
+    QString layerDefaultCrs = mSettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 
