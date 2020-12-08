@@ -1625,6 +1625,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // or wanted to pass them through when saving
   if ( !( flags & QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
   {
+    profile.switchTask( tr( "Storing original layer properties" ) );
     QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
   }
 
