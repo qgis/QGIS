@@ -393,8 +393,8 @@ bool QgsManageConnectionsDialog::populateConnections()
       case HANA:
         if ( root.tagName() != QLatin1String( "qgsHanaConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a HANA connections exchange file." ) );
+          QMessageBox::warning( this, tr( "Loading Connections" ),
+                                tr( "The file is not a HANA connections exchange file." ) );
           return false;
         }
         break;
@@ -1386,9 +1386,9 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsHanaConnections" ) )
   {
-    QMessageBox::information( this,
-                              tr( "Loading Connections" ),
-                              tr( "The file is not a HANA connections exchange file." ) );
+    QMessageBox::warning( this,
+                          tr( "Loading Connections" ),
+                          tr( "The file is not a HANA connections exchange file." ) );
     return;
   }
 
@@ -1397,7 +1397,7 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
   {
     QMessageBox::warning( this,
                           tr( "Loading Connections" ),
-                          tr( "The file version '%1' is not supported." ).arg( version.value() ) );
+                          tr( "The HANA connections exchange file version '%1' is not supported." ).arg( version.value() ) );
     return;
   }
 
