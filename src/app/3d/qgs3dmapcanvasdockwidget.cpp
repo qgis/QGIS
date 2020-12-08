@@ -272,7 +272,6 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
-  whileBlocking( mLabelFpsCounter )->setVisible( map->isFpsCounterEnabled() );
 
   mCanvas->setMap( map );
 
@@ -283,6 +282,7 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 
   // Disable button for switching the map theme if the terrain generator is a mesh
   mBtnMapThemes->setDisabled( mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+  mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -409,7 +409,7 @@ void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
 
 void Qgs3DMapCanvasDockWidget::updateFpsCount( float fpsCount )
 {
-  mLabelFpsCounter->setText( QString( "%1 fps" ).arg( fpsCount, 10, 'f', 2, QLatin1Char( ' ' ) ) );
+  mLabelFpsCounter->setText( QStringLiteral( "%1 fps" ).arg( fpsCount, 10, 'f', 2, QLatin1Char( ' ' ) ) );
 }
 
 void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()
