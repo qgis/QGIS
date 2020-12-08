@@ -129,7 +129,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         raster.setOriginalXmlProperties('pippo')
         self.assertEqual(raster.originalXmlProperties(), 'pippo')
 
-        # Now create and invalid project:
+        # Now create an invalid project:
         bad_project_path = os.path.join(temp_dir.path(), 'project_bad.qgs')
         with open(project_path, 'r') as infile:
             with open(bad_project_path, 'w+') as outfile:
