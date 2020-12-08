@@ -543,8 +543,7 @@ void QgsGeoreferencerMainWindow::linkGeorefToQgis( bool link )
 void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords, const QgsCoordinateReferenceSystem &crs,
     bool enable, bool finalize )
 {
-  QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(),
-      pixelCoords, mapCoords, QgsCoordinateReferenceSystem( crs ), enable );
+  QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), pixelCoords, mapCoords, crs, enable );
   mPoints.append( pnt );
   mGCPsDirty = true;
   if ( finalize )
@@ -635,10 +634,11 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords 
 {
   if ( mLayer && !mMapCoordsDialog )
   {
-    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, this );
-    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this,
-    [this]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs ) { this->addPoint( a, b, crs ); }
-           );
+    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, mProjection, this );
+    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs )
+    {
+      addPoint( a, b, crs );
+    } );
     mMapCoordsDialog->show();
   }
 }

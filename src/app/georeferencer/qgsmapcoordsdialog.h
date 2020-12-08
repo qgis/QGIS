@@ -59,7 +59,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent = nullptr );
+    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent = nullptr );
     ~QgsMapCoordsDialog() override;
 
   private slots:
@@ -70,10 +70,9 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     void maybeSetXY( const QgsPointXY &, Qt::MouseButton );
     void updateOK();
     void setPrevTool();
-    void updateCrs( const QgsCoordinateReferenceSystem &crs );
 
   signals:
-    void pointAdded( const QgsPointXY &, const QgsPointXY &, const QgsCoordinateReferenceSystem & );
+    void pointAdded( const QgsPointXY &a, const QgsPointXY &b, const QgsCoordinateReferenceSystem &crs );
 
   private:
     double dmsToDD( const QString &dms );
@@ -86,7 +85,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     QgsMapTool *mPrevMapTool = nullptr;
     QgsMapCanvas *mQgisCanvas = nullptr;
 
-    QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateReferenceSystem mRasterCrs;
 
     QgsPointXY mPixelCoords;
 };
