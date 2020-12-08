@@ -106,6 +106,8 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mClassifiedRendererWidget = new QgsPointCloudClassifiedRendererWidget( layer, nullptr );
   mClassifiedRendererWidget->setParent( this );
   mClassifiedRenderingLayout->addWidget( mClassifiedRendererWidget );
+
+  connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
