@@ -195,8 +195,8 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
   mFrameDuration = frameDuration;
 
   // sync frame duration with time step and time step unit.
-  mFrameTimeStep = mFrameDuration.duration();
-  mFrameTimeStepUnit = mFrameDuration.unit();
+  mFrameTimeStep = mFrameDuration.originalDuration();
+  mFrameTimeStepUnit = mFrameDuration.originalUnit();
 
   mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalFrameDurationChanged( mFrameDuration );
