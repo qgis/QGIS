@@ -37,68 +37,137 @@ class QgsHanaSettings
   public:
     QgsHanaSettings( const QString &name, bool autoLoad = false );
 
+    /**
+     * The connection name.
+     */
     const QString &name() const { return mName; }
 
+    /**
+     * The name/path of/to the driver. For example,
+     * HDBODBC/HDBODBC32 on Windows or /usr/sap/hdbclient/libodbcHDB.so on Linux.
+     */
     const QString &driver() const { return mDriver; }
     void setDriver( const QString &driver ) { mDriver = driver; }
 
+    /**
+     * The server host name.
+     */
     const QString &host() const { return mHost; }
     void setHost( const QString &host ) { mHost = host; }
 
+    /**
+     * The identifier type that specifies whether the port number depends
+     * on the instance number of a database or not. Possible values are
+     * 0 - INSTANCE_NUMBER, 1 - PORT_NUMBER.
+     */
     uint identifierType() const { return mIdentifierType; }
     void setIdentifierType( uint identifierType ) { mIdentifierType = identifierType; }
 
+    /**
+     * The identifier that specifies either the instance number of a database or
+     * the port number.
+     */
     const QString &identifier() const { return mIdentifier; }
     void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
 
+    /**
+     * The name of a database.
+     */
     const QString &database() const { return mDatabase; }
     void setDatabase( const QString &database ) { mDatabase = database; }
 
+    /**
+     * Specifies whether the HANA runs multitenant containers or not.
+     */
     bool multitenant() const { return mMultitenant; }
     void setMultitenant( bool value ) { mMultitenant = value; }
 
+    /**
+     * The schema name.
+     */
     const QString &schema() const { return mSchema; }
     void setSchema( const QString &schema ) { mSchema = schema; }
 
+    /**
+     * The authentication configuration id.
+     */
     const QString &authCfg() const { return mAuthcfg; }
     void setAuthCfg( const QString &authcfg ) { mAuthcfg = authcfg; }
 
+    /**
+     * The user name.
+     */
     const QString &userName() const { return mUserName; }
     void setUserName( const QString &userName ) { mUserName = userName; }
 
+    /**
+     * Specifies whether the user name is stored or not.
+     */
     bool saveUserName() const { return mSaveUserName; }
     void setSaveUserName( bool saveUserName ) { mSaveUserName = saveUserName; }
 
+    /**
+     * The user password.
+     */
     const QString &password() const { return mPassword; }
     void setPassword( const QString &password ) { mPassword = password; }
 
+    /**
+     * Specifies whether the user password is stored or not.
+     */
     bool savePassword() const { return mSavePassword; }
     void setSavePassword( bool savePassword ) { mSavePassword = savePassword; }
 
+    /**
+     * Specifies whether only user tables are returned or not.
+     */
     bool userTablesOnly() const { return mUserTablesOnly; }
     void setUserTablesOnly( bool userTablesOnly ) { mUserTablesOnly = userTablesOnly; }
 
+    /**
+     * Specifies whether tables without geometries are returned or not.
+     */
     bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
     void setAllowGeometrylessTables( bool allowGeometrylessTables )
     {
       mAllowGeometrylessTables = allowGeometrylessTables;
     }
 
+    /**
+     * Enables or disables TLS 1.1 – TLS1.2 encryption.
+     */
     bool enableSsl() const { return mSslEnabled; }
     void setEnableSsl( bool value ) { mSslEnabled = value; }
 
+    /**
+     * Specifies the cryptographic library provider used for SSL communication.
+     */
     const QString &sslCryptoProvider() const { return mSslCryptoProvider; }
     void setSslCryptoProvider( const QString &value ) { mSslCryptoProvider = value; }
 
+    /**
+     * Specifies the path to the keystore file that contains the client’s
+     * private key and, if using CommonCryptoLib, the server’s public certificates.
+     */
     const QString &sslKeyStore() const { return mSslKeyStore; }
     void setSslKeyStore( const QString &value ) { mSslKeyStore = value; }
 
+    /**
+     * Specifies the path to a trust store file that contains the server’s
+     * public certificates if using OpenSSL.
+     */
     const QString &sslTrustStore() const { return mSslTrustStore; }
     void setSslTrustStore( const QString &value ) { mSslTrustStore = value; }
 
+    /**
+     * Specifies whether to validate the server's certificate.
+     */
     bool sslValidateCertificate() const { return mSslValidateCertificate; }
     void setSslValidateCertificate( bool value ) { mSslValidateCertificate = value; }
 
+    /**
+     * Specifies the host name used to verify server’s identity.
+     */
     const QString &sslHostNameInCertificate() const
     {
       return mSslHostNameInCertificate;
@@ -108,11 +177,29 @@ class QgsHanaSettings
       mSslHostNameInCertificate = value;
     }
 
+    /**
+     * Gets the server port.
+     */
     QString port() const;
+
+    /**
+     * Sets values from a RDBMS data source URI.
+     */
     void setFromDataSourceUri( const QgsDataSourceUri &uri );
+
+    /**
+     * Constructs an instance of QgsDataSourceUri with values of the current object.
+     */
     QgsDataSourceUri toDataSourceUri() const ;
 
+    /**
+     * Loads HANA connection settings from /HANA/connections/{connection_name}.
+     */
     void load();
+
+    /**
+     * Saves HANA connection settings to /HANA/connections/{connection_name}.
+     */
     void save();
 
     static QStringList getConnectionNames();
