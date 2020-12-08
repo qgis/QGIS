@@ -99,8 +99,8 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mColorRampShaderMinEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
-  connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::maximumScreenErrorChanged );
-  connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, this, &QgsPointCloud3DSymbolWidget::showBoundingBoxesChanged );
+  connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, [&]() { emitChangedSignal(); } );
 
   rampAttributeChanged();
 
@@ -561,33 +561,20 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
 
 void QgsPointCloud3DSymbolWidget::setMaximumScreenError( double maxScreenError )
 {
-  mMaxScreenErrorSpinBox->setValue( maxScreenError );
-  mMaximumScreenError = maxScreenError;
+  whileBlocking( mMaxScreenErrorSpinBox )->setValue( maxScreenError );
 }
 
-void QgsPointCloud3DSymbolWidget::maximumScreenErrorChanged( double maxScreenError )
+double QgsPointCloud3DSymbolWidget::maximumScreenError() const
 {
-  if ( maxScreenError == mMaximumScreenError )
-    return;
-  mMaximumScreenError = maxScreenError;
-  emitChangedSignal();
-}
-
-void QgsPointCloud3DSymbolWidget::showBoundingBoxesChanged( int checkBoxState )
-{
-  Q_UNUSED( checkBoxState );
-  bool showBoundingBoxes = mShowBoundingBoxesCheckBox->isChecked();
-  if ( showBoundingBoxes == mShowBoundingBoxes )
-    return;
-  mShowBoundingBoxes = showBoundingBoxes;
-  emitChangedSignal();
+  return mMaxScreenErrorSpinBox->value();
 }
 
 void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
 {
-  if ( showBoundingBoxes == mShowBoundingBoxes )
-    return;
-  mShowBoundingBoxesCheckBox->setChecked( showBoundingBoxes );
-  mShowBoundingBoxes = showBoundingBoxes;
-  emitChangedSignal();
+  whileBlocking( mShowBoundingBoxesCheckBox )->setChecked( showBoundingBoxes );
+}
+
+double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
+{
+  return mShowBoundingBoxesCheckBox->isChecked();
 }
