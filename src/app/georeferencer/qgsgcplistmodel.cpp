@@ -71,27 +71,27 @@ void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *georefTransform )
 
 void QgsGCPListModel::updateModel()
 {
+
   //clear();
   if ( !mGCPList )
     return;
 
   bool bTransformUpdated = false;
-
-  QVector<QgsPointXY> mapCoords, pixelCoords;
-  mGCPList->createGCPVectors( mapCoords, pixelCoords );
-
   //  // Setup table header
   QStringList itemLabels;
   QString unitType;
   QgsSettings s;
   bool mapUnitsPossible = false;
+  QVector<QgsPointXY> mapCoords, pixelCoords;
+
+  mGCPList->createGCPVectors( mapCoords, pixelCoords,
+                              QgsCoordinateReferenceSystem( s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString() ) );
 
   if ( mGeorefTransform )
   {
     bTransformUpdated = mGeorefTransform->updateParametersFromGCPs( mapCoords, pixelCoords );
     mapUnitsPossible = mGeorefTransform->providesAccurateInverseTransformation();
   }
-
 
   if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" && mapUnitsPossible )
   {
@@ -137,8 +137,8 @@ void QgsGCPListModel::updateModel()
     setItem( i, j++, new QgsStandardItem( i ) );
     setItem( i, j++, new QgsStandardItem( p->pixelCoords().x() ) );
     setItem( i, j++, new QgsStandardItem( p->pixelCoords().y() ) );
-    setItem( i, j++, new QgsStandardItem( p->mapCoords().x() ) );
-    setItem( i, j++, new QgsStandardItem( p->mapCoords().y() ) );
+    setItem( i, j++, new QgsStandardItem( p->transCoords().x() ) );
+    setItem( i, j++, new QgsStandardItem( p->transCoords().y() ) );
 
     double residual;
     double dX = 0;
@@ -154,7 +154,7 @@ void QgsGCPListModel::updateModel()
         // This is the transform direction used by the warp operation.
         // As transforms of order >=2 are not invertible, we are only
         // interested in the residual in this direction
-        if ( mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst ) )
+        if ( mGeorefTransform->transformWorldToRaster( p->transCoords(), dst ) )
         {
           dX = ( dst.x() - pixel.x() );
           dY = -( dst.y() - pixel.y() );
@@ -164,8 +164,8 @@ void QgsGCPListModel::updateModel()
       {
         if ( mGeorefTransform->transformRasterToWorld( pixel, dst ) )
         {
-          dX = ( dst.x() - p->mapCoords().x() );
-          dY = ( dst.y() - p->mapCoords().y() );
+          dX = ( dst.x() - p->transCoords().x() );
+          dY = ( dst.y() - p->transCoords().y() );
         }
       }
     }

@@ -50,7 +50,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   if ( mDataPoint )
   {
     enabled = mDataPoint->isEnabled();
-    worldCoords = mDataPoint->mapCoords();
+    worldCoords = mDataPoint->transCoords();
     id = mDataPoint->id();
   }
 
