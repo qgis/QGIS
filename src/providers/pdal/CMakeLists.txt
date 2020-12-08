@@ -73,10 +73,14 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/VoxelKey.hpp
 )
 
+configure_file(${CMAKE_SOURCE_DIR}/external/untwine/untwine/Config.hpp.in ${CMAKE_BINARY_DIR}/untwine/Config.hpp)
+
 set(UNTWINE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine
   ${CMAKE_SOURCE_DIR}/external/untwine/epf
   ${CMAKE_SOURCE_DIR}/external/untwine/bu
+  ${CMAKE_SOURCE_DIR}/untwine/api
+  ${CMAKE_BINARY_DIR}/untwine
 )
 
 ########################################################
