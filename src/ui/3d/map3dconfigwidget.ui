@@ -179,7 +179,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -693,7 +693,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-47</y>
+                <y>0</y>
                 <width>690</width>
                 <height>681</height>
                </rect>
