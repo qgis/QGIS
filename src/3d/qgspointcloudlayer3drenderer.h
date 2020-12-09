@@ -226,7 +226,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mMaximumScreenError = 1.0;
-    bool mShowBoundingBoxes = true;
+    bool mShowBoundingBoxes = false;
 
   private:
 #ifdef SIP_RUN
