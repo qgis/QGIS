@@ -426,7 +426,7 @@ if(WITH_CORE)
       set (HAVE_QT5SERIALPORT TRUE)
   endif()
 
-  find_package(Qt5 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql LinguistTools REQUIRED)
+  find_package(Qt5 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
   if (NOT IOS)
     find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
   else()
