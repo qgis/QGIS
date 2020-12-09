@@ -205,7 +205,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>704</width>
+                <width>709</width>
                 <height>604</height>
                </rect>
               </property>
@@ -410,8 +410,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>77</width>
-                <height>45</height>
+                <width>709</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -934,7 +934,7 @@
                     <item row="10" column="0" colspan="2">
                      <widget class="QCheckBox" name="mFpsCounterCheckBox">
                       <property name="text">
-                       <string>Enable FPS counter</string>
+                       <string>Show frames per second (FPS)</string>
                       </property>
                      </widget>
                     </item>
