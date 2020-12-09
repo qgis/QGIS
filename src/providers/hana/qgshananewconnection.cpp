@@ -30,7 +30,7 @@ namespace
 {
   bool isStringEmpty( const QString &input )
   {
-    return ( input.isEmpty() || QString( input ).replace( " ", QString() ).isEmpty() );
+    return ( input.isEmpty() || QString( input ).replace( ' ', QString() ).isEmpty() );
   }
 }
 

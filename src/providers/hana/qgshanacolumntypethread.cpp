@@ -47,11 +47,7 @@ void QgsHanaColumnTypeThread::run()
         mUserTablesOnly );
 
   if ( layerProperties.isEmpty() )
-  {
-    QgsMessageLog::logMessage(
-      tr( "Unable to get list of spatially enabled tables from the database" ), tr( "HANA" ) );
     return;
-  }
 
   const int totalLayers = layerProperties.size();
 

@@ -339,7 +339,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
   }
   else
   {
-    tip += QStringLiteral( "\nno geometry column" );
+    tip += '\n' + QStringLiteral( "no geometry column" );
   }
 
   QgsHanaLayerItem *layerItem = new QgsHanaLayerItem( this, layerProperty.defaultName(),

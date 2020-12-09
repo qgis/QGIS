@@ -28,9 +28,9 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
   if ( !uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
     return;
 
-  mSslEnabled = ( uri.param( QLatin1String( "sslEnabled" ) ) == QLatin1String( "true" ) ) ? true : false;
+  mSslEnabled = ( uri.param( QStringLiteral( "sslEnabled" ) ) == QLatin1String( "true" ) ) ? true : false;
   mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
-  mSslValidateCertificate = uri.param( QLatin1String( "sslValidateCertificate" ) ) == QLatin1String( "true" ) ? true : false;
+  mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QLatin1String( "true" ) ? true : false;
   if ( mSslValidateCertificate )
     mSslHostNameInCertificate = uri.param( QStringLiteral( "sslHostNameInCertificate" ) );
   mSslKeyStore = uri.param( QStringLiteral( "sslKeyStore" ) );
@@ -41,7 +41,7 @@ QString QgsHanaConnectionStringBuilder::toString() const
 {
   // For more details on how to escape special characters in passwords,
   // see https://stackoverflow.com/questions/55150362/maybe-illegal-character-in-odbc-sql-server-connection-string-pwd
-  QString pwd = QString( mPassword ).replace( "}", "}}" );
+  QString pwd = QString( mPassword ).replace( '}', QStringLiteral( "}}" ) );
   QString ret = QStringLiteral( "DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID=%5;PWD={%6};CHAR_AS_UTF8=1" ).arg(
                   mDriver, mHost, mPort, mDatabase, mUserName, pwd );
   if ( !mSchema.isEmpty() )

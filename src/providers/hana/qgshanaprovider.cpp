@@ -73,20 +73,20 @@ namespace
     }
 
     QgsCoordinateReferenceSystem srsWGS84;
-    srsWGS84.createFromString( "EPSG:4326" );
+    srsWGS84.createFromString( QStringLiteral( "EPSG:4326" ) );
     QgsCoordinateTransformContext coordTransCntx;
     QgsCoordinateTransform ct( srsWGS84, srs, coordTransCntx );
     QgsRectangle bounds = ct.transformBoundingBox( srs.bounds() );
 
     QString units = QgsHanaUtils::toString( srs.mapUnits() );
-    QString linearUnits = srs.isGeographic() ? QString( "NULL" ) : QgsHanaUtils::quotedIdentifier( units );
-    QString angularUnits = srs.isGeographic() ? QgsHanaUtils::quotedIdentifier( units ) : QString( "NULL" ) ;
+    QString linearUnits = srs.isGeographic() ? QStringLiteral( "NULL" ) : QgsHanaUtils::quotedIdentifier( units );
+    QString angularUnits = srs.isGeographic() ? QgsHanaUtils::quotedIdentifier( units ) : QStringLiteral( "NULL" ) ;
 
     QString xRange = QStringLiteral( "%1 BETWEEN %2 AND %3" )
-                     .arg( ( srs.isGeographic() ? "LONGITUDE" : "X" ),
+                     .arg( ( srs.isGeographic() ? QStringLiteral( "LONGITUDE" ) : QStringLiteral( "X" ) ),
                            QString::number( bounds.xMinimum() ), QString::number( bounds.xMaximum() ) );
     QString yRange = QStringLiteral( "%1 BETWEEN %2 AND %3" )
-                     .arg( ( srs.isGeographic() ? "LATITUDE" : "Y" ),
+                     .arg( ( srs.isGeographic() ? QStringLiteral( "LATITUDE" ) : QStringLiteral( "Y" ) ),
                            QString::number( bounds.yMinimum() ), QString::number( bounds.yMaximum() ) );
 
     // create new spatial reference system
@@ -500,7 +500,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( !mGeometryColumn.isEmpty() )
   {
     QString geometryDataType = conn->getColumnDataType( mSchemaName, mTableName, mGeometryColumn );
-    isPointDataType = QString::compare( geometryDataType, "ST_POINT", Qt::CaseInsensitive ) == 0;
+    isPointDataType = QString::compare( geometryDataType, QStringLiteral( "ST_POINT" ), Qt::CaseInsensitive ) == 0;
 
     columnNames << QgsHanaUtils::quotedIdentifier( mGeometryColumn );
     values << QStringLiteral( "ST_GeomFromWKB(?, %1)" ).arg( QString::number( mSrid ) );
@@ -781,7 +781,7 @@ bool QgsHanaProvider::deleteAttributes( const QgsAttributeIds &attributes )
     if ( !columnNames.isEmpty() )
       columnNames += QStringLiteral( "," );
     const QgsField &field = mAttributeFields.at( attrId );
-    columnNames += QStringLiteral( "%1" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ) );
+    columnNames +=  QgsHanaUtils::quotedIdentifier( field.name() );
   }
 
   QString sql = QStringLiteral( "ALTER TABLE %1.%2 DROP (%3)" ).arg(
@@ -1430,13 +1430,13 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   }
 
   if ( wkbType != QgsWkbTypes::NoGeometry && geometryColumn.isEmpty() )
-    geometryColumn = fieldsInUpperCase ? "GEOM" : "geom";
+    geometryColumn = fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" );
 
   bool createdNewPk = false;
 
   if ( primaryKey.isEmpty() )
   {
-    QString pk = primaryKey = fieldsInUpperCase ? "ID" : "id";
+    QString pk = primaryKey = fieldsInUpperCase ? QStringLiteral( "ID" ) : QStringLiteral( "id" );
     int index = 0;
     while ( fields.indexFromName( primaryKey ) >= 0 )
     {
@@ -1534,7 +1534,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
-// add fields to the layer
+  // add fields to the layer
   if ( oldToNewAttrIdxMap )
     oldToNewAttrIdxMap->clear();
 

@@ -40,7 +40,6 @@
 #include "odbc/Statement.h"
 
 using namespace odbc;
-using namespace std;
 
 static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
 static const int GEOMETRIES_SELECT_LIMIT = 10;
@@ -383,7 +382,7 @@ const QString &QgsHanaConnection::getDatabaseVersion()
 const QString &QgsHanaConnection::getUserName()
 {
   if ( mUserName.isEmpty() )
-    mUserName = executeScalar( QLatin1String( "SELECT CURRENT_USER FROM DUMMY" ) ).toString();
+    mUserName = executeScalar( QStringLiteral( "SELECT CURRENT_USER FROM DUMMY" ) ).toString();
 
   return mUserName;
 }
@@ -448,7 +447,8 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
 
   const QString sqlOwnerFilter = userTablesOnly ? QStringLiteral( "OWNER_NAME = CURRENT_USER" ) : QStringLiteral( "OWNER_NAME IS NOT NULL" );
 
-  const QString sqlDataTypeFilter = !allowGeometrylessTables ? QStringLiteral( "DATA_TYPE_NAME IN ('ST_GEOMETRY','ST_POINT')" ) : "DATA_TYPE_NAME IS NOT NULL";
+  const QString sqlDataTypeFilter = !allowGeometrylessTables ? QStringLiteral( "DATA_TYPE_NAME IN ('ST_GEOMETRY','ST_POINT')" ) :
+                                    QStringLiteral( "DATA_TYPE_NAME IS NOT NULL" );
 
   const QString sqlTables = QStringLiteral(
                               "SELECT SCHEMA_NAME, TABLE_NAME, COLUMN_NAME, DATA_TYPE_NAME, TABLE_COMMENTS FROM "
@@ -542,6 +542,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayersFull(
   bool userTablesOnly )
 {
   QVector<QgsHanaLayerProperty> layers = getLayers( schemaName, allowGeometrylessTables, userTablesOnly );
+  // We cannot use a range-based for loop as layers are modified in readLayerInfo.
   for ( int i = 0; i < layers.size(); ++i )
     readLayerInfo( layers[i] );
   return layers;

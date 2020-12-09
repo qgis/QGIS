@@ -361,8 +361,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
       for ( QgsFeatureId featureId : mRequest.filterFids() )
         fids.push_back( FID_TO_STRING( featureId ) );
 
-      QString inClause = QStringLiteral( "%1 IN (" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ) ) +
-                         fids.join( QStringLiteral( "," ) )  + QStringLiteral( ")" );
+      QString inClause = QStringLiteral( "%1 IN (%2)" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ), fids.join( ',' ) );
       sqlFilter.push_back( inClause );
     }
   }
@@ -412,15 +411,15 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   }
 
   QString sql = QStringLiteral( "SELECT %1 FROM %2.%3" ).arg(
-                  sqlFields.isEmpty() ? QStringLiteral( "*" ) : sqlFields.join( QStringLiteral( "," ) ),
+                  sqlFields.isEmpty() ? QStringLiteral( "*" ) : sqlFields.join( ',' ),
                   QgsHanaUtils::quotedIdentifier( mSource->mSchemaName ),
                   QgsHanaUtils::quotedIdentifier( mSource->mTableName ) );
 
   if ( !sqlFilter.isEmpty() )
-    sql += QStringLiteral( " WHERE (" ) + sqlFilter.join( ") AND (" ) + QStringLiteral( ")" );
+    sql += QStringLiteral( " WHERE (%1)" ).arg( sqlFilter.join( QStringLiteral( ") AND (" ) ) );
 
   if ( !orderByParts.isEmpty() )
-    sql += QStringLiteral( " ORDER BY %1 " ).arg( orderByParts.join( QStringLiteral( "," ) ) );
+    sql += QStringLiteral( " ORDER BY %1 " ).arg( orderByParts.join( ',' ) );
 
   if ( limitAtProvider )
     sql += QStringLiteral( " LIMIT %1" ).arg( mRequest.limit() );
