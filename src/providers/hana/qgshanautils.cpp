@@ -41,45 +41,43 @@ namespace
 QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
 {
   QStringList connectionItems;
+  auto addItem = [&connectionItems]( const char *key, const QString & value, bool quoted = true )
+  {
+    if ( quoted )
+      connectionItems << QStringLiteral( "%1='%2'" ).arg( key, value );
+    else
+      connectionItems << QStringLiteral( "%1=%2" ).arg( key, value );
+  };
 
   if ( !uri.database().isEmpty() )
-    connectionItems << "dbname='" + escape( uri.database() ) + '\'';
-
+    addItem( "dbname", escape( uri.database() ) );
   if ( !uri.host().isEmpty() )
-    connectionItems << "host=" + uri.host();
-
+    addItem( "host", escape( uri.host() ), false );
   if ( !uri.port().isEmpty() )
-    connectionItems << "port=" + uri.port();
-
+    addItem( "port", uri.port(), false );
   if ( !uri.driver().isEmpty() )
-    connectionItems << "driver='" + escape( uri.driver() ) + '\'';
+    addItem( "driver", escape( uri.driver() ) );
 
   if ( !uri.username().isEmpty() )
   {
-    connectionItems << "user='" + escape( uri.username() ) + '\'';
-
+    addItem( "user", escape( uri.username() ) );
     if ( !uri.password().isEmpty() )
-      connectionItems << "password='" + escape( uri.password() ) + '\'';
+      addItem( "password", escape( uri.password() ) );
   }
 
   if ( uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
   {
-    connectionItems << "sslEnabled='" + uri.param( QStringLiteral( "sslEnabled" ) ) + '\'';
-
+    addItem( "sslEnabled", uri.param( QStringLiteral( "sslEnabled" ) ) );
     if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
-      connectionItems << "sslCryptoProvider='" + uri.param( QStringLiteral( "sslCryptoProvider" ) ) + '\'';
-
+      addItem( "sslCryptoProvider", uri.param( QStringLiteral( "sslCryptoProvider" ) ) );
     if ( uri.hasParam( QStringLiteral( "sslValidateCertificate" ) ) )
-      connectionItems << "sslValidateCertificate='" + uri.param( QStringLiteral( "sslValidateCertificate" ) ) + '\'';
-
+      addItem( "sslValidateCertificate", uri.param( QStringLiteral( "sslValidateCertificate" ) ) );
     if ( uri.hasParam( QStringLiteral( "sslHostNameInCertificate" ) ) )
-      connectionItems << "sslHostNameInCertificate='" + uri.param( QStringLiteral( "sslHostNameInCertificate" ) ) + '\'';
-
+      addItem( "sslHostNameInCertificate", uri.param( QStringLiteral( "sslHostNameInCertificate" ) ) );
     if ( uri.hasParam( QStringLiteral( "sslKeyStore" ) ) )
-      connectionItems << "sslKeyStore='" + uri.param( QStringLiteral( "sslKeyStore" ) ) + '\'';
-
+      addItem( "sslKeyStore", uri.param( QStringLiteral( "sslKeyStore" ) ) );
     if ( uri.hasParam( QStringLiteral( "sslTrustStore" ) ) )
-      connectionItems << "sslTrustStore='" + uri.param( QStringLiteral( "sslTrustStore" ) ) + '\'';
+      addItem( "sslTrustStore", uri.param( QStringLiteral( "sslTrustStore" ) ) );
   }
 
   return connectionItems.join( QStringLiteral( " " ) );
@@ -88,14 +86,14 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
 QString QgsHanaUtils::quotedIdentifier( const QString &str )
 {
   QString result = str;
-  result.replace( '"', QLatin1String( "\"\"" ) );
+  result.replace( '"', QStringLiteral( "\"\"" ) );
   return result.prepend( '\"' ).append( '\"' );
 }
 
 QString QgsHanaUtils::quotedString( const QString &str )
 {
   QString result = str;
-  result.replace( '\'', QLatin1String( "''" ) );
+  result.replace( '\'', QStringLiteral( "''" ) );
   return result.prepend( '\'' ).append( '\'' );
 }
 
@@ -123,25 +121,25 @@ QString QgsHanaUtils::toString( QgsUnitTypes::DistanceUnit unit )
   switch ( unit )
   {
     case QgsUnitTypes::DistanceMeters:
-      return "meter";
+      return QStringLiteral( "meter" );
     case QgsUnitTypes::DistanceKilometers:
-      return "kilometer";
+      return QStringLiteral( "kilometer" );
     case QgsUnitTypes::DistanceFeet:
-      return "foot";
+      return QStringLiteral( "foot" );
     case QgsUnitTypes::DistanceYards:
-      return "yard";
+      return QStringLiteral( "yard" );
     case QgsUnitTypes::DistanceMiles:
-      return "mile";
+      return QStringLiteral( "mile" );
     case QgsUnitTypes::DistanceDegrees:
-      return "degree";
+      return QStringLiteral( "degree" );
     case QgsUnitTypes::DistanceCentimeters:
-      return "centimeter";
+      return QStringLiteral( "centimeter" );
     case QgsUnitTypes::DistanceMillimeters:
-      return "millimeter";
+      return QStringLiteral( "millimeter" );
     case QgsUnitTypes::DistanceNauticalMiles:
-      return "nautical mile";
+      return QStringLiteral( "nautical mile" );
     case QgsUnitTypes::DistanceUnknownUnit:
-      return "<unknown>";
+      return QStringLiteral( "<unknown>" );
   }
   return QString();
 }
