@@ -572,10 +572,7 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
     QgsHanaResultSetRef rsSchemas = QgsHanaResultSet::create( stmt );
     while ( rsSchemas->next() )
     {
-      QgsHanaSchemaProperty schema;
-      schema.name = rsSchemas->getString( 1 );
-      schema.owner = rsSchemas->getString( 2 );
-      list << schema;
+      list.push_back( {rsSchemas->getString( 1 ), rsSchemas->getString( 2 )} );
     }
     rsSchemas->close();
   }

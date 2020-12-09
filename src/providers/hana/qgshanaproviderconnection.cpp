@@ -355,8 +355,8 @@ QStringList QgsHanaProviderConnection::schemas( ) const
   try
   {
     QStringList schemas;
-    QVector<QgsHanaSchemaProperty> schemaProperties = conn->getSchemas( "" );
-    for ( const auto &s : qgis::as_const( schemaProperties ) )
+    const QVector<QgsHanaSchemaProperty> schemaProperties = conn->getSchemas( QString() );
+    for ( const QgsHanaSchemaProperty &s : schemaProperties )
       schemas.push_back( s.name );
     return schemas;
   }
