@@ -5819,6 +5819,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
   layer->loadDefaultStyle( ok );
   layer->loadDefaultMetadata( ok );
 
+#ifdef HAVE_3D
   if ( !layer->renderer3D() )
   {
     // for point clouds we default to a 3d renderer. it just makes sense :)
@@ -5826,6 +5827,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
     if ( renderer3D )
       layer->setRenderer3D( renderer3D.release() );
   }
+#endif
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
