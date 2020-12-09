@@ -297,18 +297,18 @@ void QgsHanaNewConnection::testConnection()
 {
   QString warningMsg;
   if ( txtDriver->text().isEmpty() )
-    warningMsg = QStringLiteral( "Driver name has not been specified." );
+    warningMsg = tr( "Driver name has not been specified." );
   else if ( txtHost->text().isEmpty() )
-    warningMsg = QStringLiteral( "Host name has not been specified." );
+    warningMsg = tr( "Host name has not been specified." );
   else if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() &&
             txtTenantDatabaseName->text().isEmpty() )
-    warningMsg = QStringLiteral( "Database has not been specified." );
+    warningMsg = tr( "Database has not been specified." );
   else if ( mAuthSettings->username().isEmpty() )
-    warningMsg = QStringLiteral( "User name has not been specified." );
+    warningMsg = tr( "User name has not been specified." );
   else if ( mAuthSettings->password().isEmpty() )
-    warningMsg = QStringLiteral( "Password has not been specified." );
+    warningMsg = tr( "Password has not been specified." );
   else if ( txtIdentifier->text().isEmpty() )
-    warningMsg = QStringLiteral( "Identifier has not been specified." );
+    warningMsg = tr( "Identifier has not been specified." );
 
   if ( !warningMsg.isEmpty() )
   {

@@ -306,17 +306,13 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
   QgsLayerItem::LayerType layerType = QgsLayerItem::TableLayer;
   if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isValid() )
   {
-    if ( layerProperty.srid < 0 )
-    {
-      tip += QStringLiteral( "\n%1 as %2" ).arg( layerProperty.geometryColName,
-             QgsWkbTypes::displayString( layerProperty.type ) );
-    }
+    tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName,
+                                   QgsWkbTypes::displayString( layerProperty.type ) );
+
+    if ( layerProperty.srid >= 0 )
+      tip += tr( " (srid %1)" ).arg( layerProperty.srid );
     else
-    {
-      tip += QStringLiteral( "\n%1 as %2 (srid %3)" )
-             .arg( layerProperty.geometryColName, QgsWkbTypes::displayString( layerProperty.type ) )
-             .arg( layerProperty.srid );
-    }
+      tip += tr( " (unknown srid)" );
 
     if ( !layerProperty.tableComment.isEmpty() )
       tip = layerProperty.tableComment + '\n' + tip;
@@ -339,7 +335,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
   }
   else
   {
-    tip += '\n' + QStringLiteral( "no geometry column" );
+    tip = tr( "as geometryless table" );
   }
 
   QgsHanaLayerItem *layerItem = new QgsHanaLayerItem( this, layerProperty.defaultName(),
