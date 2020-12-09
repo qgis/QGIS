@@ -527,7 +527,21 @@ void QgsPointCloudClassifiedRendererWidget::setFromCategories( QgsPointCloudCate
 {
   mBlockChangedSignal = false;
   mModel->setRendererCategories( categories );
-  mAttributeComboBox->setAttribute( attribute );
+  if ( !attribute.isEmpty() )
+  {
+    mAttributeComboBox->setAttribute( attribute );
+  }
+  else
+  {
+    if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
+    {
+      mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
+    }
+    else
+    {
+      mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
+    }
+  }
   mBlockChangedSignal = false;
 }
 
