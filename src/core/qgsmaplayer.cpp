@@ -56,6 +56,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
+#include "qgsmessagelog.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
 
@@ -2028,6 +2029,7 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
     }
     catch ( const QgsCsException &cse )
     {
+      QgsMessageLog::logMessage( tr( "Error transforming extent: %1" ).arg( cse.what() ) );
       wgs84Extent = QgsRectangle();
     }
   }
