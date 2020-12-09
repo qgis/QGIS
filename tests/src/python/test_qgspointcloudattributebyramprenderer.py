@@ -99,10 +99,10 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         self.assertEqual(rr.maximum(), 15)
         self.assertEqual(rr.colorRampShader().minimumValue(), 20)
         self.assertEqual(rr.colorRampShader().maximumValue(), 30)
-        self.assertEqual(rr.colorRampShader().sourceColorRamp().color1(),
-                         renderer.colorRampShader().sourceColorRamp().color1())
-        self.assertEqual(rr.colorRampShader().sourceColorRamp().color2(),
-                         renderer.colorRampShader().sourceColorRamp().color2())
+        self.assertEqual(rr.colorRampShader().sourceColorRamp().color1().name(),
+                         renderer.colorRampShader().sourceColorRamp().color1().name())
+        self.assertEqual(rr.colorRampShader().sourceColorRamp().color2().name(),
+                         renderer.colorRampShader().sourceColorRamp().color2().name())
 
         doc = QDomDocument("testdoc")
         elem = renderer.save(doc, QgsReadWriteContext())
@@ -119,10 +119,10 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         self.assertEqual(r2.maximum(), 15)
         self.assertEqual(r2.colorRampShader().minimumValue(), 20)
         self.assertEqual(r2.colorRampShader().maximumValue(), 30)
-        self.assertEqual(r2.colorRampShader().sourceColorRamp().color1(),
-                         renderer.colorRampShader().sourceColorRamp().color1())
-        self.assertEqual(r2.colorRampShader().sourceColorRamp().color2(),
-                         renderer.colorRampShader().sourceColorRamp().color2())
+        self.assertEqual(r2.colorRampShader().sourceColorRamp().color1().name(),
+                         renderer.colorRampShader().sourceColorRamp().color1().name())
+        self.assertEqual(r2.colorRampShader().sourceColorRamp().color2().name(),
+                         renderer.colorRampShader().sourceColorRamp().color2().name())
 
     def testUsedAttributes(self):
         renderer = QgsPointCloudAttributeByRampRenderer()
