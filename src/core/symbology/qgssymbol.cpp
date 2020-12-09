@@ -275,6 +275,23 @@ QgsUnitTypes::RenderUnit QgsSymbol::outputUnit() const
   return unit;
 }
 
+bool QgsSymbol::usesMapUnits() const
+{
+  if ( mLayers.empty() )
+  {
+    return false;
+  }
+
+  for ( const QgsSymbolLayer *layer : mLayers )
+  {
+    if ( layer->usesMapUnits() )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 QgsMapUnitScale QgsSymbol::mapUnitScale() const
 {
   if ( mLayers.empty() )

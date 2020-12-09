@@ -392,6 +392,13 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
 
+    /**
+     * Returns TRUE if the symbol layer has any components which use map unit based sizes.
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool usesMapUnits() const;
+
     virtual void setMapUnitScale( const QgsMapUnitScale &scale ) { Q_UNUSED( scale ) }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
 

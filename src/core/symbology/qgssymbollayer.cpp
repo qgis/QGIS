@@ -234,6 +234,11 @@ bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
   return symbol->type() == mType;
 }
 
+bool QgsSymbolLayer::usesMapUnits() const
+{
+  return false;
+}
+
 void QgsSymbolLayer::setRenderingPass( int renderingPass )
 {
   mRenderingPass = renderingPass;

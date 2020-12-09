@@ -371,6 +371,13 @@ may use it to specify the units for the line width.
 .. seealso:: :py:func:`setOutputUnit`
 %End
 
+    bool usesMapUnits() const;
+%Docstring
+Returns ``True`` if the symbol has any components which use map unit based sizes.
+
+.. versionadded:: 3.18
+%End
+
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units to use for sizes and widths within the symbol. Individual

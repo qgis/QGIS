@@ -246,6 +246,13 @@ QgsStringMap QgsVectorFieldSymbolLayer::properties() const
   return properties;
 }
 
+bool QgsVectorFieldSymbolLayer::usesMapUnits() const
+{
+  return mDistanceUnit == QgsUnitTypes::RenderMapUnits || mDistanceUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsVectorFieldSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
   element.appendChild( doc.createComment( QStringLiteral( "VectorField not implemented yet..." ) ) );

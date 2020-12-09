@@ -120,6 +120,12 @@ QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   return mSymbol->bounds( point, context.renderContext() );
 }
 
+bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
+{
+  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || ( mSymbol && mSymbol->usesMapUnits() );
+}
+
 void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
   if ( !context.renderContext().painter() )
