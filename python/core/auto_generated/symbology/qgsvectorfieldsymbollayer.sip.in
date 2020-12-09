@@ -65,6 +65,8 @@ A symbol layer class for displaying displacement arrows based on point layer att
 
     virtual QgsStringMap properties() const;
 
+    virtual bool usesMapUnits() const;
+
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 

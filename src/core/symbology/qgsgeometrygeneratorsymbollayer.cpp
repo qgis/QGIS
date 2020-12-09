@@ -107,6 +107,17 @@ void QgsGeometryGeneratorSymbolLayer::stopFeatureRender( const QgsFeature &, Qgs
   mRenderingFeature = false;
 }
 
+bool QgsGeometryGeneratorSymbolLayer::usesMapUnits() const
+{
+  if ( mFillSymbol )
+    return mFillSymbol->usesMapUnits();
+  else if ( mLineSymbol )
+    return mLineSymbol->usesMapUnits();
+  else if ( mMarkerSymbol )
+    return mMarkerSymbol->usesMapUnits();
+  return false;
+}
+
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 {
   QgsGeometryGeneratorSymbolLayer *clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );

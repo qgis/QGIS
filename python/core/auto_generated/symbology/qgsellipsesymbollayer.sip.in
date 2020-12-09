@@ -152,6 +152,8 @@ Returns the units for the symbol's stroke width.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
+    virtual bool usesMapUnits() const;
+
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
