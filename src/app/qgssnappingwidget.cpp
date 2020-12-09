@@ -88,6 +88,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mLayerTreeView = new QTreeView();
   QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, mCanvas, this );
   model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
+  mLayerTreeView->installEventFilter( this );
+
   // connections
   connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
@@ -639,8 +641,16 @@ void QgsSnappingWidget::enableSelfSnapping( bool enabled )
 
 void QgsSnappingWidget::onSnappingTreeLayersChanged()
 {
-  mLayerTreeView->expandAll();
-  mLayerTreeView->resizeColumnToContents( 0 );
+  if ( mLayerTreeView->isVisible() )
+  {
+    mLayerTreeView->expandAll();
+    mLayerTreeView->resizeColumnToContents( 0 );
+    mRequireLayerTreeViewUpdate = false;
+  }
+  else
+  {
+    mRequireLayerTreeViewUpdate = true;
+  }
 }
 
 void QgsSnappingWidget::avoidIntersectionsModeButtonTriggered( QAction *action )
@@ -818,7 +828,18 @@ void QgsSnappingWidget::setConfig( const QgsSnappingConfig &config )
   mConfig = config;
 }
 
-
+bool QgsSnappingWidget::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( watched == mLayerTreeView  && event->type() == QEvent::Show )
+  {
+    if ( mRequireLayerTreeViewUpdate )
+    {
+      mLayerTreeView->expandAll();
+      mLayerTreeView->resizeColumnToContents( 0 );
+    }
+  }
+  return QWidget::eventFilter( watched, event );
+}
 
 void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
 {
