@@ -231,7 +231,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionMeasure() override;
     QAction *actionMeasureArea() override;
     QAction *actionZoomFullExtent() override;
-    QAction *actionZoomToLayer() override;
+    QAction *actionZoomToLayers() override;
     QAction *actionZoomToSelected() override;
     QAction *actionZoomLast() override;
     QAction *actionZoomNext() override;

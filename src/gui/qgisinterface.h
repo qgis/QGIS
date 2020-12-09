@@ -476,7 +476,7 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Returns the native zoom full extent action. Call trigger() on it to zoom to the full extent.
     virtual QAction *actionZoomFullExtent() = 0;
     //! Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
-    virtual QAction *actionZoomToLayer() = 0;
+    virtual QAction *actionZoomToLayers() = 0;
     //! Returns the native zoom to selected action. Call trigger() on it to zoom to the current selection.
     virtual QAction *actionZoomToSelected() = 0;
     //! Returns the native zoom last action. Call trigger() on it to zoom to last.

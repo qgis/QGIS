@@ -509,7 +509,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionMeasure() { return mActionMeasure; }
     QAction *actionMeasureArea() { return mActionMeasureArea; }
     QAction *actionZoomFullExtent() { return mActionZoomFullExtent; }
-    QAction *actionZoomToLayer() { return mActionZoomToLayer; }
+    QAction *actionZoomToLayers() { return mActionZoomToLayers; }
     QAction *actionZoomToSelected() { return mActionZoomToSelected; }
     QAction *actionZoomLast() { return mActionZoomLast; }
     QAction *actionZoomNext() { return mActionZoomNext; }
