@@ -32,12 +32,16 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
     void setSymbol( QgsPointCloud3DSymbol *symbol );
 
+    void setDockMode( bool dockMode );
+
     QgsPointCloud3DSymbol *symbol() const;
 
     void setMaximumScreenError( double maxScreenError );
     double maximumScreenError() const;
     void setShowBoundingBoxes( bool showBoundingBoxes );
     double showBoundingBoxes() const;
+
+    void connectChildPanels( QgsPanelWidget *parent );
 
   private slots:
     void reloadColorRampShaderMinMax();

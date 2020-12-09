@@ -173,6 +173,12 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   mBlockChangedSignals--;
 }
 
+void QgsPointCloud3DSymbolWidget::setDockMode( bool dockMode )
+{
+  if ( mClassifiedRendererWidget )
+    mClassifiedRendererWidget->setDockMode( dockMode );
+}
+
 QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
 {
   QgsPointCloud3DSymbol *retSymb = nullptr;
@@ -577,4 +583,9 @@ void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
 double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
 {
   return mShowBoundingBoxesCheckBox->isChecked();
+}
+
+void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
+{
+  parent->connectChildPanel( mClassifiedRendererWidget );
 }
