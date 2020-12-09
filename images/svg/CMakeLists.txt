@@ -1,7 +1,6 @@
 include(CopyResources)
 
 set (SVG_DIRS
- QGIS
  accommodation
  amenity
  arrows
@@ -16,6 +15,7 @@ set (SVG_DIRS
  health
  icon
  landmark
+ logos
  money
  religion
  services
