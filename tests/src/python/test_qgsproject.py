@@ -821,6 +821,8 @@ class TestQgsProject(unittest.TestCase):
         project.addMapLayer(l2)
         self.assertEqual(len(spy), 2)
 
+        self.assertEqual(len(project.snappingConfig().individualLayerSettings()), 3)
+
         tmpDir = QTemporaryDir()
         tmpFile = "{}/project_snap.qgs".format(tmpDir.path())
         self.assertTrue(project.write(tmpFile))
@@ -829,14 +831,19 @@ class TestQgsProject(unittest.TestCase):
         project.clear()
         self.assertEqual(len(spy), 3)
 
+        self.assertFalse(project.snappingConfig().individualLayerSettings())
+
         p2 = QgsProject()
         spy2 = QSignalSpy(p2.snappingConfigChanged)
         p2.read(tmpFile)
         # only ONE signal!
         self.assertEqual(len(spy2), 1)
 
+        self.assertEqual(len(p2.snappingConfig().individualLayerSettings()), 3)
+
         p2.removeAllMapLayers()
         self.assertEqual(len(spy2), 2)
+        self.assertFalse(p2.snappingConfig().individualLayerSettings())
 
     def testRelativePaths(self):
         """

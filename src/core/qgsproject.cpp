@@ -888,12 +888,15 @@ void QgsProject::clear()
   int alpha = mSettings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
   setSelectionColor( QColor( red, green, blue, alpha ) );
 
+  mSnappingConfig.clearIndividualLayerSettings();
+
   removeAllMapLayers();
   mRootGroup->clear();
   if ( mMainAnnotationLayer )
     mMainAnnotationLayer->reset();
 
   snapSingleBlocker.release();
+
   if ( !mBlockSnappingUpdates )
     emit snappingConfigChanged( mSnappingConfig );
 
@@ -3475,6 +3478,7 @@ void QgsProject::removeAllMapLayers()
   mLayerStore->removeAllMapLayers();
 
   snapSingleBlocker.release();
+  mSnappingConfig.clearIndividualLayerSettings();
   if ( !mBlockSnappingUpdates )
     emit snappingConfigChanged( mSnappingConfig );
 }
