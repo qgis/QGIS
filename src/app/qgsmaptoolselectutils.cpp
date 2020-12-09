@@ -574,9 +574,12 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateChooseOneMenu( 
   QgsExpression exp = mVectorLayer->displayExpression();
   exp.prepare( &context );
 
-  for ( QgsFeatureId id : qgis::as_const( displayedFeatureIds ) )
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( displayedFeatureIds );
+  QgsFeature feat;
+  QgsFeatureIterator featureIt = mVectorLayer->getFeatures( request );
+  while ( featureIt.nextFeature( feat ) )
   {
-    QgsFeature feat = mVectorLayer->getFeature( id );
+    const QgsFeatureId id = feat.id();
     context.setFeature( feat );
 
     QString featureTitle = exp.evaluate( &context ).toString();
