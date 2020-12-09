@@ -229,7 +229,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   {
     tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, ct, mTileMatrix, ctx.mapToPixel() ) );
   }
-  catch ( QgsCsException )
+  catch ( QgsCsException & )
   {
     QgsDebugMsgLevel( QStringLiteral( "Failed to generate tile polygon " ) + rawTile.id.toString(), 2 );
     return;
