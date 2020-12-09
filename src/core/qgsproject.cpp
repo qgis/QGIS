@@ -84,6 +84,38 @@
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
 
+
+class ScopedIntIncrementor
+{
+  public:
+
+    ScopedIntIncrementor( int *variable )
+      : mVariable( variable )
+    {
+      ( *mVariable )++;
+    }
+
+    ScopedIntIncrementor( const ScopedIntIncrementor &other ) = delete;
+    ScopedIntIncrementor &operator=( const ScopedIntIncrementor &other ) = delete;
+
+    void release()
+    {
+      if ( mVariable )
+        ( *mVariable )--;
+
+      mVariable = nullptr;
+    }
+
+    ~ScopedIntIncrementor()
+    {
+      release();
+    }
+
+  private:
+    int *mVariable = nullptr;
+};
+
+
 /**
     Take the given scope and key and convert them to a string list of key
     tokens that will be used to navigate through a Property hierarchy
@@ -779,6 +811,7 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
+  ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
 
   mProjectScope.reset();
   mFile.setFileName( QString() );
@@ -815,7 +848,6 @@ void QgsProject::clear()
   mTimeSettings->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
-  emit snappingConfigChanged( mSnappingConfig );
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
@@ -860,6 +892,10 @@ void QgsProject::clear()
   mRootGroup->clear();
   if ( mMainAnnotationLayer )
     mMainAnnotationLayer->reset();
+
+  snapSingleBlocker.release();
+  if ( !mBlockSnappingUpdates )
+    emit snappingConfigChanged( mSnappingConfig );
 
   setDirty( false );
   emit homePathChanged();
@@ -1283,6 +1319,9 @@ bool QgsProject::read( QgsProject::ReadFlags flags )
 
 bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags flags )
 {
+  // avoid multiple emission of snapping updated signals
+  ScopedIntIncrementor snapSignalBlock( &mBlockSnappingUpdates );
+
   QFile projectFile( filename );
   clearError();
 
@@ -1707,7 +1746,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit readProjectWithContext( *doc, context );
 
   profile.switchTask( tr( "Updating interface" ) );
-  emit snappingConfigChanged( mSnappingConfig );
+
+  snapSignalBlock.release();
+  if ( !mBlockSnappingUpdates )
+    emit snappingConfigChanged( mSnappingConfig );
+
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
   emit projectColorsChanged();
@@ -2013,13 +2056,13 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
     }
   }
 
-  if ( mSnappingConfig.addLayers( layers ) )
+  if ( !mBlockSnappingUpdates && mSnappingConfig.addLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 {
-  if ( mSnappingConfig.removeLayers( layers ) )
+  if ( !mBlockSnappingUpdates && mSnappingConfig.removeLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
 }
 
@@ -3424,8 +3467,16 @@ QgsAnnotationLayer *QgsProject::mainAnnotationLayer()
 
 void QgsProject::removeAllMapLayers()
 {
+  if ( mLayerStore->count() == 0 )
+    return;
+
+  ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
   mProjectScope.reset();
   mLayerStore->removeAllMapLayers();
+
+  snapSingleBlocker.release();
+  if ( !mBlockSnappingUpdates )
+    emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::reloadAllLayers()
