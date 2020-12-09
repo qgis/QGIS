@@ -1,4 +1,4 @@
-find_package(Qt5LinguistTools REQUIRED)
+find_package(Qt5 COMPONENTS LinguistTools REQUIRED)
 set(QT_LRELEASE_EXECUTABLE Qt5::lrelease)
 
 macro(ADD_TRANSLATION_FILES _sources )
