@@ -107,46 +107,71 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     if ( redMax.isValid() && greenMax.isValid() && blueMax.isValid() )
     {
       const int maxValue = std::max( blueMax.toInt(), std::max( redMax.toInt(), greenMax.toInt() ) );
-      // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
-      // likely to be 8 bit or 16 bit color values
-      const int rangeGuess = maxValue > 255 ? 65535 : 255;
 
-      if ( rangeGuess > 255 )
+      if ( maxValue == 0 )
       {
-        // looks like 16 bit colors, so default to a stretch contrast enhancement
-        QgsContrastEnhancement contrast( Qgis::UnknownDataType );
-        contrast.setMinimumValue( 0 );
-        contrast.setMaximumValue( rangeGuess );
-        contrast.setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
-        renderer->setRedContrastEnhancement( new QgsContrastEnhancement( contrast ) );
-        renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( contrast ) );
-        renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+        // r/g/b max value is 0 -- likely these attributes have been created by some process, but are empty.
+        // in any case they won't result in a useful render, so don't use RGB renderer for this dataset.
+        renderer.reset();
+      }
+      else
+      {
+        // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
+        // likely to be 8 bit or 16 bit color values
+        const int rangeGuess = maxValue > 255 ? 65535 : 255;
+
+        if ( rangeGuess > 255 )
+        {
+          // looks like 16 bit colors, so default to a stretch contrast enhancement
+          QgsContrastEnhancement contrast( Qgis::UnknownDataType );
+          contrast.setMinimumValue( 0 );
+          contrast.setMaximumValue( rangeGuess );
+          contrast.setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+          renderer->setRedContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+          renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+          renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+        }
       }
     }
 
-    return renderer.release();
+    if ( renderer )
+      return renderer.release();
   }
-  else
+
+  // otherwise try a classified renderer...
+  if ( attributes.indexOf( QStringLiteral( "Classification" ) ) >= 0 )
   {
-    // default to shading by Z
-    std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
-    renderer->setAttribute( QStringLiteral( "Z" ) );
-
-    // set initial range for z values if possible
-    const QVariant zMin = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
-    const QVariant zMax = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
-    if ( zMin.isValid() && zMax.isValid() )
+    // are any classifications present?
+    QVariantList classes = provider->metadataClasses( QStringLiteral( "Classification" ) );
+    // ignore "not classified" classes, and see if any are left...
+    classes.removeAll( 0 );
+    classes.removeAll( 1 );
+    if ( !classes.empty() )
     {
-      renderer->setMinimum( zMin.toDouble() );
-      renderer->setMaximum( zMax.toDouble() );
-
-      QgsColorRampShader shader = renderer->colorRampShader();
-      shader.setMinimumValue( zMin.toDouble() );
-      shader.setMaximumValue( zMax.toDouble() );
-      shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
-      renderer->setColorRampShader( shader );
+      std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = qgis::make_unique< QgsPointCloudClassifiedRenderer >();
+      renderer->setAttribute( QStringLiteral( "Classification" ) );
+      return renderer.release();
     }
-    return renderer.release();
   }
+
+  // fallback to shading by Z
+  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  renderer->setAttribute( QStringLiteral( "Z" ) );
+
+  // set initial range for z values if possible
+  const QVariant zMin = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
+  const QVariant zMax = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
+  if ( zMin.isValid() && zMax.isValid() )
+  {
+    renderer->setMinimum( zMin.toDouble() );
+    renderer->setMaximum( zMax.toDouble() );
+
+    QgsColorRampShader shader = renderer->colorRampShader();
+    shader.setMinimumValue( zMin.toDouble() );
+    shader.setMaximumValue( zMax.toDouble() );
+    shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
+    renderer->setColorRampShader( shader );
+  }
+  return renderer.release();
 }
 
