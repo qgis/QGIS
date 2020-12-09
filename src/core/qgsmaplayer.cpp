@@ -1911,7 +1911,7 @@ void QgsMapLayer::emitStyleChanged()
 
 void QgsMapLayer::setExtent( const QgsRectangle &extent )
 {
-  mExtent = extent;
+  updateExtent( extent );
 }
 
 bool QgsMapLayer::isReadOnly() const
@@ -2016,7 +2016,7 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
 {
   QgsRectangle wgs84Extent;
 
-  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata && ! forceRecalculate )
+  if ( ! forceRecalculate && ! mWgs84Extent.isNull() )
   {
     wgs84Extent = mWgs84Extent;
   }
@@ -2034,4 +2034,18 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
     }
   }
   return wgs84Extent;
+}
+
+void QgsMapLayer::updateExtent( const QgsRectangle &extent ) const
+{
+  if ( extent == mExtent )
+    return;
+
+  mExtent = extent;
+
+  // do not update the wgs84 extent if we trust layer metadata
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
+    return;
+
+  mWgs84Extent = wgs84Extent( true );
 }

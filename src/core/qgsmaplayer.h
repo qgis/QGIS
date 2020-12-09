@@ -1612,12 +1612,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
-    //! Extent of the layer
-    mutable QgsRectangle mExtent;
-
-    //! Extent of the layer in EPSG:4326
-    QgsRectangle mWgs84Extent;
-
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;
 
@@ -1698,6 +1692,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
                                bool &resultFlag, StyleCategories categories = AllStyleCategories );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
 
+    // const method because extents are mutable
+    void updateExtent( const QgsRectangle &extent ) const;
+
     /**
      * This method returns TRUE by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -1755,6 +1752,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
+    //! Extent of the layer
+    mutable QgsRectangle mExtent;
+
+    //! Extent of the layer in EPSG:4326
+    mutable QgsRectangle mWgs84Extent;
+
     /**
      * Stores the original XML properties of the layer when loaded from the project
      *
@@ -1764,6 +1767,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    friend class QgsVectorLayer;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
