@@ -305,8 +305,10 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
 
   connect( nodeLayer, &QObject::destroyed, this, [ = ]() { mLayerNode = nullptr; } );
 
-  if ( auto *lSymbol = mItem.symbol() )
-    mSymbolUsesMapUnits = ( lSymbol->outputUnit() != QgsUnitTypes::RenderMillimeters );
+  if ( const QgsSymbol *symbol = mItem.symbol() )
+  {
+    mSymbolUsesMapUnits = symbol->usesMapUnits();
+  }
 }
 
 Qt::ItemFlags QgsSymbolLegendNode::flags() const

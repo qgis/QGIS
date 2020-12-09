@@ -247,6 +247,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsUnitTypes::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
+    bool usesMapUnits() const override;
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
     QColor fillColor() const override { return mColor; }
     void setFillColor( const QColor &color ) override { mColor = color; }
@@ -462,6 +463,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     bool hasDataDefinedProperties() const override;
     void setColor( const QColor &c ) override;
     QColor color() const override;
+    bool usesMapUnits() const override;
 
   private:
 #ifdef SIP_RUN
@@ -515,6 +517,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
+    bool usesMapUnits() const override;
 
     QgsSvgMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
@@ -686,6 +689,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsStringMap properties() const override;
 
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
+    bool usesMapUnits() const override;
 
     /**
      * Calculates the marker aspect ratio between width and height.
@@ -841,6 +845,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsFontMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    bool usesMapUnits() const override;
 
     // new methods
 

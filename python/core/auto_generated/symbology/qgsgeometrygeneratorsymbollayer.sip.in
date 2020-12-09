@@ -46,6 +46,8 @@ that is created by this generator.
 
     virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
+    virtual bool usesMapUnits() const;
+
 
     virtual QgsSymbolLayer *clone() const /Factory/;
 
