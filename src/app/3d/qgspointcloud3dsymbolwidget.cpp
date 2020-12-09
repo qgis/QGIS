@@ -33,6 +33,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   setupUi( this );
 
   mPointSizeSpinBox->setClearValue( 2.0 );
+  mMaxScreenErrorSpinBox->setClearValue( 1.0 );
 
   mRenderingParameterComboBox->setLayer( layer );
   mRenderingParameterComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
