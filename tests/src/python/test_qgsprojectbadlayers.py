@@ -85,7 +85,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         if subset_string:
             layer.setSubsetString(subset_string)
 
-        self.assertTrue(layer.originalXmlProperties(), layer.name())
+        self.assertTrue(layer.isValid() or layer.originalXmlProperties(), layer.name())
         context = QgsReadWriteContext()
         context.setPathResolver(QgsProject.instance().pathResolver())
         errorMsg = ''
@@ -122,9 +122,6 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         vector = list(p.mapLayersByName('lines'))[0]
         raster = list(p.mapLayersByName('raster'))[0]
         raster_copy = list(p.mapLayersByName('raster_copy'))[0]
-        self.assertTrue(vector.originalXmlProperties() != '')
-        self.assertTrue(raster.originalXmlProperties() != '')
-        self.assertTrue(raster_copy.originalXmlProperties() != '')
         # Test setter
         raster.setOriginalXmlProperties('pippo')
         self.assertEqual(raster.originalXmlProperties(), 'pippo')
