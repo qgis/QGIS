@@ -150,16 +150,16 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     /**
-    * Returns the parameter used to select the color of the point cloud
-    * \see setRenderingParameter( const QString &parameter )
+    * Returns the attribute used to select the color of the point cloud.
+    * \see setAttribute()
     */
-    QString renderingParameter() const;
+    QString attribute() const;
 
     /**
-    * Sets the parameter used to select the color of the point cloud
-    * \see renderingParameter()
+    * Sets the \a attribute used to select the color of the point cloud.
+    * \see attribute()
     */
-    void setRenderingParameter( const QString &parameter );
+    void setAttribute( const QString &attribute );
 
     /**
     * Returns the color ramp shader used to render the color
@@ -383,16 +383,16 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     /**
-    * Returns the parameter used to select the color of the point cloud
-    * \see setRenderingParameter( const QString &parameter )
+    * Returns the attribute used to select the color of the point cloud.
+    * \see setAttribute()
     */
-    QString renderingParameter() const;
+    QString attribute() const;
 
     /**
-    * Sets the parameter used to select the color of the point cloud
-    * \see renderingParameter()
+    * Sets the \a attribute used to select the color of the point cloud.
+    * \see attribute()
     */
-    void setRenderingParameter( const QString &parameter );
+    void setAttribute( const QString &attribute );
 
     /**
      * Returns the list of categories of the classification

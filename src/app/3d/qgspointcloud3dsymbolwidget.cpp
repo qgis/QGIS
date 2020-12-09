@@ -138,7 +138,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     mStackedWidget->setCurrentIndex( 2 );
     QgsColorRampPointCloud3DSymbol *symb = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
 
-    mRenderingParameterComboBox->setAttribute( symb->renderingParameter() );
+    mRenderingParameterComboBox->setAttribute( symb->attribute() );
 
     mColorRampShaderMinEdit->setValue( symb->colorRampShaderMin() );
     mColorRampShaderMaxEdit->setValue( symb->colorRampShaderMax() );
@@ -165,7 +165,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
   {
     mStackedWidget->setCurrentIndex( 4 );
     QgsClassificationPointCloud3DSymbol *symb = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( symbol );
-    mClassifiedRendererWidget->setFromCategories( symb->categoriesList(), symb->renderingParameter() );
+    mClassifiedRendererWidget->setFromCategories( symb->categoriesList(), symb->attribute() );
   }
   else
   {
@@ -196,7 +196,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   else if ( symbolType == QLatin1String( "color-ramp" ) )
   {
     QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
-    symb->setRenderingParameter( mRenderingParameterComboBox->currentText() );
+    symb->setAttribute( mRenderingParameterComboBox->currentText() );
     symb->setPointSize( mPointSizeSpinBox->value() );
     symb->setColorRampShader( mColorRampShaderWidget->shader() );
     symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
@@ -219,7 +219,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     QgsClassificationPointCloud3DSymbol *symb = new QgsClassificationPointCloud3DSymbol;
     symb->setPointSize( mPointSizeSpinBox->value() );
 
-    symb->setRenderingParameter( mClassifiedRendererWidget->attribute() );
+    symb->setAttribute( mClassifiedRendererWidget->attribute() );
     symb->setCategoriesList( mClassifiedRendererWidget->categoriesList() );
     retSymb = symb;
   }
