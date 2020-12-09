@@ -700,7 +700,7 @@ QAction *QgisAppInterface::actionFeatureAction() { return qgis->actionFeatureAct
 QAction *QgisAppInterface::actionMeasure() { return qgis->actionMeasure(); }
 QAction *QgisAppInterface::actionMeasureArea() { return qgis->actionMeasureArea(); }
 QAction *QgisAppInterface::actionZoomFullExtent() { return qgis->actionZoomFullExtent(); }
-QAction *QgisAppInterface::actionZoomToLayer() { return qgis->actionZoomToLayer(); }
+QAction *QgisAppInterface::actionZoomToLayers() { return qgis->actionZoomToLayers(); }
 QAction *QgisAppInterface::actionZoomToSelected() { return qgis->actionZoomToSelected(); }
 QAction *QgisAppInterface::actionZoomLast() { return qgis->actionZoomLast(); }
 QAction *QgisAppInterface::actionZoomNext() { return qgis->actionZoomNext(); }

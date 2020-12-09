@@ -135,7 +135,7 @@
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
-    <addaction name="mActionZoomToLayer"/>
+    <addaction name="mActionZoomToLayers"/>
     <addaction name="mActionZoomActualSize"/>
     <addaction name="mActionZoomLast"/>
     <addaction name="mActionZoomNext"/>
@@ -537,7 +537,7 @@
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomFullExtent"/>
    <addaction name="mActionZoomToSelected"/>
-   <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomToLayers"/>
    <addaction name="mActionZoomActualSize"/>
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
@@ -1345,7 +1345,7 @@
     <string>Ctrl+Shift+F</string>
    </property>
   </action>
-  <action name="mActionZoomToLayer">
+  <action name="mActionZoomToLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>

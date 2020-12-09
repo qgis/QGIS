@@ -57,7 +57,12 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     //! Action to check a group and all its parents
     QAction *actionCheckAndAllParents( QObject *parent = nullptr );
 
-    QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+    /**
+     * \deprecated since QGIS 3.18, use actionZoomToLayers()
+     */
+    Q_DECL_DEPRECATED QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+
+    QAction *actionZoomToLayers( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
      * Action to zoom to selected features of a vector layer
@@ -96,7 +101,12 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      */
     QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr ) SIP_FACTORY;
 
-    void zoomToLayer( QgsMapCanvas *canvas );
+    /**
+    * \deprecated since QGIS 3.18, use zoomToLayers()
+    */
+    Q_DECL_DEPRECATED void zoomToLayer( QgsMapCanvas *canvas );
+
+    void zoomToLayers( QgsMapCanvas *canvas );
 
     /**
      * \see zoomToSelection()
@@ -113,7 +123,13 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void removeGroupOrLayer();
     void renameGroupOrLayer();
     void showFeatureCount();
-    void zoomToLayer();
+
+    /**
+     * \deprecated since QGIS 3.18, use zoomToLayers()
+     */
+    Q_DECL_DEPRECATED void zoomToLayer();
+
+    void zoomToLayers();
 
     /**
      * Slot to zoom to selected features of a vector layer
