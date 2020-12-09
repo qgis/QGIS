@@ -48,7 +48,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
     tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
   else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
     tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
-  else if ( !layerProperty.pkCols.empty() )
+  else if ( layerProperty.pkCols.size() > 1 )
     tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature ID" ) );
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
