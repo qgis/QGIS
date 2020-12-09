@@ -2069,6 +2069,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
+    int mBlockSnappingUpdates = 0;
+
     friend class QgsProjectDirtyBlocker;
 
     // Required to avoid creating a new project in it's destructor
