@@ -27,10 +27,10 @@ QgsHanaTableModel::QgsHanaTableModel()
   headerLabels << tr( "Table" );
   headerLabels << tr( "Comment" );
   headerLabels << tr( "Column" );
-  headerLabels << tr( "Spatial Type" );
+  headerLabels << tr( "Type" );
   headerLabels << tr( "SRID" );
-  headerLabels << tr( "Feature ID" );
-  headerLabels << tr( "Select at ID" );
+  headerLabels << tr( "Feature id" );
+  headerLabels << tr( "Select at id" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
 }
@@ -49,7 +49,7 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
   else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
     tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
   else if ( layerProperty.pkCols.size() > 1 )
-    tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature ID" ) );
+    tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
@@ -248,7 +248,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
       QSet<QString> s0( qgis::listToSet( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList() ) );
       QSet<QString> s1( qgis::listToSet( pkCols ) );
       if ( s0.intersect( s1 ).isEmpty() )
-        tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature ID" ) );
+        tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
 
     for ( int i = 0; i < DbtmColumns; i++ )

@@ -36,8 +36,6 @@
 #include <QStringList>
 #include <QStyledItemDelegate>
 
-using namespace std;
-
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsHanaSourceSelectDelegate::createEditor(
   QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -245,9 +243,9 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   mSearchColumnComboBox->addItem( tr( "Schema" ) );
   mSearchColumnComboBox->addItem( tr( "Table" ) );
   mSearchColumnComboBox->addItem( tr( "Comment" ) );
-  mSearchColumnComboBox->addItem( tr( "Column" ) );
-  mSearchColumnComboBox->addItem( tr( "Spatial Type" ) );
-  mSearchColumnComboBox->addItem( tr( "Feature ID" ) );
+  mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
+  mSearchColumnComboBox->addItem( tr( "Type" ) );
+  mSearchColumnComboBox->addItem( tr( "Feature id" ) );
   mSearchColumnComboBox->addItem( tr( "SRID" ) );
   mSearchColumnComboBox->addItem( tr( "Sql" ) );
 
@@ -433,11 +431,11 @@ void QgsHanaSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStri
   {
     mProxyModel.setFilterKeyColumn( QgsHanaTableModel::DbtmGeomCol );
   }
-  else if ( text == tr( "Geometry type" ) )
+  else if ( text == tr( "Type" ) )
   {
     mProxyModel.setFilterKeyColumn( QgsHanaTableModel::DbtmGeomType );
   }
-  else if ( text == tr( "Feature ID" ) )
+  else if ( text == tr( "Feature id" ) )
   {
     mProxyModel.setFilterKeyColumn( QgsHanaTableModel::DbtmPkCol );
   }
@@ -547,7 +545,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   const QgsDataSourceUri uri = settings.toDataSourceUri();
   bool canceled = false;
 
-  unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( uri, &canceled, nullptr ) );
+  std::unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( uri, &canceled, nullptr ) );
   if ( !conn )
   {
     if ( !canceled )
