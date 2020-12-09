@@ -260,6 +260,8 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
+    virtual bool usesMapUnits() const;
+
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
     virtual QColor fillColor() const;
@@ -512,6 +514,8 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual QColor color() const;
 
+    virtual bool usesMapUnits() const;
+
 
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
@@ -562,6 +566,8 @@ Used internally when reading/writing symbols.
 
 
     virtual QgsStringMap properties() const;
+
+    virtual bool usesMapUnits() const;
 
 
     virtual QgsSvgMarkerSymbolLayer *clone() const /Factory/;
@@ -749,6 +755,8 @@ Used internally when reading/writing symbols.
 
     virtual QgsRasterMarkerSymbolLayer *clone() const /Factory/;
 
+    virtual bool usesMapUnits() const;
+
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 %Docstring
@@ -910,6 +918,8 @@ Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
 
 
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+
+    virtual bool usesMapUnits() const;
 
 
 

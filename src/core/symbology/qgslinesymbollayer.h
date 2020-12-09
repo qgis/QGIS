@@ -75,6 +75,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
@@ -734,6 +735,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     double width( const QgsRenderContext &context ) const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    bool usesMapUnits() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
     void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property ) override;
@@ -819,6 +821,7 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
     void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property ) override;
+    bool usesMapUnits() const override;
 
     /**
      * Returns the angle to use when drawing the hashed lines sections, in degrees clockwise.

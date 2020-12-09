@@ -420,6 +420,13 @@ class CORE_EXPORT QgsSymbol
     QgsUnitTypes::RenderUnit outputUnit() const;
 
     /**
+     * Returns TRUE if the symbol has any components which use map unit based sizes.
+     *
+     * \since QGIS 3.18
+     */
+    bool usesMapUnits() const;
+
+    /**
      * Sets the units to use for sizes and widths within the symbol. Individual
      * symbol definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol

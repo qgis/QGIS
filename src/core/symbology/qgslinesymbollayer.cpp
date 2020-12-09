@@ -60,6 +60,12 @@ QgsUnitTypes::RenderUnit  QgsSimpleLineSymbolLayer::outputUnit() const
   return unit;
 }
 
+bool QgsSimpleLineSymbolLayer::usesMapUnits() const
+{
+  return mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsSimpleLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   QgsLineSymbolLayer::setMapUnitScale( scale );
@@ -2391,6 +2397,15 @@ void QgsMarkerLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
   setOffsetAlongLineUnit( unit );
 }
 
+bool QgsMarkerLineSymbolLayer::usesMapUnits() const
+{
+  return  intervalUnit() == QgsUnitTypes::RenderMapUnits || intervalUnit() == QgsUnitTypes::RenderMetersInMapUnits
+          || offsetAlongLineUnit() == QgsUnitTypes::RenderMapUnits || offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits
+          || averageAngleUnit() == QgsUnitTypes::RenderMapUnits || averageAngleUnit() == QgsUnitTypes::RenderMetersInMapUnits
+          || mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
+          || ( mMarker && mMarker->usesMapUnits() );
+}
 
 QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
 {
@@ -2583,6 +2598,17 @@ void QgsHashedLineSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property 
     mHashSymbol->setDataDefinedWidth( property );
   }
   QgsLineSymbolLayer::setDataDefinedProperty( key, property );
+}
+
+bool QgsHashedLineSymbolLayer::usesMapUnits() const
+{
+  return mHashLengthUnit == QgsUnitTypes::RenderMapUnits || mHashLengthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || intervalUnit() == QgsUnitTypes::RenderMapUnits || intervalUnit() == QgsUnitTypes::RenderMetersInMapUnits
+         || offsetAlongLineUnit() == QgsUnitTypes::RenderMapUnits || offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits
+         || averageAngleUnit() == QgsUnitTypes::RenderMapUnits || averageAngleUnit() == QgsUnitTypes::RenderMetersInMapUnits
+         || mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || ( mHashSymbol && mHashSymbol->usesMapUnits() );
 }
 
 void QgsHashedLineSymbolLayer::setSymbolLineAngle( double angle )

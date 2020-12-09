@@ -159,6 +159,8 @@ Returns the map unit scale for the fill's offset.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
+    virtual bool usesMapUnits() const;
+
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -399,6 +401,8 @@ Returns the map unit scale for the fill's offset.
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
 
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -743,6 +747,8 @@ Returns the units used for the offset of the shapeburst fill.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
+    virtual bool usesMapUnits() const;
+
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -903,6 +909,8 @@ Used internally when reading/writing symbols.
     virtual QgsRasterFillSymbolLayer *clone() const /Factory/;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual bool usesMapUnits() const;
 
 
     virtual QgsSymbol *subSymbol();
@@ -1184,6 +1192,8 @@ Used internally when reading/writing symbols.
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+
+    virtual bool usesMapUnits() const;
 
 
     void setSvgFilePath( const QString &svgPath );
@@ -1658,6 +1668,8 @@ Returns the map unit scale for the pattern's line offset.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
+    virtual bool usesMapUnits() const;
+
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
     virtual QgsMapUnitScale mapUnitScale() const;
@@ -1976,6 +1988,8 @@ Returns the unit scale for the vertical offset between rows in the pattern.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
+    virtual bool usesMapUnits() const;
+
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -2061,6 +2075,8 @@ Caller takes ownership of the returned symbol layer.
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
 
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -2253,6 +2269,8 @@ Caller takes ownership of the returned symbol layer.
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
 
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );

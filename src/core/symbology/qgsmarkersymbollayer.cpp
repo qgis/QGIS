@@ -1491,6 +1491,13 @@ QgsMapUnitScale QgsSimpleMarkerSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
+bool QgsSimpleMarkerSymbolLayer::usesMapUnits() const
+{
+  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
   QRectF symbolBounds = QgsSimpleMarkerSymbolLayerBase::bounds( point, context );
@@ -1719,6 +1726,13 @@ void QgsFilledMarkerSymbolLayer::setColor( const QColor &c )
 QColor QgsFilledMarkerSymbolLayer::color() const
 {
   return mFill ?  mFill->color() : mColor;
+}
+
+bool QgsFilledMarkerSymbolLayer::usesMapUnits() const
+{
+  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || ( mFill && mFill->usesMapUnits() );
 }
 
 void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )
@@ -2234,6 +2248,13 @@ QgsStringMap QgsSvgMarkerSymbolLayer::properties() const
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
   return map;
+}
+
+bool QgsSvgMarkerSymbolLayer::usesMapUnits() const
+{
+  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
 QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
@@ -2915,6 +2936,12 @@ QgsRasterMarkerSymbolLayer *QgsRasterMarkerSymbolLayer::clone() const
   return m;
 }
 
+bool QgsRasterMarkerSymbolLayer::usesMapUnits() const
+{
+  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsRasterMarkerSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   QgsMarkerSymbolLayer::setMapUnitScale( scale );
@@ -3373,6 +3400,13 @@ void QgsFontMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &e
   // <Displacement>
   QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, offset );
+}
+
+bool QgsFontMarkerSymbolLayer::usesMapUnits() const
+{
+  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
 QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
