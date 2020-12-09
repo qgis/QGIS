@@ -266,8 +266,13 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
   }
 
   //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
-
-  if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
+  if ( node->childCount() == 0 )
+  {
+    // there's no children available for this node, so regardless of whether it has an acceptable error
+    // or not, it's the best we'll ever get...
+    mActiveNodes << node;
+  }
+  else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
   {
     // acceptable error for the current chunk - let's render it
 
@@ -276,26 +281,18 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
   else if ( node->allChildChunksResident( mCurrentTime ) )
   {
     // error is not acceptable and children are ready to be used - recursive descent
-    if ( node->childCount() == 0 )
+
+    if ( mAdditiveStrategy )
     {
-      // no children for this node, so even though we'd like to dig deeper we can't!
+      // With additive strategy enabled, also all parent nodes are added to active nodes.
+      // This is desired when child nodes add more detailed data rather than just replace
+      // coarser data in parents. We use this e.g. with point cloud data.
       mActiveNodes << node;
     }
-    else
-    {
-      // add children
-      if ( mAdditiveStrategy )
-      {
-        // With additive strategy enabled, also all parent nodes are added to active nodes.
-        // This is desired when child nodes add more detailed data rather than just replace
-        // coarser data in parents. We use this e.g. with point cloud data.
-        mActiveNodes << node;
-      }
 
-      QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < node->childCount(); ++i )
-        update( children[i], state );
-    }
+    QgsChunkNode *const *children = node->children();
+    for ( int i = 0; i < node->childCount(); ++i )
+      update( children[i], state );
   }
   else
   {
