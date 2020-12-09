@@ -85,6 +85,7 @@ void QgsPdalProvider::loadIndex()
   connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onLoadIndexFinished );
 
   mRunningIndexingTask = generationTask;
+  QgsDebugMsgLevel( "Ept Generation Task Created", 2 );
   QgsApplication::taskManager()->addTask( generationTask );
 }
 
@@ -98,12 +99,21 @@ void QgsPdalProvider::onLoadIndexFinished()
     QFileInfo fi( outEptJson );
     if ( fi.isFile() )
     {
+      QgsDebugMsgLevel( "pdalprovider: Ept index generated", 2 );
       mIndex->load( outEptJson );
+      QgsDebugMsgLevel( "pdalprovider: Ept index loaded", 2 );
+
+      qDebug() << "Crs pdal: " << mCrs.toWkt();
+      qDebug() << "Crs untwine: " << mIndex->crs().toWkt();
+
+      qDebug() << "Extent pdal: " << mExtent.asWktPolygon();
+      qDebug() << "Extent untwine: " << mExtent.asWktPolygon();
+
       emit pointCloudIndexLoaded();
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Index %1 is not correctly generated" ).arg( outEptJson ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Ept index %1 is not correctly generated" ).arg( outEptJson ), 2 );
     }
     mRunningIndexingTask = nullptr;
   }

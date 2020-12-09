@@ -317,8 +317,15 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
   // trigger loading of index. this might be slow operation
   // if the provider decide to build the index from source file(s)
-  // in background thread
+  // in background thread. For some providers this is fast and in
+  // the main thread.
+  // Index loading should be done before crs, extent and renderer setting,
+  // compare with onPointCloudIndexLoaded
   mDataProvider.get()->loadIndex();
+
+  // Load initial extent, crs and renderer
+  setCrs( mDataProvider->crs() );
+  setExtent( mDataProvider->extent() );
 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
@@ -357,11 +364,16 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
 void QgsPointCloudLayer::onPointCloudIndexLoaded()
 {
-  setCrs( mDataProvider->crs() );
-  setExtent( mDataProvider->extent() );
-
   if ( mRenderer )
   {
+    // Renderer is already set only in case
+    // we genereated the point cloud index
+    // as a background job. In this case
+    // lets reset the crs and extent and
+    // replace temporary extent renderer
+    // with the real renderer
+    setCrs( mDataProvider->crs() );
+    setExtent( mDataProvider->extent() );
     if ( mRenderer->type() == QLatin1String( "extent" ) )
     {
       setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
