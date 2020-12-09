@@ -341,8 +341,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
-
   public:
+
+    static double MINIMUM_SIZE;
+    static double MAXIMUM_SIZE;
 
     /**
      * Constructor for QgsSymbolLegendNode.
@@ -497,8 +499,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     bool mSymbolUsesMapUnits;
 
     QSize mIconSize;
-    double mSymbolMinimumSize = 0.5;
-    double mSymbolMaximumSize = 20.0;
 
     QString mTextOnSymbolLabel;
     QgsTextFormat mTextOnSymbolTextFormat;
