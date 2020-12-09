@@ -242,6 +242,9 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
 // -------------------------------------------------------------------------
 
+double QgsSymbolLegendNode::MINIMUM_SIZE = -1.0;
+double QgsSymbolLegendNode::MAXIMUM_SIZE = -1.0;
+
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mItem( item )
@@ -250,9 +253,14 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   mIconSize = QSize( iconSize, iconSize );
 
-  QgsSettings settings;
-  mSymbolMinimumSize = settings.value( "/qgis/legendsymbolMinimumSize", 0.5 ).toDouble();
-  mSymbolMaximumSize = settings.value( "/qgis/legendsymbolMaximumSize", 20.0 ).toDouble();
+  if ( MINIMUM_SIZE < 0 )
+  {
+    // it's FAR too expensive to construct a QgsSettings object for every symbol node, especially for complex
+    // projects. So only read the valid size ranges once, and store them for subsequent use
+    QgsSettings settings;
+    MINIMUM_SIZE = settings.value( "/qgis/legendsymbolMinimumSize", 0.5 ).toDouble();
+    MAXIMUM_SIZE = settings.value( "/qgis/legendsymbolMaximumSize", 20.0 ).toDouble();
+  }
 
   updateLabel();
   connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
@@ -287,7 +295,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
     // unusued width, height variables
     double width = 0.0;
     double height = 0.0;
-    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), mSymbolMinimumSize, mSymbolMaximumSize, context, width, height ) );
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
     minSz = QgsImageOperation::nonTransparentImageRect(
               QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), QSize( largeIconSize, largeIconSize ), 0,
                   context ).toImage(),
@@ -298,7 +306,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   {
     double width = 0.0;
     double height = 0.0;
-    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), mSymbolMinimumSize, mSymbolMaximumSize, context, width, height ) );
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
     minSz = QgsImageOperation::nonTransparentImageRect(
               QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), QSize( minSz.width(), largeIconSize ), 0,
                   context ).toImage(),
@@ -468,7 +476,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
         // unusued width, height variables
         double width = 0.0;
         double height = 0.0;
-        std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), mSymbolMinimumSize, mSymbolMaximumSize, context.get(), width, height ) );
+        std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context.get(), width, height ) );
         pix = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), mIconSize, 0, context.get() );
 
         if ( !mTextOnSymbolLabel.isEmpty() && context )
@@ -1307,3 +1315,4 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
     mImage = mSettings->collapsedLegendImage( *context );
   }
 }
+
