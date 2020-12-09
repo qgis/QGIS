@@ -158,18 +158,18 @@ Constructor for QgsColorRampPointCloud3DSymbol
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
-    QString renderingParameter() const;
+    QString attribute() const;
 %Docstring
-Returns the parameter used to select the color of the point cloud
+Returns the attribute used to select the color of the point cloud.
 
-.. seealso:: :py:func:`setRenderingParameter`
+.. seealso:: :py:func:`setAttribute`
 %End
 
-    void setRenderingParameter( const QString &parameter );
+    void setAttribute( const QString &attribute );
 %Docstring
-Sets the parameter used to select the color of the point cloud
+Sets the ``attribute`` used to select the color of the point cloud.
 
-.. seealso:: :py:func:`renderingParameter`
+.. seealso:: :py:func:`attribute`
 %End
 
     QgsColorRampShader colorRampShader() const;
@@ -424,18 +424,18 @@ Constructor for QgsClassificationPointCloud3DSymbol
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
-    QString renderingParameter() const;
+    QString attribute() const;
 %Docstring
-Returns the parameter used to select the color of the point cloud
+Returns the attribute used to select the color of the point cloud.
 
-.. seealso:: :py:func:`setRenderingParameter`
+.. seealso:: :py:func:`setAttribute`
 %End
 
-    void setRenderingParameter( const QString &parameter );
+    void setAttribute( const QString &attribute );
 %Docstring
-Sets the parameter used to select the color of the point cloud
+Sets the ``attribute`` used to select the color of the point cloud.
 
-.. seealso:: :py:func:`renderingParameter`
+.. seealso:: :py:func:`attribute`
 %End
 
     QgsPointCloudCategoryList categoriesList() const;

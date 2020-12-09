@@ -139,12 +139,12 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
   mColorRampShader.readXml( elem );
 }
 
-QString QgsColorRampPointCloud3DSymbol::renderingParameter() const
+QString QgsColorRampPointCloud3DSymbol::attribute() const
 {
   return mRenderingParameter;
 }
 
-void QgsColorRampPointCloud3DSymbol::setRenderingParameter( const QString &parameter )
+void QgsColorRampPointCloud3DSymbol::setAttribute( const QString &parameter )
 {
   mRenderingParameter = parameter;
 }
@@ -440,14 +440,14 @@ void QgsClassificationPointCloud3DSymbol::readXml( const QDomElement &elem, cons
   }
 }
 
-QString QgsClassificationPointCloud3DSymbol::renderingParameter() const
+QString QgsClassificationPointCloud3DSymbol::attribute() const
 {
   return mRenderingParameter;
 }
 
-void QgsClassificationPointCloud3DSymbol::setRenderingParameter( const QString &parameter )
+void QgsClassificationPointCloud3DSymbol::setAttribute( const QString &attribute )
 {
-  mRenderingParameter = parameter;
+  mRenderingParameter = attribute;
 }
 
 void QgsClassificationPointCloud3DSymbol::setCategoriesList( const QgsPointCloudCategoryList &categories )

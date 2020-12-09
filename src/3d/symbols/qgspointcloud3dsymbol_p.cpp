@@ -320,21 +320,21 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     int offset = 0;
     QgsPointCloudAttributeCollection collection = context.attributes();
 
-    if ( symbol->renderingParameter() == QLatin1String( "X" ) )
+    if ( symbol->attribute() == QLatin1String( "X" ) )
     {
       attrIsX = true;
     }
-    else if ( symbol->renderingParameter() == QLatin1String( "Y" ) )
+    else if ( symbol->attribute() == QLatin1String( "Y" ) )
     {
       attrIsY = true;
     }
-    else if ( symbol->renderingParameter() == QLatin1String( "Z" ) )
+    else if ( symbol->attribute() == QLatin1String( "Z" ) )
     {
       attrIsZ = true;
     }
     else
     {
-      const QgsPointCloudAttribute *attr = collection.find( symbol->renderingParameter(), offset );
+      const QgsPointCloudAttribute *attr = collection.find( symbol->attribute(), offset );
       if ( attr )
       {
         attributeType = attr->type();
@@ -555,21 +555,21 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     int offset = 0;
     QgsPointCloudAttributeCollection collection = context.attributes();
 
-    if ( symbol->renderingParameter() == QLatin1String( "X" ) )
+    if ( symbol->attribute() == QLatin1String( "X" ) )
     {
       attrIsX = true;
     }
-    else if ( symbol->renderingParameter() == QLatin1String( "Y" ) )
+    else if ( symbol->attribute() == QLatin1String( "Y" ) )
     {
       attrIsY = true;
     }
-    else if ( symbol->renderingParameter() == QLatin1String( "Z" ) )
+    else if ( symbol->attribute() == QLatin1String( "Z" ) )
     {
       attrIsZ = true;
     }
     else
     {
-      const QgsPointCloudAttribute *attr = collection.find( symbol->renderingParameter(), offset );
+      const QgsPointCloudAttribute *attr = collection.find( symbol->attribute(), offset );
       if ( attr )
       {
         attributeType = attr->type();
