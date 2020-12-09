@@ -498,7 +498,7 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
     switch ( mBehavior )
     {
       case QgsVectorLayer::SetSelection:
-        return tr( "Select" );
+        return tr( "Select Feature" );
         break;
       case QgsVectorLayer::AddToSelection:
         return tr( "Add to Selection" );
@@ -542,16 +542,16 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseOneMenu
   switch ( mBehavior )
   {
     case QgsVectorLayer::SetSelection:
-      return tr( "Select One" );
+      return tr( "Select Feature" );
       break;
     case QgsVectorLayer::AddToSelection:
-      return tr( "Add One to Selection" );
+      return tr( "Add Feature to Selection" );
       break;
     case QgsVectorLayer::IntersectSelection:
-      return tr( "Intersect One with Selection" );
+      return tr( "Intersect Feature with Selection" );
       break;
     case QgsVectorLayer::RemoveFromSelection:
-      return tr( "Remove One from Selection" );
+      return tr( "Remove Feature from Selection" );
       break;
   }
 
@@ -581,9 +581,9 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateChooseOneMenu( 
 
     QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
-      featureTitle = FID_TO_STRING( feat.id() );
+      featureTitle = tr( "Feature %1" ).arg( FID_TO_STRING( feat.id() ) );
 
-    QAction *featureAction = new QAction( tr( "Feature %1" ).arg( featureTitle ), this ) ;
+    QAction *featureAction = new QAction( featureTitle, this ) ;
     connect( featureAction, &QAction::triggered, this, [this, id]() {chooseOneCandidateFeature( id );} );
     connect( featureAction, &QAction::hovered, this, [this, id]() {this->highlightOneFeature( id );} );
     mMenuChooseOne->addAction( featureAction );
