@@ -203,6 +203,19 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void symbolModified();
 
+  private slots:
+
+    /**
+     * Called when project data (such as project colors, image cache) has changed. Updates
+     * the symbol preview to take changes into account.
+     */
+    void projectDataChanged();
+
+    /**
+     * Called when layers are about to be removed from the project.
+     */
+    void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
+
   private:
 
     /**
