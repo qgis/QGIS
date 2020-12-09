@@ -84,7 +84,7 @@
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
 
-
+///@cond PRIVATE
 class ScopedIntIncrementor
 {
   public:
@@ -114,6 +114,7 @@ class ScopedIntIncrementor
   private:
     int *mVariable = nullptr;
 };
+///@endcond
 
 
 /**
