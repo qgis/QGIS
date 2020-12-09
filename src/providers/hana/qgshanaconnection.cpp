@@ -487,6 +487,8 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
       layer.geometryColName = isGeometryColumn ? rsLayers->getString( 3 ) : QString();
       layer.tableComment = rsLayers->getString( 5 );
       layer.isView = isView;
+      layer.srid = -1;
+      layer.type = isGeometryColumn ? QgsWkbTypes::Type::Unknown : QgsWkbTypes::NoGeometry;
 
       QPair<QString, QString> layerKey( layer.schemaName, layer.tableName );
       if ( allowGeometrylessTables )
@@ -532,6 +534,17 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
   }
 
   return list;
+}
+
+QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayersFull(
+  const QString &schemaName,
+  bool allowGeometrylessTables,
+  bool userTablesOnly )
+{
+  QVector<QgsHanaLayerProperty> layers = getLayers( schemaName, allowGeometrylessTables, userTablesOnly );
+  for ( int i = 0; i < layers.size(); ++i )
+    readLayerInfo( layers[i] );
+  return layers;
 }
 
 void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )

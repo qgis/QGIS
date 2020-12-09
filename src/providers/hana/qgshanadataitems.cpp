@@ -288,14 +288,11 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
   }
 
   QgsHanaSettings settings( mConnectionName, true );
-  QVector<QgsHanaLayerProperty> layers = conn->getLayers( mSchemaName,
-                                         settings.allowGeometrylessTables(), settings.userTablesOnly() );
+  const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( mSchemaName,
+      settings.allowGeometrylessTables(), settings.userTablesOnly() );
 
-  for ( QgsHanaLayerProperty &layerProperty : layers )
-  {
-    conn->readLayerInfo( layerProperty );
-    items.append( createLayer( layerProperty ) );
-  }
+  for ( const QgsHanaLayerProperty &layerInfo :  layers )
+    items.append( createLayer( layerInfo ) );
 
   setName( mSchemaName );
 

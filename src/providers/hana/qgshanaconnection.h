@@ -58,6 +58,10 @@ class QgsHanaConnection : public QObject
       const QString &schemaName,
       bool allowGeometrylessTables,
       bool userTablesOnly = true );
+    QVector<QgsHanaLayerProperty> getLayersFull(
+      const QString &schemaName,
+      bool allowGeometrylessTables,
+      bool userTablesOnly = true );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );
