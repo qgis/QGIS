@@ -22,7 +22,6 @@
 #include <QTime>
 #include <QDateTime>
 
-using namespace std;
 using namespace odbc;
 
 namespace
@@ -31,7 +30,7 @@ namespace
   {
     QString escaped = val;
 
-    escaped.replace( '\\', QLatin1String( "\\\\" ) );
+    escaped.replace( '\\', QStringLiteral( "\\\\" ) );
     escaped.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
     return escaped;
@@ -160,7 +159,7 @@ QString QgsHanaUtils::toQString( const String &str )
     return QString::fromUtf8( str->c_str() );
 }
 
-QVariant QgsHanaUtils::toVariant( const odbc::Boolean &value )
+QVariant QgsHanaUtils::toVariant( const Boolean &value )
 {
   if ( value.isNull() )
     return QVariant( QVariant::Bool );
@@ -305,7 +304,7 @@ const char16_t *QgsHanaUtils::toUtf16( const QString &sql )
   return reinterpret_cast<const char16_t *>( sql.utf16() );
 }
 
-QgsWkbTypes::Type QgsHanaUtils::toWkbType( const odbc::String &type, const odbc::Int &hasZ, const odbc::Int &hasM )
+QgsWkbTypes::Type QgsHanaUtils::toWkbType( const String &type, const Int &hasZ, const Int &hasM )
 {
   if ( type.isNull() )
     return QgsWkbTypes::Unknown;
@@ -336,7 +335,7 @@ QgsWkbTypes::Type QgsHanaUtils::toWkbType( const odbc::String &type, const odbc:
 QVersionNumber QgsHanaUtils::toHANAVersion( const QString &dbVersion )
 {
   QString version = dbVersion;
-  QStringList strs = version.replace( " ", "." ).split( "." );
+  QStringList strs = version.replace( ' ', '.' ).split( '.' );
 
   if ( strs.length() < 3 )
     return QVersionNumber( 0 );
@@ -469,7 +468,7 @@ QString QgsHanaUtils::formatErrorMessage( const char *message, bool withPrefix )
   int pos = ret.indexOf( mark );
   if ( pos != -1 )
     ret = ret.remove( 0, pos + mark.length() );
-  if ( withPrefix && ret.indexOf( "HANA" ) == -1 )
+  if ( withPrefix && ret.indexOf( QLatin1String( "HANA" ) ) == -1 )
     return QStringLiteral( "HANA: " ) + ret;
   return ret;
 }
