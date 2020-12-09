@@ -515,14 +515,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
-     * Returns the geographic extent (EPSG:4326) of the layer according to
+     * Returns the WGS84 extent (EPSG:4326) of the layer according to
      * ReadFlag::FlagTrustLayerMetadata. If that flag is activated, then the
-     * geographic extent read in the qgs project is returned. Otherwise, the
-     * actual geographic extent is returned.
-     * \param actual True to return the current geographic extent whatever the read flags
+     * WGS84 extent read in the qgs project is returned. Otherwise, the actual
+     * WGS84 extent is returned.
+     * \param forceRecalculate True to return the current WGS84 extent whatever the read flags
      * \since QGIS 3.18
      */
-    QgsRectangle geographicExtent( bool actual = false ) const;
+    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
 
     /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
@@ -1522,10 +1522,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void clone( QgsMapLayer *layer ) const;
 
-    /**
-     * Sets the \a extent in layer CRS.
-     */
-    virtual void setExtent( const QgsRectangle &extent );
+    //! Sets the extent
+    virtual void setExtent( const QgsRectangle &rect );
 
     //! Sets whether layer is valid or not
     void setValid( bool valid );
@@ -1618,7 +1616,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     mutable QgsRectangle mExtent;
 
     //! Extent of the layer in EPSG:4326
-    QgsRectangle mGeographicExtent;
+    QgsRectangle mWgs84Extent;
 
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;

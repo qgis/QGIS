@@ -395,9 +395,9 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   // geographic extent is read only if necessary
   if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
   {
-    const QDomNode geoExtentNode = layerElement.namedItem( QStringLiteral( "geographicExtent" ) );
-    if ( !geoExtentNode.isNull() )
-      mGeographicExtent = QgsXmlUtils::readRectangle( geoExtentNode.toElement() );
+    const QDomNode wgs84ExtentNode = layerElement.namedItem( QStringLiteral( "wgs84extent" ) );
+    if ( !wgs84ExtentNode.isNull() )
+      mWgs84Extent = QgsXmlUtils::readRectangle( wgs84ExtentNode.toElement() );
   }
 
   return ! layerError;
@@ -419,7 +419,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   if ( !extent().isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( geographicExtent( true ), document, QStringLiteral( "geographicExtent" ) ) );
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
   }
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
@@ -2011,25 +2011,25 @@ void QgsMapLayer::onNotified( const QString &message )
   }
 }
 
-QgsRectangle QgsMapLayer::geographicExtent( bool actual ) const
+QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
 {
-  QgsRectangle geoExtent;
+  QgsRectangle wgs84Extent;
 
-  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata && ! actual )
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata && ! forceRecalculate )
   {
-    geoExtent = mGeographicExtent;
+    wgs84Extent = mWgs84Extent;
   }
   else
   {
     const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
     try
     {
-      geoExtent = transformer.transformBoundingBox( mExtent );
+      wgs84Extent = transformer.transformBoundingBox( mExtent );
     }
     catch ( const QgsCsException &cse )
     {
-      geoExtent = QgsRectangle();
+      wgs84Extent = QgsRectangle();
     }
   }
-  return geoExtent;
+  return wgs84Extent;
 }

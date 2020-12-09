@@ -1065,7 +1065,7 @@ namespace QgsWms
 
             //Ex_GeographicBoundingBox
             QgsRectangle extent = l->extent();  // layer extent by default
-            QgsRectangle geoExtent = l->geographicExtent();
+            QgsRectangle wgs84Extent = l->wgs84Extent();
             if ( l->type() == QgsMapLayerType::VectorLayer )
             {
               QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
@@ -1073,7 +1073,7 @@ namespace QgsWms
               {
                 // if there's no feature, use the wms extent defined in the
                 // project...
-                geoExtent = QgsRectangle();
+                wgs84Extent = QgsRectangle();
                 extent = QgsServerProjectUtils::wmsExtent( *project );
                 if ( extent.isNull() )
                 {
@@ -1097,7 +1097,7 @@ namespace QgsWms
               }
             }
 
-            appendLayerBoundingBoxes( doc, layerElem, extent, l->crs(), crsList, outputCrsList, project, geoExtent );
+            appendLayerBoundingBoxes( doc, layerElem, extent, l->crs(), crsList, outputCrsList, project, wgs84Extent );
           }
 
           // add details about supported styles of the layer

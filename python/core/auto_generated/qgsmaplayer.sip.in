@@ -505,14 +505,14 @@ Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for re
 Returns the extent of the layer.
 %End
 
-    QgsRectangle geographicExtent( bool actual = false ) const;
+    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
 %Docstring
-Returns the geographic extent (EPSG:4326) of the layer according to
+Returns the WGS84 extent (EPSG:4326) of the layer according to
 ReadFlag.FlagTrustLayerMetadata. If that flag is activated, then the
-geographic extent read in the qgs project is returned. Otherwise, the
-actual geographic extent is returned.
+WGS84 extent read in the qgs project is returned. Otherwise, the actual
+WGS84 extent is returned.
 
-:param actual: True to return the current geographic extent whatever the read flags
+:param forceRecalculate: True to return the current WGS84 extent whatever the read flags
 
 .. versionadded:: 3.18
 %End
@@ -1707,9 +1707,9 @@ Copies attributes like name, short name, ... into another layer.
 .. versionadded:: 3.0
 %End
 
-    virtual void setExtent( const QgsRectangle &extent );
+    virtual void setExtent( const QgsRectangle &rect );
 %Docstring
-Sets the ``extent`` in layer CRS.
+Sets the extent
 %End
 
     void setValid( bool valid );
