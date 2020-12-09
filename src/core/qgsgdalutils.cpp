@@ -177,7 +177,7 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   GDALWarpOperation oOperation;
   oOperation.Initialize( psWarpOptions.get() );
 
-  const bool retVal { oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) != CE_None };
+  const bool retVal { oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) == CE_None };
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
   return retVal;
 }
