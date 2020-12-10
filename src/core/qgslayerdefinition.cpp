@@ -78,18 +78,20 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     }
     QDomNode layersNode = doc.elementsByTagName( QStringLiteral( "maplayers" ) ).at( 0 );
     // replace old children with new ones
-    QDomNodeList childNodes = layersNode.childNodes();
-    for ( int i = 0; i < childNodes.size(); i++ )
+    QDomNode childNode = layersNode.firstChild();
+    for ( int i = 0; ! childNode.isNull(); i++ )
     {
-      layersNode.replaceChild( clonedSorted.at( i ), childNodes.at( i ) );
+      layersNode.replaceChild( clonedSorted.at( i ), childNode );
+      childNode = childNode.nextSibling();
     }
   }
   // if a dependency is missing, we still try to load layers, since dependencies may already be loaded
 
   // IDs of layers should be changed otherwise we may have more then one layer with the same id
   // We have to replace the IDs before we load them because it's too late once they are loaded
-  QDomNodeList treeLayerNodes = doc.elementsByTagName( QStringLiteral( "layer-tree-layer" ) );
-  for ( int i = 0; i < treeLayerNodes.size(); ++i )
+  const QDomNodeList treeLayerNodes = doc.elementsByTagName( QStringLiteral( "layer-tree-layer" ) );
+  QDomNode treeLayerNode = treeLayerNodes.at( 0 );
+  for ( int i = 0; ! treeLayerNode.isNull(); ++i )
   {
     QDomNode treeLayerNode = treeLayerNodes.at( i );
     QDomElement treeLayerElem = treeLayerNode.toElement();
@@ -99,10 +101,11 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     treeLayerElem.setAttribute( QStringLiteral( "id" ), newid );
 
     // Replace IDs for map layers
-    QDomNodeList ids = doc.elementsByTagName( QStringLiteral( "id" ) );
-    for ( int i = 0; i < ids.size(); ++i )
+    const QDomNodeList ids = doc.elementsByTagName( QStringLiteral( "id" ) );
+    QDomNode idnode = ids.at( 0 );
+    for ( int j = 0; ! idnode.isNull() ; ++j )
     {
-      QDomNode idnode = ids.at( i );
+      QDomNode idnode = ids.at( j );
       QDomElement idElem = idnode.toElement();
       if ( idElem.text() == oldid )
       {
@@ -111,7 +114,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     }
 
     // change layer IDs for vector joins
-    QDomNodeList vectorJoinNodes = doc.elementsByTagName( QStringLiteral( "join" ) ); // TODO: Find a better way of searching for vectorjoins, there might be other <join> elements within the project.
+    const QDomNodeList vectorJoinNodes = doc.elementsByTagName( QStringLiteral( "join" ) ); // TODO: Find a better way of searching for vectorjoins, there might be other <join> elements within the project.
     for ( int j = 0; j < vectorJoinNodes.size(); ++j )
     {
       QDomNode joinNode = vectorJoinNodes.at( j );
@@ -123,7 +126,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     }
 
     // change IDs of dependencies
-    QDomNodeList dataDeps = doc.elementsByTagName( QStringLiteral( "dataDependencies" ) );
+    const QDomNodeList dataDeps = doc.elementsByTagName( QStringLiteral( "dataDependencies" ) );
     for ( int i = 0; i < dataDeps.size(); i++ )
     {
       QDomNodeList layers = dataDeps.at( i ).childNodes();
