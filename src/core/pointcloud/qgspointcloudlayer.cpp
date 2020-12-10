@@ -36,8 +36,10 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
+  , mSkipIndexGeneration( options.skipIndexGeneration )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
 {
+
   if ( !path.isEmpty() && !providerLib.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
@@ -55,6 +57,7 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
   options.loadDefaultStyle = false;
   options.transformContext = transformContext();
   options.skipCrsValidation = true;
+  options.skipIndexGeneration = mSkipIndexGeneration;
 
   QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
@@ -321,7 +324,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   // the main thread.
   // Index loading should be done before crs, extent and renderer setting,
   // compare with onPointCloudIndexLoaded
-  mDataProvider.get()->loadIndex();
+  mDataProvider.get()->loadIndex( mSkipIndexGeneration );
 
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );

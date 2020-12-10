@@ -28,13 +28,11 @@
 #include "qgsmessagelog.h"
 #include "qgis.h"
 
-QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file )
+QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputDir )
   : QgsTask( tr( "Generate EPT Index" ) )
+  , mOutputDir( outputDir )
   , mFile( file )
 {
-  const QFileInfo fi( file );
-  const QDir directory = fi.absoluteDir();
-  mOutputDir = QStringLiteral( "%1/ept_%2" ).arg( directory.absolutePath() ).arg( fi.baseName() );
   mUntwineExecutableBinary = guessUntwineExecutableBinary();
 }
 
@@ -136,11 +134,6 @@ QString QgsPdalEptGenerationTask::guessUntwineExecutableBinary() const
 QString QgsPdalEptGenerationTask::outputDir() const
 {
   return mOutputDir;
-}
-
-void QgsPdalEptGenerationTask::setOutputDir( const QString &outputDir )
-{
-  mOutputDir = outputDir;
 }
 
 bool QgsPdalEptGenerationTask::prepareOutputDir()

@@ -91,8 +91,10 @@ QVariant QgsEptProvider::metadataClassStatistic( const QString &attribute, const
   return mIndex->metadataClassStatistic( attribute, value, statistic );
 }
 
-void QgsEptProvider::loadIndex()
+void QgsEptProvider::loadIndex( bool skipIndexGeneration )
 {
+  Q_UNUSED( skipIndexGeneration )
+
   if ( mIndex->isValid() )
     return;
 

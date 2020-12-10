@@ -19,20 +19,18 @@
 #include <QObject>
 #include "qgstaskmanager.h"
 
-
 class QgsPdalEptGenerationTask: public QgsTask
 {
     Q_OBJECT
 
   public:
-    QgsPdalEptGenerationTask( const QString &file );
+    QgsPdalEptGenerationTask( const QString &file, const QString &outputDir );
     bool run() override;
 
     QString untwineExecutableBinary() const;
     void setUntwineExecutableBinary( const QString &untwineExecutableBinary );
 
     QString outputDir() const;
-    void setOutputDir( const QString &outputDir );
 
   private:
     bool prepareOutputDir();

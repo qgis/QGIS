@@ -74,19 +74,35 @@ QVariant QgsPdalProvider::metadataClassStatistic( const QString &attribute, cons
   return mIndex->metadataClassStatistic( attribute, value, statistic );
 }
 
-void QgsPdalProvider::loadIndex()
+
+
+void QgsPdalProvider::loadIndex( bool skipIndexGeneration )
 {
-  if ( mRunningIndexingTask || mIndex->isValid() )
-    return;
+  if ( !mIsValid )
+  {
+    const QFileInfo fi( dataSourceUri() );
+    const QDir directory = fi.absoluteDir();
+    const QString outputDir = QStringLiteral( "%1/ept_%2" ).arg( directory.absolutePath() ).arg( fi.baseName() );
 
-  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri() );
+    if ( skipIndexGeneration )
+    {
+      loadIndexIfExists( outputDir );
+    }
+    else
+    {
+      if ( mRunningIndexingTask || mIndex->isValid() )
+        return;
 
-  connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onLoadIndexFinished );
-  connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onLoadIndexFinished );
+      QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputDir );
 
-  mRunningIndexingTask = generationTask;
-  QgsDebugMsgLevel( "Ept Generation Task Created", 2 );
-  QgsApplication::taskManager()->addTask( generationTask );
+      connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onLoadIndexFinished );
+      connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onLoadIndexFinished );
+
+      mRunningIndexingTask = generationTask;
+      QgsDebugMsgLevel( "Ept Generation Task Created", 2 );
+      QgsApplication::taskManager()->addTask( generationTask );
+    }
+  }
 }
 
 void QgsPdalProvider::onLoadIndexFinished()
@@ -95,27 +111,23 @@ void QgsPdalProvider::onLoadIndexFinished()
   // this may be already canceled task that we don't care anymore...
   if ( ( task == mRunningIndexingTask ) && ( !mIndex->isValid() ) )
   {
-    QString outEptJson = mRunningIndexingTask->outputDir() + "/ept.json";
-    QFileInfo fi( outEptJson );
-    if ( fi.isFile() )
-    {
-      QgsDebugMsgLevel( "pdalprovider: Ept index generated", 2 );
-      mIndex->load( outEptJson );
-      QgsDebugMsgLevel( "pdalprovider: Ept index loaded", 2 );
-
-      qDebug() << "Crs pdal: " << mCrs.toWkt();
-      qDebug() << "Crs untwine: " << mIndex->crs().toWkt();
-
-      qDebug() << "Extent pdal: " << mExtent.asWktPolygon();
-      qDebug() << "Extent untwine: " << mExtent.asWktPolygon();
-
-      emit pointCloudIndexLoaded();
-    }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "Ept index %1 is not correctly generated" ).arg( outEptJson ), 2 );
-    }
+    loadIndexIfExists( mRunningIndexingTask->outputDir() );
     mRunningIndexingTask = nullptr;
+  }
+}
+
+void QgsPdalProvider::loadIndexIfExists( const QString &folder )
+{
+  QString outEptJson = QStringLiteral( "%1/ept.json" ).arg( folder );
+  QFileInfo fi( outEptJson );
+  if ( fi.isFile() )
+  {
+    mIndex->load( outEptJson );
+    emit pointCloudIndexLoaded();
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "pdalprovider: ept index %1 is not correctly loaded" ).arg( outEptJson ), 2 );
   }
 }
 

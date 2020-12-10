@@ -16,14 +16,12 @@ set(PDAL_HDRS
 )
 
 if (WITH_GUI)
-  set(PDAL_SRCS
-    ${PDAL_SRCS}
+  set(PDAL_GUI_SRCS
     qgspdalprovidergui.cpp
     qgspdaldataitemguiprovider.cpp
   )
 
-  set(PDAL_HDRS
-    ${PDAL_HDRS}
+  set(PDAL_GUI_HDRS
     qgspdalprovidergui.h
     qgspdaldataitemguiprovider.h
   )
@@ -122,10 +120,24 @@ target_link_libraries (untwine
 )
 target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
 
-add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS})
+add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 target_link_libraries (pdalprovider
   ${PDAL_LIBRARIES}
 )
+
+if (WITH_GUI)
+  target_link_libraries (pdalprovider
+    ${PDAL_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5Concurrent_LIBRARIES}
+  )
+  target_link_libraries(pdalprovider qgis_gui)
+  add_dependencies(pdalprovider ui)
+endif()
 
 # static library
 add_library (pdalprovider_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
@@ -140,10 +152,18 @@ target_link_libraries (pdalprovider_a
 )
 
 if (WITH_GUI)
-  target_link_libraries(pdalprovider
-    qgis_gui
+  add_library (pdalprovider_gui_a STATIC ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
+  target_link_libraries (pdalprovider_gui_a
+    ${PDAL_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5Concurrent_LIBRARIES}
   )
-  add_dependencies(pdalprovider ui)
+  target_link_libraries(pdalprovider_gui_a qgis_gui)
+  add_dependencies(pdalprovider_gui_a ui)
 endif()
 
 install(TARGETS pdalprovider

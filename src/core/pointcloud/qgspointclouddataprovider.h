@@ -81,7 +81,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \sa index()
      */
-    virtual void loadIndex() = 0;
+    virtual void loadIndex( bool skipIndexGeneration ) = 0;
 
     /**
      * Returns the point cloud index associated with the provider.

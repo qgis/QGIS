@@ -77,6 +77,11 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
        * layer.
        */
       bool skipCrsValidation = false;
+
+      /**
+       * Set to TRUE if point cloud index generation should be skipped.
+       */
+      bool skipIndexGeneration = false;
     };
 
 
@@ -172,6 +177,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 #ifdef SIP_RUN
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 #endif
+
+    bool mSkipIndexGeneration = true;
 
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
 

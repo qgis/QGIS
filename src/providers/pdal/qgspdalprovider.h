@@ -48,12 +48,13 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
-    void loadIndex() override;
+    void loadIndex( bool skipIndexGeneration ) override;
 
   private slots:
     void onLoadIndexFinished();
 
   private:
+    void loadIndexIfExists( const QString &folder );
     bool load( const QString &uri );
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;

@@ -60,7 +60,7 @@ Returns the attributes available from this data provider.
 May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
 %End
 
-    virtual void loadIndex() = 0;
+    virtual void loadIndex( bool skipIndexGeneration ) = 0;
 %Docstring
 Triggers generation/loading of the point cloud index
 
