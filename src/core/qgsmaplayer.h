@@ -1612,6 +1612,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
+    void invalidateWgs84Extent();
+
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;
 

@@ -2049,3 +2049,12 @@ void QgsMapLayer::updateExtent( const QgsRectangle &extent ) const
 
   mWgs84Extent = wgs84Extent( true );
 }
+
+void QgsMapLayer::invalidateWgs84Extent()
+{
+  // do not update the wgs84 extent if we trust layer metadata
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
+    return;
+
+  mWgs84Extent = QgsRectangle();
+}

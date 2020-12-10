@@ -1759,6 +1759,7 @@ void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &t
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
 QStringList QgsRasterLayer::subLayers() const

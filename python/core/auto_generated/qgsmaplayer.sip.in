@@ -1812,6 +1812,8 @@ Add error message
 Sets error message
 %End
 
+    void invalidateWgs84Extent();
+
 
 
 

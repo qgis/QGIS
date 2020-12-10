@@ -120,6 +120,7 @@ QgsRectangle QgsAnnotationLayer::extent() const
 void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
   mTransformContext = context;
+  invalidateWgs84Extent();
 }
 
 bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
