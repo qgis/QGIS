@@ -1973,7 +1973,7 @@
                   <item row="0" column="0" colspan="2">
                    <widget class="QCheckBox" name="cbxAttributeTableDocked">
                     <property name="text">
-                     <string>Open new attribute tables as docked windows</string>
+                     <string>Open attribute table as docked window</string>
                     </property>
                    </widget>
                   </item>
