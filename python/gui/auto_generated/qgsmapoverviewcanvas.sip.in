@@ -108,6 +108,12 @@ Overridden mouse press event
 Overridden mouse release event
 %End
 
+    virtual void wheelEvent( QWheelEvent *e );
+
+%Docstring
+Overridden mouse release event
+%End
+
     void updatePanningWidget( QPoint pos );
 %Docstring
 called when panning to reflect mouse movement
