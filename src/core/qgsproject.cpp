@@ -913,7 +913,6 @@ void dump_( const QgsProjectPropertyKey &topQgsPropertyKey )
   topQgsPropertyKey.dump();
 }
 
-
 /**
 
 Restore any optional properties found in "doc" to "properties".
@@ -994,25 +993,23 @@ QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, c
 */
 static void _getTitle( const QDomDocument &doc, QString &title )
 {
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "title" ) );
+  QDomElement titleElement = doc.documentElement().firstChildElement( QStringLiteral( "title" ) );
 
   title.clear();               // by default the title will be empty
 
-  if ( !nl.count() )
+  if ( titleElement.isNull() )
   {
     QgsDebugMsgLevel( QStringLiteral( "unable to find title element" ), 2 );
     return;
   }
 
-  QDomNode titleNode = nl.item( 0 );  // there should only be one, so zeroth element OK
-
-  if ( !titleNode.hasChildNodes() ) // if not, then there's no actual text
+  if ( !titleElement.hasChildNodes() ) // if not, then there's no actual text
   {
     QgsDebugMsgLevel( QStringLiteral( "unable to find title element" ), 2 );
     return;
   }
 
-  QDomNode titleTextNode = titleNode.firstChild();  // should only have one child
+  QDomNode titleTextNode = titleElement.firstChild();  // should only have one child
 
   if ( !titleTextNode.isText() )
   {
@@ -1028,17 +1025,15 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
 static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull, QDateTime &lastSaveDateTime )
 {
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
+  QDomElement qgisElement = doc.documentElement().firstChildElement( QStringLiteral( "qgis" ) );
 
-  if ( !nl.count() )
+  if ( qgisElement.isNull() )
   {
     QgsDebugMsg( "unable to find qgis element" );
     return;
   }
 
-  QDomNode qgisNode = nl.item( 0 ); // there should only be one, so zeroth element OK
 
-  QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
   lastUser = qgisElement.attribute( QStringLiteral( "saveUser" ), QString() );
   lastUserFull = qgisElement.attribute( QStringLiteral( "saveUserFull" ), QString() );
   lastSaveDateTime = QDateTime::fromString( qgisElement.attribute( QStringLiteral( "saveDateTime" ), QString() ), Qt::ISODate );
@@ -1047,17 +1042,14 @@ static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser,
 
 QgsProjectVersion getVersion( const QDomDocument &doc )
 {
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
+  QDomElement qgisElement = doc.documentElement().firstChildElement( QStringLiteral( "qgis" ) );
 
-  if ( !nl.count() )
+  if ( qgisElement.isNull() )
   {
     QgsDebugMsg( QStringLiteral( " unable to find qgis element in project file" ) );
     return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK
-
-  QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
   QgsProjectVersion projectVersion( qgisElement.attribute( QStringLiteral( "version" ) ) );
   return projectVersion;
 }
@@ -1092,11 +1084,12 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   // Layer order is set by the restoring the legend settings from project file.
   // This is done on the 'readProject( ... )' signal
 
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "maplayer" ) );
+  const QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "maplayer" ) );
 
   // process the map layer nodes
+  const int numLayers { nl.count() };
 
-  if ( 0 == nl.count() )      // if we have no layers to process, bail
+  if ( 0 == numLayers )      // if we have no layers to process, bail
   {
     return true; // Decided to return "true" since it's
     // possible for there to be a project with no
@@ -1118,7 +1111,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   if ( depSorter.hasMissingDependency() )
     returnStatus = false;
 
-  emit layerLoaded( 0, nl.count() );
+  emit layerLoaded( 0, numLayers );
 
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
   const int totalLayerCount = sortedLayerNodes.count();
@@ -1525,11 +1518,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
   }
 
-  QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "projectMetadata" ) );
-  if ( !nl.isEmpty() )
+  QDomElement element = doc->documentElement().firstChildElement( QStringLiteral( "projectMetadata" ) );
+
+  if ( !element.isNull() )
   {
-    QDomElement metadataElement = nl.at( 0 ).toElement();
-    mMetadata.readMetadataXml( metadataElement );
+    mMetadata.readMetadataXml( element );
   }
   else
   {
@@ -1543,28 +1536,25 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
   emit metadataChanged();
 
-  nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
-  if ( nl.count() )
+  element = doc->documentElement().firstChildElement( QStringLiteral( "autotransaction" ) );
+  if ( ! element.isNull() )
   {
-    QDomElement transactionElement = nl.at( 0 ).toElement();
-    if ( transactionElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mAutoTransaction = true;
   }
 
-  nl = doc->elementsByTagName( QStringLiteral( "evaluateDefaultValues" ) );
-  if ( nl.count() )
+  element = doc->documentElement().firstChildElement( QStringLiteral( "evaluateDefaultValues" ) );
+  if ( !element.isNull() )
   {
-    QDomElement evaluateDefaultValuesElement = nl.at( 0 ).toElement();
-    if ( evaluateDefaultValuesElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mEvaluateDefaultValues = true;
   }
 
   // Read trust layer metadata config in the project
-  nl = doc->elementsByTagName( QStringLiteral( "trust" ) );
-  if ( nl.count() )
+  element = doc->documentElement().firstChildElement( QStringLiteral( "trust" ) );
+  if ( !element.isNull() )
   {
-    QDomElement trustElement = nl.at( 0 ).toElement();
-    if ( trustElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mTrustLayerMetadata = true;
   }
 
@@ -2850,23 +2840,22 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     return false;
   }
 
-  QDomNodeList mapLayerNodes = projectLayersElem.elementsByTagName( QStringLiteral( "maplayer" ) );
-  for ( int i = 0; i < mapLayerNodes.size(); ++i )
+  QDomElement mapLayerElement = projectLayersElem.firstChildElement( QStringLiteral( "maplayer" ) );
+  while ( ! mapLayerElement.isNull() )
   {
     // get layer id
-    QDomElement mapLayerElem = mapLayerNodes.at( i ).toElement();
-    QString id = mapLayerElem.firstChildElement( QStringLiteral( "id" ) ).text();
+    QString id = mapLayerElement.firstChildElement( QStringLiteral( "id" ) ).text();
     if ( id == layerId )
     {
       // layer can be embedded only once
-      if ( mapLayerElem.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
+      if ( mapLayerElement.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
       {
         return false;
       }
 
       mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
 
-      if ( addLayer( mapLayerElem, brokenNodes, embeddedContext, flags ) )
+      if ( addLayer( mapLayerElement, brokenNodes, embeddedContext, flags ) )
       {
         return true;
       }
@@ -2876,6 +2865,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         return false;
       }
     }
+    mapLayerElement = mapLayerElement.nextSiblingElement( QStringLiteral( "maplayer" ) );
   }
 
   return false;

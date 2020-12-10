@@ -25,6 +25,9 @@
 static void _readOldLegendGroup( const QDomElement &groupElem, QgsLayerTreeGroup *parent );
 static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup *parent );
 
+
+
+
 bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup *root, const QDomElement &legendElem )
 {
   if ( legendElem.isNull() )
