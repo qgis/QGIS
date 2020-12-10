@@ -277,13 +277,16 @@ QDomDocument QgsLayerDefinition::exportLayerDefinitionLayers( const QList<QgsMap
 QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context )
 {
   QList<QgsMapLayer *> layers;
-  QDomNodeList layernodes = document.elementsByTagName( QStringLiteral( "maplayer" ) );
-  for ( int i = 0; i < layernodes.size(); ++i )
+  QDomElement layerElem = document.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
+  // For QLR:
+  if ( layerElem.isNull() )
   {
-    QDomNode layernode = layernodes.at( i );
-    QDomElement layerElem = layernode.toElement();
+    layerElem = document.documentElement().firstChildElement( QStringLiteral( "maplayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
+  }
 
-    QString type = layerElem.attribute( QStringLiteral( "type" ) );
+  while ( ! layerElem.isNull() )
+  {
+    const QString type = layerElem.attribute( QStringLiteral( "type" ) );
     QgsDebugMsg( type );
     QgsMapLayer *layer = nullptr;
 
@@ -312,6 +315,7 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument
     // at a later stage and still retain all the layer properties intact
     layer->readLayerXml( layerElem, context );
     layers << layer;
+    layerElem = layerElem.nextSiblingElement( QStringLiteral( "maplayer" ) );
   }
   return layers;
 }
@@ -347,19 +351,25 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
   QList< QPair<QString, QDomNode> > layersToSort;
   QStringList layerIds;
 
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "maplayer" ) );
-  layerIds.reserve( nl.count() );
+  QDomElement layerElem = doc.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
+  // For QLR:
+  if ( layerElem.isNull() )
+  {
+    layerElem = doc.documentElement().firstChildElement( QStringLiteral( "maplayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
+  }
+
+  const QDomElement &firstElement { layerElem };
+
   QVector<QString> deps; //avoid expensive allocation for list for every iteration
-  for ( int i = 0; i < nl.count(); i++ )
+  while ( !layerElem.isNull() )
   {
     deps.resize( 0 ); // preserve capacity - don't use clear
-    QDomNode node = nl.item( i );
 
-    QString id = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
+    QString id = layerElem.namedItem( QStringLiteral( "id" ) ).toElement().text();
     layerIds << id;
 
     // dependencies for this layer
-    QDomElement layerDependenciesElem = node.firstChildElement( QStringLiteral( "layerDependencies" ) );
+    QDomElement layerDependenciesElem = layerElem.firstChildElement( QStringLiteral( "layerDependencies" ) );
     if ( !layerDependenciesElem.isNull() )
     {
       QDomNodeList dependencyList = layerDependenciesElem.elementsByTagName( QStringLiteral( "layer" ) );
@@ -374,11 +384,14 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
     if ( deps.empty() )
     {
       sortedLayers << id;
-      mSortedLayerNodes << node;
+      mSortedLayerNodes << layerElem;
       mSortedLayerIds << id;
     }
     else
-      layersToSort << qMakePair( id, node );
+    {
+      layersToSort << qMakePair( id, layerElem );
+    }
+    layerElem = layerElem.nextSiblingElement( );
   }
 
   // check that all dependencies are present
@@ -392,8 +405,12 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
       {
         // some dependencies are not satisfied
         mHasMissingDependency = true;
-        for ( int i = 0; i < nl.size(); i++ )
-          mSortedLayerNodes << nl.at( i );
+        layerElem = firstElement;
+        while ( ! layerElem.isNull() )
+        {
+          mSortedLayerNodes << layerElem;
+          layerElem = layerElem.nextSiblingElement( );
+        }
         mSortedLayerIds = layerIds;
         return;
       }
