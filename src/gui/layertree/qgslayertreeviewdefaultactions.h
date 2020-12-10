@@ -62,6 +62,10 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      */
     Q_DECL_DEPRECATED QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
+    /**
+     * Action to zoom to all the selected layer(s) in the layer tree
+     * \since QGIS 3.18
+     */
     QAction *actionZoomToLayers( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
@@ -106,6 +110,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     */
     Q_DECL_DEPRECATED void zoomToLayer( QgsMapCanvas *canvas );
 
+    /**
+     * Zooms to all the selected layer(s) in the layer tree
+     * \see zoomToLayers()
+     * \since QGIS 3.18
+     */
     void zoomToLayers( QgsMapCanvas *canvas );
 
     /**
@@ -129,6 +138,10 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      */
     Q_DECL_DEPRECATED void zoomToLayer();
 
+    /**
+     * Slot to zoom to all the selected layer(s) in the layer tree
+     * \since QGIS 3.18
+     */
     void zoomToLayers();
 
     /**
