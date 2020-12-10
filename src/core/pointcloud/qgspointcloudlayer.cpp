@@ -370,7 +370,7 @@ void QgsPointCloudLayer::onPointCloudIndexLoaded()
   if ( mRenderer )
   {
     // Renderer is already set only in case
-    // we genereated the point cloud index
+    // we generated the point cloud index
     // as a background job. In this case
     // lets reset the crs and extent and
     // replace temporary extent renderer
