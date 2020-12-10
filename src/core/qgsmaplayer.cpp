@@ -2020,7 +2020,7 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
   {
     wgs84Extent = mWgs84Extent;
   }
-  else
+  else if ( ! mExtent.isNull() )
   {
     const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
     try
