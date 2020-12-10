@@ -93,7 +93,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   QDomNode treeLayerNode = treeLayerNodes.at( 0 );
   for ( int i = 0; ! treeLayerNode.isNull(); ++i )
   {
-    QDomNode treeLayerNode = treeLayerNodes.at( i );
+    treeLayerNode = treeLayerNodes.at( i );
     QDomElement treeLayerElem = treeLayerNode.toElement();
     QString oldid = treeLayerElem.attribute( QStringLiteral( "id" ) );
     QString layername = treeLayerElem.attribute( QStringLiteral( "name" ) );
@@ -105,7 +105,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     QDomNode idnode = ids.at( 0 );
     for ( int j = 0; ! idnode.isNull() ; ++j )
     {
-      QDomNode idnode = ids.at( j );
+      idnode = ids.at( j );
       QDomElement idElem = idnode.toElement();
       if ( idElem.text() == oldid )
       {
