@@ -873,6 +873,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setZoomResolutions( const QList<double> &resolutions ) { mZoomResolutions = resolutions; }
 
     /**
+     * Returns the zoom in factor.
+     */
+    double zoomInFactor() const;
+
+    /**
+     * Returns the zoom in factor.
+     */
+    double zoomOutFactor() const;
+
+    /**
      * \returns List of resolutions to which to "snap to" when zooming the map
      * \see setZoomResolutions()
      * \since QGIS 3.12
@@ -1329,8 +1339,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool panOperationInProgress();
 
     int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
-    double zoomInFactor() const;
-    double zoomOutFactor() const;
 
     /**
      * Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
