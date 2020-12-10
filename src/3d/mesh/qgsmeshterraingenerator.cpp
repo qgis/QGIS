@@ -90,6 +90,7 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
+  updateTriangularMesh();
 }
 
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
