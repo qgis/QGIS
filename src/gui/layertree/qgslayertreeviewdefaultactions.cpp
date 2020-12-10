@@ -103,7 +103,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayers( QgsMapCanvas *canva
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Layer(s)" ), parent );
-  a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
+  a->setData( QVariant::fromValue( canvas ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayers ) );
   return a;
 }
@@ -346,7 +346,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
 void QgsLayerTreeViewDefaultActions::zoomToLayers()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
-  QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
+  QgsMapCanvas *canvas = s->data().value<QgsMapCanvas *>();
   QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayers( canvas );
   QApplication::restoreOverrideCursor();
