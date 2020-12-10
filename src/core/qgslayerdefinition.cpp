@@ -357,6 +357,11 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
   {
     layerElem = doc.documentElement().firstChildElement( QStringLiteral( "maplayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
   }
+  // For tests (I don't know if there is a real use case for such a document except for test_qgslayerdefinition.py)
+  if ( layerElem.isNull() )
+  {
+    layerElem = doc.documentElement().firstChildElement( QStringLiteral( "maplayer" ) );
+  }
 
   const QDomElement &firstElement { layerElem };
 
