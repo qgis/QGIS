@@ -42,6 +42,8 @@ void addArgs(pdal::ProgramArgs& programArgs, Options& options, pdal::Arg * &temp
         options.fileLimit, (size_t)10000000);
     programArgs.add("progress_fd", "File descriptor on which to write process messages.",
         options.progressFd);
+    programArgs.add("dims", "Dimensions to load. Note that X, Y and Z are always "
+        "loaded.", options.dimNames);
 }
 
 bool handleOptions(pdal::StringList& arglist, Options& options)

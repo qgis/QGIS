@@ -13,8 +13,6 @@
 namespace untwine
 {
 
-std::mutex ProgressWriter::s_mutex;
-
 ProgressWriter::ProgressWriter(int fd) : m_progressFd(fd), m_percent(0.0), m_increment(.1)
 {}
 
@@ -22,7 +20,7 @@ void ProgressWriter::setIncrement(double increment)
 {
     if (!m_progressFd)
         return;
-    std::unique_lock<std::mutex> lock(s_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
 
     m_increment = increment;
 }
@@ -31,7 +29,7 @@ void ProgressWriter::setPercent(double percent)
 {
     if (!m_progressFd)
         return;
-    std::unique_lock<std::mutex> lock(s_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
 
     m_percent = (std::max)(0.0, ((std::min)(1.0, percent)));
 }
@@ -40,7 +38,7 @@ void ProgressWriter::writeIncrement(const std::string& message)
 {
     if (!m_progressFd)
         return;
-    std::unique_lock<std::mutex> lock(s_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
 
     m_percent += m_increment;
     m_percent = (std::min)(1.0, m_percent);
@@ -53,7 +51,7 @@ void ProgressWriter::write(double percent, const std::string& message)
 {
     if (!m_progressFd)
         return;
-    std::unique_lock<std::mutex> lock(s_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
 
     m_percent = (std::min)(0.0, ((std::max)(1.0, percent)));
 
@@ -76,6 +74,20 @@ void ProgressWriter::writeMessage(uint32_t percent, const std::string& message)
     WriteFile(h, &ssize, sizeof(ssize), &numWritten, NULL);
     WriteFile(h, message.data(), ssize, &numWritten, NULL);
 #endif
+}
+
+void ProgressWriter::update(PointCount count)
+{
+    std::unique_lock<std::mutex> lock(m_mutex);
+
+    PointCount inc = m_current / m_threshold;
+    m_current += count;
+    PointCount postInc = m_current / m_threshold;
+    if (inc != postInc)
+    {
+        lock.unlock();
+        writeIncrement("Processed " + std::to_string(m_current) + " points");
+    }
 }
 
 } // namespace untwine

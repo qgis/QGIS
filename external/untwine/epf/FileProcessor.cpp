@@ -12,37 +12,35 @@
 
 
 #include "FileProcessor.hpp"
+#include "../untwine/ProgressWriter.hpp"
 
 #include <pdal/StageFactory.hpp>
 #include <pdal/filters/StreamCallbackFilter.hpp>
-
-using namespace pdal;
 
 namespace untwine
 {
 namespace epf
 {
 
-
 FileProcessor::FileProcessor(const FileInfo& fi, size_t pointSize, const Grid& grid,
-        Writer *writer) :
-    m_fi(fi), m_cellMgr(pointSize, writer), m_grid(grid)
+        Writer *writer, ProgressWriter& progress) :
+    m_fi(fi), m_cellMgr(pointSize, writer), m_grid(grid), m_progress(progress)
 {}
 
 void FileProcessor::run()
 {
-    Options opts;
+    pdal::Options opts;
     opts.add("filename", m_fi.filename);
 
-    std::cerr << ("Processing " + m_fi.filename + "!\n");
-
-    StageFactory factory;
-    Stage *s = factory.createStage(m_fi.driver);
+    pdal::StageFactory factory;
+    pdal::Stage *s = factory.createStage(m_fi.driver);
     s->setOptions(opts);
 
-    StreamCallbackFilter f;
+    pdal::StreamCallbackFilter f;
 
-    size_t count = 0;
+    const PointCount CountIncrement = 100000;
+    PointCount count = 0;
+    PointCount limit = CountIncrement;
 
     // We need to move the data from the PointRef to some output buffer. We copy the data
     // to the end of the *last* output buffer we used in hopes that it's the right one.
@@ -52,7 +50,7 @@ void FileProcessor::run()
     // This is some random cell that ultimately won't get used, but it contains a buffer
     // into which we can write data.
     Cell *cell = m_cellMgr.get(VoxelKey());
-    f.setCallback([this, &count, &cell](PointRef& point)
+    f.setCallback([this, &count, &limit, &cell](pdal::PointRef& point)
         {
             // Write the data into the point buffer in the cell.  This is the *last*
             // cell buffer that we used. We're hoping that it's the right one.
@@ -73,17 +71,23 @@ void FileProcessor::run()
             // point, we're referring to the next location in the cell's buffer.
             cell->advance();
             count++;
+
+            if (count == limit)
+            {
+                m_progress.update(CountIncrement);
+                limit += CountIncrement;
+            }
+
             return true;
         }
     );
     f.setInput(*s);
 
-    FixedPointTable t(1000);
+    pdal::FixedPointTable t(1000);
 
     f.prepare(t);
     f.execute(t);
-
-    std::cerr << ("Done " + m_fi.filename + " - " + std::to_string(count) + " points!\n");
+    m_progress.update(count % CountIncrement);
 
     // Flush any data remaining in the cells.
     m_cellMgr.flush();

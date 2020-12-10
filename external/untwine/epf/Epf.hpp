@@ -44,7 +44,8 @@ public:
     void run(const Options& options, ProgressWriter& progress);
 
 private:
-    void createFileInfo(const pdal::StringList& input, std::vector<FileInfo>& fileInfos);
+    PointCount createFileInfo(const StringList& input, StringList dimNames,
+        std::vector<FileInfo>& fileInfos);
 
     Grid m_grid;
     std::unique_ptr<Writer> m_writer;

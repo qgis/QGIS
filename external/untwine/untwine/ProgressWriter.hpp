@@ -2,6 +2,8 @@
 
 #include <mutex>
 
+#include "../untwine/Common.hpp"
+
 namespace untwine
 {
 
@@ -20,8 +22,14 @@ public:
     /// Write a message and set the current percentage.
     void write(double percent, const std::string& message);
 
+    void update(PointCount numProcessed);
+    // Utility fields
+    PointCount m_total;
+    PointCount m_threshold;
+    PointCount m_current;
+
 private:
-    static std::mutex s_mutex;
+    std::mutex m_mutex;
     int m_progressFd;
     double m_percent; // Current percent.
     double m_increment; // Current increment.
