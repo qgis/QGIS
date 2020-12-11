@@ -75,7 +75,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRe
 
   if ( !expression.isEmpty() )
   {
-    featureRequest.setFilterExpression( expression );
+    featureRequest.combineFilterExpression( expression );
   }
 }
 
