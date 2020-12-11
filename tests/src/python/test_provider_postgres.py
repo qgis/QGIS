@@ -554,7 +554,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         expected_area = 43069568296.34387
 
         assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
-        self.assertEqual(round(f2['poly_area'], 4), round(expected_area, 4))
+        self.assertAlmostEqual(f2['poly_area'], expected_area, places=4)
         self.assertEqual(f2['name'], 'QGIS-3')
 
         # Checking if we can correctly change values of an existing feature.
@@ -582,7 +582,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # reading back
         vl2 = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
         f2 = next(vl2.getFeatures(QgsFeatureRequest()))
-        self.assertEqual(round(f2['poly_area'], 4), round(expected_area, 4))
+        self.assertAlmostEqual(f2['poly_area'], expected_area, places=4)
 
         # now, getting a brand new QgsVectorLayer to check if changes (UPDATE) in the geometry are reflected in the generated fields
         vl = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
@@ -603,7 +603,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         expected_area = 67718478405.28429
 
         assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
-        self.assertEqual(round(f2['poly_area'], 4), round(expected_area, 4))
+        self.assertAlmostEqual(f2['poly_area'], expected_area, places=4)
         self.assertEqual(f2['name'], 'New')
 
         # Geography columns
@@ -868,7 +868,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f['pk1'], 1)
         self.assertEqual(f['pk2'], 2)
 
-        self.assertEqual(round(f['pk3'], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f['pk3'], 3.14159274)
         self.assertEqual(f['value'], 'test 2')
 
         # can we edit a field?
@@ -883,8 +883,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(f2.isValid())
 
         # just making sure we have the correct feature
-        # Only 6 decimals for PostgreSQL 11.
-        self.assertEqual(round(f2['pk3'], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f2['pk3'], 3.14159274)
 
         # Then, making sure we really did change our value.
         self.assertEqual(f2['value'], 'Edited Test 2')
@@ -905,8 +904,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(f4.isValid())
         expected_attrs = [4, -9223372036854775800, 7.29154, 'other test']
-        gotten_attrs = [f4['pk1'], f4['pk2'], round(f4['pk3'], 5), f4['value']]
-        self.assertEqual(gotten_attrs, expected_attrs)
+        gotten_attrs = [f4['pk1'], f4['pk2'], f4['pk3'], f4['value']]
+        self.assertAlmostEqual(gotten_attrs, expected_attrs)
 
         # Finally, let's delete one of the features.
         f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154')))
@@ -976,7 +975,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # 1.4.1. Checking insertion
         f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 0.22222222222222222222222')))
         self.assertTrue(f2.isValid())
-        self.assertEqual(round(f2['pk'], 6), round(0.2222222222222222, 6))
+        self.assertAlmostEqual(f2['pk'], 0.2222222222222222)
         self.assertEqual(f2['value'], 'newly inserted')
         assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
         # One more check: can we retrieve the same row with the value that we got from this layer?
@@ -1032,7 +1031,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # 2.4.1. Checking insertion
         f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = 0.22222222222222222222222')))
         self.assertTrue(f2.isValid())
-        self.assertEqual(round(f2['pk'], 15), round(0.2222222222222222, 15))
+        self.assertAlmostEqual(f2['pk'], 0.2222222222222222, places=15)
         self.assertEqual(f2['value'], 'newly inserted')
         assert compareWkt(f2.geometry().asWkt(), newpointwkt), "Geometry mismatch. Expected: {} Got: {} \n".format(f2.geometry().asWkt(), newpointwkt)
         # One more check: can we retrieve the same row with the value that we got from this layer?
