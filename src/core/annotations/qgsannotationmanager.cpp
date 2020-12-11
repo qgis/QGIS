@@ -101,7 +101,7 @@ bool QgsAnnotationManager::readXml( const QDomElement &element, const QgsReadWri
   }
 
   // restore old (pre 3.0) project annotations
-  if ( annotationsElem.isNull() )
+  if ( annotationElement.isNull() )
   {
     QDomNodeList oldItemList = element.elementsByTagName( QStringLiteral( "TextAnnotationItem" ) );
     for ( int i = 0; i < oldItemList.size(); ++i )
