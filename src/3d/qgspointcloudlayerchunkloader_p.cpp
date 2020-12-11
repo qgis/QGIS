@@ -46,10 +46,10 @@
 
 ///////////////
 
-QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, QgsPointCloud3DSymbol *symbol )
+QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol )
   : QgsChunkLoader( node )
   , mFactory( factory )
-  , mContext( factory->mMap, dynamic_cast<QgsPointCloud3DSymbol *>( symbol->clone() ) )
+  , mContext( factory->mMap, std::move( symbol ) )
 {
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
   mContext.setAttributes( pc->attributes() );
@@ -61,16 +61,16 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
 
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
 
-  if ( symbol->symbolType() == QLatin1String( "single-color" ) )
+  if ( mContext.symbol()->symbolType() == QLatin1String( "single-color" ) )
     mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler() );
-  else if ( symbol->symbolType() == QLatin1String( "color-ramp" ) )
+  else if ( mContext.symbol()->symbolType() == QLatin1String( "color-ramp" ) )
     mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
-  else if ( symbol->symbolType() == QLatin1String( "rgb" ) )
+  else if ( mContext.symbol()->symbolType() == QLatin1String( "rgb" ) )
     mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
-  else if ( symbol->symbolType() == QLatin1String( "classification" ) )
+  else if ( mContext.symbol()->symbolType() == QLatin1String( "classification" ) )
   {
     mHandler.reset( new QgsClassificationPointCloud3DSymbolHandler() );
-    QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( symbol );
+    const QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( mContext.symbol() );
     mContext.setFilteredOutCategories( classificationSymbol->getFilteredOutCategories() );
   }
 
@@ -137,7 +137,7 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
 {
   QgsChunkNodeId id = node->tileId();
   Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
-  return new QgsPointCloudLayerChunkLoader( this, node, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ) );
+  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ) );
 }
 
 QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map );

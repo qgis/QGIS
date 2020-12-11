@@ -28,9 +28,9 @@
 
 #include "qgis.h"
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol )
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr<QgsPointCloud3DSymbol> symbol )
   : Qgs3DRenderContext( map )
-  , mSymbol( symbol )
+  , mSymbol( std::move( symbol ) )
 {
 
 }
