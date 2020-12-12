@@ -25,6 +25,11 @@
 #include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
 
+#include "qgserror.h"
+#include "qgspointcloudindex.h"
+#include "qgsidentifycontext.h"
+#include "qgspointcloudrenderer.h"
+
 #include <QDomElement>
 #include <QString>
 #include <QPainter>
@@ -35,6 +40,59 @@ class QgsPointCloudRenderer;
 class QgsPointCloudRenderContext;
 
 #define SIP_NO_FILE
+
+class CORE_EXPORT QgsPointCloudIdentifyResults
+{
+  public:
+
+    /**
+     * Constructor for QgsPointCloudIdentifyResults.
+     */
+    QgsPointCloudIdentifyResults() = default;
+
+    /**
+     * \brief Constructor. Creates valid result.
+     *  \param format the result format
+     *  \param results the results
+     */
+    QgsPointCloudIdentifyResults( const QMap<QString, QVariant> &results );
+
+    /**
+     * \brief Constructor. Creates invalid result with error.
+     *  \param error the error
+     */
+    QgsPointCloudIdentifyResults( const QgsError &error );
+
+    virtual ~QgsPointCloudIdentifyResults() = default;
+
+    //! \brief Returns TRUE if valid
+    bool isValid() const { return mValid; }
+
+    /**
+     * Returns the identify results. Results are different for each format:
+     *
+     * - QgsRaster::IdentifyFormatValue: a map of values for each band, where keys are band numbers (from 1).
+     * - QgsRaster::IdentifyFormatFeature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
+     * - QgsRaster::IdentifyFormatHtml: a map of WMS sublayer keys and HTML strings.
+     */
+    QMap<QString, QVariant> results() const { return mResults; }
+
+    //! Returns the last error
+    QgsError error() const { return mError; }
+
+    //! Sets the last error
+    void setError( const QgsError &error ) { mError = error;}
+
+  private:
+    //! \brief Is valid
+    bool mValid = false;
+
+    //! \brief Results
+    QMap<QString, QVariant> mResults;
+
+    //! \brief Error
+    QgsError mError;
+};
 
 /**
  * \ingroup core
@@ -56,11 +114,14 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     bool render() override;
     bool forceRasterRender() const override;
+    QVector<QMap<QString, QString>> identify( const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext );
 
   private:
 
     //! Traverses tree and returns all nodes in specified depth
     QList<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels );
+    //! Traverses tree and returns all nodes that intersects with a \a geometry in specified depth
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels, const QgsGeometry &geometry );
 
     QgsPointCloudLayer *mLayer = nullptr;
 
@@ -75,6 +136,25 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
 
+    /**
+     * Retrieves the x and y coordinate for the point at index \a i.
+     */
+    static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y )
+    {
+      const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.xOffset() );
+      const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.yOffset() );
+      x = context.offset().x() + context.scale().x() * ix;
+      y = context.offset().y() + context.scale().y() * iy;
+    }
+
+    /**
+     * Retrieves the z value for the point at index \a i.
+     */
+    static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i )
+    {
+      const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
+      return context.offset().z() + context.scale().z() * iz;
+    }
 };
 
 #endif // QGSPOINTCLOUDLAYERRENDERER_H

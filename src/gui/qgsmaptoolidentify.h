@@ -35,6 +35,7 @@ class QgsMapCanvas;
 class QgsMeshLayer;
 class QgsHighlight;
 class QgsIdentifyMenu;
+class QgsPointCloudLayer;
 
 /**
  * \ingroup gui
@@ -68,7 +69,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       RasterLayer = 2,
       MeshLayer = 4, //!< \since QGIS 3.6
       VectorTileLayer = 8,  //!< \since QGIS 3.14
-      AllLayers = VectorLayer | RasterLayer | MeshLayer | VectorTileLayer
+      PointCloudLayer = 16, //!< \since QGIS 3.18
+      AllLayers = VectorLayer | RasterLayer | MeshLayer | VectorTileLayer | PointCloudLayer
     };
     Q_DECLARE_FLAGS( LayerType, Type )
     Q_FLAG( LayerType )
@@ -232,6 +234,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
     bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
     bool identifyVectorTileLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorTileLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+    bool identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 
     /**
      * Desired units for distance display.
