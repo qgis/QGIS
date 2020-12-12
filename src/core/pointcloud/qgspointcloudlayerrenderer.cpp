@@ -29,6 +29,8 @@
 #include "qgspointcloudextentrenderer.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgscircle.h"
+
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -243,16 +245,35 @@ QVector<QMap<QString, QVariant>> QgsPointCloudLayerRenderer::identify( const Qgs
           continue;
         }
       }
-      QgsPointXY deviceCoords = context.renderContext().mapToPixel().transform( QgsPointXY( x, y ) );
+      bool intersects = false;
       // TODO: ask about this
       // For some reason I need to multiply the pointSize by 2 to have correct point selection behaviour
       // Inconvenience: whwn a point is not fully inside the selection area it gets selected too
-      QgsPointXY point1( deviceCoords.x() - 2 * mRenderer->pointSize(), deviceCoords.y() - 2 * mRenderer->pointSize() );
-      QgsPointXY point2( deviceCoords.x() + 2 * mRenderer->pointSize(), deviceCoords.y() + 2 * mRenderer->pointSize() );
-      QgsPointXY point1MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point1.x(), point1.y() );
-      QgsPointXY point2MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point2.x(), point2.y() );
-      QgsRectangle pointRect( point1MapCoords, point2MapCoords );
-      if ( geometry.intersects( pointRect ) )
+      if ( mRenderer->pointSymbol() == QgsPointCloudRenderer::PointSymbol::Square )
+      {
+        QgsPointXY deviceCoords = context.renderContext().mapToPixel().transform( QgsPointXY( x, y ) );
+        QgsPointXY point1( deviceCoords.x() - 2 * mRenderer->pointSize(), deviceCoords.y() - 2 * mRenderer->pointSize() );
+        QgsPointXY point2( deviceCoords.x() + 2 * mRenderer->pointSize(), deviceCoords.y() + 2 * mRenderer->pointSize() );
+        QgsPointXY point1MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point1.x(), point1.y() );
+        QgsPointXY point2MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point2.x(), point2.y() );
+        QgsRectangle pointRect( point1MapCoords, point2MapCoords );
+        intersects = geometry.intersects( pointRect );
+      }
+      else if ( mRenderer->pointSymbol() == QgsPointCloudRenderer::PointSymbol::Circle )
+      {
+        QgsPoint centerMapCoords( x, y );
+        QgsPointXY deviceCoords = context.renderContext().mapToPixel().transform( centerMapCoords );
+        QgsPoint point1( deviceCoords.x(), deviceCoords.y() - 2 * mRenderer->pointSize() );
+        QgsPoint point2( deviceCoords.x(), deviceCoords.y() + 2 * mRenderer->pointSize() );
+        QgsPointXY point1MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point1.x(), point1.y() );
+        QgsPointXY point2MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point2.x(), point2.y() );
+        QgsCircle circle = QgsCircle::from2Points( QgsPoint( point1MapCoords ), QgsPoint( point2MapCoords ) );
+        // TODO: make this faster?
+        QgsPolygon *polygon = circle.toPolygon( 5 );
+        QgsGeometry circleGeometry( polygon );
+        intersects = geometry.intersects( circleGeometry );
+      }
+      if ( intersects )
       {
         QMap<QString, QVariant> pointAttr = context.attributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
