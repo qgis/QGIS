@@ -1595,6 +1595,11 @@ QString  QgsWcsProvider::description() const
   return WCS_DESCRIPTION;
 }
 
+QgsRasterDataProvider::ProviderCapabilities QgsWcsProvider::providerCapabilities() const
+{
+  return ProviderCapability::ReloadData;
+}
+
 void QgsWcsProvider::reloadProviderData()
 {
   clearCache();
