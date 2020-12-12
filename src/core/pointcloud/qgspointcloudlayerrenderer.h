@@ -118,10 +118,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
   private:
 
-    //! Traverses tree and returns all nodes in specified depth
-    QList<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels );
-    //! Traverses tree and returns all nodes that intersects with a \a geometry in specified depth
-    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels, const QgsGeometry &geometry );
+    //! Traverses tree and returns all nodes that intersects with a \a geometry in specified depth (if the geometry is null all nodes are considered)
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels, const QgsGeometry &geometry = QgsGeometry() );
 
     QgsPointCloudLayer *mLayer = nullptr;
 
