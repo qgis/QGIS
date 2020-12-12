@@ -166,6 +166,14 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
                      const QgsFeature &feature,
                      const QMap< QString, QString > &derivedAttributes );
 
+    /**
+     * Adds results from point cloud layer
+     * \since QGIS 3.6
+     */
+    void addFeature( QgsPointCloudLayer *layer,
+                     const QString &label,
+                     const QMap< QString, QString > &attributes );
+
     //! Adds feature from identify results
     void addFeature( const QgsMapToolIdentify::IdentifyResult &result );
 

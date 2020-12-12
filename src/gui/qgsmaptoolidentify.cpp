@@ -50,6 +50,9 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudlayerrenderer.h"
 
 #include <QMouseEvent>
 #include <QCursor>
@@ -228,6 +231,10 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   else if ( layer->type() == QgsMapLayerType::VectorTileLayer && layerType.testFlag( VectorTileLayer ) )
   {
     return identifyVectorTileLayer( results, qobject_cast<QgsVectorTileLayer *>( layer ), geometry, identifyContext );
+  }
+  else if ( layer->type() == QgsMapLayerType::PointCloudLayer && layerType.testFlag( PointCloudLayer ) )
+  {
+    return identifyPointCloudLayer( results, qobject_cast<QgsPointCloudLayer *>( layer ), geometry, identifyContext );
   }
   else
   {
@@ -496,6 +503,25 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
   }
 
   return featureCount > 0;
+}
+
+bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
+{
+// TODO: decide how to do the coordinates transform properly
+//  QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+//  if ( ct.isValid() )
+//    geometry.transform( ct );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  QgsPointCloudLayerRenderer *renderer = dynamic_cast<QgsPointCloudLayerRenderer *>( layer->createMapRenderer( context ) );
+  QVector<QMap<QString, QString>> points = renderer->identify( geometry, identifyContext );
+  int id = 0;
+  for ( QMap<QString, QString> pt : points )
+  {
+    QgsMapToolIdentify::IdentifyResult res( layer, QString::number( id ), pt, pt );
+    results->append( res );
+    ++id;
+  }
+  return true;
 }
 
 QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsPoint &point )

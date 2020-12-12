@@ -30,6 +30,19 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
+QgsPointCloudIdentifyResults::QgsPointCloudIdentifyResults( const QMap<QString, QVariant> &results )
+  : mValid( true )
+  , mResults( results )
+{
+}
+
+QgsPointCloudIdentifyResults::QgsPointCloudIdentifyResults( const QgsError &error )
+  : mError( error )
+{
+}
+
+//
+
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
@@ -172,6 +185,103 @@ bool QgsPointCloudLayerRenderer::forceRasterRender() const
   return true;
 }
 
+QVector<QMap<QString, QString>> QgsPointCloudLayerRenderer::identify( const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
+{
+  QVector<QMap<QString, QString>> acceptedPoints;
+
+  QgsPointCloudIndex *index = mLayer->dataProvider()->index();
+  const IndexedPointCloudNode root = index->root();
+  QgsPointCloudRenderContext context( *renderContext(), index->scale(), index->offset() );
+
+  const float maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
+
+  const QgsRectangle rootNodeExtentLayerCoords = index->nodeMapExtent( root );
+  QgsRectangle rootNodeExtentMapCoords;
+  try
+  {
+    rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+    rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+  }
+
+  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span(); // in map coords
+
+  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
+  if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
+  {
+    QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
+    return acceptedPoints;
+  }
+  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+
+  QVector<IndexedPointCloudNode> nodes = traverseTree( index, context.renderContext(), root, maximumError, rootErrorPixels, geometry );
+
+  QgsPointCloudAttributeCollection attributeCollection = mLayer->attributes();
+  QgsPointCloudRequest request;
+  request.setAttributes( attributeCollection );
+
+  // TODO: figure out why the reprojection here is invalid
+  // even thought we get a valid one in the renderer classes
+  const QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
+  const bool reproject = ct.isValid();
+
+  for ( const IndexedPointCloudNode &n : nodes )
+  {
+    std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
+
+    if ( !block )
+      continue;
+
+    context.setAttributes( block->attributes() );
+
+    const char *ptr = block->data();
+    QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+    const std::size_t recordSize = blockAttributes.pointRecordSize();
+    for ( int i = 0; i < block->pointCount(); ++i )
+    {
+      double x, y, z;
+      pointXY( context, ptr, i, x, y );
+      z = pointZ( context, ptr, i );
+      if ( reproject )
+      {
+        try
+        {
+          ct.transformInPlace( x, y, z );
+        }
+        catch ( QgsCsException & )
+        {
+          continue;
+        }
+      }
+      if ( geometry.intersects( QgsGeometry::fromPointXY( QgsPointXY( x, y ) ) ) )
+      {
+        QMap<QString, QString> pointAttr;
+        for ( QgsPointCloudAttribute attr : blockAttributes.attributes() )
+        {
+          QString attributeName = attr.name();
+          int attributeOffset;
+          blockAttributes.find( attributeName, attributeOffset );
+          double val = 0.0f;
+          context.getAttribute( ptr, i * recordSize + attributeOffset, attr.type(), val );
+          if ( attributeName == "X" )
+            pointAttr[ attributeName ] = QString::number( x );
+          else if ( attributeName == "Y" )
+            pointAttr[ attributeName ] = QString::number( y );
+          else
+            pointAttr[ attributeName ] = QString::number( val );
+        }
+
+        acceptedPoints.push_back( pointAttr );
+      }
+    }
+  }
+
+  return acceptedPoints;
+}
+
 QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
     const QgsRenderContext &context,
     IndexedPointCloudNode n,
@@ -202,6 +312,37 @@ QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Qgs
   for ( const IndexedPointCloudNode &nn : children )
   {
     nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels );
+  }
+
+  return nodes;
+}
+
+QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
+    const QgsRenderContext &context,
+    IndexedPointCloudNode n,
+    float maxErrorPixels,
+    float nodeErrorPixels,
+    const QgsGeometry &geom )
+{
+  QVector<IndexedPointCloudNode> nodes;
+
+  if ( !geom.intersects( pc->nodeMapExtent( n ) ) )
+    return nodes;
+
+  if ( !context.zRange().isInfinite() && !context.zRange().overlaps( pc->nodeZRange( n ) ) )
+    return nodes;
+
+  nodes.append( n );
+
+  float childrenErrorPixels = nodeErrorPixels / 2.0f;
+  if ( childrenErrorPixels < maxErrorPixels )
+    return nodes;
+
+  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
+  for ( const IndexedPointCloudNode &nn : children )
+  {
+    if ( geom.intersects( pc->nodeMapExtent( nn ) ) )
+      nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels, geom );
   }
 
   return nodes;
