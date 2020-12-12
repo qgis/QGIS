@@ -41,59 +41,6 @@ class QgsPointCloudRenderContext;
 
 #define SIP_NO_FILE
 
-class CORE_EXPORT QgsPointCloudIdentifyResults
-{
-  public:
-
-    /**
-     * Constructor for QgsPointCloudIdentifyResults.
-     */
-    QgsPointCloudIdentifyResults() = default;
-
-    /**
-     * \brief Constructor. Creates valid result.
-     *  \param format the result format
-     *  \param results the results
-     */
-    QgsPointCloudIdentifyResults( const QMap<QString, QVariant> &results );
-
-    /**
-     * \brief Constructor. Creates invalid result with error.
-     *  \param error the error
-     */
-    QgsPointCloudIdentifyResults( const QgsError &error );
-
-    virtual ~QgsPointCloudIdentifyResults() = default;
-
-    //! \brief Returns TRUE if valid
-    bool isValid() const { return mValid; }
-
-    /**
-     * Returns the identify results. Results are different for each format:
-     *
-     * - QgsRaster::IdentifyFormatValue: a map of values for each band, where keys are band numbers (from 1).
-     * - QgsRaster::IdentifyFormatFeature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
-     * - QgsRaster::IdentifyFormatHtml: a map of WMS sublayer keys and HTML strings.
-     */
-    QMap<QString, QVariant> results() const { return mResults; }
-
-    //! Returns the last error
-    QgsError error() const { return mError; }
-
-    //! Sets the last error
-    void setError( const QgsError &error ) { mError = error;}
-
-  private:
-    //! \brief Is valid
-    bool mValid = false;
-
-    //! \brief Results
-    QMap<QString, QVariant> mResults;
-
-    //! \brief Error
-    QgsError mError;
-};
-
 /**
  * \ingroup core
  *
@@ -114,7 +61,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     bool render() override;
     bool forceRasterRender() const override;
-    QVector<QMap<QString, QString>> identify( const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext );
+    QVector<QMap<QString, QVariant>> identify( const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext );
 
   private:
 

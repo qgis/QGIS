@@ -31,19 +31,6 @@
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmessagelog.h"
 
-QgsPointCloudIdentifyResults::QgsPointCloudIdentifyResults( const QMap<QString, QVariant> &results )
-  : mValid( true )
-  , mResults( results )
-{
-}
-
-QgsPointCloudIdentifyResults::QgsPointCloudIdentifyResults( const QgsError &error )
-  : mError( error )
-{
-}
-
-//
-
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
@@ -194,9 +181,9 @@ bool QgsPointCloudLayerRenderer::forceRasterRender() const
   return mRenderer ? mRenderer->type() != QLatin1String( "extent" ) : false;
 }
 
-QVector<QMap<QString, QString>> QgsPointCloudLayerRenderer::identify( const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
+QVector<QMap<QString, QVariant>> QgsPointCloudLayerRenderer::identify( const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
-  QVector<QMap<QString, QString>> acceptedPoints;
+  QVector<QMap<QString, QVariant>> acceptedPoints;
 
   QgsPointCloudIndex *index = mLayer->dataProvider()->index();
   const IndexedPointCloudNode root = index->root();
@@ -276,22 +263,9 @@ QVector<QMap<QString, QString>> QgsPointCloudLayerRenderer::identify( const QgsG
       QgsRectangle pointRect( point1MapCoords, point2MapCoords );
       if ( geometry.intersects( pointRect ) )
       {
-        QMap<QString, QString> pointAttr;
-        for ( QgsPointCloudAttribute attr : blockAttributes.attributes() )
-        {
-          QString attributeName = attr.name();
-          int attributeOffset;
-          blockAttributes.find( attributeName, attributeOffset );
-          double val = 0.0f;
-          context.getAttribute( ptr, i * recordSize + attributeOffset, attr.type(), val );
-          if ( attributeName == "X" )
-            pointAttr[ attributeName ] = QString::number( x );
-          else if ( attributeName == "Y" )
-            pointAttr[ attributeName ] = QString::number( y );
-          else
-            pointAttr[ attributeName ] = QString::number( val );
-        }
-
+        QMap<QString, QVariant> pointAttr = context.attributeMap( ptr, i * recordSize, blockAttributes );
+        pointAttr[ QStringLiteral( "X" ) ] = x;
+        pointAttr[ QStringLiteral( "Y" ) ] = y;
         if ( mRenderer->willRenderPoint( pointAttr ) )
           acceptedPoints.push_back( pointAttr );
       }

@@ -507,17 +507,21 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
 bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
-// TODO: decide how to do the coordinates transform properly
+// TODO: decide how to do the coordinates transform properly (Currently things just work but not 100% if this is the right way)
 //  QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
 //  if ( ct.isValid() )
 //    geometry.transform( ct );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   QgsPointCloudLayerRenderer *renderer = dynamic_cast<QgsPointCloudLayerRenderer *>( layer->createMapRenderer( context ) );
-  QVector<QMap<QString, QString>> points = renderer->identify( geometry, identifyContext );
+  QVector<QMap<QString, QVariant>> points = renderer->identify( geometry, identifyContext );
   int id = 0;
-  for ( QMap<QString, QString> pt : points )
+  for ( QMap<QString, QVariant> pt : points )
   {
-    QgsMapToolIdentify::IdentifyResult res( layer, QString::number( id ), pt, pt );
+    // TODO: replace this conversion with something better
+    QMap<QString, QString> ptStr;
+    for ( QString key : pt.keys() )
+      ptStr[key] = pt[key].toString();
+    QgsMapToolIdentify::IdentifyResult res( layer, QString::number( id ), ptStr, ptStr );
     results->append( res );
     ++id;
   }

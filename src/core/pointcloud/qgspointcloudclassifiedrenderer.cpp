@@ -134,13 +134,12 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
   context.incrementPointsRendered( rendered );
 }
 
-bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QMap<QString, QString> &pointAttributes )
+bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QMap<QString, QVariant> &pointAttributes )
 {
   if ( !pointAttributes.contains( mAttribute ) )
     return false;
-  QString attributeString = pointAttributes[ mAttribute ];
   bool parsedCorrectly;
-  int attributeInt = attributeString.toInt( &parsedCorrectly );
+  int attributeInt = pointAttributes[ mAttribute ].toReal( &parsedCorrectly );
   if ( !parsedCorrectly )
     return false;
   for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )
