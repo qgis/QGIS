@@ -262,7 +262,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the layer's data provider, it may be NULLPTR.
      */
-    virtual QgsDataProvider *dataProvider();
+    Q_INVOKABLE virtual QgsDataProvider *dataProvider();
 
     /**
      * Returns the layer's data provider in a const-correct manner, it may be NULLPTR.
@@ -502,8 +502,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Synchronises with changes in the datasource
-        */
-    virtual void reload() {}
+     */
+    Q_INVOKABLE virtual void reload() {}
 
     /**
      * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context

@@ -53,6 +53,7 @@ of feature and attribute information from a spatial datasource.
       CancelSupport,
       CreateRenderer,
       CreateLabeling,
+      ReloadData,
     };
 
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
