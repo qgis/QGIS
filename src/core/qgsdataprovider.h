@@ -406,11 +406,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
       return QString();
     }
 
+    // TODO QGIS 4 -> Make `reloadData()` non virtual. This should be implemented in `reloadProviderData()`.
+
     /**
-     * Reloads the data from the source by calling reloadProviderData() implemented
-     * by providers with data caches to synchronize, changes in the data source, feature
-     * counts and other specific actions.
+     * Reloads the data from the source for providers with data caches to synchronize,
+     * changes in the data source, feature counts and other specific actions.
      * Emits the `dataChanged` signal
+     *
+     * \note only available for providers which implement the reloadProviderData() method.
      */
     virtual void reloadData();
 
