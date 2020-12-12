@@ -19,9 +19,6 @@
 
 #include <Qt3DRender/QMaterial>
 
-#include <Qt3DExtras/QDiffuseMapMaterial>
-#include <Qt3DExtras/QTextureMaterial>
-
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
