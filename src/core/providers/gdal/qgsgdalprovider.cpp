@@ -1641,8 +1641,9 @@ QString QgsGdalProvider::description() const
 
 QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilities() const
 {
-  return QgsRasterDataProvider::ProviderHintBenefitsFromResampling |
-         QgsRasterDataProvider::ProviderHintCanPerformProviderResampling;
+  return ProviderCapability::ProviderHintBenefitsFromResampling |
+         ProviderCapability::ProviderHintCanPerformProviderResampling |
+         ProviderCapability::ReloadData;
 }
 
 // This is used also by global isValidRasterFileName
