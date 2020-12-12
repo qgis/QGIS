@@ -77,13 +77,14 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   : QMainWindow( parent, flags )
 {
   setupUi( this );
-  QgsGui::enableAutoGeometryRestore( this );
 
   setAttribute( Qt::WA_DeleteOnClose );
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
   setWindowFlags( Qt::WindowMinimizeButtonHint |
                   Qt::WindowMaximizeButtonHint |
                   Qt::WindowCloseButtonHint );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   mModel = qgis::make_unique< QgsProcessingModelAlgorithm >();
   mModel->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
@@ -339,11 +340,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     repaintModel();
     endUndoCommand();
   } );
+
   updateWindowTitle();
+
+  // restore the toolbar and dock widgets positions using Qt settings API
+  restoreState( settings.value( QStringLiteral( "ModelDesigner/state" ), QByteArray(), QgsSettings::App ).toByteArray() );
 }
 
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
 {
+  // store the toolbar/dock widget settings using Qt settings API
+  QgsSettings().setValue( QStringLiteral( "ModelDesigner/state" ), saveState(), QgsSettings::App );
+
   mIgnoreUndoStackChanges++;
   delete mSelectTool; // delete mouse handles before everything else
 }
