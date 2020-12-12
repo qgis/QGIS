@@ -168,6 +168,61 @@ class CORE_EXPORT QgsPointCloudRenderContext
           return;
       }
     }
+    QMap<QString, QVariant> attributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection )
+    {
+      QMap<QString, QVariant> map;
+      for ( QgsPointCloudAttribute attr : attributeCollection.attributes() )
+      {
+        QString attributeName = attr.name();
+        int attributeOffset;
+        attributeCollection.find( attributeName, attributeOffset );
+        switch ( attr.type() )
+        {
+          case QgsPointCloudAttribute::Char:
+          {
+            const char value = *( data + recordOffset + attributeOffset );
+            map[ attributeName ] = value;
+          }
+          break;
+
+          case QgsPointCloudAttribute::Int32:
+          {
+            const qint32 value = *reinterpret_cast< const qint32 * >( data + recordOffset + attributeOffset );
+            map[ attributeName ] = value;
+          }
+          break;
+
+          case QgsPointCloudAttribute::Short:
+          {
+            const short value = *reinterpret_cast< const short * >( data + recordOffset + attributeOffset );
+            map[ attributeName ] = value;
+          }
+          break;
+
+          case QgsPointCloudAttribute::UShort:
+          {
+            const unsigned short value = *reinterpret_cast< const unsigned short * >( data + recordOffset + attributeOffset );
+            map[ attributeName ] = value;
+          }
+          break;
+
+          case QgsPointCloudAttribute::Float:
+          {
+            const float value = *reinterpret_cast< const float * >( data + recordOffset + attributeOffset );
+            map[ attributeName ] = value;
+          }
+          break;
+
+          case QgsPointCloudAttribute::Double:
+          {
+            const double value = *reinterpret_cast< const double * >( data + recordOffset + attributeOffset );
+            map[ attributeName ] = value;
+          }
+          break;
+        }
+      }
+      return map;
+    }
 #endif
 
   private:
@@ -261,7 +316,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * By default if not overriden in the subclass renderer will return true
      * ( the renderer is responsible for the filtering behaviour )
      */
-    virtual bool willRenderPoint( const QMap<QString, QString> &pointAttributes )
+    virtual bool willRenderPoint( const QMap<QString, QVariant> &pointAttributes )
     {
       Q_UNUSED( pointAttributes );
       return true;

@@ -176,7 +176,7 @@ and generate a proper subclass.
 Renders a ``block`` of point cloud data using the specified render ``context``.
 %End
 
-    virtual bool willRenderPoint( const QMap<QString, QString> &pointAttributes );
+    virtual bool willRenderPoint( const QMap<QString, QVariant> &pointAttributes );
 %Docstring
 Checks whether the point holding ``pointAttributes`` attributes will be rendered
 By default if not overriden in the subclass renderer will return true
