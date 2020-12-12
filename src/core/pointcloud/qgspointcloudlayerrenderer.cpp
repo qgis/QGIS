@@ -265,7 +265,16 @@ QVector<QMap<QString, QString>> QgsPointCloudLayerRenderer::identify( const QgsG
           continue;
         }
       }
-      if ( geometry.intersects( QgsGeometry::fromPointXY( QgsPointXY( x, y ) ) ) )
+      QgsPointXY deviceCoords = context.renderContext().mapToPixel().transform( QgsPointXY( x, y ) );
+      // TODO: ask about this
+      // For some reason I need to multiply the pointSize by 2 to have correct point selection behaviour
+      // Inconvenience: whwn a point is not fully inside the selection area it gets selected too
+      QgsPointXY point1( deviceCoords.x() - 2 * mRenderer->pointSize(), deviceCoords.y() - 2 * mRenderer->pointSize() );
+      QgsPointXY point2( deviceCoords.x() + 2 * mRenderer->pointSize(), deviceCoords.y() + 2 * mRenderer->pointSize() );
+      QgsPointXY point1MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point1.x(), point1.y() );
+      QgsPointXY point2MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point2.x(), point2.y() );
+      QgsRectangle pointRect( point1MapCoords, point2MapCoords );
+      if ( geometry.intersects( pointRect ) )
       {
         QMap<QString, QString> pointAttr;
         for ( QgsPointCloudAttribute attr : blockAttributes.attributes() )
