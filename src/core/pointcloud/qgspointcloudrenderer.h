@@ -257,6 +257,17 @@ class CORE_EXPORT QgsPointCloudRenderer
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
 
     /**
+     * Checks whether the point holding \a pointAttributes attributes will be rendered
+     * By default if not overriden in the subclass renderer will return true
+     * ( the renderer is responsible for the filtering behaviour )
+     */
+    virtual bool willRenderPoint( const QMap<QString, QString> &pointAttributes )
+    {
+      Q_UNUSED( pointAttributes );
+      return true;
+    }
+
+    /**
      * Creates a renderer from an XML \a element.
      *
      * Caller takes ownership of the returned renderer.

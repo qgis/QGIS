@@ -274,7 +274,8 @@ QVector<QMap<QString, QString>> QgsPointCloudLayerRenderer::identify( const QgsG
             pointAttr[ attributeName ] = QString::number( val );
         }
 
-        acceptedPoints.push_back( pointAttr );
+        if ( mRenderer->willRenderPoint( pointAttr ) )
+          acceptedPoints.push_back( pointAttr );
       }
     }
   }
@@ -321,37 +322,6 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
 
   return nodes;
 }
-
-//QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
-//    const QgsRenderContext &context,
-//    IndexedPointCloudNode n,
-//    float maxErrorPixels,
-//    float nodeErrorPixels,
-//    const QgsGeometry &geom )
-//{
-//  QVector<IndexedPointCloudNode> nodes;
-
-//  if ( !geom.intersects( pc->nodeMapExtent( n ) ) )
-//    return nodes;
-
-//  if ( !context.zRange().isInfinite() && !context.zRange().overlaps( pc->nodeZRange( n ) ) )
-//    return nodes;
-
-//  nodes.append( n );
-
-//  float childrenErrorPixels = nodeErrorPixels / 2.0f;
-//  if ( childrenErrorPixels < maxErrorPixels )
-//    return nodes;
-
-//  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
-//  for ( const IndexedPointCloudNode &nn : children )
-//  {
-//    if ( geom.intersects( pc->nodeMapExtent( nn ) ) )
-//      nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels, geom );
-//  }
-
-//  return nodes;
-//}
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
 
