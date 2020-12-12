@@ -22,9 +22,11 @@ __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFileDestination)
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterString)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -33,6 +35,7 @@ class ogrinfo(GdalAlgorithm):
     INPUT = 'INPUT'
     SUMMARY_ONLY = 'SUMMARY_ONLY'
     NO_METADATA = 'NO_METADATA'
+    OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -47,6 +50,13 @@ class ogrinfo(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.NO_METADATA,
                                                         self.tr('Suppress metadata info'),
                                                         defaultValue=False))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('Layer information'),
@@ -74,6 +84,10 @@ class ogrinfo(GdalAlgorithm):
             arguments.append('-so')
         if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.append(options)
 
         inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         if inLayer is None:
