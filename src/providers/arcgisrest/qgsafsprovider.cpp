@@ -319,7 +319,7 @@ QgsLayerMetadata QgsAfsProvider::layerMetadata() const
 
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
-  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
+  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata | QgsVectorDataProvider::Capability::ReloadData;
   if ( !mRendererDataMap.empty() )
   {
     c = c | QgsVectorDataProvider::CreateRenderer;
