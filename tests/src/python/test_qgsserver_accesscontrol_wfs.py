@@ -446,6 +446,113 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             str(response).find("<qgs:pk>7</qgs:pk>") != -1,
             "Unexpected result in GetFeature\n%s" % response)
 
+    def test_wfs_getfeature_featureid_hello(self):
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello",
+            "FEATUREID": "Hello.1"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:color>red</qgs:color>") != -1,  # spellok
+            "No color in result of GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:color>red</qgs:color>") != -1,  # spellok
+            "Unexpected color in result of GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:color>NULL</qgs:color>") != -1,  # spellok
+            "Unexpected color NULL in result of GetFeature\n%s" % response)
+
+    def test_wfs_getfeature_featureid_hello(self):
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello",
+            "FEATUREID": "Hello.2"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>2</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>2</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+    def test_wfs_getfeature_featureid_hello_filter(self):
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello_Filter",
+            "FEATUREID": "Hello_Filter.1"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+    def test_wfs_getfeature_featureid_hello_filter2(self):
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello_Filter",
+            "FEATUREID": "Hello_Filter.6"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertTrue(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
 
 if __name__ == "__main__":
     unittest.main()
