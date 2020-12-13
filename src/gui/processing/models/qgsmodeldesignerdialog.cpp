@@ -377,7 +377,7 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
     QStringList docksTitle;
     QStringList docksActive;
 
-    for ( const auto panel : mPanelStatus.toStdMap() )
+    for ( const auto &panel : mPanelStatus.toStdMap() )
     {
       if ( panel.second.isVisible )
         docksTitle << panel.first;

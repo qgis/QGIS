@@ -103,6 +103,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
   public:
 
     QgsLayoutDesignerDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+    ~QgsLayoutDesignerDialog() override;
 
     /**
      * Returns the designer interface for the dialog.
