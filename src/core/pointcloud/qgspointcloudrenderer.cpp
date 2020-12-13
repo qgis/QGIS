@@ -20,10 +20,11 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
-QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset )
+QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueFixedOffset )
   : mRenderContext( context )
   , mScale( scale )
   , mOffset( offset )
+  , mZValueFixedOffset( zValueFixedOffset )
 {
 
 }

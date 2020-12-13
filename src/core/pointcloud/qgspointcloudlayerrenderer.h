@@ -68,6 +68,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     QgsVector3D mScale;
     QgsVector3D mOffset;
+    double mZOffset = 0;
 
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;

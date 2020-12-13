@@ -29,6 +29,7 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgspointcloudlayerelevationproperties.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -65,6 +66,8 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
+
+  mOffsetZSpinBox->setClearValue( 0 );
 
   // update based on lyr's current state
   syncToLayer();
@@ -146,6 +149,9 @@ void QgsPointCloudLayerProperties::apply()
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
 
+  // elevation tab
+  static_cast< QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->setZOffset( mOffsetZSpinBox->value() );
+
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->apply();
 
@@ -184,6 +190,9 @@ void QgsPointCloudLayerProperties::syncToLayer()
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
 
   mCrsSelector->setCrs( mLayer->crs() );
+
+  // elevation tab
+  mOffsetZSpinBox->setValue( static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset() );
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
     w->syncToLayer( mLayer );

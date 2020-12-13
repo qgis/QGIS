@@ -43,8 +43,14 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
 
-    //! Constructor for QgsPointCloud3DRenderContext.
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr< QgsPointCloud3DSymbol > symbol );
+    /**
+     * Constructor for QgsPointCloud3DRenderContext.
+     *
+     * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
+     * taken from the point cloud index.
+     */
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
+                                  double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
@@ -127,6 +133,11 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
       }
     }
 
+    /**
+     * Returns any constant offset which must be applied to z values taken from the point cloud index.
+     */
+    double zValueFixedOffset() const { return mZValueFixedOffset; }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -134,6 +145,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudAttributeCollection mAttributes;
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     QgsPointCloudCategoryList mFilteredOutCategories;
+    double mZValueFixedOffset = 0;
 };
 
 
