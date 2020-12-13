@@ -683,6 +683,16 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionUnlockAll, &QAction::triggered, this, &QgsLayoutDesignerDialog::unlockAllItems );
   connect( mActionLockItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lockSelectedItems );
 
+  QStringList docksTitle = settings.value( QStringLiteral( "LayoutDesigner/hiddenDocksTitle" ), QStringList(), QgsSettings::App ).toStringList();
+  QStringList docksActive = settings.value( QStringLiteral( "LayoutDesigner/hiddenDocksActive" ), QStringList(), QgsSettings::App ).toStringList();
+  if ( !docksTitle.isEmpty() )
+  {
+    for ( const auto &title : docksTitle )
+    {
+      mPanelStatus.insert( title, PanelStatus( true, docksActive.contains( title ) ) );
+    }
+  }
+  mActionHidePanels->setChecked( !docksTitle.isEmpty() );
   connect( mActionHidePanels, &QAction::toggled, this, &QgsLayoutDesignerDialog::setPanelVisibility );
 
   connect( mActionDeleteSelection, &QAction::triggered, this, [ = ]
@@ -932,6 +942,31 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mView, &QgsLayoutView::statusMessage, this, &QgsLayoutDesignerDialog::statusMessageReceived );
 
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, this, &QgsLayoutDesignerDialog::updateWindowTitle );
+}
+
+QgsLayoutDesignerDialog::~QgsLayoutDesignerDialog()
+{
+  QgsSettings settings;
+  if ( !mPanelStatus.isEmpty() )
+  {
+    QStringList docksTitle;
+    QStringList docksActive;
+
+    for ( const auto &panel : mPanelStatus.toStdMap() )
+    {
+      if ( panel.second.isVisible )
+        docksTitle << panel.first;
+      if ( panel.second.isActive )
+        docksActive << panel.first;
+    }
+    settings.setValue( QStringLiteral( "LayoutDesigner/hiddenDocksTitle" ), docksTitle, QgsSettings::App );
+    settings.setValue( QStringLiteral( "LayoutDesigner/hiddenDocksActive" ), docksActive, QgsSettings::App );
+  }
+  else
+  {
+    settings.remove( QStringLiteral( "LayoutDesigner/hiddenDocksTitle" ), QgsSettings::App );
+    settings.remove( QStringLiteral( "LayoutDesigner/hiddenDocksActive" ), QgsSettings::App );
+  }
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
@@ -1358,7 +1393,6 @@ void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
   {
     mPanelStatus.clear();
     //record status of all docks
-
     for ( QDockWidget *dock : docks )
     {
       mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
@@ -1377,12 +1411,10 @@ void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
     //restore visibility of all docks
     for ( QDockWidget *dock : docks )
     {
-      if ( ! mPanelStatus.contains( dock->windowTitle() ) )
+      if ( mPanelStatus.contains( dock->windowTitle() ) )
       {
-        dock->setVisible( true );
-        continue;
+        dock->setVisible( mPanelStatus.value( dock->windowTitle() ).isVisible );
       }
-      dock->setVisible( mPanelStatus.value( dock->windowTitle() ).isVisible );
     }
 
     //restore previously active dock tabs
@@ -1392,12 +1424,13 @@ void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
       for ( int i = 0; i < tabBar->count(); ++i )
       {
         QString tabTitle = tabBar->tabText( i );
-        if ( mPanelStatus.value( tabTitle ).isActive )
+        if ( mPanelStatus.contains( tabTitle ) && mPanelStatus.value( tabTitle ).isActive )
         {
           tabBar->setCurrentIndex( i );
         }
       }
     }
+    mPanelStatus.clear();
   }
 }
 
