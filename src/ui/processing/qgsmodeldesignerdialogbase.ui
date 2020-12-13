@@ -84,6 +84,8 @@
     <addaction name="mActionShowComments"/>
     <addaction name="separator"/>
     <addaction name="mActionSnappingEnabled"/>
+    <addaction name="separator"/>
+    <addaction name="mActionHidePanels"/>
    </widget>
    <widget class="QMenu" name="mMenuEdit">
     <property name="title">
@@ -694,6 +696,17 @@
   <action name="mActionReorderInputs">
    <property name="text">
     <string>Reorder Model Inputs…</string>
+   </property>
+  </action>
+  <action name="mActionHidePanels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Panel &amp;Visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
    </property>
   </action>
  </widget>
