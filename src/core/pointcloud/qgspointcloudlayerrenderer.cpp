@@ -28,6 +28,7 @@
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudextentrenderer.h"
 #include "qgslogger.h"
+#include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmessagelog.h"
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
@@ -46,12 +47,15 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     mScale = mLayer->dataProvider()->index()->scale();
     mOffset = mLayer->dataProvider()->index()->offset();
   }
+
+  mZOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();
+
   mCloudExtent = mLayer->dataProvider()->polygonBounds();
 }
 
 bool QgsPointCloudLayerRenderer::render()
 {
-  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset );
+  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZOffset );
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
@@ -189,7 +193,9 @@ QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Qgs
   if ( !context.extent().intersects( pc->nodeMapExtent( n ) ) )
     return nodes;
 
-  if ( !context.zRange().isInfinite() && !context.zRange().overlaps( pc->nodeZRange( n ) ) )
+  const QgsDoubleRange nodeZRange = pc->nodeZRange( n );
+  const QgsDoubleRange adjustedNodeZRange = QgsDoubleRange( nodeZRange.lower() + mZOffset, nodeZRange.upper() + mZOffset );
+  if ( !context.zRange().isInfinite() && !context.zRange().overlaps( adjustedNodeZRange ) )
     return nodes;
 
   nodes.append( n );

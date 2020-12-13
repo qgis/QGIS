@@ -58,7 +58,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
      * Constructs the factory
      * The factory takes ownership over the passed \a symbol
      */
-    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol );
+    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol, double zValueOffset );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -67,6 +67,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
+    double mZValueOffset = 0;
 };
 
 
@@ -86,7 +87,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
      * Constructs the loader
      * QgsPointCloudLayerChunkLoader takes ownership over symbol
      */
-    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol );
+    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol, double zValueOffset );
     ~QgsPointCloudLayerChunkLoader() override;
 
     virtual void cancel() override;
@@ -115,7 +116,8 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes );
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
+        double zValueOffset );
 
     ~QgsPointCloudLayerChunkedEntity();
 };

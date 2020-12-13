@@ -38,6 +38,27 @@ Constructor for QgsPointCloudLayerElevationProperties, with the specified ``pare
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+
+    double zOffset() const;
+%Docstring
+Returns the z offset, which is a fixed offset amount which should be added to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
+
+.. seealso:: :py:func:`setZOffset`
+%End
+
+    void setZOffset( double offset );
+%Docstring
+Sets the z ``offset``, which is a fixed offset amount which will be added to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
+
+.. seealso:: :py:func:`zOffset`
+%End
+
 };
 
 /************************************************************************

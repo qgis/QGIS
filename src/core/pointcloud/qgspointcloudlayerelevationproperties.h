@@ -47,6 +47,30 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     bool isVisibleInZRange( const QgsDoubleRange &range ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+
+    /**
+     * Returns the z offset, which is a fixed offset amount which should be added to z values from
+     * the layer.
+     *
+     * This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
+     *
+     * \see setZOffset()
+     */
+    double zOffset() const { return mZOffset; }
+
+    /**
+     * Sets the z \a offset, which is a fixed offset amount which will be added to z values from
+     * the layer.
+     *
+     * This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
+     *
+     * \see zOffset()
+     */
+    void setZOffset( double offset ) { mZOffset = offset; }
+
+  private:
+
+    double mZOffset = 0.0;
 };
 
 #endif // QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H
