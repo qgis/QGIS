@@ -126,6 +126,11 @@ QgsAttributes QgsFeature::attributes() const
   return d->attributes;
 }
 
+int QgsFeature::attributeCount() const
+{
+  return d->attributes.size();
+}
+
 void QgsFeature::setAttributes( const QgsAttributes &attrs )
 {
   if ( attrs == d->attributes )
@@ -208,6 +213,24 @@ void QgsFeature::initAttributes( int fieldCount )
   // ensures ALL attributes, including previously existing ones are default constructed.
   // doing it this way also avoids clearing individual QVariants -- which can trigger a detachment. Cheaper just to make a new one.
   d->attributes.resize( fieldCount );
+}
+
+void QgsFeature::resizeAttributes( int fieldCount )
+{
+  if ( fieldCount == d->attributes.size() )
+    return;
+
+  d.detach();
+  d->attributes.resize( fieldCount );
+}
+
+void QgsFeature::padAttributes( int count )
+{
+  if ( count == 0 )
+    return;
+
+  d.detach();
+  d->attributes.resize( d->attributes.size() + count );
 }
 
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
