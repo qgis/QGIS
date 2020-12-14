@@ -130,7 +130,7 @@ QgsFeatureList QgsBatchGeocodeAlgorithm::processFeature( const QgsFeature &featu
     for ( int i = 0; i < mAdditionalFields.count(); ++ i )
       attr.append( QVariant() );
     f.setAttributes( attr );
-    feedback->reportError( QObject::tr( "Empty address field for feature %1" ).arg( feature.id() ) );
+    feedback->pushWarning( QObject::tr( "Empty address field for feature %1" ).arg( feature.id() ) );
     return QgsFeatureList() << f;
   }
 
@@ -142,7 +142,7 @@ QgsFeatureList QgsBatchGeocodeAlgorithm::processFeature( const QgsFeature &featu
     for ( int i = 0; i < mAdditionalFields.count(); ++ i )
       attr.append( QVariant() );
     f.setAttributes( attr );
-    feedback->reportError( QObject::tr( "No result for %1" ).arg( address ) );
+    feedback->pushWarning( QObject::tr( "No result for %1" ).arg( address ) );
     return QgsFeatureList() << f;
   }
 
