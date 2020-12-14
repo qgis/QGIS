@@ -73,8 +73,6 @@
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
          <addaction name="separator"/>
-         <addaction name="mHelpToolAction"/>
-         <addaction name="separator"/>
         </widget>
        </item>
        <item>

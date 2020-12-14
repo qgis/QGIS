@@ -431,6 +431,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   settingsButton->setPopupMode( QToolButton::InstantPopup );
   settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
   mIdentifyToolbar->addWidget( settingsButton );
+  mIdentifyToolbar->addSeparator();
+  mIdentifyToolbar->addAction( mHelpToolAction );
 
   settingsMenu->addAction( mActionAutoFeatureForm );
   mActionAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
