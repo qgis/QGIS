@@ -168,7 +168,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
 
   private slots:
-    void onPointCloudIndexLoaded();
+    void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
 
   private:
 
@@ -177,8 +177,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 #ifdef SIP_RUN
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 #endif
-
-    bool mSkipIndexGeneration = true;
 
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
 

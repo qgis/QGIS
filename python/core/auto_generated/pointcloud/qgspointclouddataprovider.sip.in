@@ -40,6 +40,13 @@ Responsible for reading native point cloud data and returning the indexed data.
     typedef QFlags<QgsPointCloudDataProvider::Capability> Capabilities;
 
 
+    enum PointCloudIndexGenerationState
+    {
+      NotIndexed,
+      Indexing,
+      Indexed
+    };
+
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
@@ -60,11 +67,18 @@ Returns the attributes available from this data provider.
 May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
 %End
 
-    virtual void loadIndex( bool skipIndexGeneration ) = 0;
+    virtual void loadIndex( ) = 0;
 %Docstring
-Triggers generation/loading of the point cloud index
+Triggers loading of the point cloud index
 
-On finish emits :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded`
+\sa :py:func:`~QgsPointCloudDataProvider.index`
+%End
+
+    virtual void generateIndex( ) = 0;
+%Docstring
+Triggers generation of the point cloud index
+
+emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 
 \sa :py:func:`~QgsPointCloudDataProvider.index`
 %End
@@ -78,7 +92,6 @@ Returns whether provider has index which is valid
     virtual int pointCount() const = 0;
 %Docstring
 Returns the total number of points available in the dataset.
-May return 0 until :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
 %End
 
     virtual QgsGeometry polygonBounds() const;
@@ -215,9 +228,9 @@ Returns the map of LAS data format ID to translated string value.
 
   signals:
 
-    void pointCloudIndexLoaded();
+    void indexGenerationStateChanged( PointCloudIndexGenerationState state );
 %Docstring
-Emitted when point cloud index is fully loaded
+Emitted when point cloud generation state is changed
 %End
 };
 

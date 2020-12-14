@@ -36,7 +36,6 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
-  , mSkipIndexGeneration( options.skipIndexGeneration )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
 {
 
@@ -44,6 +43,9 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataSource( path, baseName, providerLib, providerOptions, options.loadDefaultStyle );
+
+    if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
+      mDataProvider.get()->generateIndex();
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
@@ -57,7 +59,6 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
   options.loadDefaultStyle = false;
   options.transformContext = transformContext();
   options.skipCrsValidation = true;
-  options.skipIndexGeneration = mSkipIndexGeneration;
 
   QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
@@ -282,7 +283,7 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   if ( mDataProvider )
   {
     disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
-    disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::pointCloudIndexLoaded, this, &QgsPointCloudLayer::onPointCloudIndexLoaded );
+    disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged );
   }
 
   setName( baseName );
@@ -315,16 +316,10 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     return;
   }
 
-  connect( mDataProvider.get(), &QgsPointCloudDataProvider::pointCloudIndexLoaded, this, &QgsPointCloudLayer::onPointCloudIndexLoaded );
+  connect( mDataProvider.get(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged );
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
-  // trigger loading of index. this might be slow operation
-  // if the provider decide to build the index from source file(s)
-  // in background thread. For some providers this is fast and in
-  // the main thread.
-  // Index loading should be done before crs, extent and renderer setting,
-  // compare with onPointCloudIndexLoaded
-  mDataProvider.get()->loadIndex( mSkipIndexGeneration );
+  mDataProvider.get()->loadIndex( );
 
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
@@ -365,18 +360,11 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   triggerRepaint();
 }
 
-void QgsPointCloudLayer::onPointCloudIndexLoaded()
+void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
 {
-  if ( mRenderer )
+  if ( state == QgsPointCloudDataProvider::Indexed )
   {
-    // Renderer is already set only in case
-    // we generated the point cloud index
-    // as a background job. In this case
-    // lets reset the crs and extent and
-    // replace temporary extent renderer
-    // with the real renderer
-    setCrs( mDataProvider->crs() );
-    setExtent( mDataProvider->extent() );
+    mDataProvider.get()->loadIndex();
     if ( mRenderer->type() == QLatin1String( "extent" ) )
     {
       setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );

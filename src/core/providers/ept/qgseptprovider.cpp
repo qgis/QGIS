@@ -91,20 +91,22 @@ QVariant QgsEptProvider::metadataClassStatistic( const QString &attribute, const
   return mIndex->metadataClassStatistic( attribute, value, statistic );
 }
 
-void QgsEptProvider::loadIndex( bool skipIndexGeneration )
+void QgsEptProvider::loadIndex( )
 {
-  Q_UNUSED( skipIndexGeneration )
-
   if ( mIndex->isValid() )
     return;
 
   mIndex->load( dataSourceUri() );
-  emit pointCloudIndexLoaded();
 }
 
 QVariantMap QgsEptProvider::originalMetadata() const
 {
   return mIndex->originalMetadata();
+}
+
+void QgsEptProvider::generateIndex()
+{
+  //no-op, index is always generated
 }
 
 QVariant QgsEptProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const

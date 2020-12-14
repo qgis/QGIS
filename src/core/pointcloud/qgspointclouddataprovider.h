@@ -56,6 +56,16 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
+    /**
+     * Point cloud index state
+     */
+    enum PointCloudIndexGenerationState
+    {
+      NotIndexed = 0, //!< Provider has no index available
+      Indexing = 1 << 0, //!< Provider try to index the source data
+      Indexed = 1 << 1 //!< The index is ready to be used
+    };
+
     //! Ctor
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
@@ -75,13 +85,20 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsPointCloudAttributeCollection attributes() const = 0;
 
     /**
-     * Triggers generation/loading of the point cloud index
-     *
-     * On finish emits pointCloudIndexLoaded()
+     * Triggers loading of the point cloud index
      *
      * \sa index()
      */
-    virtual void loadIndex( bool skipIndexGeneration ) = 0;
+    virtual void loadIndex( ) = 0;
+
+    /**
+     * Triggers generation of the point cloud index
+     *
+     * emits indexGenerationStateChanged()
+     *
+     * \sa index()
+     */
+    virtual void generateIndex( ) = 0;
 
     /**
      * Returns the point cloud index associated with the provider.
@@ -99,7 +116,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     /**
      * Returns the total number of points available in the dataset.
-     * May return 0 until pointCloudIndexLoaded() is emitted
      */
     virtual int pointCount() const = 0;
 
@@ -268,9 +284,9 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
   signals:
 
     /**
-     * Emitted when point cloud index is fully loaded
+     * Emitted when point cloud generation state is changed
      */
-    void pointCloudIndexLoaded();
+    void indexGenerationStateChanged( PointCloudIndexGenerationState state );
 };
 
 #endif // QGSMESHDATAPROVIDER_H
