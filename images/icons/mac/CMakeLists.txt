@@ -1,6 +1,6 @@
 
-if (WITH_DESKTOP)
-  file (GLOB ICONS *.icns)
-  install (FILES ${ICONS}
+IF (WITH_DESKTOP)
+  FILE (GLOB ICONS *.icns)
+  INSTALL (FILES ${ICONS}
            DESTINATION ${CMAKE_INSTALL_PREFIX}/../Resources)
-endif()
+ENDIF (WITH_DESKTOP)

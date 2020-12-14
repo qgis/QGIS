@@ -57,7 +57,7 @@
       <item>
        <widget class="QToolButton" name="mTbInitCode">
         <property name="toolTip">
-         <string>QGIS forms can have a Python function that is called when the form is opened.
+         <string>HSLLC forms can have a Python function that is called when the form is opened.
 Use this function to add extra logic to your forms.</string>
         </property>
         <property name="text">

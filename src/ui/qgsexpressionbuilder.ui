@@ -722,7 +722,7 @@
                <property name="toolTip">
                 <string>Create a new function file based on the template file.
 
-Change the name of the script and save to allow QGIS to auto load on startup.</string>
+Change the name of the script and save to allow HSLLC to auto load on startup.</string>
                </property>
                <property name="text">
                 <string/>
@@ -818,11 +818,11 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
              <item>
               <widget class="QPushButton" name="btnRun">
                <property name="toolTip">
-                <string>Run the current editor text in QGIS (also saves current script).
+                <string>Run the current editor text in HSLLC (also saves current script).
 
 Use this when testing your functions.
 
-Saved scripts are auto loaded on QGIS startup.</string>
+Saved scripts are auto loaded on HSLLC startup.</string>
                </property>
                <property name="text">
                 <string>Save and Load Functions</string>

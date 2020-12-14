@@ -404,7 +404,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
-
+#include <shellapi.h>
 //
 // GDAL/OGR includes
 //

@@ -48,7 +48,7 @@
    <item>
     <widget class="QLabel" name="mLblProjectsNotAllowed">
      <property name="text">
-      <string>Storage of QGIS projects is not enabled for this database connection.</string>
+      <string>Storage of HSLLC projects is not enabled for this database connection.</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
