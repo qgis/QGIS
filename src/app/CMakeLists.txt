@@ -116,6 +116,7 @@ set(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
+  pointcloud/qgspointcloudelevationpropertieswidget.cpp
   pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayerstylewidget.cpp
 
