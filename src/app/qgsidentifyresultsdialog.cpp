@@ -419,7 +419,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionPrint, &QAction::triggered, this, &QgsIdentifyResultsDialog::printCurrentItem );
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
-  connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
+  connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp );
 
   initSelectionModes();
 
