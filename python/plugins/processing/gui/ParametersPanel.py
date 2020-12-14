@@ -194,7 +194,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
 
-    def createProcessingParameters(self, skip_defaults=False):
+    def createProcessingParameters(self, include_default=True):
         parameters = {}
         for p, v in self.extra_parameters.items():
             parameters[p] = v
