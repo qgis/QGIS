@@ -907,7 +907,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         gotten_attrs = [f4['pk1'], f4['pk2'], f4['pk3'], f4['value']]
         self.assertEqual(gotten_attrs[0], expected_attrs[0])
         self.assertEqual(gotten_attrs[1], expected_attrs[1])
-        self.assertAlmostEqual(gotten_attrs[2], expected_attrs[2])
+        self.assertAlmostEqual(gotten_attrs[2], expected_attrs[2], places=4)
         self.assertEqual(gotten_attrs[3], expected_attrs[3])
 
         # Finally, let's delete one of the features.
