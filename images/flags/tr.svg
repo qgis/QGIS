@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
-<rect width="1200" height="800" fill="#E30A17"/>
-<circle cx="425" cy="400" r="200" style="fill:#ffffff"/>
-<circle cx="475" cy="400" r="160" style="fill:#E30A17"/>
-<polygon style="fill:#ffffff" points="583.334,400 764.235,458.779 652.431,304.894 652.431,495.106 764.235,341.221"/>
-</svg>
+<svg height="800" width="1200" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h1200v800h-1200z" fill="#e30a17"/><circle cx="425" cy="400" fill="#fff" r="200"/><circle cx="475" cy="400" fill="#e30a17" r="160"/><path d="m583.334 400 180.901 58.779-111.804-153.885v190.212l111.804-153.885z" fill="#fff"/></svg>

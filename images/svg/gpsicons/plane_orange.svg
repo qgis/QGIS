@@ -1,9 +1,1 @@
-<svg height="109.13385" width="109.13385" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g transform="translate(.00001907 1.15625)">
-<rect fill="#ff8000" height="86.771385" rx="4.6036596" width="7.9182968" x="50.982937" y="6.1554475"/>
-<path d="m54.942086 37.82865l-43.798961 27.714051h87.597925z" fill="#ff8000" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="6.09166908"/>
-<path d="m54.942086 79.491147l-19.239934 12.174182h38.479871z" fill="#ff8000" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="2.67593813"/>
-<rect id="a" fill="#ff8000" height="18.258076" rx="4.6036596" stroke="#ff8000" width="7.9182968" x="25.527399" y="45.42197"/>
-<use fill="#ff8000" height="109.13385" stroke="#ff8000" transform="translate(50.64027 -.0000004)" width="109.13385" xlink:href="#a"/>
-</g>
-</svg>
+<svg height="109.13385" width="109.13385" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(.000019 1.15625)"><rect fill="#ff8000" height="86.771385" rx="4.60366" width="7.918297" x="50.982937" y="6.155448"/><path d="m54.942086 37.82865-43.798961 27.714051h87.597925z" fill="#ff8000" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="6.091669"/><path d="m54.942086 79.491147-19.239934 12.174182h38.479871z" fill="#ff8000" fill-rule="evenodd" stroke="#ff8000" stroke-linejoin="round" stroke-width="2.675938"/><rect id="a" fill="#ff8000" height="18.258076" rx="4.60366" stroke="#ff8000" width="7.918297" x="25.527399" y="45.42197"/><use fill="#ff8000" height="109.13385" stroke="#ff8000" transform="translate(50.64027)" width="109.13385" xlink:href="#a"/></g></svg>

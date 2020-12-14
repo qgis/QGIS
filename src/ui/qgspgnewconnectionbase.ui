@@ -223,7 +223,7 @@
       <item>
        <widget class="QCheckBox" name="cb_projectsInDatabase">
         <property name="text">
-         <string>Allow saving/loading HSLLC projects in the database</string>
+         <string>Allow saving/loading QGIS projects in the database</string>
         </property>
        </widget>
       </item>

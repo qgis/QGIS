@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>HSLLC Message</string>
+   <string>QGIS Message</string>
   </property>
   <property name="modal">
    <bool>true</bool>

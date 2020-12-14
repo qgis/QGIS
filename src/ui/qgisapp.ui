@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1482</width>
+    <width>1064</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1482</width>
-     <height>23</height>
+     <width>1064</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -30,6 +30,11 @@
     <widget class="QMenu" name="mRecentProjectsMenu">
      <property name="title">
       <string>Open &amp;Recent</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="mLayoutsMenu">
+     <property name="title">
+      <string>Layouts</string>
      </property>
     </widget>
     <widget class="QMenu" name="mProjectFromTemplateMenu">
@@ -61,7 +66,6 @@
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenProject"/>
-    <addaction name="actionopenPointCloudFile"/>
     <addaction name="mProjectFromStorageMenu"/>
     <addaction name="mRecentProjectsMenu"/>
     <addaction name="separator"/>
@@ -70,11 +74,16 @@
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mProjectToStorageMenu"/>
+    <addaction name="mActionRevertProject"/>
     <addaction name="separator"/>
     <addaction name="mActionProjectProperties"/>
     <addaction name="mActionSnappingOptions"/>
     <addaction name="menuImport_Export"/>
     <addaction name="separator"/>
+    <addaction name="mActionNewPrintLayout"/>
+    <addaction name="mActionNewReport"/>
+    <addaction name="mActionShowLayoutManager"/>
+    <addaction name="mLayoutsMenu"/>
     <addaction name="separator"/>
     <addaction name="mActionExit"/>
    </widget>
@@ -82,6 +91,14 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <widget class="QMenu" name="menuMeasure">
+     <property name="title">
+      <string>Measure</string>
+     </property>
+     <addaction name="mActionMeasure"/>
+     <addaction name="mActionMeasureArea"/>
+     <addaction name="mActionMeasureAngle"/>
+    </widget>
     <widget class="QMenu" name="menuDecorations">
      <property name="title">
       <string>&amp;Decorations</string>
@@ -94,15 +111,26 @@
      <addaction name="mActionDecorationCopyright"/>
      <addaction name="mActionDecorationLayoutExtent"/>
     </widget>
+    <widget class="QMenu" name="mMenuPreviewMode">
+     <property name="title">
+      <string>Preview Mode</string>
+     </property>
+     <addaction name="mActionPreviewModeOff"/>
+     <addaction name="mActionPreviewModeMono"/>
+     <addaction name="mActionPreviewModeGrayscale"/>
+     <addaction name="mActionPreviewProtanope"/>
+     <addaction name="mActionPreviewDeuteranope"/>
+     <addaction name="mActionPreviewTritanope"/>
+    </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="mActionNew3DMapCanvas"/>
-    <addaction name="separator"/>
-    <addaction name="actionEditCamera"/>
-    <addaction name="actionmAction_X"/>
-    <addaction name="actionmAction_Y"/>
-    <addaction name="actionmAction_Z"/>
+    <addaction name="mActionPan"/>
+    <addaction name="mActionPanToSelected"/>
+    <addaction name="mActionZoomIn"/>
+    <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
     <addaction name="mActionIdentify"/>
+    <addaction name="menuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
@@ -113,37 +141,142 @@
     <addaction name="mActionZoomNext"/>
     <addaction name="separator"/>
     <addaction name="menuDecorations"/>
+    <addaction name="mMenuPreviewMode"/>
+    <addaction name="mActionMapTips"/>
+    <addaction name="mActionNewBookmark"/>
+    <addaction name="mActionShowBookmarks"/>
+    <addaction name="mActionShowBookmarkManager"/>
     <addaction name="mActionDraw"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowAllLayers"/>
+    <addaction name="mActionHideAllLayers"/>
+    <addaction name="mActionShowSelectedLayers"/>
+    <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayersIndependently"/>
+    <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
      <string>&amp;Layer</string>
     </property>
+    <widget class="QMenu" name="mNewLayerMenu">
+     <property name="title">
+      <string>Create Layer</string>
+     </property>
+     <addaction name="mActionNewGeoPackageLayer"/>
+     <addaction name="mActionNewVectorLayer"/>
+     <addaction name="mActionNewSpatiaLiteLayer"/>
+     <addaction name="mActionNewMemoryLayer"/>
+     <addaction name="separator"/>
+     <addaction name="mActionNewVirtualLayer"/>
+    </widget>
+    <widget class="QMenu" name="mAddLayerMenu">
+     <property name="title">
+      <string>Add Layer</string>
+     </property>
+     <addaction name="mActionAddOgrLayer"/>
+     <addaction name="mActionAddRasterLayer"/>
+     <addaction name="mActionAddMeshLayer"/>
+     <addaction name="mActionAddDelimitedText"/>
+     <addaction name="mActionAddPgLayer"/>
+     <addaction name="mActionAddSpatiaLiteLayer"/>
+     <addaction name="mActionAddMssqlLayer"/>
+     <addaction name="mActionAddDb2Layer"/>
+     <addaction name="mActionAddOracleLayer"/>
+     <addaction name="mActionAddVirtualLayer"/>
+     <addaction name="mActionAddWmsLayer"/>
+     <addaction name="mActionAddXyzLayer"/>
+     <addaction name="mActionAddAmsLayer"/>
+     <addaction name="mActionAddLayerSeparator"/>
+     <addaction name="mActionAddWcsLayer"/>
+     <addaction name="mActionAddWfsLayer"/>
+     <addaction name="mActionAddAfsLayer"/>
+     <addaction name="mActionAddVectorTileLayer"/>
+     <addaction name="mActionAddPointCloudLayer"/>
+    </widget>
+    <addaction name="mActionDataSourceManager"/>
+    <addaction name="mNewLayerMenu"/>
+    <addaction name="mAddLayerMenu"/>
+    <addaction name="mActionEmbedLayers"/>
+    <addaction name="mActionAddLayerDefinition"/>
+    <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyLayer"/>
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
+    <addaction name="mActionOpenTable"/>
+    <addaction name="mActionToggleEditing"/>
+    <addaction name="mActionSaveLayerEdits"/>
+    <addaction name="mActionAllEdits"/>
+    <addaction name="separator"/>
+    <addaction name="mActionLayerSaveAs"/>
+    <addaction name="mActionSaveLayerDefinition"/>
+    <addaction name="mActionRemoveLayer"/>
+    <addaction name="mActionDuplicateLayer"/>
+    <addaction name="mActionSetLayerScaleVisibility"/>
+    <addaction name="mActionSetLayerCRS"/>
+    <addaction name="mActionSetProjectCRSFromLayer"/>
+    <addaction name="mActionLayerProperties"/>
+    <addaction name="mActionLayerSubsetString"/>
+    <addaction name="mActionLabeling"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAddToOverview"/>
+    <addaction name="mActionAddAllToOverview"/>
+    <addaction name="mActionRemoveAllFromOverview"/>
+   </widget>
+   <widget class="QMenu" name="mPluginMenu">
+    <property name="title">
+     <string>&amp;Plugins</string>
+    </property>
+    <addaction name="mActionManagePlugins"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowPythonDialog"/>
    </widget>
    <widget class="QMenu" name="mHelpMenu">
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="mActionManagePlugins"/>
-    <addaction name="mActionCustomization"/>
-    <addaction name="mActionConfigureShortcuts"/>
-    <addaction name="mActionOptions"/>
+    <widget class="QMenu" name="mMenuPluginHelp">
+     <property name="title">
+      <string>Plugins</string>
+     </property>
+    </widget>
+    <addaction name="mActionHelpContents"/>
+    <addaction name="mActionHelpAPI"/>
+    <addaction name="separator"/>
+    <addaction name="mMenuPluginHelp"/>
+    <addaction name="separator"/>
+    <addaction name="mActionReportaBug"/>
+    <addaction name="mActionNeedSupport"/>
+    <addaction name="separator"/>
+    <addaction name="mActionQgisHomePage"/>
+    <addaction name="mActionCheckQgisVersion"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAbout"/>
+    <addaction name="mActionSponsors"/>
+   </widget>
+   <widget class="QMenu" name="mSettingsMenu">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
     <addaction name="mActionStyleManager"/>
     <addaction name="mActionCustomProjection"/>
-    <addaction name="mActionQgisHomePage"/>
     <addaction name="separator"/>
+    <addaction name="mActionConfigureShortcuts"/>
+    <addaction name="mActionCustomization"/>
+    <addaction name="separator"/>
+    <addaction name="mActionOptions"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
     <property name="title">
      <string>&amp;Raster</string>
     </property>
+    <addaction name="mActionShowRasterCalculator"/>
+    <addaction name="mActionShowAlignRasterTool"/>
     <addaction name="mActionShowGeoreferencer"/>
    </widget>
    <widget class="QMenu" name="mVectorMenu">
@@ -178,6 +311,51 @@
      <addaction name="mActionPasteAsNewVector"/>
      <addaction name="mActionPasteAsNewMemoryVector"/>
     </widget>
+    <widget class="QMenu" name="mMenuCircle">
+     <property name="title">
+      <string>Add Circle</string>
+     </property>
+     <addaction name="mActionCircle2Points"/>
+     <addaction name="mActionCircle3Points"/>
+     <addaction name="mActionCircle3Tangents"/>
+     <addaction name="mActionCircle2TangentsPoint"/>
+     <addaction name="mActionCircleCenterPoint"/>
+    </widget>
+    <widget class="QMenu" name="mMenuEllipse">
+     <property name="title">
+      <string>Add Ellipse</string>
+     </property>
+     <addaction name="mActionEllipseCenter2Points"/>
+     <addaction name="mActionEllipseCenterPoint"/>
+     <addaction name="mActionEllipseExtent"/>
+     <addaction name="mActionEllipseFoci"/>
+    </widget>
+    <widget class="QMenu" name="mMenuRectangle">
+     <property name="title">
+      <string>Add Rectangle</string>
+     </property>
+     <addaction name="mActionRectangleExtent"/>
+     <addaction name="mActionRectangleCenterPoint"/>
+     <addaction name="mActionRectangle3PointsDistance"/>
+     <addaction name="mActionRectangle3PointsProjected"/>
+    </widget>
+    <widget class="QMenu" name="mMenuRegularPolygon">
+     <property name="title">
+      <string>Add Regular Polygon</string>
+     </property>
+     <addaction name="mActionRegularPolygonCenterPoint"/>
+     <addaction name="mActionRegularPolygonCenterCorner"/>
+     <addaction name="mActionRegularPolygon2Points"/>
+    </widget>
+    <widget class="QMenu" name="mMenuAnnotation">
+     <property name="title">
+      <string>Add Annotation</string>
+     </property>
+     <addaction name="mActionTextAnnotation"/>
+     <addaction name="mActionFormAnnotation"/>
+     <addaction name="mActionHtmlAnnotation"/>
+     <addaction name="mActionSvgAnnotation"/>
+    </widget>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
     <addaction name="separator"/>
@@ -187,62 +365,79 @@
     <addaction name="mMenuPasteAs"/>
     <addaction name="menuSelect"/>
     <addaction name="separator"/>
+    <addaction name="mActionAddFeature"/>
+    <addaction name="mActionCircularStringCurvePoint"/>
+    <addaction name="mActionCircularStringRadius"/>
+    <addaction name="mMenuCircle"/>
+    <addaction name="mMenuRectangle"/>
+    <addaction name="mMenuRegularPolygon"/>
+    <addaction name="mMenuEllipse"/>
+    <addaction name="mMenuAnnotation"/>
+    <addaction name="mActionMoveFeature"/>
+    <addaction name="mActionMoveFeatureCopy"/>
+    <addaction name="mActionDeleteSelected"/>
+    <addaction name="mActionMultiEditAttributes"/>
     <addaction name="separator"/>
+    <addaction name="mActionRotateFeature"/>
+    <addaction name="mActionSimplifyFeature"/>
+    <addaction name="mActionAddRing"/>
+    <addaction name="mActionAddPart"/>
+    <addaction name="mActionFillRing"/>
+    <addaction name="mActionDeleteRing"/>
+    <addaction name="mActionDeletePart"/>
+    <addaction name="mActionReshapeFeatures"/>
+    <addaction name="mActionOffsetCurve"/>
+    <addaction name="mActionSplitFeatures"/>
+    <addaction name="mActionSplitParts"/>
+    <addaction name="mActionMergeFeatures"/>
+    <addaction name="mActionMergeFeatureAttributes"/>
+    <addaction name="mActionVertexTool"/>
+    <addaction name="mActionRotatePointSymbols"/>
+    <addaction name="mActionOffsetPointSymbol"/>
+    <addaction name="mActionReverseLine"/>
+    <addaction name="mActionTrimExtendFeature"/>
    </widget>
-   <widget class="QMenu" name="menuLidar">
+   <widget class="QMenu" name="mMeshMenu">
     <property name="title">
-     <string>Lidar</string>
+     <string>&amp;Mesh</string>
     </property>
-    <widget class="QMenu" name="menu_EditingTools">
-     <property name="title">
-      <string>&amp;EditingTools</string>
-     </property>
-     <addaction name="mActionDrawRect"/>
-     <addaction name="actionAddConstantSF"/>
-     <addaction name="actionScalar_fields_2"/>
-     <addaction name="actionRegistration"/>
-     <addaction name="actionSegmentation"/>
-    </widget>
-    <widget class="QMenu" name="menu_Terrian">
-     <property name="title">
-      <string>&amp;Terrian</string>
-     </property>
-     <addaction name="actionactionProfile"/>
-    </widget>
-    <widget class="QMenu" name="menu_Filter">
-     <property name="title">
-      <string>&amp;Filter</string>
-     </property>
-     <addaction name="actionComputeNormals"/>
-    </widget>
-    <addaction name="menu_Filter"/>
-    <addaction name="menu_Terrian"/>
-    <addaction name="actionForest"/>
-    <addaction name="menu_EditingTools"/>
-   </widget>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>业务</string>
-    </property>
-    <addaction name="action_Forest"/>
-    <addaction name="actionLand_Cover"/>
-    <addaction name="actionCIM"/>
-    <addaction name="actionCAD"/>
+    <addaction name="mActionShowMeshCalculator"/>
    </widget>
    <addaction name="mProjectMenu"/>
-   <addaction name="mLayerMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
+   <addaction name="mLayerMenu"/>
+   <addaction name="mSettingsMenu"/>
+   <addaction name="mPluginMenu"/>
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
-   <addaction name="menuLidar"/>
-   <addaction name="menu"/>
+   <addaction name="mMeshMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="toolTip">
     <string>Statusbar</string>
    </property>
+  </widget>
+  <widget class="QToolBar" name="mFileToolBar">
+   <property name="windowTitle">
+    <string>Project Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Project Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionNewProject"/>
+   <addaction name="mActionOpenProject"/>
+   <addaction name="mActionSaveProject"/>
+   <addaction name="mActionNewPrintLayout"/>
+   <addaction name="mActionShowLayoutManager"/>
+   <addaction name="mActionStyleManager"/>
   </widget>
   <widget class="QToolBar" name="mLayerToolBar">
    <property name="windowTitle">
@@ -257,12 +452,15 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionNewProject"/>
-   <addaction name="mActionOpenProject"/>
-   <addaction name="mActionSaveProject"/>
    <addaction name="mActionAddOgrLayer"/>
    <addaction name="mActionAddRasterLayer"/>
-   <addaction name="actionopenPointCloudFile"/>
+   <addaction name="mActionAddMeshLayer"/>
+   <addaction name="mActionAddDelimitedText"/>
+   <addaction name="mActionAddSpatiaLiteLayer"/>
+   <addaction name="mActionAddVirtualLayer"/>
+   <addaction name="mActionAddWmsLayer"/>
+   <addaction name="mActionAddWcsLayer"/>
+   <addaction name="mActionAddWfsLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
@@ -277,27 +475,48 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
-   <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionAllEdits"/>
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
-   <addaction name="mActionAddPart"/>
-   <addaction name="mActionSplitFeatures"/>
-   <addaction name="mActionSplitParts"/>
-   <addaction name="mActionMergeFeatures"/>
    <addaction name="mActionVertexTool"/>
    <addaction name="mActionMultiEditAttributes"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
-   <addaction name="mActionOpenTable"/>
    <addaction name="mActionCopyFeatures"/>
    <addaction name="mActionPasteFeatures"/>
    <addaction name="mActionUndo"/>
    <addaction name="mActionRedo"/>
-   <addaction name="mActionSelectFeatures"/>
-   <addaction name="mActionSelectFreehand"/>
-   <addaction name="mActionInvertSelection"/>
+  </widget>
+  <widget class="QToolBar" name="mAdvancedDigitizeToolBar">
+   <property name="windowTitle">
+    <string>Advanced Digitizing Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Advanced Digitizing Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionDigitizeWithCurve"/>
+   <addaction name="mActionRotateFeature"/>
+   <addaction name="mActionSimplifyFeature"/>
+   <addaction name="mActionAddRing"/>
+   <addaction name="mActionAddPart"/>
+   <addaction name="mActionFillRing"/>
+   <addaction name="mActionDeleteRing"/>
+   <addaction name="mActionDeletePart"/>
+   <addaction name="mActionReshapeFeatures"/>
+   <addaction name="mActionOffsetCurve"/>
+   <addaction name="mActionReverseLine"/>
+   <addaction name="mActionTrimExtendFeature"/>
+   <addaction name="mActionSplitFeatures"/>
+   <addaction name="mActionSplitParts"/>
+   <addaction name="mActionMergeFeatures"/>
+   <addaction name="mActionMergeFeatureAttributes"/>
   </widget>
   <widget class="QToolBar" name="mMapNavToolBar">
    <property name="windowTitle">
@@ -312,20 +531,41 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="m_viewinprofile"/>
-   <addaction name="m_actionclassification"/>
-   <addaction name="actionactionProfile"/>
-   <addaction name="mActionDrawRect"/>
-   <addaction name="mActionMeasure"/>
-   <addaction name="mActionMeasureArea"/>
-   <addaction name="separator"/>
-   <addaction name="mActionMeasureDistance"/>
-   <addaction name="mActionMeasureAreaReal"/>
-   <addaction name="mActionMeasureAngle"/>
-   <addaction name="m_selectiononprofile"/>
-   <addaction name="separator"/>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionPanToSelected"/>
+   <addaction name="mActionZoomIn"/>
+   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionZoomFullExtent"/>
+   <addaction name="mActionZoomToSelected"/>
+   <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomActualSize"/>
+   <addaction name="mActionZoomLast"/>
+   <addaction name="mActionZoomNext"/>
+   <addaction name="mActionNewMapCanvas"/>
+   <addaction name="mActionNew3DMapCanvas"/>
+   <addaction name="mActionNewBookmark"/>
+   <addaction name="mActionShowBookmarks"/>
+   <addaction name="mActionTemporalController"/>
    <addaction name="mActionDraw"/>
+  </widget>
+  <widget class="QToolBar" name="mAttributesToolBar">
+   <property name="windowTitle">
+    <string>Attributes Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Attributes Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
    <addaction name="mActionIdentify"/>
+   <addaction name="mActionOpenTable"/>
+   <addaction name="mActionOpenFieldCalc"/>
+   <addaction name="mActionStatisticalSummary"/>
+   <addaction name="mActionMapTips"/>
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
    <property name="windowTitle">
@@ -341,6 +581,21 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionShowPythonDialog"/>
+  </widget>
+  <widget class="QToolBar" name="mHelpToolBar">
+   <property name="windowTitle">
+    <string>Help Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Help Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionHelpContents"/>
   </widget>
   <widget class="QToolBar" name="mRasterToolBar">
    <property name="windowTitle">
@@ -363,6 +618,33 @@
    <addaction name="mActionDecreaseBrightness"/>
    <addaction name="mActionIncreaseContrast"/>
    <addaction name="mActionDecreaseContrast"/>
+   <addaction name="mActionIncreaseGamma"/>
+   <addaction name="mActionDecreaseGamma"/>
+  </widget>
+  <widget class="QToolBar" name="mLabelToolBar">
+   <property name="windowTitle">
+    <string>Label Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Label Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionLabeling"/>
+   <addaction name="mActionDiagramProperties"/>
+   <addaction name="separator"/>
+   <addaction name="mActionShowPinnedLabels"/>
+   <addaction name="mActionShowUnplacedLabels"/>
+   <addaction name="separator"/>
+   <addaction name="mActionPinLabels"/>
+   <addaction name="mActionShowHideLabels"/>
+   <addaction name="mActionMoveLabel"/>
+   <addaction name="mActionRotateLabel"/>
+   <addaction name="mActionChangeLabelProperties"/>
   </widget>
   <widget class="QToolBar" name="mVectorToolBar">
    <property name="windowTitle">
@@ -375,7 +657,35 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mDatabaseToolBar">
+   <property name="windowTitle">
+    <string>Database Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Database Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mWebToolBar">
+   <property name="windowTitle">
+    <string>Web Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Web Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QToolBar" name="mSnappingToolBar">
@@ -391,6 +701,28 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="mDataSourceManagerToolBar">
+   <property name="windowTitle">
+    <string>Data Source Manager Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Data Source Manager Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionDataSourceManager"/>
+   <addaction name="mActionNewGeoPackageLayer"/>
+   <addaction name="mActionNewVectorLayer"/>
+   <addaction name="mActionNewSpatiaLiteLayer"/>
+   <addaction name="mActionNewMemoryLayer"/>
+   <addaction name="separator"/>
+   <addaction name="mActionNewVirtualLayer"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
@@ -412,47 +744,6 @@
    </property>
    <property name="toolTip">
     <string>Selection Toolbar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QToolBar" name="PointCloudViewToolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="mActionPan"/>
-   <addaction name="mActionPanToSelected"/>
-   <addaction name="mActionZoomToSelected"/>
-   <addaction name="mActionZoomToLayer"/>
-   <addaction name="mActionZoomActualSize"/>
-   <addaction name="mActionZoomNext"/>
-   <addaction name="mActionZoomLast"/>
-   <addaction name="mActionZoomIn"/>
-   <addaction name="mActionZoomOut"/>
-   <addaction name="mActionZoomFullExtent"/>
-   <addaction name="actionSetViewTop"/>
-   <addaction name="actionSetViewFront"/>
-   <addaction name="actionSetViewLeft"/>
-   <addaction name="actionmAction_X"/>
-   <addaction name="actionmAction_Y"/>
-   <addaction name="actionmAction_Z"/>
-  </widget>
-  <widget class="QToolBar" name="mWebToolBar">
-   <property name="windowTitle">
-    <string>Web Toolbar</string>
-   </property>
-   <property name="toolTip">
-    <string>Web Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -566,7 +857,7 @@
      <normaloff>:/images/themes/default/mActionFileExit.svg</normaloff>:/images/themes/default/mActionFileExit.svg</iconset>
    </property>
    <property name="text">
-    <string>Exit HSLLC</string>
+    <string>Exit QGIS</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -898,7 +1189,7 @@
     <string>Select Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Select Features by area or single click</string>
+    <string>Select Features by Area or Single Click</string>
    </property>
   </action>
   <action name="mActionSelectPolygon">
@@ -1006,13 +1297,10 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/labelingCalloutSimple.svg</normaloff>:/images/themes/default/labelingCalloutSimple.svg</iconset>
+     <normaloff>:/images/themes/default/mActionMeasure.svg</normaloff>:/images/themes/default/mActionMeasure.svg</iconset>
    </property>
    <property name="text">
-    <string>LineProfile</string>
-   </property>
-   <property name="toolTip">
-    <string>在二维窗口创建剖面，线型方式</string>
+    <string>Measure Line</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+M</string>
@@ -1024,13 +1312,10 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mLayoutItemPolygon.svg</normaloff>:/images/themes/default/mLayoutItemPolygon.svg</iconset>
+     <normaloff>:/images/themes/default/mActionMeasureArea.svg</normaloff>:/images/themes/default/mActionMeasureArea.svg</iconset>
    </property>
    <property name="text">
-    <string>PologonProfile</string>
-   </property>
-   <property name="toolTip">
-    <string>绘制多边形，创建剖面</string>
+    <string>Measure Area</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+J</string>
@@ -1231,6 +1516,24 @@
     <string>New Shapefile Layer…</string>
    </property>
   </action>
+  <action name="mActionNewSpatiaLiteLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New SpatiaLite Layer…</string>
+   </property>
+  </action>
+  <action name="mActionShowRasterCalculator">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowRasterCalculator.png</normaloff>:/images/themes/default/mActionShowRasterCalculator.png</iconset>
+   </property>
+   <property name="text">
+    <string>Raster Calculator…</string>
+   </property>
+  </action>
   <action name="mActionAddOgrLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1253,6 +1556,75 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="mActionAddPgLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add PostGIS Layers…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="mActionAddSpatiaLiteLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.svg</normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add SpatiaLite Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="mActionAddMssqlLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add MSSQL Spatial Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddDb2Layer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddDb2Layer.svg</normaloff>:/images/themes/default/mActionAddDb2Layer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add DB2 Spatial Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+2</string>
+   </property>
+  </action>
+  <action name="mActionAddOracleLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOracleLayer.svg</normaloff>:/images/themes/default/mActionAddOracleLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Oracle Spatial Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
+  <action name="mActionAddWmsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWmsLayer.svg</normaloff>:/images/themes/default/mActionAddWmsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add WMS/WMTS Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
    </property>
   </action>
   <action name="mActionOpenTable">
@@ -1513,7 +1885,7 @@
      <normaloff>:/images/themes/default/mActionQgisHomePage.png</normaloff>:/images/themes/default/mActionQgisHomePage.png</iconset>
    </property>
    <property name="text">
-    <string>HSLLC Home Page</string>
+    <string>QGIS Home Page</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
@@ -1525,16 +1897,16 @@
      <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
    </property>
    <property name="text">
-    <string>Check HSLLC Version</string>
+    <string>Check QGIS Version</string>
    </property>
    <property name="statusTip">
-    <string>Check if your HSLLC version is up to date (requires internet access)</string>
+    <string>Check if your QGIS version is up to date (requires internet access)</string>
    </property>
   </action>
   <action name="mActionAbout">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/icons/qgis_icon.svg</normaloff>:/images/icons/qgis_icon.svg</iconset>
+     <normaloff>:/images/themes/default/mActionHelpAbout.svg</normaloff>:/images/themes/default/mActionHelpAbout.svg</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -1549,7 +1921,7 @@
      <normaloff>:/images/themes/default/mActionHelpSponsors.png</normaloff>:/images/themes/default/mActionHelpSponsors.png</iconset>
    </property>
    <property name="text">
-    <string>HSLLC Sustaining Members</string>
+    <string>QGIS Sustaining Members</string>
    </property>
   </action>
   <action name="mActionMoveLabel">
@@ -1646,7 +2018,7 @@ Acts on all layers.</string>
     <string notr="true">More Add Layer actions here</string>
    </property>
    <property name="toolTip">
-    <string notr="true">More Add Layer actions here</string>
+    <string notr="true">More Add Layer Actions here</string>
    </property>
    <property name="visible">
     <bool>false</bool>
@@ -1677,7 +2049,7 @@ Acts on all layers.</string>
     <string>Embed Layers and Groups…</string>
    </property>
    <property name="toolTip">
-    <string>Embed layers and groups from other project files</string>
+    <string>Embed Layers and Groups from other Project Files</string>
    </property>
   </action>
   <action name="mActionDecorationTitle">
@@ -1830,6 +2202,15 @@ Acts on all layers.</string>
     <string>Paste Style</string>
    </property>
   </action>
+  <action name="mActionAddWcsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWcsLayer.svg</normaloff>:/images/themes/default/mActionAddWcsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add WCS Layer…</string>
+   </property>
+  </action>
   <action name="mActionDecorationGrid">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1927,7 +2308,7 @@ Shows highlight rectangles around labels which are fixed in place, e.g. due to m
     <string>Show/Hide Labels and Diagrams</string>
    </property>
    <property name="toolTip">
-    <string>Show/Hide Labels And Diagrams
+    <string>Show/Hide Labels and Diagrams
 Click or marquee on features to show individual labels or diagrams.
 Shift+click or marquee on a label or diagram to hide it.
 Acts on the currently active layer only.</string>
@@ -2134,7 +2515,7 @@ Acts on the currently active layer only.</string>
     <string>Select Features by Expression…</string>
    </property>
    <property name="toolTip">
-    <string>Select features using an expression</string>
+    <string>Select Features Using an Expression</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F3</string>
@@ -2249,18 +2630,7 @@ Acts on the currently active layer only.</string>
     <string>Normal</string>
    </property>
    <property name="toolTip">
-    <string>Normal preview mode</string>
-   </property>
-  </action>
-  <action name="mActionPreviewModeGrayscale">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Simulate Photocopy (Grayscale)</string>
-   </property>
-   <property name="toolTip">
-    <string>Simulate photocopy (grayscale)</string>
+    <string>Normal Preview Mode</string>
    </property>
   </action>
   <action name="mActionPreviewModeMono">
@@ -2268,10 +2638,21 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Fax (Mono)</string>
+    <string>Simulate Monochrome</string>
    </property>
    <property name="toolTip">
-    <string>Simulate fax (mono)</string>
+    <string>Simulate Monochrome</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeGrayscale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Achromatopsia Color Blindness (Grayscale)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Achromatopsia Color Blindness (Grayscale)</string>
    </property>
   </action>
   <action name="mActionPreviewProtanope">
@@ -2279,10 +2660,10 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (Protanope)</string>
+    <string>Simulate Protanopia Color Blindness (No Red)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate color blindness (protanope)</string>
+    <string>Simulate Protanopia Color Blindness (No Red)</string>
    </property>
   </action>
   <action name="mActionPreviewDeuteranope">
@@ -2290,10 +2671,21 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (Deuteranope)</string>
+    <string>Simulate Deuteranopia Color Blindness (No Green)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate color blindness (deuteranope)</string>
+    <string>Simulate Deuteranopia Color Blindness (No Green)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewTritanope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
    </property>
   </action>
   <action name="mActionSetLayerScaleVisibility">
@@ -2351,7 +2743,7 @@ Acts on the currently active layer only.</string>
     <string>New Temporary Scratch Layer…</string>
    </property>
    <property name="toolTip">
-    <string>New temporary scratch layer</string>
+    <string>New Temporary Scratch Layer</string>
    </property>
   </action>
   <action name="mActionStatisticalSummary">
@@ -2366,7 +2758,7 @@ Acts on the currently active layer only.</string>
     <string>Statistical Summary</string>
    </property>
    <property name="toolTip">
-    <string>Show statistical summary</string>
+    <string>Show Statistical Summary</string>
    </property>
   </action>
   <action name="mActionShowAlignRasterTool">
@@ -2386,7 +2778,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circular String</string>
    </property>
    <property name="toolTip">
-    <string>Add circular string</string>
+    <string>Add Circular String</string>
    </property>
   </action>
   <action name="mActionCircularStringRadius">
@@ -2401,7 +2793,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circular String by Radius</string>
    </property>
    <property name="toolTip">
-    <string>Add circular string by radius</string>
+    <string>Add Circular String by Radius</string>
    </property>
   </action>
   <action name="mActionReportaBug">
@@ -2443,6 +2835,30 @@ Acts on the currently active layer only.</string>
    </property>
    <property name="toolTip">
     <string>Modify the Attributes of all Selected Features Simultaneously</string>
+   </property>
+  </action>
+  <action name="mActionAddAmsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Arc&amp;GIS Map Service Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add ArcGIS Map Service Layer</string>
+   </property>
+  </action>
+  <action name="mActionAddAfsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Ar&amp;cGIS Feature Service Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add ArcGIS Feature Service Layer</string>
    </property>
   </action>
   <action name="mActionSelectByForm">
@@ -2514,7 +2930,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circle from &amp;2 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 2 points</string>
+    <string>Add Circle from 2 Points</string>
    </property>
   </action>
   <action name="mActionCircle3Points">
@@ -2529,7 +2945,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circle from &amp;3 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 3 points</string>
+    <string>Add Circle from 3 Points</string>
    </property>
   </action>
   <action name="mActionCircleCenterPoint">
@@ -2544,7 +2960,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Circle by a Center Point and Another Point</string>
    </property>
    <property name="toolTip">
-    <string>Add Circle by a center point and another point</string>
+    <string>Add Circle by a Center Point and Another Point</string>
    </property>
   </action>
   <action name="mActionEllipseCenter2Points">
@@ -2559,7 +2975,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Ellipse from Center and 2 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add Ellipse from center and 2 points</string>
+    <string>Add Ellipse from Center and 2 Points</string>
    </property>
   </action>
   <action name="mActionEllipseCenterPoint">
@@ -2589,7 +3005,7 @@ Acts on the currently active layer only.</string>
     <string>Add Ellipse from &amp;Extent</string>
    </property>
    <property name="toolTip">
-    <string>Add Ellipse from extent</string>
+    <string>Add Ellipse from Extent</string>
    </property>
   </action>
   <action name="mActionEllipseFoci">
@@ -2604,7 +3020,7 @@ Acts on the currently active layer only.</string>
     <string>Add Ellipse from &amp;Foci</string>
    </property>
    <property name="toolTip">
-    <string>Add Ellipse from foci</string>
+    <string>Add Ellipse from Foci</string>
    </property>
   </action>
   <action name="mActionRectangleExtent">
@@ -2619,7 +3035,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Rectangle from Extent</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from extent</string>
+    <string>Add Rectangle from Extent</string>
    </property>
   </action>
   <action name="mActionRectangleCenterPoint">
@@ -2634,7 +3050,7 @@ Acts on the currently active layer only.</string>
     <string>Add &amp;Rectangle from Center and a Point</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from center and a point</string>
+    <string>Add Rectangle from Center and a Point</string>
    </property>
   </action>
   <action name="mActionRegularPolygonCenterPoint">
@@ -2649,7 +3065,7 @@ Acts on the currently active layer only.</string>
     <string>&amp;Add Regular Polygon from Center and a Point</string>
    </property>
    <property name="toolTip">
-    <string>Add regular polygon from center and a point</string>
+    <string>Add Regular Polygon from Center and a Point</string>
    </property>
   </action>
   <action name="mActionRegularPolygon2Points">
@@ -2664,7 +3080,7 @@ Acts on the currently active layer only.</string>
     <string>Add &amp;Regular Polygon from 2 Points</string>
    </property>
    <property name="toolTip">
-    <string>Add regular polygon from 2 points</string>
+    <string>Add Regular Polygon from 2 Points</string>
    </property>
   </action>
   <action name="mActionCircle3Tangents">
@@ -2679,7 +3095,7 @@ Acts on the currently active layer only.</string>
     <string>Add &amp;Circle from 3 Tangents</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 3 tangents</string>
+    <string>Add Circle from 3 Tangents</string>
    </property>
   </action>
   <action name="mActionRectangle3PointsDistance">
@@ -2694,7 +3110,7 @@ Acts on the currently active layer only.</string>
     <string>Add Rectangle &amp;from 3 Points (Distance from 2nd and 3rd point)</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from 3 points (Distance from 2nd and 3rd point)</string>
+    <string>Add Rectangle from 3 Points (Distance from 2nd and 3rd Point)</string>
    </property>
   </action>
   <action name="mActionCircle2TangentsPoint">
@@ -2709,7 +3125,7 @@ Acts on the currently active layer only.</string>
     <string>Add Circle &amp;from 2 Tangents and a Point</string>
    </property>
    <property name="toolTip">
-    <string>Add circle from 2 tangents and a point</string>
+    <string>Add Circle from 2 Tangents and a Point</string>
    </property>
   </action>
   <action name="mActionRegularPolygonCenterCorner">
@@ -2724,7 +3140,7 @@ Acts on the currently active layer only.</string>
     <string>Add Regular &amp;Polygon from Center and a Corner</string>
    </property>
    <property name="toolTip">
-    <string>Add regular polygon from center and a corner</string>
+    <string>Add Regular Polygon from Center and a Corner</string>
    </property>
   </action>
   <action name="mActionNew3DMapCanvas">
@@ -2794,7 +3210,7 @@ Acts on the currently active layer only.</string>
     <string>Revert…</string>
    </property>
    <property name="toolTip">
-    <string>Revert Project to Saved version</string>
+    <string>Revert Project to Saved Version</string>
    </property>
   </action>
   <action name="mActionCopyLayer">
@@ -2845,7 +3261,37 @@ Acts on the currently active layer only.</string>
     <string>Add Rectangle &amp;from 3 Points (Distance from projected point on segment p1 and p2)</string>
    </property>
    <property name="toolTip">
-    <string>Add rectangle from 3 points (Distance from projected point on segment p1 and p2)</string>
+    <string>Add Rectangle from 3 Points (Distance from Projected Point on Segment p1 and p2)</string>
+   </property>
+  </action>
+  <action name="mActionShowMeshCalculator">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowMeshCalculator.svg</normaloff>:/images/themes/default/mActionShowMeshCalculator.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Mesh Calculator…</string>
+   </property>
+  </action>
+  <action name="mActionAddMeshLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMeshLayer.svg</normaloff>:/images/themes/default/mActionAddMeshLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Mesh Layer...</string>
+   </property>
+  </action>
+  <action name="mActionNewVirtualLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewVirtualLayer.svg</normaloff>:/images/themes/default/mActionNewVirtualLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Virtual Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New Virtual Layer</string>
    </property>
   </action>
   <action name="mActionShowUnplacedLabels">
@@ -2872,6 +3318,43 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Reselect Features from Current Layer</string>
    </property>
   </action>
+  <action name="mActionTemporalController">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/propertyicons/temporal.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Controller</string>
+   </property>
+   <property name="toolTip">
+    <string>Temporal Controller Panel</string>
+   </property>
+  </action>
+  <action name="mActionAddXyzLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddXyzLayer.svg</normaloff>:/images/themes/default/mActionAddXyzLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add XYZ Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add XYZ Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddVectorTileLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector Tile Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Vector Tile Layer…</string>
+   </property>
+  </action>
   <action name="mActionShowGeoreferencer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2881,434 +3364,58 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Georeferencer…</string>
    </property>
   </action>
-  <action name="actionopenPointCloudFile">
+  <action name="mActionDecreaseGamma">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/svg/displaz.svg</normaloff>:/images/svg/displaz.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDecreaseGamma.svg</normaloff>:/images/themes/default/mActionDecreaseGamma.svg</iconset>
    </property>
    <property name="text">
-    <string>openPointCloudFile </string>
+    <string>Decrease Gamma</string>
    </property>
    <property name="toolTip">
-    <string>open point cloud</string>
+    <string>Decrease Gamma</string>
    </property>
   </action>
-  <action name="actionmAction_X">
+  <action name="mActionIncreaseGamma">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/icons/x.png</normaloff>:/images/icons/x.png</iconset>
+     <normaloff>:/images/themes/default/mActionIncreaseGamma.svg</normaloff>:/images/themes/default/mActionIncreaseGamma.svg</iconset>
    </property>
    <property name="text">
-    <string>Assign_X</string>
-   </property>
-  </action>
-  <action name="actionmAction_Y">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/icons/y.png</normaloff>:/images/icons/y.png</iconset>
-   </property>
-   <property name="text">
-    <string>Assign_Y</string>
-   </property>
-  </action>
-  <action name="actionmAction_Z">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/icons/z.png</normaloff>:/images/icons/z.png</iconset>
-   </property>
-   <property name="text">
-    <string>Assign_Z</string>
-   </property>
-  </action>
-  <action name="actionSetViewTop">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccViewZpos.png</normaloff>:/images/cc/ccViewZpos.png</iconset>
-   </property>
-   <property name="text">
-    <string>Top View</string>
+    <string>Increase Gamma</string>
    </property>
    <property name="toolTip">
-    <string>Set top view</string>
+    <string>Increase Gamma</string>
    </property>
-   <property name="statusTip">
-    <string>Set top view</string>
+  </action>
+  <action name="mActionDigitizeWithCurve">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitize with curve</string>
    </property>
    <property name="shortcut">
-    <string>8</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
+    <string>Ctrl+Shift+G</string>
    </property>
   </action>
-  <action name="actionSetViewFront">
+  <action name="mActionAddPointCloudLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccViewYpos.png</normaloff>:/images/cc/ccViewYpos.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddPointCloudLayer.svg</normaloff>:/images/themes/default/mActionAddPointCloudLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Front View</string>
-   </property>
-   <property name="toolTip">
-    <string>Set front view</string>
-   </property>
-   <property name="statusTip">
-    <string>Set front view</string>
-   </property>
-   <property name="shortcut">
-    <string>5</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionSetViewBack">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccViewYneg.png</normaloff>:/images/cc/ccViewYneg.png</iconset>
-   </property>
-   <property name="text">
-    <string>Back View</string>
-   </property>
-   <property name="toolTip">
-    <string>Set back view</string>
-   </property>
-   <property name="statusTip">
-    <string>Set back view</string>
-   </property>
-   <property name="shortcut">
-    <string>0</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionSetViewLeft">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccViewXpos.png</normaloff>:/images/cc/ccViewXpos.png</iconset>
-   </property>
-   <property name="text">
-    <string>Left Side View</string>
-   </property>
-   <property name="toolTip">
-    <string>Set left side view</string>
-   </property>
-   <property name="statusTip">
-    <string>Set left side view</string>
-   </property>
-   <property name="shortcut">
-    <string>4</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionSetViewRight">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccViewXneg.png</normaloff>:/images/cc/ccViewXneg.png</iconset>
-   </property>
-   <property name="text">
-    <string>Right Side View</string>
-   </property>
-   <property name="toolTip">
-    <string>Set right side view</string>
-   </property>
-   <property name="statusTip">
-    <string>Set right side view</string>
-   </property>
-   <property name="shortcut">
-    <string>6</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionSetViewBottom">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccViewZneg.png</normaloff>:/images/cc/ccViewZneg.png</iconset>
-   </property>
-   <property name="text">
-    <string>Bottom View</string>
-   </property>
-   <property name="toolTip">
-    <string>Set bottom view</string>
-   </property>
-   <property name="statusTip">
-    <string>Set bottom view</string>
-   </property>
-   <property name="shortcut">
-    <string>2</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionSetViewerPerspectiveView">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/CC/images/ccViewerBasedPerspective32.png</normaloff>:/CC/images/ccViewerBasedPerspective32.png</iconset>
-   </property>
-   <property name="text">
-    <string>Viewer-based perspective</string>
-   </property>
-   <property name="toolTip">
-    <string>Set viewer-based perspective for current 3D View</string>
-   </property>
-   <property name="statusTip">
-    <string>Set viewer-based perspective for current 3D View</string>
-   </property>
-  </action>
-  <action name="actionSetViewIso1">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/CC/images/ccViewIso1.png</normaloff>:/CC/images/ccViewIso1.png</iconset>
-   </property>
-   <property name="text">
-    <string>Iso 1</string>
-   </property>
-   <property name="toolTip">
-    <string>Set view to 'front' isometric</string>
-   </property>
-   <property name="statusTip">
-    <string>Set view to 'front' isometric</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">7</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionSetViewIso2">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/CC/images/ccViewIso2.png</normaloff>:/CC/images/ccViewIso2.png</iconset>
-   </property>
-   <property name="text">
-    <string>Iso 2</string>
-   </property>
-   <property name="toolTip">
-    <string>Set view to 'back' isometric</string>
-   </property>
-   <property name="statusTip">
-    <string>Set view to 'back' isometric</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">9</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionPointPicking">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccPointPicking.png</normaloff>:/images/cc/ccPointPicking.png</iconset>
-   </property>
-   <property name="text">
-    <string>Point picking</string>
-   </property>
-   <property name="toolTip">
-    <string>Point picking (point information, distance between 2 points, angles between 3 points, etc.)</string>
-   </property>
-   <property name="statusTip">
-    <string>Point picking (point information, distance between 2 points, angles between 3 points, etc.)</string>
-   </property>
-  </action>
-  <action name="actionPointListPicking">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccPointListPicking.png</normaloff>:/images/cc/ccPointListPicking.png</iconset>
-   </property>
-   <property name="text">
-    <string>Point list picking</string>
-   </property>
-   <property name="statusTip">
-    <string>Pick several points (and export them to ASCII file, a new cloud, etc.)</string>
-   </property>
-  </action>
-  <action name="actionForest">
-   <property name="text">
-    <string>&amp;Forest</string>
-   </property>
-  </action>
-  <action name="actionScalar_fields_2">
-   <property name="text">
-    <string>Scalar fields</string>
-   </property>
-  </action>
-  <action name="actionSegmentation">
-   <property name="text">
-    <string>Segmentation</string>
-   </property>
-  </action>
-  <action name="actionRegistration">
-   <property name="text">
-    <string>Registration</string>
-   </property>
-  </action>
-  <action name="actionAddConstantSF">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccAddConstSF.png</normaloff>:/images/cc/ccAddConstSF.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add constant SF</string>
-   </property>
-  </action>
-  <action name="mActionDrawRect">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/smallRectangleSelect.png</normaloff>:/images/cc/smallRectangleSelect.png</iconset>
-   </property>
-   <property name="text">
-    <string>多边形选择</string>
-   </property>
-   <property name="iconText">
-    <string>多边形选择</string>
-   </property>
-   <property name="toolTip">
-    <string>在三维窗口，矩形形选择</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
-   </property>
-  </action>
-  <action name="actionactionProfile">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccMinus.png</normaloff>:/images/cc/ccMinus.png</iconset>
-   </property>
-   <property name="text">
-    <string>剖面线选择</string>
-   </property>
-   <property name="toolTip">
-    <string>在三维窗口进行剖面线选择</string>
-   </property>
-  </action>
-  <action name="action_Forest">
-   <property name="text">
-    <string>Forest</string>
-   </property>
-  </action>
-  <action name="actionLand_Cover">
-   <property name="text">
-    <string>Land Cover</string>
-   </property>
-  </action>
-  <action name="actionCIM">
-   <property name="text">
-    <string>CIM</string>
-   </property>
-  </action>
-  <action name="actionCAD">
-   <property name="text">
-    <string>CAD</string>
-   </property>
-  </action>
-  <action name="actionEditCamera">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/photo-camera.svg</normaloff>:/images/cc/photo-camera.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Camera settings</string>
-   </property>
-  </action>
-  <action name="actionComputeNormals">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/typeNormal.png</normaloff>:/images/cc/typeNormal.png</iconset>
-   </property>
-   <property name="text">
-    <string>Compute</string>
-   </property>
-   <property name="toolTip">
-    <string>Compute unsigned normals (least squares approx.)</string>
-   </property>
-   <property name="statusTip">
-    <string>Compute unsigned normals (least squares approx.)</string>
-   </property>
-  </action>
-  <action name="mActionSection">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/sectionExtraction.png</normaloff>:/images/cc/sectionExtraction.png</iconset>
-   </property>
-   <property name="text">
-    <string>隐藏未选中区域，建立剖面视图</string>
-   </property>
-   <property name="statusTip">
-    <string>隐藏未选中的区域</string>
-   </property>
-  </action>
-  <action name="m_actionclassification">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccSampleCloud.png</normaloff>:/images/cc/ccSampleCloud.png</iconset>
-   </property>
-   <property name="text">
-    <string>classification</string>
-   </property>
-   <property name="toolTip">
-    <string>在剖面图中启动分类模块</string>
-   </property>
-  </action>
-  <action name="m_selectiononprofile">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/square.png</normaloff>:/images/cc/square.png</iconset>
-   </property>
-   <property name="text">
-    <string>在剖面图上框选点云</string>
-   </property>
-  </action>
-  <action name="m_viewinprofile">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/algorithms/mAlgorithmRoundRastervalues.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmRoundRastervalues.svg</iconset>
-   </property>
-   <property name="text">
-    <string>在剖面图上线选</string>
-   </property>
-   <property name="toolTip">
-    <string>启动剖面图</string>
-   </property>
-  </action>
-  <action name="m_refresh3dView">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
-   </property>
-   <property name="text">
-    <string>refresh</string>
-   </property>
-   <property name="toolTip">
-    <string>重置状态</string>
-   </property>
-  </action>
-  <action name="mActionMeasureDistance">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMeasure.svg</normaloff>:/images/themes/default/mActionMeasure.svg</iconset>
-   </property>
-   <property name="text">
-    <string>测量距离</string>
-   </property>
-   <property name="toolTip">
-    <string>MeasureDistance</string>
-   </property>
-  </action>
-  <action name="mActionMeasureAreaReal">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMeasureArea.svg</normaloff>:/images/themes/default/mActionMeasureArea.svg</iconset>
-   </property>
-   <property name="text">
-    <string>测量平面面积</string>
+    <string>Add Point Cloud Layer...</string>
    </property>
   </action>
  </widget>

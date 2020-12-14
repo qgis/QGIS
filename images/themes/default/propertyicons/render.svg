@@ -1,15 +1,1 @@
-<svg enable-background="new -4 -4 24 24" height="24" viewBox="-4 -4 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<linearGradient id="a" gradientTransform="matrix(1 0 0 -1 -294 -335)" gradientUnits="userSpaceOnUse" x1="303.5488" x2="302.2881" y1="-361.2173" y2="-359.9566">
-<stop offset="0" stop-color="#babdb6"/>
-<stop offset="1" stop-color="#babdb6" stop-opacity="0"/>
-</linearGradient>
-<linearGradient id="b" gradientTransform="matrix(1 0 0 -1 -294 -335)" gradientUnits="userSpaceOnUse" x1="308.5879" x2="307.3268" y1="-354.9175" y2="-353.6564">
-<stop offset="0" stop-color="#888a85"/>
-<stop offset="1" stop-color="#b3b4b1"/>
-</linearGradient>
-<g stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -16)">
-<path d="m6.091 28.414c0 0-2.523 3.783-7.568 5.045 3.503.059 10.09 0 10.09-3.783z" fill="#555753" stroke="#555753"/>
-<path d="m9.244 22.739l3.783 2.522-3.783 3.783c0 0-1.805-.223-2.522-1.261-.718-1.037 2.6-4.965 2.522-5.044z" fill="url(#a)" stroke="#888a85" stroke-width=".75"/>
-<path d="m9.244 22.739c0 0 7.082-7.799 8.197-8.198 1.116-.398-3.697 10.162-4.414 10.72s-3.092-1.379-3.783-2.522z" fill="url(#b)" stroke="#888a85" stroke-width=".75"/>
-</g>
-</svg>
+<svg enable-background="new -4 -4 24 24" height="24" viewBox="-4 -4 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="a" gradientTransform="matrix(1 0 0 -1 -294 -335)" gradientUnits="userSpaceOnUse" x1="303.5488" x2="302.2881" y1="-361.2173" y2="-359.9566"><stop offset="0" stop-color="#babdb6"/><stop offset="1" stop-color="#babdb6" stop-opacity="0"/></linearGradient><linearGradient id="b" gradientTransform="matrix(1 0 0 -1 -294 -335)" gradientUnits="userSpaceOnUse" x1="308.5879" x2="307.3268" y1="-354.9175" y2="-353.6564"><stop offset="0" stop-color="#888a85"/><stop offset="1" stop-color="#b3b4b1"/></linearGradient><g stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -16)"><path d="m6.091 28.414s-2.523 3.783-7.568 5.045c3.503.059 10.09 0 10.09-3.783z" fill="#555753" stroke="#555753"/><g stroke="#888a85" stroke-width=".75"><path d="m9.244 22.739 3.783 2.522-3.783 3.783s-1.805-.223-2.522-1.261c-.718-1.037 2.6-4.965 2.522-5.044z" fill="url(#a)"/><path d="m9.244 22.739s7.082-7.799 8.197-8.198c1.116-.398-3.697 10.162-4.414 10.72s-3.092-1.379-3.783-2.522z" fill="url(#b)"/></g></g></svg>

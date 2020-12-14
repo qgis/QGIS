@@ -169,7 +169,7 @@ if(WITH_CORE)
     endif()
     add_definitions(-DWITH_BINDINGS)
   endif()
-  add_definitions(-DWIN32_LEAN_AND_MEAN)
+
   # server disabled default because it needs FastCGI (which is optional dependency)
   set (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   if(WITH_SERVER)
