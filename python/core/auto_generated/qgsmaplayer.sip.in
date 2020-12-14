@@ -1431,6 +1431,14 @@ re-rendered, and will not trigger any canvas redraws itself.
    in 2.6 function moved from vector/raster subclasses to QgsMapLayer
 %End
 
+    void trigger3DUpdate();
+%Docstring
+Will advise any 3D maps that this layer requires to be updated in the scene.
+Will emit a :py:func:`~QgsMapLayer.request3DUpdate` signal.
+
+.. versionadded:: 3.18
+%End
+
     void emitStyleChanged();
 %Docstring
 Triggers an emission of the :py:func:`~QgsMapLayer.styleChanged` signal.
@@ -1576,6 +1584,13 @@ Signal emitted when legend of the layer has changed
 Signal emitted when 3D renderer associated with the layer has changed.
 
 .. versionadded:: 3.0
+%End
+
+    void request3DUpdate();
+%Docstring
+Signal emitted when a layer requires an update in any 3D maps.
+
+.. versionadded:: 3.18
 %End
 
     void configChanged();
