@@ -1646,7 +1646,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_max(array(-1, 0, 1, 2))" ) << QStringLiteral( "array_max(array(-1, 0, 1, 2))" ) << false << QVariant( 2 );
       QTest::newRow( "array_max(array(make_date(2020,12,11),make_date(2020,12,12),make_date(2020,12,13)))" ) << QStringLiteral( "array_max(array(make_date(2020,12,11),make_date(2020,12,12),make_date(2020,12,13)))" ) << false << QVariant( QDate( 2020, 12, 13 ) );
       QTest::newRow( "array_majority(array())" ) << QStringLiteral( "array_majority(array())" ) << false << QVariant();
-      QTest::newRow( "array_majority(array(1,2,42,42,'a','b'))" ) << QStringLiteral( "array_majority(array(1,2,42,42,'a','b'))" ) << false << QVariant( 42 );
+      QTest::newRow( "array_majority(array(1,2,42,42,'a','b'))" ) << QStringLiteral( "array_majority(array(1,2,42,42,'a','b'))" ) << false << QVariant( QVariantList() << 42 );
 
       // file functions
       QTest::newRow( "base_file_name(5)" ) << QStringLiteral( "base_file_name(5)" ) << false << QVariant( "5" );
