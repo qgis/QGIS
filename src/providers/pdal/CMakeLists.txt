@@ -1,6 +1,8 @@
 ########################################################
 # Files
 
+find_package(Threads REQUIRED)
+
 set(PDAL_SRCS
   qgspdaldataitems.cpp
   qgspdalprovider.cpp
@@ -123,6 +125,7 @@ target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
 add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 target_link_libraries (pdalprovider
   ${PDAL_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
 )
 
 if (WITH_GUI)
