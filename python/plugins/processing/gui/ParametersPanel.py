@@ -223,7 +223,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     continue
 
                 value = wrapper.parameterValue()
-                if (param.defaultValue() != value and skip_defaults):
+                if param.defaultValue() != value or include_default:
                     parameters[param.name()] = value
 
                 if not param.checkValueIsAcceptable(value):
@@ -247,7 +247,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
-                if value and (param.defaultValue() != value and skip_defaults):
+                if value and (param.defaultValue() != value or include_default):
                     parameters[param.name()] = value
 
                     context = createContext()
