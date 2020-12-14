@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/errno.h>
+#include <sys/wait.h>
 
 #include "QgisUntwine.hpp"
 
