@@ -121,15 +121,10 @@ QgsFeatureList QgsBatchGeocodeAlgorithm::processFeature( const QgsFeature &featu
 {
   QgsFeature f = feature;
 
-  QgsAttributes attr = f.attributes();
-
   const QString address = f.attribute( mAddressField ).toString();
   if ( address.isEmpty() )
   {
-    // append null attributes
-    for ( int i = 0; i < mAdditionalFields.count(); ++ i )
-      attr.append( QVariant() );
-    f.setAttributes( attr );
+    f.padAttributes( mAdditionalFields.count() );
     feedback->pushWarning( QObject::tr( "Empty address field for feature %1" ).arg( feature.id() ) );
     return QgsFeatureList() << f;
   }
@@ -138,25 +133,19 @@ QgsFeatureList QgsBatchGeocodeAlgorithm::processFeature( const QgsFeature &featu
   const QList< QgsGeocoderResult > results = mGeocoder->geocodeString( address, geocodeContext, feedback );
   if ( results.empty() )
   {
-    // append null attributes
-    for ( int i = 0; i < mAdditionalFields.count(); ++ i )
-      attr.append( QVariant() );
-    f.setAttributes( attr );
+    f.padAttributes( mAdditionalFields.count() );
     feedback->pushWarning( QObject::tr( "No result for %1" ).arg( address ) );
     return QgsFeatureList() << f;
   }
 
   if ( !results.at( 0 ).isValid() )
   {
-    // append null attributes
-    for ( int i = 0; i < mAdditionalFields.count(); ++ i )
-      attr.append( QVariant() );
-    f.setAttributes( attr );
-
+    f.padAttributes( mAdditionalFields.count() );
     feedback->reportError( QObject::tr( "Error geocoding %1: %2" ).arg( address, results.at( 0 ).error() ) );
     return QgsFeatureList() << f;
   }
 
+  QgsAttributes attr = f.attributes();
   const QVariantMap additionalAttributes = results.at( 0 ).additionalAttributes();
   if ( !mIsInPlace )
   {
