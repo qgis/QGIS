@@ -260,7 +260,7 @@ Initialize this feature with the given number of fields. Discard any previously 
 
 :param fieldCount: Number of fields to initialize
 
-.. seealso:: :py:func:`resizedAttributes`
+.. seealso:: :py:func:`resizeAttributes`
 %End
 
     void resizeAttributes( int fieldCount );

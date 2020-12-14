@@ -292,7 +292,7 @@ class CORE_EXPORT QgsFeature
      * Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * \param fieldCount Number of fields to initialize
      *
-     * \see resizedAttributes()
+     * \see resizeAttributes()
      */
     void initAttributes( int fieldCount );
 
