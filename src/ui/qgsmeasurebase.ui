@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
-    <height>376</height>
+    <width>671</width>
+    <height>288</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Measure</string>
+   <string>在二维窗口创建剖面</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -39,8 +39,14 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="2" column="0" colspan="4">
+   <item row="2" column="0" colspan="3">
     <widget class="QTreeWidget" name="mTable">
+     <property name="maximumSize">
+      <size>
+       <width>1000000</width>
+       <height>60</height>
+      </size>
+     </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
@@ -48,7 +54,7 @@
       <bool>false</bool>
      </property>
      <property name="columnCount">
-      <number>1</number>
+      <number>6</number>
      </property>
      <column>
       <property name="text">
@@ -58,150 +64,85 @@
        <set>AlignTrailing|AlignVCenter</set>
       </property>
      </column>
+     <column>
+      <property name="text">
+       <string>x1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>y1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>x2</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>y2</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+     </column>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="totalDistanceLabel">
+   <item row="8" column="0">
+    <widget class="QPushButton" name="mpushButton">
      <property name="text">
-      <string>Total</string>
+      <string>提取剖面</string>
      </property>
-     <property name="buddy">
-      <cstring>editTotal</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>41</width>
-       <height>25</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="totalHorizontalDistanceLabel">
-     <property name="text">
-      <string>Total Horizontal Distance</string>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/images/themes/default/labelingCalloutSimple.svg</normaloff>:/images/themes/default/labelingCalloutSimple.svg</iconset>
      </property>
     </widget>
    </item>
-   <item row="6" column="2">
-    <widget class="QLineEdit" name="editHorizontalTotal">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
-    <widget class="QRadioButton" name="mEllipsoidal">
-     <property name="text">
-      <string>Ellipsoidal</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QRadioButton" name="mCartesian">
-     <property name="text">
-      <string>Cartesian</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0" colspan="4">
-    <widget class="QgsCollapsibleGroupBox" name="groupBox">
-     <property name="title">
-      <string>Info</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="mNotesLabel">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <widget class="QComboBox" name="mUnitsCombo"/>
-   </item>
-   <item row="11" column="0" colspan="4">
+   <item row="8" column="1" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QLineEdit" name="editTotal">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="4">
-    <spacer name="mSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
   </layout>
+  <action name="actionactionProfile">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/cc/ccMinus.png</normaloff>:/images/cc/ccMinus.png</iconset>
+   </property>
+   <property name="text">
+    <string>剖面线选择</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mTable</tabstop>
-  <tabstop>editTotal</tabstop>
  </tabstops>
- <resources/>
- <connections/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>mpushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>actionactionProfile</receiver>
+   <slot>hover()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>355</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

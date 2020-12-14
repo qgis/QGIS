@@ -101,7 +101,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Configurations store encrypted credentials in the QGIS authentication database.</string>
+          <string>Configurations store encrypted credentials in the HSLLC authentication database.</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>

@@ -8,6 +8,6 @@
 
 ########################################################
 # Continue on to subdirs
-add_subdirectory(icons)
-add_subdirectory(themes)
-add_subdirectory(svg)
+ADD_SUBDIRECTORY(icons)
+ADD_SUBDIRECTORY(themes)
+ADD_SUBDIRECTORY(svg)
