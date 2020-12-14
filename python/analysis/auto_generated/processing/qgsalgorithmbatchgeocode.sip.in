@@ -77,6 +77,8 @@ exists for the lifetime of this algorithm.
 
     virtual QList<int> inputLayerTypes() const;
 
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
 
   protected:
     virtual QString outputName() const;

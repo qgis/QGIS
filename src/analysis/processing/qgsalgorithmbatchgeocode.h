@@ -84,6 +84,7 @@ class ANALYSIS_EXPORT QgsBatchGeocodeAlgorithm : public QgsProcessingFeatureBase
     QString group() const override;
     QString groupId() const override;
     QList<int> inputLayerTypes() const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
     QString outputName() const override;
@@ -94,9 +95,10 @@ class ANALYSIS_EXPORT QgsBatchGeocodeAlgorithm : public QgsProcessingFeatureBase
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
 
   private:
-
+    bool mIsInPlace = false;
     QString mAddressField;
     QgsGeocoderInterface *mGeocoder = nullptr;
+    QgsStringMap mInPlaceFieldMap;
     mutable QgsCoordinateReferenceSystem mOutputCrs;
     mutable QStringList mAdditionalFields;
 

@@ -216,6 +216,68 @@ class TestQgsBatchGeocodeAlgorithm(unittest.TestCase):
         self.assertEqual(res[0].geometry().asWkt(), 'Point (11 12)')
         self.assertEqual(res[0].attributes(), [17, 'b', 'xyz2', 456])
 
+    def testInPlace(self):
+        geocoder = TestGeocoderExtraFields()
+
+        alg = TestGeocoderAlgorithm(geocoder)
+        alg.initParameters({'IN_PLACE': True})
+
+        fields = QgsFields()
+        fields.append(QgsField('some_pk', QVariant.Int))
+        fields.append(QgsField('address', QVariant.String))
+        fields.append(QgsField('parsedx', QVariant.String))
+        fields.append(QgsField('accuracyx', QVariant.Int))
+
+        output_fields = alg.outputFields(fields)
+        self.assertEqual([f.name() for f in output_fields], ['some_pk', 'address', 'parsedx', 'accuracyx'])
+        self.assertEqual([f.type() for f in output_fields],
+                         [QVariant.Int, QVariant.String, QVariant.String, QVariant.Int])
+
+        f = QgsFeature(fields)
+        f.initAttributes(4)
+        f['some_pk'] = 17
+
+        # not storing additional attributes
+        params = {'FIELD': 'address'}
+
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        self.assertTrue(alg.prepareAlgorithm(params, context, feedback))
+
+        # empty field
+        res = alg.processFeature(f, context, feedback)
+        self.assertEqual(len(res), 1)
+        self.assertTrue(res[0].geometry().isNull())
+        self.assertEqual(res[0].attributes(), [17, NULL, NULL, NULL])
+
+        f['address'] = 'a'
+        res = alg.processFeature(f, context, feedback)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].geometry().asWkt(), 'Point (1 2)')
+        self.assertEqual(res[0].attributes(), [17, 'a', None, None])
+
+        f.clearGeometry()
+        f['address'] = NULL
+
+        # storing additional attributes
+        params = {'FIELD': 'address', 'parsed': 'parsedx', 'accuracy': 'accuracyx'}
+
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        self.assertTrue(alg.prepareAlgorithm(params, context, feedback))
+
+        # empty field
+        res = alg.processFeature(f, context, feedback)
+        self.assertEqual(len(res), 1)
+        self.assertTrue(res[0].geometry().isNull())
+        self.assertEqual(res[0].attributes(), [17, NULL, NULL, NULL])
+
+        f['address'] = 'b'
+        res = alg.processFeature(f, context, feedback)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].geometry().asWkt(), 'Point (11 12)')
+        self.assertEqual(res[0].attributes(), [17, 'b', 'xyz2', 456])
+
 
 if __name__ == '__main__':
     unittest.main()
