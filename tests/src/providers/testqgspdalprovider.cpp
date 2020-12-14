@@ -55,6 +55,7 @@ class TestQgsPdalProvider : public QObject
     void brokenPath();
     void validLayer();
     void testEptGeneration();
+    void testEptGenerationNonASCII();
 
   private:
     QString mTestDataDir;
@@ -159,7 +160,10 @@ void TestQgsPdalProvider::preferredUri()
 void TestQgsPdalProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "pdal" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >(
+        QStringLiteral( "not valid" ),
+        QStringLiteral( "layer" ),
+        QStringLiteral( "pdal" ) );
   QVERIFY( !layer->isValid() );
 }
 
@@ -192,6 +196,16 @@ void TestQgsPdalProvider::testEptGeneration()
   QTemporaryDir dir;
   QVERIFY( dir.isValid() );
   QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path() );
+  QVERIFY( task.run() );
+  QFileInfo fi( dir.path() + "/ept.json" );
+  QVERIFY( fi.exists() );
+}
+
+void TestQgsPdalProvider::testEptGenerationNonASCII()
+{
+  QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud%!* _*čopy.las" ), dir.path() );
   QVERIFY( task.run() );
   QFileInfo fi( dir.path() + "/ept.json" );
   QVERIFY( fi.exists() );
