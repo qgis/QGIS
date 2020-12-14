@@ -905,7 +905,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(f4.isValid())
         expected_attrs = [4, -9223372036854775800, 7.29154, 'other test']
         gotten_attrs = [f4['pk1'], f4['pk2'], f4['pk3'], f4['value']]
-        self.assertAlmostEqual(gotten_attrs, expected_attrs)
+        self.assertEqual(gotten_attrs[0], expected_attrs[0])
+        self.assertEqual(gotten_attrs[1], expected_attrs[1])
+        self.assertAlmostEqual(gotten_attrs[2], expected_attrs[2])
+        self.assertEqual(gotten_attrs[3], expected_attrs[3])
 
         # Finally, let's delete one of the features.
         f5 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 7.29154')))
