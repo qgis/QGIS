@@ -18,6 +18,7 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
+#include "qgscolorramplegendnode.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -209,6 +210,20 @@ QList<QPair<QString, QColor> > QgsSingleBandGrayRenderer::legendSymbologyItems()
     symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), maxColor ) );
   }
   return symbolItems;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsSingleBandGrayRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> res;
+  if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+  {
+    const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
+    const QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
+    res << new QgsColorRampLegendNode( nodeLayer, new QgsGradientColorRamp( minColor, maxColor ),
+                                       QString::number( mContrastEnhancement->minimumValue() ),
+                                       QString::number( mContrastEnhancement->maximumValue() ) );
+  }
+  return res;
 }
 
 QList<int> QgsSingleBandGrayRenderer::usesBands() const

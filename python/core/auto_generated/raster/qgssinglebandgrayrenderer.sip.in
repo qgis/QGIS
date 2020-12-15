@@ -56,6 +56,8 @@ Takes ownership
 
     virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
 
     virtual QList<int> usesBands() const;
 
