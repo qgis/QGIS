@@ -24,7 +24,7 @@ jobs:
   
   If there is no further activity on this issue, it will be closed in a week.
 
-close-issue-message: >
+        close-issue-message: >
   While we hate to see this happen, this Issue has been automatically closed because
   it has not had any activity in the last 21 days despite being marked as feedback.
   If this issue should be reconsidered, please follow the guidelines in the previous
