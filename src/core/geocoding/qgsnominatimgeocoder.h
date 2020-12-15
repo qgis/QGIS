@@ -82,14 +82,15 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
      *
      * \see setRequestsPerSecond()
      */
-    int requestsPerSecond() const { return mRequestsPerSecond; }
+    double requestsPerSecond() const { return mRequestsPerSecond; }
 
     /**
      * Sets the \a number of request per seconds to the endpoint.
      *
      * \see requestsPerSecond()
+     * \warning Setting this to a value > 1 violates the nomatim terms of service. Only change this value if you are using a self-hosted nomatim service.
      */
-    void setRequestsPerSecond( int number ) { mRequestsPerSecond = number; }
+    void setRequestsPerSecond( double number ) { mRequestsPerSecond = number; }
 
     /**
      * Returns the optional region bias which will be used to prioritize results in a certain region.
@@ -112,12 +113,12 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
 
     QString mCountryCodes;
     QString mEndpoint;
-    int mRequestsPerSecond = 1;
+    double mRequestsPerSecond = 1;
 
-    static QReadWriteLock sMutex;
+    static QMutex sMutex;
     static QMap< QUrl, QList< QgsGeocoderResult > > sCachedResults;
 
-    static qint64 sLastRequestTimstamp;
+    static qint64 sLastRequestTimestamp;
 
 };
 
