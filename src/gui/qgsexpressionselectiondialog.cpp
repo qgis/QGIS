@@ -41,6 +41,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   connect( mActionSelectIntersect, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionSelectIntersect_triggered );
   connect( mButtonZoomToFeatures, &QToolButton::clicked, this, &QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked );
   connect( mPbnClose, &QPushButton::clicked, this, &QgsExpressionSelectionDialog::mPbnClose_clicked );
+  connect( mLayer, &QgsVectorLayer::willBeDeleted, this, &QgsExpressionSelectionDialog::close );
 
   setWindowTitle( tr( "%1 — Select by Expression" ).arg( layer->name() ) );
 
