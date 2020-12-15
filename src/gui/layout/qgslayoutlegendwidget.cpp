@@ -1595,6 +1595,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
       case QgsLayerTreeModelLegendNode::ImageLegend:
       case QgsLayerTreeModelLegendNode::WmsLegend:
       case QgsLayerTreeModelLegendNode::DataDefinedSizeLegend:
+      case QgsLayerTreeModelLegendNode::ColorRampLegend:
         mCustomSymbolCheckBox->hide();
         break;
 
