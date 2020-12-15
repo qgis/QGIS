@@ -48,6 +48,20 @@ def define_new_no_outputs_but_sink_instead(newid=1):
         """
 
 
+def define_new_input_help(newid=1):
+    @alg(name=ARGNAME.format(newid), label=alg.tr("Test func"), group="unittest",
+         group_label=alg.tr("Test label"))
+    @alg.help(HELPSTRING.format(newid))
+    @alg.input(type=alg.SOURCE, name="INPUT", label="Input layer", help="The input layer as source")
+    @alg.input(type=alg.DISTANCE, name="DISTANCE", label="Distance", default=30, help="The distance to split the input layer")
+    @alg.input(type=alg.SINK, name="SINK", label="Output layer", help="The output layer as sink")
+    @alg.output(type=str, name="DISTANCE_OUT", label="Distance out")
+    def testalg(instance, parameters, context, feedback, inputs):
+        """
+        Given a distance will split a line layer into segments of the distance
+        """
+
+
 def define_new_doc_string(newid=1):
     @alg(name=ARGNAME.format(newid), label=alg.tr("Test func"), group="unittest",
          group_label=alg.tr("Test label"))
@@ -150,6 +164,22 @@ class AlgHelpTests(unittest.TestCase):
         define_new_doc_string()
         current = alg.instances.pop()
         self.assertEqual("Test doc string text", current.shortHelpString())
+
+    def test_has_input_help(self):
+        define_new_input_help()
+        current = alg.instances.pop()
+        current.initAlgorithm()
+        defs = current.parameterDefinitions()
+        self.assertEqual(3, len(defs))
+        inputs = [
+            ("INPUT", "The input layer as source"),
+            ("DISTANCE", "The distance to split the input layer"),
+            ("SINK", "The output layer as sink"),
+        ]
+        for count, data in enumerate(inputs):
+            parmdef = defs[count]
+            self.assertEqual(data[0], parmdef.name())
+            self.assertEqual(data[1], parmdef.help())
 
 
 class TestAlg(unittest.TestCase):
