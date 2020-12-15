@@ -73,18 +73,22 @@ Sets a specific API ``endpoint`` to use for requests. This is for internal testi
 .. seealso:: :py:func:`endpoint`
 %End
 
-    int requestsPerSecond() const;
+    double requestsPerSecond() const;
 %Docstring
 Returns the number of requests per seconds to the endpoint.
 
 .. seealso:: :py:func:`setRequestsPerSecond`
 %End
 
-    void setRequestsPerSecond( int number );
+    void setRequestsPerSecond( double number );
 %Docstring
 Sets the ``number`` of request per seconds to the endpoint.
 
 .. seealso:: :py:func:`requestsPerSecond`
+
+.. warning::
+
+   Setting this to a value > 1 violates the nomatim terms of service. Only change this value if you are using a self-hosted nomatim service.
 %End
 
     QString countryCodes() const;

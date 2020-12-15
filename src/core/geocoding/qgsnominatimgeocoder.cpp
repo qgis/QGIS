@@ -18,17 +18,17 @@
 #include "qgsgeocodercontext.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsreadwritelocker.h"
 #include <QDateTime>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QMutex>
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonArray>
 
-QReadWriteLock QgsNominatimGeocoder::sMutex;
+QMutex QgsNominatimGeocoder::sMutex;
 QMap< QUrl, QList< QgsGeocoderResult > > QgsNominatimGeocoder::sCachedResults;
-qint64 QgsNominatimGeocoder::sLastRequestTimstamp = 0;
+qint64 QgsNominatimGeocoder::sLastRequestTimestamp = 0;
 
 QgsNominatimGeocoder::QgsNominatimGeocoder( const QString &countryCodes, const QString &endpoint )
   : QgsGeocoderInterface()
@@ -88,28 +88,27 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
 
   const QUrl url = requestUrl( string, bounds );
 
-  QgsReadWriteLocker locker( sMutex, QgsReadWriteLocker::Read );
+  QMutexLocker locker( &sMutex );
   auto it = sCachedResults.constFind( url );
   if ( it != sCachedResults.constEnd() )
   {
     return *it;
   }
 
-  while ( QDateTime::currentMSecsSinceEpoch() - sLastRequestTimstamp < 1000 / mRequestsPerSecond )
+  while ( QDateTime::currentMSecsSinceEpoch() - sLastRequestTimestamp < 1000 / mRequestsPerSecond )
   {
     QThread::msleep( 50 );
     if ( feedback && feedback->isCanceled() )
       return QList<QgsGeocoderResult>();
   }
-  locker.changeMode( QgsReadWriteLocker::Write );
-  sLastRequestTimstamp = QDateTime::currentMSecsSinceEpoch();
-  locker.unlock();
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsNominatimGeocoder" ) );
 
   QgsBlockingNetworkRequest newReq;
   const QgsBlockingNetworkRequest::ErrorCode errorCode = newReq.get( request, false, feedback );
+
+  sLastRequestTimestamp = QDateTime::currentMSecsSinceEpoch();
 
   if ( errorCode != QgsBlockingNetworkRequest::NoError )
   {
@@ -124,7 +123,6 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( err.errorString() );
   }
 
-  locker.changeMode( QgsReadWriteLocker::Write );
   const QVariantList results = doc.array().toVariantList();
   if ( results.isEmpty() )
   {
