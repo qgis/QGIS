@@ -656,6 +656,20 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
     double strokeWidth() const;
     void setStrokeWidth( double w );
 
+    QgsSvgParameters parameters() const;
+%Docstring
+Returns the dynamic SVG parameters
+
+.. versionadded:: 3.18
+%End
+
+    void setParameters( const QgsSvgParameters &parameters );
+%Docstring
+Sets the dynamic SVG parameters
+
+.. versionadded:: 3.18
+%End
+
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the stroke width.

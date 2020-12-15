@@ -570,6 +570,7 @@
 %Include auto_generated/symbology/qgsstyleentityvisitor.sip
 %Include auto_generated/symbology/qgsstylemodel.sip
 %Include auto_generated/symbology/qgssvgcache.sip
+%Include auto_generated/symbology/qgssvgparameter.sip
 %Include auto_generated/symbology/qgssymbol.sip
 %Include auto_generated/symbology/qgssymbollayer.sip
 %Include auto_generated/symbology/qgssymbollayerreference.sip

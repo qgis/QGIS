@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QtConcurrent>
 #include <QElapsedTimer>
+#include "qgssvgparameter.h"
 #include "qgssvgcache.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
@@ -339,7 +340,7 @@ void TestQgsSvgCache::dynamicSvg()
   QgsSvgCache cache;
   const QString dynamicImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
   QByteArray svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
-  1.0, 0, false, {{"text1", "green?"}, {"text2", "supergreen"}, {"align",  "middle"}} );
+                                     1.0, 0, false, QgsSvgParameters( {QgsSvgParameter( "text1", "green?" ), QgsSvgParameter( "text2", "supergreen" ), QgsSvgParameter( "align",  "middle" )} ) );
   const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
   QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
                            1.0, 0, false, {} );

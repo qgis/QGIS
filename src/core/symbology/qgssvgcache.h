@@ -20,6 +20,7 @@
 
 #include "qgsabstractcontentcache.h"
 #include "qgis.h"
+#include "qgssvgparameter.h"
 
 #include <QPicture>
 
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
      * \param parameters an optional map of parameters to dynamically replace content in the SVG
      */
     QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
-                      double fixedAspectRatio = 0, const QMap<QString, QString> &parameters = QMap<QString, QString>() ) ;
+                      double fixedAspectRatio = 0, const QgsSvgParameters &parameters = QgsSvgParameters() ) ;
 
     //! QgsSvgCacheEntry cannot be copied.
     QgsSvgCacheEntry( const QgsSvgCacheEntry &rh ) = delete;
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
 
     QColor fill = Qt::black;
     QColor stroke = Qt::black;
-    QMap<QString, QString> parameters;
+    QgsSvgParameters parameters;
 
     std::unique_ptr< QImage > image;
     std::unique_ptr< QPicture > picture;
@@ -150,7 +151,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      */
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false,
-                       const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+                       const QgsSvgParameters &parameters = QgsSvgParameters() );
 
     /**
      * Returns an SVG drawing as a QPicture.
@@ -176,7 +177,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      */
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false,
-                           const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+                           const QgsSvgParameters &parameters = QgsSvgParameters() );
 
     /**
      * Calculates the viewbox size of a (possibly cached) SVG file.
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \since QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QgsSvgParameters &parameters = QgsSvgParameters() );
 
     /**
      * Tests if an SVG file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
@@ -276,10 +277,10 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      */
 #ifndef SIP_RUN
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>(), bool *isMissingImage = nullptr );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QgsSvgParameters &parameters = QgsSvgParameters(), bool *isMissingImage = nullptr );
 #else
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QgsSvgParameters &parameters = QgsSvgParameters() );
 #endif
 
   signals:
@@ -307,10 +308,10 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     //! Returns entry from cache or creates a new entry if it does not exist already
     QgsSvgCacheEntry *cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                  double widthScaleFactor, double fixedAspectRatio = 0, const QMap<QString, QString> &parameters = QMap<QString, QString>(), bool blocking = false, bool *isMissingImage = nullptr );
+                                  double widthScaleFactor, double fixedAspectRatio = 0, const QgsSvgParameters &parameters = QgsSvgParameters(), bool blocking = false, bool *isMissingImage = nullptr );
 
     //! Replaces parameters in elements of a dom node and calls method for all child nodes
-    void replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth, const QMap<QString, QString> &parameters );
+    void replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth, const QgsSvgParameters &parameters );
 
     void containsElemParams( const QDomElement &elem,
                              bool &hasFillParam, bool &hasDefaultFill, QColor &defaultFill,
