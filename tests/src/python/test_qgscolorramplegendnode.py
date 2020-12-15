@@ -85,7 +85,14 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         node = TestColorRampLegend(layer_tree_layer, r, 'min_label', 'max_label')
 
         pixmap = node.data(Qt.DecorationRole)
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_icon', 'color_ramp_legend_node_icon', pixmap.toImage()))
+
+        im = QImage(pixmap.size(), QImage.Format_ARGB32)
+        im.fill(QColor(255, 255, 255))
+        p = QPainter(im)
+        p.drawPixmap(0, 0, pixmap)
+        p.end()
+
+        self.assertTrue(self.imageCheck('color_ramp_legend_node_icon', 'color_ramp_legend_node_icon', im))
 
     def test_draw(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -104,6 +111,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
         image = QImage(400, 250, QImage.Format_ARGB32)
+        image.fill(QColor(255, 255, 255))
 
         p = QPainter(image)
 
