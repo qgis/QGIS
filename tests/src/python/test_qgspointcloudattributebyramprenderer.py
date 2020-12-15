@@ -29,7 +29,8 @@ from qgis.core import (
     QgsDoubleRange,
     QgsColorRampShader,
     QgsStyle,
-    QgsLayerTreeLayer
+    QgsLayerTreeLayer,
+    QgsColorRampLegendNode
 )
 
 from qgis.PyQt.QtCore import QDir, QSize, Qt
@@ -147,14 +148,14 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
         layer_tree_layer = QgsLayerTreeLayer(layer)
         nodes = renderer.createLegendNodes(layer_tree_layer)
-        self.assertEqual(len(nodes), 4)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), '200')
-        self.assertEqual(nodes[1].data(Qt.DisplayRole), '400')
-        self.assertEqual(nodes[2].data(Qt.DisplayRole), '600')
-        self.assertEqual(nodes[3].data(Qt.DisplayRole), '800')
+        self.assertEqual(len(nodes), 1)
+        self.assertIsInstance(nodes[0], QgsColorRampLegendNode)
+        self.assertEqual(nodes[0].ramp().color1().name(), '#440154')
+        self.assertEqual(nodes[0].ramp().color2().name(), '#fde725')
 
         shader = QgsColorRampShader(200, 600, ramp.clone())
         shader.setClassificationMode(QgsColorRampShader.EqualInterval)
+        shader.setColorRampType(QgsColorRampShader.Exact)
         shader.classifyColorRamp(classes=2)
         renderer.setColorRampShader(shader)
         nodes = renderer.createLegendNodes(layer_tree_layer)
