@@ -67,7 +67,7 @@ bool QgsPdalEptGenerationTask::runUntwine()
   QFileInfo executable( mUntwineExecutableBinary );
   if ( !executable.isExecutable() )
   {
-    QgsMessageLog::logMessage( tr( "Unwine executable not found %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::Critical );
+    QgsMessageLog::logMessage( tr( "Untwine executable not found %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::Critical );
     return false;
   }
   else

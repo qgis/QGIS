@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-
 #include <memory>
 
 class QgsEptPointCloudIndex;
@@ -50,9 +49,11 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
     void loadIndex( ) override;
     void generateIndex( ) override;
+    PointCloudIndexGenerationState indexingState( ) override;
 
   private slots:
     void onGenerateIndexFinished();
+    void onGenerateIndexFailed();
 
   private:
     bool anyIndexingTaskExists();

@@ -47,6 +47,7 @@ QgsPdalProvider::QgsPdalProvider(
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   mIsValid = load( uri );
+  loadIndex( );
 }
 
 QgsPdalProvider::~QgsPdalProvider() = default;
@@ -91,7 +92,7 @@ void QgsPdalProvider::generateIndex()
 
   if ( anyIndexingTaskExists() )
   {
-    QgsMessageLog::logMessage( tr( "EPT generation task already runnings" ), QObject::tr( "Point clouds" ), Qgis::Info );
+    QgsMessageLog::logMessage( tr( "EPT generation task is already running" ), QObject::tr( "Point clouds" ), Qgis::Info );
     return;
   }
 
@@ -99,13 +100,23 @@ void QgsPdalProvider::generateIndex()
 
   QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputDir );
 
-  connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFinished );
+  connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
   connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
 
   mRunningIndexingTask = generationTask;
   QgsDebugMsgLevel( "Ept Generation Task Created", 2 );
   emit indexGenerationStateChanged( PointCloudIndexGenerationState::Indexing );
   QgsApplication::taskManager()->addTask( generationTask );
+}
+
+QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::indexingState()
+{
+  if ( mIndex->isValid() )
+    return PointCloudIndexGenerationState::Indexed;
+  else if ( mRunningIndexingTask )
+    return PointCloudIndexGenerationState::Indexing;
+  else
+    return PointCloudIndexGenerationState::NotIndexed;
 }
 
 void QgsPdalProvider::loadIndex( )
@@ -130,10 +141,21 @@ void QgsPdalProvider::onGenerateIndexFinished()
 {
   QgsPdalEptGenerationTask *task = qobject_cast<QgsPdalEptGenerationTask *>( QObject::sender() );
   // this may be already canceled task that we don't care anymore...
-  if ( ( task == mRunningIndexingTask ) && ( !mIndex->isValid() ) )
+  if ( task == mRunningIndexingTask )
   {
     mRunningIndexingTask = nullptr;
     emit indexGenerationStateChanged( PointCloudIndexGenerationState::Indexed );
+  }
+}
+
+void QgsPdalProvider::onGenerateIndexFailed()
+{
+  QgsPdalEptGenerationTask *task = qobject_cast<QgsPdalEptGenerationTask *>( QObject::sender() );
+  // this may be already canceled task that we don't care anymore...
+  if ( task == mRunningIndexingTask )
+  {
+    mRunningIndexingTask = nullptr;
+    emit indexGenerationStateChanged( PointCloudIndexGenerationState::NotIndexed );
   }
 }
 

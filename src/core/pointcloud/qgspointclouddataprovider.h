@@ -100,6 +100,12 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      */
     virtual void generateIndex( ) = 0;
 
+
+    /**
+     * Gets the current index generation state
+     */
+    virtual PointCloudIndexGenerationState indexingState( ) = 0;
+
     /**
      * Returns the point cloud index associated with the provider.
      *

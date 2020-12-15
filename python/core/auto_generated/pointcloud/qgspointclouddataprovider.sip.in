@@ -84,6 +84,12 @@ emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 %End
 
 
+    virtual PointCloudIndexGenerationState indexingState( ) = 0;
+%Docstring
+Gets the current index generation state
+%End
+
+
     bool hasValidIndex() const;
 %Docstring
 Returns whether provider has index which is valid

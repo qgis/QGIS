@@ -189,6 +189,7 @@ void TestQgsPdalProvider::validLayer()
 
   QCOMPARE( layer->dataProvider()->pointCount(), 253 );
   QCOMPARE( layer->pointCount(), 253 );
+  QVERIFY( layer->dataProvider()->indexingState() == QgsPointCloudDataProvider::NotIndexed );
 }
 
 void TestQgsPdalProvider::testEptGeneration()

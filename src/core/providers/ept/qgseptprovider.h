@@ -55,6 +55,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     QVariantMap originalMetadata() const override;
     void loadIndex( ) override;
     void generateIndex( ) override;
+    PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
     std::unique_ptr<QgsEptPointCloudIndex> mIndex;

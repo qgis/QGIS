@@ -37,6 +37,8 @@ QgsEptProvider::QgsEptProvider(
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+
+  loadIndex( );
 }
 
 QgsEptProvider::~QgsEptProvider() = default;

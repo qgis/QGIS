@@ -319,8 +319,6 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged );
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
-  mDataProvider.get()->loadIndex( );
-
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
   setExtent( mDataProvider->extent() );
