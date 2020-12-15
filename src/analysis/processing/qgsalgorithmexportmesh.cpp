@@ -364,7 +364,7 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
     {
       geom.transform( mTransform );
     }
-    catch ( QgsCsException &e )
+    catch ( QgsCsException & )
     {
       geom = meshElement( i );
       feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
@@ -666,7 +666,7 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
         {
           geom.transform( mTransform );
         }
-        catch ( QgsCsException &e )
+        catch ( QgsCsException & )
         {
           geom = QgsGeometry( point.clone() );
           feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
@@ -1296,7 +1296,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
     {
       line.transform( transform );
     }
-    catch ( QgsCsException &e )
+    catch ( QgsCsException & )
     {
       line = feat.geometry();
       feedback->reportError( QObject::tr( "Could not transform line to mesh CRS" ) );
@@ -1610,7 +1610,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
     {
       geom.transform( transform );
     }
-    catch ( QgsCsException &e )
+    catch ( QgsCsException & )
     {
       geom = feat.geometry();
       feedback->reportError( QObject::tr( "Could not transform line to mesh CRS" ) );
