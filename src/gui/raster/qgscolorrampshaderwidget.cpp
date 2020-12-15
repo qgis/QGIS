@@ -725,6 +725,7 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
 {
   auto applyPrecision = [ = ]( const QString & value )
   {
+    double val { value.toDouble( ) };
     Qgis::DataType dataType { mRasterDataProvider ? mRasterDataProvider->dataType( mBand ) : Qgis::DataType::Float64 };
     switch ( dataType )
     {
@@ -738,12 +739,11 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
       case Qgis::DataType::ARGB32:
       case Qgis::DataType::ARGB32_Premultiplied:
       {
-        return QLocale().toString( QLocale().toLongLong( value ) );
+        return QLocale().toString( std::round( val ), 'f', 0 );
       }
       case Qgis::DataType::Float32:
       case Qgis::DataType::CFloat32:
       {
-        double val { value.toFloat( ) };
         if ( mLabelPrecisionSpinBox->value() <  0 )
         {
           const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
@@ -756,7 +756,6 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
       case Qgis::DataType::CFloat64:
       case Qgis::DataType::UnknownDataType:
       {
-        double val { value.toDouble( ) };
         if ( mLabelPrecisionSpinBox->value() <  0 )
         {
           const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
