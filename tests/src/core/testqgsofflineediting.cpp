@@ -154,6 +154,8 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   //set on LayerTreeNode showFeatureCount property
   QgsLayerTreeLayer *layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
+  // LayerTreeNode custom property
+  layerTreelayer->setCustomProperty( QStringLiteral( "myCustomProperty" ), true );
 
   //convert
   if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
@@ -171,6 +173,8 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 1 );
   //unset on LayerTreeNode showFeatureCount property
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 0 );
+  // Check layerTreeNode custom property
+  QVERIFY( layerTreelayer->customProperty( QStringLiteral( "myCustomProperty" ), false ).toBool() );
 
   //synchronize back
   mOfflineEditing->synchronize();
@@ -183,6 +187,8 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 0 );
+  // Check LayerTreeNode custom property
+  QVERIFY( layerTreelayer->customProperty( QStringLiteral( "myCustomProperty" ), false ).toBool() );
 }
 
 void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
@@ -206,8 +212,9 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   layerTreelayer->setItemVisibilityChecked( false );
   QgsMapLayerStyle style;
   style.readFromLayer( mpLayer );
-
   mpLayer->styleManager()->addStyle( QStringLiteral( "testStyle" ), style );
+  // LayerTreeNode custom property
+  layerTreelayer->setCustomProperty( QStringLiteral( "myCustomProperty" ), true );
 
   //convert
   if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
@@ -224,6 +231,8 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 1 );
+  // Check layerTreeNode custom property
+  QVERIFY( layerTreelayer->customProperty( QStringLiteral( "myCustomProperty" ), false ).toBool() );
   QCOMPARE( layerTreelayer->isVisible(), false );
   QVERIFY( mpLayer->styleManager()->styles().contains( QStringLiteral( "testStyle" ) ) );
 
@@ -256,6 +265,8 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 0 );
+  // Check layerTreeNode custom property
+  QVERIFY( layerTreelayer->customProperty( QStringLiteral( "myCustomProperty" ), false ).toBool() );
 
   //get last feature
   QgsFeature f = mpLayer->getFeature( mpLayer->dataProvider()->featureCount() - 1 );
