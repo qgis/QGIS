@@ -3150,6 +3150,54 @@ QgsStringMap QgsVectorLayer::attributeAliases() const
   return mAttributeAliasMap;
 }
 
+QSet<QString> QgsVectorLayer::excludeAttributesWms() const
+{
+  QSet<QString> excludeList;
+  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
+  {
+    if ( flagsIt->testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+    {
+      excludeList << flagsIt.key();
+    }
+  }
+  return excludeList;
+}
+
+void QgsVectorLayer::setExcludeAttributesWms( const QSet<QString> &att )
+{
+  QMap< QString, QgsField::ConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
+  for ( ; flagsIt != mFieldConfigurationFlags.end(); ++flagsIt )
+  {
+    flagsIt->setFlag( QgsField::ConfigurationFlag::HideFromWms, att.contains( flagsIt.key() ) );
+  }
+  updateFields();
+}
+
+QSet<QString> QgsVectorLayer::excludeAttributesWfs() const
+{
+  QSet<QString> excludeList;
+  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
+  {
+    if ( flagsIt->testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
+    {
+      excludeList << flagsIt.key();
+    }
+  }
+  return excludeList;
+}
+
+void QgsVectorLayer::setExcludeAttributesWfs( const QSet<QString> &att )
+{
+  QMap< QString, QgsField::ConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
+  for ( ; flagsIt != mFieldConfigurationFlags.end(); ++flagsIt )
+  {
+    flagsIt->setFlag( QgsField::ConfigurationFlag::HideFromWfs, att.contains( flagsIt.key() ) );
+  }
+  updateFields();
+}
+
 bool QgsVectorLayer::deleteAttribute( int index )
 {
   if ( index < 0 || index >= fields().count() )
