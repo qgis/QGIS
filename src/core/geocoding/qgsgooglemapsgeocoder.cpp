@@ -118,16 +118,16 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
     return QList<QgsGeocoderResult>();
   }
 
-  if ( res.contains( QStringLiteral( "error_message" ) ) )
+  if ( res.contains( QLatin1String( "error_message" ) ) )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( QStringLiteral( "error_message" ) ).toString() );
   }
 
-  if ( status == QStringLiteral( "REQUEST_DENIED" ) || status == QStringLiteral( "OVER_QUERY_LIMIT" ) )
+  if ( status == QLatin1String( "REQUEST_DENIED" ) || status == QLatin1String( "OVER_QUERY_LIMIT" ) )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( QObject::tr( "Request denied -- the API key was rejected" ) );
   }
-  if ( status != QStringLiteral( "OK" ) )
+  if ( status != QLatin1String( "OK" ) && status != QLatin1String( "ZERO_RESULTS" ) )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( QStringLiteral( "status" ) ).toString() );
   }
