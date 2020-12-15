@@ -169,6 +169,8 @@ QSet<QString> QgsPointCloudAttributeByRampRenderer::usedAttributes( const QgsPoi
 QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
   QList<QgsLayerTreeModelLegendNode *> res;
+  res << new QgsSimpleLegendNode( nodeLayer, mAttribute );
+
   switch ( mColorRampShader.colorRampType() )
   {
     case QgsColorRampShader::Interpolated:
