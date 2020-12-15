@@ -1837,25 +1837,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      * \deprecated since QGIS 3.16, use fields().configurationFlags() instead
      */
-    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWms() const SIP_DEPRECATED { return mExcludeAttributesWMS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWms() const SIP_DEPRECATED;
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      * \deprecated since QGIS 3.16, use setFieldConfigurationFlag instead
      */
-    Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWMS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED;
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      * \deprecated since QGIS 3.16, use fields().configurationFlags() instead
      */
-    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWfs() const SIP_DEPRECATED { return mExcludeAttributesWFS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWfs() const SIP_DEPRECATED;
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      * \deprecated since QGIS 3.16, use setFieldConfigurationFlag instead
      */
-    Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWFS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED;
 
     /**
      * Deletes an attribute field (but does not commit it).
@@ -2832,12 +2832,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Holds the configuration for the edit form
     QgsEditFormConfig mEditFormConfig;
-
-    //! Attributes which are not published in WMS
-    QSet<QString> mExcludeAttributesWMS;
-
-    //! Attributes which are not published in WFS
-    QSet<QString> mExcludeAttributesWFS;
 
     //! Geometry type as defined in enum WkbType (qgis.h)
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
