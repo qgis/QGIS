@@ -1704,14 +1704,14 @@ if (WITH_EPT)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptdataitems.cpp
       providers/ept/qgseptprovider.cpp
-      providers/ept/qgseptdecoder.cpp
-      providers/ept/qgseptpointcloudindex.cpp
+      pointcloud/qgseptdecoder.cpp
+      pointcloud/qgseptpointcloudindex.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
-      providers/ept/qgseptdecoder.h
-      providers/ept/qgseptpointcloudindex.h
+      pointcloud/qgseptdecoder.h
+      pointcloud/qgseptpointcloudindex.h
   )
 endif()
 

@@ -44,23 +44,21 @@ class QgsEptProvider: public QgsPointCloudDataProvider
 
     QgsRectangle extent() const override;
     QgsPointCloudAttributeCollection attributes() const override;
-
     bool isValid() const override;
-
     QString name() const override;
-
     QString description() const override;
-
     QgsPointCloudIndex *index() const override;
     int pointCount() const override;
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantMap originalMetadata() const override;
+    void loadIndex( ) override;
+    void generateIndex( ) override;
+    PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
     std::unique_ptr<QgsEptPointCloudIndex> mIndex;
-    bool mIsValid = false;
 };
 
 class QgsEptProviderMetadata : public QgsProviderMetadata

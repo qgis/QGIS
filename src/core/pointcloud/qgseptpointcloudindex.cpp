@@ -31,6 +31,8 @@
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
+#include "qgsfeedback.h"
+#include "qgsmessagelog.h"
 
 ///@cond PRIVATE
 
@@ -41,16 +43,29 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex() = default;
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-bool QgsEptPointCloudIndex::load( const QString &fileName )
+void QgsEptPointCloudIndex::load( const QString &fileName )
 {
-  // mDirectory = directory;
   QFile f( fileName );
   if ( !f.open( QIODevice::ReadOnly ) )
-    return false;
+  {
+    QgsMessageLog::logMessage( tr( "Unable to open %1 for reading" ).arg( fileName ) );
+    mIsValid = false;
+    return;
+  }
 
   const QDir directory = QFileInfo( fileName ).absoluteDir();
   mDirectory = directory.absolutePath();
+  bool success = loadSchema( f );
+  if ( success )
+  {
+    success = loadHierarchy();
+  }
 
+  mIsValid = success;
+}
+
+bool QgsEptPointCloudIndex::loadSchema( QFile &f )
+{
   QByteArray dataJson = f.readAll();
   QJsonParseError err;
   QJsonDocument doc = QJsonDocument::fromJson( dataJson, &err );
@@ -243,8 +258,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
 #endif
 
-  // load hierarchy
-  return loadHierarchy();
+  return true;
 }
 
 QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -389,6 +403,11 @@ bool QgsEptPointCloudIndex::loadHierarchy()
     }
   }
   return true;
+}
+
+bool QgsEptPointCloudIndex::isValid() const
+{
+  return mIsValid;
 }
 
 ///@endcond
