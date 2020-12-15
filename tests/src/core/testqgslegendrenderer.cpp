@@ -41,6 +41,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
 #include "qgsdiagramrenderer.h"
+#include "qgspalettedrasterrenderer.h"
 #include "diagram/qgspiediagram.h"
 #include "qgspropertytransformer.h"
 
@@ -261,6 +262,14 @@ void TestQgsLegendRenderer::init()
   static const char RASTER_ARRAY[] = { 1, 2, 2, 1 };
   QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg( ( qulonglong ) RASTER_ARRAY );
   mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
+
+  std::unique_ptr< QgsPalettedRasterRenderer > rasterRenderer( new  QgsPalettedRasterRenderer( mRL->dataProvider(), 1,
+  {
+    QgsPalettedRasterRenderer::Class( 1, QColor( 0, 0, 0 ), QStringLiteral( "1" ) ),
+    QgsPalettedRasterRenderer::Class( 2, QColor( 255, 255, 255 ), QStringLiteral( "2" ) )
+  } ) );
+  mRL->setRenderer( rasterRenderer.release() );
+
   QgsProject::instance()->addMapLayer( mRL );
 
   QgsCategoryList cats;
