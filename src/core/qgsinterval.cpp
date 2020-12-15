@@ -207,6 +207,63 @@ void QgsInterval::setSeconds( double seconds )
   mOriginalUnit = QgsUnitTypes::TemporalSeconds;
 }
 
+void QgsInterval::setYears( double years )
+{
+    mSeconds = years * YEARS;
+    mValid = true;
+    mOriginalDuration = years;
+    mOriginalUnit = QgsUnitTypes::TemporalYears;
+}
+
+void QgsInterval::setMonths( double months )
+{
+    mSeconds = months * MONTHS;
+    mValid = true;
+    mOriginalDuration = months;
+    mOriginalUnit = QgsUnitTypes::TemporalMonths;
+}
+
+void QgsInterval::setWeeks( double weeks )
+{
+    mSeconds = weeks * WEEKS;
+    mValid = true;
+    mOriginalDuration = weeks;
+    mOriginalUnit = QgsUnitTypes::TemporalWeeks;
+}
+
+void QgsInterval::setDays( double days )
+{
+    mSeconds = days * DAY;
+    mValid = true;
+    mOriginalDuration = days;
+    mOriginalUnit = QgsUnitTypes::TemporalDays;
+}
+
+void QgsInterval::setHours( double hours )
+{
+    mSeconds = hours * HOUR;
+    mValid = true;
+    mOriginalDuration = hours;
+    mOriginalUnit = QgsUnitTypes::TemporalHours;
+}
+
+
+void QgsInterval::setMinutes( double minutes )
+{
+    mSeconds = minutes * MINUTE;
+    mValid = true;
+    mOriginalDuration = minutes;
+    mOriginalUnit = QgsUnitTypes::TemporalMinutes;
+}
+
+void QgsInterval::setSeconds( double seconds )
+{
+    mSeconds = seconds;
+    mValid = true;
+    mOriginalDuration = seconds;
+    mOriginalUnit = QgsUnitTypes::TemporalSeconds;
+}
+
 bool QgsInterval::operator==( QgsInterval other ) const
 {
   if ( !mValid && !other.mValid )
