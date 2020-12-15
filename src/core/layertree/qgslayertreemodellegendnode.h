@@ -49,15 +49,33 @@ class QgsRenderContext;
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
-    Q_OBJECT
+#ifdef SIP_RUN
+#include "qgscolorramplegendnode.h"
+#endif
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
       sipType = sipType_QgsSymbolLegendNode;
+    else if ( qobject_cast<QgsDataDefinedSizeLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsDataDefinedSizeLegendNode;
+    else if ( qobject_cast<QgsImageLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsImageLegendNode;
+    else if ( qobject_cast<QgsRasterSymbolLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsRasterSymbolLegendNode;
+    else if ( qobject_cast<QgsSimpleLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsSimpleLegendNode;
+    else if ( qobject_cast<QgsWmsLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsWmsLegendNode;
+    else if ( qobject_cast<QgsColorRampLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsColorRampLegendNode;
     else
       sipType = 0;
     SIP_END
 #endif
+
+    Q_OBJECT
+
   public:
 
     //! Legend node data roles
