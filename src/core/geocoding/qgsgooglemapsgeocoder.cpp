@@ -18,11 +18,16 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgsreadwritelocker.h"
 #include <QUrl>
 #include <QUrlQuery>
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonObject>
+
+QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
+QMap< QUrl, QList< QgsGeocoderResult > > QgsGoogleMapsGeocoder::sCachedResults;
+
 
 QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QString &regionBias )
   : QgsGeocoderInterface()
@@ -81,6 +86,14 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
 
   const QUrl url = requestUrl( string, bounds );
 
+  QgsReadWriteLocker locker( sMutex, QgsReadWriteLocker::Read );
+  auto it = sCachedResults.constFind( url );
+  if ( it != sCachedResults.constEnd() )
+  {
+    return *it;
+  }
+  locker.unlock();
+
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGoogleMapsGeocoder" ) );
 
@@ -120,9 +133,12 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   }
 
   // all good!
+  locker.changeMode( QgsReadWriteLocker::Write );
+
   const QVariantList results = res.value( QStringLiteral( "results" ) ).toList();
   if ( results.empty() )
   {
+    sCachedResults.insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -132,6 +148,8 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   {
     matches << jsonToResult( result.toMap() );
   }
+  sCachedResults.insert( url, matches );
+
   return matches;
 }
 
