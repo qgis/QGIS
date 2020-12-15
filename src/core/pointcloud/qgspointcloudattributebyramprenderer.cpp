@@ -21,6 +21,7 @@
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgscolorramplegendnode.h"
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
@@ -167,16 +168,31 @@ QSet<QString> QgsPointCloudAttributeByRampRenderer::usedAttributes( const QgsPoi
 
 QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
-  QList<QgsLayerTreeModelLegendNode *> nodes;
-
-  QList< QPair< QString, QColor > > items;
-  mColorRampShader.legendSymbologyItems( items );
-  for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+  QList<QgsLayerTreeModelLegendNode *> res;
+  switch ( mColorRampShader.colorRampType() )
   {
-    nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
-  }
+    case QgsColorRampShader::Interpolated:
+      // for interpolated shaders we use a ramp legend node
+      res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
+                                         QString::number( mColorRampShader.minimumValue() ),
+                                         QString::number( mColorRampShader.maximumValue() ) );
+      break;
 
-  return nodes;
+    case QgsColorRampShader::Discrete:
+    case QgsColorRampShader::Exact:
+    {
+      // for all others we use itemised lists
+      QList< QPair< QString, QColor > > items;
+      mColorRampShader.legendSymbologyItems( items );
+      res.reserve( items.size() );
+      for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+      {
+        res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      }
+      break;
+    }
+  }
+  return res;
 }
 
 QString QgsPointCloudAttributeByRampRenderer::attribute() const
