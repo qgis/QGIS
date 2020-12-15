@@ -51,6 +51,7 @@ and customized look.
       WmsLegend,
       DataDefinedSizeLegend,
       EmbeddedWidget,
+      ColorRampLegend,
     };
 
     QgsLayerTreeLayer *layerNode() const;
