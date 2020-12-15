@@ -1634,17 +1634,25 @@ class TestQgsExpression: public QObject
       QTest::newRow( "with_variable(name:='five', value:=5, expression:=@five * 2)" ) << QStringLiteral( "with_variable(name:='five', value:=5, expression:=@five * 2)" ) << false << QVariant( 10 );
       QTest::newRow( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << QStringLiteral( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << false << QVariant( "something" );
 
-      // array_first, array_last, array_min, array_max, array_majority
+      // array_first, array_last
       QTest::newRow( "array_first(array('a', 'b', 'c'))" ) << QStringLiteral( "array_first(array('a', 'b', 'c'))" ) << false << QVariant( "a" );
       QTest::newRow( "array_first(array())" ) << QStringLiteral( "array_first(array())" ) << false << QVariant();
       QTest::newRow( "array_last(array('a', 'b', 'c'))" ) << QStringLiteral( "array_last(array('a', 'b', 'c'))" ) << false << QVariant( "c" );
       QTest::newRow( "array_last(array())" ) << QStringLiteral( "array_last(array())" ) << false << QVariant();
+
+      // array_min, array_max, array_mean, array_median, array_majority
       QTest::newRow( "array_min(array())" ) << QStringLiteral( "array_min(array())" ) << false << QVariant();
       QTest::newRow( "array_min(array(-1, 0, 1, 2))" ) << QStringLiteral( "array_min(array(-1, 0, 1, 2))" ) << false << QVariant( -1 );
       QTest::newRow( "array_min(array(make_date(2020,12,11),make_date(2020,12,12),make_date(2020,12,13)))" ) << QStringLiteral( "array_min(array(make_date(2020,12,11),make_date(2020,12,12),make_date(2020,12,13)))" ) << false << QVariant( QDate( 2020, 12, 11 ) );
       QTest::newRow( "array_max(array())" ) << QStringLiteral( "array_max(array())" ) << false << QVariant();
       QTest::newRow( "array_max(array(-1, 0, 1, 2))" ) << QStringLiteral( "array_max(array(-1, 0, 1, 2))" ) << false << QVariant( 2 );
       QTest::newRow( "array_max(array(make_date(2020,12,11),make_date(2020,12,12),make_date(2020,12,13)))" ) << QStringLiteral( "array_max(array(make_date(2020,12,11),make_date(2020,12,12),make_date(2020,12,13)))" ) << false << QVariant( QDate( 2020, 12, 13 ) );
+      QTest::newRow( "array_mean(array())" ) << QStringLiteral( "array_mean(array())" ) << false << QVariant();
+      QTest::newRow( "array_mean(array(0,1,7,66.6,135.4))" ) << QStringLiteral( "array_mean(array(0,1,7,66.6,135.4))" ) << false << QVariant( 42 );
+      QTest::newRow( "array_mean(array(0,84,'a','b','c'))" ) << QStringLiteral( "array_mean(array(0,84,'a','b','c'))" ) << false << QVariant( 42 );
+      QTest::newRow( "array_median(array())" ) << QStringLiteral( "array_median(array())" ) << false << QVariant();
+      QTest::newRow( "array_median(array(0,1,42,42,43))" ) << QStringLiteral( "array_median(array(0,1,42,42,43))" ) << false << QVariant( 42 );
+      QTest::newRow( "array_median(array(0,0,1,2,2,42,'a','b'))" ) << QStringLiteral( "array_median(array(0,0,1,2,2,42,'a','b'))" ) << false << QVariant( 1.5 );
       QTest::newRow( "array_majority(array())" ) << QStringLiteral( "array_majority(array())" ) << false << QVariant();
       QTest::newRow( "array_majority(array(1,2,42,42,'a','b'))" ) << QStringLiteral( "array_majority(array(1,2,42,42,'a','b'))" ) << false << QVariant( QVariantList() << 42 );
 

@@ -5354,6 +5354,63 @@ static QVariant fcnArrayMaximum( const QVariantList &values, const QgsExpression
   return list.isEmpty() ? QVariant() : *std::max_element( list.constBegin(), list.constEnd(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
 }
 
+static QVariant fcnArrayMean( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  int i = 0;
+  double total = 0.0;
+  for ( const auto &item : list )
+  {
+    switch ( item.userType() )
+    {
+      case QMetaType::Int:
+      case QMetaType::UInt:
+      case QMetaType::LongLong:
+      case QMetaType::ULongLong:
+      case QMetaType::Float:
+      case QMetaType::Double:
+        total += item.toDouble();
+        ++i;
+        break;
+    }
+  }
+  return i == 0 ? QVariant() : total / i;
+}
+
+static QVariant fcnArrayMedian( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  QVariantList numbers;
+  for ( const auto &item : list )
+  {
+    switch ( item.userType() )
+    {
+      case QMetaType::Int:
+      case QMetaType::UInt:
+      case QMetaType::LongLong:
+      case QMetaType::ULongLong:
+      case QMetaType::Float:
+      case QMetaType::Double:
+        numbers.append( item );
+        break;
+    }
+  }
+  std::sort( numbers.begin(), numbers.end(), []( QVariant a, QVariant b ) -> bool { return ( qgsVariantLessThan( a, b ) ); } );
+  const int count = numbers.count();
+  if ( count == 0 )
+  {
+    return QVariant();
+  }
+  else if ( count % 2 )
+  {
+    return numbers.at( count / 2 );
+  }
+  else
+  {
+    return ( numbers.at( count / 2 - 1 ).toDouble() + numbers.at( count / 2 ).toDouble() ) / 2;
+  }
+}
+
 static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
@@ -6974,6 +7031,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_last" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayLast, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMinimum, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMaximum, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_mean" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMean, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_median" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMedian, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_majority" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayMajority, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_append" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayAppend, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_prepend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayPrepend, QStringLiteral( "Arrays" ) )
