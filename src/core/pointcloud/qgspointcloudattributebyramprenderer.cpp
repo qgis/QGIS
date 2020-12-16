@@ -181,8 +181,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
     case QgsColorRampShader::Interpolated:
       // for interpolated shaders we use a ramp legend node
       res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
-                                         QString::number( mColorRampShader.minimumValue() ),
-                                         QString::number( mColorRampShader.maximumValue() ) );
+                                         mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                                         mColorRampShader.minimumValue(),
+                                         mColorRampShader.maximumValue() );
       break;
 
     case QgsColorRampShader::Discrete:

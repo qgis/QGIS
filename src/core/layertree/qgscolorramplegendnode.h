@@ -21,6 +21,7 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendsymbolitem.h"
 #include "qgstextformat.h"
+#include "qgscolorramplegendnodesettings.h"
 
 /**
  * \ingroup core
@@ -45,6 +46,20 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp SIP_TRANSFER,
                             const QString &minimumLabel, const QString &maximumLabel, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Constructor for QgsColorRampLegendNode.
+     * \param nodeLayer layer node
+     * \param ramp color ramp to render in node. Ownership is transferred to the node.
+     * \param settings node settings
+     * \param minimumValue value associated with minimum of ramp
+     * \param maximumValue value associated with maximum of ramp
+     * \param parent attach a parent QObject to the legend node.
+     */
+    QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp SIP_TRANSFER,
+                            const QgsColorRampLegendNodeSettings &settings, double minimumValue,
+                            double maximumValue, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
 
     QVariant data( int role ) const override;
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
@@ -72,13 +87,12 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
     std::unique_ptr< QgsColorRamp > mRamp;
 
     mutable QPixmap mPixmap; // cached symbol preview
-    QString mMinimumLabel;
-    QString mMaximumLabel;
-
     QSize mIconSize;
 
-    QgsTextFormat mTextFormat;
+    QgsColorRampLegendNodeSettings mSettings;
 
 };
+
+
 
 #endif // QGSCOLORRAMPLEGENDNODE_H
