@@ -1,6 +1,8 @@
 ########################################################
 # Files
 
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 set(PDAL_SRCS
@@ -119,13 +121,14 @@ set_target_properties(untwine PROPERTIES
 
 target_link_libraries (untwine
   ${PDAL_LIBRARIES}
+  Threads::Threads
 )
 target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
 
 add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 target_link_libraries (pdalprovider
   ${PDAL_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
+  Threads::Threads
 )
 
 if (WITH_GUI)
