@@ -81,6 +81,11 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   int alpha = 0;
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.renderContext().renderingStopped() )
+    {
+      break;
+    }
+
     if ( considerZ )
     {
       // z value filtering is cheapest, if we're doing it...

@@ -35,7 +35,11 @@ QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettin
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
 {
-
+  auto callback = []()->bool
+  {
+    return false;
+  };
+  mIsCanceledCallback = callback;
 }
 
 void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )

@@ -150,6 +150,16 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      */
     double zValueFixedOffset() const { return mZValueFixedOffset; }
 
+    /**
+     * Sets the function to call to test if the rendering is canceled.
+     */
+    void setIsCanceledCallback( const std::function< bool() > &callback ) { mIsCanceledCallback = callback; }
+
+    /**
+     * Returns TRUE if the rendering is canceled.
+     */
+    bool isCanceled() const { return mIsCanceledCallback(); }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -159,6 +169,9 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudCategoryList mFilteredOutCategories;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
+
+    std::function< bool() > mIsCanceledCallback;
+
 };
 
 
