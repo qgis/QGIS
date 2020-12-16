@@ -93,6 +93,7 @@ set(QGIS_CORE_SRCS
   effects/qgstransformeffect.cpp
 
   layertree/qgscolorramplegendnode.cpp
+  layertree/qgscolorramplegendnodesettings.cpp
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
@@ -1237,6 +1238,7 @@ set(QGIS_CORE_HDRS
   labeling/qgsvectorlayerlabelprovider.h
 
   layertree/qgscolorramplegendnode.h
+  layertree/qgscolorramplegendnodesettings.h
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
