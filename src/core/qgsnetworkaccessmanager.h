@@ -424,6 +424,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     /**
      * Sets the maximum timeout \a time for network requests, in milliseconds.
+     * If set to 0, no timeout is set.
      *
      * \see timeout()
      * \since QGIS 3.6
