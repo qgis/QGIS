@@ -52,6 +52,8 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   , mFactory( factory )
   , mContext( factory->mMap, std::move( symbol ), zValueScale, zValueOffset )
 {
+  mContext.setIsCanceledCallback( [this] { return mCanceled; } );
+
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
   mContext.setAttributes( pc->attributes() );
 

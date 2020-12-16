@@ -265,6 +265,9 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
 
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.isCanceled() )
+      break;
+
     qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
     qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
@@ -367,6 +370,9 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.isCanceled() )
+      break;
+
     qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
     qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
@@ -471,6 +477,9 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   int ib = 0;
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.isCanceled() )
+      break;
+
     qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
     qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
@@ -607,6 +616,9 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.isCanceled() )
+      break;
+
     qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
     qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );

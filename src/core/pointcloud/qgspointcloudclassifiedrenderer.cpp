@@ -93,6 +93,11 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.renderContext().renderingStopped() )
+    {
+      break;
+    }
+
     if ( considerZ )
     {
       // z value filtering is cheapest, if we're doing it...
