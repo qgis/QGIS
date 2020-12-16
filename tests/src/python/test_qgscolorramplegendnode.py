@@ -13,9 +13,10 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir, Qt, QSizeF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
+
 from qgis.core import (QgsGradientColorRamp,
                        QgsRectangle,
-                       QgsLayerTreeModelLegendNode,
                        QgsColorRampLegendNode,
                        QgsLayerTreeLayer,
                        QgsVectorLayer,
@@ -25,14 +26,16 @@ from qgis.core import (QgsGradientColorRamp,
                        QgsLegendStyle,
                        QgsLayerTreeModelLegendNode,
                        QgsRenderContext,
-                       QgsMapSettings)
+                       QgsMapSettings,
+                       QgsColorRampLegendNodeSettings,
+                       QgsBearingNumericFormat,
+                       QgsReadWriteContext)
 from qgis.testing import start_app, unittest
 
 start_app()
 
 
 class TestColorRampLegend(QgsColorRampLegendNode):
-
     """
     Override font role to use standard qgis test font
     """
@@ -56,6 +59,36 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+
+    def test_settings(self):
+        settings = QgsColorRampLegendNodeSettings()
+        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        self.assertEqual(settings.direction(), QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        settings.setMinimumLabel('min')
+        self.assertEqual(settings.minimumLabel(), 'min')
+        settings.setMaximumLabel('max')
+        self.assertEqual(settings.maximumLabel(), 'max')
+
+        self.assertIsNotNone(settings.numericFormat())
+        settings.setNumericFormat(QgsBearingNumericFormat())
+        self.assertIsInstance(settings.numericFormat(), QgsBearingNumericFormat)
+
+        settings2 = QgsColorRampLegendNodeSettings(settings)
+        self.assertEqual(settings2.direction(), QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        self.assertEqual(settings2.minimumLabel(), 'min')
+        self.assertEqual(settings2.maximumLabel(), 'max')
+        self.assertIsInstance(settings2.numericFormat(), QgsBearingNumericFormat)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement('test')
+        settings.writeXml(doc, elem, QgsReadWriteContext())
+
+        settings3 = QgsColorRampLegendNodeSettings()
+        settings3.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(settings3.direction(), QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        self.assertEqual(settings3.minimumLabel(), 'min')
+        self.assertEqual(settings3.maximumLabel(), 'max')
+        self.assertIsInstance(settings3.numericFormat(), QgsBearingNumericFormat)
 
     def test_basic(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
