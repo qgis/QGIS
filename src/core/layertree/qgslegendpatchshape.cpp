@@ -151,7 +151,7 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
     {
       QList< QList<QPolygonF> > res;
       const QgsGeometry patch = geom;
-      if ( QgsWkbTypes::flatType( mGeometry.wkbType() ) == QgsWkbTypes::LineString || QgsWkbTypes::flatType( mGeometry.wkbType() ) == QgsWkbTypes::MultiLineString)
+      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
       {
         for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
         {
