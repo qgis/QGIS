@@ -111,7 +111,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
       if ( applyYOffset )
         attributeValue = context.offset().y() + context.scale().y() * attributeValue;
       if ( applyZOffset )
-        attributeValue = context.offset().z() + context.scale().z() * attributeValue + context.zValueFixedOffset();
+        attributeValue = ( context.offset().z() + context.scale().z() * attributeValue ) * context.zValueScale() + context.zValueFixedOffset();
 
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
       drawPoint( x, y, QColor( red, green, blue, alpha ), context );
