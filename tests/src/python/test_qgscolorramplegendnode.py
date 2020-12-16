@@ -19,7 +19,7 @@ from qgis.core import (QgsGradientColorRamp,
                        QgsColorRampLegendNode,
                        QgsLayerTreeLayer,
                        QgsVectorLayer,
-                       QgsRenderChecker,
+                       QgsMultiRenderChecker,
                        QgsFontUtils,
                        QgsLegendSettings,
                        QgsLegendStyle,
@@ -141,7 +141,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlPathPrefix("color_ramp_legend_node")
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
