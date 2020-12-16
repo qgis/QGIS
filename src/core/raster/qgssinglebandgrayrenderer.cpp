@@ -217,6 +217,12 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandGrayRenderer::createLegendNode
   QList<QgsLayerTreeModelLegendNode *> res;
   if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
   {
+    const QString name = displayBandName( mGrayBand );
+    if ( !name.isEmpty() )
+    {
+      res << new QgsSimpleLegendNode( nodeLayer, name );
+    }
+
     const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
     const QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
     res << new QgsColorRampLegendNode( nodeLayer, new QgsGradientColorRamp( minColor, maxColor ),

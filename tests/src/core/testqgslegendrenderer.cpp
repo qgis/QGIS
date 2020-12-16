@@ -119,7 +119,30 @@ static bool _verifyImage( const QString &testName, QString &report, int diff = 3
   return equal;
 }
 
+class TestRasterRenderer : public QgsPalettedRasterRenderer
+{
+  public:
 
+    TestRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes )
+      : QgsPalettedRasterRenderer( input, bandNumber, classes )
+    {}
+
+    // don't create the default legend nodes for this layer!
+    QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override
+    {
+      QList<QgsLayerTreeModelLegendNode *> res;
+
+      const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+      res.reserve( res.size() + items.size() );
+      for ( const QPair< QString, QColor > &item : items )
+      {
+        res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      }
+
+      return res;
+    }
+
+};
 
 class TestQgsLegendRenderer : public QObject
 {
@@ -263,7 +286,7 @@ void TestQgsLegendRenderer::init()
   QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg( ( qulonglong ) RASTER_ARRAY );
   mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
 
-  std::unique_ptr< QgsPalettedRasterRenderer > rasterRenderer( new  QgsPalettedRasterRenderer( mRL->dataProvider(), 1,
+  std::unique_ptr< TestRasterRenderer > rasterRenderer( new  TestRasterRenderer( mRL->dataProvider(), 1,
   {
     QgsPalettedRasterRenderer::Class( 1, QColor( 0, 0, 0 ), QStringLiteral( "1" ) ),
     QgsPalettedRasterRenderer::Class( 2, QColor( 255, 255, 255 ), QStringLiteral( "2" ) )

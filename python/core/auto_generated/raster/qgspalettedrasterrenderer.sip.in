@@ -88,6 +88,8 @@ Returns the raster band used for rendering the raster.
 
     virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
     virtual QList<int> usesBands() const;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;

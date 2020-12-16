@@ -166,12 +166,5 @@ QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider,
   if ( !provider )
     return QString();
 
-  QString name = provider->generateBandName( band );
-
-  QString colorInterp = provider->colorInterpretationName( band );
-  if ( colorInterp != QLatin1String( "Undefined" ) )
-  {
-    name.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );
-  }
-  return name;
+  return provider->displayBandName( band );
 }
