@@ -262,7 +262,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
 {
   Q_UNUSED( attributes )
 
-  std::ifstream file( filename.toLatin1().constData(), std::ios::binary );
+  const QByteArray arr = filename.toUtf8();
+  std::ifstream file( arr.constData(), std::ios::binary );
   if ( ! file.good() )
     return nullptr;
 

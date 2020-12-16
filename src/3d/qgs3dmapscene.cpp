@@ -830,7 +830,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
   if ( needsSceneUpdate )
     onCameraChanged();   // needed for chunked entities
 
-  connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  connect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
   if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
@@ -858,7 +858,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   if ( entity )
     entity->deleteLater();
 
-  disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  disconnect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
   if ( layer->type() == QgsMapLayerType::VectorLayer )
   {

@@ -1317,6 +1317,8 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 {
   QgsDebugMsgLevel( QStringLiteral( "Checking for permissions on the relation" ), 2 );
 
+  mEnabledCapabilities = QgsVectorDataProvider::Capability::ReloadData;
+
   QgsPostgresResult testAccess;
   if ( !mIsQuery )
   {
@@ -1348,7 +1350,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     // the latter flag is here just for compatibility
     if ( !mSelectAtIdDisabled )
     {
-      mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
+      mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
     }
 
     if ( !inRecovery )

@@ -262,7 +262,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the layer's data provider, it may be NULLPTR.
      */
-    virtual QgsDataProvider *dataProvider();
+    Q_INVOKABLE virtual QgsDataProvider *dataProvider();
 
     /**
      * Returns the layer's data provider in a const-correct manner, it may be NULLPTR.
@@ -502,8 +502,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Synchronises with changes in the datasource
-        */
-    virtual void reload() {}
+     */
+    Q_INVOKABLE virtual void reload() {}
 
     /**
      * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -1281,6 +1281,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void triggerRepaint( bool deferredUpdate = false );
 
     /**
+     * Will advise any 3D maps that this layer requires to be updated in the scene.
+     * Will emit a request3DUpdate() signal.
+     *
+     * \since QGIS 3.18
+     */
+    void trigger3DUpdate();
+
+    /**
      * Triggers an emission of the styleChanged() signal.
      * \since QGIS 2.16
      */
@@ -1403,6 +1411,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     void renderer3DChanged();
+
+    /**
+     * Signal emitted when a layer requires an update in any 3D maps.
+     *
+     * \since QGIS 3.18
+     */
+    void request3DUpdate();
 
     /**
      * Emitted whenever the configuration is changed. The project listens to this signal

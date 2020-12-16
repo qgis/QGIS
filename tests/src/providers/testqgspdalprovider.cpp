@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
+#include <QTemporaryDir>
 
 //qgis includes...
 #include "qgis.h"
@@ -30,6 +31,7 @@
 #include "qgspdalprovider.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgspdaleptgenerationtask.h"
 
 /**
  * \ingroup UnitTests
@@ -52,6 +54,8 @@ class TestQgsPdalProvider : public QObject
     void preferredUri();
     void brokenPath();
     void validLayer();
+    void testEptGeneration();
+    void testEptGenerationNonASCII();
 
   private:
     QString mTestDataDir;
@@ -156,13 +160,24 @@ void TestQgsPdalProvider::preferredUri()
 void TestQgsPdalProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "pdal" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >(
+        QStringLiteral( "not valid" ),
+        QStringLiteral( "layer" ),
+        QStringLiteral( "pdal" ) );
   QVERIFY( !layer->isValid() );
 }
 
 void TestQgsPdalProvider::validLayer()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), QStringLiteral( "layer" ), QStringLiteral( "pdal" ) );
+  QgsPointCloudLayer::LayerOptions options;
+  options.skipIndexGeneration = true;
+
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >(
+        mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ),
+        QStringLiteral( "layer" ),
+        QStringLiteral( "pdal" ),
+        options
+      );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
@@ -174,6 +189,27 @@ void TestQgsPdalProvider::validLayer()
 
   QCOMPARE( layer->dataProvider()->pointCount(), 253 );
   QCOMPARE( layer->pointCount(), 253 );
+  QVERIFY( layer->dataProvider()->indexingState() == QgsPointCloudDataProvider::NotIndexed );
+}
+
+void TestQgsPdalProvider::testEptGeneration()
+{
+  QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path() );
+  QVERIFY( task.run() );
+  QFileInfo fi( dir.path() + "/ept.json" );
+  QVERIFY( fi.exists() );
+}
+
+void TestQgsPdalProvider::testEptGenerationNonASCII()
+{
+  QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud%!* _*čopy.las" ), dir.path() );
+  QVERIFY( task.run() );
+  QFileInfo fi( dir.path() + "/ept.json" );
+  QVERIFY( fi.exists() );
 }
 
 QGSTEST_MAIN( TestQgsPdalProvider )

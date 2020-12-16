@@ -29,6 +29,7 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgspointcloudlayerelevationproperties.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>

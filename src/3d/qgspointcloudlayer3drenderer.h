@@ -43,8 +43,17 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
 
-    //! Constructor for QgsPointCloud3DRenderContext.
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol );
+    /**
+     * Constructor for QgsPointCloud3DRenderContext.
+     *
+     * The \a zValueScale argument specifies any constant scaling factor which must be applied to z values
+     * taken from the point cloud index.
+     *
+     * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
+     * taken from the point cloud index.
+     */
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
+                                  double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
@@ -127,6 +136,30 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
       }
     }
 
+    /**
+     * Returns any constant scaling factor which must be applied to z values taken from the point cloud index.
+     *
+     * \note Scaling of z values should be applied before the zValueFixedOffset().
+     */
+    double zValueScale() const { return mZValueScale; }
+
+    /**
+     * Returns any constant offset which must be applied to z values taken from the point cloud index.
+     *
+     * \note Scaling of z values via zValueScale() should be applied before the zValueFixedOffset().
+     */
+    double zValueFixedOffset() const { return mZValueFixedOffset; }
+
+    /**
+     * Sets the function to call to test if the rendering is canceled.
+     */
+    void setIsCanceledCallback( const std::function< bool() > &callback ) { mIsCanceledCallback = callback; }
+
+    /**
+     * Returns TRUE if the rendering is canceled.
+     */
+    bool isCanceled() const { return mIsCanceledCallback(); }
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -134,6 +167,11 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudAttributeCollection mAttributes;
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     QgsPointCloudCategoryList mFilteredOutCategories;
+    double mZValueScale = 1.0;
+    double mZValueFixedOffset = 0;
+
+    std::function< bool() > mIsCanceledCallback;
+
 };
 
 

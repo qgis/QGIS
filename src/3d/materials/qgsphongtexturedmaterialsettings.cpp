@@ -18,7 +18,12 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
+#include "qgsimagetexture.h"
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 #include <Qt3DExtras/QDiffuseMapMaterial>
+#else
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
+#endif
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QTexture>
@@ -89,28 +94,6 @@ void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsRea
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-///@cond PRIVATE
-class QgsQImageTextureImage : public Qt3DRender::QPaintedTextureImage
-{
-  public:
-    QgsQImageTextureImage( const QImage &image, Qt3DCore::QNode *parent = nullptr )
-      : Qt3DRender::QPaintedTextureImage( parent )
-      , mImage( image )
-    {
-      setSize( mImage.size() );
-    }
-
-    void paint( QPainter *painter ) override
-    {
-      painter->drawImage( mImage.rect(), mImage, mImage.rect() );
-    }
-
-  private:
-
-    QImage mImage;
-
-};
-
 ///@endcond
 Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
@@ -129,14 +112,33 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
 
       if ( !textureSourceImage.isNull() )
       {
+        QgsImageTexture *textureImage = new QgsImageTexture( textureSourceImage );
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
         Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
-
-        QgsQImageTextureImage *textureImage = new QgsQImageTextureImage( textureSourceImage );
         material->diffuse()->addTextureImage( textureImage );
 
         material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
         material->diffuse()->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
         material->diffuse()->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
+#else
+        Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial;
+
+        Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
+        texture->addTextureImage( textureImage );
+
+        texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
+        texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
+        texture->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
+
+        texture->setSamples( 4 );
+
+        texture->setGenerateMipMaps( true );
+        texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+        texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+
+        material->setDiffuse( QVariant::fromValue( texture ) );
+#endif
+
         material->setSpecular( mSpecular );
         material->setAmbient( mAmbient );
         material->setShininess( mShininess );

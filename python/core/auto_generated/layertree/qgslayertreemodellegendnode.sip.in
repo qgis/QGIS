@@ -26,10 +26,23 @@ and customized look.
 
 %TypeHeaderCode
 #include "qgslayertreemodellegendnode.h"
+#include "qgscolorramplegendnode.h"
 %End
 %ConvertToSubClassCode
     if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
       sipType = sipType_QgsSymbolLegendNode;
+    else if ( qobject_cast<QgsDataDefinedSizeLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsDataDefinedSizeLegendNode;
+    else if ( qobject_cast<QgsImageLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsImageLegendNode;
+    else if ( qobject_cast<QgsRasterSymbolLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsRasterSymbolLegendNode;
+    else if ( qobject_cast<QgsSimpleLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsSimpleLegendNode;
+    else if ( qobject_cast<QgsWmsLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsWmsLegendNode;
+    else if ( qobject_cast<QgsColorRampLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsColorRampLegendNode;
     else
       sipType = 0;
 %End
@@ -51,6 +64,7 @@ and customized look.
       WmsLegend,
       DataDefinedSizeLegend,
       EmbeddedWidget,
+      ColorRampLegend,
     };
 
     QgsLayerTreeLayer *layerNode() const;

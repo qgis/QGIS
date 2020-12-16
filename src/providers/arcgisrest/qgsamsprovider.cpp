@@ -338,7 +338,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
 
 QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities() const
 {
-  return QgsRasterDataProvider::ReadLayerMetadata;
+  return ProviderCapability::ReadLayerMetadata | ProviderCapability::ReloadData;
 }
 
 QString QgsAmsProvider::name() const { return AMS_PROVIDER_KEY; }

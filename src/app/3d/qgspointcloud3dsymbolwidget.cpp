@@ -25,6 +25,7 @@
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgsdoublevalidator.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
+#include "qgspointcloudlayerelevationproperties.h"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -34,6 +35,9 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 
   mPointSizeSpinBox->setClearValue( 2.0 );
   mMaxScreenErrorSpinBox->setClearValue( 1.0 );
+
+  mColorRampShaderMinEdit->setShowClearButton( false );
+  mColorRampShaderMaxEdit->setShowClearButton( false );
 
   mRenderingParameterComboBox->setLayer( layer );
   mRenderingParameterComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
@@ -463,6 +467,11 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
       mProviderMin = std::numeric_limits< double >::quiet_NaN();
       mProviderMax = std::numeric_limits< double >::quiet_NaN();
     }
+
+    const double zScale = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale();
+    const double zOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();
+    mProviderMin = mProviderMin * zScale + zOffset;
+    mProviderMax = mProviderMax * zScale + zOffset;
   }
   mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
   emitChangedSignal();

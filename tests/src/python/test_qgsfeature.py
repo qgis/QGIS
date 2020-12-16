@@ -165,6 +165,36 @@ class TestQgsFeature(unittest.TestCase):
         feat.setGeometry(QgsPoint(12, 34))
         self.assertEqual(feat.geometry().asWkt(), 'Point (12 34)')
 
+    def testAttributeCount(self):
+        f = QgsFeature()
+        self.assertEqual(f.attributeCount(), 0)
+        f.setAttributes([1, 2, 3])
+        self.assertEqual(f.attributeCount(), 3)
+
+    def testResizeAttributes(self):
+        f = QgsFeature()
+        f.resizeAttributes(3)
+        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
+        f.setAttributes([1, 2, 3])
+        f.resizeAttributes(3)
+        self.assertEqual(f.attributes(), [1, 2, 3])
+        f.resizeAttributes(5)
+        self.assertEqual(f.attributes(), [1, 2, 3, NULL, NULL])
+        f.resizeAttributes(2)
+        self.assertEqual(f.attributes(), [1, 2])
+
+    def testPadAttributes(self):
+        f = QgsFeature()
+        f.padAttributes(3)
+        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
+        f.setAttributes([1, 2, 3])
+        f.padAttributes(0)
+        self.assertEqual(f.attributes(), [1, 2, 3])
+        f.padAttributes(2)
+        self.assertEqual(f.attributes(), [1, 2, 3, NULL, NULL])
+        f.padAttributes(3)
+        self.assertEqual(f.attributes(), [1, 2, 3, NULL, NULL, NULL, NULL, NULL])
+
 
 if __name__ == '__main__':
     unittest.main()

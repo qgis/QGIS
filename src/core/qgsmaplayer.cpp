@@ -1851,6 +1851,7 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   delete m3DRenderer;
   m3DRenderer = renderer;
   emit renderer3DChanged();
+  trigger3DUpdate();
 }
 
 QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
@@ -1866,6 +1867,11 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
   mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
   mRepaintRequestedFired = false;
+}
+
+void QgsMapLayer::trigger3DUpdate()
+{
+  emit request3DUpdate();
 }
 
 void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )

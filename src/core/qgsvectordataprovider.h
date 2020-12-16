@@ -94,6 +94,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       CancelSupport = 1 << 23, //!< Supports interruption of pending queries from a separated thread. Since QGIS 3.2
       CreateRenderer = 1 << 24, //!< Provider can create feature renderers using backend-specific formatting information. Since QGIS 3.2. See QgsVectorDataProvider::createRenderer().
       CreateLabeling = 1 << 25, //!< Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider::createLabeling().
+      ReloadData = 1 << 26, //!< Provider is able to force reload data
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -400,7 +401,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * a spatial filter is active on this provider, so it may
      * be prudent to check this value per intended operation.
      */
-    virtual QgsVectorDataProvider::Capabilities capabilities() const;
+    Q_INVOKABLE virtual QgsVectorDataProvider::Capabilities capabilities() const;
 
     /**
      *  Returns the above in friendly format.

@@ -101,7 +101,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
       WriteLayerMetadata = 1 << 2, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
       ProviderHintBenefitsFromResampling = 1 << 3, //!< Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)
-      ProviderHintCanPerformProviderResampling = 1 << 4 //!< Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
+      ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
+      ReloadData = 1 << 5 //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
     };
 
     //! Provider capabilities
@@ -151,11 +152,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     Qgis::DataType sourceDataType( int bandNo ) const override = 0;
 
     //! Returns data type for the band specified by number
-    virtual int colorInterpretation( int bandNo ) const
-    {
-      Q_UNUSED( bandNo )
-      return QgsRaster::UndefinedColorInterpretation;
-    }
+    virtual int colorInterpretation( int bandNo ) const;
 
     QString colorName( int colorInterpretation ) const
     {
@@ -220,10 +217,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Reload data (data could change)
     virtual bool reload() { return true; }
 
-    virtual QString colorInterpretationName( int bandNo ) const
-    {
-      return colorName( colorInterpretation( bandNo ) );
-    }
+    QString colorInterpretationName( int bandNo ) const override;
 
     /**
      * Read band scale for raster value

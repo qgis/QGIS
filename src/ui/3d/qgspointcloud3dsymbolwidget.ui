@@ -167,7 +167,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true"/>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item row="1" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,1,0">
          <item>
           <widget class="QLabel" name="label_3">
@@ -177,7 +177,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="mColorRampShaderMinEdit">
+          <widget class="QgsDoubleSpinBox" name="mColorRampShaderMinEdit">
            <property name="decimals">
             <number>6</number>
            </property>
@@ -200,7 +200,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="mColorRampShaderMaxEdit">
+          <widget class="QgsDoubleSpinBox" name="mColorRampShaderMaxEdit">
            <property name="decimals">
             <number>6</number>
            </property>

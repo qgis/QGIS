@@ -28,6 +28,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterrenderer.h"
+#include "qgscolorramplegendnode.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -471,11 +472,28 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
   if ( indexScalar > -1 )
   {
     QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar );
-    QgsLegendColorList items;
-    settings.colorRampShader().legendSymbologyItems( items );
-    for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+    const QgsColorRampShader shader = settings.colorRampShader();
+    switch ( shader.colorRampType() )
     {
-      nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      case QgsColorRampShader::Interpolated:
+        // for interpolated shaders we use a ramp legend node
+        nodes << new QgsColorRampLegendNode( nodeLayer, shader.sourceColorRamp()->clone(),
+                                             QString::number( shader.minimumValue() ),
+                                             QString::number( shader.maximumValue() ) );
+        break;
+
+      case QgsColorRampShader::Discrete:
+      case QgsColorRampShader::Exact:
+      {
+        // for all others we use itemised lists
+        QgsLegendColorList items;
+        settings.colorRampShader().legendSymbologyItems( items );
+        for ( const QPair< QString, QColor > &item : items )
+        {
+          nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+        }
+        break;
+      }
     }
   }
 

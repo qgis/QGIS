@@ -247,6 +247,12 @@ QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapab
   return QgsRasterDataProvider::NoProviderCapabilities;
 }
 
+int QgsRasterDataProvider::colorInterpretation( int bandNo ) const
+{
+  Q_UNUSED( bandNo )
+  return QgsRaster::UndefinedColorInterpretation;
+}
+
 //
 //Random Static convenience function
 //
@@ -624,5 +630,7 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
                                   QString::number( mMaxOversampling ) );
 }
 
-
-// ENDS
+QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
+{
+  return colorName( colorInterpretation( bandNo ) );
+}

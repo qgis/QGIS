@@ -30,6 +30,7 @@ set(QGIS_CORE_SRCS
   geocoding/qgsgeocoder.cpp
   geocoding/qgsgeocodercontext.cpp
   geocoding/qgsgeocoderresult.cpp
+  geocoding/qgsnominatimgeocoder.cpp
   geocoding/qgsgooglemapsgeocoder.cpp
 
   gps/qgsgpsconnection.cpp
@@ -91,6 +92,7 @@ set(QGIS_CORE_SRCS
   effects/qgsshadoweffect.cpp
   effects/qgstransformeffect.cpp
 
+  layertree/qgscolorramplegendnode.cpp
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
@@ -1178,6 +1180,7 @@ set(QGIS_CORE_HDRS
   geocoding/qgsgeocoder.h
   geocoding/qgsgeocodercontext.h
   geocoding/qgsgeocoderresult.h
+  geocoding/qgsnominatimgeocoder.h
   geocoding/qgsgooglemapsgeocoder.h
 
   geometry/qgsabstractgeometry.h
@@ -1233,6 +1236,7 @@ set(QGIS_CORE_HDRS
   labeling/qgsvectorlayerlabeling.h
   labeling/qgsvectorlayerlabelprovider.h
 
+  layertree/qgscolorramplegendnode.h
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
@@ -1702,14 +1706,14 @@ if (WITH_EPT)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptdataitems.cpp
       providers/ept/qgseptprovider.cpp
-      providers/ept/qgseptdecoder.cpp
-      providers/ept/qgseptpointcloudindex.cpp
+      pointcloud/qgseptdecoder.cpp
+      pointcloud/qgseptpointcloudindex.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
-      providers/ept/qgseptdecoder.h
-      providers/ept/qgseptpointcloudindex.h
+      pointcloud/qgseptdecoder.h
+      pointcloud/qgseptpointcloudindex.h
   )
 endif()
 

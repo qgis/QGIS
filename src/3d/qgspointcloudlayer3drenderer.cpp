@@ -25,14 +25,21 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudlayerelevationproperties.h"
 
 #include "qgis.h"
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol )
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( map )
-  , mSymbol( symbol )
+  , mSymbol( std::move( symbol ) )
+  , mZValueScale( zValueScale )
+  , mZValueFixedOffset( zValueFixedOffset )
 {
-
+  auto callback = []()->bool
+  {
+    return false;
+  };
+  mIsCanceledCallback = callback;
 }
 
 void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
@@ -112,7 +119,9 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes() );
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
+         static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
+         static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset() );
 }
 
 void QgsPointCloudLayer3DRenderer::setSymbol( QgsPointCloud3DSymbol *symbol )

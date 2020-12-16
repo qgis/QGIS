@@ -46,8 +46,15 @@ class CORE_EXPORT QgsPointCloudRenderContext
      *
      * The \a scale and \a offset arguments specify the scale and offset of the layer's int32 coordinates
      * compared to CRS coordinates respectively.
+     *
+     * The \a zValueScale argument specifies any constant scaling factor which must be applied to z values
+     * taken from the point cloud index.
+     *
+     * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
+     * taken from the point cloud index.
      */
-    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset );
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
+                                double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh ) = delete;
@@ -131,6 +138,20 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \see yOffset()
      */
     int zOffset() const { return mZOffset; }
+
+    /**
+     * Returns any constant scaling factor which must be applied to z values taken from the point cloud index.
+     *
+     * \note Scaling of z values should be applied before the zValueFixedOffset().
+     */
+    double zValueScale() const { return mZValueScale; }
+
+    /**
+     * Returns any constant offset which must be applied to z values taken from the point cloud index.
+     *
+     * \note Scaling of z values via zValueScale() should be applied before the zValueFixedOffset().
+     */
+    double zValueFixedOffset() const { return mZValueFixedOffset; }
 
 #ifndef SIP_RUN
 
@@ -239,6 +260,9 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mXOffset = 0;
     int mYOffset = 0;
     int mZOffset = 0;
+    double mZValueScale = 1.0;
+    double mZValueFixedOffset = 0;
+
 };
 
 
@@ -518,7 +542,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i )
     {
       const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
-      return context.offset().z() + context.scale().z() * iz;
+      return ( context.offset().z() + context.scale().z() * iz ) * context.zValueScale() + context.zValueFixedOffset();
     }
 
     /**

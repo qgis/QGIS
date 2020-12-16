@@ -149,7 +149,10 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     ~QgsPointCloudIndex();
 
     //! Loads the index from the file
-    virtual bool load( const QString &fileName ) = 0;
+    virtual void load( const QString &fileName ) = 0;
+
+    //! Returns whether index is loaded and valid
+    virtual bool isValid() const = 0;
 
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
