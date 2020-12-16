@@ -34,6 +34,7 @@
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
+  , mLayerAttributes( layer->attributes() )
 {
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
@@ -48,14 +49,18 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     mOffset = mLayer->dataProvider()->index()->offset();
   }
 
-  mZOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();
+  if ( const QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() ) )
+  {
+    mZOffset = elevationProps->zOffset();
+    mZScale = elevationProps->zScale();
+  }
 
   mCloudExtent = mLayer->dataProvider()->polygonBounds();
 }
 
 bool QgsPointCloudLayerRenderer::render()
 {
-  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZOffset );
+  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset );
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
@@ -93,14 +98,14 @@ bool QgsPointCloudLayerRenderer::render()
     if ( mAttributes.indexOf( attribute ) >= 0 )
       continue; // don't re-add attributes we are already going to fetch
 
-    const int layerIndex = mLayer->attributes().indexOf( attribute );
+    const int layerIndex = mLayerAttributes.indexOf( attribute );
     if ( layerIndex < 0 )
     {
       QgsMessageLog::logMessage( QObject::tr( "Required attribute %1 not found in layer" ).arg( attribute ), QObject::tr( "Point Cloud" ) );
       continue;
     }
 
-    mAttributes.push_back( mLayer->attributes().at( layerIndex ) );
+    mAttributes.push_back( mLayerAttributes.at( layerIndex ) );
   }
 
   QgsPointCloudDataBounds db;

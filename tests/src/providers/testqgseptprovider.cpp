@@ -244,8 +244,15 @@ void TestQgsEptProvider::calculateZRange()
   QVERIFY( layer->isValid() );
 
   QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
-  QGSCOMPARENEAR( range.lower(), 1, 74.34 );
-  QGSCOMPARENEAR( range.upper(), 2, 80.02 );
+  QGSCOMPARENEAR( range.lower(), 74.34, 0.01 );
+  QGSCOMPARENEAR( range.upper(), 80.02, 0.01 );
+
+  static_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->setZScale( 2 );
+  static_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->setZOffset( 0.5 );
+
+  range = layer->elevationProperties()->calculateZRange( layer.get() );
+  QGSCOMPARENEAR( range.lower(), 149.18, 0.01 );
+  QGSCOMPARENEAR( range.upper(), 160.54, 0.01 );
 }
 
 

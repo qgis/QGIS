@@ -46,6 +46,10 @@ the layer.
 
 This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
 
+.. note::
+
+   Any scaling specified via :py:func:`~QgsPointCloudLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsPointCloudLayerElevationProperties.zOffset`
+
 .. seealso:: :py:func:`setZOffset`
 %End
 
@@ -56,7 +60,41 @@ the layer.
 
 This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer.
 
+.. note::
+
+   Any scaling specified via :py:func:`~QgsPointCloudLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsPointCloudLayerElevationProperties.zOffset`
+
 .. seealso:: :py:func:`zOffset`
+%End
+
+    double zScale() const;
+%Docstring
+Returns the z scale, which is a scaling factor which should be applied to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer, such
+as conversion of elevation values in feet to meters.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsPointCloudLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsPointCloudLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`setZScale`
+%End
+
+    void setZScale( double scale );
+%Docstring
+Sets the z ``scale``, which is a scaling factor which will be applied to z values from
+the layer.
+
+This can be used to correct or manually adjust for incorrect elevation values in a point cloud layer, such
+as conversion of elevation values in feet to meters.
+
+.. note::
+
+   Any scaling specified via :py:func:`~QgsPointCloudLayerElevationProperties.zScale` is applied before any offset value specified via :py:func:`~QgsPointCloudLayerElevationProperties.zOffset`
+
+.. seealso:: :py:func:`zScale`
 %End
 
 };

@@ -27,10 +27,12 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   setupUi( this );
 
   mOffsetZSpinBox->setClearValue( 0 );
+  mScaleZSpinBox->setClearValue( 1 );
 
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qgis::overload<double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mScaleZSpinBox, qgis::overload<double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
 }
 
 void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -41,6 +43,7 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   mBlockUpdates = true;
   mOffsetZSpinBox->setValue( static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset() );
+  mScaleZSpinBox->setValue( static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale() );
   mBlockUpdates = false;
 }
 
@@ -50,6 +53,7 @@ void QgsPointCloudElevationPropertiesWidget::apply()
     return;
 
   static_cast< QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->setZOffset( mOffsetZSpinBox->value() );
+  static_cast< QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->setZScale( mScaleZSpinBox->value() );
   mLayer->trigger3DUpdate();
 }
 
