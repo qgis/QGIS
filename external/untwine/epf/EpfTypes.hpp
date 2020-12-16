@@ -36,6 +36,8 @@ using Totals = std::unordered_map<VoxelKey, size_t>;
 constexpr int MaxPointsPerNode = 100000;
 constexpr int BufSize = 4096 * 10;
 constexpr int MaxBuffers = 1000;
+constexpr int NumWriters = 4;
+constexpr int NumFileProcessors = 8;
 
 struct FileInfo
 {

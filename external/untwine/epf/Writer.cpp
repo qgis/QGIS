@@ -58,6 +58,24 @@ Totals Writer::totals(size_t minSize)
     return t;
 }
 
+DataVecPtr Writer::fetchBuffer()
+{
+    std::unique_lock<std::mutex> lock(m_mutex);
+
+    // If there are fewer items in the queue than we have FileProcessors, we may choose not
+    // to block and return a nullptr, expecting that the caller will flush outstanding cells.
+    return m_bufferCache.fetch(lock, m_queue.size() < NumFileProcessors);
+}
+
+
+DataVecPtr Writer::fetchBufferBlocking()
+{
+    std::unique_lock<std::mutex> lock(m_mutex);
+
+    return m_bufferCache.fetch(lock, false);
+}
+
+
 void Writer::enqueue(const VoxelKey& key, DataVecPtr data, size_t dataSize)
 {
     {
@@ -123,9 +141,9 @@ void Writer::run()
         out.close();
         if (!out)
             fatal("Failure writing to '" + path(wd.key) + "'.");
-        m_bufferCache.replace(std::move(wd.data));
 
         std::lock_guard<std::mutex> lock(m_mutex);
+        m_bufferCache.replace(std::move(wd.data));
         m_active.remove(wd.key);
     }
 }

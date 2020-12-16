@@ -15,7 +15,8 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <map>
+#include <functional>
+#include <unordered_map>
 #include <memory>
 
 #include "EpfTypes.hpp"
@@ -35,11 +36,17 @@ class Writer;
 class Cell
 {
 public:
-    Cell(const VoxelKey& key, int pointSize, Writer *writer) :
-        m_key(key), m_pointSize(pointSize), m_writer(writer)
+    using FlushFunc = std::function<void(Cell *)>;
+
+    Cell(const VoxelKey& key, int pointSize, Writer *writer, FlushFunc flush) :
+        m_key(key), m_pointSize(pointSize), m_writer(writer), m_flush(flush)
     {
         assert(pointSize < BufSize);
         initialize();
+    }
+    ~Cell()
+    {
+        write();
     }
 
     void initialize();
@@ -49,7 +56,6 @@ public:
         { return m_key; }
     void copyPoint(Point& b)
         { std::copy(b.data(), b.data() + m_pointSize, m_pos); }
-    void write();
     void advance();
 
 private:
@@ -59,19 +65,24 @@ private:
     Writer *m_writer;
     uint8_t *m_pos;
     uint8_t *m_endPos;
+    FlushFunc m_flush;
+
+    void write();
 };
 
 class CellMgr
 {
 public:
     CellMgr(int pointSize, Writer *writer);
+
     Cell *get(const VoxelKey& key);
-    void flush();
+    void flush(Cell *exclude);
 
 private:
+    using CellMap = std::unordered_map<VoxelKey, std::unique_ptr<Cell>>;
     int m_pointSize;
     Writer *m_writer;
-    std::map<VoxelKey, std::unique_ptr<Cell>> m_cells;
+    CellMap m_cells;
 };
 
 

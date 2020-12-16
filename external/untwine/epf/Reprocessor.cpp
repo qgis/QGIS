@@ -66,7 +66,6 @@ void Reprocessor::run()
         cell->advance();
         pos += m_pointSize;
     }
-    m_mgr.flush();
     pdal::FileUtils::unmapFile(ctx);
     pdal::FileUtils::deleteFile(m_filename);
 }

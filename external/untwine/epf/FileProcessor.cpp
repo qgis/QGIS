@@ -85,12 +85,17 @@ void FileProcessor::run()
 
     pdal::FixedPointTable t(1000);
 
-    f.prepare(t);
-    f.execute(t);
-    m_progress.update(count % CountIncrement);
+    try
+    {
+        f.prepare(t);
+        f.execute(t);
+    }
+    catch (const pdal::pdal_error& err)
+    {
+        fatal(err.what());
+    }
 
-    // Flush any data remaining in the cells.
-    m_cellMgr.flush();
+    m_progress.update(count % CountIncrement);
 }
 
 } // namespace epf

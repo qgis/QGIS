@@ -61,7 +61,7 @@ void writeMetadata(const std::string& tempDir, const Grid& grid,
 
 /// Epf
 
-Epf::Epf() : m_pool(8)
+Epf::Epf() : m_pool(NumFileProcessors)
 {}
 
 
@@ -120,8 +120,8 @@ void Epf::run(const Options& options, ProgressWriter& progress)
         }
     }
 
-    // Make a writer with 4 threads.
-    m_writer.reset(new Writer(options.tempDir, 4, layout->pointSize()));
+    // Make a writer with NumWriters threads.
+    m_writer.reset(new Writer(options.tempDir, NumWriters, layout->pointSize()));
 
     // Sort file infos so the largest files come first. This helps to make sure we don't delay
     // processing big files that take the longest (use threads more efficiently).
