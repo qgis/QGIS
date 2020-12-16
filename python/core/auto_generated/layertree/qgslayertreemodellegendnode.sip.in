@@ -11,7 +11,6 @@
 
 
 
-
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring
@@ -622,6 +621,8 @@ Constructor for QgsWmsLegendNode.
 :param nodeLayer: layer node
 :param parent: attach a parent QObject to the legend node.
 %End
+
+    ~QgsWmsLegendNode();
 
     virtual QVariant data( int role ) const;
 

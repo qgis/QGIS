@@ -22,11 +22,9 @@
 #include <QIcon>
 #include <QObject>
 
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
 
@@ -668,6 +666,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
      * \param parent attach a parent QObject to the legend node.
      */
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    ~QgsWmsLegendNode() override;
 
     QVariant data( int role ) const override;
 
