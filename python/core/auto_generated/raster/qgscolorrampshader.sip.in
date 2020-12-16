@@ -11,7 +11,6 @@
 
 
 
-
 class QgsColorRampShader : QgsRasterShaderFunction
 {
 %Docstring
@@ -206,6 +205,22 @@ Sets whether the shader should not render values out of range.
 Returns whether the shader will clip values which are out of range.
 
 .. seealso:: :py:func:`setClip`
+%End
+
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+%Docstring
+Returns the color ramp shader legend settings.
+
+.. seealso:: :py:func:`setLegendSettings`
+%End
+
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings /Transfer/ );
+%Docstring
+Sets the color ramp shader legend ``settings``.
+
+Ownership of ``settings`` is transferred.
+
+.. seealso:: :py:func:`legendSettings`
 %End
 
   protected:
