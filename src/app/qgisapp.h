@@ -18,7 +18,7 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
-
+#define disableauth true
 //#include <glew/GL/glew.h>
 
  /*-----------------------wp--pointcloud--------
@@ -722,6 +722,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() { return mAdvancedDigitizingDockWidget; }
 
+	//! Returns the profilewindowdock
+	QgsDockWidget *m_ProfileViewDockWidget() { return ProfileViewerDock; }
     //! Returns map overview canvas
     QgsMapOverviewCanvas *mapOverviewCanvas() { return mOverviewCanvas; }
 
@@ -1818,6 +1820,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void measureArea();
     //! Measure angle
     void measureAngle();
+        //! Measure distance
+    void makeProfileByPly();
+    //! Measure area
+    void makeProfilebyPologon();
+    //! Measure angle
 
     //! Run the default feature action on the current layer
     void doFeatureAction();
@@ -2405,7 +2412,131 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     // action groups ----------------------------------
     QActionGroup *mMapToolGroup = nullptr;
     QActionGroup *mPreviewGroup = nullptr;
+    // lasviewer-----------wp--------------------------
 
+    //---------------------wp-----------------------------
+
+    //QgsDecorationGrid* m_decorationGrid = nullptr;
+    // Point viewer
+    QGLFormat 	format ;
+    QgsVectorLayer *newScratchLayer;
+    QImage X;// / = x.toImage();
+    QImage Y;// = y.toImage();
+    QImage Z;// = z.toImage();
+
+    QgsDockWidget* dataSetDock;
+    QgsDockWidget* logDock;
+    QgsDockWidget* shaderEditorDock;
+    QgsDockWidget* shaderParamsDock;
+    QgsProfileWindowDockWidget* ProfileViewerDock;
+    QgsUserInputWidget* classformdock;
+    public:
+    void createLasViewer();
+
+    /// Hint at an appropriate size
+    QSize sizeHint() const;
+
+    /// Return file loader object
+    FileLoader& fileLoader() { return *m_PointCloudfileLoader; }
+    /// Start server for interprocess communication
+    ///
+    /// Listens on local socket `socketName` for incoming connections.  Any
+    /// socket previously in use is deleted.
+    void startIpcServer(const QString& socketName);
+    void addPointCloudFile(const QString& DataSource);
+    
+
+    public slots:
+    void handleMessage(QByteArray message);
+    void openShaderFile(const QString& shaderFileName);
+    QByteArray hookPayload(QByteArray payload) override;
+    void showlockstate();
+    void setLockAxesX();
+    void setLockAxesY();
+    void setLockAxesZ();
+    void FromGeometriesToLayerMap(std::shared_ptr<Geometry> geom);
+    void FromGeometriesToLayerMap();
+    void setViewTop(View3D* viewer );
+    void setViewTop();
+    void setViewFront(View3D* viewer);
+    void setViewFront();
+    void setViewLeft(View3D* viewer);
+    void setViewLeft();
+    void doActionAddConstantSF();
+    void OnPointsPicked(QString pointInfo);
+    void StartMeasureDistanceMode();
+    void StartMeasureAreaMode();
+    void StartCloseProfileMode();
+    void StartPointPickingList();
+    void StartPointInterpret();
+    void On2dProfile();
+    void StartProfileLineDrawOn2d();
+    void StartProfileRectDrawOn2d();
+    void resetStateof3dView();
+
+    protected:
+    void lasdragEnterEvent(QDragEnterEvent *event);
+    void lasdropEvent(QDropEvent *event);
+
+    private slots:
+    void openPointCloudFiles();
+    void addPointCloudFiles();
+    
+
+    void openShaderFile();
+    void saveShaderFile();
+    void compileShaderFile();
+    void reloadFiles();
+    void screenShot();
+    void setBackground(const QString& name);
+    void chooseBackground();
+    void updateTitle();
+    void geometryRowsInserted(const QModelIndex& parent, int first, int last);
+
+    void setStatusBarText(QString text);
+    void setStatusBarText();
+    void setProgressReadlas(int per);
+    void handleIpcConnection();
+    //void addGeometry(std::shared_ptr<Geometry>, bool, bool);
+
+    private:
+      uchar axescode = 0;
+      bool profilewindowstarted=0;
+      bool interpretmodestarted=0;
+      bool profilelineone2d = 0;
+      bool profileRecton2d = 0;
+      // Gui objects
+      QProgressBar* m_progressBar;
+      View3D* m_pointView;
+      View3D* m_pointProfileView =nullptr;
+      ShaderEditor* m_shaderEditor;
+      HelpDialog* m_helpDialog;
+      LogViewer* m_logTextView;
+      QAbstractItemView* dataSetOverview;
+      QgsClassifyTool* Classfifytool = nullptr;
+      // Gui state
+      QDir m_currPointCloudFileDir;
+      QString m_currShaderFileName;
+
+      // File loader (slots run on separate thread)
+      FileLoader* m_PointCloudfileLoader;
+      /// Maximum desired number of points to load
+      size_t m_maxPointCount =200000000;
+      // Currently loaded geometry
+      GeometryCollection* m_geometries;
+
+      // Interprocess communication
+      QLocalServer* m_ipcServer;
+
+      // Custom event registration for dynamic hooks
+      HookManager* m_hookManager;
+      
+      // ---------------------------
+      QgsStatusBarCoordinatesWidget*	mCoordsEdit3D = nullptr;
+
+    // end las viewer------------------------------
+
+    
     // menus ------------------------------------------
 
 #ifdef Q_OS_MAC
@@ -2440,6 +2571,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mMeasureDist = nullptr;
         QgsMapTool *mMeasureArea = nullptr;
         QgsMapTool *mMeasureAngle = nullptr;
+        QgsMapTool *mMakePolineProfile = nullptr;
+        QgsMapTool *mMakePlogonProfile = nullptr;
         QgsMapToolAddFeature *mAddFeature = nullptr;
         QgsMapTool *mCircularStringCurvePoint = nullptr;
         QgsMapTool *mCircularStringRadius = nullptr;

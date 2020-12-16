@@ -405,6 +405,51 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "modeltest.h"
 #endif
 
+//--------------------wp----------las--------
+
+
+#include "config.h"
+#include "DataSetUI.h"
+#include "fileloader.h"
+#include "geometrycollection.h"
+//#include "HelpDialog.h"
+#include "IpcChannel.h"
+//#include "QtLogger.h"
+#include "TriMesh.h"
+#include "ShaderEditor.h"
+#include "Shader.h"
+#include "View3D.h"
+#include "HookFormatter.h"
+#include "HookManager.h"
+
+#include <QSignalMapper>
+#include <QThread>
+#include <QUrl>
+#include <QApplication>
+#include <QColorDialog>
+#include <QDockWidget>
+#include <QFileDialog>
+#include <QGridLayout>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QSplitter>
+#include <QDoubleSpinBox>
+#include <QDesktopWidget>
+#include <QDropEvent>
+#include <QLocalServer>
+#include <QMimeData>
+#include <QGLFormat>
+
+//#define m_maxPointCount 200000000
+#define DISPLAZ_VERSION_STRING "0.3"
+#define DISPLAZ_SHADER_DIR "shaders"
+#define DISPLAZ_DOC_DIR "doc"
+#define DISPLAZ_BACKGROUDN_COLOR 250,250,255
+
+
+//----------------------wp-----------las--------
 //
 // GDAL/OGR includes
 //
@@ -943,6 +988,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // "theMapCanvas" used to find this canonical instance later
   startProfile( tr( "Creating map canvas" ) );
   mMapCanvas = new QgsMapCanvas( centralWidget );
+  centralLayout->setContentsMargins(0, 0, 0, 0);
+  createLasViewer();
   mMapCanvas->setObjectName( QStringLiteral( "theMapCanvas" ) );
 
   // before anything, let's freeze canvas redraws
@@ -969,7 +1016,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // what type of project to auto-open
   mProjOpen = settings.value( QStringLiteral( "qgis/projOpenAtLaunch" ), 0 ).toInt();
+  startProfile(tr("lasviewdock"));
 
+  QMainWindow::addDockWidget(Qt::LeftDockWidgetArea, dataSetDock);
+  QMainWindow::addDockWidget(Qt::LeftDockWidgetArea, logDock);
+  QMainWindow::addDockWidget(Qt::LeftDockWidgetArea, shaderEditorDock);
+  QMainWindow::addDockWidget(Qt::LeftDockWidgetArea, shaderParamsDock);
+  dataSetDock->hide();
+  logDock->hide();
+  shaderEditorDock->hide();
+  shaderParamsDock->hide();
+  endProfile();
   // a bar to warn the user with non-blocking messages
   startProfile( tr( "Message bar" ) );
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -1003,7 +1060,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mCentralContainer->insertWidget( 0, mMapCanvas );
   mCentralContainer->insertWidget( 1, mWelcomePage );
 
-  centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
+  //centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
+  centralLayout->addWidget( mCentralContainer, 0, 0, -1, 2,0 );
+  //m_pointView->setBackground(QColor(DISPLAZ_BACKGROUDN_COLOR));
+  centralLayout->addWidget(m_pointView, 0, 2, -1, 2, 0);
   mInfoBar->raise();
 
   connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgisApp::showMapCanvas );
@@ -1764,7 +1824,7 @@ QgisApp::~QgisApp()
 #endif
 
   mNetworkLoggerWidgetFactory.reset();
-
+delete Classfifytool;
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
@@ -1787,6 +1847,9 @@ QgisApp::~QgisApp()
   delete mMapTools.mMeasureAngle;
   delete mMapTools.mMeasureArea;
   delete mMapTools.mMeasureDist;
+  
+  delete mMapTools.mMakePlogonProfile;
+  delete mMapTools.mMakePolineProfile;
   delete mMapTools.mMoveFeature;
   delete mMapTools.mMoveFeatureCopy;
   delete mMapTools.mMoveLabel;
@@ -1883,7 +1946,32 @@ QgisApp::~QgisApp()
   mUserInputDockWidget = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
-
+  if (m_pointProfileView)
+  {
+	  try 
+	  { 
+		 // delete m_pointProfileView;
+	  }
+	  catch (std::exception& e)
+	  {
+		  // do nothing 
+		 // continue;
+	  }
+  }
+  m_pointProfileView = nullptr;
+  if (ProfileViewerDock)
+  {
+	  try
+	  {
+		//  delete ProfileViewerDock;
+	  }
+	  catch (std::exception& e)
+	  {
+		  // do nothing 
+		  // continue;
+	  }
+  }
+  ProfileViewerDock = nullptr;
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
   // safe destroying them afterwards
@@ -2733,6 +2821,8 @@ void QgisApp::createActions()
   connect( mActionFeatureAction, &QAction::triggered, this, &QgisApp::doFeatureAction );
   connect(mActionMeasureDistance, &QAction::triggered, this, &QgisApp::measure );
   connect(mActionMeasureAreaReal, &QAction::triggered, this, &QgisApp::measureArea );
+  connect( mActionMeasure, &QAction::triggered, this, &QgisApp::makeProfileByPly);
+  connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::makeProfilebyPologon );
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
@@ -3021,6 +3111,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasureDistance );
   mMapToolGroup->addAction(mActionMeasureAreaReal);
   mMapToolGroup->addAction( mActionMeasureAngle );
+  mMapToolGroup->addAction( mActionMeasure );
+  mMapToolGroup->addAction( mActionMeasureArea );
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionCircularStringCurvePoint );
   mMapToolGroup->addAction( mActionCircularStringRadius );
@@ -3939,6 +4031,8 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsBookmarkLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsGotoLocatorFilter() );
+
+  mCoordsEdit->set3DView(m_pointView);
 }
 
 void QgisApp::setIconSizes( int size )
@@ -4342,6 +4436,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mMeasureDist->setAction( mActionMeasureDistance );
   mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, true /* area */ );
   mMapTools.mMeasureArea->setAction(mActionMeasureAreaReal);
+  mMapTools.mMakePolineProfile = new QgsMeasureTool( mMapCanvas, false,m_pointView/* area */ );
+  mMapTools.mMakePolineProfile->setAction(mActionMeasure);
   mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
   mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );
   mMapTools.mTextAnnotation = new QgsMapToolTextAnnotation( mMapCanvas );
@@ -8483,7 +8579,15 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
     }
   }
 }
+void QgisApp::makeProfileByPly()
+{
+  mMapCanvas->setMapTool( mMapTools.mMakePolineProfile );
+}
 
+void QgisApp::makeProfilebyPologon()
+{
+  mMapCanvas->setMapTool( mMapTools.mMakePlogonProfile );
+}
 void QgisApp::measure()
 {
   mMapCanvas->setMapTool( mMapTools.mMeasureDist );
@@ -12175,6 +12279,7 @@ void QgisApp::legendGroupSetWmsData()
 void QgisApp::zoomToLayerExtent()
 {
   mLayerTreeView->defaultActions()->zoomToLayer( mMapCanvas );
+  //TODO layer point cloud
 }
 
 void QgisApp::showPluginManager()
