@@ -21,21 +21,26 @@ namespace epf
 
 void Cell::initialize()
 {
-    m_buf = m_writer->bufferCache().fetch();
+    m_buf = m_writer->fetchBuffer();
+
+    // If we couldn't fetch a buffer, flush all the the buffers for this processor and
+    // try again, but block.
+    if (!m_buf)
+    {
+        m_flush(this);
+        m_buf = m_writer->fetchBufferBlocking();
+    }
     m_pos = m_buf->data();
 
     m_endPos = m_pos + m_pointSize * (BufSize / m_pointSize);
 }
 
+// NOTE - After write(), the cell is invalid and must be initialized or destroyed.
 void Cell::write()
 {
-    // Resize the buffer so the writer knows how much to write.
     size_t size = m_pos - m_buf->data();
     if (size)
-//    {
-//        m_buf->resize(size);
         m_writer->enqueue(m_key, std::move(m_buf), size);
-//    }
 }
 
 void Cell::advance()
@@ -61,17 +66,35 @@ Cell *CellMgr::get(const VoxelKey& key)
     auto it = m_cells.find(key);
     if (it == m_cells.end())
     {
-        std::unique_ptr<Cell> cell(new Cell(key, m_pointSize, m_writer));
+        Cell::FlushFunc f = [this](Cell *exclude)
+        {
+            flush(exclude);
+        };
+        std::unique_ptr<Cell> cell(new Cell(key, m_pointSize, m_writer, f));
         it = m_cells.insert( {key, std::move(cell)} ).first;
     }
     Cell& c = *(it->second);
     return &c;
 }
 
-void CellMgr::flush()
+// Eliminate all the cells and their associated data buffers except the `exclude`
+// cell.
+void CellMgr::flush(Cell *exclude)
 {
-    for (auto& cp : m_cells)
-        cp.second->write();
+    CellMap::iterator it = m_cells.end();
+    if (exclude)
+        it = m_cells.find(exclude->key());
+
+    // If there was no exclude cell or it isn't in our list, just clear the cells.
+    // Otherwise, save the exclude cell, clear the list, and reinsert.
+    if (it == m_cells.end())
+        m_cells.clear();
+    else
+    {
+        std::unique_ptr<Cell> c = std::move(it->second);
+        m_cells.clear();
+        m_cells.insert({c->key(), std::move(c)});
+    }
 }
 
 } // namespace epf

@@ -307,12 +307,21 @@ Processor::writeOctantCompressed(const OctantInfo& o, Index& index, IndexIter po
         }
     }
 flush:
-    flushCompressed(table, view, o);
+    try
+    {
+        flushCompressed(table, view, o);
+    }
+    catch (pdal::pdal_error& err)
+    {
+        fatal(err.what());
+    }
+
     m_manager.logOctant(o.key(), count);
     return pos;
 }
 
 
+// Copy data from the source file to the point view.
 void Processor::appendCompressed(pdal::PointViewPtr view, const DimInfoList& dims,
     const FileInfo& fi, IndexIter begin, IndexIter end)
 {

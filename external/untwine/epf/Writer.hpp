@@ -43,11 +43,11 @@ public:
 
     void enqueue(const VoxelKey& key, DataVecPtr data, size_t dataSize);
     void stop();
-    BufferCache& bufferCache()
-        { return m_bufferCache; }
     const Totals& totals()
         { return m_totals; }
     Totals totals(size_t minSize);
+    DataVecPtr fetchBuffer();
+    DataVecPtr fetchBufferBlocking();
 
 private:
     std::string path(const VoxelKey& key);
