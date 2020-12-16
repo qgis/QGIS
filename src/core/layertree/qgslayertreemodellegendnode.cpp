@@ -1169,6 +1169,8 @@ QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *paren
 {
 }
 
+QgsWmsLegendNode::~QgsWmsLegendNode() = default;
+
 QImage QgsWmsLegendNode::getLegendGraphic() const
 {
   if ( ! mValid && ! mFetcher )
