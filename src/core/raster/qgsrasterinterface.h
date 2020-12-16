@@ -242,10 +242,21 @@ class CORE_EXPORT QgsRasterInterface
     virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
     //! \brief helper function to create zero padded band names
-    virtual QString generateBandName( int bandNumber ) const
-    {
-      return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( std::log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
-    }
+    virtual QString generateBandName( int bandNumber ) const;
+
+    /**
+     * Returns the name of the color interpretation for the specified \a bandNumber.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QString colorInterpretationName( int bandNumber ) const;
+
+    /**
+     * Generates a friendly, descriptive name for the specified \a bandNumber.
+     *
+     * \since QGIS 3.18
+     */
+    QString displayBandName( int bandNumber ) const;
 
     /**
      * Read block of data using given extent and size.

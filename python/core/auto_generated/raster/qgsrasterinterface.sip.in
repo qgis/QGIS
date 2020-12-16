@@ -225,6 +225,20 @@ Gets raster size
 helper function to create zero padded band names
 %End
 
+    virtual QString colorInterpretationName( int bandNumber ) const;
+%Docstring
+Returns the name of the color interpretation for the specified ``bandNumber``.
+
+.. versionadded:: 3.18
+%End
+
+    QString displayBandName( int bandNumber ) const;
+%Docstring
+Generates a friendly, descriptive name for the specified ``bandNumber``.
+
+.. versionadded:: 3.18
+%End
+
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
 %Docstring
 Read block of data using given extent and size.

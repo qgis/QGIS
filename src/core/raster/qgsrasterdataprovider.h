@@ -152,11 +152,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     Qgis::DataType sourceDataType( int bandNo ) const override = 0;
 
     //! Returns data type for the band specified by number
-    virtual int colorInterpretation( int bandNo ) const
-    {
-      Q_UNUSED( bandNo )
-      return QgsRaster::UndefinedColorInterpretation;
-    }
+    virtual int colorInterpretation( int bandNo ) const;
 
     QString colorName( int colorInterpretation ) const
     {
@@ -221,10 +217,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Reload data (data could change)
     virtual bool reload() { return true; }
 
-    virtual QString colorInterpretationName( int bandNo ) const
-    {
-      return colorName( colorInterpretation( bandNo ) );
-    }
+    QString colorInterpretationName( int bandNo ) const override;
 
     /**
      * Read band scale for raster value

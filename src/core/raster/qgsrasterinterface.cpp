@@ -616,3 +616,30 @@ QString QgsRasterInterface::capabilitiesString() const
 
   return abilitiesList.join( QLatin1String( ", " ) );
 }
+
+QString QgsRasterInterface::generateBandName( int bandNumber ) const
+{
+  if ( mInput )
+    return mInput->generateBandName( bandNumber );
+
+  return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( std::log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
+}
+
+QString QgsRasterInterface::colorInterpretationName( int bandNo ) const
+{
+  if ( mInput )
+    return mInput->colorInterpretationName( bandNo );
+
+  return QString();
+}
+
+QString QgsRasterInterface::displayBandName( int bandNumber ) const
+{
+  QString name = generateBandName( bandNumber );
+  QString colorInterp = colorInterpretationName( bandNumber );
+  if ( colorInterp != QLatin1String( "Undefined" ) )
+  {
+    name.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );
+  }
+  return name;
+}

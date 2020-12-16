@@ -148,6 +148,7 @@ Reload data (data could change)
 
     virtual QString colorInterpretationName( int bandNo ) const;
 
+
     virtual double bandScale( int bandNo ) const;
 %Docstring
 Read band scale for raster value

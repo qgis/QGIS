@@ -431,6 +431,13 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
     return QList<QgsLayerTreeModelLegendNode *>();
 
   QList<QgsLayerTreeModelLegendNode *> res;
+
+  const QString name = displayBandName( mBand );
+  if ( !name.isEmpty() )
+  {
+    res << new QgsSimpleLegendNode( nodeLayer, name );
+  }
+
   switch ( rampShader->colorRampType() )
   {
     case QgsColorRampShader::Interpolated:
