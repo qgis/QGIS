@@ -147,7 +147,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
         checker.setSizeTolerance(size_tolerance, size_tolerance)
-        result = checker.compareImages(name, 20)
+        result = checker.runTest(name, 20)
         TestQgsColorRampLegendNode.report += checker.report()
         return result
 
