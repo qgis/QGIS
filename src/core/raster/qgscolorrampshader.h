@@ -29,6 +29,7 @@ originally part of the larger QgsRasterLayer class
 
 #include "qgsrastershaderfunction.h"
 #include "qgsrectangle.h"
+#include "qgsreadwritecontext.h"
 
 class QgsColorRamp;
 class QgsRasterInterface;
@@ -198,13 +199,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Writes configuration to a new DOM element
      * \since QGIS 3.4
      */
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Reads configuration from the given DOM element
      * \since QGIS 3.4
      */
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode ) { mClassificationMode = classificationMode; }

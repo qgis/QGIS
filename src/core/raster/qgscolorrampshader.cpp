@@ -29,6 +29,8 @@ originally part of the larger QgsRasterLayer class
 #include "qgsrasterinterface.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgssymbollayerutils.h"
+#include "qgsreadwritecontext.h"
+#include "qgscolorramplegendnodesettings.h"
 
 #include <cmath>
 QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue, QgsColorRamp *colorRamp, Type type, ClassificationMode classificationMode )
@@ -502,7 +504,7 @@ void QgsColorRampShader::legendSymbologyItems( QList< QPair< QString, QColor > >
   }
 }
 
-QDomElement QgsColorRampShader::writeXml( QDomDocument &doc ) const
+QDomElement QgsColorRampShader::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
   colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampTypeAsQString() );
@@ -534,7 +536,7 @@ QDomElement QgsColorRampShader::writeXml( QDomDocument &doc ) const
   return colorRampShaderElem;
 }
 
-void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem )
+void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const QgsReadWriteContext &context )
 {
   // try to load color ramp (optional)
   QDomElement sourceColorRampElem = colorRampShaderElem.firstChildElement( QStringLiteral( "colorramp" ) );

@@ -168,14 +168,14 @@ Generates and new RGB value based on original RGB value
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes configuration to a new DOM element
 
 .. versionadded:: 3.4
 %End
 
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads configuration from the given DOM element
 
