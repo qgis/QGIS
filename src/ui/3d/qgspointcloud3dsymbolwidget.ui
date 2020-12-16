@@ -177,7 +177,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="mColorRampShaderMinEdit">
+          <widget class="QgsDoubleSpinBox" name="mColorRampShaderMinEdit">
            <property name="decimals">
             <number>6</number>
            </property>
@@ -200,7 +200,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="mColorRampShaderMaxEdit">
+          <widget class="QgsDoubleSpinBox" name="mColorRampShaderMaxEdit">
            <property name="decimals">
             <number>6</number>
            </property>
