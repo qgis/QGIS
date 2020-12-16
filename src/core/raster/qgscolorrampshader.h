@@ -33,7 +33,7 @@ originally part of the larger QgsRasterLayer class
 
 class QgsColorRamp;
 class QgsRasterInterface;
-
+class QgsColorRampLegendNodeSettings;
 
 /**
  * \ingroup core
@@ -226,6 +226,22 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     bool clip() const { return mClip; }
 
+    /**
+     * Returns the color ramp shader legend settings.
+     *
+     * \see setLegendSettings()
+     */
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+
+    /**
+     * Sets the color ramp shader legend \a settings.
+     *
+     * Ownership of \a settings is transferred.
+     *
+     * \see legendSettings()
+     */
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
+
   protected:
 
     //! Source color ramp
@@ -256,6 +272,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     //! Do not render values out of range
     bool mClip = false;
+
+    std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
 
 };
 
