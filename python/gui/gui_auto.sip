@@ -29,6 +29,7 @@
 %Include auto_generated/qgscolorbutton.sip
 %Include auto_generated/qgscolordialog.sip
 %Include auto_generated/qgscolorrampbutton.sip
+%Include auto_generated/qgscolorramplegendnodewidget.sip
 %Include auto_generated/qgscolorschemelist.sip
 %Include auto_generated/qgscolorswatchgrid.sip
 %Include auto_generated/qgscolorwidgets.sip

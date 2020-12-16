@@ -402,6 +402,7 @@ set(QGIS_GUI_SRCS
   qgscolorbutton.cpp
   qgscolorrampbutton.cpp
   qgscolordialog.cpp
+  qgscolorramplegendnodewidget.cpp
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
   qgscolorwidgets.cpp
@@ -639,6 +640,7 @@ set(QGIS_GUI_HDRS
   qgscolorbutton.h
   qgscolordialog.h
   qgscolorrampbutton.h
+  qgscolorramplegendnodewidget.h
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
