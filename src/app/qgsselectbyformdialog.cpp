@@ -47,7 +47,13 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
 
   QgsGui::enableAutoGeometryRestore( this );
 
+<<<<<<< HEAD
   setWindowTitle( tr( "Select Features by Value" ) );
+=======
+  setWindowTitle( tr( "%1 — Select Features" ).arg( layer->name() ) );
+
+  connect( mLayer, &QgsVectorLayer::willBeDeleted, this, &QgsSelectByFormDialog::close );
+>>>>>>> d7cce9c0f0 (Follow up b5469c933, also close Select by Form dialog when layer is removed)
 }
 
 void QgsSelectByFormDialog::setMessageBar( QgsMessageBar *messageBar )
