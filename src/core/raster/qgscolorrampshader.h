@@ -230,6 +230,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Returns the color ramp shader legend settings.
      *
      * \see setLegendSettings()
+     * \since QGIS 3.18
      */
     const QgsColorRampLegendNodeSettings *legendSettings() const;
 
@@ -239,6 +240,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Ownership of \a settings is transferred.
      *
      * \see legendSettings()
+     * \since QGIS 3.18
      */
     void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
 

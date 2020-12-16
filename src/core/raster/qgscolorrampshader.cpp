@@ -37,6 +37,7 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
+  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
 {
   QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 

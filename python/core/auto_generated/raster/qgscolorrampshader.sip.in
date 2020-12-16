@@ -212,6 +212,8 @@ Returns whether the shader will clip values which are out of range.
 Returns the color ramp shader legend settings.
 
 .. seealso:: :py:func:`setLegendSettings`
+
+.. versionadded:: 3.18
 %End
 
     void setLegendSettings( QgsColorRampLegendNodeSettings *settings /Transfer/ );
@@ -221,6 +223,8 @@ Sets the color ramp shader legend ``settings``.
 Ownership of ``settings`` is transferred.
 
 .. seealso:: :py:func:`legendSettings`
+
+.. versionadded:: 3.18
 %End
 
   protected:
