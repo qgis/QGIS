@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
+    <width>397</width>
     <height>605</height>
    </rect>
   </property>
@@ -15,16 +15,16 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <item row="4" column="0" colspan="3">
     <widget class="QTreeWidget" name="mColormapTreeWidget">
@@ -227,6 +227,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mLegendSettingsButton">
+       <property name="text">
+        <string>Legend Settings…</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

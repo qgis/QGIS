@@ -21,6 +21,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsdoublevalidator.h"
+#include "qgscolorramplegendnodewidget.h"
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
@@ -30,8 +31,10 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
   connect( mMinLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged );
   connect( mMaxLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged );
 
-  mGradientComboBox->insertItem( 0, tr( "Black to white" ), QgsSingleBandGrayRenderer::BlackToWhite );
-  mGradientComboBox->insertItem( 1, tr( "White to black" ), QgsSingleBandGrayRenderer::WhiteToBlack );
+  connect( mLegendSettingsButton, &QPushButton::clicked, this, &QgsSingleBandGrayRendererWidget::showLegendSettings );
+
+  mGradientComboBox->insertItem( 0, tr( "Black to White" ), QgsSingleBandGrayRenderer::BlackToWhite );
+  mGradientComboBox->insertItem( 1, tr( "White to Black" ), QgsSingleBandGrayRenderer::WhiteToBlack );
 
   mMinLineEdit->setValidator( new QgsDoubleValidator( mMinLineEdit ) );
   mMaxLineEdit->setValidator( new QgsDoubleValidator( mMaxLineEdit ) );
@@ -99,6 +102,8 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
 
   renderer->setGradient( ( QgsSingleBandGrayRenderer::Gradient ) mGradientComboBox->currentData().toInt() );
   renderer->setMinMaxOrigin( mMinMaxWidget->minMaxOrigin() );
+
+  renderer->setLegendSettings( new QgsColorRampLegendNodeSettings( mLegendSettings ) );
 
   return renderer;
 }
@@ -198,6 +203,9 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
     }
 
     mMinMaxWidget->setFromMinMaxOrigin( gr->minMaxOrigin() );
+
+    if ( gr->legendSettings() )
+      mLegendSettings = *gr->legendSettings();
   }
 }
 
@@ -213,4 +221,31 @@ void QgsSingleBandGrayRendererWidget::setMax( const QString &value, int )
   mDisableMinMaxWidgetRefresh = true;
   mMaxLineEdit->setText( value );
   mDisableMinMaxWidgetRefresh = false;
+}
+
+void QgsSingleBandGrayRendererWidget::showLegendSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
+  {
+    QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
+    legendPanel->setPanelTitle( tr( "Legend Settings" ) );
+    legendPanel->setSettings( mLegendSettings );
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [ = ]
+    {
+      mLegendSettings = legendPanel->settings();
+      emit widgetChanged();
+    } );
+    panel->openPanel( legendPanel );
+  }
+  else
+  {
+    QgsColorRampLegendNodeDialog dialog( mLegendSettings, this );
+    dialog.setWindowTitle( tr( "Legend Settings" ) );
+    if ( dialog.exec() )
+    {
+      mLegendSettings = dialog.settings();
+      emit widgetChanged();
+    }
+  }
 }

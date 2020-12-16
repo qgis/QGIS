@@ -34,6 +34,7 @@
 #include "qgsguiutils.h"
 #include "qgsdoublevalidator.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
+#include "qgscolorramplegendnodewidget.h"
 
 #include <QCursor>
 #include <QPushButton>
@@ -62,6 +63,8 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mColormapTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsColorRampShaderWidget::mColormapTreeWidget_itemDoubleClicked );
   connect( mColorInterpolationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorRampShaderWidget::mColorInterpolationComboBox_currentIndexChanged );
   connect( mClassificationModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorRampShaderWidget::mClassificationModeComboBox_currentIndexChanged );
+
+  connect( mLegendSettingsButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::showLegendSettings );
 
   contextMenu = new QMenu( tr( "Options" ), this );
   contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
@@ -174,6 +177,8 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
   {
     colorRampShader.setSourceColorRamp( btnColorRamp->colorRamp() );
   }
+
+  colorRampShader.setLegendSettings( new QgsColorRampLegendNodeSettings( mLegendSettings ) );
   return colorRampShader;
 }
 
@@ -613,6 +618,9 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
 
   populateColormapTreeWidget( colorRampShader.colorRampItemList() );
 
+  if ( colorRampShader.legendSettings() )
+    mLegendSettings = *colorRampShader.legendSettings();
+
   emit widgetChanged();
 }
 
@@ -629,14 +637,17 @@ void QgsColorRampShaderWidget::mColorInterpolationComboBox_currentIndexChanged( 
     case QgsColorRampShader::Interpolated:
       valueLabel = tr( "Value" );
       valueToolTip = tr( "Value for color stop" );
+      mLegendSettingsButton->setEnabled( true );
       break;
     case QgsColorRampShader::Discrete:
       valueLabel = tr( "Value <=" );
       valueToolTip = tr( "Maximum value for class" );
+      mLegendSettingsButton->setEnabled( false );
       break;
     case QgsColorRampShader::Exact:
       valueLabel = tr( "Value =" );
       valueToolTip = tr( "Value for color" );
+      mLegendSettingsButton->setEnabled( false );
       break;
   }
 
@@ -870,5 +881,32 @@ void QgsColorRampShaderWidget::changeOpacity()
 
     loadMinimumMaximumFromTree();
     emit widgetChanged();
+  }
+}
+
+void QgsColorRampShaderWidget::showLegendSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
+  {
+    QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
+    legendPanel->setPanelTitle( tr( "Legend Settings" ) );
+    legendPanel->setSettings( mLegendSettings );
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [ = ]
+    {
+      mLegendSettings = legendPanel->settings();
+      emit widgetChanged();
+    } );
+    panel->openPanel( legendPanel );
+  }
+  else
+  {
+    QgsColorRampLegendNodeDialog dialog( mLegendSettings, this );
+    dialog.setWindowTitle( tr( "Legend Settings" ) );
+    if ( dialog.exec() )
+    {
+      mLegendSettings = dialog.settings();
+      emit widgetChanged();
+    }
   }
 }
