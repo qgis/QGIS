@@ -15,7 +15,7 @@
 
 #ifndef QGS3DMAPCANVAS_H
 #define QGS3DMAPCANVAS_H
-
+#include <glew/GL/glew.h>
 #include <QWidget>
 #include <Qt3DRender/QRenderCapture>
 

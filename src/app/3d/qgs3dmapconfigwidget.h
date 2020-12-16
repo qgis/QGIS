@@ -15,7 +15,7 @@
 
 #ifndef QGS3DMAPCONFIGWIDGET_H
 #define QGS3DMAPCONFIGWIDGET_H
-
+#include <glew/GL/glew.h>
 #include <QWidget>
 
 #include <ui_map3dconfigwidget.h>

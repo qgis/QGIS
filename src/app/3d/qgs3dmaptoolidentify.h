@@ -15,7 +15,7 @@
 
 #ifndef QGS3DMAPTOOLIDENTIFY_H
 #define QGS3DMAPTOOLIDENTIFY_H
-
+#include <glew/GL/glew.h>
 #include "qgs3dmaptool.h"
 
 #include <memory>

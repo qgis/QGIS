@@ -15,7 +15,7 @@
 
 #ifndef QGS3DMAPTOOL_H
 #define QGS3DMAPTOOL_H
-
+#include <glew/GL/glew.h>
 #include <QObject>
 
 class Qgs3DMapCanvas;

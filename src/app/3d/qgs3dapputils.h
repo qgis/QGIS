@@ -15,7 +15,7 @@
 
 #ifndef QGS3DAPPUTILS_H
 #define QGS3DAPPUTILS_H
-
+#include <glew/GL/glew.h>
 #include <memory>
 
 class QgsPointCloudLayer3DRenderer;

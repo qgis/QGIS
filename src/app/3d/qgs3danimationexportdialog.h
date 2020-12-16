@@ -15,7 +15,7 @@
 
 #ifndef QGS3DANIMATIONEXPORTDIALOG_H
 #define QGS3DANIMATIONEXPORTDIALOG_H
-
+#include <glew/GL/glew.h>
 #include <QWidget>
 #include <memory>
 #include <QSize>

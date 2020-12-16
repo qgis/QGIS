@@ -15,7 +15,7 @@
 
 #ifndef QGS3DMAPTOOLMEASURELINE_H
 #define QGS3DMAPTOOLMEASURELINE_H
-
+#include <glew/GL/glew.h>
 #include "qgs3dmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvector3d.h"

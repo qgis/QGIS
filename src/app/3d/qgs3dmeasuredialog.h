@@ -16,7 +16,7 @@
 
 #ifndef QGS3DMEASUREDIALOG_H
 #define QGS3DMEASUREDIALOG_H
-
+#include <glew/GL/glew.h>
 #include <QCloseEvent>
 #include "ui_qgspointcloudmeasurebase.h"
 #include "ui_qgsmeasurebase.h"

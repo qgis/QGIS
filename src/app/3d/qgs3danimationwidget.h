@@ -15,7 +15,7 @@
 
 #ifndef QGS3DANIMATIONWIDGET_H
 #define QGS3DANIMATIONWIDGET_H
-
+#include <glew/GL/glew.h>
 #include <QWidget>
 #include <memory>
 
