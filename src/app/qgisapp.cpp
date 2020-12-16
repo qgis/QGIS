@@ -404,7 +404,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
-#include <shellapi.h>
+
 //
 // GDAL/OGR includes
 //
@@ -1527,7 +1527,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsStyle::defaultStyle();
   endProfile();
 
-  mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
+  mSplash->showMessage( tr( "HSLLC Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
   QgsMessageLog::logMessage( QgsApplication::showSettings(), QString(), Qgis::Info );
 
@@ -2731,8 +2731,8 @@ void QgisApp::createActions()
   connect( mActionSelectByForm, &QAction::triggered, this, &QgisApp::selectByForm );
   connect( mActionIdentify, &QAction::triggered, this, &QgisApp::identify );
   connect( mActionFeatureAction, &QAction::triggered, this, &QgisApp::doFeatureAction );
-  connect( mActionMeasure, &QAction::triggered, this, &QgisApp::measure );
-  connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::measureArea );
+  connect(mActionMeasureDistance, &QAction::triggered, this, &QgisApp::measure );
+  connect(mActionMeasureAreaReal, &QAction::triggered, this, &QgisApp::measureArea );
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
@@ -3018,8 +3018,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionSelectAll );
   mMapToolGroup->addAction( mActionReselect );
   mMapToolGroup->addAction( mActionInvertSelection );
-  mMapToolGroup->addAction( mActionMeasure );
-  mMapToolGroup->addAction( mActionMeasureArea );
+  mMapToolGroup->addAction( mActionMeasureDistance );
+  mMapToolGroup->addAction(mActionMeasureAreaReal);
   mMapToolGroup->addAction( mActionMeasureAngle );
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionCircularStringCurvePoint );
@@ -3155,13 +3155,13 @@ void QgisApp::createMenus()
   else
   {
     // on the top of the settings menu
-    QAction *before = mSettingsMenu->actions().at( 0 );
-    mSettingsMenu->insertMenu( before, mPanelMenu );
-    mSettingsMenu->insertMenu( before, mToolbarMenu );
-    mSettingsMenu->insertAction( before, mActionToggleFullScreen );
-    mSettingsMenu->insertAction( before, mActionTogglePanelsVisibility );
-    mSettingsMenu->insertAction( before, mActionToggleMapOnly );
-    mSettingsMenu->insertSeparator( before );
+    QAction *before = mHelpMenu->actions().at( 0 );
+    mHelpMenu->insertMenu( before, mPanelMenu );
+    mHelpMenu->insertMenu( before, mToolbarMenu );
+    mHelpMenu->insertAction( before, mActionToggleFullScreen );
+    mHelpMenu->insertAction( before, mActionTogglePanelsVisibility );
+    mHelpMenu->insertAction( before, mActionToggleMapOnly );
+    mHelpMenu->insertSeparator( before );
   }
 
 #ifdef Q_OS_MAC
@@ -3192,13 +3192,14 @@ void QgisApp::createMenus()
 
   // Database Menu
   // don't add it yet, wait for a plugin
-  mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
-  mDatabaseMenu->setObjectName( QStringLiteral( "mDatabaseMenu" ) );
+  //mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
+  //mDatabaseMenu->setObjectName( QStringLiteral( "mDatabaseMenu" ) );
   // Web Menu
   // don't add it yet, wait for a plugin
-  mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
-  mWebMenu->setObjectName( QStringLiteral( "mWebMenu" ) );
-
+ // mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
+ // mWebMenu->setObjectName( QStringLiteral( "mWebMenu" ) );
+  mDatabaseMenu = mHelpMenu;
+  mWebMenu = mHelpMenu;
   createProfileMenu();
 }
 
@@ -3271,22 +3272,22 @@ void QgisApp::createToolBars()
   // work properly
 
   QList<QToolBar *> toolbarMenuToolBars;
-  toolbarMenuToolBars << mFileToolBar
-                      << mDataSourceManagerToolBar
+  toolbarMenuToolBars << mLayerToolBar
+                      //<< mDataSourceManagerToolBar
                       << mLayerToolBar
                       << mDigitizeToolBar
-                      << mAdvancedDigitizeToolBar
+                   //   << mDigitizeToolBar
                       << mShapeDigitizeToolBar
                       << mMapNavToolBar
-                      << mAttributesToolBar
+                   //   << mSelectionToolBar
                       << mSelectionToolBar
                       << mPluginToolBar
-                      << mHelpToolBar
+//                      << mHelpToolBar
                       << mRasterToolBar
                       << mVectorToolBar
-                      << mDatabaseToolBar
+                   //   << mVectorToolBar
                       << mWebToolBar
-                      << mLabelToolBar
+//                      << mLabelToolBar
                       << mSnappingToolBar;
 
 
@@ -3396,7 +3397,7 @@ void QgisApp::createToolBars()
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   // feature action tool button
-  bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->setDefaultAction( mActionFeatureAction );
   mFeatureActionMenu = new QMenu( bt );
@@ -3404,32 +3405,32 @@ void QgisApp::createToolBars()
   connect( mFeatureActionMenu, &QMenu::triggered, this, &QgisApp::doFeatureAction );
   connect( mFeatureActionMenu, &QMenu::aboutToShow, this, &QgisApp::refreshFeatureActions );
   bt->setMenu( mFeatureActionMenu );
-  QAction *featureActionAction = mAttributesToolBar->insertWidget( mouseSelectionAction, bt );
+  QAction *featureActionAction = mSelectionToolBar->insertWidget( mouseSelectionAction, bt );
   featureActionAction->setObjectName( QStringLiteral( "ActionFeatureAction" ) );
 
   // measure tool button
 
-  bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
-  bt->addAction( mActionMeasure );
-  bt->addAction( mActionMeasureArea );
+  bt->addAction( mActionMeasureDistance );
+  bt->addAction(mActionMeasureAreaReal);
   bt->addAction( mActionMeasureAngle );
 
-  QAction *defMeasureAction = mActionMeasure;
+  QAction *defMeasureAction = mActionMeasureDistance;
   switch ( settings.value( QStringLiteral( "UI/measureTool" ), 0 ).toInt() )
   {
     case 0:
-      defMeasureAction = mActionMeasure;
+      defMeasureAction = mActionMeasureDistance;
       break;
     case 1:
-      defMeasureAction = mActionMeasureArea;
+      defMeasureAction = mActionMeasureAreaReal;
       break;
     case 2:
       defMeasureAction = mActionMeasureAngle;
       break;
   }
   bt->setDefaultAction( defMeasureAction );
-  QAction *measureAction = mAttributesToolBar->insertWidget( mActionMapTips, bt );
+  QAction *measureAction = mSelectionToolBar->insertWidget( mActionMapTips, bt );
   measureAction->setObjectName( QStringLiteral( "ActionMeasure" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -3463,7 +3464,7 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defAnnotationAction );
-  QAction *annotationAction = mAttributesToolBar->addWidget( bt );
+  QAction *annotationAction = mSelectionToolBar->addWidget( bt );
   annotationAction->setObjectName( QStringLiteral( "ActionAnnotation" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -3716,10 +3717,10 @@ void QgisApp::createToolBars()
   connect( tbAddRegularPolygon, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   // Cad toolbar
-  mAdvancedDigitizeToolBar->insertAction( mActionRotateFeature, mAdvancedDigitizingDockWidget->enableAction() );
+  mDigitizeToolBar->insertAction( mActionRotateFeature, mAdvancedDigitizingDockWidget->enableAction() );
 
   // move feature tool button
-  QToolButton *moveFeatureButton = new QToolButton( mAdvancedDigitizeToolBar );
+  QToolButton *moveFeatureButton = new QToolButton( mDigitizeToolBar );
   moveFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
   moveFeatureButton->addAction( mActionMoveFeature );
   moveFeatureButton->addAction( mActionMoveFeatureCopy );
@@ -3734,7 +3735,7 @@ void QgisApp::createToolBars()
       break;
   }
   moveFeatureButton->setDefaultAction( defAction );
-  QAction *moveToolAction = mAdvancedDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
+  QAction *moveToolAction = mDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
   moveToolAction->setObjectName( QStringLiteral( "ActionMoveFeatureTool" ) );
   connect( moveFeatureButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -3772,7 +3773,7 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defPointSymbolAction );
-  QAction *pointSymbolAction = mAdvancedDigitizeToolBar->addWidget( bt );
+  QAction *pointSymbolAction = mDigitizeToolBar->addWidget( bt );
   pointSymbolAction->setObjectName( QStringLiteral( "ActionPointSymbolTools" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -3915,19 +3916,19 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsLayoutLocatorFilter() );
   QList< QWidget *> actionObjects;
   actionObjects << menuBar()
-                << mAdvancedDigitizeToolBar
+                << mDigitizeToolBar
                 << mShapeDigitizeToolBar
-                << mFileToolBar
-                << mDataSourceManagerToolBar
+                << mLayerToolBar
+                //<< mDataSourceManagerToolBar
                 << mLayerToolBar
                 << mDigitizeToolBar
                 << mMapNavToolBar
-                << mAttributesToolBar
+                << mSelectionToolBar
                 << mPluginToolBar
                 << mRasterToolBar
-                << mLabelToolBar
+           //     << mLabelToolBar
                 << mVectorToolBar
-                << mDatabaseToolBar
+           //     << mVectorToolBar
                 << mWebToolBar
                 << mSnappingToolBar;
 
@@ -4114,8 +4115,8 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSelectByForm->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
-  mActionMeasure->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
-  mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureArea.svg" ) ) );
+  mActionMeasureDistance->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
+  mActionMeasureAreaReal->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureArea.svg" ) ) );
   mActionMeasureAngle->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureAngle.svg" ) ) );
   mActionMapTips->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapTips.svg" ) ) );
   mActionShowBookmarkManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
@@ -4318,7 +4319,7 @@ void QgisApp::setupConnections()
   // setup undo/redo actions
   connect( mUndoWidget, &QgsUndoWidget::undoStackChanged, this, &QgisApp::updateUndoActions );
 
-  connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgisApp::layoutsMenuAboutToShow );
+  connect( mViewMenu, &QMenu::aboutToShow, this, &QgisApp::layoutsMenuAboutToShow );
 }
 
 void QgisApp::createCanvasTools()
@@ -4338,9 +4339,9 @@ void QgisApp::createCanvasTools()
   mMapTools.mFeatureAction = new QgsMapToolFeatureAction( mMapCanvas );
   mMapTools.mFeatureAction->setAction( mActionFeatureAction );
   mMapTools.mMeasureDist = new QgsMeasureTool( mMapCanvas, false /* area */ );
-  mMapTools.mMeasureDist->setAction( mActionMeasure );
+  mMapTools.mMeasureDist->setAction( mActionMeasureDistance );
   mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, true /* area */ );
-  mMapTools.mMeasureArea->setAction( mActionMeasureArea );
+  mMapTools.mMeasureArea->setAction(mActionMeasureAreaReal);
   mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
   mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );
   mMapTools.mTextAnnotation = new QgsMapToolTextAnnotation( mMapCanvas );
@@ -9806,7 +9807,7 @@ void QgisApp::setLayoutAtlasFeature( QgsPrintLayout *layout, const QgsFeature &f
 
 void QgisApp::layoutsMenuAboutToShow()
 {
-  populateLayoutsMenu( mLayoutsMenu );
+  populateLayoutsMenu( mViewMenu );
 }
 
 void QgisApp::populateLayoutsMenu( QMenu *menu )
@@ -12772,7 +12773,9 @@ void QgisApp::helpQgisHomePage()
                                  QStringLiteral( "https://qgis.org" ) ).toString();
   openURL( helpQgisHomePageUrl, false );
 }
-
+#ifdef Q_OS_WIN
+#include<shellapi.h>
+#endif
 void QgisApp::openURL( QString url, bool useQgisDocDirectory )
 {
   // open help in user browser
@@ -13610,7 +13613,7 @@ QMenu *QgisApp::getPluginMenu( const QString &menuName )
   if ( !mActionPluginSeparator1 )
   {
     // First plugin - create plugin list separator
-    mActionPluginSeparator1 = mPluginMenu->insertSeparator( before );
+    mActionPluginSeparator1 = mHelpMenu->insertSeparator( before );
   }
   else
   {
@@ -13618,7 +13621,7 @@ QMenu *QgisApp::getPluginMenu( const QString &menuName )
     dst.remove( QChar( '&' ) );
 
     // Plugins exist - search between plugin separator and python separator or end of list
-    QList<QAction *> actions = mPluginMenu->actions();
+    QList<QAction *> actions = mHelpMenu->actions();
     int end = mActionPluginSeparator2 ? actions.indexOf( mActionPluginSeparator2 ) : actions.count();
     for ( int i = actions.indexOf( mActionPluginSeparator1 ) + 1; i < end; i++ )
     {
@@ -13643,7 +13646,7 @@ QMenu *QgisApp::getPluginMenu( const QString &menuName )
   QMenu *menu = new QMenu( cleanedMenuName, this );
   menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
   // Where to put it? - we worked that out above...
-  mPluginMenu->insertMenu( before, menu );
+  mHelpMenu->insertMenu( before, menu );
 
   return menu;
 }
@@ -13660,14 +13663,14 @@ void QgisApp::removePluginMenu( const QString &name, QAction *action )
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
-    mPluginMenu->removeAction( menu->menuAction() );
+    mHelpMenu->removeAction( menu->menuAction() );
   }
   // Remove separator above plugins in Plugin menu if no plugins remain
-  QList<QAction *> actions = mPluginMenu->actions();
+  QList<QAction *> actions = mHelpMenu->actions();
   int end = mActionPluginSeparator2 ? actions.indexOf( mActionPluginSeparator2 ) : actions.count();
   if ( actions.indexOf( mActionPluginSeparator1 ) + 1 == end )
   {
-    mPluginMenu->removeAction( mActionPluginSeparator1 );
+    mHelpMenu->removeAction( mActionPluginSeparator1 );
     mActionPluginSeparator1 = nullptr;
   }
 }
@@ -13860,12 +13863,12 @@ QMenu *QgisApp::getWebMenu( const QString &menuName )
 
 void QgisApp::insertAddLayerAction( QAction *action )
 {
-  mAddLayerMenu->insertAction( mActionAddLayerSeparator, action );
+  mLayerMenu->insertAction( mActionAddLayerSeparator, action );
 }
 
 void QgisApp::removeAddLayerAction( QAction *action )
 {
-  mAddLayerMenu->removeAction( action );
+  mLayerMenu->removeAction( action );
 }
 
 void QgisApp::addPluginToDatabaseMenu( const QString &name, QAction *action )
@@ -14105,7 +14108,7 @@ void QgisApp::removeVectorToolBarIcon( QAction *qAction )
 
 int QgisApp::addDatabaseToolBarIcon( QAction *qAction )
 {
-  mDatabaseToolBar->addAction( qAction );
+  mVectorToolBar->addAction( qAction );
   return 0;
 }
 
@@ -14116,12 +14119,12 @@ void QgisApp::onVirtualLayerAdded( const QString &uri, const QString &layerName 
 
 QAction *QgisApp::addDatabaseToolBarWidget( QWidget *widget )
 {
-  return mDatabaseToolBar->addWidget( widget );
+  return mVectorToolBar->addWidget( widget );
 }
 
 void QgisApp::removeDatabaseToolBarIcon( QAction *qAction )
 {
-  mDatabaseToolBar->removeAction( qAction );
+  mVectorToolBar->removeAction( qAction );
 }
 
 int QgisApp::addWebToolBarIcon( QAction *qAction )
@@ -14588,23 +14591,23 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionAddFeature->setEnabled( false );
     mActionCircularStringCurvePoint->setEnabled( false );
     mActionCircularStringRadius->setEnabled( false );
-    mMenuCircle->setEnabled( false );
+    //mMenuCircle->setEnabled( false );
     mActionCircle2Points->setEnabled( false );
     mActionCircle3Points->setEnabled( false );
     mActionCircle3Tangents->setEnabled( false );
     mActionCircle2TangentsPoint->setEnabled( false );
     mActionCircleCenterPoint->setEnabled( false );
-    mMenuEllipse->setEnabled( false );
+    //mMenuEllipse->setEnabled( false );
     mActionEllipseCenter2Points->setEnabled( false );
     mActionEllipseCenterPoint->setEnabled( false );
     mActionEllipseExtent->setEnabled( false );
     mActionEllipseFoci->setEnabled( false );
-    mMenuRectangle->setEnabled( false );
+//    mMenuRectangle->setEnabled( false );
     mActionRectangleCenterPoint->setEnabled( false );
     mActionRectangleExtent->setEnabled( false );
     mActionRectangle3PointsDistance->setEnabled( false );
     mActionRectangle3PointsProjected->setEnabled( false );
-    mMenuRegularPolygon->setEnabled( false );
+//    mMenuRegularPolygon->setEnabled( false );
     mActionRegularPolygon2Points->setEnabled( false );
     mActionRegularPolygonCenterPoint->setEnabled( false );
     mActionRegularPolygonCenterCorner->setEnabled( false );
@@ -14768,23 +14771,23 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         enableShapeTools = enableCircularTools;
         mActionCircularStringCurvePoint->setEnabled( enableCircularTools );
         mActionCircularStringRadius->setEnabled( enableCircularTools );
-        mMenuCircle->setEnabled( enableShapeTools );
+//        mMenuCircle->setEnabled( enableShapeTools );
         mActionCircle2Points->setEnabled( enableShapeTools );
         mActionCircle3Points->setEnabled( enableShapeTools );
         mActionCircle3Tangents->setEnabled( enableShapeTools );
         mActionCircle2TangentsPoint->setEnabled( enableShapeTools );
         mActionCircleCenterPoint->setEnabled( enableShapeTools );
-        mMenuEllipse->setEnabled( enableShapeTools );
+//        mMenuEllipse->setEnabled( enableShapeTools );
         mActionEllipseCenter2Points->setEnabled( enableShapeTools );
         mActionEllipseCenterPoint->setEnabled( enableShapeTools );
         mActionEllipseExtent->setEnabled( enableShapeTools );
         mActionEllipseFoci->setEnabled( enableShapeTools );
-        mMenuRectangle->setEnabled( enableShapeTools );
+//        mMenuRectangle->setEnabled( enableShapeTools );
         mActionRectangleCenterPoint->setEnabled( enableShapeTools );
         mActionRectangleExtent->setEnabled( enableShapeTools );
         mActionRectangle3PointsDistance->setEnabled( enableShapeTools );
         mActionRectangle3PointsProjected->setEnabled( enableShapeTools );
-        mMenuRegularPolygon->setEnabled( enableShapeTools );
+//        mMenuRegularPolygon->setEnabled( enableShapeTools );
         mActionRegularPolygon2Points->setEnabled( enableShapeTools );
         mActionRegularPolygonCenterPoint->setEnabled( enableShapeTools );
         mActionRegularPolygonCenterCorner->setEnabled( enableShapeTools );
@@ -14979,23 +14982,23 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionAddFeature->setEnabled( false );
       mActionCircularStringCurvePoint->setEnabled( false );
       mActionCircularStringRadius->setEnabled( false );
-      mMenuCircle->setEnabled( false );
+//      mMenuCircle->setEnabled( false );
       mActionCircle2Points->setEnabled( false );
       mActionCircle3Points->setEnabled( false );
       mActionCircle3Tangents->setEnabled( false );
       mActionCircle2TangentsPoint->setEnabled( false );
       mActionCircleCenterPoint->setEnabled( false );
-      mMenuEllipse->setEnabled( false );
+//      mMenuEllipse->setEnabled( false );
       mActionEllipseCenter2Points->setEnabled( false );
       mActionEllipseCenterPoint->setEnabled( false );
       mActionEllipseExtent->setEnabled( false );
       mActionEllipseFoci->setEnabled( false );
-      mMenuRectangle->setEnabled( false );
+//      mMenuRectangle->setEnabled( false );
       mActionRectangleCenterPoint->setEnabled( false );
       mActionRectangleExtent->setEnabled( false );
       mActionRectangle3PointsDistance->setEnabled( false );
       mActionRectangle3PointsProjected->setEnabled( false );
-      mMenuRegularPolygon->setEnabled( false );
+//      mMenuRegularPolygon->setEnabled( false );
       mActionRegularPolygon2Points->setEnabled( false );
       mActionRegularPolygonCenterPoint->setEnabled( false );
       mActionRegularPolygonCenterCorner->setEnabled( false );
@@ -16451,9 +16454,9 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/deselectionTool" ), 0 );
   else if ( action == mActionDeselectActiveLayer )
     settings.setValue( QStringLiteral( "UI/deselectionTool" ), 1 );
-  else if ( action == mActionMeasure )
+  else if ( action == mActionMeasureDistance )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 0 );
-  else if ( action == mActionMeasureArea )
+  else if ( action == mActionMeasureAreaReal)
     settings.setValue( QStringLiteral( "UI/measureTool" ), 1 );
   else if ( action == mActionMeasureAngle )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 2 );

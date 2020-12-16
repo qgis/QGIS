@@ -18,7 +18,7 @@
 #define QGSMEASUREDIALOG_H
 
 #include "ui_qgsmeasurebase.h"
-
+#include "ui_qgspointcloudmeasurebase.h"
 #include "qgspointxy.h"
 #include "qgsdistancearea.h"
 #include "qgshelp.h"
@@ -28,7 +28,7 @@ class QCloseEvent;
 class QgsMeasureTool;
 class QgsMapCanvas;
 
-class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
+class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsPointCloudMeasureBase
 {
     Q_OBJECT
 

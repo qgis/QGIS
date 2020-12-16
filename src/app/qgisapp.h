@@ -18,6 +18,37 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
+
+//#include <glew/GL/glew.h>
+
+ /*-----------------------wp--pointcloud--------
+#include "qgsprofilewindowdockwidget.h"
+#include <View3D.h>
+#include <PointViewerMainWindow.h>
+
+//#include "providers\pdal\PointCloudlayer.h"
+
+//#include "qgsmeasuretool.h"
+
+class PointCloudWindow;
+class QActionGroup;
+class QLocalServer;
+class QSignalMapper;
+class QPlainTextEdit;
+class QProgressBar;
+class QModelIndex;
+class QGLFormat;
+
+class HelpDialog;
+class View3D;
+class ShaderEditor;
+class LogViewer;
+class GeometryCollection;
+class IpcChannel;
+class FileLoader;
+class HookManager;
+//-----------------------wp---pointcloud----------
+*/
 class QActionGroup;
 class QCheckBox;
 class QCursor;
@@ -184,6 +215,9 @@ class QgsNetworkLoggerWidgetFactory;
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif
+
+
+
 
 class QgsLegendFilterButton;
 
@@ -506,8 +540,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSelectRadius() { return mActionSelectRadius; }
     QAction *actionIdentify() { return mActionIdentify; }
     QAction *actionFeatureAction() { return mActionFeatureAction; }
-    QAction *actionMeasure() { return mActionMeasure; }
-    QAction *actionMeasureArea() { return mActionMeasureArea; }
+    QAction *actionMeasure() { return mActionMeasureDistance; }
+    QAction *actionMeasureArea() { return mActionMeasureAreaReal; }
     QAction *actionZoomFullExtent() { return mActionZoomFullExtent; }
     QAction *actionZoomToLayer() { return mActionZoomToLayer; }
     QAction *actionZoomToSelected() { return mActionZoomToSelected; }
@@ -616,16 +650,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
     //! Menus
+
     QMenu *projectMenu() { return mProjectMenu; }
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
-    QMenu *newLayerMenu() { return mNewLayerMenu; }
+    QMenu *newLayerMenu() { return mLayerMenu; }
     //! \since QGIS 2.5
-    QMenu *addLayerMenu() { return mAddLayerMenu; }
-    QMenu *settingsMenu() { return mSettingsMenu; }
-    QMenu *pluginMenu() { return mPluginMenu; }
-    QMenu *pluginHelpMenu() { return mMenuPluginHelp; }
+    QMenu *addLayerMenu() { return mLayerMenu; }
+    QMenu *settingsMenu() { return mHelpMenu; }
+    QMenu *pluginMenu() { return mHelpMenu; }
+    QMenu *pluginHelpMenu() { return mHelpMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
@@ -647,14 +682,28 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *   an icon into the file toolbar for consistency e.g.
      *   addWFS and GPS plugins.
      */
-    QToolBar *fileToolBar() { return mFileToolBar; }
+   // mLayerToolBar= mFileToolBar；
+    /*
+    QToolBar *mLayerToolBar;
+    QToolBar *mDigitizeToolBar;
+    QToolBar *mMapNavToolBar;
+    QToolBar *mPluginToolBar;
+    QToolBar *mRasterToolBar;
+    QToolBar *mVectorToolBar;
+    QToolBar *mSnappingToolBar;
+    QToolBar *mShapeDigitizeToolBar;
+    QToolBar *mSelectionToolBar;
+    QToolBar *PointCloudViewToolBar;
+    QToolBar *mWebToolBar;
+    */
+    QToolBar *fileToolBar() { return mLayerToolBar; }
     QToolBar *layerToolBar() { return mLayerToolBar; }
-    QToolBar *dataSourceManagerToolBar() { return mDataSourceManagerToolBar; }
+    QToolBar *dataSourceManagerToolBar() { return mLayerToolBar; }
     QToolBar *mapNavToolToolBar() { return mMapNavToolBar; }
     QToolBar *digitizeToolBar() { return mDigitizeToolBar; }
-    QToolBar *advancedDigitizeToolBar() { return mAdvancedDigitizeToolBar; }
+    QToolBar *advancedDigitizeToolBar() { return mMapNavToolBar; }
     QToolBar *shapeDigitizeToolBar() { return mShapeDigitizeToolBar; }
-    QToolBar *attributesToolBar() { return mAttributesToolBar; }
+    QToolBar *attributesToolBar() { return mVectorToolBar; }
 
     /**
      * Returns selection toolbar
@@ -662,10 +711,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QToolBar *selectionToolBar() { return mSelectionToolBar; }
     QToolBar *pluginToolBar() { return mPluginToolBar; }
-    QToolBar *helpToolBar() { return mHelpToolBar; }
+    QToolBar *helpToolBar() { return mWebToolBar; }
     QToolBar *rasterToolBar() { return mRasterToolBar; }
     QToolBar *vectorToolBar() { return mVectorToolBar; }
-    QToolBar *databaseToolBar() { return mDatabaseToolBar; }
+    QToolBar *databaseToolBar() { return mVectorToolBar; }
     QToolBar *webToolBar() { return mWebToolBar; }
 
     QgsStatusBar *statusBarIface() { return mStatusBar; }

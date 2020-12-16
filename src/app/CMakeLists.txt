@@ -118,7 +118,7 @@ set(QGIS_APP_SRCS
 
   pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayerstylewidget.cpp
-
+  qgsprofilewindowdockwidget.cpp
   vectortile/qgsvectortilelayerproperties.cpp
 
   vertextool/qgslockedfeature.cpp
@@ -487,7 +487,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/native
 )
-
 if (WITH_3D)
   include_directories(
     ${CMAKE_SOURCE_DIR}/src/app/3d
@@ -504,7 +503,6 @@ if (WITH_3D)
     ${QT5_3DEXTRA_INCLUDE_DIR}
   )
 endif()
-
 include_directories(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -563,6 +561,14 @@ include_directories(SYSTEM
   ${QWTPOLAR_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
+  ${Qt5OpenGL_INCLUDE_DIRS}
+  E:/code/displaz-master/src
+  E:/code/displaz-master/src/render
+  E:/code/displaz-master/src/gui
+  E:/code/displaz-master/build_external/dist/include
+  E:/code/displaz-master/build_external/dist/include/OpenEXR
+  E:/code/displaz-master/thirdparty/glew
+  E:/code/displaz-master/thirdparty
 )
 
 if(HAVE_OPENCL)
@@ -616,6 +622,14 @@ target_link_libraries(qgis_app
   qgis_analysis
   qgis_native
   libdxfrw
+  laslib.lib
+  Imath.lib
+  lmThread.lib
+  IexMath.lib
+  Iex.lib
+  Half.lib
+  displaz.lib
+  embeddedGLEW.lib
 )
 
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")

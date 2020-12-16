@@ -1344,7 +1344,7 @@ int main( int argc, char *argv[] )
 
   //set up splash screen
   QString mySplashPath( QgsCustomization::instance()->splashPath() );
-  QPixmap myPixmap( mySplashPath + QStringLiteral( "splash.png" ) );
+  QPixmap myPixmap( mySplashPath + QStringLiteral( "splashd.png" ) );
 
   int w = 600 * qApp->desktop()->logicalDpiX() / 96;
   int h = 300 * qApp->desktop()->logicalDpiY() / 96;

@@ -18,14 +18,14 @@
 #define QGS3DMEASUREDIALOG_H
 
 #include <QCloseEvent>
-
+#include "ui_qgspointcloudmeasurebase.h"
 #include "ui_qgsmeasurebase.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dmapcanvas.h"
 #include "qgsunittypes.h"
 
 
-class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
+class Qgs3DMeasureDialog : public QDialog, private Ui::QgsPointCloudMeasureBase
 {
     Q_OBJECT
 

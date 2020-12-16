@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1482</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -199,7 +199,6 @@
      </property>
      <addaction name="mActionDrawRect"/>
      <addaction name="actionAddConstantSF"/>
-     <addaction name="actionScalar_fields_2"/>
      <addaction name="actionRegistration"/>
      <addaction name="actionSegmentation"/>
     </widget>
@@ -316,8 +315,8 @@
    <addaction name="m_actionclassification"/>
    <addaction name="actionactionProfile"/>
    <addaction name="mActionDrawRect"/>
-   <addaction name="mActionMeasure"/>
-   <addaction name="mActionMeasureArea"/>
+   <addaction name="mActionDrawLine2D"/>
+   <addaction name="mActionDrawAnyrect2D"/>
    <addaction name="separator"/>
    <addaction name="mActionMeasureDistance"/>
    <addaction name="mActionMeasureAreaReal"/>
@@ -1000,7 +999,7 @@
     <string>Ctrl+Shift+I</string>
    </property>
   </action>
-  <action name="mActionMeasure">
+  <action name="mActionDrawLine2D">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1018,7 +1017,7 @@
     <string>Ctrl+Shift+M</string>
    </property>
   </action>
-  <action name="mActionMeasureArea">
+  <action name="mActionDrawAnyrect2D">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -3135,11 +3134,6 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>&amp;Forest</string>
    </property>
   </action>
-  <action name="actionScalar_fields_2">
-   <property name="text">
-    <string>Scalar fields</string>
-   </property>
-  </action>
   <action name="actionSegmentation">
    <property name="text">
     <string>Segmentation</string>
@@ -3309,6 +3303,242 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>测量平面面积</string>
+   </property>
+  </action>
+  <action name="mActionNewSpatiaLiteLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New SpatiaLite Layer…</string>
+   </property>
+  </action>
+  <action name="mActionShowRasterCalculator">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowRasterCalculator.png</normaloff>:/images/themes/default/mActionShowRasterCalculator.png</iconset>
+   </property>
+   <property name="text">
+    <string>Raster Calculator…</string>
+   </property>
+  </action>
+  <action name="mActionAddPgLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add PostGIS Layers…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="mActionAddSpatiaLiteLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.svg</normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add SpatiaLite Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="mActionAddMssqlLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add MSSQL Spatial Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddDb2Layer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddDb2Layer.svg</normaloff>:/images/themes/default/mActionAddDb2Layer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add DB2 Spatial Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+2</string>
+   </property>
+  </action>
+  <action name="mActionAddOracleLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOracleLayer.svg</normaloff>:/images/themes/default/mActionAddOracleLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Oracle Spatial Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
+  <action name="mActionAddWmsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWmsLayer.svg</normaloff>:/images/themes/default/mActionAddWmsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add WMS/WMTS Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="mActionAddWcsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWcsLayer.svg</normaloff>:/images/themes/default/mActionAddWcsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add WCS Layer…</string>
+   </property>
+  </action>
+  <action name="mActionPreviewTritanope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
+   </property>
+  </action>
+  <action name="mActionAddAmsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Arc&amp;GIS Map Service Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add ArcGIS Map Service Layer</string>
+   </property>
+  </action>
+  <action name="mActionAddAfsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Ar&amp;cGIS Feature Service Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add ArcGIS Feature Service Layer</string>
+   </property>
+  </action>
+  <action name="mActionShowMeshCalculator">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowMeshCalculator.svg</normaloff>:/images/themes/default/mActionShowMeshCalculator.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Mesh Calculator…</string>
+   </property>
+  </action>
+  <action name="mActionAddMeshLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMeshLayer.svg</normaloff>:/images/themes/default/mActionAddMeshLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Mesh Layer...</string>
+   </property>
+  </action>
+  <action name="mActionNewVirtualLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewVirtualLayer.svg</normaloff>:/images/themes/default/mActionNewVirtualLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Virtual Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New Virtual Layer</string>
+   </property>
+  </action>
+  <action name="mActionTemporalController">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/propertyicons/temporal.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Controller</string>
+   </property>
+   <property name="toolTip">
+    <string>Temporal Controller Panel</string>
+   </property>
+  </action>
+  <action name="mActionAddXyzLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddXyzLayer.svg</normaloff>:/images/themes/default/mActionAddXyzLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add XYZ Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add XYZ Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddVectorTileLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector Tile Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Vector Tile Layer…</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseGamma">
+   <property name="text">
+    <string>Decrease Gamma</string>
+   </property>
+   <property name="toolTip">
+    <string>Decrease Gamma</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseGamma">
+   <property name="text">
+    <string>Increase Gamma</string>
+   </property>
+   <property name="toolTip">
+    <string>Increase Gamma</string>
+   </property>
+  </action>
+  <action name="mActionDigitizeWithCurve">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Digitize with curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitize with curve</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
+  <action name="mActionAddPointCloudLayer">
+   <property name="text">
+    <string>Add Point Cloud Layer...</string>
    </property>
   </action>
  </widget>
