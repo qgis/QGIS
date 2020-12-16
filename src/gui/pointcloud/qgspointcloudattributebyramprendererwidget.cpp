@@ -33,6 +33,9 @@ QgsPointCloudAttributeByRampRendererWidget::QgsPointCloudAttributeByRampRenderer
   mAttributeComboBox->setAllowEmptyAttributeName( false );
   mAttributeComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
 
+  mMinSpin->setShowClearButton( false );
+  mMaxSpin->setShowClearButton( false );
+
   if ( layer )
   {
     mAttributeComboBox->setLayer( layer );
