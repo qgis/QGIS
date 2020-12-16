@@ -27,10 +27,12 @@ originally part of the larger QgsRasterLayer class
 #include <QVector>
 #include <memory>
 
-#include "qgscolorramp.h"
-#include "qgsrasterinterface.h"
 #include "qgsrastershaderfunction.h"
 #include "qgsrectangle.h"
+
+class QgsColorRamp;
+class QgsRasterInterface;
+
 
 /**
  * \ingroup core
@@ -67,6 +69,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \returns new QgsColorRampShader
      */
     QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+
+    ~QgsColorRampShader() override;
 
     /**
      * Copy constructor

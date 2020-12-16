@@ -41,6 +41,8 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   setSourceColorRamp( colorRamp );
 }
 
+QgsColorRampShader::~QgsColorRampShader() = default;
+
 QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
   : QgsRasterShaderFunction( other )
   , mColorRampType( other.mColorRampType )

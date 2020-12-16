@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsColorRampShader : QgsRasterShaderFunction
 {
 %Docstring
@@ -47,6 +49,8 @@ Creates a new color ramp shader.
 
 :return: new QgsColorRampShader
 %End
+
+    ~QgsColorRampShader();
 
     QgsColorRampShader( const QgsColorRampShader &other );
 %Docstring
