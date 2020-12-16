@@ -92,7 +92,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         p.drawPixmap(0, 0, pixmap)
         p.end()
 
-        self.assertTrue(self.imageCheck('color_ramp_legend_node_icon', 'color_ramp_legend_node_icon', im))
+        self.assertTrue(self.imageCheck('color_ramp_legend_node_icon', 'color_ramp_legend_node_icon', im, 10))
 
     def test_draw(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -136,7 +136,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('color_ramp_legend_node_draw', 'color_ramp_legend_node_draw', image))
 
-    def imageCheck(self, name, reference_image, image):
+    def imageCheck(self, name, reference_image, image, size_tolerance=0):
         TestQgsColorRampLegendNode.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
@@ -146,6 +146,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
+        checker.setSizeTolerance(size_tolerance, size_tolerance)
         result = checker.compareImages(name, 20)
         TestQgsColorRampLegendNode.report += checker.report()
         return result
