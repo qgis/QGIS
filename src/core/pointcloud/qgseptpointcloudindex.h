@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QVector>
 #include <QList>
+#include <QFile>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
@@ -35,7 +36,7 @@
 
 class QgsCoordinateReferenceSystem;
 
-class QgsEptPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 {
     Q_OBJECT
   public:
@@ -43,7 +44,7 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
     explicit QgsEptPointCloudIndex();
     ~QgsEptPointCloudIndex();
 
-    bool load( const QString &fileName ) override;
+    void load( const QString &fileName ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
@@ -54,10 +55,13 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
 
     QVariantMap originalMetadata() const { return mOriginalMetadata; }
+    bool isValid() const override;
 
   private:
+    bool loadSchema( QFile &f );
     bool loadHierarchy();
 
+    bool mIsValid = false;
     QString mDataType;
     QString mDirectory;
     QString mWkt;

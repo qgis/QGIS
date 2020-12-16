@@ -3015,6 +3015,7 @@ void QgsOgrProvider::computeCapabilities()
   }
 
   ability |= ReadLayerMetadata;
+  ability |= ReloadData;
 
   if ( updateModeActivated )
     leaveUpdateMode();

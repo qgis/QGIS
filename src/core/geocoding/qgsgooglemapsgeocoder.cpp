@@ -18,11 +18,16 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgsreadwritelocker.h"
 #include <QUrl>
 #include <QUrlQuery>
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonObject>
+
+QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
+QMap< QUrl, QList< QgsGeocoderResult > > QgsGoogleMapsGeocoder::sCachedResults;
+
 
 QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QString &regionBias )
   : QgsGeocoderInterface()
@@ -81,6 +86,14 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
 
   const QUrl url = requestUrl( string, bounds );
 
+  QgsReadWriteLocker locker( sMutex, QgsReadWriteLocker::Read );
+  auto it = sCachedResults.constFind( url );
+  if ( it != sCachedResults.constEnd() )
+  {
+    return *it;
+  }
+  locker.unlock();
+
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGoogleMapsGeocoder" ) );
 
@@ -105,24 +118,27 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
     return QList<QgsGeocoderResult>();
   }
 
-  if ( res.contains( QStringLiteral( "error_message" ) ) )
+  if ( res.contains( QLatin1String( "error_message" ) ) )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( QStringLiteral( "error_message" ) ).toString() );
   }
 
-  if ( status == QStringLiteral( "REQUEST_DENIED" ) || status == QStringLiteral( "OVER_QUERY_LIMIT" ) )
+  if ( status == QLatin1String( "REQUEST_DENIED" ) || status == QLatin1String( "OVER_QUERY_LIMIT" ) )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( QObject::tr( "Request denied -- the API key was rejected" ) );
   }
-  if ( status != QStringLiteral( "OK" ) )
+  if ( status != QLatin1String( "OK" ) && status != QLatin1String( "ZERO_RESULTS" ) )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( QStringLiteral( "status" ) ).toString() );
   }
 
   // all good!
+  locker.changeMode( QgsReadWriteLocker::Write );
+
   const QVariantList results = res.value( QStringLiteral( "results" ) ).toList();
   if ( results.empty() )
   {
+    sCachedResults.insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -132,6 +148,8 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   {
     matches << jsonToResult( result.toMap() );
   }
+  sCachedResults.insert( url, matches );
+
   return matches;
 }
 

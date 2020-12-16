@@ -3480,7 +3480,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
          qry.addBindValue( dsUri.table() ),
          qry.addBindValue( dsUri.geometryColumn() ),
          qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName ),
-         qry.exec( sql )
+         qry.exec()
        ) )
   {
     errCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );

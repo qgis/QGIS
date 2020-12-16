@@ -70,7 +70,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
-  if ( !pc )
+  if ( !pc || !pc->isValid() )
     return false;
 
   mRenderer->startRender( context );
@@ -167,9 +167,9 @@ bool QgsPointCloudLayerRenderer::render()
 
 bool QgsPointCloudLayerRenderer::forceRasterRender() const
 {
-  // point cloud layers should always be rasterized -- we don't want to export points as vectors
+  // unless we are using the extent only renderer, point cloud layers should always be rasterized -- we don't want to export points as vectors
   // to formats like PDF!
-  return true;
+  return mRenderer ? mRenderer->type() != QLatin1String( "extent" ) : false;
 }
 
 QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,

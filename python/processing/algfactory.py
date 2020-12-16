@@ -194,6 +194,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
         kwargs['description'] = kwargs.pop("label", "")
         kwargs['defaultValue'] = kwargs.pop("default", None)
         advanced = kwargs.pop("advanced", False)
+        help_str = kwargs.pop("help", "")
         try:
             if output:
                 try:
@@ -208,6 +209,8 @@ class AlgWrapper(QgsProcessingAlgorithm):
             parm = make_func(**kwargs)
             if advanced:
                 parm.setFlags(parm.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            if not output:
+                parm.setHelp(help_str)
             return parm
         except KeyError as ex:
             raise NotImplementedError("{} not supported".format(str(type)))

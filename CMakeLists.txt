@@ -408,6 +408,9 @@ if(WITH_CORE)
   endif()
 
   if (WITH_PDAL)
+    if (NOT WITH_EPT)
+      message(FATAL_ERROR "PDAL provider cannot be built with EPT disabled")
+    endif()
     find_package(PDAL) # PDAL provider
   endif()
   if (PDAL_FOUND)

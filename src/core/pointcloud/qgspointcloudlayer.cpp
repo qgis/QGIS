@@ -38,10 +38,14 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
 {
+
   if ( !path.isEmpty() && !providerLib.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
     setDataSource( path, baseName, providerLib, providerOptions, options.loadDefaultStyle );
+
+    if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
+      mDataProvider.get()->generateIndex();
   }
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
@@ -273,10 +277,14 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
     mDataProvider->setTransformContext( transformContext );
 }
 
-void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
+                                        const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
   if ( mDataProvider )
+  {
     disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
+    disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged );
+  }
 
   setName( baseName );
   mProviderKey = provider;
@@ -308,7 +316,12 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     return;
   }
 
+  connect( mDataProvider.get(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, &QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged );
+  connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
+
+  // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
+  setExtent( mDataProvider->extent() );
 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
@@ -341,10 +354,21 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
     }
   }
 
-  connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
-
   emit dataSourceChanged();
   triggerRepaint();
+}
+
+void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
+{
+  if ( state == QgsPointCloudDataProvider::Indexed )
+  {
+    mDataProvider.get()->loadIndex();
+    if ( mRenderer->type() == QLatin1String( "extent" ) )
+    {
+      setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
+    }
+    triggerRepaint();
+  }
 }
 
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )

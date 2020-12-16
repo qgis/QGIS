@@ -391,6 +391,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
 #endif
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
+  mImagesListView->setUniformItemSizes( false );
 
   mGroupsTreeView->setHeaderHidden( true );
   populateList();

@@ -254,7 +254,7 @@ bool QgsOapifProvider::isValid() const
 
 QgsVectorDataProvider::Capabilities QgsOapifProvider::capabilities() const
 {
-  return QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata;
+  return QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata | QgsVectorDataProvider::Capability::ReloadData;
 }
 
 bool QgsOapifProvider::empty() const

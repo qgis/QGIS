@@ -15,6 +15,7 @@ set (SVG_DIRS
  health
  icon
  landmark
+ logos
  money
  religion
  services

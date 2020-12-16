@@ -238,6 +238,12 @@ class CORE_EXPORT QgsFeature
     QgsAttributes attributes() const;
 
     /**
+     * Returns the number of attributes attached to the feature.
+     * \since QGIS 3.18
+     */
+    int attributeCount() const;
+
+    /**
      * Sets the feature's attributes.
      * The feature will be valid after.
      * \param attrs attribute list
@@ -285,8 +291,33 @@ class CORE_EXPORT QgsFeature
     /**
      * Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * \param fieldCount Number of fields to initialize
+     *
+     * \see resizeAttributes()
      */
     void initAttributes( int fieldCount );
+
+    /**
+     * Resizes the attributes attached to this feature to the given number of fields.
+     *
+     * If the new \a fieldCount is greater than the original number of fields then the additional attributes will
+     * be filled with NULL values. All existing attributes will remain unchanged.
+     *
+     * If the new \a fieldCount is less than the original number of fields then the unwanted values will be discarded from the
+     * end of the existing attributes.
+     *
+     * \see initAttributes()
+     * \see padAttributes()
+     * \since QGIS 3.18
+     */
+    void resizeAttributes( int fieldCount );
+
+    /**
+     * Resizes the attributes attached to this feature by appending the specified \a count of NULL values to the end of the existing attributes.
+     *
+     * \see resizeAttributes()
+     * \since QGIS 3.18
+     */
+    void padAttributes( int count );
 
     /**
      * Deletes an attribute and its value.
