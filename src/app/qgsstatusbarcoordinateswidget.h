@@ -29,6 +29,7 @@ class QgsPointXY;
 
 #include <QWidget>
 #include "qgis_app.h"
+#include "View3D.h"
 
 class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 {
@@ -45,7 +46,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
     //! define the map canvas associated to the widget
     void setMapCanvas( QgsMapCanvas *mapCanvas );
-
+	void set3DView(View3D * View);
     void setFont( const QFont &myFont );
 
     void setMouseCoordinatesPrecision( unsigned int precision );
@@ -56,6 +57,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
   private slots:
     void showMouseCoordinates( const QgsPointXY &p );
+	  void show3DMouseCoordinates(const V3d &p);   
     void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();

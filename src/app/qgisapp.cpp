@@ -1824,7 +1824,7 @@ QgisApp::~QgisApp()
 #endif
 
   mNetworkLoggerWidgetFactory.reset();
-delete Classfifytool;
+  //delete Classfifytool;
   delete mInternalClipboard;
   delete mQgisInterface;
   delete mStyleSheetBuilder;
@@ -2821,8 +2821,8 @@ void QgisApp::createActions()
   connect( mActionFeatureAction, &QAction::triggered, this, &QgisApp::doFeatureAction );
   connect(mActionMeasureDistance, &QAction::triggered, this, &QgisApp::measure );
   connect(mActionMeasureAreaReal, &QAction::triggered, this, &QgisApp::measureArea );
-  connect( mActionMeasure, &QAction::triggered, this, &QgisApp::makeProfileByPly);
-  connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::makeProfilebyPologon );
+  connect(mActionDrawLine2D, &QAction::triggered, this, &QgisApp::makeProfileByPly);
+  connect(mActionDrawAnyrect2D, &QAction::triggered, this, &QgisApp::makeProfilebyPologon );
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
@@ -3111,8 +3111,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasureDistance );
   mMapToolGroup->addAction(mActionMeasureAreaReal);
   mMapToolGroup->addAction( mActionMeasureAngle );
-  mMapToolGroup->addAction( mActionMeasure );
-  mMapToolGroup->addAction( mActionMeasureArea );
+  mMapToolGroup->addAction(mActionDrawLine2D);
+  mMapToolGroup->addAction(mActionDrawAnyrect2D);
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionCircularStringCurvePoint );
   mMapToolGroup->addAction( mActionCircularStringRadius );
@@ -4436,8 +4436,10 @@ void QgisApp::createCanvasTools()
   mMapTools.mMeasureDist->setAction( mActionMeasureDistance );
   mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, true /* area */ );
   mMapTools.mMeasureArea->setAction(mActionMeasureAreaReal);
-  mMapTools.mMakePolineProfile = new QgsMeasureTool( mMapCanvas, false,m_pointView/* area */ );
-  mMapTools.mMakePolineProfile->setAction(mActionMeasure);
+  mMapTools.mMakePolineProfile = new QgsPointCloudProfileTool(mMapCanvas, false,m_pointView/* area */ );
+  mMapTools.mMakePolineProfile->setAction(mActionDrawLine2D);
+  mMapTools.mMakePlogonProfile = new QgsPointCloudProfileTool(mMapCanvas, true, m_pointView/* area */);
+  mMapTools.mMakePlogonProfile->setAction(mActionDrawAnyrect2D);
   mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
   mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );
   mMapTools.mTextAnnotation = new QgsMapToolTextAnnotation( mMapCanvas );
@@ -17146,6 +17148,772 @@ void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockW
   }
 }
 
+
+static void setupQFileSearchPaths()
+{
+	QString installBinDir = QCoreApplication::applicationDirPath();
+	if (!installBinDir.endsWith("/bin"))
+	{
+		std::cerr << "WARNING: strange install location detected "
+			"- shaders will not be found\n";
+		return;
+	}
+	QString installBaseDir = installBinDir;
+	installBaseDir.chop(4);
+	QDir::addSearchPath("shaders", installBaseDir + "/" + DISPLAZ_SHADER_DIR);
+	QDir::addSearchPath("doc", installBaseDir + "/" + DISPLAZ_DOC_DIR);
+}
+
+void QgisApp::createLasViewer()
+{
+	///888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+	qRegisterMetaType<std::shared_ptr<Geometry>>("std::shared_ptr<Geometry>");
+	qRegisterMetaType<std::shared_ptr<GeometryMutator>>("std::shared_ptr<GeometryMutator>");
+
+	setupQFileSearchPaths();
+	format = QGLFormat::defaultFormat();
+	format.setVersion(3, 2);
+	format.setProfile(QGLFormat::CoreProfile);
+
+	QString x = QgsApplication::pkgDataPath() + "\\resources\\themes\\x.png";
+	QString y = QgsApplication::pkgDataPath() + "\\resources\\themes\\y.png";
+	QString z = QgsApplication::pkgDataPath() + "\\resources\\themes\\z.png";
+
+	X=QImage(x);// / = x.toImage();
+	Y=QImage(y);// = y.toImage();
+	Z=QImage(z);// = z.toImage();
+///888888888888888888888888888888888888888888888888888888888888888888888888
+	
+#ifndef _WIN32
+	setWindowIcon(QIcon(":resource/displaz_icon_256.png"));
+#else
+	// On windows, application icon is set via windows resource file
+#endif
+	setWindowTitle("Engine Start!!!");
+	setAcceptDrops(true);
+
+	//m_helpDialog = new HelpDialog(this);
+
+	m_geometries = new GeometryCollection(this);
+	connect(m_geometries, SIGNAL(layoutChanged()), this, SLOT(updateTitle()));
+	connect(m_geometries, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateTitle()));
+	connect(m_geometries, SIGNAL(rowsInserted(QModelIndex, int, int)), this, SLOT(updateTitle()));
+	connect(m_geometries, SIGNAL(rowsRemoved(QModelIndex, int, int)), this, SLOT(updateTitle()));
+
+	//------------------------------
+
+	//--------------------------------------------------
+	// Set up file loader in a separate thread
+	//
+	// Some subtleties regarding qt thread usage are discussed here:
+	// http://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation
+	//
+	// Main point: each QObject has a thread affinity which determines which
+	// thread its slots will execute on, when called via a connected signal.
+	QThread* loaderThread = new QThread();
+	m_PointCloudfileLoader = new FileLoader(m_maxPointCount);
+	m_PointCloudfileLoader->moveToThread(loaderThread);
+	connect(loaderThread, SIGNAL(finished()), m_PointCloudfileLoader, SLOT(deleteLater()));
+	connect(loaderThread, SIGNAL(finished()), loaderThread, SLOT(deleteLater()));
+	//connect(m_PointCloudfileLoader, SIGNAL(finished()), this, SIGNAL(fileLoadFinished()));
+	connect(m_PointCloudfileLoader, SIGNAL(geometryLoaded(std::shared_ptr<Geometry>, bool, bool)),
+		m_geometries, SLOT(addGeometry(std::shared_ptr<Geometry>, bool, bool)));
+	connect(m_PointCloudfileLoader, SIGNAL(geometryMutatorLoaded(std::shared_ptr<GeometryMutator>)),
+		m_geometries, SLOT(mutateGeometry(std::shared_ptr<GeometryMutator>))); 
+
+
+	///   wp ----------
+
+	loaderThread->start();
+	connect(actionopenPointCloudFile, SIGNAL(triggered()), this, SLOT(openPointCloudFiles()));
+	//connect(m_PointCloudfileLoader, SIGNAL(geometryLoaded(std::shared_ptr<Geometry>)), this, SLOT(FromGeometriesToLayerMap((std::shared_ptr<Geometry>))));
+	connect(m_geometries, SIGNAL(geomadded(std::shared_ptr<Geometry>)), this, SLOT(FromGeometriesToLayerMap(std::shared_ptr<Geometry>))); //
+	//--------------------------------------------------  
+	// Menus
+	menuBar()->setNativeMenuBar(1); // OS X doesn't activate the native menu bar under Qt5
+
+										// File menu
+	//QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
+	QMenu* fileMenu = mProjectMenu;
+	//QAction* openAct = fileMenu->addAction(tr("&Open "));
+	//openAct->setToolTip(tr("Open a data set"));
+	//openAct->setShortcuts(QKeySequence::Open);
+	//connect(openAct, SIGNAL(triggered()), this, SLOT(openPointCloudFiles()));
+	QAction* addAct = fileMenu->addAction(tr("&Add"));
+	addAct->setToolTip(tr("Add a data set"));
+	connect(addAct, SIGNAL(triggered()), this, SLOT(addFiles()));
+	QAction* reloadAct = fileMenu->addAction(tr("&Reload"));
+	reloadAct->setStatusTip(tr("Reload point files from disk"));
+	reloadAct->setShortcut(Qt::Key_F5);
+	connect(reloadAct, SIGNAL(triggered()), this, SLOT(reloadFiles()));
+
+	fileMenu->addSeparator();
+	QAction* screenShotAct = fileMenu->addAction(tr("Scree&nshot"));
+	screenShotAct->setStatusTip(tr("Save screen shot of 3D window"));
+	screenShotAct->setShortcut(Qt::Key_F9);
+	connect(screenShotAct, SIGNAL(triggered()), this, SLOT(screenShot()));
+
+	fileMenu->addSeparator();
+	QAction* quitAct = fileMenu->addAction(tr("&Quit"));
+	quitAct->setStatusTip(tr("Exit the application"));
+	quitAct->setShortcuts(QKeySequence::Quit);
+	connect(quitAct, SIGNAL(triggered()), this, SLOT(close()));
+
+	// View menu
+	QMenu* viewMenu = mViewMenu;
+	QAction* trackballMode = viewMenu->addAction(tr("Use &Trackball camera"));
+	trackballMode->setCheckable(true);
+	trackballMode->setChecked(false);
+	// Background sub-menu
+	QMenu* backMenu = viewMenu->addMenu(tr("Set &Background"));
+	QSignalMapper* mapper = new QSignalMapper(this);
+	// Selectable backgrounds (svg_names from SVG standard - see QColor docs)
+	const char* backgroundNames[] = {/* "Display Name", "svg_name", */
+		"Default",      "#3C3232",
+		"Black",        "black",
+		"Dark Grey",    "dimgrey",
+		"Slate Grey",   "#858C93",
+		"Light Grey",   "lightgrey",
+		"White",        "white" };
+	for (size_t i = 0; i < sizeof(backgroundNames) / sizeof(const char*); i += 2)
+	{
+		QAction* backgroundAct = backMenu->addAction(tr(backgroundNames[i]));
+		QPixmap pixmap(50, 50);
+		QString colName = backgroundNames[i + 1];
+		pixmap.fill(QColor(colName));
+		QIcon icon(pixmap);
+		backgroundAct->setIcon(icon);
+		mapper->setMapping(backgroundAct, colName);
+		connect(backgroundAct, SIGNAL(triggered()), mapper, SLOT(map()));
+	}
+	connect(mapper, SIGNAL(mapped(QString)),
+		this, SLOT(setBackground(QString)));
+	backMenu->addSeparator();
+	QAction* backgroundCustom = backMenu->addAction(tr("&Custom"));
+	connect(backgroundCustom, SIGNAL(triggered()),
+		this, SLOT(chooseBackground()));
+	// Check boxes for drawing various scene elements by category
+	viewMenu->addSeparator();
+	QAction* drawBoundingBoxes = viewMenu->addAction(tr("Draw Bounding bo&xes"));
+	drawBoundingBoxes->setCheckable(true);
+	drawBoundingBoxes->setChecked(false);
+	QAction* drawCursor = viewMenu->addAction(tr("Draw 3D &Cursor"));
+	drawCursor->setCheckable(true);
+	drawCursor->setChecked(true);
+	QAction* drawAxes = viewMenu->addAction(tr("Draw &Axes"));
+	drawAxes->setCheckable(true);
+	drawAxes->setChecked(true);
+	QAction* drawGrid = viewMenu->addAction(tr("Draw &Grid"));
+	drawGrid->setCheckable(true);
+	drawGrid->setChecked(false);
+	QAction* drawAnnotations = viewMenu->addAction(tr("Draw A&nnotations"));
+	drawAnnotations->setCheckable(true);
+	drawAnnotations->setChecked(true);
+
+	// Shader menu
+	QMenu* shaderMenu = mViewMenu;
+	QAction* openShaderAct = shaderMenu->addAction(tr("&Open"));
+	openShaderAct->setToolTip(tr("Open a shader file"));
+	connect(openShaderAct, SIGNAL(triggered()), this, SLOT(openShaderFile()));
+	QAction* editShaderAct = shaderMenu->addAction(tr("&Edit"));
+	editShaderAct->setToolTip(tr("Open shader editor window"));
+	QAction* saveShaderAct = shaderMenu->addAction(tr("&Save"));
+	saveShaderAct->setToolTip(tr("Save current shader file"));
+	connect(saveShaderAct, SIGNAL(triggered()), this, SLOT(saveShaderFile()));
+	shaderMenu->addSeparator();
+
+	//--------------------------------------------------
+	// Point viewer
+	m_pointView = new View3D(m_geometries, format, instance());
+	connect(drawBoundingBoxes, SIGNAL(triggered()),m_pointView, SLOT(toggleDrawBoundingBoxes()));
+	connect(drawCursor, SIGNAL(triggered()),m_pointView, SLOT(toggleDrawCursor()));
+	connect(drawAxes, SIGNAL(triggered()),m_pointView, SLOT(toggleDrawAxes()));
+	connect(drawGrid, SIGNAL(triggered()),m_pointView, SLOT(toggleDrawGrid()));
+	connect(drawAnnotations, SIGNAL(triggered()),m_pointView, SLOT(toggleDrawAnnotations()));
+	connect(trackballMode, SIGNAL(triggered()),m_pointView, SLOT(toggleCameraMode()));
+	connect(m_geometries, SIGNAL(rowsInserted(QModelIndex, int, int)),this, SLOT(geometryRowsInserted(QModelIndex, int, int)));
+	// 设置label 图标和 设置宽度
+	m_pointView->setAxesLabelX(X);
+	m_pointView->setAxesLabelY(Y);
+	m_pointView->setAxesLabelZ(Z);
+	m_pointView->setMinimumWidth(int(this->centralwidget->size().width() / 5 * 3));
+	
+	//--------------------------------------------------
+	// Docked widgets-----------------
+	// Shader parameters UI
+	shaderParamsDock = new QgsDockWidget(tr("Shader Parameters"), this);
+	shaderParamsDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	QWidget* shaderParamsUI = new QWidget(shaderParamsDock);
+	shaderParamsDock->setWidget(shaderParamsUI);
+	m_pointView->setShaderParamsUIWidget(shaderParamsUI);
+
+	// Shader editor UI
+	shaderEditorDock = new QgsDockWidget(tr("Shader Editor"), this);
+	shaderEditorDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	QWidget* shaderEditorUI = new QWidget(shaderEditorDock);
+	m_shaderEditor = new ShaderEditor(shaderEditorUI);
+	QGridLayout* shaderEditorLayout = new QGridLayout(shaderEditorUI);
+	shaderEditorLayout->setContentsMargins(2, 2, 2, 2);
+	shaderEditorLayout->addWidget(m_shaderEditor, 0, 0, 1, 1);
+	connect(editShaderAct, SIGNAL(triggered()), shaderEditorDock, SLOT(show()));
+	shaderEditorDock->setWidget(shaderEditorUI);
+
+	shaderMenu->addAction(m_shaderEditor->compileAction());
+	connect(m_shaderEditor->compileAction(), SIGNAL(triggered()),
+		this, SLOT(compileShaderFile()));
+
+	// Log viewer UI
+	logDock = new QgsDockWidget(tr("Log"), this);
+	logDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	QWidget* logUI = new QWidget(logDock);
+	m_logTextView = new LogViewer(logUI);
+	m_logTextView->setReadOnly(true);
+	m_logTextView->setTextInteractionFlags(Qt::TextSelectableByKeyboard | Qt::TextSelectableByMouse);
+	m_logTextView->connectLogger(&g_logger); // connect to global logger
+	m_progressBar = new QProgressBar(logUI);
+	m_progressBar->setRange(0, 100);
+	m_progressBar->setValue(0);
+	m_progressBar->hide();
+	connect(m_PointCloudfileLoader, SIGNAL(loadStepStarted(QString)),this, SLOT(setStatusBarText(QString)));
+	connect(m_PointCloudfileLoader, SIGNAL(loadProgress(int)),this, SLOT(setProgressReadlas(int)));
+	connect(m_PointCloudfileLoader, SIGNAL(resetProgress()),this, SLOT(setStatusBarText()));
+	QVBoxLayout* logUILayout = new QVBoxLayout(logUI);
+	//logUILayout->setContentsMargins(2,2,2,2);
+	logUILayout->addWidget(m_logTextView);
+	logUILayout->addWidget(m_progressBar);
+	//m_logTextView->setLineWrapMode(QPlainTextEdit::NoWrap);
+	logDock->setWidget(logUI);
+
+	// Data set list UI
+	dataSetDock = new QgsDockWidget(tr("Data Sets"), this);
+	/*dataSetDock->setFeatures(QDockWidget::DockWidgetMovable |
+		QDockWidget::DockWidgetClosable |
+		QDockWidget::DockWidgetFloatable);*/
+	dataSetDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+	DataSetUI* dataSetUI = new DataSetUI(this);
+	dataSetDock->setWidget(dataSetUI);
+	dataSetOverview = dataSetUI->view();
+	dataSetOverview->setModel(m_geometries);
+	connect(dataSetOverview, SIGNAL(doubleClicked(const QModelIndex&)),m_pointView, SLOT(centerOnGeometry(const QModelIndex&)));
+	m_pointView->setSelectionModel(dataSetOverview->selectionModel());
+
+	// Set up docked widgets
+	tabifyDockWidget(logDock, dataSetDock);
+	//logDock->raise();
+	shaderEditorDock->setVisible(false);
+
+	// Add dock widget toggles to view menu
+	viewMenu->addSeparator();
+	viewMenu->addAction(shaderParamsDock->toggleViewAction());
+	viewMenu->addAction(logDock->toggleViewAction());
+	viewMenu->addAction(dataSetDock->toggleViewAction());
+
+	// Create custom hook events from CLI at runtime
+	m_hookManager = new HookManager(this);
+	openShaderFile("shaders:las_points.glsl");
+
+	connect(actionmAction_X, SIGNAL(triggered()), this, SLOT(setLockAxesX()));
+	connect(actionmAction_Y, SIGNAL(triggered()), this, SLOT(setLockAxesY()));
+	connect(actionmAction_Z, SIGNAL(triggered()), this, SLOT(setLockAxesZ()));
+	connect(actionSetViewTop, SIGNAL(triggered()), this, SLOT(setViewTop()));
+	connect(actionSetViewFront, SIGNAL(triggered()), this, SLOT(setViewFront()));
+	connect(actionSetViewLeft, SIGNAL(triggered()), this, SLOT(setViewLeft()));
+	//connect(actionmAction_Z, SIGNAL(triggered()), this, SLOT(setLockAxesZ()));
+
+	// ------wp ------like----cc--------
+	connect(actionAddConstantSF, SIGNAL(triggered()), this, SLOT(doActionAddConstantSF()));
+	connect(mActionPan, SIGNAL(triggered()), m_pointView, SLOT(setOpenHandCursor()));
+	connect(actionactionProfile, SIGNAL(triggered()), m_pointView, SLOT(StartLineDrawMode()));
+	//connect(actionactionProfile, SIGNAL(triggered()), this, SLOT(StartProfileLineDrawOn2d()));
+	connect(mActionDrawLine2D, SIGNAL(triggered()), this, SLOT(StartProfileLineDrawOn2d()));
+	//connect(mActionMeasure, SIGNAL(triggered()), m_pointView, SLOT(StartLineDrawMode()));
+    connect(m_viewinprofile, SIGNAL(triggered()), this, SLOT(StartCloseProfileMode()));
+	connect(mActionMeasureDistance, SIGNAL(triggered()), this, SLOT(StartMeasureDistanceMode()));
+	connect(mActionMeasureAreaReal, SIGNAL(triggered()), this, SLOT(StartMeasureAreaMode()));
+	connect(mActionMeasureAngle, SIGNAL(triggered()), this, SLOT(measureAngle()));
+	//---矩形选择
+	connect(mActionDrawRect, SIGNAL(triggered()), m_pointView, SLOT(StartRectangleDrawMode()));
+	//connect(mActionDrawRect, SIGNAL(triggered()), this, SLOT(StartProfileRectDrawOn2d()));
+	connect(mActionDrawAnyrect2D, SIGNAL(triggered()), this, SLOT(StartProfileRectDrawOn2d()));
+	/*
+	point picking  的信号槽设置  等
+	*/
+
+	//connect(actionPointPicking, SIGNAL(triggered()), m_pointView, SLOT(setPointingHandCursor()));
+	connect(actionPointPicking, SIGNAL(triggered()), m_pointView, SLOT(StartPickingMode()));
+	connect(actionPointPicking, SIGNAL(triggered()), m_pointProfileView, SLOT(StartPickingMode()));
+	connect(actionPointListPicking, SIGNAL(triggered()), m_pointView, SLOT(StartPickingMode()));
+	connect(actionPointListPicking, SIGNAL(triggered()), this, SLOT(StartPointPickingList()));
+	connect(m_actionclassification, SIGNAL(triggered()), this, SLOT(StartPointInterpret()));
+	connect(m_refresh3dView, SIGNAL(triggered()), this, SLOT(resetStateof3dView()));
+
+	trackballMode->setChecked(true);
+	
+}
+
+
+
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureaction.h" 
+
+void QgisApp::resetStateof3dView()
+{
+	m_pointView->resetState();
+}
+
+void QgisApp::On2dProfile()
+{
+	if (m_pointProfileView)
+	{ 
+		if (profileRecton2d)
+		{
+			m_pointView->SetQuadPoints(static_cast<QgsPointCloudProfileTool*>(mMapTools.mMakePlogonProfile)->m_V2FPoints);
+			m_pointProfileView->onProfileChanged();
+		}
+		if (profilelineone2d)
+		{
+			m_pointView->SetQuadPoints(static_cast<QgsPointCloudProfileTool*>(mMapTools.mMakePolineProfile)->m_V2FPoints);
+			m_pointProfileView->onProfileChanged();
+		}
+
+	}
+}
+
+void QgisApp::StartProfileLineDrawOn2d()
+{
+	/*if (profilelineone2d)
+	{
+		//pan();
+
+		mMapCanvas->unsetMapTool(mMapTools.mMakePolineProfile);
+		mMapCanvas->setMapTool(mMapTools.mPan);
+		profilelineone2d = 0;
+		mStatusBar->showMessage(tr("Line模式关闭"));
+	}
+	else
+	{*/
+		mMapCanvas->setMapTool(mMapTools.mMakePolineProfile);
+		profilelineone2d = 1;
+		profileRecton2d = 0;
+		mStatusBar->showMessage(tr("Line模式启动"));
+	/*}*/
+
+}
+
+void QgisApp::StartProfileRectDrawOn2d()
+{
+	/*if (profileRecton2d)
+	{
+		mMapCanvas->unsetMapTool(mMapTools.mMakePlogonProfile);
+		mMapCanvas->setMapTool(mMapTools.mPan);
+		profileRecton2d = 0;
+		mStatusBar->showMessage(tr("Rect模式关闭"));
+	}
+	else
+	{*/
+		mMapCanvas->setMapTool(mMapTools.mMakePlogonProfile);
+		profileRecton2d = 1;
+		profilelineone2d = 0;
+		mStatusBar->showMessage(tr("Rect模式启动"));
+	/*}*/
+
+}
+
+void QgisApp::StartPointInterpret()
+{
+	/*
+	if (interpretmodestarted)
+	{
+		m_pointProfileView->CloseProfileviewMode();
+		Classfifytool->deactivate();
+		interpretmodestarted = 0;
+		profilewindowstarted = false;
+		mStatusBar->showMessage(tr("解译模式关闭"));
+	}
+	else
+	{
+		//mMapCanvas->setMapTool(mMapTools.mClassifyInProfileLas);
+		profilewindowstarted = false; // just make sure  能够启动 profile
+		//StartCloseProfileMode();
+		if (!Classfifytool)
+		{
+			if (m_pointProfileView)
+			{
+				Classfifytool = new QgsClassifyTool(mMapCanvas, m_pointProfileView);
+				connect(m_pointProfileView, &View3D::EmitPointInfo, this, &QgisApp::OnPointsPicked);
+			}
+		}
+
+		if (Classfifytool)
+		{
+			Classfifytool->activate();
+			m_pointProfileView->StartProfileviewMode();
+			mStatusBar->showMessage(tr("解译模式启动"));
+			interpretmodestarted = 1;
+		}
+	}*/
+}
+
+void QgisApp::StartPointPickingList()
+{
+	/* 
+	@   三维点云中采集到的点  在左边窗口中绘制 
+	@1 静默创建临时的点（3d point 、single point ） 图层 PickPointLayer
+	@2 PickPointLayer 添加到layertreeView中
+	@3 PickPointLayer 的字段根据点云的属性设置 
+	@4 每次检查是否已经创建了PickPointLayer 或 PickPointLayer 是否valid
+	@5 两侧窗口位置对齐 
+	@6 左边的点信息动态发送到 qgisapp 
+	*/
+
+	//connect
+	//newMemoryLayer()
+	if (!newScratchLayer)
+	{
+		newScratchLayer = QgsNewMemoryLayerDialog::runAndCreateLayer(this, QgsProject::instance()->defaultCrsForNewLayers());
+		//then add the layer to the view
+		QList< QgsMapLayer * > layers;
+		layers << newScratchLayer;
+
+		QgsProject::instance()->addMapLayers(layers);
+		newScratchLayer->startEditing();
+		
+	}
+	
+	if (newScratchLayer)
+	{
+		QgsFeature feat(newScratchLayer->fields(), 0);
+		QgsGeometry g;
+		g = QgsGeometry(qgis::make_unique<QgsPoint>());
+		feat.setGeometry(g);
+		feat.setValid(true);
+		//digitized(f);
+		//QgsFeature feat(f);
+		//sExpressionContextScope *scope = QgsExpressionContextUtils::mapToolCaptureScope(snappingMatches());
+		QgsFeatureAction *action = new QgsFeatureAction(tr("add feature"), feat, newScratchLayer, QString(), -1, this);
+		//if (QgsRubberBand *rb = takeRubberBand())
+		//	connect(action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater);
+		bool showModal;
+		bool res = action->addFeature(QgsAttributeMap(), showModal,nullptr);
+		if (showModal)
+			delete action;
+
+		//bool res = QgsMapToolAddFeature::addFeature(newLayer, f, false);
+	}
+
+
+
+}
+
+void QgisApp::OnPointsPicked(QString pointInfo)
+{
+	//Q_UNUSED( pointInfo);
+//	Classfifytool->mDialog->OnPointsPicked(pointInfo);
+	//connect(m_pointProfileView, &View3D::EmitPointInfo, Classfifytool->mDialog, &QgsClassifyDialog::OnPointsPicked);
+	//QString name =pointInfo;
+}
+
+void QgisApp::StartMeasureDistanceMode()
+{
+	mMapCanvas->setMapTool(mMapTools.mMeasureDist);
+}
+void QgisApp::StartMeasureAreaMode()
+{
+	mMapCanvas->setMapTool(mMapTools.mMeasureArea);
+}
+
+void QgisApp::StartCloseProfileMode()
+{
+	/*
+	1,完成隐藏，框选区域内的点显示，其余的显示。控制m_pointview
+	2，设置成为正面视图
+	*/
+	if (profilewindowstarted == true)
+	{
+	   /// 
+		mMapCanvas->setMapTool(mMapTools.mPan);
+		//setViewTop();
+		m_pointProfileView->CloseProfileviewMode();
+		profilewindowstarted = false;
+		ProfileViewerDock->hide();
+		mStatusBar->showMessage(tr("剖面图模式关闭"));
+	}
+	else
+	{   // todo:: 在二维平面 显示  这个四边形 
+		const std::vector<Imath::V3f>& quadpoint = m_pointView->Get_Quadpoints();
+
+		if (!m_pointProfileView && m_geometries)
+		{
+			m_pointProfileView = new View3D(format, m_pointView);
+			
+			// create profile window widget
+			startProfile(tr("profile dock"));
+			// dock widget pointcloud  profile view
+			ProfileViewerDock = new QgsProfileWindowDockWidget(tr("剖面图"), this); // 
+			ProfileViewerDock->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
+			ProfileViewerDock->setObjectName(QStringLiteral("ShowProfileWindow"));
+			ProfileViewerDock->setWhatsThis(tr("ShowProfileWindow"));
+			ProfileViewerDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+			m_pointProfileView->setMinimumWidth(int(this->centralwidget->size().width() / 5));
+			//ProfileViewerDock->setWidget(m_pointProfileView);
+			ProfileViewerDock->setProfileWindow(m_pointProfileView);
+			ProfileViewerDock->setMain3DWindow(m_pointView);
+			addDockWidget(Qt::BottomDockWidgetArea, ProfileViewerDock);
+
+			endProfile();
+			
+		}
+		m_pointProfileView->StartProfileviewMode();
+		setViewFront(m_pointProfileView);
+		m_pointProfileView->LockXYZ(4);
+		mStatusBar->showMessage(tr("剖面图模式启动"));
+		profilewindowstarted = true;
+		ProfileViewerDock->show();
+		//ProfileViewerDock->dock
+	}
+
+}
+
+void QgisApp::FromGeometriesToLayerMap()
+{
+	bool guiWarning = true;
+	//PointArray* pointgeo = static_cast<PointArray*>(geom.get());
+	//PointCloudLayer* pointcloudlayer = new PointCloudLayer(pointgeo);
+	// if the layer needs authentication, ensure the master password is set
+	bool authok = true;
+	// create the layer
+	QgsVectorLayer::LayerOptions options{ QgsProject::instance()->transformContext() };
+	// Default style is loaded later in this method
+	options.loadDefaultStyle = false;
+
+}
+void QgisApp::FromGeometriesToLayerMap(std::shared_ptr<Geometry> geom)
+{
+	/*
+	bool guiWarning = true;
+	//PointArray* pointgeo = static_cast<PointArray*>(geom.get());
+	//PointCloudLayer* pointcloudlayer = new PointCloudLayer(pointgeo);
+	// if the layer needs authentication, ensure the master password is set
+	bool authok = true;
+	// create the layer
+	QgsVectorLayer::LayerOptions options{ QgsProject::instance()->transformContext() };
+	// Default style is loaded later in this method
+	options.loadDefaultStyle = false;
+	options.fallbackWkbType = QgsWkbTypes::MultiPointZ;
+	auto layer = new PointCloudLayer(geom, geom->fileName(), QFileInfo(geom->fileName()).fileName(),"pdal",options);
+	if (authok && layer->isValid())
+	{
+		{
+			// Register this layer with the layers registry
+			QList<QgsMapLayer *> myList;
+
+			myList << layer;
+			QgsProject::instance()->addMapLayers(myList);
+
+			askUserForDatumTransform(layer->crs(), QgsProject::instance()->crs(), layer);
+
+			bool ok;
+			layer->loadDefaultStyle(ok);
+			layer->loadDefaultMetadata(ok);
+		}
+	}
+	else
+	{
+		if (guiWarning)
+		{
+			QString message = layer->dataProvider() ? layer->dataProvider()->error().message(QgsErrorMessage::Text) : tr("Invalid provider");
+			QString msg = tr("The layer %1 is not a valid layer and can not be added to the map. Reason: %2").arg(geom->fileName(), message);
+			visibleMessageBar()->pushMessage(tr("Layer is not valid"), msg, Qgis::Critical, messageTimeout());
+		}
+
+		delete layer;
+		//return nullptr;
+	}
+
+	// Let render() do its own cursor management
+	//  QApplication::restoreOverrideCursor();
+
+	//return layer;*/
+}
+#include "typespec.h"
+//struct TypeSpec;
+/*
+两层for循环实现 点云新字段的插入
+todo：当前默认的字段类型为 vec3float32，需修改为克选择的类型
+
+*/
+void QgisApp::doActionAddConstantSF()
+{
+	QString defaultName = "Constant";
+	//ask for a name
+	bool ok;
+	QString sfName = QInputDialog::getText(this, "New SF name", "SF name (must be unique)", QLineEdit::Normal, defaultName, &ok);
+
+	std::vector<Geometry*> geoms = m_pointView->GetselectedGeometry();
+	bool hasnewsfname = false;
+	if (geoms.size())
+	{
+		//for (std::vector<const Geometry*>::iterator pointiterator; pointiterator != geoms.begin(); ++pointiterator)
+		for (int i = 0; i<geoms.size(); i++)
+		{   
+			const std::vector<PointCloudGeomField>* field = geoms[i]->GetFiled();
+			hasnewsfname = false;
+			for (size_t f = 0; f < (*field).size(); i++)
+			{
+				if ((*field)[f].name == sfName.toStdString())
+				{
+					//std::vector<std::string> s;
+					hasnewsfname = true;
+					break;
+				}
+			}
+			if( hasnewsfname)
+			{
+				size_t pointcount = geoms[i]->pointCount();
+				//PointCloudGeomField m_field(TypeSpec::uint16(), sfName, pointcount);
+				//(*pointiterator)->AddFiled(sfName.toStdString(),pointcount);
+				//*pointiterator->m_fields;
+				geoms[i]->AddFiled(sfName.toStdString(), pointcount);
+			}
+
+		}
+	}
+
+}
+
+void QgisApp::setViewTop()
+{
+
+	double yaw = 0;
+	double pitch = 90;
+	double roll = 0;
+	m_pointView->camera().setRotation(
+		QQuaternion::fromAxisAndAngle(0, 0, 1, roll)  *
+		QQuaternion::fromAxisAndAngle(1, 0, 0, pitch - 90) *
+		QQuaternion::fromAxisAndAngle(0, 0, 1, yaw)
+	);
+}
+
+void QgisApp::setViewTop(View3D* viewer)
+{
+
+	double yaw = 0;
+	double pitch = 90;
+	double roll = 0;
+	viewer->camera().setRotation(
+		QQuaternion::fromAxisAndAngle(0, 0, 1, roll)  *
+		QQuaternion::fromAxisAndAngle(1, 0, 0, pitch - 90) *
+		QQuaternion::fromAxisAndAngle(0, 0, 1, yaw)
+	);
+}
+
+void QgisApp::setViewFront()
+{
+	double yaw = 0;
+	double pitch = 0;
+	double roll = 0;
+	m_pointView->camera().setRotation(
+		QQuaternion::fromAxisAndAngle(0, 0, 1, roll)  *
+		QQuaternion::fromAxisAndAngle(1, 0, 0, pitch - 90) *
+		QQuaternion::fromAxisAndAngle(0, 0, 1, yaw)
+	);
+}
+
+void QgisApp::setViewFront(View3D* viewer)
+{
+	double yaw = 0;
+	double pitch = 0;
+	double roll = 0;
+	viewer->camera().setRotation(
+		QQuaternion::fromAxisAndAngle(0, 0, 1, roll)  *
+		QQuaternion::fromAxisAndAngle(1, 0, 0, pitch - 90) *
+		QQuaternion::fromAxisAndAngle(0, 0, 1, yaw)
+	);
+}
+
+void QgisApp::setViewLeft()
+{
+	double yaw = 90;
+	double pitch = 0;
+	double roll = 0;
+	m_pointView->camera().setRotation(
+		QQuaternion::fromAxisAndAngle(0, 0, 1, roll)  *
+		QQuaternion::fromAxisAndAngle(1, 0, 0, pitch - 90) *
+		QQuaternion::fromAxisAndAngle(0, 0, 1, yaw)
+	);
+}
+
+void QgisApp::setViewLeft(View3D* viewer)
+{
+	double yaw = 90;
+	double pitch = 0;
+	double roll = 0;
+	viewer->camera().setRotation(
+		QQuaternion::fromAxisAndAngle(0, 0, 1, roll)  *
+		QQuaternion::fromAxisAndAngle(1, 0, 0, pitch - 90) *
+		QQuaternion::fromAxisAndAngle(0, 0, 1, yaw)
+	);
+}
+
+void QgisApp::showlockstate()
+{
+	QString state = "Locked:: ";
+
+	if (m_pointView->axesstate & 1)
+	{
+		state = state + "X-";
+	}
+	if (m_pointView->axesstate & 2)
+	{
+		state = state + "Y-";
+	}
+	//m_camera
+	if (m_pointView->axesstate & 4)
+	{
+		state = state + "Z-";
+	}
+	mStatusBar->showMessage(state);
+}
+
+void QgisApp::setLockAxesX()
+{  
+	axescode = (axescode |1) == axescode ? axescode -1: axescode;
+	m_pointView->LockXYZ(1);
+	showlockstate();
+	
+}
+
+void QgisApp::setLockAxesY()
+{
+	axescode = (axescode | 2) == axescode ? axescode-2 : axescode;
+	m_pointView->LockXYZ(2);
+	showlockstate();
+}
+
+
+void QgisApp::setLockAxesZ()
+{
+	axescode = (axescode | 4) == axescode ? axescode-4 : axescode;
+	m_pointView->LockXYZ(4);
+	showlockstate();
+}
+
+void QgisApp::setProgressReadlas(int per)
+{
+	showProgress(per, 100);
+
+}
+
+void QgisApp::setStatusBarText(QString text)
+{
+	mStatusBar->showMessage(QString(text + " (::)"));
+}
+
+void QgisApp::setStatusBarText()
+{
+	mStatusBar->showMessage("Finished PointCloud Fectching");
+}
+
 QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
 {
   QgsAttributeEditorContext context;
@@ -17154,4 +17922,532 @@ QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
   context.setCadDockWidget( cadDockWidget() );
   context.setMainMessageBar( messageBar() );
   return context;
+}
+
+void QgisApp::startIpcServer(const QString& socketName)
+{
+	delete m_ipcServer;
+	m_ipcServer = new QLocalServer(this);
+	if (!QLocalServer::removeServer(socketName))
+		qWarning("Could not clean up socket file \"%s\"", qPrintable(socketName));
+	if (!m_ipcServer->listen(socketName))
+		qWarning("Could not listen on socket \"%s\"", qPrintable(socketName));
+	connect(m_ipcServer, SIGNAL(newConnection()),
+		this, SLOT(handleIpcConnection()));
+}
+
+
+void QgisApp::handleIpcConnection()
+{
+	IpcChannel* channel = new IpcChannel(m_ipcServer->nextPendingConnection(), this);
+	connect(channel, SIGNAL(disconnected()), channel, SLOT(deleteLater()));
+	connect(channel, SIGNAL(messageReceived(QByteArray)), this, SLOT(handleMessage(QByteArray)));
+}
+
+
+void QgisApp::geometryRowsInserted(const QModelIndex& parent, int first, int last)
+{
+	QItemSelection range(m_geometries->index(first), m_geometries->index(last));
+	m_pointView->selectionModel()->select(range, QItemSelectionModel::Select);
+	/*if (m_pointProfileView)
+	{
+	 m_pointProfileView->selectionModel()->select(range, QItemSelectionModel::Select);
+	}*/
+}
+
+// 待修改
+void QgisApp::lasdragEnterEvent(QDragEnterEvent *event)
+{
+	if (event->mimeData()->hasUrls())
+	{
+		QList<QUrl> urls = event->mimeData()->urls();
+		for (int i = 0; i < urls.size(); ++i)
+		{
+			if (urls[i].isLocalFile())
+			{
+				event->acceptProposedAction();
+				break;
+			}
+		}
+	}
+}
+
+
+void QgisApp::lasdropEvent(QDropEvent *event)
+{
+	QList<QUrl> urls = event->mimeData()->urls();
+	if (urls.isEmpty())
+		return;
+	for (int i = 0; i < urls.size(); ++i)
+	{
+		if (urls[i].isLocalFile())
+			m_PointCloudfileLoader->loadFile(FileLoadInfo(urls[i].toLocalFile()));
+	}
+}
+
+
+QSize QgisApp::sizeHint() const
+{
+	return QSize(800, 600);
+}
+
+
+void QgisApp::handleMessage(QByteArray message)
+{
+	QList<QByteArray> commandTokens = message.split('\n');
+	if (commandTokens.empty())
+		return;
+	if (commandTokens[0] == "OPEN_FILES")
+	{
+		QList<QByteArray> flags = commandTokens[1].split('\0');
+		bool replaceLabel = flags.contains("REPLACE_LABEL");
+		bool deleteAfterLoad = flags.contains("DELETE_AFTER_LOAD");
+		bool mutateExisting = flags.contains("MUTATE_EXISTING");
+		for (int i = 2; i < commandTokens.size(); ++i)
+		{
+			QList<QByteArray> pathAndLabel = commandTokens[i].split('\0');
+			if (pathAndLabel.size() != 2)
+			{
+				g_logger.error("Unrecognized OPEN_FILES token: %s",
+					QString(commandTokens[i]));
+				continue;
+			}
+			FileLoadInfo loadInfo(pathAndLabel[0], pathAndLabel[1], replaceLabel);
+			loadInfo.deleteAfterLoad = deleteAfterLoad;
+			loadInfo.mutateExisting = mutateExisting;
+			m_PointCloudfileLoader->loadFile(loadInfo);
+		}
+	}
+	else if (commandTokens[0] == "CLEAR_FILES")
+	{
+		m_geometries->clear();
+	}
+	else if (commandTokens[0] == "UNLOAD_FILES")
+	{
+		QString regex_str = commandTokens[1];
+		QRegExp regex(regex_str, Qt::CaseSensitive, QRegExp::WildcardUnix);
+		if (!regex.isValid())
+		{
+			g_logger.error("Invalid pattern in -unload command: '%s': %s",
+				regex_str, regex.errorString());
+			return;
+		}
+		m_geometries->unloadFiles(regex);
+		m_pointView->removeAnnotations(regex);
+	}
+	else if (commandTokens[0] == "SET_VIEW_LABEL")
+	{
+		QString regex_str = commandTokens[1];
+		QRegExp regex(regex_str, Qt::CaseSensitive, QRegExp::FixedString);
+		if (!regex.isValid())
+		{
+			g_logger.error("Invalid pattern in -unload command: '%s': %s",
+				regex_str, regex.errorString());
+			return;
+		}
+		QModelIndex index = m_geometries->findLabel(regex);
+		if (index.isValid())
+			m_pointView->centerOnGeometry(index);
+	}
+	else if (commandTokens[0] == "ANNOTATE")
+	{
+		if (commandTokens.size() - 1 != 5)
+		{
+			tfm::format(std::cerr, "Expected five arguments, got %d\n",
+				commandTokens.size() - 1);
+			return;
+		}
+		QString label = commandTokens[1];
+		QString text = commandTokens[2];
+		bool xOk = false, yOk = false, zOk = false;
+		double x = commandTokens[3].toDouble(&xOk);
+		double y = commandTokens[4].toDouble(&yOk);
+		double z = commandTokens[5].toDouble(&zOk);
+		if (!zOk || !yOk || !zOk)
+		{
+			std::cerr << "Could not parse XYZ coordinates for position\n";
+			return;
+		}
+		m_pointView->addAnnotation(label, text, Imath::V3d(x, y, z));
+	}
+	else if (commandTokens[0] == "SET_VIEW_POSITION")
+	{
+		if (commandTokens.size() - 1 != 3)
+		{
+			tfm::format(std::cerr, "Expected three coordinates, got %d\n",
+				commandTokens.size() - 1);
+			return;
+		}
+		bool xOk = false, yOk = false, zOk = false;
+		double x = commandTokens[1].toDouble(&xOk);
+		double y = commandTokens[2].toDouble(&yOk);
+		double z = commandTokens[3].toDouble(&zOk);
+		if (!zOk || !yOk || !zOk)
+		{
+			std::cerr << "Could not parse XYZ coordinates for position\n";
+			return;
+		}
+		m_pointView->setExplicitCursorPos(Imath::V3d(x, y, z));
+	}
+	else if (commandTokens[0] == "SET_VIEW_ANGLES")
+	{
+		if (commandTokens.size() - 1 != 3)
+		{
+			tfm::format(std::cerr, "Expected three view angles, got %d\n",
+				commandTokens.size() - 1);
+			return;
+		}
+		bool yawOk = false, pitchOk = false, rollOk = false;
+		double yaw = commandTokens[1].toDouble(&yawOk);
+		double pitch = commandTokens[2].toDouble(&pitchOk);
+		double roll = commandTokens[3].toDouble(&rollOk);
+		if (!yawOk || !pitchOk || !rollOk)
+		{
+			std::cerr << "Could not parse Euler angles for view\n";
+			return;
+		}
+		m_pointView->camera().setRotation(
+			QQuaternion::fromAxisAndAngle(0, 0, 1, roll)  *
+			QQuaternion::fromAxisAndAngle(1, 0, 0, pitch - 90) *
+			QQuaternion::fromAxisAndAngle(0, 0, 1, yaw)
+		);
+	}
+	else if (commandTokens[0] == "SET_VIEW_ROTATION")
+	{
+		if (commandTokens.size() - 1 != 9)
+		{
+			tfm::format(std::cerr, "Expected 9 rotation matrix components, got %d\n",
+				commandTokens.size() - 1);
+			return;
+		}
+#       ifdef DISPLAZ_USE_QT4
+		qreal rot[9] = { 0 };
+#       else
+		float rot[9] = { 0 };
+#       endif
+		for (int i = 0; i < 9; ++i)
+		{
+			bool ok = true;
+			rot[i] = commandTokens[i + 1].toDouble(&ok);
+			if (!ok)
+			{
+				tfm::format(std::cerr, "badly formatted view matrix message:\n%s", message.constData());
+				return;
+			}
+		}
+		m_pointView->camera().setRotation(QMatrix3x3(rot));
+	}
+	else if (commandTokens[0] == "SET_VIEW_RADIUS")
+	{
+		bool ok = false;
+		double viewRadius = commandTokens[1].toDouble(&ok);
+		if (!ok)
+		{
+			std::cerr << "Could not parse view radius";
+			return;
+		}
+		m_pointView->camera().setEyeToCenterDistance(viewRadius);
+	}
+	else if (commandTokens[0] == "QUERY_CURSOR")
+	{
+		// Yuck!
+		IpcChannel* channel = dynamic_cast<IpcChannel*>(sender());
+		if (!channel)
+		{
+			qWarning() << "Signalling object not a IpcChannel!\n";
+			return;
+		}
+		V3d p = m_pointView->cursorPos();
+		std::string response = tfm::format("%.15g %.15g %.15g", p.x, p.y, p.z);
+		channel->sendMessage(QByteArray(response.data(), (int)response.size()));
+	}
+	else if (commandTokens[0] == "QUIT")
+	{
+		close();
+	}
+	else if (commandTokens[0] == "SET_MAX_POINT_COUNT")
+	{
+		m_maxPointCount = commandTokens[1].toLongLong();
+	}
+	else if (commandTokens[0] == "OPEN_SHADER")
+	{
+		openShaderFile(commandTokens[1]);
+	}
+	else if (commandTokens[0] == "NOTIFY")
+	{
+		if (commandTokens.size() < 3)
+		{
+			g_logger.error("Could not parse NOTIFY message: %s", QString::fromUtf8(message));
+			return;
+		}
+		QString spec = QString::fromUtf8(commandTokens[1]);
+		QList<QString> specList = spec.split(':');
+		if (specList[0].toLower() != "log")
+		{
+			g_logger.error("Could not parse NOTIFY spec: %s", spec);
+			return;
+		}
+
+		Logger::LogLevel level = Logger::Info;
+		if (specList.size() > 1)
+			level = Logger::parseLogLevel(specList[1].toLower().toStdString());
+
+		// Ugh, reassemble message from multiple lines.  Need a better
+		// transport serialization!
+		QByteArray message;
+		for (int i = 2; i < commandTokens.size(); ++i)
+		{
+			if (i > 2)
+				message += "\n";
+			message += commandTokens[i];
+		}
+
+		g_logger.log(level, "%s", tfm::makeFormatList(message.constData()));
+	}
+	else if (commandTokens[0] == "HOOK")
+	{
+		IpcChannel* channel = dynamic_cast<IpcChannel*>(sender());
+		if (!channel)
+		{
+			qWarning() << "Signalling object not a IpcChannel!\n";
+			return;
+		}
+		for (int i = 1; i<commandTokens.count(); i += 2)
+		{
+			HookFormatter* formatter = new HookFormatter(this, commandTokens[i], commandTokens[i + 1], channel);
+			m_hookManager->connectHook(commandTokens[i], formatter);
+		}
+	}
+	else
+	{
+		g_logger.error("Unkown remote message:\n%s", QString::fromUtf8(message));
+	}
+}
+
+
+QByteArray QgisApp::hookPayload(QByteArray payload)
+{
+	if (payload == QByteArray("cursor"))
+	{
+		V3d p = m_pointView->cursorPos();
+		std::string response = tfm::format("%.15g %.15g %.15g", p.x, p.y, p.z);
+		return (payload + " " + QByteArray(response.data(), (int)response.size()));
+	}
+	else
+	{
+		return QByteArray("null");//payload;
+	}
+}
+
+
+void QgisApp::openPointCloudFiles()
+{
+	// Note - using the static getOpenFileNames seems to be the only way to get
+	// a native dialog.  This is annoying since the last selected directory
+	// can't be deduced directly from the native dialog, but only when it
+	// returns a valid selected file.  However we'll just have to put up with
+	// this, because not having native dialogs is jarring.
+	QStringList files = QFileDialog::getOpenFileNames(
+		this,
+		tr("Open point clouds or meshes"),
+		m_currPointCloudFileDir.path(),
+		tr("Data sets (*.las *.laz *.txt *.xyz *.ply);;All files (*)"),
+		0,
+		QFileDialog::ReadOnly
+	);
+	if (files.empty())
+		return;
+
+	for (int i = 0; i < files.size(); ++i)
+		m_PointCloudfileLoader->loadFile(FileLoadInfo(files[i]));
+	m_currPointCloudFileDir = QFileInfo(files[0]).dir();
+	m_currPointCloudFileDir.makeAbsolute();
+}
+
+
+void QgisApp::addPointCloudFiles()
+{
+	QStringList files = QFileDialog::getOpenFileNames(
+		this,
+		tr("Add point clouds or meshes"),
+		m_currPointCloudFileDir.path(),
+		tr("Data sets (*.las *.laz *.txt *.xyz *.ply);;All files (*)"),
+		0,
+		QFileDialog::ReadOnly
+	);
+	if (files.empty())
+		return;
+	for (int i = 0; i < files.size(); ++i)
+	{
+		FileLoadInfo loadInfo(files[i]);
+		loadInfo.replaceLabel = false;
+		m_PointCloudfileLoader->loadFile(loadInfo);
+	}
+	m_currPointCloudFileDir = QFileInfo(files[0]).dir();
+	m_currPointCloudFileDir.makeAbsolute();
+}
+
+void QgisApp::addPointCloudFile(const QString& DataSource)
+{
+	connect(m_PointCloudfileLoader, SIGNAL(geometryLoaded(std::shared_ptr<Geometry>)), this, SLOT(FromGeometriesToLayerMap((std::shared_ptr<Geometry>))));
+	const GeometryCollection::GeometryVec& geoms = m_geometries->get();
+	bool isloaded = false;
+	for (auto g = geoms.begin(); g != geoms.end(); ++g)
+	{
+		//FileLoadInfo loadInfo((*g)->fileName(), (*g)->label(), false);
+		//m_PointCloudfileLoader->reloadFile(loadInfo);
+		if ((*g)->fileName()== DataSource)
+		{
+			isloaded = true;
+			//g->get()
+			FromGeometriesToLayerMap(*g);
+			break;
+		}
+	}
+	if (!isloaded)
+	{
+		FileLoadInfo loadInfo(DataSource);
+		loadInfo.replaceLabel = false;
+		//QgisApp::instance()->m_PointCloud
+		m_PointCloudfileLoader->loadFile(loadInfo);
+		m_currPointCloudFileDir = QFileInfo(DataSource).dir();
+		m_currPointCloudFileDir.makeAbsolute();
+	}
+}
+
+void QgisApp::openShaderFile(const QString& shaderFileName)
+{
+	QFile shaderFile(shaderFileName);
+	if (!shaderFile.open(QIODevice::ReadOnly))
+	{
+		shaderFile.setFileName("shaders:" + shaderFileName);
+		if (!shaderFile.open(QIODevice::ReadOnly))
+		{
+			g_logger.error("Couldn't open shader file \"%s\": %s",
+				shaderFileName, shaderFile.errorString());
+			return;
+		}
+	}
+	m_currShaderFileName = shaderFile.fileName();
+	QByteArray src = shaderFile.readAll();
+	m_shaderEditor->setPlainText(src);
+	m_pointView->shaderProgram().setShader(src);
+	//m_pointProfileView->shaderProgram().setShader(src);
+}
+
+void QgisApp::openShaderFile()
+{
+	QString shaderFileName = QFileDialog::getOpenFileName(
+		this,
+		tr("Open OpenGL shader in displaz format"),
+		m_currShaderFileName,
+		tr("OpenGL shader files (*.glsl);;All files(*)")
+	);
+	if (shaderFileName.isNull())
+		return;
+	openShaderFile(shaderFileName);
+}
+
+
+void QgisApp::saveShaderFile()
+{
+	QString shaderFileName = QFileDialog::getSaveFileName(
+		this,
+		tr("Save current OpenGL shader"),
+		m_currShaderFileName,
+		tr("OpenGL shader files (*.glsl);;All files(*)")
+	);
+	if (shaderFileName.isNull())
+		return;
+	QFile shaderFile(shaderFileName);
+	if (shaderFile.open(QIODevice::WriteOnly))
+	{
+		QTextStream stream(&shaderFile);
+		stream << m_shaderEditor->toPlainText();
+		m_currShaderFileName = shaderFileName;
+	}
+	else
+	{
+		g_logger.error("Couldn't open shader file \"%s\": %s",
+			shaderFileName, shaderFile.errorString());
+	}
+}
+
+
+void QgisApp::compileShaderFile()
+{
+	m_pointView->shaderProgram().setShader(m_shaderEditor->toPlainText());
+	//m_pointProfileView->shaderProgram().setShader(m_shaderEditor->toPlainText());
+}
+
+
+void QgisApp::reloadFiles()
+{
+	const GeometryCollection::GeometryVec& geoms = m_geometries->get();
+	for (auto g = geoms.begin(); g != geoms.end(); ++g)
+	{
+		FileLoadInfo loadInfo((*g)->fileName(), (*g)->label(), false);
+		m_PointCloudfileLoader->reloadFile(loadInfo);
+	}
+}
+
+
+void QgisApp::screenShot()
+{
+	// Hack: do the grab first, before the widget is covered by the save
+	// dialog.
+	//
+	// Grabbing the desktop directly using grabWindow() isn't great, but makes
+	// this much simpler to implement.  (Other option: use
+	// m_pointView->renderPixmap() and turn off incremental rendering.)
+	QPoint tl = m_pointView->mapToGlobal(QPoint(0, 0));
+	QPixmap sshot = QPixmap::grabWindow(QApplication::desktop()->winId(),
+		tl.x(), tl.y(),
+		m_pointView->width(), m_pointView->height());
+	QString fileName = QFileDialog::getSaveFileName(
+		this,
+		tr("Save screen shot"),
+		QDir::currentPath(),
+		tr("Image files (*.tif *.png *.jpg);;All files(*)")
+	);
+	if (fileName.isNull())
+		return;
+	sshot.save(fileName);
+}
+
+
+
+void QgisApp::setBackground(const QString& name)
+{
+	m_pointView->setBackground(QColor(name));
+}
+
+
+void QgisApp::chooseBackground()
+{
+	QColor originalColor = m_pointView->background();
+	QColorDialog chooser(originalColor, this);
+	connect(&chooser, SIGNAL(currentColorChanged(QColor)),
+		m_pointView, SLOT(setBackground(QColor)));
+	if (chooser.exec() == QDialog::Rejected)
+		m_pointView->setBackground(originalColor);
+}
+
+
+void QgisApp::updateTitle()
+{
+	QStringList labels;
+	const GeometryCollection::GeometryVec& geoms = m_geometries->get();
+	int numGeoms = 0;
+	for (auto i = geoms.begin(); i != geoms.end(); ++i)
+	{
+		labels << (*i)->label();
+		numGeoms += 1;
+		if (numGeoms > 10)
+		{
+			labels << "...";
+			break;
+		}
+	}
+	setWindowTitle(tr("Displaz - %1").arg(labels.join(", ")));
 }

@@ -21,7 +21,7 @@
 #define disableauth true
 //#include <glew/GL/glew.h>
 
- /*-----------------------wp--pointcloud--------
+ //-----------------------wp--pointcloud--------
 #include "qgsprofilewindowdockwidget.h"
 #include <View3D.h>
 #include <PointViewerMainWindow.h>
@@ -48,7 +48,7 @@ class IpcChannel;
 class FileLoader;
 class HookManager;
 //-----------------------wp---pointcloud----------
-*/
+
 class QActionGroup;
 class QCheckBox;
 class QCursor;
@@ -229,7 +229,7 @@ class QgsGeoreferencerMainWindow;
  * \class QgisApp
  * \brief Main window for the QGIS application
  */
-class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
+class APP_EXPORT QgisApp : public QMainWindow, public PointCloudWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
@@ -2513,7 +2513,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       HelpDialog* m_helpDialog;
       LogViewer* m_logTextView;
       QAbstractItemView* dataSetOverview;
-      QgsClassifyTool* Classfifytool = nullptr;
+     // QgsClassifyTool* Classfifytool = nullptr;
       // Gui state
       QDir m_currPointCloudFileDir;
       QString m_currShaderFileName;

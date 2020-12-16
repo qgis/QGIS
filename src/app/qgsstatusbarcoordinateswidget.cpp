@@ -97,6 +97,12 @@ void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
   connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
 }
+void QgsStatusBarCoordinatesWidget::set3DView(View3D* appView)
+{
+
+	connect(appView, &View3D::mousexyzCoordinates, this, &QgsStatusBarCoordinatesWidget::show3DMouseCoordinates);
+	//connect(appView, &View3D::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent);
+}
 
 void QgsStatusBarCoordinatesWidget::setFont( const QFont &myFont )
 {
@@ -337,7 +343,13 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
   ensureCoordinatesVisible();
 }
 
-
+void QgsStatusBarCoordinatesWidget::show3DMouseCoordinates(const V3d &p)
+{
+	QString temp;
+	temp = QString("%1,%2, %3").arg(p.x).arg(p.y).arg(p.z);
+	mLineEdit->setText(temp);
+	ensureCoordinatesVisible();
+}
 void QgsStatusBarCoordinatesWidget::showExtent()
 {
   if ( !mToggleExtentsViewButton->isChecked() )
