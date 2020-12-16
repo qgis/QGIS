@@ -135,6 +135,9 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType c
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  setTransferTimeout( timeout() );
+#endif
   setProxyFactory( new QgsNetworkProxyFactory() );
 }
 
@@ -273,6 +276,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   connect( reply, &QNetworkReply::sslErrors, this, &QgsNetworkAccessManager::onReplySslErrors );
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   // The timer will call abortRequest slot to abort the connection if needed.
   // The timer is stopped by the finished signal and is restarted on downloadProgress and
   // uploadProgress.
@@ -285,6 +289,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
   connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
   connect( reply, &QNetworkReply::finished, timer, &QTimer::stop );
+#endif
   QgsDebugMsgLevel( QStringLiteral( "Created [reply:%1]" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ), 3 );
 
   return reply;
@@ -391,16 +396,19 @@ void QgsNetworkAccessManager::pauseTimeout( QNetworkReply *reply )
 {
   Q_ASSERT( reply->manager() == this );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
   if ( timer && timer->isActive() )
   {
     timer->stop();
   }
+#endif
 }
 
 void QgsNetworkAccessManager::restartTimeout( QNetworkReply *reply )
 {
   Q_ASSERT( reply->manager() == this );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   // restart reply timeout
   QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
   if ( timer )
@@ -410,6 +418,7 @@ void QgsNetworkAccessManager::restartTimeout( QNetworkReply *reply )
     timer->setSingleShot( true );
     timer->start( timeout() );
   }
+#endif
 }
 
 int QgsNetworkAccessManager::getRequestId( QNetworkReply *reply )
@@ -647,6 +656,9 @@ int QgsNetworkAccessManager::timeout()
 void QgsNetworkAccessManager::setTimeout( const int time )
 {
   QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), time );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  QgsNetworkAccessManager::instance()->setTransferTimeout( time );
+#endif
 }
 
 QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
