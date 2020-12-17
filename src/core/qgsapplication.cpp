@@ -124,8 +124,8 @@
 QObject *ABISYM( QgsApplication::mFileOpenEventReceiver ) = nullptr;
 bool ABISYM( QgsApplication::mInitialized ) = false;
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
-const char *QgsApplication::QGIS_ORGANIZATION_NAME = "HSLLC";
-const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "hsllc.org";
+const char *QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
+const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
 QgsAuthManager *QgsApplication::sAuthManager = nullptr;

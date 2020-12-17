@@ -67,9 +67,9 @@ bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar )
 {
   if ( QgsApplication::authManager()->isDisabled() )
   {
-    msgbar->pushMessage( QObject::tr( "Authentication System" ),
+   /* msgbar->pushMessage( QObject::tr( "Authentication System" ),
                          QObject::tr( "DISABLED. Resources authenticating via the system can not be accessed" ),
-                         Qgis::Critical );
+                         Qgis::Critical );*/
     return true;
   }
   return false;

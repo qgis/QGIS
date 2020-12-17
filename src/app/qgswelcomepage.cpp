@@ -42,7 +42,7 @@
 #include <QMessageBox>
 #include <QSplitter>
 
-#define FEED_URL "https://feed.qgis.org/"
+#define FEED_URL "https://www"
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
@@ -117,7 +117,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     connect( mNewsFeedParser, &QgsNewsFeedParser::fetched, this, &QgsWelcomePage::updateNewsFeedVisibility );
     mNewsFeedParser->fetch();
     newsContainer->setLayout( newsLayout );
-    mSplitter2->addWidget( newsContainer );
+    //mSplitter2->addWidget( newsContainer );
   }
 
   QWidget *templateContainer = new QWidget();

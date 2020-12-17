@@ -9918,7 +9918,7 @@ void QgisApp::layoutsMenuAboutToShow()
 
 void QgisApp::populateLayoutsMenu( QMenu *menu )
 {
-  menu->clear();
+  //menu->clear();
   QList<QAction *> acts;
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   acts.reserve( layouts.size() );

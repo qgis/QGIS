@@ -18,6 +18,8 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
+//#define disableauth true
+
 #include <glew/GL/glew.h>
 
  //-----------------------wp--pointcloud--------

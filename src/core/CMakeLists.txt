@@ -199,6 +199,11 @@ set(QGIS_CORE_SRCS
   providers/ogr/qgsogrdbconnection.cpp
   providers/ogr/qgsogrtransaction.cpp
 
+  providers/displaz/qgsdisplazdataitems.cpp
+  providers/displaz/qgsdisplazfeatureiterator.cpp
+  providers/displaz/qgsdisplazprovider.cpp
+  providers/displaz/qgsdisplazsourceselect.cpp
+  
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgshollowscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
@@ -1410,6 +1415,11 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrprovider.h
   providers/ogr/qgsogrtransaction.h
 
+  providers/displaz/qgsdisplazdataitems.h
+  providers/displaz/qgsdisplazfeatureiterator.h
+  providers/displaz/qgsdisplazprovider.h
+  providers/displaz/qgsdisplazsourceselect.h
+
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
   raster/qgscliptominmaxenhancement.h
@@ -1662,6 +1672,14 @@ include_directories(SYSTEM
   ${Qt5SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
+  ${Qt5OpenGL_INCLUDE_DIRS}
+  E:/code/displaz-master/src
+  E:/code/displaz-master/src/render
+  E:/code/displaz-master/src/gui
+  E:/code/displaz-master/build_external/dist/include
+  E:/code/displaz-master/build_external/dist/include/OpenEXR
+  E:/code/displaz-master/thirdparty/glew
+  E:/code/displaz-master/thirdparty
 )
 
 if (HAVE_PDAL)
@@ -1840,6 +1858,14 @@ target_link_libraries(qgis_core
   ${LIBZIP_LIBRARY}
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
+    laslib.lib
+  Imath.lib
+  lmThread.lib
+  IexMath.lib
+  Iex.lib
+  Half.lib
+  displaz.lib
+  embeddedGLEW.lib
 )
 
 if (WITH_EPT)
