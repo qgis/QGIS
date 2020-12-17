@@ -267,6 +267,7 @@ Returns the network timeout length, in milliseconds.
     static void setTimeout( int time );
 %Docstring
 Sets the maximum timeout ``time`` for network requests, in milliseconds.
+If set to 0, no timeout is set.
 
 .. seealso:: :py:func:`timeout`
 
