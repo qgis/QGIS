@@ -29,7 +29,8 @@ from qgis.core import (QgsGradientColorRamp,
                        QgsMapSettings,
                        QgsColorRampLegendNodeSettings,
                        QgsBearingNumericFormat,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsBasicNumericFormat)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -127,6 +128,32 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('color_ramp_legend_node_icon', 'color_ramp_legend_node_icon', im, 10))
 
+    def test_icon_with_settings(self):
+        r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
+
+        # need a layer in order to make legend nodes
+        layer = QgsVectorLayer('dummy', 'test', 'memory')
+        layer_tree_layer = QgsLayerTreeLayer(layer)
+
+        settings = QgsColorRampLegendNodeSettings()
+        format = QgsBasicNumericFormat()
+        format.setShowTrailingZeros(True)
+        format.setNumberDecimalPlaces(3)
+        settings.setNumericFormat(format)
+        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
+
+        node = TestColorRampLegend(layer_tree_layer, r, settings, 5, 10)
+
+        pixmap = node.data(Qt.DecorationRole)
+
+        im = QImage(pixmap.size(), QImage.Format_ARGB32)
+        im.fill(QColor(255, 255, 255))
+        p = QPainter(im)
+        p.drawPixmap(0, 0, pixmap)
+        p.end()
+
+        self.assertTrue(self.imageCheck('color_ramp_legend_node_settings_icon', 'color_ramp_legend_node_settings_icon', im, 10))
+
     def test_draw(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
 
@@ -168,6 +195,55 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         p.end()
 
         self.assertTrue(self.imageCheck('color_ramp_legend_node_draw', 'color_ramp_legend_node_draw', image))
+
+    def test_draw_settings(self):
+        r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
+
+        # need a layer in order to make legend nodes
+        layer = QgsVectorLayer('dummy', 'test', 'memory')
+        layer_tree_layer = QgsLayerTreeLayer(layer)
+
+        settings = QgsColorRampLegendNodeSettings()
+        format = QgsBasicNumericFormat()
+        format.setShowTrailingZeros(True)
+        format.setNumberDecimalPlaces(3)
+        settings.setNumericFormat(format)
+        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
+
+        node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
+
+        ls = QgsLegendSettings()
+        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+
+        item_context = QgsLayerTreeModelLegendNode.ItemContext()
+
+        image = QImage(400, 250, QImage.Format_ARGB32)
+        image.fill(QColor(255, 255, 255))
+
+        p = QPainter(image)
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(1, 10, 1, 10))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(p)
+        context.setScaleFactor(150 / 25.4)  # 150 DPI
+
+        p.scale(context.scaleFactor(), context.scaleFactor())
+
+        item_context.context = context
+        item_context.painter = p
+        item_context.top = 1
+        item_context.columnLeft = 3
+        item_context.columnRight = 30
+        item_context.patchSize = QSizeF(12, 40)
+
+        node.drawSymbol(ls, item_context, 0)
+        p.end()
+
+        self.assertTrue(self.imageCheck('color_ramp_legend_node_settings_draw', 'color_ramp_legend_node_settings_draw', image))
 
     def imageCheck(self, name, reference_image, image, size_tolerance=0):
         TestQgsColorRampLegendNode.report += "<h2>Render {}</h2>\n".format(name)
