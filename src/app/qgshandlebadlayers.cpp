@@ -562,7 +562,8 @@ void QgsHandleBadLayers::autoFind()
 
   const QList<int> layersToFind = fileBasedRows( !mLayerList->selectedItems().isEmpty() );
 
-  QProgressDialog progressDialog( QObject::tr( "Searching files" ), QObject::tr( "Cancel" ), 1, layersToFind.size(), this, Qt::Dialog );
+  QProgressDialog progressDialog( QObject::tr( "Searching files" ), 0, 1, layersToFind.size(), this, Qt::Dialog );
+  QgsTaskManager *manager = QgsApplication::taskManager();
 
   for ( int i : std::as_const( layersToFind ) )
   {
@@ -614,7 +615,20 @@ void QgsHandleBadLayers::autoFind()
 
     if ( !dataSourceChanged )
     {
-      QStringList filesFound = QgsFileUtils::findFile( fileName, basepath, 5 );
+      QStringList filesFound;
+      QgsFileSearchTask *fileutil = new QgsFileSearchTask( fileName,  basepath, 4, 4, QgsProject::instance()->absolutePath() );
+      fileutil->setDescription( "Searching for " + fileName );
+      manager->addTask( fileutil );
+      while ( !( ( fileutil->status() == QgsTask::Complete ) || ( fileutil->status() == QgsTask::Terminated ) ) )
+      {
+        QCoreApplication::processEvents();
+        if ( progressDialog.wasCanceled() )
+          fileutil->cancel();
+      }
+      // fileutil->waitForFinished();
+      if ( !( fileutil->isActive() ) )
+        filesFound = fileutil->results();
+
       if ( filesFound.length() > 1 )
       {
         bool ok;
@@ -668,10 +682,13 @@ void QgsHandleBadLayers::autoFind()
         item->setForeground( QBrush( Qt::red ) );
       }
     }
-
+    if ( progressDialog.wasCanceled() )
+      break;
   }
 
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
 
 }
+
+
 

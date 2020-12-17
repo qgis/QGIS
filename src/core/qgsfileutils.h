@@ -21,7 +21,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgstaskmanager.h"
 #include <QString>
+
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -115,10 +118,11 @@ class CORE_EXPORT QgsFileUtils
      * \param maxClimbs limit the number of time the search can move up from the basepath
      * \param searchCeiling limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
      * \param currentDir alternative default directory to override the actual current directory during the search
+     * \param feedback pointer to the feedback instance when available.
      * \returns List of strings of the first matching path in unix format.
      * \since QGIS 3.12
      */
-    static QStringList findFile( const QString &file, const QString &basepath = QString(), int maxClimbs = 4, int searchCeiling = 4, const QString &currentDir = QString() );
+    static QStringList findFile( const QString file, const QString basepath = QString(), int maxClimbs = 4, int searchCeiling = 4, const QString currentDir = QString(), QgsFeedback *feedback = nullptr );
 
     /**
      * Returns the drive type for the given \a path.
@@ -214,6 +218,51 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.22
      */
     static bool isCloseToLimitOfOpenedFiles( int filesToBeOpened = 1 ) SIP_SKIP;
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsFileSearchTask
+ * \brief Background thread handler for findFile.
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsFileSearchTask: public QgsTask
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Background task handler for findFile.
+     * \param file Name or full path of the file to find
+     * \param basePath current basepath of the file, needed if only the name is specified in file
+     * \param maxClimbs limit the number of time the search can move up from the basepath
+     * \param searchCeiling limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
+     * \param currentDir alternative default directory to override the actual current directory during the search
+     * \since QGIS 3.18
+     */
+    QgsFileSearchTask( const QString file, const QString basePath, int maxClimbs, int searchCeiling, const QString currentDir );
+
+    /**
+     * Returns the result of the process.
+     * \since QGIS 3.18
+     */
+    QStringList results();
+
+  protected:
+
+    bool run() override;
+
+  private:
+    const QString mFile;
+    const QString mBasePath;
+    const int mMaxClimbs;
+    const int mSearchCeil;
+    const QString mCurrentDir;
+    QStringList mResults;
+    std::unique_ptr< QgsFeedback > mFeedback;
+
+
 };
 
 #endif // QGSFILEUTILS_H

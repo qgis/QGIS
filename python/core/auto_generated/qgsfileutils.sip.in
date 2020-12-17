@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFileUtils
 {
 %Docstring(signature="appended")
@@ -103,7 +104,7 @@ and "/home/user/projects" exists but no "2018" subfolder exists, then the functi
 .. versionadded:: 3.2
 %End
 
-    static QStringList findFile( const QString &file, const QString &basepath = QString(), int maxClimbs = 4, int searchCeiling = 4, const QString &currentDir = QString() );
+    static QStringList findFile( const QString file, const QString basepath = QString(), int maxClimbs = 4, int searchCeiling = 4, const QString currentDir = QString(), QgsFeedback *feedback = 0 );
 %Docstring
 Will check ``basepath`` in an outward spiral up to ``maxClimbs`` levels to check if ``file`` exists.
 
@@ -112,6 +113,7 @@ Will check ``basepath`` in an outward spiral up to ``maxClimbs`` levels to check
 :param maxClimbs: limit the number of time the search can move up from the basepath
 :param searchCeiling: limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
 :param currentDir: alternative default directory to override the actual current directory during the search
+:param feedback: pointer to the feedback instance when available.
 
 :return: List of strings of the first matching path in unix format.
 
@@ -181,6 +183,47 @@ desired.
 .. versionadded:: 3.22
 %End
 
+
+
+};
+
+
+class QgsFileSearchTask: QgsTask
+{
+%Docstring
+Background thread handler for findFile.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsfileutils.h"
+%End
+  public:
+
+    QgsFileSearchTask( const QString file, const QString basePath, int maxClimbs, int searchCeiling, const QString currentDir );
+%Docstring
+Background task handler for findFile.
+
+:param file: Name or full path of the file to find
+:param basePath: current basepath of the file, needed if only the name is specified in file
+:param maxClimbs: limit the number of time the search can move up from the basepath
+:param searchCeiling: limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
+:param currentDir: alternative default directory to override the actual current directory during the search
+
+.. versionadded:: 3.18
+%End
+
+    QStringList results();
+%Docstring
+Returns the result of the process.
+
+.. versionadded:: 3.18
+%End
+
+  protected:
+
+    virtual bool run();
 
 
 };
