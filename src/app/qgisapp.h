@@ -138,6 +138,7 @@ class QgsLabelingWidget;
 class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
+class QgsNominatimGeocoder;
 class QgsDataSourceManagerDialog;
 class QgsBrowserGuiModel;
 class QgsBrowserModel;
@@ -2664,6 +2665,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 
     QgsLocatorWidget *mLocatorWidget = nullptr;
+    std::unique_ptr<QgsNominatimGeocoder> mNominatimGeocoder;
 
     QgsStatusBar *mStatusBar = nullptr;
 
