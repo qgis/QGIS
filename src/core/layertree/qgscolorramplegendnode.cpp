@@ -39,14 +39,9 @@ QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, Qg
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mRamp( ramp )
   , mSettings( settings )
+  , mMinimumValue( minimumValue )
+  , mMaximumValue( maximumValue )
 {
-  QgsNumericFormatContext numericContext;
-  if ( mSettings.minimumLabel().isEmpty() )
-    mSettings.setMinimumLabel( settings.numericFormat()->formatDouble( minimumValue, numericContext ) );
-
-  if ( mSettings.maximumLabel().isEmpty() )
-    mSettings.setMaximumLabel( settings.numericFormat()->formatDouble( maximumValue, numericContext ) );
-
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   mIconSize = QSize( iconSize, iconSize * 6 );
 
@@ -56,6 +51,34 @@ QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, Qg
 const QgsColorRamp *QgsColorRampLegendNode::ramp() const
 {
   return mRamp.get();
+}
+
+QgsColorRampLegendNodeSettings QgsColorRampLegendNode::settings() const
+{
+  return mSettings;
+}
+
+void QgsColorRampLegendNode::setSettings( const QgsColorRampLegendNodeSettings &settings )
+{
+  mSettings = settings;
+}
+
+QString QgsColorRampLegendNode::labelForMinimum() const
+{
+  if ( !mSettings.minimumLabel().isEmpty() )
+    return mSettings.prefix() + mSettings.minimumLabel() + mSettings.suffix();
+
+  QgsNumericFormatContext numericContext;
+  return mSettings.prefix() + mSettings.numericFormat()->formatDouble( mMinimumValue, numericContext )  + mSettings.suffix();
+}
+
+QString QgsColorRampLegendNode::labelForMaximum() const
+{
+  if ( !mSettings.maximumLabel().isEmpty() )
+    return mSettings.prefix() + mSettings.maximumLabel() + mSettings.suffix();
+
+  QgsNumericFormatContext numericContext;
+  return mSettings.prefix() + mSettings.numericFormat()->formatDouble( mMaximumValue, numericContext ) + mSettings.suffix();
 }
 
 QVariant QgsColorRampLegendNode::data( int role ) const
@@ -86,8 +109,8 @@ QVariant QgsColorRampLegendNode::data( int role ) const
 
       const QFont font = data( Qt::FontRole ).value< QFont >();
 
-      const QString minLabel = mSettings.prefix() + mSettings.minimumLabel() + mSettings.suffix();
-      const QString maxLabel = mSettings.prefix() + mSettings.maximumLabel() + mSettings.suffix();
+      const QString minLabel = labelForMinimum();
+      const QString maxLabel = labelForMaximum();
 
       const QFontMetrics fm( font );
       const int maxTextWidth = std::max( fm.boundingRect( minLabel ).width(), fm.boundingRect( maxLabel ).width() );
@@ -152,8 +175,8 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
   QgsTextFormat format = QgsTextFormat::fromQFont( symbolLabelFont );
   format.setColor( settings.fontColor() );
 
-  const QString minLabel = mSettings.prefix() + mSettings.minimumLabel() + mSettings.suffix();
-  const QString maxLabel = mSettings.prefix() + mSettings.maximumLabel() + mSettings.suffix();
+  const QString minLabel = labelForMinimum();
+  const QString maxLabel = labelForMaximum();
 
   double minHeightMm = QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel << maxLabel, QgsTextRenderer::Rect ) / context->scaleFactor();
 
@@ -259,8 +282,8 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
   QgsTextFormat format = QgsTextFormat::fromQFont( symbolLabelFont );
   format.setColor( settings.fontColor() );
 
-  const QString minLabel = mSettings.prefix() + mSettings.minimumLabel() + mSettings.suffix();
-  const QString maxLabel = mSettings.prefix() + mSettings.maximumLabel() + mSettings.suffix();
+  const QString minLabel = labelForMinimum();
+  const QString maxLabel = labelForMaximum();
 
   const double height = symbolSize.height();
   const double width = symbolSize.width();

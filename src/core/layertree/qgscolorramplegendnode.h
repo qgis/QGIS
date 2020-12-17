@@ -65,7 +65,6 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
     QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const override;
 
-
     /**
      * Set the icon \a size, which controls how large the ramp will render in a layer tree widget.
      *
@@ -85,13 +84,32 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      */
     const QgsColorRamp *ramp() const;
 
+    /**
+     * Returns the node's settings.
+     *
+     * \see setSettings()
+     */
+    QgsColorRampLegendNodeSettings settings() const;
+
+    /**
+     * Sets the node's \a settings.
+     *
+     * \see settings()
+     */
+    void setSettings( const QgsColorRampLegendNodeSettings &settings );
+
   private:
+    QString labelForMinimum() const;
+    QString labelForMaximum() const;
+
     std::unique_ptr< QgsColorRamp > mRamp;
 
     mutable QPixmap mPixmap; // cached symbol preview
     QSize mIconSize;
 
     QgsColorRampLegendNodeSettings mSettings;
+    double mMinimumValue = 0;
+    double mMaximumValue = 0;
 
 };
 

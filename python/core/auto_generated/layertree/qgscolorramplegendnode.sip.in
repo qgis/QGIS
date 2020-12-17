@@ -55,7 +55,6 @@ Constructor for QgsColorRampLegendNode.
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
 
-
     void setIconSize( QSize size );
 %Docstring
 Set the icon ``size``, which controls how large the ramp will render in a layer tree widget.
@@ -73,6 +72,20 @@ Returns the icon size, which is how large the ramp will render in a layer tree w
     const QgsColorRamp *ramp() const;
 %Docstring
 Returns the color ramp used by the node.
+%End
+
+    QgsColorRampLegendNodeSettings settings() const;
+%Docstring
+Returns the node's settings.
+
+.. seealso:: :py:func:`setSettings`
+%End
+
+    void setSettings( const QgsColorRampLegendNodeSettings &settings );
+%Docstring
+Sets the node's ``settings``.
+
+.. seealso:: :py:func:`settings`
 %End
 
 };
