@@ -127,6 +127,42 @@ Writes settings to an XML ``element``.
 Reads settings from an XML ``element``.
 %End
 
+    QString prefix() const;
+%Docstring
+Returns the prefix to show before legend text.
+
+.. seealso:: :py:func:`setPrefix`
+
+.. seealso:: :py:func:`suffix`
+%End
+
+    void setPrefix( const QString &prefix );
+%Docstring
+Sets the ``prefix`` to show before legend text.
+
+.. seealso:: :py:func:`prefix`
+
+.. seealso:: :py:func:`setSuffix`
+%End
+
+    QString suffix() const;
+%Docstring
+Returns the suffix to show after legend text.
+
+.. seealso:: :py:func:`setSuffix`
+
+.. seealso:: :py:func:`prefix`
+%End
+
+    void setSuffix( const QString &suffix );
+%Docstring
+Sets the ``suffix`` to show after legend text.
+
+.. seealso:: :py:func:`suffix`
+
+.. seealso:: :py:func:`setPrefix`
+%End
+
 };
 
 /************************************************************************

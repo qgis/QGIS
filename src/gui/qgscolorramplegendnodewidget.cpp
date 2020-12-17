@@ -34,6 +34,8 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent )
 
   connect( mMinLabelLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mMaxLabelLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
+  connect( mPrefixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
+  connect( mSuffixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mDirectionComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsColorRampLegendNodeWidget::changeNumberFormat );
 }
@@ -44,6 +46,8 @@ QgsColorRampLegendNodeSettings QgsColorRampLegendNodeWidget::settings() const
   settings.setDirection( static_cast< QgsColorRampLegendNodeSettings::Direction >( mDirectionComboBox->currentData().toInt() ) );
   settings.setMinimumLabel( mMinLabelLineEdit->text() );
   settings.setMaximumLabel( mMaxLabelLineEdit->text() );
+  settings.setPrefix( mPrefixLineEdit->text() );
+  settings.setSuffix( mSuffixLineEdit->text() );
   settings.setNumericFormat( mSettings.numericFormat()->clone() );
   return settings;
 }
@@ -55,6 +59,8 @@ void QgsColorRampLegendNodeWidget::setSettings( const QgsColorRampLegendNodeSett
   mSettings = settings;
   mMinLabelLineEdit->setText( settings.minimumLabel() );
   mMaxLabelLineEdit->setText( settings.maximumLabel() );
+  mPrefixLineEdit->setText( settings.prefix() );
+  mSuffixLineEdit->setText( settings.suffix() );
   mDirectionComboBox->setCurrentIndex( mDirectionComboBox->findData( settings.direction() ) );
 
   mBlockSignals = false;
