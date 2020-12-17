@@ -1632,6 +1632,14 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   connect( mColumnSplitBehaviorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
 
   connect( mColorRampLegendWidget, &QgsColorRampLegendNodeWidget::widgetChanged, this, &QgsLayoutLegendNodeWidget::colorRampLegendChanged );
+
+  connectChildPanel( mColorRampLegendWidget );
+}
+
+void QgsLayoutLegendNodeWidget::setDockMode( bool dockMode )
+{
+  mColorRampLegendWidget->setDockMode( dockMode );
+  QgsPanelWidget::setDockMode( dockMode );
 }
 
 void QgsLayoutLegendNodeWidget::labelChanged()
