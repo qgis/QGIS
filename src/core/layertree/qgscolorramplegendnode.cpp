@@ -217,8 +217,8 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     const double gradientTop = rampTopMm * dotsPerMM;
     const double gradientBottom = gradientTop + height * dotsPerMM;
 
-    QLinearGradient gradient( 0, mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? gradientTop : gradientBottom,
-                              0, mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? gradientBottom : gradientTop );
+    QLinearGradient gradient( 0, mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? gradientBottom : gradientTop,
+                              0, mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? gradientTop : gradientBottom );
     if ( mRamp->type() == QgsGradientColorRamp::typeString() || mRamp->type() == QgsCptCityColorRamp::typeString() )
     {
       //color ramp gradient
