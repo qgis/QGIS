@@ -599,7 +599,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Sets the dynamic SVG parameters
      * \since QGIS 3.18
      */
-    void setParameters( const QMap<QString, QgsProperty> &parameters ) { mParameters = parameters; }
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
 
     /**
      * Sets the units for the stroke width.

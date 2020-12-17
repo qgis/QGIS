@@ -1979,6 +1979,11 @@ bool QgsSvgMarkerSymbolLayer::setPreservedAspectRatio( bool par )
   return preservedAspectRatio();
 }
 
+void QgsSvgMarkerSymbolLayer::setParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  mParameters = parameters;
+}
+
 
 QString QgsSvgMarkerSymbolLayer::layerType() const
 {
@@ -2291,7 +2296,15 @@ QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
-  m->setParameters( mParameters );
+
+  QMap<QString, QgsProperty> parameters;
+  QMap<QString, QgsProperty>::const_iterator paramIt = mParameters.constBegin();
+  for ( ; paramIt != mParameters.constEnd(); ++paramIt )
+  {
+    parameters.insert( paramIt.key(), QgsProperty::fromExpression( paramIt.value().expressionString() ) );
+  }
+  m->setParameters( parameters );
+
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;
