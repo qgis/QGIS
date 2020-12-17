@@ -186,7 +186,7 @@ HdfDataset::HdfDataset( hid_t file, const std::string &path )
 
 HdfDataset::~HdfDataset() = default;
 
-bool HdfDataset::isValid() const { return d->id >= 0; }
+bool HdfDataset::isValid() const { return  d && d->id >= 0; }
 
 hid_t HdfDataset::id() const { return d->id; }
 

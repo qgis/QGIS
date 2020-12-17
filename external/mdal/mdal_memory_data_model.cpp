@@ -308,8 +308,8 @@ size_t MDAL::MemoryMeshEdgeIterator::next( size_t edgeCount,
       break;
 
     const Edge &e = edges[mLastEdgeIndex + i];
-    startVertexIndices[i] = e.startVertex;
-    endVertexIndices[i] = e.endVertex;
+    startVertexIndices[i] = MDAL::toInt( e.startVertex );
+    endVertexIndices[i] = MDAL::toInt( e.endVertex );
 
     ++i;
   }
