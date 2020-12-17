@@ -426,6 +426,9 @@ bool QgsSingleBandPseudoColorRenderer::accept( QgsStyleEntityVisitorInterface *v
 
 QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
+  if ( !mShader )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
   const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
   if ( !rampShader )
     return QList<QgsLayerTreeModelLegendNode *>();
