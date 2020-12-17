@@ -441,6 +441,17 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
     res << new QgsSimpleLegendNode( nodeLayer, name );
   }
 
+  if ( !rampShader->sourceColorRamp() )
+  {
+    const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+    res.reserve( items.size() );
+    for ( const QPair< QString, QColor > &item : items )
+    {
+      res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+    }
+    return res;
+  }
+
   switch ( rampShader->colorRampType() )
   {
     case QgsColorRampShader::Interpolated:
