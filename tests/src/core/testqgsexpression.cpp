@@ -1655,9 +1655,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_median(array(0,0,1,2,2,42,'a','b'))" ) << QStringLiteral( "array_median(array(0,0,1,2,2,42,'a','b'))" ) << false << QVariant( 1.5 );
       QTest::newRow( "array_majority(array())" ) << QStringLiteral( "array_majority(array())" ) << false << QVariant();
       QTest::newRow( "array_majority(array(1,2,42,42,'a','b'))" ) << QStringLiteral( "array_majority(array(1,2,42,42,'a','b'))" ) << false << QVariant( QVariantList() << 42 );
-      QTest::newRow( "array_sum(array())" ) << QStringLiteral( "array_mean(array())" ) << false << QVariant();
-      QTest::newRow( "array_sum(array('a','b','c'))" ) << QStringLiteral( "array_mean(array('a','b','c'))" ) << false << QVariant();
-      QTest::newRow( "array_sum(array(0,1,39.4,1.6,'a'))" ) << QStringLiteral( "array_mean(array(0,1,39.4,1.6,'a'))" ) << false << QVariant( 42.0 );
+      QTest::newRow( "array_sum(array())" ) << QStringLiteral( "array_sum(array())" ) << false << QVariant();
+      QTest::newRow( "array_sum(array('a','b','c'))" ) << QStringLiteral( "array_sum(array('a','b','c'))" ) << false << QVariant();
+      QTest::newRow( "array_sum(array(0,1,39.4,1.6,'a'))" ) << QStringLiteral( "array_sum(array(0,1,39.4,1.6,'a'))" ) << false << QVariant( 42.0 );
 
       // file functions
       QTest::newRow( "base_file_name(5)" ) << QStringLiteral( "base_file_name(5)" ) << false << QVariant( "5" );
