@@ -191,7 +191,8 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         item_context.columnRight = 30
         item_context.patchSize = QSizeF(12, 40)
 
-        node.drawSymbol(ls, item_context, 0)
+        symbol_size = node.drawSymbol(ls, item_context, 0)
+        node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
         self.assertTrue(self.imageCheck('color_ramp_legend_node_draw', 'color_ramp_legend_node_draw', image))
@@ -240,7 +241,8 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         item_context.columnRight = 30
         item_context.patchSize = QSizeF(12, 40)
 
-        node.drawSymbol(ls, item_context, 0)
+        symbol_size = node.drawSymbol(ls, item_context, 0)
+        node.drawSymbolText(ls, item_context, symbol_size)
         p.end()
 
         self.assertTrue(self.imageCheck('color_ramp_legend_node_settings_draw', 'color_ramp_legend_node_settings_draw', image))

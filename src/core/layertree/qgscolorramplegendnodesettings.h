@@ -137,9 +137,43 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      */
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+    /**
+     * Returns the prefix to show before legend text.
+     *
+     * \see setPrefix()
+     * \see suffix()
+     */
+    QString prefix() const;
+
+    /**
+     * Sets the \a prefix to show before legend text.
+     *
+     * \see prefix()
+     * \see setSuffix()
+     */
+    void setPrefix( const QString &prefix );
+
+    /**
+     * Returns the suffix to show after legend text.
+     *
+     * \see setSuffix()
+     * \see prefix()
+     */
+    QString suffix() const;
+
+    /**
+     * Sets the \a suffix to show after legend text.
+     *
+     * \see suffix()
+     * \see setPrefix()
+     */
+    void setSuffix( const QString &suffix );
+
   private:
     QString mMinimumLabel;
     QString mMaximumLabel;
+    QString mPrefix;
+    QString mSuffix;
     Direction mDirection = MinimumToMaximum;
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
 };

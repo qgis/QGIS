@@ -52,6 +52,9 @@ Constructor for QgsColorRampLegendNode.
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
+    virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
+
+
 
     void setIconSize( QSize size );
 %Docstring

@@ -28,6 +28,8 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other )
   : mMinimumLabel( other.mMinimumLabel )
   , mMaximumLabel( other.mMaximumLabel )
+  , mPrefix( other.mPrefix )
+  , mSuffix( other.mSuffix )
   , mDirection( other.mDirection )
   , mNumericFormat( other.numericFormat()->clone() )
 {
@@ -38,6 +40,8 @@ QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const
 {
   mMinimumLabel = other.mMinimumLabel;
   mMaximumLabel = other.mMaximumLabel;
+  mPrefix = other.mPrefix;
+  mSuffix = other.mSuffix;
   mDirection = other.mDirection;
   mNumericFormat.reset( other.numericFormat()->clone() );
   return *this;
@@ -91,6 +95,8 @@ void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &e
 
   settingsElement.setAttribute( QStringLiteral( "minimumLabel" ), mMinimumLabel );
   settingsElement.setAttribute( QStringLiteral( "maximumLabel" ), mMaximumLabel );
+  settingsElement.setAttribute( QStringLiteral( "prefix" ), mPrefix );
+  settingsElement.setAttribute( QStringLiteral( "suffix" ), mSuffix );
   settingsElement.setAttribute( QStringLiteral( "direction" ), static_cast< int >( mDirection ) );
 
   QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
@@ -107,6 +113,8 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
   {
     mMinimumLabel = settingsElement.attribute( QStringLiteral( "minimumLabel" ) );
     mMaximumLabel = settingsElement.attribute( QStringLiteral( "maximumLabel" ) );
+    mPrefix = settingsElement.attribute( QStringLiteral( "prefix" ) );
+    mSuffix = settingsElement.attribute( QStringLiteral( "suffix" ) );
     mDirection = static_cast<  QgsColorRampLegendNodeSettings::Direction >( settingsElement.attribute( QStringLiteral( "direction" ) ).toInt() );
 
     QDomNodeList numericFormatNodeList = settingsElement.elementsByTagName( QStringLiteral( "numericFormat" ) );
@@ -116,4 +124,24 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
       mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElem, context ) );
     }
   }
+}
+
+QString QgsColorRampLegendNodeSettings::prefix() const
+{
+  return mPrefix;
+}
+
+void QgsColorRampLegendNodeSettings::setPrefix( const QString &prefix )
+{
+  mPrefix = prefix;
+}
+
+QString QgsColorRampLegendNodeSettings::suffix() const
+{
+  return mSuffix;
+}
+
+void QgsColorRampLegendNodeSettings::setSuffix( const QString &suffix )
+{
+  mSuffix = suffix;
 }

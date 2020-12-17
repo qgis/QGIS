@@ -63,6 +63,8 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
 
     QVariant data( int role ) const override;
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+    QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const override;
+
 
     /**
      * Set the icon \a size, which controls how large the ramp will render in a layer tree widget.
