@@ -780,6 +780,39 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \return 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
      */
     static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
+
+    /**
+     * Evaluates a map of properties using the given \a context and returns a variant map with evaluated expressions from the properties.
+     * \since QGIS 3.18
+     */
+    static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
+
+    /**
+     * Serialize a map of properties
+     * {"key1": "value1", "key2": "value2"}
+     * becomes
+     * {
+     *   "properties_0_name": "key1", "properties_0_value": "value1",
+     *   "properties_1_name": "key2", "properties_1_value": "value2",
+     * }
+     * \see readSerializedProperties
+     * \since QGIS 3.18
+     */
+    static QMap<QString, QString> serializeProperties( const QMap<QString, QgsProperty> &propertiesMap );
+
+    /**
+     * Reads a serialized map of properties
+     * It expects
+     * {
+     *   "properties_0_name": "key1", "properties_0_value": "value1",
+     *   "properties_1_name": "key2", "properties_1_value": "value2",
+     * }
+     * which will return
+     * {"key1": "value1", "key2": "value2"}
+     * \see serializeProperties
+     * \since QGIS 3.18
+     */
+    static QMap<QString, QgsProperty> readSerializedProperties( const QMap<QString, QString> &serializedProperties );
 };
 
 class QPolygonF;

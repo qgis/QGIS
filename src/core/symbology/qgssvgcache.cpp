@@ -43,7 +43,7 @@
 // QgsSvgCacheEntry
 //
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, double fixedAspectRatio, const QgsSvgParameters &parameters )
+QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, double fixedAspectRatio, const QMap<QString, QString> &parameters )
   : QgsAbstractContentCacheEntry( path )
   , size( size )
   , strokeWidth( strokeWidth )
@@ -66,7 +66,8 @@ bool QgsSvgCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) cons
        || !qgsDoubleNear( otherSvg->widthScaleFactor, widthScaleFactor )
        || otherSvg->fill != fill
        || otherSvg->stroke != stroke
-       || otherSvg->path != path )
+       || otherSvg->path != path
+       || otherSvg->parameters != parameters )
     return false;
 
   return true;
@@ -121,7 +122,7 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
 }
 
 QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio, bool blocking, const QgsSvgParameters &parameters )
+                                double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
 {
   QMutexLocker locker( &mMutex );
 
@@ -181,7 +182,7 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
 }
 
 QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio, bool blocking, const QgsSvgParameters &parameters )
+                                    double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
 {
   QMutexLocker locker( &mMutex );
 
@@ -205,7 +206,7 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
 }
 
 QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QgsSvgParameters &parameters, bool *isMissingImage )
+                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters, bool *isMissingImage )
 {
   QMutexLocker locker( &mMutex );
 
@@ -215,7 +216,7 @@ QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QCol
 }
 
 QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QgsSvgParameters &parameters )
+                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
 {
   QMutexLocker locker( &mMutex );
 
@@ -495,7 +496,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor, double fixedAspectRatio, const QgsSvgParameters &parameters, bool blocking, bool *isMissingImage )
+    double widthScaleFactor, double fixedAspectRatio, const QMap<QString, QString> &parameters, bool blocking, bool *isMissingImage )
 {
   QgsSvgCacheEntry *currentEntry = findExistingEntry( new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio, parameters ) );
 
@@ -511,7 +512,7 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
 }
 
 
-void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth, const QgsSvgParameters &parameters )
+void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth, const QMap<QString, QString> &parameters )
 {
   if ( elem.isNull() )
   {
@@ -598,12 +599,12 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
       }
       else
       {
-        QgsSvgParameters::const_iterator paramIt = parameters.constBegin();
+        QMap<QString, QString>::const_iterator paramIt = parameters.constBegin();
         for ( ; paramIt != parameters.constEnd(); ++paramIt )
         {
-          if ( value.startsWith( QString( QLatin1String( "param(%1)" ) ).arg( paramIt->name() ) ) )
+          if ( value.startsWith( QString( QLatin1String( "param(%1)" ) ).arg( paramIt.key() ) ) )
           {
-            elem.setAttribute( attribute.name(), paramIt->value() );
+            elem.setAttribute( attribute.name(), paramIt.value() );
             break;
           }
         }
@@ -611,14 +612,15 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
     }
   }
 
-  if ( elem.nodeValue().startsWith( "param(" ) )
+  QDomNode child = elem.firstChild();
+  if ( child.isText() && child.nodeValue().startsWith( "param(" ) )
   {
-    QgsSvgParameters::const_iterator paramIt = parameters.constBegin();
+    QMap<QString, QString>::const_iterator paramIt = parameters.constBegin();
     for ( ; paramIt != parameters.constEnd(); ++paramIt )
     {
-      if ( elem.nodeValue().startsWith( QString( QLatin1String( "param(%1)" ) ).arg( paramIt->name() ) ) )
+      if ( child.toText().data().startsWith( QString( QLatin1String( "param(%1)" ) ).arg( paramIt.key() ) ) )
       {
-        elem.setNodeValue( paramIt->value() );
+        child.setNodeValue( paramIt.value() );
         break;
       }
     }

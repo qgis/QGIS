@@ -24,7 +24,6 @@
 #include <QPainter>
 #include <QtConcurrent>
 #include <QElapsedTimer>
-#include "qgssvgparameter.h"
 #include "qgssvgcache.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
@@ -55,9 +54,9 @@ class TestQgsSvgCache : public QObject
     void changeImage(); //check that cache is updated if svg source file changes
     void base64();
     void replaceParams();
+    void dynamicSvg();
     void aspectRatio();
     void noViewBox();
-    void dynamicSvg();
 };
 
 
@@ -340,8 +339,8 @@ void TestQgsSvgCache::dynamicSvg()
   QgsSvgCache cache;
   const QString dynamicImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
   QByteArray svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
-                                     1.0, 0, false, QgsSvgParameters( {QgsSvgParameter( "text1", "green?" ), QgsSvgParameter( "text2", "supergreen" ), QgsSvgParameter( "align",  "middle" )} ) );
-  const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
+  1.0, 0, false, {{"text1", "green?"}, {"text2", "supergreen"}, {"align",  "middle" }} );
+  const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
   QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
                            1.0, 0, false, {} );
   QCOMPARE( svg, control_svg );

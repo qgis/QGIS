@@ -49,7 +49,7 @@ Constructor for QgsSvgCache.
 
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false,
-                       const QgsSvgParameters &parameters = QgsSvgParameters() );
+                       const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Returns an SVG drawing as a QImage.
 
@@ -72,7 +72,7 @@ Returns an SVG drawing as a QImage.
 
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false,
-                           const QgsSvgParameters &parameters = QgsSvgParameters() );
+                           const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Returns an SVG drawing as a QPicture.
 
@@ -102,7 +102,7 @@ Returns an SVG drawing as a QPicture.
 %End
 
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QgsSvgParameters &parameters = QgsSvgParameters() );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Calculates the viewbox size of a (possibly cached) SVG file.
 
@@ -195,7 +195,7 @@ in the same thread to ensure provided the remote content.
 %End
 
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QgsSvgParameters &parameters = QgsSvgParameters() );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 %Docstring
 Gets the SVG content corresponding to the given ``path``.
 

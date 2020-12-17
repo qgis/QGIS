@@ -870,6 +870,44 @@ Creates a new symbol with size restricted to min/max size if original size is ou
 
 :return: 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
 %End
+
+    static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
+%Docstring
+Evaluates a map of properties using the given ``context`` and returns a variant map with evaluated expressions from the properties.
+
+.. versionadded:: 3.18
+%End
+
+    static QMap<QString, QString> serializeProperties( const QMap<QString, QgsProperty> &propertiesMap );
+%Docstring
+Serialize a map of properties
+{"key1": "value1", "key2": "value2"}
+becomes
+{
+"properties_0_name": "key1", "properties_0_value": "value1",
+"properties_1_name": "key2", "properties_1_value": "value2",
+}
+
+.. seealso:: :py:func:`readSerializedProperties`
+
+.. versionadded:: 3.18
+%End
+
+    static QMap<QString, QgsProperty> readSerializedProperties( const QMap<QString, QString> &serializedProperties );
+%Docstring
+Reads a serialized map of properties
+It expects
+{
+"properties_0_name": "key1", "properties_0_value": "value1",
+"properties_1_name": "key2", "properties_1_value": "value2",
+}
+which will return
+{"key1": "value1", "key2": "value2"}
+
+.. seealso:: :py:func:`serializeProperties`
+
+.. versionadded:: 3.18
+%End
 };
 
 

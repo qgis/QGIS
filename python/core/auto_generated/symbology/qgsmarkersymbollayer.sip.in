@@ -656,14 +656,14 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
     double strokeWidth() const;
     void setStrokeWidth( double w );
 
-    QgsSvgParameters parameters() const;
+    QMap<QString, QgsProperty> parameters() const;
 %Docstring
 Returns the dynamic SVG parameters
 
 .. versionadded:: 3.18
 %End
 
-    void setParameters( const QgsSvgParameters &parameters );
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
 %Docstring
 Sets the dynamic SVG parameters
 

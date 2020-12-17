@@ -473,7 +473,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
       QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
       double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
       // TODO parameters (handle this in the gui part)
-      QgsSvgParameters parameters;
+      QMap<QString, QString> parameters;
       bool isMissingImage = false;
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
                                      1.0, 0, false, parameters, &isMissingImage );

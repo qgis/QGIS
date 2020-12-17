@@ -1502,7 +1502,6 @@ set(QGIS_CORE_HDRS
   symbology/qgsstyleentityvisitor.h
   symbology/qgsstylemodel.h
   symbology/qgssvgcache.h
-  symbology/qgssvgparameter.h
   symbology/qgssymbol.h
   symbology/qgssymbollayer.h
   symbology/qgssymbollayerreference.h
