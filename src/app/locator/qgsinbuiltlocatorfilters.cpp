@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDesktopServices>
 #include <QClipboard>
 #include <QMap>
 #include <QSpinBox>
@@ -33,6 +34,8 @@
 #include "qgsfeedback.h"
 #include "qgisapp.h"
 #include "qgsmaplayermodel.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
@@ -1188,4 +1191,31 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
   }
 
   mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
+}
+
+QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas )
+  : QgsGeocoderLocatorFilter( QStringLiteral( "nominatimgeocoder" ), tr( "Nominatim Geocoder" ), QStringLiteral( "nom" ), geocoder, canvas )
+{
+  setFetchResultsDelay( 1000 );
+  setUseWithoutPrefix( false );
+}
+
+void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+
+  QgsSettings settings;
+  if ( !settings.value( "locator_filters/nominatim_geocoder/attribution_shown", false, QgsSettings::App ).toBool() )
+  {
+    settings.setValue( "locator_filters/nominatim_geocoder/attribution_shown", true, QgsSettings::App );
+
+    QgsMessageBarItem *messageWidget = QgisApp::instance()->messageBar()->createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
+    QPushButton *learnMoreButton = new QPushButton( tr( "Learn more" ) );
+    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [ = ]
+    {
+      QDesktopServices::openUrl( QStringLiteral( "https://nominatim.org/" ) );
+    } );
+    messageWidget->layout()->addWidget( learnMoreButton );
+    QgisApp::instance()->messageBar()->pushWidget( messageWidget, Qgis::Info );
+  }
+  QgsGeocoderLocatorFilter::triggerResult( result );
 }

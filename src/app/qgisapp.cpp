@@ -267,6 +267,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsinbuiltlocatorfilters.h"
+#include "qgsgeocoderlocatorfilter.h"
+#include "qgsnominatimgeocoder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasdockwidget.h"
@@ -3915,6 +3917,9 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsBookmarkLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsGotoLocatorFilter() );
+
+  mNominatimGeocoder.reset( new QgsNominatimGeocoder() );
+  mLocatorWidget->locator()->registerFilter( new QgsNominatimLocatorFilter( mNominatimGeocoder.get(), mMapCanvas ) );
 }
 
 void QgisApp::setIconSizes( int size )
