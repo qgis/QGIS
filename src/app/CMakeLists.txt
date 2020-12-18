@@ -91,6 +91,7 @@ set(QGIS_APP_SRCS
   qgsmaptoolreverseline.cpp
   qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatepointsymbols.cpp
+  qgsmaptoolscalefeature.cpp
   qgsmaptoolselect.cpp
   qgsmaptoolselectionhandler.cpp
   qgsmaptoolselectutils.cpp

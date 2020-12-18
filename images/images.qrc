@@ -398,6 +398,7 @@
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.svg</file>
         <file>themes/default/mActionScaleBar.svg</file>
+	    <file>themes/default/mActionScaleFeature.svg</file>
         <file>themes/default/mActionScriptOpen.svg</file>
         <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectAll.svg</file>
