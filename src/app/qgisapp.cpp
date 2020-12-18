@@ -4266,9 +4266,10 @@ void QgisApp::setupConnections()
            this, &QgisApp::activateDeactivateLayerRelatedActions );
   connect( this, &QgisApp::activeLayerChanged,
            this, &QgisApp::setMapStyleDockLayer );
-
   connect( mLayerTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgisApp::legendLayerSelectionChanged );
+  connect( mLayerTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
+           this, &QgisApp::activateDeactivateMultipleLayersRelatedActions );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), &QgsLayerTreeNode::addedChildren,
            this, &QgisApp::markDirty );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), &QgsLayerTreeNode::addedChildren,
@@ -14537,6 +14538,8 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   {
     activateDeactivateLayerRelatedActions( layer );
   }
+
+  activateDeactivateMultipleLayersRelatedActions();
 }
 
 void QgisApp::legendLayerSelectionChanged()
@@ -14616,6 +14619,61 @@ void QgisApp::updateLabelToolButtons()
   mActionMoveLabel->setEnabled( enableMove );
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
+}
+
+bool QgisApp::selectedLayersHaveSelection()
+{
+  QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+
+  // If no selected layers, use active layer
+  if ( layers.size() == 0 )
+  {
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+
+    if ( layer && layer->selectedFeatureCount() == 0 )
+      return false;
+
+    if ( layer && layer->selectedFeatureCount() > 0 )
+      return true;
+  }
+
+  for ( QgsMapLayer *mapLayer : layers )
+  {
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+
+    if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
+      continue;
+
+    return true;
+  }
+
+  return false;
+}
+
+bool QgisApp::selectedLayersHaveSpatial()
+{
+  QList<QgsMapLayer *> layers = mLayerTreeView->selectedLayers();
+
+  // If no selected layers, use active layer
+  if ( layers.size() == 0 )
+    return activeLayer()->isSpatial();
+
+  for ( QgsMapLayer *mapLayer : layers )
+  {
+    if ( !mapLayer || !mapLayer->isSpatial() )
+      continue;
+
+    return true;
+  }
+
+  return false;
+}
+
+void QgisApp::activateDeactivateMultipleLayersRelatedActions()
+{
+  mActionZoomToLayers->setEnabled( selectedLayersHaveSpatial() );
+  mActionZoomToSelected->setEnabled( selectedLayersHaveSelection() );
+  mActionPanToSelected->setEnabled( selectedLayersHaveSelection() );
 }
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
@@ -14797,8 +14855,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseGamma->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( isSpatial );
-      mActionZoomToLayers->setEnabled( isSpatial );
-      mActionZoomToSelected->setEnabled( isSpatial );
       mActionLabeling->setEnabled( isSpatial );
       mActionDiagramProperties->setEnabled( isSpatial );
       mActionReverseLine->setEnabled( false );
@@ -15053,8 +15109,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( true );
       mActionZoomToLayer->setEnabled( true );
-      mActionZoomToLayers->setEnabled( true );
-      mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
@@ -15166,8 +15220,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
-      mActionZoomToLayers->setEnabled( true );
-      mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
@@ -15233,8 +15285,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
-      mActionZoomToLayers->setEnabled( true );
-      mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
@@ -15300,8 +15350,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
-      mActionZoomToLayers->setEnabled( true );
-      mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
