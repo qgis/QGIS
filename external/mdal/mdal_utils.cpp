@@ -21,20 +21,7 @@ std::string MDAL::getEnvVar( const std::string &varname, const std::string &defa
   if ( varname.empty() )
     return std::string();
 
-  char *envVarC = nullptr;
-#ifdef WIN32
-  size_t requiredSize = 0;
-  getenv_s( &requiredSize, NULL, 0, varname.c_str() );
-  if ( requiredSize != 0 )
-  {
-    envVarC = ( char * )malloc( requiredSize * sizeof( char ) );
-    getenv_s( &requiredSize, envVarC, requiredSize, varname.c_str() );
-  }
-  else
-    envVarC = nullptr;
-#else
-  envVarC = getenv( varname.c_str() );
-#endif
+  char *envVarC = getenv( varname.c_str() );
 
   if ( !envVarC )
     return defaultVal;
