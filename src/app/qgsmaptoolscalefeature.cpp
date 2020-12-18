@@ -21,7 +21,6 @@
 
 #include <limits>
 #include <cmath>
-#include <QDebug>
 
 #include "qgsmaptoolscalefeature.h"
 #include "qgsfeatureiterator.h"
@@ -201,7 +200,6 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       return;
     }
-    //mCenterPoint =  toLayerCoordinates( mLayer, e->mapPoint() );;//QgsPointXY(
     mFeatureCenter = toLayerCoordinates( mLayer, e->mapPoint() );;
     mAnchorPoint->setCenter( mFeatureCenter );
     return;
@@ -272,7 +270,6 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
       mExtent = cf.geometry().boundingBox();
       mFeatureCenter = mExtent.center();
-      mAnchorPoint->setCenter( mFeatureCenter );
 
       mScaledFeatures.clear();
       mScaledFeatures << cf.id(); //todo: take the closest feature, not the first one...
@@ -293,11 +290,11 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         mRubberBand->addGeometry( feat.geometry(), mLayer );
       }
     }
-    QPoint rubberAnchor = toCanvasCoordinates(toMapCoordinates(mLayer,mFeatureCenter));
-    mRubberScale = QPointF(rubberAnchor.x()-mRubberBand->x(),rubberAnchor.y()-mRubberBand->y());
-
-    mRubberBand->setTransformOriginPoint(mFeatureCenter.toQPointF());//rubberAnchor);
-    qDebug()<<QString("rubber scale %1 %2").arg(mRubberScale.x()).arg(mRubberScale.y());
+    QgsPointXY mapAnchor = toMapCoordinates( mLayer,mFeatureCenter );
+    QPoint rubberAnchor = toCanvasCoordinates( mapAnchor );
+    mAnchorPoint->setCenter( mapAnchor );
+    mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
+    mRubberBand->setTransformOriginPoint( rubberAnchor );
     mRubberBand->show();
     mBaseDistance = toLayerCoordinates( mLayer, e->mapPoint() ).distance( mFeatureCenter );
     mScaling = 1.0;
@@ -336,14 +333,13 @@ void QgsMapToolScaleFeature::updateRubberband( double scale )
   if ( mScalingActive )
   {
     mScaling = scale;
-    //double offsetX = mFeatureCenter.x() + mRubberBand->x();
-    //double offsetY = mFeatureCenter.y() + mRubberBand->y();
-    double offsetx = -0.15*(1-mScaling)*mRubberScale.y()*0;
-    double offsety = -0.2*(1-mScaling)*mRubberScale.y()*0;
-    qDebug()<<QString("rubber scale %1 %2").arg(offsetx).arg(offsety);
+
+    double offsetx = ( 1 - mScaling ) * mRubberScale.x();
+    double offsety = ( 1 - mScaling ) *  mRubberScale.y();
+
     if ( mRubberBand )
     {
-      mRubberBand->setTransform( QTransform().fromScale( mScaling, mScaling ).translate(offsetx,offsety ));
+      mRubberBand->setTransform( QTransform( mScaling, 0, 0, mScaling, offsetx, offsety ) );
       mRubberBand->update();
     }
   }
@@ -367,15 +363,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   mLayer->beginEditCommand( tr( "Features Scaled" ) );
 
-  int start;
-  if ( mLayer->geometryType() == 2 )
-  {
-    start = 1;
-  }
-  else
-  {
-    start = 0;
-  }
+  int start = ( mLayer->geometryType() == 2 )? 1 : 0;
 
   int i = 0;
   const auto constMScaledFeatures = mScaledFeatures;
@@ -389,8 +377,8 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
     while ( !vertex.isEmpty() )
     {
       // for to maintain feature position use the center of the feature bbox and not the whole selection
-      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * (scale-1) );
-      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * (scale-1) );
+      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * (scale - 1) );
+      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * (scale - 1) );
 
       mLayer->moveVertex( newX, newY, id, i );
       i = i + 1;
@@ -398,11 +386,6 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
     }
 
   }
-
-  // double anchorX = vertex.x() + ( ( vertex.x() - anchorPoint.x() ) * scale );
-  // double anchorY = vertex.x() + ( ( vertex.x() - anchorPoint.x() ) * scale );
-
-  // mAnchorPoint->setCenter( QgsPointXY( anchorX, anchorY ) );
 
   deleteScalingWidget();
   deleteRubberband();
@@ -439,11 +422,9 @@ void QgsMapToolScaleFeature::activate()
     mExtent = mLayer->boundingBoxOfSelected();
     mFeatureCenter = mExtent.center();
 
-
     mAnchorPoint = qgis::make_unique<QgsVertexMarker>( mCanvas );
     mAnchorPoint->setIconType( QgsVertexMarker::ICON_CROSS );
     mAnchorPoint->setCenter( mFeatureCenter );
-    //mCenterPoint = mFeatureCente;//toCanvasCoordinates(
   }
   QgsMapTool::activate();
 }
