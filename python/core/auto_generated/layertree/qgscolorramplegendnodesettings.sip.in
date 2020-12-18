@@ -163,6 +163,20 @@ Sets the ``suffix`` to show after legend text.
 .. seealso:: :py:func:`setPrefix`
 %End
 
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used to render text in the legend item.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used to render text in the legend item.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
 };
 
 /************************************************************************

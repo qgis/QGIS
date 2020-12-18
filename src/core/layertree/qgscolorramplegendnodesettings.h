@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include "qgstextformat.h"
 #include <QString>
 #include <memory>
 
@@ -169,6 +170,20 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      */
     void setSuffix( const QString &suffix );
 
+    /**
+     * Returns the text format used to render text in the legend item.
+     *
+     * \see setTextFormat()
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Sets the text \a format used to render text in the legend item.
+     *
+     * \see textFormat()
+     */
+    void setTextFormat( const QgsTextFormat &format );
+
   private:
     QString mMinimumLabel;
     QString mMaximumLabel;
@@ -176,6 +191,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
     QString mSuffix;
     Direction mDirection = MinimumToMaximum;
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
+    QgsTextFormat mTextFormat;
 };
 
 #endif // QGSCOLORRAMPLEGENDNODESETTINGS_H

@@ -32,6 +32,7 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRa
   , mSuffix( other.mSuffix )
   , mDirection( other.mDirection )
   , mNumericFormat( other.numericFormat()->clone() )
+  , mTextFormat( other.textFormat() )
 {
 
 }
@@ -44,6 +45,7 @@ QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const
   mSuffix = other.mSuffix;
   mDirection = other.mDirection;
   mNumericFormat.reset( other.numericFormat()->clone() );
+  mTextFormat = other.mTextFormat;
   return *this;
 }
 
@@ -103,6 +105,11 @@ void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &e
   mNumericFormat->writeXml( numericFormatElem, doc, context );
   settingsElement.appendChild( numericFormatElem );
 
+  if ( mTextFormat.isValid() )
+  {
+    settingsElement.appendChild( mTextFormat.writeXml( doc, context ) );
+  }
+
   element.appendChild( settingsElement );
 }
 
@@ -122,6 +129,15 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
     {
       QDomElement numericFormatElem = numericFormatNodeList.at( 0 ).toElement();
       mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElem, context ) );
+    }
+
+    if ( !settingsElement.firstChildElement( QStringLiteral( "text-style" ) ).isNull() )
+    {
+      mTextFormat.readXml( settingsElement, context );
+    }
+    else
+    {
+      mTextFormat = QgsTextFormat();
     }
   }
 }
@@ -144,4 +160,14 @@ QString QgsColorRampLegendNodeSettings::suffix() const
 void QgsColorRampLegendNodeSettings::setSuffix( const QString &suffix )
 {
   mSuffix = suffix;
+}
+
+QgsTextFormat QgsColorRampLegendNodeSettings::textFormat() const
+{
+  return mTextFormat;
+}
+
+void QgsColorRampLegendNodeSettings::setTextFormat( const QgsTextFormat &format )
+{
+  mTextFormat = format;
 }

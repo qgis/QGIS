@@ -30,7 +30,8 @@ from qgis.core import (QgsGradientColorRamp,
                        QgsColorRampLegendNodeSettings,
                        QgsBearingNumericFormat,
                        QgsReadWriteContext,
-                       QgsBasicNumericFormat)
+                       QgsBasicNumericFormat,
+                       QgsTextFormat)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -74,6 +75,12 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         settings.setSuffix('suff')
         self.assertEqual(settings.suffix(), 'suff')
 
+        self.assertFalse(settings.textFormat().isValid())
+        tf = QgsTextFormat()
+        tf.setSize(13)
+        settings.setTextFormat(tf)
+        self.assertEqual(settings.textFormat().size(), 13)
+
         self.assertIsNotNone(settings.numericFormat())
         settings.setNumericFormat(QgsBearingNumericFormat())
         self.assertIsInstance(settings.numericFormat(), QgsBearingNumericFormat)
@@ -85,6 +92,11 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         self.assertIsInstance(settings2.numericFormat(), QgsBearingNumericFormat)
         self.assertEqual(settings2.prefix(), 'pref')
         self.assertEqual(settings2.suffix(), 'suff')
+        self.assertEqual(settings2.textFormat().size(), 13)
+
+        settings2.setTextFormat(QgsTextFormat())
+        settings2a = QgsColorRampLegendNodeSettings(settings2)
+        self.assertFalse(settings2a.textFormat().isValid())
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
@@ -98,6 +110,14 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         self.assertIsInstance(settings3.numericFormat(), QgsBearingNumericFormat)
         self.assertEqual(settings3.prefix(), 'pref')
         self.assertEqual(settings3.suffix(), 'suff')
+        self.assertEqual(settings3.textFormat().size(), 13)
+
+        # no text format
+        elem = doc.createElement('test2')
+        settings2.writeXml(doc, elem, QgsReadWriteContext())
+        settings3a = QgsColorRampLegendNodeSettings()
+        settings3a.readXml(elem, QgsReadWriteContext())
+        self.assertFalse(settings3a.textFormat().isValid())
 
     def test_basic(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -323,6 +343,55 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         p.end()
 
         self.assertTrue(self.imageCheck('color_ramp_legend_node_prefix_suffix_draw', 'color_ramp_legend_node_prefix_suffix_draw', image))
+
+    def test_draw_text_format(self):
+        r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
+
+        # need a layer in order to make legend nodes
+        layer = QgsVectorLayer('dummy', 'test', 'memory')
+        layer_tree_layer = QgsLayerTreeLayer(layer)
+
+        settings = QgsColorRampLegendNodeSettings()
+        tf = QgsTextFormat()
+        tf.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        tf.setSize(30)
+        tf.setColor(QColor(200, 100, 50))
+        settings.setTextFormat(tf)
+        node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
+
+        ls = QgsLegendSettings()
+        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+
+        item_context = QgsLayerTreeModelLegendNode.ItemContext()
+
+        image = QImage(400, 250, QImage.Format_ARGB32)
+        image.fill(QColor(255, 255, 255))
+
+        p = QPainter(image)
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(1, 10, 1, 10))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(p)
+        context.setScaleFactor(150 / 25.4)  # 150 DPI
+
+        p.scale(context.scaleFactor(), context.scaleFactor())
+
+        item_context.context = context
+        item_context.painter = p
+        item_context.top = 1
+        item_context.columnLeft = 3
+        item_context.columnRight = 30
+        item_context.patchSize = QSizeF(12, 40)
+
+        symbol_size = node.drawSymbol(ls, item_context, 0)
+        node.drawSymbolText(ls, item_context, symbol_size)
+        p.end()
+
+        self.assertTrue(self.imageCheck('color_ramp_legend_node_text_format_draw', 'color_ramp_legend_node_text_format_draw', image))
 
     def imageCheck(self, name, reference_image, image, size_tolerance=0):
         TestQgsColorRampLegendNode.report += "<h2>Render {}</h2>\n".format(name)
