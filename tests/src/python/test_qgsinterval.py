@@ -266,8 +266,11 @@ class TestQgsInterval(unittest.TestCase):
         self.assertEqual(i.originalDuration(), 1.0)
         self.assertEqual(i.originalUnit(), QgsUnitTypes.TemporalSeconds)
         i = QgsInterval(0, 0, 0, 0, 0, 0, 0)
+
+        # we may as well treat this the same as if 0 seconds was explicitly specified!
         self.assertEqual(i.originalDuration(), 0.0)
-        self.assertEqual(i.originalUnit(), QgsUnitTypes.TemporalUnknownUnit)
+        self.assertEqual(i.originalUnit(), QgsUnitTypes.TemporalSeconds)
+
         i = QgsInterval(0, 0, 0, 0, 0, 1, 1)
         self.assertEqual(i.originalDuration(), 0.0)
         self.assertEqual(i.originalUnit(), QgsUnitTypes.TemporalUnknownUnit)
