@@ -151,9 +151,12 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
     {
       QList< QList<QPolygonF> > res;
       const QgsGeometry patch = geom;
-      for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
+      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
       {
-        res << ( QList< QPolygonF >() << curveToPolygonF( qgsgeometry_cast< const QgsCurve * >( *it ) ) );
+        for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
+        {
+          res << ( QList< QPolygonF >() << curveToPolygonF( qgsgeometry_cast< const QgsCurve * >( *it ) ) );
+        }
       }
       return res;
     }
