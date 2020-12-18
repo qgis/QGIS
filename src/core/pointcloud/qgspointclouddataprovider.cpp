@@ -19,6 +19,11 @@
 #include "qgspointclouddataprovider.h"
 #include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudrequest.h"
+#include "qgslogger.h"
+#include "qgscircle.h"
 #include <mutex>
 
 QgsPointCloudDataProvider::QgsPointCloudDataProvider(
@@ -175,4 +180,95 @@ QVariantList QgsPointCloudDataProvider::metadataClasses( const QString & ) const
 QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, const QVariant &, QgsStatisticalSummary::Statistic ) const
 {
   return QVariant();
+}
+
+QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
+                                QgsPointCloudLayer *layer,
+                                float maximumError,
+                                float rootErrorPixels,
+                                QgsGeometry extentGeometry,
+                                const QgsDoubleRange extentZRange )
+{
+  QVector<QMap<QString, QVariant>> acceptedPoints;
+
+  QgsPointCloudIndex *index = this->index();
+  const IndexedPointCloudNode root = index->root();
+
+
+  QgsPointCloudLayerElevationProperties *properties = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
+  QgsRenderContext renderContext;
+
+  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maximumError, rootErrorPixels, extentGeometry, extentZRange );
+
+  QgsPointCloudAttributeCollection attributeCollection = index->attributes();
+  QgsPointCloudRequest request;
+  request.setAttributes( attributeCollection );
+
+  QgsPointCloudRenderContext context( renderContext, index->scale(), index->offset(), properties->zScale(), properties->zOffset() );
+  int pointCount = 0;
+
+  for ( const IndexedPointCloudNode &n : nodes )
+  {
+    std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( n, request ) );
+
+    if ( !block )
+      continue;
+
+    const char *ptr = block->data();
+    QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+    const std::size_t recordSize = blockAttributes.pointRecordSize();
+    context.setAttributes( block->attributes() );
+    for ( int i = 0; i < block->pointCount(); ++i )
+    {
+      double x, y, z;
+      pointXY( context, ptr, i, x, y );
+      z = pointZ( context, ptr, i );
+      QgsPointXY pointXY( x, y );
+
+      if ( extentGeometry.contains( &pointXY ) && extentZRange.contains( z ) )
+      {
+        QMap<QString, QVariant> pointAttr = context.attributeMap( ptr, i * recordSize, blockAttributes );
+        pointAttr[ QStringLiteral( "X" ) ] = x;
+        pointAttr[ QStringLiteral( "Y" ) ] = y;
+        pointAttr[ QStringLiteral( "Z" ) ] = z;
+        acceptedPoints.push_back( pointAttr );
+      }
+    }
+    pointCount += block->pointCount();
+  }
+
+  return acceptedPoints;
+}
+
+QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
+  const QgsPointCloudIndex *pc,
+  IndexedPointCloudNode n,
+  float maxErrorPixels,
+  float nodeErrorPixels,
+  const QgsGeometry &extentGeometry,
+  const QgsDoubleRange extentZRange )
+{
+  QVector<IndexedPointCloudNode> nodes;
+
+  const QgsDoubleRange nodeZRange = pc->nodeZRange( n );
+  if ( !extentZRange.overlaps( nodeZRange ) )
+    return nodes;
+
+  if ( !extentGeometry.intersects( pc->nodeMapExtent( n ) ) )
+    return nodes;
+
+  nodes.append( n );
+
+  float childrenErrorPixels = nodeErrorPixels / 2.0f;
+  if ( childrenErrorPixels < maxErrorPixels )
+    return nodes;
+
+  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
+  for ( const IndexedPointCloudNode &nn : children )
+  {
+    if ( extentGeometry.intersects( pc->nodeMapExtent( nn ) ) )
+      nodes += traverseTree( pc, nn, maxErrorPixels, childrenErrorPixels, extentGeometry, extentZRange );
+  }
+
+  return nodes;
 }

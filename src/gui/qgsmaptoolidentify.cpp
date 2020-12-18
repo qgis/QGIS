@@ -507,13 +507,15 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
 bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
-// TODO: decide how to do the coordinates transform properly (Currently things just work but not 100% if this is the right way)
-//  QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
-//  if ( ct.isValid() )
-//    geometry.transform( ct );
+  QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+
+  QgsGeometry transformedGeometry = geometry;
+  if ( ct.isValid() )
+    transformedGeometry.transform( ct );
+
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
-  QgsPointCloudLayerRenderer *renderer = dynamic_cast<QgsPointCloudLayerRenderer *>( layer->createMapRenderer( context ) );
-  QVector<QMap<QString, QVariant>> points = renderer->identify( geometry, identifyContext );
+  QgsPointCloudRenderer *renderer = layer->renderer();
+  QVector<QMap<QString, QVariant>> points = renderer->identify( layer, context, transformedGeometry );
   int id = 0;
   for ( QMap<QString, QVariant> pt : points )
   {

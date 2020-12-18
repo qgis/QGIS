@@ -28,6 +28,7 @@
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
+class QgsPointCloudLayer;
 
 /**
  * \ingroup core
@@ -334,6 +335,8 @@ class CORE_EXPORT QgsPointCloudRenderer
      * Renders a \a block of point cloud data using the specified render \a context.
      */
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
+
+    QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, QgsRenderContext context,  const QgsGeometry &geometry );
 
     /**
      * Checks whether the point holding \a pointAttributes attributes will be rendered

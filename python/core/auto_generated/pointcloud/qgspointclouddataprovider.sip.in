@@ -56,6 +56,13 @@ Ctor
 
     ~QgsPointCloudDataProvider();
 
+    QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, float maximumError, float rootErrorPixels, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange );
+%Docstring
+Returns the list of points of the point cloud layer ``layer`` according to a zoom level
+defined by ``maximumError`` and ``rootErrorPixels``, and an extent defined by a geometry
+in the 2D plane ``geometry`` and a range for z values ``extentZRange``
+%End
+
     virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities for the data provider.
@@ -238,6 +245,7 @@ Returns the map of LAS data format ID to translated string value.
 %Docstring
 Emitted when point cloud generation state is changed
 %End
+
 };
 
 /************************************************************************

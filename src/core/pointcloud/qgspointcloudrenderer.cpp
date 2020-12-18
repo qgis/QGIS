@@ -19,6 +19,10 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayerelevationproperties.h"
+#include "qgslogger.h"
 
 QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset )
   : mRenderContext( context )
@@ -188,6 +192,51 @@ QgsPointCloudRenderer::PointSymbol QgsPointCloudRenderer::pointSymbol() const
 void QgsPointCloudRenderer::setPointSymbol( PointSymbol symbol )
 {
   mPointSymbol = symbol;
+}
+
+QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, QgsRenderContext renderContext, const QgsGeometry &geometry )
+{
+  QVector<QMap<QString, QVariant>> selectedPoints;
+
+  QgsPointCloudIndex *index = layer->dataProvider()->index();
+  const IndexedPointCloudNode root = index->root();
+  QgsPointCloudLayerElevationProperties *properties = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
+  QgsPointCloudRenderContext context( renderContext, index->scale(), index->offset(), properties->zScale(), properties->zOffset() );
+
+  const float maximumError = context.renderContext().convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
+
+  const QgsRectangle rootNodeExtentLayerCoords = index->nodeMapExtent( root );
+  QgsRectangle rootNodeExtentMapCoords;
+  try
+  {
+    rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+    rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+  }
+
+  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span(); // in map coords
+
+  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
+  if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
+  {
+    QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
+    return selectedPoints;
+  }
+
+  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+
+  QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( layer, maximumError, rootErrorPixels, geometry, QgsDoubleRange() );
+
+  for ( QMap<QString, QVariant> point : points )
+  {
+    if ( this->willRenderPoint( point ) )
+      selectedPoints.push_back( point );
+  }
+
+  return selectedPoints;
 }
 
 
