@@ -202,6 +202,10 @@ Renders a ``block`` of point cloud data using the specified render ``context``.
 %End
 
     QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, QgsRenderContext context,  const QgsGeometry &geometry );
+%Docstring
+Returns the list of points of the point cloud layer ``layer`` and an extent defined by
+a geometry in the 2D plane ``geometry`` and a range for z values ``extentZRange``
+%End
 
     virtual bool willRenderPoint( const QMap<QString, QVariant> &pointAttributes );
 %Docstring
