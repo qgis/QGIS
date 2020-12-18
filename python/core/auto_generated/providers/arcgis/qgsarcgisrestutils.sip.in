@@ -22,7 +22,6 @@ Utility functions for working with ArcGIS REST services.
 %End
   public:
 
-
     static QVariant::Type convertFieldType( const QString &type );
 %Docstring
 Converts an ESRI REST field ``type`` to a QVariant type.
@@ -98,8 +97,6 @@ Converts an ESRI fill ``style`` to a Qt brush style.
 %Docstring
 Converts a date time ``value`` to a QDateTime.
 %End
-
-
 
 };
 
