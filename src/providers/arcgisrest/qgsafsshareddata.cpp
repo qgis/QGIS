@@ -105,7 +105,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
       // date/datetime fields must be converted
       if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
-        attribute = QgsArcGisRestUtils::parseDateTime( attribute );
+        attribute = QgsArcGisRestUtils::convertDateTime( attribute );
 
       if ( !mFields.at( idx ).convertCompatible( attribute ) )
       {
@@ -124,8 +124,8 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
     // Set geometry
     const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-    std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
-        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
+    std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
+        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) ) );
     // Above might return 0, which is OK since in theory empty geometries are allowed
     if ( geometry )
       feature.setGeometry( QgsGeometry( std::move( geometry ) ) );

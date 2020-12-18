@@ -27,6 +27,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "geometry/qgsmultisurface.h"
+#include "qgsmulticurve.h"
 
 #include <QObject>
 
@@ -80,22 +81,22 @@ void TestQgsArcGisRestUtils::cleanupTestCase()
 
 void TestQgsArcGisRestUtils::testMapEsriFieldType()
 {
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeInteger" ) ), QVariant::LongLong );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeSmallInteger" ) ), QVariant::Int );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QVariant::Double );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QVariant::Double );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeString" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::DateTime );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QVariant::LongLong );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QVariant::ByteArray );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeRaster" ) ), QVariant::ByteArray );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeGUID" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeXML" ) ), QVariant::String );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeInteger" ) ), QVariant::LongLong );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSmallInteger" ) ), QVariant::Int );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QVariant::Double );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QVariant::Double );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeString" ) ), QVariant::String );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::DateTime );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QVariant::LongLong );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QVariant::ByteArray );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QVariant::String );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeRaster" ) ), QVariant::ByteArray );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGUID" ) ), QVariant::String );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeXML" ) ), QVariant::String );
 
   // not valid fields
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeGeometry" ) ), QVariant::Invalid );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "xxx" ) ), QVariant::Invalid );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGeometry" ) ), QVariant::Invalid );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "xxx" ) ), QVariant::Invalid );
 }
 
 void TestQgsArcGisRestUtils::testParseSpatialReference()
@@ -105,7 +106,7 @@ void TestQgsArcGisRestUtils::testParseSpatialReference()
     QStringLiteral( "wkt" ),
     QStringLiteral( "PROJCS[\"NewJTM\",GEOGCS[\"GCS_ETRF_1989\",DATUM[\"D_ETRF_1989\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",40000.0],PARAMETER[\"False_Northing\",70000.0],PARAMETER[\"Central_Meridian\",-2.135],PARAMETER[\"Scale_Factor\",0.9999999],PARAMETER[\"Latitude_Of_Origin\",49.225],UNIT[\"Meter\",1.0]]" ) );
 
-  QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( map );
+  QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( map );
   QVERIFY( crs.isValid() );
 
 #if PROJ_VERSION_MAJOR>=6
@@ -117,15 +118,15 @@ void TestQgsArcGisRestUtils::testParseSpatialReference()
 
 void TestQgsArcGisRestUtils::testMapEsriGeometryType()
 {
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryNull" ) ), QgsWkbTypes::Unknown );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryPoint" ) ), QgsWkbTypes::Point );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryMultipoint" ) ), QgsWkbTypes::MultiPoint );
+  QCOMPARE( QgsArcGisRestUtils::convertGeometryType( QStringLiteral( "esriGeometryNull" ) ), QgsWkbTypes::Unknown );
+  QCOMPARE( QgsArcGisRestUtils::convertGeometryType( QStringLiteral( "esriGeometryPoint" ) ), QgsWkbTypes::Point );
+  QCOMPARE( QgsArcGisRestUtils::convertGeometryType( QStringLiteral( "esriGeometryMultipoint" ) ), QgsWkbTypes::MultiPoint );
   //unsure why this maps to multicurve and not multilinestring
   //QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral("esriGeometryPolyline") ),QgsWkbTypes::MultiCurve );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryPolygon" ) ), QgsWkbTypes::MultiPolygon );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "esriGeometryEnvelope" ) ), QgsWkbTypes::Polygon );
+  QCOMPARE( QgsArcGisRestUtils::convertGeometryType( QStringLiteral( "esriGeometryPolygon" ) ), QgsWkbTypes::MultiPolygon );
+  QCOMPARE( QgsArcGisRestUtils::convertGeometryType( QStringLiteral( "esriGeometryEnvelope" ) ), QgsWkbTypes::Polygon );
 
-  QCOMPARE( QgsArcGisRestUtils::mapEsriGeometryType( QStringLiteral( "xxx" ) ), QgsWkbTypes::Unknown );
+  QCOMPARE( QgsArcGisRestUtils::convertGeometryType( QStringLiteral( "xxx" ) ), QgsWkbTypes::Unknown );
 }
 
 void TestQgsArcGisRestUtils::testParseEsriGeometryPolygon()
@@ -138,43 +139,43 @@ void TestQgsArcGisRestUtils::testParseEsriGeometryPolygon()
                                      "]"
                                      "}" );
   QCOMPARE( map[QStringLiteral( "rings" )].isValid(), true );
-  std::unique_ptr<QgsMultiSurface> geometry = QgsArcGisRestUtils::parseEsriGeometryPolygon( map, QgsWkbTypes::Point );
+  std::unique_ptr<QgsMultiSurface> geometry = QgsArcGisRestUtils::convertGeometryPolygon( map, QgsWkbTypes::Point );
   QVERIFY( geometry.get() );
   QCOMPARE( geometry->asWkt(), QStringLiteral( "MultiSurface (CurvePolygon (CompoundCurve ((0 0, 10 0, 10 10, 0 10, 0 0)),CompoundCurve ((3 3, 9 3, 6 9, 3 3))),CurvePolygon (CompoundCurve ((12 0, 13 0, 13 10, 12 10, 12 0))))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParseEsriFillStyle()
 {
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSBackwardDiagonal" ) ), Qt::BDiagPattern );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSCross" ) ), Qt::CrossPattern );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSDiagonalCross" ) ), Qt::DiagCrossPattern );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSForwardDiagonal" ) ), Qt::FDiagPattern );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSHorizontal" ) ), Qt::HorPattern );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSNull" ) ), Qt::NoBrush );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSSolid" ) ), Qt::SolidPattern );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "esriSFSVertical" ) ), Qt::VerPattern );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriFillStyle( QStringLiteral( "xxx" ) ), Qt::SolidPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSBackwardDiagonal" ) ), Qt::BDiagPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSCross" ) ), Qt::CrossPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSDiagonalCross" ) ), Qt::DiagCrossPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSForwardDiagonal" ) ), Qt::FDiagPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSHorizontal" ) ), Qt::HorPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSNull" ) ), Qt::NoBrush );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSSolid" ) ), Qt::SolidPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "esriSFSVertical" ) ), Qt::VerPattern );
+  QCOMPARE( QgsArcGisRestUtils::convertFillStyle( QStringLiteral( "xxx" ) ), Qt::SolidPattern );
 }
 
 void TestQgsArcGisRestUtils::testParseEsriLineStyle()
 {
-  QCOMPARE( QgsArcGisRestUtils::parseEsriLineStyle( QStringLiteral( "esriSLSSolid" ) ), Qt::SolidLine );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriLineStyle( QStringLiteral( "esriSLSDash" ) ), Qt::DashLine );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriLineStyle( QStringLiteral( "esriSLSDashDot" ) ), Qt::DashDotLine );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriLineStyle( QStringLiteral( "esriSLSDashDotDot" ) ), Qt::DashDotDotLine );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriLineStyle( QStringLiteral( "esriSLSDot" ) ), Qt::DotLine );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriLineStyle( QStringLiteral( "esriSLSNull" ) ), Qt::NoPen );
-  QCOMPARE( QgsArcGisRestUtils::parseEsriLineStyle( QStringLiteral( "xxx" ) ), Qt::SolidLine );
+  QCOMPARE( QgsArcGisRestUtils::convertLineStyle( QStringLiteral( "esriSLSSolid" ) ), Qt::SolidLine );
+  QCOMPARE( QgsArcGisRestUtils::convertLineStyle( QStringLiteral( "esriSLSDash" ) ), Qt::DashLine );
+  QCOMPARE( QgsArcGisRestUtils::convertLineStyle( QStringLiteral( "esriSLSDashDot" ) ), Qt::DashDotLine );
+  QCOMPARE( QgsArcGisRestUtils::convertLineStyle( QStringLiteral( "esriSLSDashDotDot" ) ), Qt::DashDotDotLine );
+  QCOMPARE( QgsArcGisRestUtils::convertLineStyle( QStringLiteral( "esriSLSDot" ) ), Qt::DotLine );
+  QCOMPARE( QgsArcGisRestUtils::convertLineStyle( QStringLiteral( "esriSLSNull" ) ), Qt::NoPen );
+  QCOMPARE( QgsArcGisRestUtils::convertLineStyle( QStringLiteral( "xxx" ) ), Qt::SolidLine );
 }
 
 void TestQgsArcGisRestUtils::testParseEsriColorJson()
 {
-  QVERIFY( !QgsArcGisRestUtils::parseEsriColorJson( QString( "x" ) ).isValid() );
-  QVERIFY( !QgsArcGisRestUtils::parseEsriColorJson( QVariantList() ).isValid() );
-  QVERIFY( !QgsArcGisRestUtils::parseEsriColorJson( QVariantList() << 1 ).isValid() );
-  QVERIFY( !QgsArcGisRestUtils::parseEsriColorJson( QVariantList() << 10 << 20 ).isValid() );
-  QVERIFY( !QgsArcGisRestUtils::parseEsriColorJson( QVariantList() << 10 << 20 << 30 ).isValid() );
-  QColor res = QgsArcGisRestUtils::parseEsriColorJson( QVariantList() << 10 << 20 << 30 << 40 );
+  QVERIFY( !QgsArcGisRestUtils::convertColor( QString( "x" ) ).isValid() );
+  QVERIFY( !QgsArcGisRestUtils::convertColor( QVariantList() ).isValid() );
+  QVERIFY( !QgsArcGisRestUtils::convertColor( QVariantList() << 1 ).isValid() );
+  QVERIFY( !QgsArcGisRestUtils::convertColor( QVariantList() << 10 << 20 ).isValid() );
+  QVERIFY( !QgsArcGisRestUtils::convertColor( QVariantList() << 10 << 20 << 30 ).isValid() );
+  QColor res = QgsArcGisRestUtils::convertColor( QVariantList() << 10 << 20 << 30 << 40 );
   QCOMPARE( res.red(), 10 );
   QCOMPARE( res.green(), 20 );
   QCOMPARE( res.blue(), 30 );
@@ -206,7 +207,7 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
                                      "\"width\": 5"
                                      "}"
                                      "}" );
-  std::unique_ptr<QgsSymbol> symbol = QgsArcGisRestUtils::parseEsriSymbolJson( map );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
   QgsMarkerSymbol *marker = dynamic_cast< QgsMarkerSymbol * >( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -241,7 +242,7 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
                                      "\"xoffset\": 7,"
                                      "\"yoffset\": 17"
                                      "}" );
-  std::unique_ptr<QgsSymbol> symbol = QgsArcGisRestUtils::parseEsriSymbolJson( map );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
   QgsMarkerSymbol *marker = dynamic_cast< QgsMarkerSymbol * >( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
@@ -273,7 +274,7 @@ void TestQgsArcGisRestUtils::testParseLineSymbol()
                                      "],"
                                      "\"width\": 7"
                                      "}" );
-  std::unique_ptr<QgsSymbol> symbol = QgsArcGisRestUtils::parseEsriSymbolJson( map );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
   QgsLineSymbol *line = dynamic_cast< QgsLineSymbol * >( symbol.get() );
   QVERIFY( line );
   QCOMPARE( line->symbolLayerCount(), 1 );
@@ -312,7 +313,7 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
                                      "\"width\": 5"
                                      "}"
                                      "}" );
-  std::unique_ptr<QgsSymbol> symbol = QgsArcGisRestUtils::parseEsriSymbolJson( map );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
   QgsFillSymbol *fill = dynamic_cast< QgsFillSymbol * >( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 1 );
@@ -349,7 +350,7 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
                                      "\"width\": 5"
                                      "}"
                                      "}" );
-  std::unique_ptr<QgsSymbol> symbol = QgsArcGisRestUtils::parseEsriSymbolJson( map );
+  std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
   QgsFillSymbol *fill = dynamic_cast< QgsFillSymbol * >( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 2 );
@@ -396,7 +397,7 @@ void TestQgsArcGisRestUtils::testParseRendererSimple()
                                      "}"
                                      "}"
                                      "}" );
-  std::unique_ptr< QgsFeatureRenderer > renderer( QgsArcGisRestUtils::parseEsriRenderer( map ) );
+  std::unique_ptr< QgsFeatureRenderer > renderer( QgsArcGisRestUtils::convertRenderer( map ) );
   QgsSingleSymbolRenderer *ssRenderer = dynamic_cast< QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   QVERIFY( ssRenderer->symbol() );
@@ -468,7 +469,7 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
                                      "}"
                                      "]"
                                      "}" );
-  std::unique_ptr< QgsFeatureRenderer > renderer( QgsArcGisRestUtils::parseEsriRenderer( map ) );
+  std::unique_ptr< QgsFeatureRenderer > renderer( QgsArcGisRestUtils::convertRenderer( map ) );
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast< QgsCategorizedSymbolRenderer *>( renderer.get() );
   QVERIFY( catRenderer );
   QCOMPARE( catRenderer->categories().count(), 2 );
@@ -560,7 +561,7 @@ void TestQgsArcGisRestUtils::testParseLabeling()
                                      "}"
                                      "]"
                                      "}" );
-  std::unique_ptr< QgsAbstractVectorLayerLabeling > labeling( QgsArcGisRestUtils::parseEsriLabeling( map.value( QStringLiteral( "labelingInfo" ) ).toList() ) );
+  std::unique_ptr< QgsAbstractVectorLayerLabeling > labeling( QgsArcGisRestUtils::convertLabeling( map.value( QStringLiteral( "labelingInfo" ) ).toList() ) );
   QVERIFY( labeling );
   QgsRuleBasedLabeling *rules = dynamic_cast< QgsRuleBasedLabeling *>( labeling.get() );
   QVERIFY( rules );
@@ -611,7 +612,7 @@ QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) con
 void TestQgsArcGisRestUtils::testParseCompoundCurve()
 {
   QVariantMap map = jsonStringToMap( "{\"curvePaths\": [[[6,3],[5,3],{\"c\": [[3,3],[1,4]]}]]}" );
-  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::parseEsriGeometryPolyline( map, QgsWkbTypes::Point ) );
+  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, QgsWkbTypes::Point ) );
   QVERIFY( curve );
   // FIXME: the final linestring with one single point (1 4) is wrong !
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3),CircularString (5 3, 3 3, 1 4),(1 4)))" ) );
