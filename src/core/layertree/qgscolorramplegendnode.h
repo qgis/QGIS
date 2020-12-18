@@ -99,6 +99,8 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
     void setSettings( const QgsColorRampLegendNodeSettings &settings );
 
   private:
+    void init( QgsLayerTreeLayer *nodeLayer );
+
     QString labelForMinimum() const;
     QString labelForMaximum() const;
 

@@ -33,6 +33,7 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRa
   , mDirection( other.mDirection )
   , mNumericFormat( other.numericFormat()->clone() )
   , mTextFormat( other.textFormat() )
+  , mOrientation( other.mOrientation )
 {
 
 }
@@ -46,6 +47,7 @@ QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const
   mDirection = other.mDirection;
   mNumericFormat.reset( other.numericFormat()->clone() );
   mTextFormat = other.mTextFormat;
+  mOrientation = other.mOrientation;
   return *this;
 }
 
@@ -100,6 +102,7 @@ void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &e
   settingsElement.setAttribute( QStringLiteral( "prefix" ), mPrefix );
   settingsElement.setAttribute( QStringLiteral( "suffix" ), mSuffix );
   settingsElement.setAttribute( QStringLiteral( "direction" ), static_cast< int >( mDirection ) );
+  settingsElement.setAttribute( QStringLiteral( "orientation" ), static_cast< int >( mOrientation ) );
 
   QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
   mNumericFormat->writeXml( numericFormatElem, doc, context );
@@ -123,6 +126,7 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
     mPrefix = settingsElement.attribute( QStringLiteral( "prefix" ) );
     mSuffix = settingsElement.attribute( QStringLiteral( "suffix" ) );
     mDirection = static_cast<  QgsColorRampLegendNodeSettings::Direction >( settingsElement.attribute( QStringLiteral( "direction" ) ).toInt() );
+    mOrientation = static_cast<  Qt::Orientation >( settingsElement.attribute( QStringLiteral( "orientation" ), QString::number( Qt::Vertical ) ).toInt() );
 
     QDomNodeList numericFormatNodeList = settingsElement.elementsByTagName( QStringLiteral( "numericFormat" ) );
     if ( !numericFormatNodeList.isEmpty() )
@@ -170,4 +174,14 @@ QgsTextFormat QgsColorRampLegendNodeSettings::textFormat() const
 void QgsColorRampLegendNodeSettings::setTextFormat( const QgsTextFormat &format )
 {
   mTextFormat = format;
+}
+
+Qt::Orientation QgsColorRampLegendNodeSettings::orientation() const
+{
+  return mOrientation;
+}
+
+void QgsColorRampLegendNodeSettings::setOrientation( Qt::Orientation orientation )
+{
+  mOrientation = orientation;
 }

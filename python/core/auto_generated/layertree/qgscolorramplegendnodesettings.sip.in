@@ -44,6 +44,8 @@ Copy constructor
 Returns the direction of the ramp.
 
 .. seealso:: :py:func:`setDirection`
+
+.. seealso:: :py:func:`orientation`
 %End
 
     void setDirection( QgsColorRampLegendNodeSettings::Direction direction );
@@ -51,6 +53,8 @@ Returns the direction of the ramp.
 Sets the ``direction`` of the ramp.
 
 .. seealso:: :py:func:`direction`
+
+.. seealso:: :py:func:`setOrientation`
 %End
 
     QString minimumLabel() const;
@@ -175,6 +179,24 @@ Returns the text format used to render text in the legend item.
 Sets the text ``format`` used to render text in the legend item.
 
 .. seealso:: :py:func:`textFormat`
+%End
+
+    Qt::Orientation orientation() const;
+%Docstring
+Returns the ramp orientation (i.e. horizontal or vertical).
+
+.. seealso:: :py:func:`setOrientation`
+
+.. seealso:: :py:func:`direction`
+%End
+
+    void setOrientation( Qt::Orientation orientation );
+%Docstring
+Sets the ramp ``orientation`` (i.e. horizontal or vertical).
+
+.. seealso:: :py:func:`orientation`
+
+.. seealso:: :py:func:`setDirection`
 %End
 
 };

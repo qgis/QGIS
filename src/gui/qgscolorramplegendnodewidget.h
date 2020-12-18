@@ -67,6 +67,7 @@ class GUI_EXPORT QgsColorRampLegendNodeWidget: public QgsPanelWidget, private Ui
 
     void onChanged();
     void changeNumberFormat();
+    void onOrientationChanged();
 
   private:
 
