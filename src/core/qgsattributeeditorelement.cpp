@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsattributeeditorelement.h"
 #include "qgsrelationmanager.h"
+#include "qgsxmlutils.h"
 
 
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
@@ -118,6 +119,11 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   QDomElement elem = doc.createElement( typeIdentifier() );
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
+
+  QDomElement elemConfig = QgsXmlUtils::writeVariant( mConfig, doc );
+  elemConfig.setTagName( QStringLiteral( "config" ) );
+  elem.appendChild( elemConfig );
+
   saveConfiguration( elem );
   return elem;
 }
@@ -132,13 +138,24 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
   mShowLabel = showLabel;
 }
 
+QVariantMap QgsAttributeEditorElement::config() const
+{
+  return mConfig;
+}
+
+void QgsAttributeEditorElement::setConfig( const QVariantMap &config )
+{
+  mConfig = config;
+}
+
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
 {
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
-  elem.setAttribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( mButtons ) );
+  elem.setAttribute( QStringLiteral( "buttons" ), mConfig.value( QStringLiteral( "buttons" ) ).toString() );
   elem.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), mForceSuppressFormPopup );
   elem.setAttribute( QStringLiteral( "nmRelationId" ), mNmRelationId.toString() );
   elem.setAttribute( QStringLiteral( "label" ), mLabel );
+  elem.setAttribute( QStringLiteral( "relationWidgetTypeId" ), mRelationWidgetTypeId );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
@@ -209,6 +226,16 @@ void QgsAttributeEditorRelation::setLabel( const QString &label )
 QString QgsAttributeEditorRelation::label() const
 {
   return mLabel;
+}
+
+QString QgsAttributeEditorRelation::relationWidgetTypeId() const
+{
+  return mRelationWidgetTypeId;
+}
+
+void QgsAttributeEditorRelation::setRelationWidgetTypeId( const QString &relationWidgetTypeId )
+{
+  mRelationWidgetTypeId = relationWidgetTypeId;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const

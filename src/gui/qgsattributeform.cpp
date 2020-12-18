@@ -1254,7 +1254,12 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
 
 QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context )
 {
-  QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
+  return setupRelationWidgetWrapper( QString(), rel, context );
+}
+
+QgsRelationWidgetWrapper *QgsAttributeForm::setupRelationWidgetWrapper( const QString &relationWidgetTypeId, const QgsRelation &rel, const QgsAttributeEditorContext &context )
+{
+  QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( relationWidgetTypeId, mLayer, rel, nullptr, this );
   const QVariantMap config = mLayer->editFormConfig().widgetConfig( rel.id() );
   rww->setConfig( config );
   rww->setContext( context );
@@ -1943,7 +1948,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
     {
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
-      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
+      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relationWidgetTypeId(), relDef->relation(), context );
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
@@ -1951,7 +1956,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // This needs to be after QgsAttributeFormRelationEditorWidget creation, because the widget
       // does not exists yet until QgsAttributeFormRelationEditorWidget is created and the setters
       // below directly alter the widget and check for it.
-      rww->setVisibleButtons( relDef->visibleButtons() );
+      rww->setWidgetConfig( relDef->config() );
       rww->setShowLabel( relDef->showLabel() );
       rww->setNmRelationId( relDef->nmRelationId() );
       rww->setForceSuppressFormPopup( relDef->forceSuppressFormPopup() );

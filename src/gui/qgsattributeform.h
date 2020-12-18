@@ -415,6 +415,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
 
     QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context );
+    QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QString &relationWidgetTypeId, const QgsRelation &rel, const QgsAttributeEditorContext &context );
 
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;

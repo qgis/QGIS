@@ -135,12 +135,27 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      */
     void setShowLabel( bool showLabel );
 
+    /**
+     * Returns the editor configuration
+     *
+     * \since QGIS 3.18
+     */
+    QVariantMap config() const;
+
+    /**
+     * Sets the editor configuration
+     *
+     * \since QGIS 3.18
+     */
+    void setConfig( const QVariantMap &config );
+
   protected:
 #ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
+    QVariantMap mConfig;
 #endif
 
   private:
@@ -458,14 +473,16 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * Defines the buttons which are shown
      * \since QGIS 3.16
+     * \deprecated since QGIS 3.18 use setConfig() instead
      */
-    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+    Q_DECL_DEPRECATED void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
 
     /**
      * Returns the buttons which are shown
      * \since QGIS 3.16
+     * \deprecated since QGIS 3.18 use setConfig() instead
      */
-    QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
 
     /**
      * Determines the force suppress form popup status.
@@ -507,6 +524,16 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     void setLabel( const QString &label = QString() );
 
+    /**
+     * Returns the current relation widget type id
+     */
+    QString relationWidgetTypeId() const;
+
+    /**
+     * Sets the relation widget type
+     */
+    void setRelationWidgetTypeId( const QString &relationWidgetTypeId );
+
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
@@ -516,6 +543,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;
     QString mLabel;
+    QString mRelationWidgetTypeId;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )

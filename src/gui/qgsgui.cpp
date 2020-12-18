@@ -60,6 +60,7 @@
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgssubsetstringeditorproviderregistry.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
+#include "qgsrelationwidgetregistry.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -75,6 +76,11 @@ QgsNative *QgsGui::nativePlatformInterface()
 QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
 {
   return instance()->mEditorWidgetRegistry;
+}
+
+QgsRelationWidgetRegistry *QgsGui::relationWidgetRegistry()
+{
+  return instance()->mRelationEditorRegistry;
 }
 
 QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
@@ -198,6 +204,7 @@ QgsGui::~QgsGui()
   delete mCodeEditorColorSchemeRegistry;
   delete mSubsetStringEditorProviderRegistry;
   delete mProviderSourceWidgetProviderRegistry;
+  delete mRelationEditorRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -261,6 +268,7 @@ QgsGui::QgsGui()
   mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
+  mRelationEditorRegistry = new QgsRelationWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();

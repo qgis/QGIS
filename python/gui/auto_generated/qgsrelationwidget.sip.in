@@ -1,0 +1,226 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationwidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRelationWidget : QWidget
+{
+%Docstring
+Base class to build new relation widgets.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrelationwidget.h"
+%End
+  public:
+
+
+    QgsRelationWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
+%End
+
+    void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
+%Docstring
+Sets the ``relation`` and the ``feature``
+%End
+
+    void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
+%Docstring
+Set the relation(s) for this widget
+If only one relation is set, it will act as a simple 1:N relation widget
+If both relations are set, it will act as an N:M relation widget
+inserting and deleting entries on the intermediate table as required.
+
+:param relation: Relation referencing the edited table
+:param nmrelation: Optional reference from the referencing table to a 3rd N:M table
+%End
+
+    void setFeature( const QgsFeature &feature, bool update = true );
+%Docstring
+Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``
+%End
+
+    void setEditorContext( const QgsAttributeEditorContext &context );
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referencing feature from this widget
+%End
+
+    QgsAttributeEditorContext editorContext( ) const;
+%Docstring
+Returns the attribute editor context.
+%End
+
+    QgsIFeatureSelectionManager *featureSelectionManager();
+%Docstring
+The feature selection manager is responsible for the selected features
+which are currently being edited.
+%End
+
+    bool showLabel() const;
+%Docstring
+Defines if a title label should be shown for this widget.
+%End
+
+    void setShowLabel( bool showLabel );
+%Docstring
+Defines if a title label should be shown for this widget.
+%End
+
+    QVariant nmRelationId() const;
+%Docstring
+Determines the relation id of the second relation involved in an N:M relation.
+%End
+
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+%Docstring
+Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
+If it's empty, then it's considered as a 1:M relationship.
+%End
+
+    QString label() const;
+%Docstring
+Determines the label of this element
+%End
+
+    void setLabel( const QString &label = QString() );
+%Docstring
+Sets ``label`` for this element
+If it's empty it takes the relation id as label
+%End
+
+    QgsFeature feature() const;
+%Docstring
+Returns the widget's current feature
+%End
+
+    bool forceSuppressFormPopup() const;
+%Docstring
+Determines the force suppress form popup status that is configured for this widget
+%End
+
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Sets force suppress form popup status with ``forceSuppressFormPopup``
+configured for this widget
+%End
+
+    virtual QVariantMap config() const = 0;
+%Docstring
+Returns the widget configuration
+%End
+
+    virtual void setConfig( const QVariantMap &config ) = 0;
+%Docstring
+Defines the widget configuration
+%End
+
+  public slots:
+
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) = 0;
+%Docstring
+Called when an ``attribute`` value in the parent widget has changed to ``newValue``
+%End
+
+  protected slots:
+
+    void toggleEditing( bool state );
+%Docstring
+Toggles editing state of the widget
+%End
+
+    void saveEdits();
+%Docstring
+Saves the current modifications in the relation
+%End
+
+    void addFeature( const QgsGeometry &geometry = QgsGeometry() );
+%Docstring
+Adds a new feature with given ``geometry``
+%End
+
+    void deleteFeature( QgsFeatureId fid = QgsFeatureId() );
+%Docstring
+Delete a feature with given ``fid``
+%End
+
+    void deleteSelectedFeatures();
+%Docstring
+Deletes the currently selected features
+%End
+
+    void linkFeature();
+%Docstring
+Links a new feature to the relation
+%End
+
+    void onLinkFeatureDlgAccepted();
+%Docstring
+Called when the link feature dialog is confirmed by the user
+%End
+
+    void unlinkFeature( QgsFeatureId fid = QgsFeatureId() );
+%Docstring
+Unlinks a feature with given ``fid``
+%End
+
+    void unlinkSelectedFeatures();
+%Docstring
+Unlinks the selected features from the relation
+%End
+
+    void duplicateFeature();
+%Docstring
+Duplicates a feature
+%End
+
+    void zoomToSelectedFeatures();
+%Docstring
+Zooms to the selected features
+%End
+
+  protected:
+
+
+
+
+    void updateTitle();
+%Docstring
+Updates the title contents to reflect the current state of the widget
+%End
+
+    void deleteFeatures( const QgsFeatureIds &fids );
+%Docstring
+Deletes the features with ``fids``
+%End
+
+    void unlinkFeatures( const QgsFeatureIds &fids );
+%Docstring
+Unlinks the features with ``fids``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationwidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

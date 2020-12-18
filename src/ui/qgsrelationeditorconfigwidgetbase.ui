@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsRelationEditorConfigWidgetBase</class>
+ <widget class="QWidget" name="QgsRelationEditorConfigWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>274</width>
+    <height>215</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Attribute Widget Relation Edit Widget</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QCheckBox" name="mRelationShowLinkCheckBox">
+     <property name="text">
+      <string>Show link button</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationShowUnlinkCheckBox">
+     <property name="text">
+      <string>Show unlink button</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationShowSaveChildEditsCheckBox">
+     <property name="text">
+      <string>Show save child layer edits button</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationShowAddChildCheckBox">
+     <property name="text">
+      <string>Add child feature</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationShowDuplicateChildFeatureCheckBox">
+     <property name="text">
+      <string>Duplicate child feature</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationDeleteChildFeatureCheckBox">
+     <property name="text">
+      <string>Delete child feature</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mRelationShowZoomToFeatureCheckBox">
+     <property name="text">
+      <string>Zoom to child feature</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

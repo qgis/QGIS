@@ -1,0 +1,110 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbasicrelationwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsBasicRelationWidget : QgsRelationWidget
+{
+%Docstring
+The default relation widget in QGIS. Successor of the now deprecated {:py:class:`QgsRelationEditorWidget`}.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsbasicrelationwidget.h"
+%End
+  public:
+
+    enum Button
+    {
+      Link,
+      Unlink,
+      SaveChildEdits,
+      AddChildFeature,
+      DuplicateChildFeature,
+      DeleteChildFeature,
+      ZoomToChildFeature,
+      AllButtons
+    };
+    typedef QFlags<QgsBasicRelationWidget::Button> Buttons;
+
+
+    QgsBasicRelationWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
+
+:param config: widget configuration
+:param parent: parent widget
+%End
+
+    void setViewMode( QgsDualView::ViewMode mode );
+%Docstring
+Define the view mode for the dual view
+%End
+
+    QgsDualView::ViewMode viewMode();
+%Docstring
+Gets the view mode for the dual view
+%End
+
+    void setEditorContext( const QgsAttributeEditorContext &context );
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referencing feature from this widget
+%End
+
+    void setVisibleButtons( const Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+%End
+
+    Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+%End
+
+    virtual QVariantMap config() const;
+
+%Docstring
+Returns the current configuration
+%End
+
+    virtual void setConfig( const QVariantMap &config );
+
+%Docstring
+Defines the current configuration
+%End
+
+    virtual void setTitle( const QString &title );
+
+%Docstring
+Sets the title of the root groupbox
+%End
+
+  public slots:
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbasicrelationwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

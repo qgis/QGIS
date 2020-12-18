@@ -1,0 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationwidgetfactory.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRelationWidgetFactory
+{
+%Docstring
+Factory class for creating relation widgets and their corresponding config widgets
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrelationwidgetfactory.h"
+%End
+  public:
+
+    QgsRelationWidgetFactory();
+%Docstring
+Creates a new relation widget factory with given ``name``
+%End
+
+    virtual ~QgsRelationWidgetFactory();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the machine readable identifier name of this widget type
+%End
+
+    virtual QString name() const = 0;
+%Docstring
+Returns the human readable identifier name of this widget type
+%End
+
+    virtual QgsRelationWidget *create( const QVariantMap &config, QWidget *parent = 0 ) const = 0 /Factory/;
+%Docstring
+Override this in your implementation.
+Create a new relation widget. Call :py:func:`QgsEditorWidgetRegistry.create()`
+instead of calling this method directly.
+
+:param config: The widget configuration to build the widget with
+:param parent: The parent for the wrapper class and any created widget.
+
+:return: A new widget wrapper
+%End
+
+    virtual QgsRelationConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const = 0 /Factory/;
+%Docstring
+Override this in your implementation.
+Create a new configuration widget for this widget type.
+
+:param relation: The relation for which the widget will be created
+:param parent: The parent widget of the created config widget
+
+:return: A configuration widget
+%End
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationwidgetfactory.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

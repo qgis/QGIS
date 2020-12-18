@@ -24,6 +24,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 
+
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
   qDeleteAll( mChildren );
@@ -660,20 +661,36 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
     QgsAttributeEditorRelation *relElement = new QgsAttributeEditorRelation( elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
-    if ( elem.hasAttribute( "buttons" ) )
+    QVariantMap config = QgsXmlUtils::readVariant( elem.firstChildElement( "config" ) ).toMap();
+
+    // load defaults
+    if ( config.isEmpty() )
+      config = relElement->config();
+
+    // pre QGIS 3.18 compatibility
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( ! config.contains( QStringLiteral( "buttons" ) ) )
     {
-      QString buttonString = elem.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
-      relElement->setVisibleButtons( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) );
+      if ( elem.hasAttribute( "buttons" ) )
+      {
+        QString buttonString = elem.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
+        relElement->setVisibleButtons( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) );
+        config.insert( "buttons", qgsFlagValueToKeys( relElement->visibleButtons() ) );
+      }
+      else
+      {
+        // pre QGIS 3.16 compatibility
+        QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
+        buttons.setFlag( QgsAttributeEditorRelation::Button::Link, elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
+        buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
+        buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+        config.insert( "buttons", qgsFlagValueToKeys( relElement->visibleButtons() ) );
+      }
     }
-    else
-    {
-      // pre QGIS 3.16 compatibility
-      QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
-      buttons.setFlag( QgsAttributeEditorRelation::Button::Link, elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
-      relElement->setVisibleButtons( buttons );
-    }
+    Q_NOWARN_DEPRECATED_POP
+
+    relElement->setConfig( config );
+
     if ( elem.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
     {
       relElement->setForceSuppressFormPopup( elem.attribute( QStringLiteral( "forceSuppressFormPopup" ) ).toInt() );
@@ -697,6 +714,11 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     {
       QString label = elem.attribute( QStringLiteral( "label" ) );
       relElement->setLabel( label );
+    }
+    if ( elem.hasAttribute( "relationWidgetTypeId" ) )
+    {
+      QString relationWidgetTypeId = elem.attribute( QStringLiteral( "relationWidgetTypeId" ) );
+      relElement->setRelationWidgetTypeId( relationWidgetTypeId );
     }
     newElement = relElement;
   }
