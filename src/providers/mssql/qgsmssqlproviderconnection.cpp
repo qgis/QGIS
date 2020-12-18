@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include <QSqlRecord>
+#include <QSqlField>
 
 #include "qgsmssqlproviderconnection.h"
 #include "qgsmssqlconnection.h"
@@ -213,15 +214,15 @@ void QgsMssqlProviderConnection::dropSchema( const QString &schemaName,  bool fo
                      .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
 }
 
-QList<QVariantList> QgsMssqlProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::executeSqlWithNames( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
   return executeSqlPrivate( sql, true, feedback );
 }
 
-QList<QVariantList> QgsMssqlProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback ) const
 {
-  QList<QVariantList> results;
+  QgsAbstractDatabaseProviderConnection::QueryResult results;
 
   if ( feedback && feedback->isCanceled() )
   {
@@ -264,6 +265,10 @@ QList<QVariantList> QgsMssqlProviderConnection::executeSqlPrivate( const QString
     {
       const QSqlRecord rec { q.record() };
       const int numCols { rec.count() };
+      for ( int idx = 0; idx < numCols; ++idx )
+      {
+        results.columnns.push_back( rec.field( idx ).name() );
+      }
       while ( q.next() && ( ! feedback || ! feedback->isCanceled() ) )
       {
         QVariantList row;
@@ -278,7 +283,7 @@ QList<QVariantList> QgsMssqlProviderConnection::executeSqlPrivate( const QString
             row.push_back( q.value( col ).toString() );
           }
         }
-        results.push_back( row );
+        results.rows.push_back( row );
       }
     }
 
@@ -360,7 +365,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
              .arg( QgsMssqlProvider::quotedValue( schema ) );
   }
 
-  const QList<QVariantList> results { executeSqlPrivate( query, false ) };
+  const QList<QVariantList> results { executeSqlPrivate( query, false ).rows };
   for ( const auto &row : results )
   {
     Q_ASSERT( row.count( ) == 6 );
@@ -394,7 +399,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
       // This may fail for invalid geometries
       try
       {
-        const auto geomColResults { executeSqlPrivate( geomColSql ) };
+        const auto geomColResults { executeSqlPrivate( geomColSql ).rows };
         for ( const auto &row : geomColResults )
         {
           table.addGeometryColumnType( QgsWkbTypes::parseType( row[0].toString() ),
@@ -443,7 +448,7 @@ QStringList QgsMssqlProviderConnection::schemas( ) const
      WHERE u.issqluser = 1
         AND u.name NOT IN ('sys', 'guest', 'INFORMATION_SCHEMA')
     )raw" )};
-  const QList<QVariantList> result { executeSqlPrivate( sql, false ) };
+  const QList<QVariantList> result { executeSqlPrivate( sql, false ).rows };
   for ( const auto &row : result )
   {
     if ( row.size() > 0 )

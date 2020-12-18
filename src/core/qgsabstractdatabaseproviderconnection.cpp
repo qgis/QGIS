@@ -133,11 +133,18 @@ void QgsAbstractDatabaseProviderConnection::renameSchema( const QString &, const
   checkCapability( Capability::RenameSchema );
 }
 
-QList<QList<QVariant>> QgsAbstractDatabaseProviderConnection::executeSql( const QString &, QgsFeedback * ) const
+QList<QList<QVariant>> QgsAbstractDatabaseProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
+{
+  return executeSqlWithNames( sql, feedback ).rows;
+}
+
+
+QgsAbstractDatabaseProviderConnection::QueryResult QgsAbstractDatabaseProviderConnection::executeSqlWithNames( const QString &, QgsFeedback * ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return QList<QList<QVariant>>();
+  return QueryResult();
 }
+
 
 void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QString & ) const
 {

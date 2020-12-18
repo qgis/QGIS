@@ -68,6 +68,27 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_FLAG( TableFlags )
 
     /**
+     * The QueryResult class represents the result of a query executed by executeSqlWithNames()
+     *
+     * It encapsulates the result rows and a list of the column names.
+     * The query result may be empty in case the query returns nothing.
+     * \since QGIS 3.18
+     */
+    struct CORE_EXPORT QueryResult
+    {
+#ifdef SIP_RUN
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rows.size() );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+#endif
+      QStringList columnns;
+      QList<QList<QVariant>> rows;
+    };
+
+
+    /**
      * The TableProperty class represents a database table or view.
      *
      * In case the table is a vector spatial table and it has multiple
@@ -459,6 +480,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException
      */
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Executes raw \a sql and returns the (possibly empty) query results, optionally \a feedback can be provided.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.18
+     */
+    virtual QueryResult executeSqlWithNames( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Vacuum the database table with given \a schema and \a name (schema is ignored if not supported by the backend).

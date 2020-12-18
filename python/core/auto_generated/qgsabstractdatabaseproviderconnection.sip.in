@@ -45,6 +45,18 @@ is not supported or cannot be performed without errors.
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
 
 
+    struct QueryResult
+    {
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rows.size() );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+      QStringList columnns;
+      QList<QList<QVariant>> rows;
+    };
+
+
     struct TableProperty
     {
 
@@ -434,6 +446,16 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    virtual QueryResult executeSqlWithNames( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
+%Docstring
+Executes raw ``sql`` and returns the (possibly empty) query results, optionally ``feedback`` can be provided.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.18
 %End
 
     virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
