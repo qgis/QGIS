@@ -179,6 +179,8 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
 
+  providers/arcgis/qgsarcgisrestutils.cpp
+
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
   providers/gdal/qgsgdaldataitems.cpp
@@ -1400,6 +1402,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
 
+  providers/arcgis/qgsarcgisrestutils.h
   providers/gdal/qgsgdaldataitems.h
   providers/gdal/qgsgdalprovider.h
   providers/memory/qgsmemoryfeatureiterator.h

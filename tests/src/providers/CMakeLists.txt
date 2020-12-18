@@ -20,7 +20,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/providers/wms
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
-  ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/test
@@ -75,15 +74,6 @@ set(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
 set_target_properties(qgis_wcsprovidertest PROPERTIES
   COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
 )
-
-if (NOT FORCE_STATIC_PROVIDERS)
-  ADD_QGIS_TEST(arcgisrestutilstest testqgsarcgisrestutils.cpp)
-  target_link_libraries(qgis_arcgisrestutilstest arcgisfeatureserverprovider_a)
-endif()
-
-if(NOT MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-endif()
 
 ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)

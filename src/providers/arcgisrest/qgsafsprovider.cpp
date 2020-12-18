@@ -94,7 +94,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     appendError( QgsErrorMessage( tr( "Could not retrieve layer extent" ), QStringLiteral( "AFSProvider" ) ) );
     return;
   }
-  QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::parseSpatialReference( layerExtentMap[QStringLiteral( "spatialReference" )].toMap() );
+  QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::convertSpatialReference( layerExtentMap[QStringLiteral( "spatialReference" )].toMap() );
   if ( mSharedData->mExtent.isEmpty() && !extentCrs.isValid() )
   {
     appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
@@ -139,7 +139,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
     const QString fieldAlias = fieldDataMap[QStringLiteral( "alias" )].toString();
     const QString fieldTypeString = fieldDataMap[QStringLiteral( "type" )].toString();
-    QVariant::Type type = QgsArcGisRestUtils::mapEsriFieldType( fieldTypeString );
+    QVariant::Type type = QgsArcGisRestUtils::convertFieldType( fieldTypeString );
     if ( fieldName == QLatin1String( "geometry" ) || fieldTypeString == QLatin1String( "esriFieldTypeGeometry" ) )
     {
       // skip geometry field
@@ -183,7 +183,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   // Determine geometry type
   bool hasM = layerData[QStringLiteral( "hasM" )].toBool();
   bool hasZ = layerData[QStringLiteral( "hasZ" )].toBool();
-  mSharedData->mGeometryType = QgsArcGisRestUtils::mapEsriGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
+  mSharedData->mGeometryType = QgsArcGisRestUtils::convertGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
   if ( mSharedData->mGeometryType == QgsWkbTypes::Unknown )
   {
     if ( layerData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) ) )
@@ -217,8 +217,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     const QVariantList extent = timeInfo.value( QStringLiteral( "timeExtent" ) ).toList();
     if ( extent.size() == 2 )
     {
-      temporalCapabilities()->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::parseDateTime( extent.at( 0 ) ),
-          QgsArcGisRestUtils::parseDateTime( extent.at( 1 ) ) ) );
+      temporalCapabilities()->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::convertDateTime( extent.at( 0 ) ),
+          QgsArcGisRestUtils::convertDateTime( extent.at( 1 ) ) ) );
     }
   }
 
@@ -369,12 +369,12 @@ void QgsAfsProvider::reloadProviderData()
 
 QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::parseEsriRenderer( mRendererDataMap );
+  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap );
 }
 
 QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::parseEsriLabeling( mLabelingDataList );
+  return QgsArcGisRestUtils::convertLabeling( mLabelingDataList );
 }
 
 bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )

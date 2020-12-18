@@ -6,6 +6,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/pal
@@ -37,7 +38,6 @@ endif()
 ###############################################################################
 
 set (AFS_SRCS
-  qgsarcgisrestutils.cpp
   qgsafsdataitems.cpp
   qgsafsfeatureiterator.cpp
   qgsafsprovider.cpp
@@ -83,7 +83,6 @@ install (TARGETS arcgisfeatureserverprovider
 ###############################################################################
 
 set (AMS_SRCS
-  qgsarcgisrestutils.cpp
   qgsamsdataitems.cpp
   qgsamsprovider.cpp
 )

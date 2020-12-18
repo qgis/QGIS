@@ -232,7 +232,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   mExtent.setYMinimum( extentData[QStringLiteral( "ymin" )].toDouble() );
   mExtent.setXMaximum( extentData[QStringLiteral( "xmax" )].toDouble() );
   mExtent.setYMaximum( extentData[QStringLiteral( "ymax" )].toDouble() );
-  mCrs = QgsArcGisRestUtils::parseSpatialReference( extentData[QStringLiteral( "spatialReference" )].toMap() );
+  mCrs = QgsArcGisRestUtils::convertSpatialReference( extentData[QStringLiteral( "spatialReference" )].toMap() );
   if ( !mCrs.isValid() )
   {
     appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AMSProvider" ) ) );
@@ -872,7 +872,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
         featureAttributes.append( it.value().toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs );
+      std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs ) );
       QgsFeature feature( fields );
       feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
       feature.setAttributes( featureAttributes );
