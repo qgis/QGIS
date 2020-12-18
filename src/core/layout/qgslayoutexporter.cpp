@@ -1593,14 +1593,14 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
           creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
         }
       }
-      GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
-      GDALSetMetadataItem( outputDS.get(), "AUTHOR", mLayout->project()->metadata().author().toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "AUTHOR", mLayout->project()->metadata().author().toUtf8().constData(), nullptr );
       const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-      GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
-      GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
-      GDALSetMetadataItem( outputDS.get(), "SUBJECT", mLayout->project()->metadata().abstract().toLocal8Bit().constData(), nullptr );
-      GDALSetMetadataItem( outputDS.get(), "TITLE", mLayout->project()->metadata().title().toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toUtf8().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toUtf8().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "SUBJECT", mLayout->project()->metadata().abstract().toUtf8().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "TITLE", mLayout->project()->metadata().title().toUtf8().constData(), nullptr );
 
       const QgsAbstractMetadataBase::KeywordMap keywords = mLayout->project()->metadata().keywords();
       QStringList allKeywords;
@@ -1609,7 +1609,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
         allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
       }
       const QString keywordString = allKeywords.join( ';' );
-      GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toUtf8().constData(), nullptr );
     }
 
     if ( t )
