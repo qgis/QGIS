@@ -41,6 +41,8 @@
 #include "providers/ept/qgseptprovider.h"
 #endif
 
+#include "providers/displaz/qgsdisplazprovider.h"
+
 #include "qgsruntimeprofiler.h"
 #include "qgsfileutils.h"
 
@@ -146,10 +148,16 @@ void QgsProviderRegistry::init()
 #ifdef HAVE_EPT
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Create EPT point cloud provider" ) );
-    QgsProviderMetadata *pc = new QgsEptProviderMetadata();
+    QgsProviderMetadata *pc = new QgsDisplazProviderMetadata();
     mProviders[ pc->key() ] = pc;
   }
 #endif
+  {
+    QgsScopedRuntimeProfile profile(QObject::tr("Create displaz point cloud provider"));
+    QgsProviderMetadata *pc = new QgsEptProviderMetadata();
+    mProviders[pc->key()] = pc;
+}
+
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();

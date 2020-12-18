@@ -26,7 +26,7 @@
 #include "qgsprofilewindowdockwidget.h"
 #include <View3D.h>
 #include <PointViewerMainWindow.h>
-
+#include <providers/displaz/qgsdisplazfeatureiterator.h>
 //#include "providers\pdal\PointCloudlayer.h"
 
 //#include "qgsmeasuretool.h"

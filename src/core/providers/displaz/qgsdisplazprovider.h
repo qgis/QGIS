@@ -31,7 +31,15 @@
 
 #include "Geometry.h"
 #include "PointArray.h"
+#include "qgis_core.h"
+#include "qgspointclouddataprovider.h"
+#include "qgsprovidermetadata.h"
 
+#include <memory>
+
+class QgsDisplazPointCloudIndex;
+ ///@cond PRIVATE
+#define SIP_NO_FILE
 
 class QgsDisplazProvider :public QgsPointCloudDataProvider//public QgsDataProvider, public QgsFeatureSink, public QgsFeatureSource
 {
@@ -39,92 +47,36 @@ class QgsDisplazProvider :public QgsPointCloudDataProvider//public QgsDataProvid
 
   public:
 	
-	 QgsDisplazProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options);
+	 QgsDisplazProvider(const QString &uri,
+     const QgsDataProvider::ProviderOptions &providerOptions);
     ~QgsDisplazProvider() override;
+
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    QgsPointCloudAttributeCollection attributes() const override;
+    bool isValid() const override;
+
+    QString name() const override;
+
+    QString description() const override;
 
 	QString filePointCloudFilters() const;
 	static void filePointCloudExtensions(QStringList &filePointCloudExtensions);
 
-	//! Returns the memory provider key
-	static QString providerKey();
-	//! Returns the memory provider description
-	static QString providerDescription();
+  QgsPointCloudIndex *index() const override;
 
-	void setGeom(std::shared_ptr<Geometry> geom) override
-	{
-		m_geom = geom;
-	};
+  int pointCount() const override;
 
-	std::shared_ptr<Geometry>getGeom() const
-	{
-		return m_geom;
-	}
+  QVariant metadataStatistic(const QString &attribute, QgsStatisticalSummary::Statistic statistic) const override;
+  QVariantList metadataClasses(const QString &attribute) const override;
+  QVariant metadataClassStatistic(const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic) const override;
+  QVariantMap originalMetadata() const override;
 
-	void setattribute();
-
-	/**
-	* Creates a new memory provider, with provider properties embedded within the given \a uri and \a options
-	* argument.
-	*/
-	//static QgsDisplazProvider *createProvider(const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext);
-
-	/* Implementation of functions from QgsVectorDataProvider */
-
-	QgsAbstractFeatureSource *featureSource() const override;
-
-	QString dataSourceUri(bool expandAuthConfig = true) const override;
-	QString storageType() const override;
-	QgsFeatureIterator getFeatures(const QgsFeatureRequest &request) const override;
-	QgsWkbTypes::Type wkbType() const override;
-	long featureCount() const override;
-	QgsFields fields() const override;
-	//bool addFeatures(QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags()) override;
-	//bool deleteFeatures(const QgsFeatureIds &id) override;
-	bool addAttributes(const QList<QgsField> &attributes) override;
-	bool renameAttributes(const QgsFieldNameMap &renamedAttributes) override;
-	bool deleteAttributes(const QgsAttributeIds &attributes) override;
-	bool changeAttributeValues(const QgsChangedAttributesMap &attr_map) override;
-	bool changeGeometryValues(const QgsGeometryMap &geometry_map) override;
-	QString subsetString() const override;
-	bool setSubsetString(const QString &theSQL, bool updateFeatureCount = true) override;
-	bool supportsSubsetString() const override { return true; }
-	bool createSpatialIndex() override;
-	QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
-	QgsVectorDataProvider::Capabilities capabilities() const override;
-	bool truncate() override;
-
-	/* Implementation of functions from QgsDataProvider */
-
-	QString name() const override;
-	QString description() const override;
-	QgsRectangle extent() const override;
-	void updateExtents() override;
-	bool isValid() const override;
-	QgsCoordinateReferenceSystem crs() const override;
-	
-
-  private:
-
-	bool mValid = false;
+private:
+  std::unique_ptr<QgsDisplazPointCloudIndex> mIndex;
+  bool mIsValid = false;
 
 	std::shared_ptr<Geometry>  m_geom;
-
-	// Coordinate reference system
-	QgsCoordinateReferenceSystem mCrs;
-
-	// fields
-	QgsFields mFields;
-	QgsWkbTypes::Type mWkbType;
-	mutable QgsRectangle mExtent;
-
-	// features
-	//QgsFeatureMap mFeatures;
-	QgsFeatureId mNextFeatureId;
-
-	// indexing
-	//QgsSpatialIndex *mSpatialIndex = nullptr;
-
-	QString mSubsetString;
 };
 
 

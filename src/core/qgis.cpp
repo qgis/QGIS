@@ -62,6 +62,18 @@ const double Qgis::UI_SCALE_FACTOR = 1.5;
 const double Qgis::UI_SCALE_FACTOR = 1;
 #endif
 
+QgsdisplazfileLoader::QgsdisplazfileLoader()
+{
+  g_PointCloudfileLoader = new FileLoader(m_maxPointCount);
+  g_PointCloudGeoms = new GeometryCollection();
+}
+QgsdisplazfileLoader ::~QgsdisplazfileLoader()
+{
+  delete g_PointCloudfileLoader;
+  delete g_PointCloudGeoms;
+};
+
+
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators

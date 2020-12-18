@@ -23,7 +23,7 @@
 
 QgsDisplazLayerItem::QgsDisplazLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "pdal" ) )
+  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "displaz" ) )
 {
   mToolTip = uri;
   setState( Populated );
@@ -66,7 +66,7 @@ static QStringList sExtensions = QStringList();
   {
     QgsDisplazProvider::filePointCloudExtensions( sExtensions);
   } 
-  ); //  sExtension ¾²Ì¬£¬Ö»µ÷ÓÃÒ»´Î
+  ); //  sExtension é™æ€ï¼Œåªè°ƒç”¨ä¸€æ¬¡
 
   // Filter files by extension
   if ( !sExtensions.contains( suffix ) )
@@ -81,7 +81,7 @@ static QStringList sExtensions = QStringList();
 
  QString QgsDisplazDataItemProvider::name()
  {
-	 return QStringLiteral("PDAL");
+	 return QStringLiteral("displaz");
  }
 
  int QgsDisplazDataItemProvider::capabilities() const

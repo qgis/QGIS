@@ -202,7 +202,7 @@ set(QGIS_CORE_SRCS
   providers/displaz/qgsdisplazdataitems.cpp
   providers/displaz/qgsdisplazfeatureiterator.cpp
   providers/displaz/qgsdisplazprovider.cpp
-  providers/displaz/qgsdisplazsourceselect.cpp
+  #providers/displaz/qgsdisplazsourceselect.cpp
   
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgshollowscalebarrenderer.cpp
@@ -1418,7 +1418,7 @@ set(QGIS_CORE_HDRS
   providers/displaz/qgsdisplazdataitems.h
   providers/displaz/qgsdisplazfeatureiterator.h
   providers/displaz/qgsdisplazprovider.h
-  providers/displaz/qgsdisplazsourceselect.h
+  #providers/displaz/qgsdisplazsourceselect.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
@@ -1643,6 +1643,7 @@ include_directories(
   providers/gdal
   providers/ogr
   providers/meshmemory
+  providers/displaz
   raster
   renderer
   scalebar
@@ -1858,9 +1859,9 @@ target_link_libraries(qgis_core
   ${LIBZIP_LIBRARY}
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
-    laslib.lib
+  laslib.lib
   Imath.lib
-  lmThread.lib
+  IlmThread.lib
   IexMath.lib
   Iex.lib
   Half.lib

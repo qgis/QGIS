@@ -15,104 +15,72 @@
 #ifndef HSLLCDISPLAZFEATUREITERATOR_H
 #define HSLLCDISPLAZFEATUREITERATOR_H
 
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
-#include "qgsgeometry.h"
-#include "qgsgeometryengine.h"
-#include <memory>
-#include <set>
-
 #include <Geometry.h>
 #include <PointArray.h>
 
-class QgsDisplazFeatureIterator;
+#include <QObject>
+#include <QString>
+#include <QHash>
+#include <QStringList>
+#include <QVector>
+#include <QList>
+
+#include "qgspointcloudindex.h"
+#include "qgspointcloudattribute.h"
+#include "qgsstatisticalsummary.h"
+#include "qgis_sip.h"
+#include "qgis.h"
+
+#include <fileloader.h>
+#include <geometrycollection.h>
+
 class QgsDisplazProvider;
-//class QgsDisplazDataset;
-//using QgsDisplazDatasetSharedPtr = std::shared_ptr< QgsDisplazDataset>;
+class QgsCoordinateReferenceSystem;
 
-class QgsDisplazFeatureSource : public QgsAbstractFeatureSource
+class QgsDisplazPointCloudIndex : public QgsPointCloudIndex
 {
-  public:
-    explicit QgsDisplazFeatureSource( const QgsDisplazProvider *p );
-    ~QgsDisplazFeatureSource() override;
+  Q_OBJECT
+public:
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
-	std::shared_ptr<Geometry> mPointCloudData;
+  explicit QgsDisplazPointCloudIndex();
+  ~QgsDisplazPointCloudIndex();
+  
 
+  bool load(const QString &fileName) override;
 
-  private:
-    QString mDataSource;
-    bool mShareSameDatasetAmongLayers;
-    QString mLayerName;
-    int mLayerIndex;
-    QString mSubsetString;
-    QTextCodec *mEncoding = nullptr;
-    QgsFields mFields;
-    bool mFirstFieldIsFid;
-    QgsFields mFieldsWithoutFid;
+  QgsPointCloudBlock *nodeData(const IndexedPointCloudNode &n, const QgsPointCloudRequest &request) override;
 
-    QgsCoordinateReferenceSystem mCrs;
-    QgsWkbTypes::Type mWkbType = QgsWkbTypes::MultiPointZ;
+  QgsCoordinateReferenceSystem crs() const;
+  int pointCount() const;
+  QVariant metadataStatistic(const QString &attribute, QgsStatisticalSummary::Statistic statistic) const;
+  QVariantList metadataClasses(const QString &attribute) const;
+  QVariant metadataClassStatistic(const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic) const;
 
+  QVariantMap originalMetadata() const { return mOriginalMetadata; }
 
-    friend class QgsDisplazFeatureIterator;
-};
+private:
+  bool loadHierarchy();
 
-class QgsDisplazFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDisplazFeatureSource>
-{
-  public:
-    QgsDisplazFeatureIterator( QgsDisplazFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
+  QString mDataType;
+  QString mDirectory;
+  QString mWkt;
 
-    ~QgsDisplazFeatureIterator() override;
+  int mPointCount = 0;
 
-    bool rewind() override;
-    bool close() override;
+  struct AttributeStatistics
+  {
+    int count = -1;
+    QVariant minimum;
+    QVariant maximum;
+    double mean = std::numeric_limits< double >::quiet_NaN();
+    double stDev = std::numeric_limits< double >::quiet_NaN();
+    double variance = std::numeric_limits< double >::quiet_NaN();
+  };
 
-  protected:
-    bool checkFeature(std::shared_ptr<Geometry>, QgsFeature &feature) ;
-    bool fetchFeature( QgsFeature &feature ) override;
-    bool nextFeatureFilterExpression( QgsFeature &f ) override;
+  QMap< QString, AttributeStatistics > mMetadataStats;
 
-	bool checkFeatureSinglePoint(std::shared_ptr<Geometry> geom, QgsFeature & feature);
-
-  private:
-
-	QgsGeometry mSelectRectGeom;
-	std::unique_ptr< QgsGeometryEngine > mSelectRectEngine;
-	bool mClosed = false;
-	V3f* m_P;
-    bool readFeature( ) const;
-
-    //! Sets to true, if geometry is in the requested columns
-    bool mFetchGeometry = false;
-
-    bool mExpressionCompiled = false;
-    // use std::set to get sorted ids (needed for efficient QgsFeatureRequest::FilterFids requests on OSM datasource)
-    std::set<QgsFeatureId> mFilterFids;
-    std::set<QgsFeatureId>::iterator mFilterFidsIt;
-
-    QgsRectangle mFilterRect;
-    QgsCoordinateTransform mTransform;
-	bool mUsingFeatureIdList = false;
-	DrawCount mdrawlist;// �洢�����Ƶ��list  
-
-    bool mFirstFieldIsFid = false;
-    QgsFields mFieldsWithoutFid;
-	QgsDisplazFeatureSource *m_source;
-   // bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
-	const std::vector<PointCloudGeomField>* m_pointarrayfields =nullptr;
-   // void resetReading();
-	int decimal_step=1;
-	int count = 0;
-	int m_iterration = 0;
-	size_t classificationindex = 0;
-	size_t Positionindex = 0;
-	size_t intensityindex = 0;
-	size_t returnNumberindex = 0;
-	size_t numberofreturnindex = 0;
-	size_t pointsoureindex = 0;
-	size_t colorindex = 0;
-	V3d offset;
+  QMap< QString, QMap< int, int > > mAttributeClasses;
+  QVariantMap mOriginalMetadata;
 };
 
 #endif // HSLLCDISPLAZFEATUREITERATOR_H

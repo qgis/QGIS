@@ -17166,7 +17166,7 @@ static void setupQFileSearchPaths()
 
 void QgisApp::createLasViewer()
 {
-	///888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+	///8888888888888888888888888888888888888888888888888
 	qRegisterMetaType<std::shared_ptr<Geometry>>("std::shared_ptr<Geometry>");
 	qRegisterMetaType<std::shared_ptr<GeometryMutator>>("std::shared_ptr<GeometryMutator>");
 
@@ -17194,7 +17194,9 @@ void QgisApp::createLasViewer()
 
 	//m_helpDialog = new HelpDialog(this);
 
-	m_geometries = new GeometryCollection(this);
+  QgsdisplazfileLoader  *lasfileManager = Qgis::getlasfileManager();
+	//m_geometries = new GeometryCollection(this);
+  m_geometries=lasfileManager->getDisPlaz_las_geometry();
 	connect(m_geometries, SIGNAL(layoutChanged()), this, SLOT(updateTitle()));
 	connect(m_geometries, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateTitle()));
 	connect(m_geometries, SIGNAL(rowsInserted(QModelIndex, int, int)), this, SLOT(updateTitle()));
@@ -17211,7 +17213,8 @@ void QgisApp::createLasViewer()
 	// Main point: each QObject has a thread affinity which determines which
 	// thread its slots will execute on, when called via a connected signal.
 	QThread* loaderThread = new QThread();
-	m_PointCloudfileLoader = new FileLoader(m_maxPointCount);
+	//m_PointCloudfileLoader = new FileLoader(m_maxPointCount);
+  m_PointCloudfileLoader = lasfileManager->getDisPlaz_las_loader();
 	m_PointCloudfileLoader->moveToThread(loaderThread);
 	connect(loaderThread, SIGNAL(finished()), m_PointCloudfileLoader, SLOT(deleteLater()));
 	connect(loaderThread, SIGNAL(finished()), loaderThread, SLOT(deleteLater()));
@@ -17220,7 +17223,6 @@ void QgisApp::createLasViewer()
 		m_geometries, SLOT(addGeometry(std::shared_ptr<Geometry>, bool, bool)));
 	connect(m_PointCloudfileLoader, SIGNAL(geometryMutatorLoaded(std::shared_ptr<GeometryMutator>)),
 		m_geometries, SLOT(mutateGeometry(std::shared_ptr<GeometryMutator>))); 
-
 
 	///   wp ----------
 
