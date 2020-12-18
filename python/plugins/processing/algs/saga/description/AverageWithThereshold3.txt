@@ -1,4 +1,4 @@
-Average With Thereshold 3
+Average With Threshold 3
 contrib_perego
 QgsProcessingParameterRasterLayer|INPUT|Input|None|False
 QgsProcessingParameterRasterDestination|RESULT|AWT Grid
