@@ -105,6 +105,24 @@ class TestQgsInterval(unittest.TestCase):
         i1.setSeconds(6)
         self.assertNotEqual(i1, i2)
 
+        # using original units
+
+        i1 = QgsInterval(1, QgsUnitTypes.TemporalMonths)
+        self.assertEqual(i1, QgsInterval(1, QgsUnitTypes.TemporalMonths))
+        i2 = QgsInterval(720, QgsUnitTypes.TemporalHours)
+        self.assertEqual(i2, QgsInterval(720, QgsUnitTypes.TemporalHours))
+        # these QgsInterval would be equal if we test on the approximated seconds value alone, but should be treated as not equal
+        # as their original units differ and we don't want the odd situation that the QgsInterval objects report equality
+        # but i1.months() != i2.months()!!
+        self.assertEqual(i1.seconds(), i2.seconds())
+        self.assertNotEqual(i1, i2)
+
+        # these should be treated as equal - they have unknown original units, so we are just comparing
+        # their computed seconds values
+        i1 = QgsInterval(0, 0, 0, 1, 0, 0, 1)
+        i2 = QgsInterval(0, 0, 0, 0, 24, 0, 1)
+        self.assertEqual(i1, i2)
+
     def testFromString(self):
         i = QgsInterval.fromString('1 Year 1 Month 1 Week 1 Hour 1 Minute')
         self.assertTrue(i.isValid())

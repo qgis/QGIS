@@ -136,7 +136,7 @@ class CORE_EXPORT QgsInterval
      * Returns the interval duration in weeks.
      *
      * If the originalUnit() is QgsUnitTypes::TemporalWeeks then this value
-     * will match the exact number of months as returned by originalDuration(),
+     * will match the exact number of weeks as returned by originalDuration(),
      * otherwise it will be calculated using the QgsInterval::WEEKS constant.
      *
      * \see setWeeks()
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsInterval
      * Returns the interval duration in days.
      *
      * If the originalUnit() is QgsUnitTypes::TemporalDays then this value
-     * will match the exact number of months as returned by originalDuration(),
+     * will match the exact number of days as returned by originalDuration(),
      * otherwise it will be calculated using the QgsInterval::DAY constant.
      *
      * \see setDays()
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsInterval
      * Returns the interval duration in hours.
      *
      * If the originalUnit() is QgsUnitTypes::TemporalHours then this value
-     * will match the exact number of months as returned by originalDuration(),
+     * will match the exact number of hours as returned by originalDuration(),
      * otherwise it will be calculated using the QgsInterval::HOUR constant.
      *
      * \see setHours()
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsInterval
      * Returns the interval duration in minutes.
      *
      * If the originalUnit() is QgsUnitTypes::TemporalMinutes then this value
-     * will match the exact number of months as returned by originalDuration(),
+     * will match the exact number of minutes as returned by originalDuration(),
      * otherwise it will be calculated using the QgsInterval::MINUTE constant.
      *
      * \see setMinutes()
@@ -276,7 +276,6 @@ class CORE_EXPORT QgsInterval
      *
      * \since 3.18
      */
-
     double originalDuration() const { return mOriginalDuration; }
 
     /**
@@ -292,7 +291,6 @@ class CORE_EXPORT QgsInterval
      *
      * \since 3.18
      */
-
     QgsUnitTypes::TemporalUnit originalUnit() const { return mOriginalUnit; }
 
     bool operator==( QgsInterval other ) const;

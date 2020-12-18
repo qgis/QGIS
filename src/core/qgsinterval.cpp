@@ -31,17 +31,17 @@
 QgsInterval::QgsInterval( double seconds )
   : mSeconds( seconds )
   , mValid( true )
+  , mOriginalDuration( seconds )
+  , mOriginalUnit( QgsUnitTypes::TemporalSeconds )
 {
-  mOriginalDuration = mSeconds;
-  mOriginalUnit = QgsUnitTypes::TemporalSeconds;
 }
 
 QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
   : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsUnitTypes::TemporalSeconds ) )
   , mValid( true )
+  , mOriginalDuration( duration )
+  , mOriginalUnit( unit )
 {
-  mOriginalDuration = duration;
-  mOriginalUnit = unit;
 }
 
 QgsInterval::QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds )
@@ -89,11 +89,15 @@ QgsInterval::QgsInterval( double years, double months, double weeks, double days
     mOriginalDuration = seconds;
     mOriginalUnit = QgsUnitTypes::TemporalSeconds;
   }
+  else if ( !years && !months && !weeks && !days && !hours && !minutes && !seconds )
+  {
+    mOriginalDuration = 0;
+    mOriginalUnit = QgsUnitTypes::TemporalSeconds;
+  }
   else
   {
     mOriginalUnit = QgsUnitTypes::TemporalUnknownUnit;
   }
-
 }
 
 double QgsInterval::years() const
@@ -207,6 +211,8 @@ bool QgsInterval::operator==( QgsInterval other ) const
 {
   if ( !mValid && !other.mValid )
     return true;
+  else if ( mValid && other.mValid && ( mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit || other.mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit ) )
+    return mOriginalUnit == other.mOriginalUnit && mOriginalDuration == other.mOriginalDuration;
   else if ( mValid && other.mValid )
     return qgsDoubleNear( mSeconds, other.mSeconds );
   else
