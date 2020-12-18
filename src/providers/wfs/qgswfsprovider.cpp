@@ -1636,14 +1636,12 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
   const QString WfsVersion = mShared->mWFSVersion;
   // only 1.1.0 and 1.0.0 are supported
+  QString theWfsVersion = QStringLiteral( "1.0.0" );
   if ( WfsVersion == QLatin1String( "1.1.0" ) )
   {
-    transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
+    theWfsVersion = QStringLiteral( "1.1.0" );
   }
-  else
-  {
-    transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
-  }
+  transactionElem.setAttribute( QStringLiteral( "version" ), theWfsVersion );
   transactionElem.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WFS" ) );
   transactionElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
 
@@ -1657,7 +1655,8 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
     describeFeatureTypeURL.setQuery( query );
   }
   QUrlQuery query( describeFeatureTypeURL );
-  query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
+  // only 1.1.0 and 1.0.0 are supported
+  query.addQueryItem( QStringLiteral( "VERSION" ), theWfsVersion );
   query.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
   describeFeatureTypeURL.setQuery( query );
 
