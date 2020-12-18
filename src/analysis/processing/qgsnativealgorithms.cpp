@@ -28,6 +28,7 @@
 #include "qgsalgorithmaspect.h"
 #include "qgsalgorithmassignprojection.h"
 #include "qgsalgorithmattributeindex.h"
+#include "qgsalgorithmbatchnominatimgeocode.h"
 #include "qgsalgorithmboundary.h"
 #include "qgsalgorithmboundingbox.h"
 #include "qgsalgorithmbuffer.h"
@@ -259,6 +260,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAspectAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsAttributeIndexAlgorithm() );
+  addAlgorithm( new QgsBatchNominatimGeocodeAlgorithm() );
   addAlgorithm( new QgsBookmarksToLayerAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );
