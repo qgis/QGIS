@@ -17,6 +17,7 @@
 #include "qgsafsdataitems.h"
 #include "qgsafsprovider.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsarcgisrestquery.h"
 
 #ifdef HAVE_GUI
 #include "qgsafssourceselect.h"
@@ -67,7 +68,7 @@ void QgsAfsRootItem::onConnectionsChanged()
 
 void addFolderItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent )
 {
-  QgsArcGisRestUtils::visitFolderItems( [parent, &baseUrl, &items, headers, authcfg]( const QString & name, const QString & url )
+  QgsArcGisRestQueryUtils::visitFolderItems( [parent, &baseUrl, &items, headers, authcfg]( const QString & name, const QString & url )
   {
     std::unique_ptr< QgsAfsFolderItem > folderItem = qgis::make_unique< QgsAfsFolderItem >( parent, name, url, baseUrl, authcfg, headers );
     items.append( folderItem.release() );
@@ -76,12 +77,12 @@ void addFolderItems( QVector< QgsDataItem * > &items, const QVariantMap &service
 
 void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent )
 {
-  QgsArcGisRestUtils::visitServiceItems(
+  QgsArcGisRestQueryUtils::visitServiceItems(
     [&items, parent, authcfg, headers]( const QString & name, const QString & url )
   {
     std::unique_ptr< QgsAfsServiceItem > serviceItem = qgis::make_unique< QgsAfsServiceItem >( parent, name, url, url, authcfg, headers );
     items.append( serviceItem.release() );
-  }, serviceData, baseUrl, QgsArcGisRestUtils::Vector );
+  }, serviceData, baseUrl, QgsArcGisRestQueryUtils::Vector );
 }
 
 void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &parentUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent )
@@ -89,7 +90,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
   QMap< QString, QgsDataItem * > layerItems;
   QMap< QString, QString > parents;
 
-  QgsArcGisRestUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers]( const QString & parentLayerId, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & )
+  QgsArcGisRestQueryUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers]( const QString & parentLayerId, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & )
   {
     Q_UNUSED( description )
 
@@ -107,7 +108,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
       layerItems.insert( id, layerItem.release() );
     }
 
-  }, serviceData, parentUrl, QgsArcGisRestUtils::Vector );
+  }, serviceData, parentUrl, QgsArcGisRestQueryUtils::Vector );
 
   // create groups
   for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
@@ -143,7 +144,7 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 
   QVector<QgsDataItem *> items;
   QString errorTitle, errorMessage;
-  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, authcfg, errorTitle, errorMessage, headers );
+  const QVariantMap serviceData = QgsArcGisRestQueryUtils::getServiceInfo( url, authcfg, errorTitle, errorMessage, headers );
   if ( serviceData.isEmpty() )
   {
     if ( !errorMessage.isEmpty() )
@@ -194,7 +195,7 @@ QVector<QgsDataItem *> QgsAfsFolderItem::createChildren()
 
   QVector<QgsDataItem *> items;
   QString errorTitle, errorMessage;
-  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, mAuthCfg, errorTitle, errorMessage, mHeaders );
+  const QVariantMap serviceData = QgsArcGisRestQueryUtils::getServiceInfo( url, mAuthCfg, errorTitle, errorMessage, mHeaders );
   if ( serviceData.isEmpty() )
   {
     if ( !errorMessage.isEmpty() )
@@ -236,7 +237,7 @@ QVector<QgsDataItem *> QgsAfsServiceItem::createChildren()
 
   QVector<QgsDataItem *> items;
   QString errorTitle, errorMessage;
-  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, mAuthCfg, errorTitle, errorMessage, mHeaders );
+  const QVariantMap serviceData = QgsArcGisRestQueryUtils::getServiceInfo( url, mAuthCfg, errorTitle, errorMessage, mHeaders );
   if ( serviceData.isEmpty() )
   {
     if ( !errorMessage.isEmpty() )

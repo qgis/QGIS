@@ -55,19 +55,6 @@ class CORE_EXPORT QgsArcGisRestUtils
 {
   public:
 
-#ifndef SIP_RUN
-
-    /**
-     * Service types
-     */
-    enum ServiceTypeFilter
-    {
-      AllTypes, //!< All types
-      Vector,   //!< Vector type
-      Raster   //!< Raster type
-    };
-#endif
-
     /**
      * Converts an ESRI REST field \a type to a QVariant type.
      */
@@ -144,26 +131,6 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static QDateTime convertDateTime( const QVariant &value );
 
-
-#ifndef SIP_RUN
-    ///@cond PRIVATE
-    static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >() );
-    static QVariantMap getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >() );
-    static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(),
-                                     const QgsRectangle &bbox = QgsRectangle() );
-    static QVariantMap getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
-                                   bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
-                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
-    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr );
-    static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders = QgsStringMap(), QgsFeedback *feedback = nullptr );
-    static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
-    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter = QgsArcGisRestUtils::AllTypes );
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter = QgsArcGisRestUtils::AllTypes );
-    ///@endcond
-
-#endif
-
   private:
 
     /**
@@ -216,53 +183,7 @@ class CORE_EXPORT QgsArcGisRestUtils
 
     static QgsSimpleMarkerSymbolLayerBase::Shape parseEsriMarkerShape( const QString &style );
 
-    static QUrl parseUrl( const QUrl &url );
-    static void adjustBaseUrl( QString &baseUrl, const QString name );
-
     friend class TestQgsArcGisRestUtils;
 };
 
-#ifndef SIP_RUN
-///@cond PRIVATE
-class CORE_EXPORT QgsArcGisAsyncQuery : public QObject
-{
-    Q_OBJECT
-  public:
-    QgsArcGisAsyncQuery( QObject *parent = nullptr );
-    ~QgsArcGisAsyncQuery() override;
-
-    void start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache = false, const QgsStringMap &headers = QgsStringMap() );
-  signals:
-    void finished();
-    void failed( QString errorTitle, QString errorName );
-  private slots:
-    void handleReply();
-
-  private:
-    QNetworkReply *mReply = nullptr;
-    QByteArray *mResult = nullptr;
-};
-
-class CORE_EXPORT QgsArcGisAsyncParallelQuery : public QObject
-{
-    Q_OBJECT
-  public:
-    QgsArcGisAsyncParallelQuery( const QString &authcfg, const QgsStringMap &requestHeaders, QObject *parent = nullptr );
-    void start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache = false );
-
-  signals:
-    void finished( QStringList errors );
-  private slots:
-    void handleReply();
-
-  private:
-    QVector<QByteArray> *mResults = nullptr;
-    int mPendingRequests = 0;
-    QStringList mErrors;
-    QString mAuthCfg;
-    QgsStringMap mRequestHeaders;
-};
-
-///@endcond
-#endif
 #endif // QGSARCGISRESTUTILS_H
