@@ -209,8 +209,12 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
   }
 
   if ( ! pgconn )
+  {
     pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
+  }
+
   QgsPostgresConn *conn = pgconn->get();
+
   if ( ! conn )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
@@ -261,68 +265,85 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
     {
       // Try to convert value types at least for basic simple types that can be directly mapped to Python
       QMap<int, QVariant::Type> typeMap;
+      const int numFields { res.PQnfields() };
       if ( resolveTypes )
       {
-        for ( int rowIdx = 0; rowIdx < res.PQnfields(); rowIdx++ )
+        // Collect oids
+        QStringList oids;
+        oids.reserve( numFields );
+        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
         {
           if ( feedback && feedback->isCanceled() )
           {
             break;
           }
-          const Oid oid { res.PQftype( rowIdx ) };
-          QList<QVariantList> typeRes { executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false, nullptr, pgconn ) };
-          // Set the default to string
-          QVariant::Type vType { QVariant::Type::String };
-          if ( typeRes.size() > 0 && typeRes.first().size() > 0 )
-          {
-            static const QStringList intTypes = { QStringLiteral( "oid" ),
-                                                  QStringLiteral( "int2" ),
-                                                  QStringLiteral( "int4" ),
-                                                  QStringLiteral( "int8" )
-                                                };
-            static const QStringList floatTypes = { QStringLiteral( "float4" ),
-                                                    QStringLiteral( "float8" ),
-                                                    QStringLiteral( "numeric" )
-                                                  };
-            const QString typName { typeRes.first().first().toString() };
+          const QString oidStr { QString::number( res.PQftype( rowIdx ) ) };
+          oids.push_back( oidStr );
+        }
 
-            if ( floatTypes.contains( typName ) )
-            {
-              vType = QVariant::Double;
-            }
-            else if ( intTypes.contains( typName ) )
-            {
-              vType = QVariant::LongLong;
-            }
-            else if ( typName == QLatin1String( "date" ) )
-            {
-              vType = QVariant::Date;
-            }
-            else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
-            {
-              vType = QVariant::DateTime;
-            }
-            else if ( typName == QLatin1String( "time" ) )
-            {
-              vType = QVariant::Time;
-            }
-            else if ( typName == QLatin1String( "bool" ) )
-            {
-              vType = QVariant::Bool;
-            }
-            else if ( typName == QLatin1String( "char" ) )
-            {
-              vType = QVariant::Char;
-            }
-            else
-            {
-              // Just a warning, usually ok
-              QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
-            }
+        const QList<QVariantList> typesResolved( executeSqlPrivate( QStringLiteral( "SELECT oid, typname FROM pg_type WHERE oid IN (%1)" ).arg( oids.join( ',' ) ), false, nullptr, pgconn ) );
+        QgsStringMap oidTypeMap;
+        for ( const auto &typeRes : qgis::as_const( typesResolved ) )
+        {
+          const QString oid { typeRes.constLast().toString() };
+          if ( ! oidTypeMap.contains( oid ) )
+          {
+            oidTypeMap.insert( typeRes.constFirst().toString(), typeRes.constLast().toString() );
+          }
+        }
+
+        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
+        {
+          static const QStringList intTypes = { QStringLiteral( "oid" ),
+                                                QStringLiteral( "int2" ),
+                                                QStringLiteral( "int4" ),
+                                                QStringLiteral( "int8" ),
+                                              };
+          static const QStringList floatTypes = { QStringLiteral( "float4" ),
+                                                  QStringLiteral( "float8" ),
+                                                  QStringLiteral( "numeric" )
+                                                };
+
+          const QString typName { oidTypeMap[ oids.at( rowIdx )] };
+          QVariant::Type vType { QVariant::Type::String };
+          if ( floatTypes.contains( typName ) )
+          {
+            vType = QVariant::Double;
+          }
+          else if ( intTypes.contains( typName ) )
+          {
+            vType = QVariant::LongLong;
+          }
+          else if ( typName == QLatin1String( "date" ) )
+          {
+            vType = QVariant::Date;
+          }
+          else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
+          {
+            vType = QVariant::DateTime;
+          }
+          else if ( typName == QLatin1String( "time" ) )
+          {
+            vType = QVariant::Time;
+          }
+          else if ( typName == QLatin1String( "bool" ) )
+          {
+            vType = QVariant::Bool;
+          }
+          else if ( typName == QLatin1String( "char" ) )
+          {
+            vType = QVariant::Char;
+          }
+          else
+          {
+            // Just a warning, usually ok
+            QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
           }
           typeMap[ rowIdx ] = vType;
         }
       }
+
+      // Get results
       for ( int rowIdx = 0; rowIdx < res.PQntuples(); rowIdx++ )
       {
         if ( feedback && feedback->isCanceled() )
@@ -339,9 +360,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             // Special case for bools: 'f' and 't'
             if ( vType == QVariant::Bool )
             {
-              if ( ! val.toString().isEmpty() )
+              const QString boolStrVal { val.toString() };
+              if ( ! boolStrVal.isEmpty() )
               {
-                val = val.toString() == 't';
+                val = boolStrVal == 't';
               }
             }
             else if ( val.canConvert( static_cast<int>( vType ) ) )
