@@ -19,6 +19,8 @@
 #include "qgsrectangle.h"
 #include "qgsmarkersymbollayer.h"
 
+#include "qgis_sip.h"
+
 #include <QStringList>
 #include <QVariant>
 #include <functional>
