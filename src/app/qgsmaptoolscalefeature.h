@@ -103,14 +103,14 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
     QPointF mRubberScale;
     QPointF mInitialCanvasPos;
 
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     //! Rubberband that shows the feature being moved
     QgsRubberBand *mRubberBand = nullptr;
 
     //! Id of moved feature
     QgsFeatureIds mScaledFeatures;
     double mScaling;
-    double mBaseDistance;
+    double mBaseDistance = 1;
     QgsRectangle mExtent;
 
     QgsPointXY mCenterPoint;
