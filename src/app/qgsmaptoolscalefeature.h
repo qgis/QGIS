@@ -1,0 +1,125 @@
+/***************************************************************************
+    qgsmaptoolscalefeature.h  -  map tool for scaling features by mouse drag
+    ---------------------
+    begin                :
+    copyright            :
+    email                :
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSMAPTOOLSCALEFEATURE_H
+#define QGSMAPTOOLSCALEFEATURE_H
+
+#include <QWidget>
+
+#include "qgsmaptooledit.h"
+#include "qgsvertexmarker.h"
+#include "qgis_app.h"
+#include "qgsgeometry.h"
+#include "qgsfeatureid.h"
+
+class QgsDoubleSpinBox;
+class QHBoxLayout;
+class QgsSpinBox;
+
+class APP_EXPORT QgsScaleMagnetWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    explicit QgsScaleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
+
+    void setScale( double scale );
+    double scale() const;
+    void setMagnet( int magnet );
+    int magnet() const;
+
+    QgsDoubleSpinBox *editor() const {return mScaleSpinBox;}
+
+  signals:
+    void scaleChanged( double scale );
+    void scaleEditingFinished( double scale );
+    void scaleEditingCanceled();
+
+
+  public slots:
+
+  protected:
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
+
+  private slots:
+    void scaleSpinBoxValueChanged( double scale );
+
+  private:
+    QHBoxLayout *mLayout = nullptr;
+    QgsDoubleSpinBox *mScaleSpinBox = nullptr;
+    QgsSpinBox *mMagnetSpinBox = nullptr;
+};
+
+
+//! Map tool to scale features
+class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolEdit
+{
+    Q_OBJECT
+  public:
+    QgsMapToolScaleFeature( QgsMapCanvas *canvas );
+    ~QgsMapToolScaleFeature() override;
+
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+
+    //! called when map tool is being deactivated
+    void deactivate() override;
+
+    void activate() override;
+
+    //! catch escape when active to cancel selection
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
+  private slots:
+    void updateRubberband( double scale );
+
+    void applyScaling( double scale );
+    void cancel();
+
+  private:
+
+    QgsGeometry scaleGeometry( QgsGeometry geom, QgsPointXY point, double scale );
+    QgsPointXY scalePoint( QgsPointXY point, double scale );
+    void deleteRubberband();
+    void createScalingWidget();
+    void deleteScalingWidget();
+
+    //! Start point of the move in map coordinates
+    QgsPointXY mFeatureCenter;
+    QPointF mRubberScale;
+    QPointF mInitialCanvasPos;
+
+    QgsVectorLayer *mLayer;
+    //! Rubberband that shows the feature being moved
+    QgsRubberBand *mRubberBand = nullptr;
+
+    //! Id of moved feature
+    QgsFeatureIds mScaledFeatures;
+    double mScaling;
+    double mBaseDistance;
+    QgsRectangle mExtent;
+
+    QgsPointXY mCenterPoint;
+    std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
+
+    bool mScalingActive;
+
+    //! Shows current scale value and allows numerical editing
+    QgsScaleMagnetWidget *mScalingWidget = nullptr;
+};
+
+#endif

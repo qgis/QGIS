@@ -467,6 +467,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolrotatefeature.h"
+#include "qgsmaptoolscalefeature.h"
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmaptooloffsetpointsymbol.h"
 #include "qgsmaptoolpan.h"
@@ -1799,6 +1800,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mReshapeFeatures;
   delete mMapTools.mReverseLine;
   delete mMapTools.mRotateFeature;
+  delete mMapTools.mScaleFeature;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mRotatePointSymbolsTool;
   delete mMapTools.mOffsetPointSymbolTool;
@@ -2679,7 +2681,7 @@ void QgisApp::createActions()
   connect( mActionMoveFeature, &QAction::triggered, this, &QgisApp::moveFeature );
   connect( mActionMoveFeatureCopy, &QAction::triggered, this, &QgisApp::moveFeatureCopy );
   connect( mActionRotateFeature, &QAction::triggered, this, &QgisApp::rotateFeature );
-
+  connect( mActionScaleFeature, &QAction::triggered, this, &QgisApp::scaleFeature );
   connect( mActionReshapeFeatures, &QAction::triggered, this, &QgisApp::reshapeFeatures );
   connect( mActionSplitFeatures, &QAction::triggered, this, &QgisApp::splitFeatures );
   connect( mActionSplitParts, &QAction::triggered, this, &QgisApp::splitParts );
@@ -3052,6 +3054,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMoveFeature );
   mMapToolGroup->addAction( mActionMoveFeatureCopy );
   mMapToolGroup->addAction( mActionRotateFeature );
+  mMapToolGroup->addAction( mActionScaleFeature );
   mMapToolGroup->addAction( mActionOffsetCurve );
   mMapToolGroup->addAction( mActionReshapeFeatures );
   mMapToolGroup->addAction( mActionSplitFeatures );
@@ -3731,6 +3734,7 @@ void QgisApp::createToolBars()
 
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionRotateFeature, mAdvancedDigitizingDockWidget->enableAction() );
+  mAdvancedDigitizeToolBar->insertAction( mActionScaleFeature, mAdvancedDigitizingDockWidget->enableAction() );
 
   // move feature tool button
   QToolButton *moveFeatureButton = new QToolButton( mAdvancedDigitizeToolBar );
@@ -4086,6 +4090,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeaturePoint.svg" ) ) );
   mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopyPoint.svg" ) ) );
   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRotateFeature.svg" ) ) );
+  mActionScaleFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleFeature.svg" ) ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionReshape.svg" ) ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSplitFeatures.svg" ) ) );
   mActionSplitParts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSplitParts.svg" ) ) );
@@ -4415,6 +4420,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mMoveFeatureCopy->setAction( mActionMoveFeatureCopy );
   mMapTools.mRotateFeature = new QgsMapToolRotateFeature( mMapCanvas );
   mMapTools.mRotateFeature->setAction( mActionRotateFeature );
+  mMapTools.mScaleFeature = new QgsMapToolScaleFeature( mMapCanvas );
+  mMapTools.mScaleFeature->setAction( mActionScaleFeature );
   mMapTools.mOffsetCurve = new QgsMapToolOffsetCurve( mMapCanvas );
   mMapTools.mOffsetCurve->setAction( mActionOffsetCurve );
   mMapTools.mReshapeFeatures = new QgsMapToolReshape( mMapCanvas );
@@ -9888,6 +9895,11 @@ void QgisApp::rotateFeature()
   mMapCanvas->setMapTool( mMapTools.mRotateFeature );
 }
 
+void QgisApp::scaleFeature()
+{
+  mMapCanvas->setMapTool( mMapTools.mScaleFeature );
+}
+
 void QgisApp::rotateLabel()
 {
   mMapCanvas->setMapTool( mMapTools.mRotateLabel );
@@ -14641,6 +14653,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionMoveFeature->setEnabled( false );
     mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
+    mActionScaleFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
     mActionVertexTool->setEnabled( false );
     mActionVertexToolActiveLayer->setEnabled( false );
@@ -14848,6 +14861,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionMoveFeature->setEnabled( isEditable && canChangeGeometry );
         mActionMoveFeatureCopy->setEnabled( isEditable && canChangeGeometry );
         mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
+        mActionScaleFeature->setEnabled( isEditable && canChangeGeometry );
         mActionVertexTool->setEnabled( isEditable && canChangeGeometry );
         mActionVertexToolActiveLayer->setEnabled( isEditable && canChangeGeometry );
 
@@ -15044,6 +15058,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
+      mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
@@ -15136,6 +15151,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
+      mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
@@ -15202,6 +15218,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
+      mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
@@ -15268,6 +15285,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
+      mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
