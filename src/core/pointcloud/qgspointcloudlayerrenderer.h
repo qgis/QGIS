@@ -61,7 +61,6 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     bool render() override;
     bool forceRasterRender() const override;
-    QVector<QMap<QString, QVariant>> identify( const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext );
 
   private:
 

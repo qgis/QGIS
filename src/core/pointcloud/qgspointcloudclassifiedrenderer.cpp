@@ -139,7 +139,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QMap<QString, QVari
   if ( !pointAttributes.contains( mAttribute ) )
     return false;
   bool parsedCorrectly;
-  int attributeInt = pointAttributes[ mAttribute ].toReal( &parsedCorrectly );
+  int attributeInt = pointAttributes[ mAttribute ].toInt( &parsedCorrectly );
   if ( !parsedCorrectly )
     return false;
   for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )

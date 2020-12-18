@@ -201,6 +201,8 @@ and generate a proper subclass.
 Renders a ``block`` of point cloud data using the specified render ``context``.
 %End
 
+    QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, QgsRenderContext context,  const QgsGeometry &geometry );
+
     virtual bool willRenderPoint( const QMap<QString, QVariant> &pointAttributes );
 %Docstring
 Checks whether the point holding ``pointAttributes`` attributes will be rendered

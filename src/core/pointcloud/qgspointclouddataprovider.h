@@ -22,8 +22,12 @@
 #include "qgsdataprovider.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
+#include "qgspointcloudrenderer.h"
+#include "qgsidentifycontext.h"
 #include <memory>
 
+class QgsPointCloudLayer;
+class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
@@ -72,6 +76,13 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
+
+    /**
+     * Returns the list of points of the point cloud layer \a layer according to a zoom level
+     * defined by \a maximumError and \a rootErrorPixels, and an extent defined by a geometry
+     * in the 2D plane \a geometry and a range for z values \a extentZRange
+     */
+    QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, float maximumError, float rootErrorPixels, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange );
 
     /**
      * Returns flags containing the supported capabilities for the data provider.
@@ -293,6 +304,30 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * Emitted when point cloud generation state is changed
      */
     void indexGenerationStateChanged( PointCloudIndexGenerationState state );
+
+  private:
+
+    /**
+     * Retrieves the x and y coordinate for the point at index \a i.
+     */
+    static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y )
+    {
+      const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.xOffset() );
+      const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.yOffset() );
+      x = context.offset().x() + context.scale().x() * ix;
+      y = context.offset().y() + context.scale().y() * iy;
+    }
+
+    /**
+     * Retrieves the z value for the point at index \a i.
+     */
+    static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i )
+    {
+      const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
+      return context.offset().z() + context.scale().z() * iz;
+    }
+
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels, const QgsGeometry &extentGeometry, const QgsDoubleRange extentZRange );
 };
 
 #endif // QGSMESHDATAPROVIDER_H
