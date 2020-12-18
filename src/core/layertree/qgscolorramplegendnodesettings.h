@@ -60,6 +60,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * Returns the direction of the ramp.
      *
      * \see setDirection()
+     * \see orientation()
      */
     QgsColorRampLegendNodeSettings::Direction direction() const;
 
@@ -67,6 +68,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      * Sets the \a direction of the ramp.
      *
      * \see direction()
+     * \see setOrientation()
      */
     void setDirection( QgsColorRampLegendNodeSettings::Direction direction );
 
@@ -184,6 +186,22 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      */
     void setTextFormat( const QgsTextFormat &format );
 
+    /**
+     * Returns the ramp orientation (i.e. horizontal or vertical).
+     *
+     * \see setOrientation()
+     * \see direction()
+     */
+    Qt::Orientation orientation() const;
+
+    /**
+     * Sets the ramp \a orientation (i.e. horizontal or vertical).
+     *
+     * \see orientation()
+     * \see setDirection()
+     */
+    void setOrientation( Qt::Orientation orientation );
+
   private:
     QString mMinimumLabel;
     QString mMaximumLabel;
@@ -192,6 +210,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
     Direction mDirection = MinimumToMaximum;
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
     QgsTextFormat mTextFormat;
+    Qt::Orientation mOrientation = Qt::Vertical;
 };
 
 #endif // QGSCOLORRAMPLEGENDNODESETTINGS_H

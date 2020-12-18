@@ -29,6 +29,9 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent )
   mDirectionComboBox->addItem( tr( "Maximum on Top" ), QgsColorRampLegendNodeSettings::MinimumToMaximum );
   mDirectionComboBox->addItem( tr( "Minimum on Top" ), QgsColorRampLegendNodeSettings::MaximumToMinimum );
 
+  mOrientationComboBox->addItem( tr( "Vertical" ), Qt::Vertical );
+  mOrientationComboBox->addItem( tr( "Horizontal" ), Qt::Horizontal );
+
   mMinLabelLineEdit->setPlaceholderText( tr( "Default" ) );
   mMaxLabelLineEdit->setPlaceholderText( tr( "Default" ) );
 
@@ -40,6 +43,7 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent )
   connect( mPrefixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mSuffixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mDirectionComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onChanged );
+  connect( mOrientationComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onOrientationChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsColorRampLegendNodeWidget::changeNumberFormat );
   connect( mFontButton, &QgsFontButton::changed, this, &QgsColorRampLegendNodeWidget::onChanged );
 }
@@ -48,6 +52,7 @@ QgsColorRampLegendNodeSettings QgsColorRampLegendNodeWidget::settings() const
 {
   QgsColorRampLegendNodeSettings settings;
   settings.setDirection( static_cast< QgsColorRampLegendNodeSettings::Direction >( mDirectionComboBox->currentData().toInt() ) );
+  settings.setOrientation( static_cast< Qt::Orientation >( mOrientationComboBox->currentData().toInt() ) );
   settings.setMinimumLabel( mMinLabelLineEdit->text() );
   settings.setMaximumLabel( mMaxLabelLineEdit->text() );
   settings.setPrefix( mPrefixLineEdit->text() );
@@ -67,7 +72,9 @@ void QgsColorRampLegendNodeWidget::setSettings( const QgsColorRampLegendNodeSett
   mPrefixLineEdit->setText( settings.prefix() );
   mSuffixLineEdit->setText( settings.suffix() );
   mDirectionComboBox->setCurrentIndex( mDirectionComboBox->findData( settings.direction() ) );
+  mOrientationComboBox->setCurrentIndex( mOrientationComboBox->findData( settings.orientation() ) );
   mFontButton->setTextFormat( settings.textFormat() );
+  onOrientationChanged();
   mBlockSignals = false;
 }
 
@@ -83,6 +90,24 @@ void QgsColorRampLegendNodeWidget::changeNumberFormat()
   } );
   openPanel( widget );
   return;
+}
+
+void QgsColorRampLegendNodeWidget::onOrientationChanged()
+{
+  switch ( static_cast< Qt::Orientation >( mOrientationComboBox->currentData().toInt() ) )
+  {
+    case Qt::Vertical:
+      mDirectionComboBox->setItemText( 0, tr( "Maximum on Top" ) );
+      mDirectionComboBox->setItemText( 1, tr( "Minimum on Top" ) );
+      break;
+
+    case Qt::Horizontal:
+      mDirectionComboBox->setItemText( 0, tr( "Maximum on Right" ) );
+      mDirectionComboBox->setItemText( 1, tr( "Minimum on Right" ) );
+      break;
+  }
+
+  onChanged();
 }
 
 void QgsColorRampLegendNodeWidget::onChanged()
