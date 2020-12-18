@@ -376,6 +376,7 @@
      <addaction name="mActionMoveFeature"/>
      <addaction name="mActionMoveFeatureCopy"/>
      <addaction name="mActionRotateFeature"/>
+     <addaction name="mActionScaleFeature"/>
      <addaction name="mActionSimplifyFeature"/>
      <addaction name="mActionAddRing"/>
      <addaction name="mActionAddPart"/>
@@ -521,6 +522,7 @@
    </attribute>
    <addaction name="mActionDigitizeWithCurve"/>
    <addaction name="mActionRotateFeature"/>
+   <addaction name="mActionScaleFeature"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
    <addaction name="mActionAddPart"/>
@@ -2492,6 +2494,21 @@ Acts on the currently active layer only.</string>
    </property>
    <property name="toolTip">
     <string>Save Layer Edits</string>
+   </property>
+  </action>
+  <action name="mActionScaleFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../../images/themes/default/mActionScaleFeature.svg</normaloff>../../images/themes/default/mActionScaleFeature.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Scale Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Scale Feature(s)</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
