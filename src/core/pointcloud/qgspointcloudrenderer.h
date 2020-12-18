@@ -340,8 +340,8 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     /**
      * Checks whether the point holding \a pointAttributes attributes will be rendered
-     * By default if not overriden in the subclass renderer will return true
-     * ( the renderer is responsible for the filtering behaviour )
+     * By default if not overridden in the subclass renderer will return true
+     * ( the renderer is responsible for the filtering behavior )
      */
     virtual bool willRenderPoint( const QMap<QString, QVariant> &pointAttributes )
     {
