@@ -562,8 +562,6 @@ void QgsPGRootItem::onConnectionsChanged()
   refresh();
 }
 
-QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
-
 QString QgsPostgresDataItemProvider::name()
 {
   return QStringLiteral( "PostGIS" );
