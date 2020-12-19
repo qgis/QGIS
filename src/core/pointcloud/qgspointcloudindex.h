@@ -213,14 +213,14 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      * Returns the number of points in one direction in a single node.
      */
     int span() const;
-
+	bool isloaded = false;
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
-
+	
     QHash<IndexedPointCloudNode, int> mHierarchy; //!< Data hierarchy
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords

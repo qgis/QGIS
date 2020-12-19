@@ -30,6 +30,8 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
+#include "qgsdisplazfeatureiterator.h"
+
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
@@ -105,63 +107,100 @@ bool QgsPointCloudLayerRenderer::render()
   QElapsedTimer t;
   t.start();
 #endif
-
   const IndexedPointCloudNode root = pc->root();
 
-  const float maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
-
-  const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
-  QgsRectangle rootNodeExtentMapCoords;
-  try
+  if (mLayer->providerType()=="displaz")
   {
-    rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+
+		  QgsPointCloudRequest request;
+		  request.setAttributes(mAttributes);
+		  const float maximumError = context.renderContext().convertToPainterUnits(mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit());// in pixels
+		  QgsRectangle rootNodeExtentMapCoords = pc->extent();
+		  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
+		  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
+		  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+		  const QList<IndexedPointCloudNode> nodes = traverseTree(pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels);
+																				// drawing
+		  int nodesDrawn = 0;
+		//  for (const IndexedPointCloudNode &n : nodes)
+
+			  if (context.renderContext().renderingStopped())
+			  {
+				  QgsDebugMsgLevel("canceled", 2);
+				  return true;
+			  }
+			  QgsRectangle  extent =context.renderContext().extent();
+			  static_cast<QgsDisplazPointCloudIndex*>(pc)->RootNode(extent);
+			  if (pc->isloaded)
+			  {
+				  DrawCount  mdrawlist =  static_cast<QgsDisplazPointCloudIndex*>(pc)->getData();
+				  std::shared_ptr<Geometry> geom = static_cast<QgsDisplazPointCloudIndex*>(pc)->getgeom();
+				//  pc->nodeData(root, request);
+				 // context.setAttributes(block->attributes());
+				  //mRenderer->renderBlock(block, context);
+				  mRenderer->renderDisplaz(mdrawlist,geom,context);
+				  ++nodesDrawn;
+			  }
+		  mRenderer->stopRender(context);
+
   }
-  catch ( QgsCsException & )
+  else
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
-    rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+	
+	  const float maximumError = context.renderContext().convertToPainterUnits(mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit());// in pixels
+
+	  const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent(root);
+	  QgsRectangle rootNodeExtentMapCoords;
+	  try
+	  {
+		  rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox(rootNodeExtentLayerCoords);
+	  }
+	  catch (QgsCsException &)
+	  {
+		  QgsDebugMsg(QStringLiteral("Could not transform node extent to map CRS"));
+		  rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
+	  }
+
+	  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
+
+	  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
+	  if ((rootErrorInMapCoordinates < 0.0) || (mapUnitsPerPixel < 0.0) || (maximumError < 0.0))
+	  {
+		  QgsDebugMsg(QStringLiteral("invalid screen error"));
+		  return false;
+	  }
+	  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+	  const QList<IndexedPointCloudNode> nodes = traverseTree(pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels);
+
+	  QgsPointCloudRequest request;
+	  request.setAttributes(mAttributes);
+
+	  // drawing
+	  int nodesDrawn = 0;
+	  for (const IndexedPointCloudNode &n : nodes)
+	  {
+		  if (context.renderContext().renderingStopped())
+		  {
+			  QgsDebugMsgLevel("canceled", 2);
+			  break;
+		  }
+		  std::unique_ptr<QgsPointCloudBlock> block(pc->nodeData(n, request));
+
+		  if (!block)
+			  continue;
+
+		  context.setAttributes(block->attributes());
+
+		  mRenderer->renderBlock(block.get(), context);
+		  ++nodesDrawn;
+	  }
+
+	  QgsDebugMsgLevel(QStringLiteral("totals: %1 nodes | %2 points | %3ms").arg(nodesDrawn)
+		  .arg(context.pointsRendered())
+		  .arg(t.elapsed()), 2);
+
+	  mRenderer->stopRender(context);
   }
-
-  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
-
-  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
-  if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
-  {
-    QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
-    return false;
-  }
-  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
-  const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
-
-  QgsPointCloudRequest request;
-  request.setAttributes( mAttributes );
-
-  // drawing
-  int nodesDrawn = 0;
-  for ( const IndexedPointCloudNode &n : nodes )
-  {
-    if ( context.renderContext().renderingStopped() )
-    {
-      QgsDebugMsgLevel( "canceled", 2 );
-      break;
-    }
-    std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
-
-    if ( !block )
-      continue;
-
-    context.setAttributes( block->attributes() );
-
-    mRenderer->renderBlock( block.get(), context );
-    ++nodesDrawn;
-  }
-
-  QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
-                    .arg( context.pointsRendered() )
-                    .arg( t.elapsed() ), 2 );
-
-  mRenderer->stopRender( context );
-
   return true;
 }
 

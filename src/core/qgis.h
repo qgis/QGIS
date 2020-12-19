@@ -37,44 +37,6 @@ int QgisEvent = QEvent::User + 1;
 % End
 #endif
 
-#include <fileloader.h>
-#include <geometrycollection.h>
-class  QgsdisplazfileLoader
-{
-public:
-  explicit QgsdisplazfileLoader();
-
-  ~QgsdisplazfileLoader();
-
-public:
-  int m_maxPointCount = 200000000;
-
-  FileLoader* getDisPlaz_las_loader()
-  {
-    return g_PointCloudfileLoader;
-  }
-  GeometryCollection* getDisPlaz_las_geometry()
-  {
-    return g_PointCloudGeoms;
-  }
-  FileLoader* g_PointCloudfileLoader;
-  GeometryCollection* g_PointCloudGeoms;
-};
-
-static QgsdisplazfileLoader*lasfileManager;
-
-static inline QgsdisplazfileLoader* getlasfileManager()
-{
-  if (lasfileManager == nullptr)
-  {
-    return new QgsdisplazfileLoader();
-  }
-  else
-  {
-    return lasfileManager;
-  }
-}
-
 /**
  * \ingroup core
  * The Qgis class provides global constants for use throughout the application.

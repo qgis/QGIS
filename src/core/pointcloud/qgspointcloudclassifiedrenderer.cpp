@@ -129,7 +129,9 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
   context.incrementPointsRendered( rendered );
 }
 
-
+void QgsPointCloudClassifiedRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context)
+{
+}
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   std::unique_ptr< QgsPointCloudClassifiedRenderer > r = qgis::make_unique< QgsPointCloudClassifiedRenderer >();

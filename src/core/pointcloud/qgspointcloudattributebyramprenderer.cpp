@@ -122,6 +122,10 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   context.incrementPointsRendered( rendered );
 }
 
+void QgsPointCloudAttributeByRampRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context)
+{
+
+}
 
 QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {

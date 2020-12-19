@@ -28,14 +28,50 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
-#include "qgis_sip.h"
 #include "qgis.h"
 
 #include <fileloader.h>
 #include <geometrycollection.h>
 
+//#include "PointViewerMainWindow.h"
 class QgsDisplazProvider;
 class QgsCoordinateReferenceSystem;
+
+class CORE_EXPORT  QgsdisplazfileLoader :public QObject
+{
+	Q_OBJECT
+public:
+	QgsdisplazfileLoader();
+
+	~QgsdisplazfileLoader();
+
+public:
+	int m_maxPointCount = 200000000;
+
+	static  QgsdisplazfileLoader *sInstance;
+
+	static QgsdisplazfileLoader *instance();
+
+	FileLoader* getDisPlaz_las_loader()
+	{
+		return g_PointCloudfileLoader;
+	}
+	void setlasloader(FileLoader* _PointCloudfileLoader)
+	{
+		g_PointCloudfileLoader = _PointCloudfileLoader;
+	}
+	GeometryCollection* getDisPlaz_las_geometry()
+	{
+		return g_PointCloudGeoms;
+	}
+	void setlas_geometry(GeometryCollection* _PointCloudGeoms)
+	{
+		g_PointCloudGeoms = _PointCloudGeoms;
+	}
+     FileLoader* g_PointCloudfileLoader =nullptr ;
+	 GeometryCollection* g_PointCloudGeoms =nullptr;
+
+};
 
 class QgsDisplazPointCloudIndex : public QgsPointCloudIndex
 {
@@ -48,6 +84,12 @@ public:
 
   bool load(const QString &fileName) override;
 
+ void RootNode(QgsRectangle &extent);
+  DrawCount  getData();
+  std::shared_ptr<Geometry> getgeom()
+  {
+	  return m_geom;
+  }
   QgsPointCloudBlock *nodeData(const IndexedPointCloudNode &n, const QgsPointCloudRequest &request) override;
 
   QgsCoordinateReferenceSystem crs() const;
@@ -64,9 +106,11 @@ private:
   QString mDataType;
   QString mDirectory;
   QString mWkt;
-
+  QString mName;
+  QgsRectangle m_renderextent;
   int mPointCount = 0;
-
+  std::shared_ptr<Geometry> m_geom;
+ 
   struct AttributeStatistics
   {
     int count = -1;

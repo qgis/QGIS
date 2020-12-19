@@ -562,13 +562,13 @@ include_directories(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${Qt5OpenGL_INCLUDE_DIRS}
-  E:/code/displaz-master/src
-  E:/code/displaz-master/src/render
-  E:/code/displaz-master/src/gui
-  E:/code/displaz-master/build_external/dist/include
-  E:/code/displaz-master/build_external/dist/include/OpenEXR
-  E:/code/displaz-master/thirdparty/glew
-  E:/code/displaz-master/thirdparty
+  I:/tst/ccgis/displaz-master/displaz-master/src
+  I:/tst/ccgis/displaz-master/displaz-master/src/render
+  I:/tst/ccgis/displaz-master/displaz-master/src/gui
+  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include
+  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include/OpenEXR
+  I:/tst/ccgis/displaz-master/displaz-master/thirdparty/glew
+  I:/tst/ccgis/displaz-master/displaz-master/thirdparty
 )
 
 if(HAVE_OPENCL)
@@ -624,7 +624,7 @@ target_link_libraries(qgis_app
   libdxfrw
   laslib.lib
   Imath.lib
-  lmThread.lib
+  IlmThread.lib
   IexMath.lib
   Iex.lib
   Half.lib

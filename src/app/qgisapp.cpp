@@ -2198,6 +2198,10 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
+		if (u.providerKey== QLatin1String("displaz"))
+		{
+			addPointCloudFile(uri); //三维窗口
+		}
       addPointCloudLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
@@ -17194,9 +17198,9 @@ void QgisApp::createLasViewer()
 
 	//m_helpDialog = new HelpDialog(this);
 
-  QgsdisplazfileLoader  *lasfileManager = Qgis::getlasfileManager();
-	//m_geometries = new GeometryCollection(this);
-  m_geometries=lasfileManager->getDisPlaz_las_geometry();
+	QgsdisplazfileLoader  *lasfileManager = QgsdisplazfileLoader::instance();
+	m_geometries = new GeometryCollection(this);
+    lasfileManager->setlas_geometry(m_geometries);
 	connect(m_geometries, SIGNAL(layoutChanged()), this, SLOT(updateTitle()));
 	connect(m_geometries, SIGNAL(dataChanged(QModelIndex, QModelIndex)), this, SLOT(updateTitle()));
 	connect(m_geometries, SIGNAL(rowsInserted(QModelIndex, int, int)), this, SLOT(updateTitle()));
@@ -17212,9 +17216,11 @@ void QgisApp::createLasViewer()
 	//
 	// Main point: each QObject has a thread affinity which determines which
 	// thread its slots will execute on, when called via a connected signal.
+
+	m_PointCloudfileLoader = new FileLoader(m_maxPointCount);
+    lasfileManager->setlasloader(m_PointCloudfileLoader);
+
 	QThread* loaderThread = new QThread();
-	//m_PointCloudfileLoader = new FileLoader(m_maxPointCount);
-  m_PointCloudfileLoader = lasfileManager->getDisPlaz_las_loader();
 	m_PointCloudfileLoader->moveToThread(loaderThread);
 	connect(loaderThread, SIGNAL(finished()), m_PointCloudfileLoader, SLOT(deleteLater()));
 	connect(loaderThread, SIGNAL(finished()), loaderThread, SLOT(deleteLater()));
@@ -17223,12 +17229,9 @@ void QgisApp::createLasViewer()
 		m_geometries, SLOT(addGeometry(std::shared_ptr<Geometry>, bool, bool)));
 	connect(m_PointCloudfileLoader, SIGNAL(geometryMutatorLoaded(std::shared_ptr<GeometryMutator>)),
 		m_geometries, SLOT(mutateGeometry(std::shared_ptr<GeometryMutator>))); 
-
-	///   wp ----------
-
 	loaderThread->start();
+
 	connect(actionopenPointCloudFile, SIGNAL(triggered()), this, SLOT(openPointCloudFiles()));
-	//connect(m_PointCloudfileLoader, SIGNAL(geometryLoaded(std::shared_ptr<Geometry>)), this, SLOT(FromGeometriesToLayerMap((std::shared_ptr<Geometry>))));
 	connect(m_geometries, SIGNAL(geomadded(std::shared_ptr<Geometry>)), this, SLOT(FromGeometriesToLayerMap(std::shared_ptr<Geometry>))); //
 	//--------------------------------------------------  
 	// Menus
@@ -17691,8 +17694,9 @@ void QgisApp::FromGeometriesToLayerMap()
 }
 void QgisApp::FromGeometriesToLayerMap(std::shared_ptr<Geometry> geom)
 {
-	/*
+
 	bool guiWarning = true;
+	/*
 	//PointArray* pointgeo = static_cast<PointArray*>(geom.get());
 	//PointCloudLayer* pointcloudlayer = new PointCloudLayer(pointgeo);
 	// if the layer needs authentication, ensure the master password is set

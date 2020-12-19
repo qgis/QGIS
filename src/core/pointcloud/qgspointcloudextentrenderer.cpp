@@ -47,6 +47,10 @@ void QgsPointCloudExtentRenderer::renderBlock( const QgsPointCloudBlock *, QgsPo
 {
 
 }
+void QgsPointCloudExtentRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &)
+{
+
+}
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
