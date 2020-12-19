@@ -296,8 +296,8 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
     // rotate/tilt using mouse (camera moves as it rotates around its view center)
     float pitch = mCameraPose.pitchAngle();
     float yaw = mCameraPose.headingAngle();
-    pitch += dy;
-    yaw -= dx / 2;
+    pitch += 0.2f * dy;
+    yaw -= 0.2f * dx;
     mCameraPose.setPitchAngle( pitch );
     mCameraPose.setHeadingAngle( yaw );
     updateCameraFromPose();
@@ -306,7 +306,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   {
     // rotate/tilt using mouse (camera stays at one position as it rotates)
     float diffPitch = 0.2f * dy;
-    float diffYaw = 0.2f * -dx / 2;
+    float diffYaw = - 0.2f * dx;
     rotateCamera( diffPitch, diffYaw );
     updateCameraFromPose( true );
   }
