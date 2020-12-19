@@ -307,7 +307,6 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
                     point.addZValue( point.m() );
                   break;
 
-                  break;
                 case ValueZ:
                   break;
               }
