@@ -1345,6 +1345,15 @@
     <string>Ctrl+Shift+F</string>
    </property>
   </action>
+  <action name="mActionZoomToLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;Layer</string>
+   </property>
+  </action>
   <action name="mActionZoomToLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
