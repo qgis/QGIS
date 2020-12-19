@@ -2735,6 +2735,7 @@ void QgisApp::createActions()
   connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::measureArea );
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
+  connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToLayers, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToSelected, &QAction::triggered, this, &QgisApp::zoomToSelected );
   connect( mActionZoomLast, &QAction::triggered, this, &QgisApp::zoomToPrevious );
@@ -4098,6 +4099,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
   mActionZoomNext->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomNext.svg" ) ) );
+  mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
   mActionZoomToLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ) );
   mActionIdentify->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ) );
@@ -14654,6 +14656,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionDecreaseGamma->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
     mActionZoomToLayers->setEnabled( false );
+    mActionZoomToLayer->setEnabled( false );
 
     enableDigitizeWithCurveAction( false );
 
@@ -14665,6 +14668,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
   mActionZoomToLayers->setEnabled( true );
+  mActionZoomToLayer->setEnabled( true );
 
   mActionCopyStyle->setEnabled( true );
   mActionPasteStyle->setEnabled( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ) );
@@ -14695,6 +14699,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionIncreaseGamma->setEnabled( false );
       mActionDecreaseGamma->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( isSpatial );
       mActionZoomToLayers->setEnabled( isSpatial );
       mActionZoomToSelected->setEnabled( isSpatial );
       mActionLabeling->setEnabled( isSpatial );
@@ -14949,6 +14954,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectFreehand->setEnabled( false );
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( true );
+      mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
@@ -15062,6 +15068,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectFreehand->setEnabled( false );
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
@@ -15127,6 +15134,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectFreehand->setEnabled( false );
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
@@ -15192,6 +15200,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectFreehand->setEnabled( false );
       mActionSelectRadius->setEnabled( false );
       mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
       mActionZoomToLayers->setEnabled( true );
       mActionZoomToSelected->setEnabled( false );
       mActionOpenTable->setEnabled( false );
