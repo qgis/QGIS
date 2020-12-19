@@ -129,7 +129,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) );
     const QString basepath = QFileInfo( datasource ).absolutePath();
-    mOriginalFileBase[name].append( basepath );
+    mOriginalFileBase[ node.namedItem( QStringLiteral( "id" ) ).toElement().text() ].append( basepath );
 
     QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name,
@@ -408,10 +408,9 @@ void QgsHandleBadLayers::apply()
     {
       fileName = longName;
     }
-    if ( item->data( Qt::UserRole + 2 ).isValid() )
+    if ( !( item->data( Qt::UserRole + 2 ).isValid() && item->data( Qt::UserRole + 2 ).toBool() ) )
     {
-      if ( item->data( Qt::UserRole + 2 ).toBool() )
-        datasource = QDir::toNativeSeparators( checkBasepath( layerId, datasource, fileName ).replace( fileName, longName ) );
+      datasource = QDir::toNativeSeparators( checkBasepath( layerId, datasource, fileName ).replace( fileName, longName ) );
     }
 
     bool dataSourceChanged { false };
@@ -518,10 +517,11 @@ int QgsHandleBadLayers::layerCount()
 QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName )
 {
   const QString originalBase = mOriginalFileBase.value( layerId );
-  const QFileInfo newpathInfo = QFileInfo( newPath );
-  if ( newpathInfo.exists() && newpathInfo.isFile() )
+  const QDir newpathDir = QDir( newPath );
+  bool exists = newpathDir.exists( fileName );
+  if ( exists )
   {
-    const QString newBasepath = newpathInfo.absoluteDir().path();
+    const QString newBasepath = newpathDir.absolutePath();
     if ( !mAlternativeBasepaths.value( originalBase ).contains( newBasepath ) )
       mAlternativeBasepaths[ originalBase ].append( newBasepath );
     return ( newPath );
@@ -643,8 +643,8 @@ void QgsHandleBadLayers::autoFind()
       }
       if ( dataSourceChanged )
       {
-        const QString altBasepath = QFileInfo( datasource ).absoluteDir().path();
-        checkBasepath( layerId, altBasepath, fileName );
+        QString cleanSrc = QFileInfo( datasource ).absoluteDir().absolutePath();
+        checkBasepath( layerId, cleanSrc, fileName );
       }
     }
 
@@ -654,6 +654,7 @@ void QgsHandleBadLayers::autoFind()
     if ( dataSourceChanged )
     {
       setFilename( i, datasource );
+      item->setText( datasource );
       item->setForeground( QBrush( Qt::green ) );
       item->setData( Qt::UserRole + 2, QVariant( true ) );
     }
