@@ -284,6 +284,7 @@ void QgsColorRampShaderWidget::mAddEntryButton_clicked()
   autoLabel();
 
   loadMinimumMaximumFromTree();
+  updateColorRamp();
   emit widgetChanged();
 }
 
@@ -303,6 +304,7 @@ void QgsColorRampShaderWidget::mDeleteEntryButton_clicked()
   }
 
   loadMinimumMaximumFromTree();
+  updateColorRamp();
   emit widgetChanged();
 }
 
@@ -354,6 +356,12 @@ void QgsColorRampShaderWidget::mClassificationModeComboBox_currentIndexChanged( 
   QgsColorRampShader::ClassificationMode mode = static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->itemData( index ).toInt() );
   mNumberOfEntriesSpinBox->setEnabled( mode != QgsColorRampShader::Continuous );
   emit classificationModeChanged( mode );
+}
+
+void QgsColorRampShaderWidget::updateColorRamp()
+{
+  std::unique_ptr< QgsColorRamp > ramp( shader().createColorRamp() );
+  whileBlocking( btnColorRamp )->setColorRamp( ramp.get() );
 }
 
 void QgsColorRampShaderWidget::applyColorRamp()
@@ -571,6 +579,7 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
     {
       autoLabel();
       loadMinimumMaximumFromTree();
+      updateColorRamp();
       emit widgetChanged();
       break;
     }
@@ -586,6 +595,7 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
     case ColorColumn:
     {
       loadMinimumMaximumFromTree();
+      updateColorRamp();
       emit widgetChanged();
       break;
     }
