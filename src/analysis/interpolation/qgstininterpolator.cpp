@@ -289,41 +289,27 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
 
             QgsPointSequence linePoints;
             curve->points( linePoints );
-            for ( int i = 0; i < linePoints.size(); ++i )
+            for ( QgsPoint &point : linePoints )
             {
-              QgsPoint &point = linePoints[i];
               switch ( source )
               {
                 case ValueAttribute:
-                {
-                  QgsPoint newPoint = point;
                   if ( point.is3D() )
-                    newPoint = point;
+                    point.setZ( attributeValue );
                   else
-                    newPoint = QgsPoint( point.x(), point.y(), 0 );
-
-                  newPoint.setZ( attributeValue );
-
-                  linePoints[i] = newPoint;
-                }
-                break;
-
-                case ValueZ:
+                    point.addZValue( attributeValue );
                   break;
 
                 case ValueM:
-                {
-                  QgsPoint newPoint = point;
                   if ( point.is3D() )
-                    newPoint = point;
+                    point.setZ( point.m() );
                   else
-                    newPoint = QgsPoint( point.x(), point.y(), 0 );
+                    point.addZValue( point.m() );
+                  break;
 
-                  newPoint.setZ( point.m() );
-
-                  linePoints[i] = newPoint;
-                }
-                break;
+                  break;
+                case ValueZ:
+                  break;
               }
             }
             mTriangulation->addLine( linePoints, type );
