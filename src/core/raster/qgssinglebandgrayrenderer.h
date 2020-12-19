@@ -21,11 +21,12 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
+#include "qgscolorramplegendnodesettings.h"
+
 #include <memory>
 
 class QgsContrastEnhancement;
 class QDomElement;
-class QgsColorRampLegendNodeSettings;
 
 /**
  * \ingroup core
