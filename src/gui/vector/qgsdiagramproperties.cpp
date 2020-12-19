@@ -882,7 +882,7 @@ void QgsDiagramProperties::apply()
   ds.setSpacingUnit( mBarSpacingUnitComboBox->unit() );
   ds.setSpacingMapUnitScale( mBarSpacingUnitComboBox->getMapUnitScale() );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+  if ( mPaintEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) || mPaintEffect->enabled() ) )
     ds.setPaintEffect( mPaintEffect->clone() );
   else
     ds.setPaintEffect( nullptr );
