@@ -63,7 +63,7 @@ QgsScaleMagnetWidget::QgsScaleMagnetWidget( const QString &label, QWidget *paren
   mMagnetSpinBox->setMinimum( 0 );
   mMagnetSpinBox->setMaximum( 180 );
   mMagnetSpinBox->setPrefix( tr( "Snap to " ) );
-  mMagnetSpinBox->setSuffix( tr( "°" ) );
+  mMagnetSpinBox->setSuffix( tr( "x" ) );
   mMagnetSpinBox->setSingleStep( 5 );
   mMagnetSpinBox->setValue( 0 );
   mMagnetSpinBox->setClearValue( 0, tr( "No snapping" ) );
@@ -149,6 +149,10 @@ QgsMapToolScaleFeature::~QgsMapToolScaleFeature()
 
 void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 {
+  if ( mBaseDistance == 0)
+  {
+    return;
+  }
   if ( mScalingActive )
   {
     const double distance = mFeatureCenter.distance( toLayerCoordinates( mLayer, e->mapPoint() ) );
@@ -200,14 +204,14 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       return;
     }
-    mFeatureCenter = toLayerCoordinates( mLayer, e->mapPoint() );;
+    mFeatureCenter = toLayerCoordinates( mLayer, e->mapPoint() );
     mAnchorPoint->setCenter( mFeatureCenter );
     return;
   }
 
   deleteScalingWidget();
 
-  // Initialize rotation if not yet active
+  // Initialize scaling if not yet active
   if ( !mScalingActive )
   {
     mScaling = 1;
@@ -300,13 +304,6 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mScaling = 1.0;
 
     createScalingWidget();
-    if ( e->modifiers() & Qt::ShiftModifier )
-    {
-      if ( mScalingWidget )
-      {
-        mScalingWidget->setMagnet( 45 );
-      }
-    }
 
     mScalingActive = true;
 
@@ -351,7 +348,6 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   mScaling = scale;
   mScalingActive = false;
 
-  QgsVectorLayer *mLayer = currentVectorLayer();
   if ( !mLayer )
   {
     deleteRubberband();
@@ -365,14 +361,12 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   int start = ( mLayer->geometryType() == 2 )? 1 : 0;
 
-  int i = 0;
-  const auto constMScaledFeatures = mScaledFeatures;
-  for ( QgsFeatureId id : constMScaledFeatures )
+  for ( QgsFeatureId id : qgis::as_const( mScaledFeatures ) )
   {
     QgsFeature feat;
     mLayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
     QgsGeometry geom = feat.geometry();
-    i = start;
+    int i = start;
     QgsPointXY vertex = geom.vertexAt( i );
     while ( !vertex.isEmpty() )
     {
@@ -384,7 +378,10 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
       i = i + 1;
       vertex = geom.vertexAt( i );
     }
-
+    //double offsetx = ( 1 - mScaling ) * mRubberScale.x();
+    //double offsety = ( 1 - mScaling ) *  mRubberScale.y();
+    //QgsGeometry::OperationResult res = geom.transform( QTransform( mScaling, 0, 0, mScaling, offsetx, offsety ) );
+    //QString::number( res );
   }
 
   deleteScalingWidget();
