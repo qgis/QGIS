@@ -441,6 +441,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann

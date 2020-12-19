@@ -30,10 +30,10 @@ originally part of the larger QgsRasterLayer class
 #include "qgsrastershaderfunction.h"
 #include "qgsrectangle.h"
 #include "qgsreadwritecontext.h"
+#include "qgscolorramplegendnodesettings.h"
 
 class QgsColorRamp;
 class QgsRasterInterface;
-class QgsColorRampLegendNodeSettings;
 
 /**
  * \ingroup core
