@@ -410,7 +410,7 @@ void QgsHandleBadLayers::apply()
     }
     if ( !( item->data( Qt::UserRole + 2 ).isValid() && item->data( Qt::UserRole + 2 ).toBool() ) )
     {
-      datasource = QDir::toNativeSeparators( checkBasepath( layerId, datasource, fileName ).replace( fileName, longName ) );
+      datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ).replace( fileName, longName ) );
     }
 
     bool dataSourceChanged { false };
