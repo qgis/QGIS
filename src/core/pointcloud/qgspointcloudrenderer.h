@@ -25,7 +25,7 @@
 #include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
 
-#include <Geometry.h>
+//#include <Geometry.h>
 #include <PointArray.h>
 
 class QgsPointCloudBlock;
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 	/**
 	* Renders a \a block of point cloud data using the specified render \a context.
 	*/
-	virtual void renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context) = 0;
+	virtual void renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context) {};
     /**
      * Creates a renderer from an XML \a element.
      *

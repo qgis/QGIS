@@ -1392,6 +1392,14 @@ include_directories(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
   ${SPATIALINDEX_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
+  ${Qt5OpenGL_INCLUDE_DIRS}
+  I:/tst/ccgis/displaz-master/displaz-master/src
+  I:/tst/ccgis/displaz-master/displaz-master/src/render
+  I:/tst/ccgis/displaz-master/displaz-master/src/gui
+  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include
+  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include/OpenEXR
+  I:/tst/ccgis/displaz-master/displaz-master/thirdparty/glew
+  I:/tst/ccgis/displaz-master/displaz-master/thirdparty
 )
 
 if (WITH_EPT)
