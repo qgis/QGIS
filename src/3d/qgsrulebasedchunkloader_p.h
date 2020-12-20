@@ -26,7 +26,7 @@
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
-
+#include <glew/GL/glew.h>
 #include "qgschunkloader_p.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"

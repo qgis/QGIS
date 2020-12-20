@@ -15,7 +15,7 @@
 
 #ifndef QGSPHONGTEXTUREDMATERIALSETTINGS_H
 #define QGSPHONGTEXTUREDMATERIALSETTINGS_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
 

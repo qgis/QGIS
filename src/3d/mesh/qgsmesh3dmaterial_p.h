@@ -17,7 +17,7 @@
 
 #ifndef QGSMESH3DMATERIAL_H
 #define QGSMESH3DMATERIAL_H
-
+#include <glew/GL/glew.h>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QRenderPassFilter>

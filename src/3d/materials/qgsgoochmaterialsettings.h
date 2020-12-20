@@ -15,7 +15,7 @@
 
 #ifndef QGSGOOCHMATERIALSETTINGS_H
 #define QGSGOOCHMATERIALSETTINGS_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
 

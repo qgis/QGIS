@@ -17,7 +17,7 @@
 #define QGSPOINTCLOUD3DSYMBOL_P_H
 
 ///@cond PRIVATE
-
+#include <glew/GL/glew.h>
 #include "qgspointcloud3dsymbol.h"
 
 #include "qgschunkloader_p.h"

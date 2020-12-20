@@ -28,7 +28,7 @@
 //
 
 #define SIP_NO_FILE
-
+#include <glew/GL/glew.h>
 #include <Qt3DRender/QAbstractTextureImage>
 
 #include "qgsrectangle.h"

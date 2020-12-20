@@ -15,7 +15,7 @@
 
 #ifndef QGS3DMAPSETTINGS_H
 #define QGS3DMAPSETTINGS_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include <memory>

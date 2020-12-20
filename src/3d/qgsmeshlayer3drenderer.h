@@ -15,7 +15,7 @@
 
 #ifndef QGSMESHLAYER3DRENDERER_H
 #define QGSMESHLAYER3DRENDERER_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include "qgs3drendererregistry.h"

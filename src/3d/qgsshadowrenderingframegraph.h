@@ -15,7 +15,7 @@
 
 #ifndef QGSSHADOWRENDERINGFRAMEGRAPH_H
 #define QGSSHADOWRENDERINGFRAMEGRAPH_H
-
+#include <glew/GL/glew.h>
 #include <QWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSurfaceSelector>

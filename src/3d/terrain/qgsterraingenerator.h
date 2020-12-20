@@ -15,7 +15,7 @@
 
 #ifndef QGSTERRAINGENERATOR_H
 #define QGSTERRAINGENERATOR_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include "qgstilingscheme.h"

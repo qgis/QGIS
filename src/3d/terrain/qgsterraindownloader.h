@@ -15,7 +15,7 @@
 
 #ifndef QGSTERRAINDOWNLOADER_H
 #define QGSTERRAINDOWNLOADER_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include <memory>

@@ -15,7 +15,8 @@
 
 #ifndef QGS3DMAPSCENE_H
 #define QGS3DMAPSCENE_H
-
+#include <glew/GL/glew.h>
+#include <GL/GL.h>
 #include "qgis_3d.h"
 
 #include <Qt3DCore/QEntity>

@@ -15,7 +15,7 @@
 
 #ifndef QGSONLINETERRAINGENERATOR_H
 #define QGSONLINETERRAINGENERATOR_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include "qgsterraingenerator.h"

@@ -17,7 +17,7 @@
 
 #ifndef QGSMESHTERRAINGENERATOR_H
 #define QGSMESHTERRAINGENERATOR_H
-
+#include <glew/GL/glew.h>
 #include "qgsmaplayerref.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsmeshlayer.h"

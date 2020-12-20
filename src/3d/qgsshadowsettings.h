@@ -15,7 +15,7 @@
 
 #ifndef QGSSHADOWSETTINGS_H
 #define QGSSHADOWSETTINGS_H
-
+#include <glew/GL/glew.h>
 #include <QString>
 #include <QMap>
 

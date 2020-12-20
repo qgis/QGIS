@@ -15,7 +15,7 @@
 
 #ifndef QGSPOINTCLOUD3DSYMBOL_H
 #define QGSPOINTCLOUD3DSYMBOL_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include <Qt3DRender/QMaterial>

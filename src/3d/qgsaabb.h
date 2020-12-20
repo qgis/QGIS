@@ -15,7 +15,7 @@
 
 #ifndef QGSAABB_H
 #define QGSAABB_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include <cmath>

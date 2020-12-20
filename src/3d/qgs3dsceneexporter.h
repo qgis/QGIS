@@ -15,7 +15,7 @@
 
 #ifndef QGS3DSCENEEXPORTER_H
 #define QGS3DSCENEEXPORTER_H
-
+#include <glew/GL/glew.h>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DExtras/QPlaneGeometry>

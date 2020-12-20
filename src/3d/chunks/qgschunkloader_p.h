@@ -26,7 +26,7 @@
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
-
+#include <glew/GL/glew.h>
 #include "qgschunkqueuejob_p.h"
 
 #define SIP_NO_FILE

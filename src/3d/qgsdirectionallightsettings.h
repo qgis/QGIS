@@ -16,7 +16,7 @@
 #ifndef QGSDIRECTIONALLIGHTSETTINGS_H
 #define QGSDIRECTIONALLIGHTSETTINGS_H
 #include "qgis_3d.h"
-
+#include <glew/GL/glew.h>
 #include "qgsvector3d.h"
 #include <QColor>
 

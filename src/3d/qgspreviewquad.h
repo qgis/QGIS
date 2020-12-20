@@ -15,7 +15,7 @@
 
 #ifndef QGSPREVIEWQUAD_H
 #define QGSPREVIEWQUAD_H
-
+#include <glew/GL/glew.h>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>

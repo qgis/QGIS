@@ -33,7 +33,7 @@ class QgsMapRendererSequentialJob;
 class QgsMapSettings;
 class QgsProject;
 class QgsRasterLayer;
-
+#include <glew/GL/glew.h>
 #include <QObject>
 #include <QSize>
 

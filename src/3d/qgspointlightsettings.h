@@ -15,7 +15,7 @@
 
 #ifndef QGSPOINTLIGHTSETTINGS_H
 #define QGSPOINTLIGHTSETTINGS_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include "qgsvector3d.h"

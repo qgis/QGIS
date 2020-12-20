@@ -15,7 +15,7 @@
 
 #ifndef QGSABSTRACT3DENGINE_H
 #define QGSABSTRACT3DENGINE_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include <QObject>

@@ -15,7 +15,7 @@
 
 #ifndef QGS3DTYPES_H
 #define QGS3DTYPES_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 /**

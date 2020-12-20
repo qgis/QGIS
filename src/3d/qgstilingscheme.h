@@ -15,7 +15,7 @@
 
 #ifndef QGSTILINGSCHEME_H
 #define QGSTILINGSCHEME_H
-
+#include <glew/GL/glew.h>
 #include "qgis_3d.h"
 
 #include <qgscoordinatereferencesystem.h>
