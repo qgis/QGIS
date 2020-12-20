@@ -1,9 +1,9 @@
 /***************************************************************************
     qgsmaptoolscalefeature.h  -  map tool for scaling features by mouse drag
     ---------------------
-    begin                :
-    copyright            :
-    email                :
+    Date                 : December 2020
+    Copyright            : (C) 2020 by roya0045
+    Contact              : ping me on github
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
