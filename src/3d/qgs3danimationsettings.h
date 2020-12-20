@@ -15,7 +15,7 @@
 
 #ifndef QGS3DANIMATIONSETTINGS_H
 #define QGS3DANIMATIONSETTINGS_H
-#include <glew/GL/glew.h>
+
 #include "qgsvector3d.h"
 #include "qgis_3d.h"
 

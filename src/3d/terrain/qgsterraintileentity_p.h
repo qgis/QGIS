@@ -28,7 +28,7 @@
 //
 
 class QgsTerrainTextureImage;
-#include <glew/GL/glew.h>
+
 #include <Qt3DCore/QEntity>
 
 #include "qgschunknode_p.h"

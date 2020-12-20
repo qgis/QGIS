@@ -15,7 +15,7 @@
 
 #ifndef QGSMESH3DSYMBOL_H
 #define QGSMESH3DSYMBOL_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"

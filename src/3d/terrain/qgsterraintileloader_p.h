@@ -28,7 +28,7 @@
 //
 
 #define SIP_NO_FILE
-#include <glew/GL/glew.h>
+
 #include "qgschunkloader_p.h"
 
 #include <QImage>

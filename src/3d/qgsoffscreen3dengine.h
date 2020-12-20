@@ -15,7 +15,7 @@
 
 #ifndef QGSOFFSCREEN3DENGINE_H
 #define QGSOFFSCREEN3DENGINE_H
-#include <glew/GL/glew.h>
+
 #include "qgsabstract3dengine.h"
 
 #include <QSize>

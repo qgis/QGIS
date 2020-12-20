@@ -17,7 +17,7 @@
 
 #ifndef QGSMESH3DENTITY_H
 #define QGSMESH3DENTITY_H
-#include <glew/GL/glew.h>
+
 #include <Qt3DCore/QEntity>
 
 #include "mesh/qgsmesh3dgeometry_p.h"

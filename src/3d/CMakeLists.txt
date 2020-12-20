@@ -217,14 +217,6 @@ include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${QT5_3DEXTRA_INCLUDE_DIR}
-  ${Qt5OpenGL_INCLUDE_DIRS}
-  I:/tst/ccgis/displaz-master/displaz-master/src
-  I:/tst/ccgis/displaz-master/displaz-master/src/render
-  I:/tst/ccgis/displaz-master/displaz-master/src/gui
-  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include
-  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include/OpenEXR
-  I:/tst/ccgis/displaz-master/displaz-master/thirdparty/glew
-  I:/tst/ccgis/displaz-master/displaz-master/thirdparty
 )
 
 #############################################################

@@ -17,7 +17,7 @@
 #define QGSLAYOUTITEM3DMAP_H
 
 #include "qgis_3d.h"
-#include <glew/GL/glew.h>
+
 #include "qgslayoutitem.h"
 #include "qgstemporalrangeobject.h"
 #include "qgscamerapose.h"

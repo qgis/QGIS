@@ -15,7 +15,7 @@
 
 #ifndef QGSABSTRACTMATERIALSETTINGS_H
 #define QGSABSTRACTMATERIALSETTINGS_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 #include "qgis_sip.h"
 

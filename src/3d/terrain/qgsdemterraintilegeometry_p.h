@@ -28,7 +28,7 @@
 //
 
 #define SIP_NO_FILE
-#include <glew/GL/glew.h>
+
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometry.h>
 #include <QSize>

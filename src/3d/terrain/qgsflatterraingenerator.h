@@ -15,7 +15,7 @@
 
 #ifndef QGSFLATTERRAINGENERATOR_H
 #define QGSFLATTERRAINGENERATOR_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 
 #include "qgsterraingenerator.h"

@@ -15,7 +15,7 @@
 
 #ifndef QGSTESSELLATEDPOLYGONGEOMETRY_H
 #define QGSTESSELLATEDPOLYGONGEOMETRY_H
-#include <glew/GL/glew.h>
+
 #include "qgsfeatureid.h"
 #include "qgspolygon.h"
 

@@ -15,7 +15,7 @@
 
 #ifndef QGSPOLYGON3DSYMBOL_H
 #define QGSPOLYGON3DSYMBOL_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"

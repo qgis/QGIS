@@ -14,7 +14,7 @@
  ***************************************************************************/
 #ifndef QGSPOINT3DBILLBOARDMATERIAL_H
 #define QGSPOINT3DBILLBOARDMATERIAL_H
-#include <glew/GL/glew.h>
+
 #include <QObject>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>

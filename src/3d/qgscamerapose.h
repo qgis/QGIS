@@ -15,7 +15,7 @@
 
 #ifndef QGSCAMERAPOSE_H
 #define QGSCAMERAPOSE_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 
 #include "qgsvector3d.h"

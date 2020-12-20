@@ -19,7 +19,7 @@
 #define QGSCOLORRAMPTEXTURE_H
 
 /// @cond PRIVATE
-#include <glew/GL/glew.h>
+
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>

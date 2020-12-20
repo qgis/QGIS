@@ -15,7 +15,7 @@
 
 #ifndef QGSPHONGMATERIALSETTINGS_H
 #define QGSPHONGMATERIALSETTINGS_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
 #include "qgspropertycollection.h"

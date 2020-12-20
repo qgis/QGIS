@@ -15,7 +15,7 @@
 
 #ifndef QGSBILLBOARDGEOMETRY_H
 #define QGSBILLBOARDGEOMETRY_H
-#include <glew/GL/glew.h>
+
 #include <QObject>
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QBuffer>

@@ -15,7 +15,7 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
-#include <glew/GL/glew.h>
+
 #include "qgis_sip.h"
 
 class QgsLineString;

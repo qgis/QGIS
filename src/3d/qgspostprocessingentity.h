@@ -15,7 +15,7 @@
 
 #ifndef QGSPOSTPROCESSINGENTITY_H
 #define QGSPOSTPROCESSINGENTITY_H
-#include <glew/GL/glew.h>
+
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QMaterial>

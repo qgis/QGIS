@@ -15,7 +15,7 @@
 
 #ifndef QGSWINDOW3DENGINE_H
 #define QGSWINDOW3DENGINE_H
-#include <glew/GL/glew.h>
+
 #include "qgsabstract3dengine.h"
 #include "qgsshadowrenderingframegraph.h"
 #include "qgspostprocessingentity.h"

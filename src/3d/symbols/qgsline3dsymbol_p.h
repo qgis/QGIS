@@ -30,7 +30,7 @@
 #define SIP_NO_FILE
 
 #include "qgsfeature3dhandler_p.h"
-#include <glew/GL/glew.h>
+
 class QgsLine3DSymbol;
 class QgsAbstract3DSymbol;
 

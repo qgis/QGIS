@@ -26,7 +26,7 @@
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
-#include <glew/GL/glew.h>
+
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QGeometry>

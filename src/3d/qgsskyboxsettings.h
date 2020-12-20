@@ -18,7 +18,7 @@
 
 #include <QString>
 #include <QMap>
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 #include "qgsskyboxentity.h"
 

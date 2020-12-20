@@ -17,7 +17,7 @@
 
 #ifndef QGSMESHGEOMETRY_P_H
 #define QGSMESHGEOMETRY_P_H
-#include <glew/GL/glew.h>
+
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometry.h>
 #include <QVector3D>

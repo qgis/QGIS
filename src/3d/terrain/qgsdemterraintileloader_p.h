@@ -28,7 +28,7 @@
 //
 
 #define SIP_NO_FILE
-#include <glew/GL/glew.h>
+
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QElapsedTimer>

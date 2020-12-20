@@ -15,7 +15,7 @@
 
 #ifndef QGSMATERIALREGISTRY_H
 #define QGSMATERIALREGISTRY_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 #include "qgis_sip.h"
 

@@ -17,7 +17,7 @@
 
 #ifndef QGS3DALGORITHMS_H
 #define QGS3DALGORITHMS_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 #include "qgis.h"
 #include "processing/qgsprocessingprovider.h"

@@ -15,7 +15,7 @@
 
 #ifndef QGSSKYBOXENTITY_H
 #define QGSSKYBOXENTITY_H
-#include <glew/GL/glew.h>
+
 #include <Qt3DCore/QEntity>
 #include <QVector3D>
 #include <Qt3DRender/QTexture>

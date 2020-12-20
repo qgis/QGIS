@@ -17,7 +17,7 @@
 #define QGSMESH3DSYMBOL_P_H
 
 /// @cond PRIVATE
-#include <glew/GL/glew.h>
+
 //
 //  W A R N I N G
 //  -------------

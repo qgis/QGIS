@@ -15,7 +15,7 @@
 
 #ifndef QGSCAMERACONTROLLER_H
 #define QGSCAMERACONTROLLER_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 
 #include <QPointer>

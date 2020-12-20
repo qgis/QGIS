@@ -28,7 +28,7 @@
 //
 
 #define SIP_NO_FILE
-#include <glew/GL/glew.h>
+
 #include "qgsfeature3dhandler_p.h"
 
 class QgsPolygon3DSymbol;

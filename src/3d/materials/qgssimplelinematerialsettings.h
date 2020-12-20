@@ -16,7 +16,7 @@
 
 #ifndef QGSSIMPLELINEMATERIALSETTINGS_H
 #define QGSSIMPLELINEMATERIALSETTINGS_H
-#include <glew/GL/glew.h>
+
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
 
