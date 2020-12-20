@@ -1,9 +1,9 @@
 /***************************************************************************
-     testqgsmaptoolrotatefeature.cpp
+     testqgsmaptoolscalefeature.cpp
      --------------------------------
-    Date                 : November 2019
-    Copyright            : (C) 2019 by Nyall Dawson
-    Email                : nyall dot dawson at gmail dot com
+    Date                 : December 2020
+    Copyright            : (C) 2020 by roya0045
+    Contact              : ping me on github
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,30 +33,30 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsMapToolRotateFeature: public QObject
+class TestQgsMapToolScaleFeature: public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolRotateFeature();
+    TestQgsMapToolScaleFeature();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
-    void testRotateFeature();
+    void testScaleFeature();
 
   private:
     QgisApp *mQgisApp = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
-    QgsMapToolRotateFeature *mRotateTool = nullptr;
+    QgsMapToolScaleFeature *mScaleTool = nullptr;
     QgsVectorLayer *mLayerBase = nullptr;
 };
 
-TestQgsMapToolRotateFeature::TestQgsMapToolRotateFeature() = default;
+TestQgsMapToolScaleFeature::TestQgsMapToolScaleFeature() = default;
 
 
 //runs before all tests
-void TestQgsMapToolRotateFeature::initTestCase()
+void TestQgsMapToolScaleFeature::initTestCase()
 {
   qDebug() << "TestMapToolCapture::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -76,7 +76,7 @@ void TestQgsMapToolRotateFeature::initTestCase()
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
-  mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
+  mCanvas->setExtent( QgsRectangle( -4, -4, 4, 4 ) );
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
@@ -86,10 +86,10 @@ void TestQgsMapToolRotateFeature::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0))" );
+  QString wkt1 = QStringLiteral( "Polygon ((-2 -2, -2 -1, -1 -1, -1 -2))" );
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  QString wkt2 = QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" );
+  QString wkt2 = QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8))" );
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -111,35 +111,40 @@ void TestQgsMapToolRotateFeature::initTestCase()
   mCanvas->setCurrentLayer( mLayerBase );
 
   // create the tool
-  mRotateTool = new QgsMapToolRotateFeature( mCanvas );
-  mCanvas->setMapTool( mRotateTool );
+  mScaleTool = new QgsMapToolScaleFeature( mCanvas );
+  mCanvas->setMapTool( mScaleTool );
 
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
-  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
+  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( -4, -4, 4, 4 ) );
 }
 
 //runs after all tests
-void TestQgsMapToolRotateFeature::cleanupTestCase()
+void TestQgsMapToolScaleFeature::cleanupTestCase()
 {
-  delete mRotateTool;
+  delete mScaleTool;
   delete mCanvas;
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolRotateFeature::testRotateFeature()
+void TestQgsMapToolScaleFeature::testScaleFeature()
 {
-  TestQgsMapToolUtils utils( mRotateTool );
+  TestQgsMapToolUtils utils( mScaleTool );
 
-  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseMove( 2, 1 );
-  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  //scale up
+  utils.mouseClick( -2, -1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -2.5, -0.5 );
+  utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  //scale down
+  utils.mouseClick( 1.1, 0.8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 1.35, 1.85 );
+  utils.mouseClick( 1.35, 1.85, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((0.72 -0.17, 0.28 1.17, 1.17 0.72, 0.72 -0.17))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.85, 1.35 3.95, 1.85 3.95, 1.85 1.85))" ) );
 
   mLayerBase->undoStack()->undo();
 }
 
 
-QGSTEST_MAIN( TestQgsMapToolRotateFeature )
-#include "testqgsmaptoolrotatefeature.moc"
+QGSTEST_MAIN( TestQgsMapToolScaleFeature )
+#include "testqgsmaptoolscalefeature.moc"
