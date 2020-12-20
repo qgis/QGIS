@@ -131,15 +131,21 @@ bool QgsPointCloudLayerRenderer::render()
 			  }
 			  QgsRectangle  extent =context.renderContext().extent();
 			  static_cast<QgsDisplazPointCloudIndex*>(pc)->RootNode(extent);
+			 int  m_iterration = 0;
+			 int count = 0;
 			  if (pc->isloaded)
 			  {
 				  DrawCount  mdrawlist =  static_cast<QgsDisplazPointCloudIndex*>(pc)->getData();
 				  std::shared_ptr<Geometry> geom = static_cast<QgsDisplazPointCloudIndex*>(pc)->getgeom();
-				//  pc->nodeData(root, request);
-				 // context.setAttributes(block->attributes());
-				  //mRenderer->renderBlock(block, context);
+				  count += mdrawlist.numVertices;
 				  mRenderer->renderDisplaz(mdrawlist,geom,context);
-				  ++nodesDrawn;
+				 while( mdrawlist.moreToDraw && count<500000 && m_iterration<3)
+				  {
+					 DrawCount  mdrawlist = static_cast<QgsDisplazPointCloudIndex*>(pc)->getDataMore();
+					 mRenderer->renderDisplaz(mdrawlist, geom, context);
+					 m_iterration++;
+					 count += mdrawlist.numVertices;
+                 }
 			  }
 		  mRenderer->stopRender(context);
 

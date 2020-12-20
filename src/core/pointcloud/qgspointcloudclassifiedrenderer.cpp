@@ -131,6 +131,78 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
 void QgsPointCloudClassifiedRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context)
 {
+	const QgsRectangle visibleExtent = context.renderContext().extent();
+	QHash< int, QColor > colors;
+	for (const QgsPointCloudCategory &category : qgis::as_const(mCategories))
+	{
+		if (!category.renderState())
+			continue;
+
+		colors.insert(category.value(), category.color());
+	}
+
+	int decimal_step = 1;
+	if (mdrawlist.numVertices>1000000)
+	{
+		decimal_step = std::floorl(mdrawlist.numVertices / 1000000);
+	}
+	else
+	{
+		decimal_step = 1;
+	}
+	int count = mdrawlist.numVertices / decimal_step;
+
+	const QgsDoubleRange zRange = context.renderContext().zRange();
+	const bool considerZ = !zRange.isInfinite();
+
+	int rendered = 0;
+	const QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
+	const bool reproject = ct.isValid();
+	V3f* m_P;
+	const uint8_t* classification;
+	int attributeValue = 0;
+	const std::vector<PointCloudGeomField>* m_pointarrayfields = m_geom->GetFiled();
+	for (size_t i = 0; i < m_pointarrayfields->size(); ++i)
+	{
+		const PointCloudGeomField& field = (*m_pointarrayfields)[i];
+		if (field.name == "position")
+		{
+			m_P = (V3f*)field.as<float>();
+		}
+		if (QString::fromStdString(field.name).toLower().toStdString() == "classification")
+		{
+			classification = field.as<uint8_t>();
+		}
+	}
+
+	V3f Vertex;
+	 QColor color;
+	while (mdrawlist.index.size() > decimal_step && mdrawlist.numVertices>1)
+	{
+		std::list<size_t>::iterator it = mdrawlist.index.begin();
+		try
+		{
+			Vertex = m_geom->getPointByIndex(*it);
+			attributeValue = classification[(*it)];
+			color = colors.value(attributeValue);
+			drawPoint(Vertex.x, Vertex.y, color, context);
+		}
+		catch (const std::exception& e)
+		{
+			e.what();
+			return;
+		}
+		rendered++;
+		for (size_t i = 0; i < decimal_step; i++)
+		{
+			mdrawlist.index.erase(it);
+			it = mdrawlist.index.begin();
+			mdrawlist.numVertices--;
+		}
+	}
+	m_P = nullptr;
+	classification = nullptr;
+	context.incrementPointsRendered(rendered);
 }
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {

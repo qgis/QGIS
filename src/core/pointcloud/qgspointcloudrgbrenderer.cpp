@@ -160,9 +160,9 @@ void QgsPointCloudRgbRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_pt
 	const QgsRectangle visibleExtent = context.renderContext().extent();
 	//attributes(), request.attributes()
 	int decimal_step = 1;
-	if (mdrawlist.numVertices>100000)
+	if (mdrawlist.numVertices>1000000)
 	{
-		decimal_step = std::floorl(mdrawlist.numVertices / 100000);
+		decimal_step = std::floorl(mdrawlist.numVertices / 1000000);
 	}
 	else
 	{
@@ -219,7 +219,7 @@ void QgsPointCloudRgbRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_pt
 		catch (const std::exception& e)
 		{
 			e.what();
-			continue;
+			return;
 		}
 		rendered++;
 		for (size_t i = 0; i < decimal_step; i++)

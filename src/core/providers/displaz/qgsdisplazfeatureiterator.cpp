@@ -157,15 +157,20 @@ DrawCount QgsDisplazPointCloudIndex::getData()
 	float ymax = m_renderextent.yMaximum();
 	Imath::Box2f filterbox(Imath::V2f(xmin, ymin), Imath::V2f(xmax, ymax));
 	DrawCount mdrawlist = m_geom->getPointsOnlyInFilterRect(std::log10((std::pow(scale + 4, 1.5))) + 10.0, false, filterbox);
-	//attributes(), request.attributes()
-	if (mdrawlist.numVertices>40000)
-	{
-		decimal_step = std::floorl(mdrawlist.numVertices / 50000);
-	}
-	else
-	{
-		decimal_step = 1;
-	}
+	return mdrawlist;
+}
+
+DrawCount QgsDisplazPointCloudIndex::getDataMore()
+{
+	int decimal_step = 1;
+	//m_renderextent;
+	float scale = mExtent.width() / m_renderextent.width();
+	float xmin = m_renderextent.xMinimum();
+	float xmax = m_renderextent.xMaximum();
+	float ymin = m_renderextent.yMinimum();
+	float ymax = m_renderextent.yMaximum();
+	Imath::Box2f filterbox(Imath::V2f(xmin, ymin), Imath::V2f(xmax, ymax));
+	DrawCount mdrawlist = m_geom->getPointsOnlyInFilterRect(std::log10((std::pow(scale + 4, 1.5))) + 15.0, true, filterbox);
 	return mdrawlist;
 }
 

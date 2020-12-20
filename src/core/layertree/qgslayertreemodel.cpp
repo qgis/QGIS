@@ -837,7 +837,10 @@ void QgsLayerTreeModel::layerLegendChanged()
   QgsLayerTreeLayer *nodeLayer = mRootNode->findLayer( layer->id() );
   if ( !nodeLayer )
     return;
-
+  if (nodeLayer->layer()->providerType()=="displaz")
+  {
+	  return;
+  }
   refreshLayerLegend( nodeLayer );
 }
 
