@@ -145,6 +145,8 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   rightContainer->setLayout( rightLayout );
   mSplitter->addWidget( rightContainer );
+  mSplitter->setStretchFactor( 0, 4 );
+  mSplitter->setStretchFactor( 1, 6 );
 
   mVersionInformation = new QTextBrowser;
   mVersionInformation->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
