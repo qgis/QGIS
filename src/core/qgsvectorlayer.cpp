@@ -1434,7 +1434,7 @@ bool QgsVectorLayer::startEditing()
   }
 
   // allow editing if provider supports any of the capabilities
-  if ( supportsEditing() )
+  if ( !supportsEditing() )
   {
     return false;
   }
