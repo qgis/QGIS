@@ -1434,12 +1434,7 @@ bool QgsVectorLayer::startEditing()
   }
 
   // allow editing if provider supports any of the capabilities
-  if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
-  {
-    return false;
-  }
-
-  if ( mReadOnly )
+  if ( supportsEditing() )
   {
     return false;
   }
