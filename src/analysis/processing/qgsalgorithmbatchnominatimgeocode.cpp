@@ -41,12 +41,18 @@ QString QgsBatchNominatimGeocodeAlgorithm::displayName() const
 
 QStringList QgsBatchNominatimGeocodeAlgorithm::tags() const
 {
-  return QObject::tr( "geocode,nominatim,batch" ).split( ',' );
+  return QObject::tr( "geocode,nominatim,batch,bulk,address,match" ).split( ',' );
 }
 
 QgsBatchNominatimGeocodeAlgorithm *QgsBatchNominatimGeocodeAlgorithm::createInstance() const
 {
   return new QgsBatchNominatimGeocodeAlgorithm();
+}
+
+QString QgsBatchNominatimGeocodeAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm performs batch geocoding using the <a href=\"#\">Nominatim</a> service against an input layer string field.\n\n"
+                      "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location." );
 }
 
 bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
