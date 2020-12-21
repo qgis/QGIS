@@ -142,12 +142,12 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QTableWidgetItem *item = nullptr;
 
     item = new QTableWidgetItem( name );
-    item->setData( Qt::UserRole + 0, i );
+    item->setData( static_cast< int >( NameColumnRoles::Index ), i );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 0, item );
 
     item = new QTableWidgetItem( type );
-    item->setData( Qt::UserRole + 0, providerFileBased );
+    item->setData( static_cast< int >( TypeColumnRoles::ProviderIsFileBased ), providerFileBased );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 1, item );
 
@@ -191,7 +191,7 @@ void QgsHandleBadLayers::selectionChanged()
     if ( item->column() != 0 )
       continue;
 
-    bool providerFileBased = mLayerList->item( item->row(), 1 )->data( Qt::UserRole + 0 ).toBool();
+    const bool providerFileBased = mLayerList->item( item->row(), 1 )->data( static_cast< int >( TypeColumnRoles::ProviderIsFileBased ) ).toBool();
     if ( !providerFileBased )
       continue;
 
@@ -315,10 +315,9 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    const auto constMRows = mRows;
-    for ( int row : constMRows )
+    for ( int row : qgis::as_const( mRows ) )
     {
-      bool providerFileBased = mLayerList->item( row, 1 )->data( Qt::UserRole + 0 ).toBool();
+      const bool providerFileBased = mLayerList->item( row, 1 )->data( static_cast< int >( TypeColumnRoles::ProviderIsFileBased ) ).toBool();
       if ( !providerFileBased )
         continue;
 
@@ -378,7 +377,7 @@ void QgsHandleBadLayers::apply()
   QDir::setCurrent( QgsProject::instance()->absolutePath() );
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
-    int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
+    const int idx = mLayerList->item( i, 0 )->data( static_cast< int >( NameColumnRoles::Index ) ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
     QTableWidgetItem *item = mLayerList->item( i, 4 );
@@ -408,7 +407,9 @@ void QgsHandleBadLayers::apply()
     {
       fileName = longName;
     }
-    if ( !( item->data( Qt::UserRole + 2 ).isValid() && item->data( Qt::UserRole + 2 ).toBool() ) )
+
+    const QVariant dataSourceIsChanged = item->data( static_cast< int >( DataSourceColumnRoles::DataSourceIsChanged ) );
+    if ( !( dataSourceIsChanged.isValid() && dataSourceIsChanged.toBool() ) )
     {
       datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ).replace( fileName, longName ) );
     }
@@ -552,13 +553,11 @@ void QgsHandleBadLayers::autoFind()
       layersToFind.append( i );
   }
 
-  const QList<int> constLayersToFind = layersToFind;
-
   QProgressDialog progressDialog( QObject::tr( "Searching files" ), 0, 1, layersToFind.size(), this, Qt::Dialog );
 
-  for ( int i : constLayersToFind )
+  for ( int i : qgis::as_const( layersToFind ) )
   {
-    int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
+    const int idx = mLayerList->item( i, 0 )->data( static_cast< int >( NameColumnRoles::Index ) ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
     QTableWidgetItem *item = mLayerList->item( i, 4 );
@@ -656,7 +655,7 @@ void QgsHandleBadLayers::autoFind()
       setFilename( i, datasource );
       item->setText( datasource );
       item->setForeground( QBrush( Qt::green ) );
-      item->setData( Qt::UserRole + 2, QVariant( true ) );
+      item->setData( static_cast< int >( DataSourceColumnRoles::DataSourceIsChanged ), QVariant( true ) );
     }
     else
     {
