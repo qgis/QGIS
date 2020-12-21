@@ -133,11 +133,11 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     // Data source URI
     QgsDataSourceUri mUri;
     // Srid of the geometry column
-    int mSrid;
+    int mSrid = -1;
     // Srs extent
     QgsRectangle mSrsExtent;
     // Flag that shows the presence of a planar equivalent in a database
-    bool mHasSrsPlanarEquivalent;
+    bool mHasSrsPlanarEquivalent = false;
     // Name of the table with no schema
     QString mTableName;
     // Name of the schema
@@ -154,11 +154,11 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     // Source for sql query
     QString mQuerySource;
     // Provider references query (instead of a table)
-    bool mIsQuery;
+    bool mIsQuery = false;
     // Where clause of the SQL statement
     QString mQueryWhereClause;
     // Disable support for SelectAtId
-    bool mSelectAtIdDisabled;
+    bool mSelectAtIdDisabled = false;
     // Attributes of nongeometry fields
     QgsFields mAttributeFields;
     // Additional information about HANA fields
