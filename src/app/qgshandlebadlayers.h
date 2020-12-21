@@ -71,6 +71,22 @@ class APP_EXPORT QgsHandleBadLayers
     void autoFind();
 
   private:
+
+    enum class NameColumnRoles : int
+    {
+      Index = Qt::UserRole,
+    };
+
+    enum class TypeColumnRoles : int
+    {
+      ProviderIsFileBased = Qt::UserRole,
+    };
+
+    enum class DataSourceColumnRoles : int
+    {
+      DataSourceIsChanged = Qt::UserRole + 2,
+    };
+
     QPushButton *mBrowseButton = nullptr;
     QPushButton *mApplyButton = nullptr;
     QPushButton *mAutoFindButton = nullptr;
