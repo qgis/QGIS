@@ -112,19 +112,19 @@ void QgsHanaConnectionItem::updateToolTip( const QString &userName, const QStrin
   QgsHanaSettings settings( mName, true );
   QString tip;
   if ( !settings.database().isEmpty() )
-    tip = QStringLiteral( "Database: " ) + settings.database();
+    tip = tr( "Database: " ) + settings.database();
   if ( !tip.isEmpty() )
     tip += '\n';
-  tip += QStringLiteral( "Host: " ) + settings.host() + QStringLiteral( " " );
+  tip += tr( "Host: " ) + settings.host() + QStringLiteral( " " );
   if ( QgsHanaIdentifierType::fromInt( settings.identifierType() ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
     tip += settings.identifier();
   else
     tip += settings.port();
   tip += '\n';
   if ( !dbmsVersion.isEmpty() )
-    tip += QStringLiteral( "DB Version: " ) + dbmsVersion + '\n';
-  tip += QStringLiteral( "User: " ) + userName + '\n';
-  tip += QStringLiteral( "Encrypted: " ) + QString( settings.enableSsl() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+    tip += tr( "DB Version: " ) + dbmsVersion + '\n';
+  tip += tr( "User: " ) + userName + '\n';
+  tip += tr( "Encrypted: " ) + QString( settings.enableSsl() ? tr( "yes" ) : tr( "no" ) );
   setToolTip( tip );
 }
 
