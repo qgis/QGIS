@@ -17,7 +17,7 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
-#include "qgsafsdataitemguiprovider.h"
+#include "qgsarcgisrestdataitemguiprovider.h"
 #include "qgsafsprovider.h"
 #include "qgsafssourceselect.h"
 
@@ -49,7 +49,7 @@ class QgsAfsProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
     {
       QList<QgsDataItemGuiProvider *> providers;
-      providers << new QgsAfsDataItemGuiProvider();
+      providers << new QgsArcGisRestDataItemGuiProvider();
       return providers;
     }
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsafsdataitemguiprovider.h
+  qgsarcgisrestdataitemguiprovider.h
   --------------------------------------
   Date                 : June 2019
   Copyright            : (C) 2019 by Martin Dobias
@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSAFSDATAITEMGUIPROVIDER_H
-#define QGSAFSDATAITEMGUIPROVIDER_H
+#ifndef QGSARCGISRESTDATAITEMGUIPROVIDER_H
+#define QGSARCGISRESTDATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
 
 
-class QgsAfsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
 
   public:
 
-    QgsAfsDataItemGuiProvider() = default;
+    QgsArcGisRestDataItemGuiProvider() = default;
 
     QString name() override
     {
@@ -45,4 +45,4 @@ class QgsAfsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 };
 
 
-#endif // QGSAFSDATAITEMGUIPROVIDER_H
+#endif // QGSARCGISRESTDATAITEMGUIPROVIDER_H

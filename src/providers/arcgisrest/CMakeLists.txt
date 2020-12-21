@@ -39,16 +39,16 @@ endif()
 ###############################################################################
 
 set (AFS_SRCS
-  qgsafsdataitems.cpp
   qgsafsfeatureiterator.cpp
   qgsafsprovider.cpp
   qgsafsshareddata.cpp
+  qgsarcgisrestdataitems.cpp
 )
 if (WITH_GUI)
   set(AFS_SRCS ${AFS_SRCS}
     qgsafsprovidergui.cpp
-    qgsafsdataitemguiprovider.cpp
     qgsafssourceselect.cpp
+    qgsarcgisrestdataitemguiprovider.cpp
     qgsarcgisservicesourceselect.cpp
     qgsnewarcgisrestconnection.cpp
   )
@@ -85,14 +85,12 @@ install (TARGETS arcgisfeatureserverprovider
 ###############################################################################
 
 set (AMS_SRCS
-  qgsamsdataitems.cpp
   qgsamsprovider.cpp
 )
 
 if (WITH_GUI)
   set(AMS_SRCS ${AMS_SRCS}
     qgsamsprovidergui.cpp
-    qgsamsdataitemguiprovider.cpp
     qgsamssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
     qgsnewarcgisrestconnection.cpp
