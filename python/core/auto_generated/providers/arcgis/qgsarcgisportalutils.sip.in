@@ -40,12 +40,12 @@ If ``user`` is blank then the user associated with the current logon details wil
 
 :param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
 :param user: username to query, or an empty string to query the current user
-:param authcfg: authentification configuration ID
+:param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
-:param feedback: optional feedback argument for cancelation support
+:param feedback: optional feedback argument for cancellation support
 
 :return: - JSON user info
-         - errorTitle: title summary of any encountered errrors
+         - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 %End
 
@@ -57,12 +57,12 @@ If ``user`` is blank then the user associated with the current logon details wil
 
 :param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
 :param user: username to query, or an empty string to query the current user
-:param authcfg: authentification configuration ID
+:param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
-:param feedback: optional feedback argument for cancelation support
+:param feedback: optional feedback argument for cancellation support
 
 :return: - a list of JSON group info
-         - errorTitle: title summary of any encountered errrors
+         - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 %End
 
@@ -72,13 +72,13 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 
 :param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
-:param authcfg: authentification configuration ID
+:param authcfg: authentication configuration ID
 :param requestHeaders: optional additional request headers
-:param feedback: optional feedback argument for cancelation support
+:param feedback: optional feedback argument for cancellation support
 :param pageSize: number of results to retrieve for each request. Maximum value is 100.
 
 :return: - a list of JSON item info for all items within the group
-         - errorTitle: title summary of any encountered errrors
+         - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 %End
 
@@ -90,14 +90,14 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 
 :param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
 :param groupId: ID of group to query
-:param authcfg: authentification configuration ID
+:param authcfg: authentication configuration ID
 :param itemTypes: list of desired item types (using QgsArcGisPortalUtils.ItemType values)
 :param requestHeaders: optional additional request headers
-:param feedback: optional feedback argument for cancelation support
+:param feedback: optional feedback argument for cancellation support
 :param pageSize: number of results to retrieve for each request. Maximum value is 100.
 
 :return: - a list of JSON item info for all items within the group
-         - errorTitle: title summary of any encountered errrors
+         - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 %End
 
