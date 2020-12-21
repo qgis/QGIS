@@ -248,9 +248,9 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url )
   return modifiedUrl;
 }
 
-void QgsArcGisRestQueryUtils::adjustBaseUrl( QString &baseUrl, const QString name )
+void QgsArcGisRestQueryUtils::adjustBaseUrl( QString &baseUrl, const QString &name )
 {
-  QStringList parts = name.split( '/' );
+  const QStringList parts = name.split( '/' );
   QString checkString;
   for ( const QString &part : parts )
   {
