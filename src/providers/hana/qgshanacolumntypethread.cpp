@@ -27,6 +27,7 @@ QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QString &connName, const
   , mAllowGeometrylessTables( allowGeometrylessTables )
   , mUserTablesOnly( userTablesOnly )
 {
+  // Make sure the meta type is registered only once
   static int initialized = qRegisterMetaType<QgsHanaLayerProperty>( "QgsHanaLayerProperty" );
   Q_UNUSED( initialized )
 }
