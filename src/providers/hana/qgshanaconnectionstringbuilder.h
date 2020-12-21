@@ -75,11 +75,11 @@ class QgsHanaConnectionStringBuilder
     QString mUserName;
     QString mPassword;
     // Ssl parameters
-    bool mSslEnabled;
+    bool mSslEnabled = false;
     QString mSslCryptoProvider;
     QString mSslKeyStore;
     QString mSslTrustStore;
-    bool mSslValidateCertificate;
+    bool mSslValidateCertificate = false;
     QString mSslHostNameInCertificate;
 };
 
