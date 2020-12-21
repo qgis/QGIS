@@ -22,7 +22,6 @@ __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
 import os
-from os.path import exists
 from datetime import datetime
 
 from qgis.core import (QgsExpression,
@@ -155,8 +154,8 @@ class PointsToPaths(QgisAlgorithm):
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        if text_dir and not(exists(text_dir)):
-            raise QgsProcessingException(self.tr("Provided directory for text output does not exists"))
+        if text_dir and not(os.path.exists(text_dir)):
+            raise QgsProcessingException(self.tr("The text output directory does not exist"))
 
         points = dict()
         required_fields = expression.referencedColumns()
