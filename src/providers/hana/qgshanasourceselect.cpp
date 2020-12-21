@@ -163,7 +163,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
     if ( index.column() == QgsHanaTableModel::DbtmPkCol &&
          !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
     {
-      QStringList columns = index.data( Qt::UserRole + 2 ).toStringList();
+      const QStringList columns = index.data( Qt::UserRole + 2 ).toStringList();
       for ( const QString &colName : columns )
       {
         QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
@@ -500,7 +500,8 @@ void QgsHanaSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
-  for ( const QModelIndex &idx : mTablesTreeView->selectionModel()->selection().indexes() )
+  const QModelIndexList indexes = mTablesTreeView->selectionModel()->selection().indexes();
+  for ( const QModelIndex &idx : indexes )
   {
     if ( idx.column() != QgsHanaTableModel::DbtmTable )
       continue;
