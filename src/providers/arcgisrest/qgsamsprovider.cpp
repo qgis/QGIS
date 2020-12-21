@@ -24,7 +24,6 @@
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 #include "qgsapplication.h"
-#include "qgsamsdataitems.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
@@ -1245,13 +1244,6 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
 QgsAmsProviderMetadata::QgsAmsProviderMetadata()
   : QgsProviderMetadata( QgsAmsProvider::AMS_PROVIDER_KEY, QgsAmsProvider::AMS_PROVIDER_DESCRIPTION )
 {
-}
-
-QList<QgsDataItemProvider *> QgsAmsProviderMetadata::dataItemProviders() const
-{
-  QList<QgsDataItemProvider *> providers;
-  providers << new QgsAmsDataItemProvider;
-  return providers;
 }
 
 QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

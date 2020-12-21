@@ -69,7 +69,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
     }, serviceInfoMap, baseUrl );
 
     QgsArcGisRestQueryUtils::visitServiceItems(
-      [ =, &res]( const QString & name, const QString & url )
+      [ =, &res]( const QString & name, const QString & url, QgsArcGisRestQueryUtils::ServiceTypeFilter )
     {
       QStandardItem *nameItem = new QStandardItem( name );
       nameItem->setToolTip( url );
@@ -85,7 +85,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
 
-    QgsArcGisRestQueryUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid, const QString & )
+    QgsArcGisRestQueryUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, QgsArcGisRestQueryUtils::ServiceTypeFilter, QgsWkbTypes::GeometryType, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid, const QString & )
     {
       if ( !parentLayerId.isEmpty() )
         parents.insert( layerId, parentLayerId );

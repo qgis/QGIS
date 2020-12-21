@@ -285,7 +285,7 @@ void QgsArcGisRestQueryUtils::visitFolderItems( const std::function< void( const
   }
 }
 
-void QgsArcGisRestQueryUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, const ServiceTypeFilter )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -301,7 +301,8 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function< void( cons
       continue;
 
     // If the requested service type is raster, do not show vector-only services
-    if ( serviceType == QLatin1String( "FeatureServer" ) && filter == Raster )
+    const ServiceTypeFilter type = serviceType == QLatin1String( "FeatureServer" ) ? Vector : Raster;
+    if ( type == Raster && ( filter != Raster && filter != AllTypes ) )
       continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
@@ -312,11 +313,11 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function< void( cons
       baseChecked = true;
     }
 
-    visitor( displayName, base + serviceName + '/' + serviceType );
+    visitor( displayName, base + serviceName + '/' + serviceType, type );
   }
 }
 
-void QgsArcGisRestQueryUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, QgsWkbTypes::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter )
 {
   const QString authid = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
 
@@ -343,8 +344,9 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function< void( const QS
   // If the requested layer type is vector, do not show raster-only layers (i.e. non query-able layers)
   const bool serviceMayHaveQueryCapability = capabilities.contains( QStringLiteral( "Query" ) ) ||
       serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
-  if ( filter == Vector && !serviceMayHaveQueryCapability )
-    return;
+
+  const bool serviceMayRenderMaps = capabilities.contains( QStringLiteral( "Map" ) ) ||
+                                    serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
 
   const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
   for ( const QVariant &layerInfo : layerInfoList )
@@ -355,13 +357,39 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function< void( const QS
     const QString name = layerInfoMap.value( QStringLiteral( "name" ) ).toString();
     const QString description = layerInfoMap.value( QStringLiteral( "description" ) ).toString();
 
-    if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+    // Yes, potentially we may visit twice, once as as a raster (if applicable), and once as a vector (if applicable)!
+    if ( serviceMayRenderMaps && ( filter == Raster || filter == AllTypes ) )
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString(), format );
+      if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+      {
+        visitor( parentLayerId, Raster, QgsWkbTypes::UnknownGeometry, id, name, description, parentUrl + '/' + id, true, QString(), format );
+      }
+      else
+      {
+        visitor( parentLayerId, Raster, QgsWkbTypes::UnknownGeometry, id, name, description, parentUrl + '/' + id, false, authid, format );
+      }
     }
-    else
+
+    if ( serviceMayHaveQueryCapability && ( filter == Vector || filter == AllTypes ) )
     {
-      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid, format );
+      const QString geometryType = layerInfoMap.value( QStringLiteral( "geometryType" ) ).toString();
+      if ( serviceMayRenderMaps )
+      {
+        if ( geometryType.isEmpty() )
+          continue;
+      }
+
+      const QgsWkbTypes::Type wkbType = QgsArcGisRestUtils::convertGeometryType( geometryType );
+
+
+      if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+      {
+        visitor( parentLayerId, Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, true, QString(), format );
+      }
+      else
+      {
+        visitor( parentLayerId, Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, false, authid, format );
+      }
     }
   }
 
@@ -370,7 +398,7 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function< void( const QS
   {
     const QString name = QStringLiteral( "(%1)" ).arg( QObject::tr( "All layers" ) );
     const QString description = serviceData.value( QStringLiteral( "Comments" ) ).toString();
-    visitor( 0, 0, name, description, parentUrl, false, authid, format );
+    visitor( nullptr, Raster, QgsWkbTypes::UnknownGeometry, nullptr, name, description, parentUrl, false, authid, format );
   }
 
   // Add root ImageServer as layer
@@ -378,7 +406,7 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function< void( const QS
   {
     const QString name = serviceData.value( QStringLiteral( "name" ) ).toString();
     const QString description = serviceData.value( QStringLiteral( "description" ) ).toString();
-    visitor( 0, 0, name, description, parentUrl, false, authid, format );
+    visitor( nullptr, Raster, QgsWkbTypes::UnknownGeometry, nullptr, name, description, parentUrl, false, authid, format );
   }
 }
 

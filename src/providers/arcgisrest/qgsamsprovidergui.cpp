@@ -17,7 +17,6 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
-#include "qgsamsdataitemguiprovider.h"
 #include "qgsamsprovider.h"
 #include "qgsamssourceselect.h"
 
@@ -44,13 +43,6 @@ class QgsAmsProviderGuiMetadata: public QgsProviderGuiMetadata
     QgsAmsProviderGuiMetadata()
       : QgsProviderGuiMetadata( QgsAmsProvider::AMS_PROVIDER_KEY )
     {
-    }
-
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      QList<QgsDataItemGuiProvider *> providers;
-      providers << new QgsAmsDataItemGuiProvider();
-      return providers;
     }
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override

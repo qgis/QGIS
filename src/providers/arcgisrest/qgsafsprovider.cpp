@@ -20,7 +20,7 @@
 #include "qgsarcgisrestquery.h"
 #include "qgsafsfeatureiterator.h"
 #include "qgsdatasourceuri.h"
-#include "qgsafsdataitems.h"
+#include "qgsarcgisrestdataitems.h"
 #include "qgslogger.h"
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
@@ -396,7 +396,7 @@ QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
   QList<QgsDataItemProvider *> providers;
 
   providers
-      << new QgsAfsDataItemProvider;
+      << new QgsArcGisRestDataItemProvider;
 
   return providers;
 }

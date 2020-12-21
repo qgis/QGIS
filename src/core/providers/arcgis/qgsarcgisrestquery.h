@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <QVariantMap>
@@ -92,12 +93,12 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Calls the specified \a visitor function on all service items found within the given service data.
      */
-    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter = AllTypes );
+    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url, ServiceTypeFilter serviceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter = AllTypes );
 
     /**
      * Calls the specified \a visitor function on all layer items found within the given service data.
      */
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter = AllTypes );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter = AllTypes );
 
   private:
 
