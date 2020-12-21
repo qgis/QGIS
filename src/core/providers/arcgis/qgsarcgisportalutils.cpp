@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include "qgsarcgisportalutils.h"
 #include "qgsarcgisrestquery.h"
+#include "qgsfeedback.h"
+
 #include <QUrl>
 #include <QUrlQuery>
 
@@ -40,4 +42,41 @@ QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityU
 {
   const QVariantMap info = retrieveUserInfo( communityUrl, user, authcfg, errorTitle, errorText, requestHeaders, feedback );
   return info.value( QStringLiteral( "groups" ) ).toList();
+}
+
+QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap<QString, QString> &requestHeaders, QgsFeedback *feedback, int pageSize )
+{
+  QString endPoint = contentUrl;
+  if ( endPoint.endsWith( '/' ) )
+    endPoint.chop( 1 );
+
+  endPoint += QStringLiteral( "/groups/" ) + groupId;
+
+  int start = 1;
+
+  QVariantList items;
+  while ( true )
+  {
+    QUrl queryUrl( endPoint );
+    QUrlQuery query( queryUrl );
+    query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
+    query.addQueryItem( QStringLiteral( "start" ), QString::number( start ) );
+    query.addQueryItem( QStringLiteral( "num" ), QString::number( pageSize ) );
+    queryUrl.setQuery( query );
+
+    const QVariantMap response = QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback );
+    if ( !errorText.isEmpty() )
+      return QVariantList();
+
+    items.append( response.value( QStringLiteral( "items" ) ).toList() );
+
+    if ( feedback && feedback->isCanceled() )
+      return items;
+
+    const int total = response.value( QStringLiteral( "total" ) ).toInt();
+    start += pageSize;
+    if ( total < start )
+      break;
+  }
+  return items;
 }

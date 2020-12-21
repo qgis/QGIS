@@ -59,6 +59,22 @@ If ``user`` is blank then the user associated with the current logon details wil
          - errorText: error text of any encountered errors
 %End
 
+    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0, int pageSize = 100 );
+%Docstring
+Retrieves JSON definitions for all items which belong the the specified ``groupId``.
+
+:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param groupId: ID of group to query
+:param authcfg: authentification configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancelation support
+:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+
+:return: - a list of JSON item info for all items within the group
+         - errorTitle: title summary of any encountered errrors
+         - errorText: error text of any encountered errors
+%End
+
 };
 
 /************************************************************************
