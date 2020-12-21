@@ -182,8 +182,9 @@ void QgsChunkNode::unloadChunk()
   Q_ASSERT( mEntity );
   Q_ASSERT( mReplacementQueueEntry );
 
-  mEntity->deleteLater();
+  delete mEntity;
   mEntity = nullptr;
+
   delete mReplacementQueueEntry;
   mReplacementQueueEntry = nullptr;
   mState = QgsChunkNode::Skeleton;
