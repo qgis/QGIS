@@ -19,9 +19,11 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
     QgsVectorLayer,
-    QgsVectorLayerCache
+    QgsVectorLayerCache,
+    QgsConditionalStyle,
 )
-
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -117,6 +119,45 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         # check that index from layer and model are sync
         self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
+    def testStyle(self):
+        style_threshold = 2
+        color = QColor(133, 133, 133)
+        style = QgsConditionalStyle()
+        style.setRule(f'"fldint" <= {style_threshold}')
+        style.setTextColor(color)
+        self.layer.conditionalStyles().setRowStyles([style])
+
+        for f in self.layer.getFeatures():
+            model_index = self.am.idToIndex(f.id())
+            text_color = self.am.data(model_index, Qt.TextColorRole)
+
+            if f['fldint'] <= style_threshold:
+                self.assertEqual(text_color, color)
+            else:
+                self.assertIsNone(text_color)
+
+        self.assertTrue(self.layer.startEditing())
+
+        feature1 = self.layer.getFeature(2)
+        feature1['fldint'] = style_threshold + 1
+        feature2 = self.layer.getFeature(8)
+        feature2['fldint'] = style_threshold
+
+        self.assertTrue(self.layer.updateFeature(feature1))
+        self.assertTrue(self.layer.updateFeature(feature2))
+        self.assertTrue(self.layer.commitChanges())
+
+        for f in self.layer.getFeatures():
+            model_index = self.am.idToIndex(f.id())
+            text_color = self.am.data(model_index, Qt.TextColorRole)
+
+            if f['fldint'] <= style_threshold:
+                self.assertEqual(color, text_color, f'Feature {f.id()} should have color')
+            else:
+                self.assertIsNone(text_color, f'Feature {f.id()} should have no color')
+
+        self.layer.conditionalStyles().setRowStyles([])
 
 
 if __name__ == '__main__':
