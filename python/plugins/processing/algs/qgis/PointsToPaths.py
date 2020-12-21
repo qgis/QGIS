@@ -211,7 +211,7 @@ class PointsToPaths(QgisAlgorithm):
                 if line[0] != line[-1]:
                     line.append(line[0])
 
-            if text_dir :
+            if text_dir:
                 fileName = os.path.join(text_dir, '%s.txt' % group)
 
                 with open(fileName, 'w') as fl:
