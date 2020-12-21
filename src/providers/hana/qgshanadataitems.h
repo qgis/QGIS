@@ -21,8 +21,6 @@
 #include "qgsdataitemprovider.h"
 #include "qgshanatablemodel.h"
 
-#include <QMainWindow>
-
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;
 class QgsHanaSchemaItem;
