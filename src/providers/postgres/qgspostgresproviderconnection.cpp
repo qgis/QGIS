@@ -195,16 +195,16 @@ void QgsPostgresProviderConnection::renameSchema( const QString &name, const QSt
 QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return executeSqlPrivateWithNames( sql, true, feedback );
+  return execSqlPrivate( sql, true, feedback );
 }
 
 QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
   QStringList columnNames;
-  return executeSqlPrivateWithNames( sql, resolveTypes, feedback, pgconn ).rows();
+  return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
 }
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::executeSqlPrivateWithNames( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
   QueryResult results;
 
