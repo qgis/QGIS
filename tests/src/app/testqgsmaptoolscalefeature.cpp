@@ -86,10 +86,10 @@ void TestQgsMapToolScaleFeature::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  QString wkt1 = QStringLiteral( "Polygon ((-2 -2, -2 -1, -1 -1, -1 -2))" );
+  QString wkt1 = QStringLiteral( "Polygon ((-2 -2, -2 -1, -1 -1, -1 -2, -2 -2))" );
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  QString wkt2 = QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8))" );
+  QString wkt2 = QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" );
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -139,8 +139,8 @@ void TestQgsMapToolScaleFeature::testScaleFeature()
   utils.mouseMove( 1.35, 1.85 );
   utils.mouseClick( 1.35, 1.85, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.85, 1.35 3.95, 1.85 3.95, 1.85 1.85))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.85, 1.35 3.95, 1.85 3.95, 1.85 1.85, 1.35 1.85))" ) );
 
   mLayerBase->undoStack()->undo();
 }
