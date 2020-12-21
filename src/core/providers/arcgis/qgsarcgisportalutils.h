@@ -53,11 +53,11 @@ class CORE_EXPORT QgsArcGisPortalUtils
      *
      * \param communityUrl should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community/
      * \param user username to query, or an empty string to query the current user
-     * \param authcfg authentification configuration ID
-     * \param errorTitle title summary of any encountered errrors
+     * \param authcfg authentication configuration ID
+     * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
-     * \param feedback optional feedback argument for cancelation support
+     * \param feedback optional feedback argument for cancellation support
      *
      * \returns JSON user info
      */
@@ -70,11 +70,11 @@ class CORE_EXPORT QgsArcGisPortalUtils
      *
      * \param communityUrl should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community/
      * \param user username to query, or an empty string to query the current user
-     * \param authcfg authentification configuration ID
-     * \param errorTitle title summary of any encountered errrors
+     * \param authcfg authentication configuration ID
+     * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
-     * \param feedback optional feedback argument for cancelation support
+     * \param feedback optional feedback argument for cancellation support
      *
      * \returns a list of JSON group info
      */
@@ -85,11 +85,11 @@ class CORE_EXPORT QgsArcGisPortalUtils
      *
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query
-     * \param authcfg authentification configuration ID
-     * \param errorTitle title summary of any encountered errrors
+     * \param authcfg authentication configuration ID
+     * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
-     * \param feedback optional feedback argument for cancelation support
+     * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      *
      * \returns a list of JSON item info for all items within the group
@@ -101,12 +101,12 @@ class CORE_EXPORT QgsArcGisPortalUtils
      *
      * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
      * \param groupId ID of group to query
-     * \param authcfg authentification configuration ID
+     * \param authcfg authentication configuration ID
      * \param itemTypes list of desired item types (using QgsArcGisPortalUtils.ItemType values)
-     * \param errorTitle title summary of any encountered errrors
+     * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
-     * \param feedback optional feedback argument for cancelation support
+     * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      *
      * \returns a list of JSON item info for all items within the group
