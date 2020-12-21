@@ -140,7 +140,7 @@ void TestQgsMapToolScaleFeature::testScaleFeature()
   utils.mouseClick( 1.35, 1.85, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.85, 1.35 3.95, 1.85 3.95, 1.85 1.85, 1.35 1.85))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))" ) );
 
   mLayerBase->undoStack()->undo();
 }
