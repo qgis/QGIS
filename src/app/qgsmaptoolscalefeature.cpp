@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
     qgsmaptoolscalefeature.cpp  -  map tool for scaling features by mouse drag
     ---------------------
     Date                 : December 2020
@@ -149,7 +149,7 @@ QgsMapToolScaleFeature::~QgsMapToolScaleFeature()
 
 void QgsMapToolScaleFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( mBaseDistance == 0)
+  if ( mBaseDistance == 0 )
   {
     return;
   }
@@ -294,7 +294,7 @@ void QgsMapToolScaleFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         mRubberBand->addGeometry( feat.geometry(), mLayer );
       }
     }
-    QgsPointXY mapAnchor = toMapCoordinates( mLayer,mFeatureCenter );
+    QgsPointXY mapAnchor = toMapCoordinates( mLayer, mFeatureCenter );
     QPoint rubberAnchor = toCanvasCoordinates( mapAnchor );
     mAnchorPoint->setCenter( mapAnchor );
     mRubberScale = QPointF( rubberAnchor.x() - mRubberBand->x(), rubberAnchor.y() - mRubberBand->y() );
@@ -359,7 +359,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
   mLayer->beginEditCommand( tr( "Features Scaled" ) );
 
-  int start = ( mLayer->geometryType() == 2 )? 1 : 0;
+  int start = ( mLayer->geometryType() == 2 ) ? 1 : 0;
 
   for ( QgsFeatureId id : qgis::as_const( mScaledFeatures ) )
   {
@@ -371,8 +371,8 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
     while ( !vertex.isEmpty() )
     {
       // for to maintain feature position use the center of the feature bbox and not the whole selection
-      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * (scale - 1) );
-      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * (scale - 1) );
+      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * ( scale - 1) );
+      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * ( scale - 1) );
 
       mLayer->moveVertex( newX, newY, id, i );
       i = i + 1;
