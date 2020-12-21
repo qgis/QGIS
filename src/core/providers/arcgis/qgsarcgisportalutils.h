@@ -37,6 +37,16 @@ class CORE_EXPORT QgsArcGisPortalUtils
   public:
 
     /**
+     * Portal item types (not complete)
+     */
+    enum ItemType
+    {
+      FeatureService, //!< ArcGIS Server feature service
+      MapService, //!< ArcGIS Server map service
+      ImageService, //!< ArcGIS Server image service
+    };
+
+    /**
      * Retrieves JSON user info for the specified user name.
      *
      * If \a user is blank then the user associated with the current logon details will be retrieved
@@ -85,6 +95,30 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \returns a list of JSON item info for all items within the group
      */
     static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = nullptr, int pageSize = 100 );
+
+    /**
+     * Retrieves JSON definitions for all items which belong the the specified \a groupId.
+     *
+     * \param contentUrl should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content/
+     * \param groupId ID of group to query
+     * \param authcfg authentification configuration ID
+     * \param itemTypes list of desired item types (using QgsArcGisPortalUtils.ItemType values)
+     * \param errorTitle title summary of any encountered errrors
+     * \param errorText error text of any encountered errors
+     * \param requestHeaders optional additional request headers
+     * \param feedback optional feedback argument for cancelation support
+     * \param pageSize number of results to retrieve for each request. Maximum value is 100.
+     *
+     * \returns a list of JSON item info for all items within the group
+     */
+    static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
+        const QList< int > &itemTypes,
+        QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = nullptr, int pageSize = 100 );
+
+
+  private:
+
+    static QString typeToString( ItemType type );
 
 };
 
