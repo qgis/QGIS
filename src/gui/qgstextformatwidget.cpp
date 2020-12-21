@@ -983,12 +983,30 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   buffer.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
   buffer.setFillBufferInterior( mBufferTranspFillChbx->isChecked() );
   buffer.setBlendMode( comboBufferBlendMode->blendMode() );
-  if ( mBufferEffect && !QgsPaintEffectRegistry::isDefaultStack( mBufferEffect.get() ) )
+  if ( mBufferEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mBufferEffect.get() ) || mBufferEffect->enabled() ) )
     buffer.setPaintEffect( mBufferEffect->clone() );
   else
     buffer.setPaintEffect( nullptr );
   format.setBuffer( buffer );
 
+<<<<<<< HEAD
+=======
+  // mask
+  QgsTextMaskSettings mask;
+  mask.setEnabled( mEnableMaskChkBx->isChecked() );
+  mask.setSize( mMaskBufferSizeSpinBox->value() );
+  mask.setOpacity( mMaskOpacityWidget->opacity() );
+  mask.setSizeUnit( mMaskBufferUnitWidget->unit() );
+  mask.setSizeMapUnitScale( mMaskBufferUnitWidget->getMapUnitScale() );
+  mask.setJoinStyle( mMaskJoinStyleComboBox->penJoinStyle() );
+  if ( mMaskEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mMaskEffect.get() ) || mMaskEffect->enabled() ) )
+    mask.setPaintEffect( mMaskEffect->clone() );
+  else
+    mask.setPaintEffect( nullptr );
+  mask.setMaskedSymbolLayers( mMaskedSymbolLayers );
+  format.setMask( mask );
+
+>>>>>>> c851c0ff69 (Fix impossible to activate draw effects on settings in font buttons)
   // shape background
   QgsTextBackgroundSettings background;
   background.setEnabled( mShapeDrawChkBx->isChecked() );
@@ -1015,7 +1033,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   background.setJoinStyle( mShapePenStyleCmbBx->penJoinStyle() );
   background.setOpacity( mBackgroundOpacityWidget->opacity() );
   background.setBlendMode( mShapeBlendCmbBx->blendMode() );
-  if ( mBackgroundEffect && !QgsPaintEffectRegistry::isDefaultStack( mBackgroundEffect.get() ) )
+  if ( mBackgroundEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mBackgroundEffect.get() ) || mBackgroundEffect->enabled() ) )
     background.setPaintEffect( mBackgroundEffect->clone() );
   else
     background.setPaintEffect( nullptr );
