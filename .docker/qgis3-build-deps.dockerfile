@@ -162,7 +162,7 @@ RUN curl -LJO https://cmake.org/files/v3.12/cmake-3.12.4-Linux-x86_64.tar.gz \
   && cp -r cmake-3.12.4-Linux-x86_64/share/cmake-3.12/* /usr/local/share/cmake-3.12 \
   && rm -rf cmake-3.12.4-Linux-x86_64*
 # Download and compile odbc-cpp-wrapper
-RUN git clone --branch v0.1 --depth 1 https://github.com/SAP/odbc-cpp-wrapper.git \
+RUN git clone --branch v0.2 --depth 1 https://github.com/SAP/odbc-cpp-wrapper.git \
   && mkdir odbc-cpp-wrapper/build \
   && cd odbc-cpp-wrapper/build \
   && cmake .. \
