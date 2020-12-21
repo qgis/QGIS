@@ -102,7 +102,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
   private:
 
     static QUrl parseUrl( const QUrl &url );
-    static void adjustBaseUrl( QString &baseUrl, const QString name );
+    static void adjustBaseUrl( QString &baseUrl, const QString &name );
 
     friend class TestQgsArcGisRestUtils;
 };

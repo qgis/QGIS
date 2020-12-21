@@ -35,3 +35,9 @@ QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl,
 
   return QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback );
 }
+
+QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap<QString, QString> &requestHeaders, QgsFeedback *feedback )
+{
+  const QVariantMap info = retrieveUserInfo( communityUrl, user, authcfg, errorTitle, errorText, requestHeaders, feedback );
+  return info.value( QStringLiteral( "groups" ) ).toList();
+}
