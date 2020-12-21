@@ -736,7 +736,7 @@ Returns whether all the datasets contain ``count`` values
 
     void calculateStatistic();
 %Docstring
-Calculates the statictics (minimum and maximum)
+Calculates the statistics (minimum and maximum)
 %End
 
     virtual QStringList datasetGroupNamesDependentOn() const;

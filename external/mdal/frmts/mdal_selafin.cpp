@@ -1208,7 +1208,7 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
   else
   {
     if ( datasetGroup->datasets.size() != mTimeSteps.size() )
-      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Incomaptible dataset group : time steps count are not the same" );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Incompatible dataset group : time steps count are not the same" );
   }
 
   //parameters table
