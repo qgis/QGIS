@@ -830,6 +830,7 @@ void QgsProject::clear()
   mDirty = false;
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
+  mCrs = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
   if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
