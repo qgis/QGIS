@@ -18,6 +18,7 @@
 #include "qgsafsprovider.h"
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
+#include "qgsarcgisportalutils.h"
 
 #ifdef HAVE_GUI
 #include "qgsafssourceselect.h"
@@ -27,6 +28,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QUrl>
+#include "qgssettings.h"
 
 
 QgsAfsRootItem::QgsAfsRootItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -130,6 +132,11 @@ QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem *parent, const QString &
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
+
+  QgsSettings settings;
+  const QString key = QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) + mConnName;
+  mPortalContentEndpoint = settings.value( key + "/content_endpoint" ).toString();
+  mPortalCommunityEndpoint = settings.value( key + "/community_endpoint" ).toString();
 }
 
 QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
@@ -143,23 +150,31 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
     headers[ QStringLiteral( "Referer" )] = referer;
 
   QVector<QgsDataItem *> items;
-  QString errorTitle, errorMessage;
-  const QVariantMap serviceData = QgsArcGisRestQueryUtils::getServiceInfo( url, authcfg, errorTitle, errorMessage, headers );
-  if ( serviceData.isEmpty() )
+  if ( !mPortalCommunityEndpoint.isEmpty() && !mPortalContentEndpoint.isEmpty() )
   {
-    if ( !errorMessage.isEmpty() )
-    {
-      std::unique_ptr< QgsErrorItem > error = qgis::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
-      error->setToolTip( errorMessage );
-      items.append( error.release() );
-      QgsDebugMsg( "Connection failed - " + errorMessage );
-    }
-    return items;
+    items << new QgsAfsPortalGroupsItem( this, QStringLiteral( "groups" ), authcfg, headers, mPortalCommunityEndpoint, mPortalContentEndpoint );
+    items << new QgsAfsServicesItem( this, url, QStringLiteral( "services" ), authcfg, headers );
   }
+  else
+  {
+    QString errorTitle, errorMessage;
+    const QVariantMap serviceData = QgsArcGisRestQueryUtils::getServiceInfo( url, authcfg, errorTitle, errorMessage, headers );
+    if ( serviceData.isEmpty() )
+    {
+      if ( !errorMessage.isEmpty() )
+      {
+        std::unique_ptr< QgsErrorItem > error = qgis::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
+        error->setToolTip( errorMessage );
+        items.append( error.release() );
+        QgsDebugMsg( "Connection failed - " + errorMessage );
+      }
+      return items;
+    }
 
-  addFolderItems( items, serviceData, url, authcfg, headers, this );
-  addServiceItems( items, serviceData, url, authcfg, headers, this );
-  addLayerItems( items, serviceData, url, authcfg, headers, this );
+    addFolderItems( items, serviceData, url, authcfg, headers, this );
+    addServiceItems( items, serviceData, url, authcfg, headers, this );
+    addLayerItems( items, serviceData, url, authcfg, headers, this );
+  }
 
   return items;
 }
@@ -177,6 +192,163 @@ QString QgsAfsConnectionItem::url() const
 }
 
 
+//
+// QgsAfsGroupsItem
+//
+
+QgsAfsPortalGroupsItem::QgsAfsPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsStringMap &headers, const QString &communityEndpoint, const QString &contentEndpoint )
+  : QgsDataCollectionItem( parent, tr( "Groups" ), path, QStringLiteral( "AFS" ) )
+  , mAuthCfg( authcfg )
+  , mHeaders( headers )
+  , mPortalCommunityEndpoint( communityEndpoint )
+  , mPortalContentEndpoint( contentEndpoint )
+{
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mCapabilities |= Collapse;
+  setToolTip( path );
+}
+
+
+QVector<QgsDataItem *> QgsAfsPortalGroupsItem::createChildren()
+{
+  QVector<QgsDataItem *> items;
+
+  QString errorTitle;
+  QString errorMessage;
+  const QVariantList groups = QgsArcGisPortalUtils::retrieveUserGroups( mPortalCommunityEndpoint, QString(), mAuthCfg, errorTitle, errorMessage, mHeaders );
+  if ( groups.isEmpty() )
+  {
+    if ( !errorMessage.isEmpty() )
+    {
+      std::unique_ptr< QgsErrorItem > error = qgis::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
+      error->setToolTip( errorMessage );
+      items.append( error.release() );
+      QgsDebugMsg( "Connection failed - " + errorMessage );
+    }
+    return items;
+  }
+
+  for ( const QVariant &group : groups )
+  {
+    const QVariantMap groupData = group.toMap();
+    items << new QgsAfsPortalGroupItem( this, groupData.value( QStringLiteral( "id" ) ).toString(),
+                                        groupData.value( QStringLiteral( "title" ) ).toString(),
+                                        mAuthCfg, mHeaders, mPortalCommunityEndpoint, mPortalContentEndpoint );
+    items.last()->setToolTip( groupData.value( QStringLiteral( "snippet" ) ).toString() );
+  }
+
+  return items;
+}
+
+bool QgsAfsPortalGroupsItem::equal( const QgsDataItem *other )
+{
+  const QgsAfsPortalGroupsItem *o = qobject_cast<const QgsAfsPortalGroupsItem *>( other );
+  return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
+}
+
+
+//
+// QgsAfsGroupItem
+//
+QgsAfsPortalGroupItem::QgsAfsPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsStringMap &headers, const QString &communityEndpoint, const QString &contentEndpoint )
+  : QgsDataCollectionItem( parent, name, groupId, QStringLiteral( "AFS" ) )
+  , mId( groupId )
+  , mAuthCfg( authcfg )
+  , mHeaders( headers )
+  , mPortalCommunityEndpoint( communityEndpoint )
+  , mPortalContentEndpoint( contentEndpoint )
+{
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mCapabilities |= Collapse;
+  setToolTip( name );
+}
+
+QVector<QgsDataItem *> QgsAfsPortalGroupItem::createChildren()
+{
+  QVector<QgsDataItem *> items;
+
+  QString errorTitle;
+  QString errorMessage;
+  const QVariantList groupItems = QgsArcGisPortalUtils::retrieveGroupItemsOfType( mPortalContentEndpoint, mId, mAuthCfg, QList<int >() << QgsArcGisPortalUtils::FeatureService,
+                                  errorTitle, errorMessage, mHeaders );
+  if ( groupItems.isEmpty() )
+  {
+    if ( !errorMessage.isEmpty() )
+    {
+      std::unique_ptr< QgsErrorItem > error = qgis::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
+      error->setToolTip( errorMessage );
+      items.append( error.release() );
+      QgsDebugMsg( "Connection failed - " + errorMessage );
+    }
+    return items;
+  }
+
+  for ( const QVariant &item : groupItems )
+  {
+    const QVariantMap itemData = item.toMap();
+    items << new QgsAfsServiceItem( this, itemData.value( QStringLiteral( "title" ) ).toString(),
+                                    itemData.value( QStringLiteral( "url" ) ).toString(),
+                                    itemData.value( QStringLiteral( "url" ) ).toString(), mAuthCfg, mHeaders );
+  }
+
+  return items;
+}
+
+bool QgsAfsPortalGroupItem::equal( const QgsDataItem *other )
+{
+  const QgsAfsPortalGroupItem *o = qobject_cast<const QgsAfsPortalGroupItem *>( other );
+  return ( type() == other->type() && o && mId == o->mId && mName == o->mName );
+}
+
+
+//
+// QgsAfsServicesItem
+//
+
+QgsAfsServicesItem::QgsAfsServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsStringMap &headers )
+  : QgsDataCollectionItem( parent, tr( "Services" ), path, QStringLiteral( "AFS" ) )
+  , mUrl( url )
+  , mAuthCfg( authcfg )
+  , mHeaders( headers )
+{
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mCapabilities |= Collapse;
+}
+
+QVector<QgsDataItem *> QgsAfsServicesItem::createChildren()
+{
+  QVector<QgsDataItem *> items;
+  QString errorTitle, errorMessage;
+  const QVariantMap serviceData = QgsArcGisRestQueryUtils::getServiceInfo( mUrl, mAuthCfg, errorTitle, errorMessage, mHeaders );
+  if ( serviceData.isEmpty() )
+  {
+    if ( !errorMessage.isEmpty() )
+    {
+      std::unique_ptr< QgsErrorItem > error = qgis::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
+      error->setToolTip( errorMessage );
+      items.append( error.release() );
+      QgsDebugMsg( "Connection failed - " + errorMessage );
+    }
+    return items;
+  }
+
+  addFolderItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this );
+  addServiceItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this );
+  addLayerItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this );
+  return items;
+}
+
+bool QgsAfsServicesItem::equal( const QgsDataItem *other )
+{
+  const QgsAfsServicesItem *o = qobject_cast<const QgsAfsServicesItem *>( other );
+  return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
+}
+
+
+
+//
+// QgsAfsFolderItem
+//
 QgsAfsFolderItem::QgsAfsFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
   , mBaseUrl( baseUrl )

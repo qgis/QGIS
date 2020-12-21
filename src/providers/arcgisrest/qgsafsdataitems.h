@@ -40,7 +40,13 @@ class QgsAfsRootItem : public QgsConnectionsRootItem
 #endif
 };
 
-
+/**
+ * Root item corresponding to a connection.
+ *
+ * Depending on whether the connection has the Portal endpoints set, child items will either be
+ * QgsAfsServiceItems directly, or a QgsAfsPortalGroupsItem and QgsAfsServicesItem allowing the user
+ * to explore content by services or by Portal content groups.
+ */
 class QgsAfsConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -52,7 +58,80 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
 
   private:
     QString mConnName;
+    QString mPortalCommunityEndpoint;
+    QString mPortalContentEndpoint;
 };
+
+/**
+ * A container for all ArcGIS Portal user groups present on a server (which the user belongs to).
+ *
+ * Child items are QgsAfsPortalGroupItem items for each group.
+ *
+ * \note This is only used for AFS connections which have the Portal endpoints set.
+ */
+class QgsAfsPortalGroupsItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAfsPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsStringMap &headers,
+                            const QString &communityEndpoint, const QString &contentEndpoint );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+    QString mPortalCommunityEndpoint;
+    QString mPortalContentEndpoint;
+};
+
+/**
+ * Represents a single ArcGIS Portal user group. Child items are QgsAfsServiceItem representing each feature service
+ * present within the group.
+ *
+ * \note This is only used for AFS connections which have the Portal endpoints set.
+ */
+class QgsAfsPortalGroupItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAfsPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsStringMap &headers,
+                           const QString &communityEndpoint, const QString &contentEndpoint );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mId;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+    QString mPortalCommunityEndpoint;
+    QString mPortalContentEndpoint;
+};
+
+
+/**
+ * A container for all ArcGIS Portal services present on a server.
+ *
+ * Child items are QgsAfsServiceItem items.
+ *
+ * \note This is only used for AFS connections which have the Portal endpoints set.
+ */
+class QgsAfsServicesItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAfsServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsStringMap &headers );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mUrl;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+    QString mPortalCommunityEndpoint;
+    QString mPortalContentEndpoint;
+};
+
 
 class QgsAfsFolderItem : public QgsDataCollectionItem
 {
