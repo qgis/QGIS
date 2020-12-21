@@ -240,8 +240,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         // allow editing
         const QgsVectorDataProvider *provider = vlayer->dataProvider();
-        if ( provider &&
-             ( provider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
+        if ( vlayer->supportsEditing() )
         {
           if ( toggleEditingAction )
           {
