@@ -177,6 +177,9 @@
       <property name="openLinks">
        <bool>false</bool>
       </property>
+      <property name="openExternalLinks">
+       <bool>true</bool>
+      </property>
      </widget>
     </widget>
    </item>
