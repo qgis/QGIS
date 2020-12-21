@@ -164,7 +164,7 @@ void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, 
   }
 }
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::executeSqlWithNames( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
   return executeGdalSqlPrivate( sql, feedback );
@@ -221,7 +221,7 @@ bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema,
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
   const auto res { executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                                          QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows };
+                                          QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows() };
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
@@ -394,7 +394,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
           fields = QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) );
           for ( const auto &f : qgis::as_const( fields ) )
           {
-            results.columnns.push_back( f.name() );
+            results.appendColumn( f.name() );
           }
         }
 
@@ -415,7 +415,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
           }
         }
 
-        results.rows.push_back( row );
+        results.appendRow( row );
       }
       GDALDatasetReleaseResultSet( hDS.get(), ogrLayer );
     }

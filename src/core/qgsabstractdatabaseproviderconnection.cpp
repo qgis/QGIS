@@ -135,11 +135,11 @@ void QgsAbstractDatabaseProviderConnection::renameSchema( const QString &, const
 
 QList<QList<QVariant>> QgsAbstractDatabaseProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
 {
-  return executeSqlWithNames( sql, feedback ).rows;
+  return execSql( sql, feedback ).rows();
 }
 
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsAbstractDatabaseProviderConnection::executeSqlWithNames( const QString &, QgsFeedback * ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsAbstractDatabaseProviderConnection::execSql( const QString &, QgsFeedback * ) const
 {
   checkCapability( Capability::ExecuteSql );
   return QueryResult();
@@ -434,3 +434,23 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setSchema( const QStr
   mSchema = schema;
 }
 
+
+QStringList QgsAbstractDatabaseProviderConnection::QueryResult::columns() const
+{
+  return mColumns;
+}
+
+QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows() const
+{
+  return mRows;
+}
+
+void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QString &columnName )
+{
+  mColumns.push_back( columnName );
+}
+
+void QgsAbstractDatabaseProviderConnection::QueryResult::appendRow( const QList<QVariant> &row )
+{
+  mRows.push_back( row );
+}

@@ -192,7 +192,7 @@ void QgsPostgresProviderConnection::renameSchema( const QString &name, const QSt
                      .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::executeSqlWithNames( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
   return executeSqlPrivateWithNames( sql, true, feedback );
@@ -201,7 +201,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
   QStringList columnNames;
-  return executeSqlPrivateWithNames( sql, resolveTypes, feedback, pgconn ).rows;
+  return executeSqlPrivateWithNames( sql, resolveTypes, feedback, pgconn ).rows();
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::executeSqlPrivateWithNames( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
@@ -270,7 +270,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
       // Get column names
       for ( int rowIdx = 0; rowIdx < res.PQnfields(); rowIdx++ )
       {
-        results.columnns.push_back( res.PQfname( rowIdx ) );
+        results.appendColumn( res.PQfname( rowIdx ) );
       }
 
       // Try to convert value types at least for basic simple types that can be directly mapped to Python
@@ -369,7 +369,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
             row.push_back( res.PQgetvalue( rowIdx, colIdx ) );
           }
         }
-        results.rows.push_back( row );
+        results.appendRow( row );
       }
     }
     if ( ! errCause.isEmpty() )
