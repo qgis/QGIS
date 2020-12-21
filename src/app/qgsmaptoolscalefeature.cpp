@@ -371,8 +371,8 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
     while ( !vertex.isEmpty() )
     {
       // for to maintain feature position use the center of the feature bbox and not the whole selection
-      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * ( scale - 1) );
-      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * ( scale - 1) );
+      double newX = vertex.x() + ( ( vertex.x() - mFeatureCenter.x() ) * ( scale - 1 ) );
+      double newY = vertex.y() + ( ( vertex.y() - mFeatureCenter.y() ) * ( scale - 1 ) );
 
       mLayer->moveVertex( newX, newY, id, i );
       i = i + 1;
