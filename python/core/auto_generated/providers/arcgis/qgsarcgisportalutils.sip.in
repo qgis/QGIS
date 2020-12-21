@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsarcgisportalutils.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsArcGisPortalUtils
+{
+%Docstring
+Utility functions for working with ArcGIS REST services.
+
+.. seealso:: :py:class:`QgsArcGisRestUtils`
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsarcgisportalutils.h"
+%End
+  public:
+
+    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0 );
+%Docstring
+Retrieves JSON user info for the specified user name.
+
+If ``user`` is blank then the user associated with the current logon details will be retrieved
+
+:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current user
+:param authcfg: authentification configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancelation support
+
+:return: - JSON user info
+         - errorTitle: title summary of any encountered errrors
+         - errorText: error text of any encountered errors
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsarcgisportalutils.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

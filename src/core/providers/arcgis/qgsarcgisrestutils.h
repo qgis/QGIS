@@ -51,6 +51,8 @@ class QgsMultiCurve;
  * \ingroup core
  * Utility functions for working with ArcGIS REST services.
  *
+ * \see QgsArcGisPortalUtils
+ *
  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsArcGisRestUtils
