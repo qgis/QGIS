@@ -231,7 +231,7 @@ namespace
   }
 }
 
-static const size_t MAX_BATCH_SIZE = 4098;
+static const size_t MAXIMUM_BATCH_DATA_SIZE = 4* 1024 * 1024;
 
 const QString QgsHanaProvider::HANA_KEY = QStringLiteral( "hana" );
 const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral( "HANA spatial data provider" );
@@ -529,8 +529,6 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
                         QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
                         columnNames.join( QStringLiteral( "," ) ), values.join( QStringLiteral( "," ) ) );
 
-  size_t batchSize = 0;
-
   try
   {
     PreparedStatementRef stmtInsert = conn->prepareStatement( sql );
@@ -594,13 +592,9 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( allowBatchInserts )
       {
         stmtInsert->addBatch();
-        ++batchSize;
 
-        if ( batchSize >= MAX_BATCH_SIZE )
-        {
+        if ( stmtInsert->getBatchDataSize() >= MAXIMUM_BATCH_DATA_SIZE )
           stmtInsert->executeBatch();
-          batchSize = 0;
-        }
       }
       else
       {
@@ -623,7 +617,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       }
     }
 
-    if ( allowBatchInserts && batchSize > 0 )
+    if ( allowBatchInserts && stmtInsert->getBatchDataSize() > 0 )
       stmtInsert->executeBatch();
 
     conn->commit();
@@ -909,7 +903,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
 
   try
   {
-    PreparedStatementRef stmt = conn->prepareStatement( sql );
+    PreparedStatementRef stmtUpdate = conn->prepareStatement( sql );
 
     for ( QgsGeometryMap::const_iterator it = geometryMap.begin(); it != geometryMap.end(); ++it )
     {
@@ -919,10 +913,16 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
         continue;
 
       QByteArray wkb = it->asWkb();
-      stmt->setBinary( 1, makeNullable<vector<char>>( wkb.begin(), wkb.end() ) );
-      stmt->setLong( 2, fid );
-      stmt->executeUpdate();
+      stmtUpdate->setBinary( 1, makeNullable<vector<char>>( wkb.begin(), wkb.end() ) );
+      stmtUpdate->setLong( 2, fid );
+      stmtUpdate->addBatch();
+
+      if ( stmtUpdate->getBatchDataSize() >= MAXIMUM_BATCH_DATA_SIZE )
+        stmtUpdate->executeBatch();
     }
+
+    if ( stmtUpdate->getBatchDataSize() > 0 )
+      stmtUpdate->executeBatch();
 
     conn->commit();
   }
