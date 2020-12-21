@@ -111,9 +111,22 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt1_tg3 First point of the third tangent.
      * \param pt2_tg3 Second point of the third tangent.
      * \param epsilon Value used to compare point.
-     * \param pos Point to determine which circle use in case of multi return. This case happens only when two tangets are parallels. \since QGIS 3.18
+     * \param pos Point to determine which circle use in case of multi return.
+     * If the solution is not unique and pos is an empty point, an empty circle is returned. -- This case happens only when two tangets are parallels. \since QGIS 3.18
      *
      * \see from3TangentsMulti()
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *  # [(0 0), (5 0)] and [(5 5), (10 5)] are parallels
+     *  QgsCircle.from3Tangents(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5))
+     *  # <QgsCircle: Empty>
+     *  QgsCircle.from3Tangents(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5), pos=QgsPoint(2, 0))
+     *  # <QgsCircle: Circle (Center: Point (1.46446609406726203 2.49999999999999911), Radius: 2.5, Azimuth: 0)>
+     *  QgsCircle.from3Tangents(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5), pos=QgsPoint(3, 0))
+     *  # <QgsCircle: Circle (Center: Point (8.53553390593273775 2.5), Radius: 2.5, Azimuth: 0)>
+     * \endcode
      */
     static QgsCircle from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1,
                                     const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
@@ -142,7 +155,24 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt2_tg3 Second point of the third tangent.
      * \param epsilon Value used to compare point.
      * \param pos (optional) Point to determine which circle use in case of multi return.
+     *
      * \see from3Tangents()
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *
+     *  # [(0 0), (5 0)] and [(5 5), (10 5)] are parallels
+     *  QgsCircle.from3TangentsMulti(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5))
+     *  # [<QgsCircle: Circle (Center: Point (8.53553390593273775 2.5), Radius: 2.5, Azimuth: 0)>, <QgsCircle: Circle (Center: Point (1.46446609406726203 2.49999999999999911), Radius: 2.5, Azimuth: 0)>]
+     *  QgsCircle.from3TangentsMulti(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5), pos=QgsPoint(2, 0))
+     *  # [<QgsCircle: Circle (Center: Point (1.46446609406726203 2.49999999999999911), Radius: 2.5, Azimuth: 0)>]
+     *  QgsCircle.from3TangentsMulti(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5), pos=QgsPoint(3, 0))
+     *  # [<QgsCircle: Circle (Center: Point (8.53553390593273775 2.5), Radius: 2.5, Azimuth: 0)>]
+     *  # [(0 0), (5 0)], [(5 5), (10 5)] and [(15 5), (20 5)] are parallels
+     *  QgsCircle.from3TangentsMulti(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(15, 5), QgsPoint(20, 5))
+     *  # []
+     * \endcode
      */
     static QVector<QgsCircle> from3TangentsMulti( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1,
         const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
