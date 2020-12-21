@@ -17,7 +17,7 @@
 #include "qgsafsdataitems.h"
 #include "qgsafssourceselect.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgsnewhttpconnection.h"
+#include "qgsnewarcgisrestconnection.h"
 #include "qgsowsconnection.h"
 
 #include <QDesktopServices>
@@ -105,7 +105,7 @@ void QgsAfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsAfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString() );
   nc.setWindowTitle( tr( "Create a New ArcGIS Feature Service Connection" ) );
 
   if ( nc.exec() )
@@ -116,7 +116,7 @@ void QgsAfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsAfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), item->name() );
   nc.setWindowTitle( tr( "Modify ArcGIS Feature Service Connection" ) );
 
   if ( nc.exec() )

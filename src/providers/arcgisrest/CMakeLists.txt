@@ -50,6 +50,7 @@ if (WITH_GUI)
     qgsafsdataitemguiprovider.cpp
     qgsafssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
+    qgsnewarcgisrestconnection.cpp
   )
 endif()
 
@@ -94,6 +95,7 @@ if (WITH_GUI)
     qgsamsdataitemguiprovider.cpp
     qgsamssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
+    qgsnewarcgisrestconnection.cpp
   )
 endif()
 
