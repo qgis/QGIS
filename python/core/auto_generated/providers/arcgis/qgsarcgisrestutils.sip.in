@@ -15,6 +15,8 @@ class QgsArcGisRestUtils
 %Docstring
 Utility functions for working with ArcGIS REST services.
 
+.. seealso:: :py:class:`QgsArcGisPortalUtils`
+
 .. versionadded:: 3.18
 %End
 

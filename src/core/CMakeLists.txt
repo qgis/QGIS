@@ -179,6 +179,7 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
 
+  providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
 
@@ -1403,6 +1404,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
 
+  providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
 
