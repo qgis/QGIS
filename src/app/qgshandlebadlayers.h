@@ -72,19 +72,11 @@ class APP_EXPORT QgsHandleBadLayers
 
   private:
 
-    enum class NameColumnRoles : int
+    enum class CustomRoles : int
     {
       Index = Qt::UserRole,
-    };
-
-    enum class TypeColumnRoles : int
-    {
-      ProviderIsFileBased = Qt::UserRole,
-    };
-
-    enum class DataSourceColumnRoles : int
-    {
-      DataSourceIsChanged = Qt::UserRole + 2,
+      ProviderIsFileBased,
+      DataSourceIsChanged,
     };
 
     QPushButton *mBrowseButton = nullptr;
