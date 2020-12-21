@@ -103,29 +103,44 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      */
     virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
+     * the case.
+     * As per Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by QgsProcessingAlgorithm::createInstance()
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on create() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Creates a configuration widget for an \a item of this type. Can return NULLPTR if no configuration GUI is required.
      */
-    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_FACTORY { Q_UNUSED( item ) return nullptr; }
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_TRANSFERBACK { Q_UNUSED( item ) return nullptr; }
 
     /**
      * Creates a rubber band for use when creating layout items of this type. Can return NULLPTR if no rubber band
      * should be created. The default behavior is to create a rectangular rubber band.
      * \see createNodeRubberBand()
      */
-    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) SIP_FACTORY;
+    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) SIP_TRANSFERBACK;
 
     /**
      * Creates a rubber band for use when creating layout node based items of this type. Can return NULLPTR if no rubber band
      * should be created. The default behavior is to return NULLPTR.
      * \see createRubberBand()
      */
-    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) SIP_FACTORY;
+    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) SIP_TRANSFERBACK;
 
     /**
      * Creates an instance of the corresponding item type.
      */
-    virtual QgsLayoutItem *createItem( QgsLayout *layout ) SIP_FACTORY;
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) SIP_TRANSFERBACK;
 
     /**
      * Called when a newly created item of the associated type has been added to a layout.
@@ -377,10 +392,25 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      */
     const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
+     * the case.
+     * As per Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by QgsProcessingAlgorithm::createInstance()
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on create() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Creates a new instance of a layout item given the item metadata \a metadataId, target \a layout.
      */
-    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const SIP_FACTORY;
+    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const SIP_TRANSFERBACK;
 
     /**
      * Called when a newly created item of the associated metadata \a metadataId has been added to a layout.
@@ -390,10 +420,25 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      */
     void newItemAddedToLayout( int metadataId, QgsLayoutItem *item );
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
+     * the case.
+     * As per Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by QgsProcessingAlgorithm::createInstance()
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on create() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Creates a new instance of a layout item configuration widget for the specified \a item.
      */
-    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const SIP_FACTORY;
+    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const SIP_TRANSFERBACK;
 
     /**
      * Creates a new rubber band item for the specified item \a metadataId and destination \a view.
