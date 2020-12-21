@@ -227,8 +227,15 @@ class TestPyQgsProviderConnectionBase():
                 self.assertEqual(res, [])
                 sql = "SELECT string_t, long_t, double_t, integer_t, date_t, datetime_t FROM %s" % table
                 res = conn.executeSql(sql)
+
                 # GPKG and spatialite have no type for time
                 self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+
+                # Test column names
+                res = conn.execSql(sql)
+                self.assertEqual(res.rows(), [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                self.assertEqual(res.columns(), ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t'])
+
                 sql = "SELECT time_t FROM %s" % table
                 res = conn.executeSql(sql)
 

@@ -68,6 +68,51 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_FLAG( TableFlags )
 
     /**
+     * The QueryResult class represents the result of a query executed by execSql()
+     *
+     * It encapsulates the result rows and a list of the column names.
+     * The query result may be empty in case the query returns nothing.
+     * \since QGIS 3.18
+     */
+    struct CORE_EXPORT QueryResult
+    {
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rows().size() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+        /**
+         * Returns the column names
+         */
+        QStringList columns() const;
+
+        /**
+         *Returns the results rows
+         */
+        QList<QList<QVariant> > rows() const;
+
+        /**
+         * Appends \a columnName to the list of column names.
+         */
+        void appendColumn( const QString &columnName );
+
+        /**
+         * Appends \a row to the results.
+         */
+        void appendRow( const QList<QVariant> &row );
+
+      private:
+
+        QStringList mColumns;
+        QList<QList<QVariant>> mRows;
+
+    };
+
+
+    /**
      * The TableProperty class represents a database table or view.
      *
      * In case the table is a vector spatial table and it has multiple
@@ -456,9 +501,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array, optionally \a feedback can be provided.
      * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \see execSql()
      * \throws QgsProviderConnectionException
      */
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Executes raw \a sql and returns the (possibly empty) query results, optionally \a feedback can be provided.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \see executeSql()
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.18
+     */
+    virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Vacuum the database table with given \a schema and \a name (schema is ignored if not supported by the backend).

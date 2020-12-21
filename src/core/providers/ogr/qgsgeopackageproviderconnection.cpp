@@ -164,7 +164,7 @@ void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, 
   }
 }
 
-QList<QList<QVariant>> QgsGeoPackageProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
   return executeGdalSqlPrivate( sql, feedback );
@@ -220,8 +220,8 @@ bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema,
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  const QList<QVariantList> res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                                  QgsSqliteUtils::quotedString( geometryColumn ) ) );
+  const auto res { executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                                          QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows() };
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
@@ -354,9 +354,9 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   };
 }
 
-QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
-  QList<QVariantList> results;
+  QgsAbstractDatabaseProviderConnection::QueryResult results;
 
   if ( feedback && feedback->isCanceled() )
   {
@@ -392,6 +392,10 @@ QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( cons
         if ( fields.isEmpty() )
         {
           fields = QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) );
+          for ( const auto &f : qgis::as_const( fields ) )
+          {
+            results.appendColumn( f.name() );
+          }
         }
 
         if ( ! fields.isEmpty() )
@@ -411,7 +415,7 @@ QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( cons
           }
         }
 
-        results.push_back( row );
+        results.appendRow( row );
       }
       GDALDatasetReleaseResultSet( hDS.get(), ogrLayer );
     }

@@ -181,7 +181,7 @@ void QgsSpatiaLiteProviderConnection::renameVectorTable( const QString &schema, 
   }
 }
 
-QList<QList<QVariant>> QgsSpatiaLiteProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
   return executeSqlPrivate( sql, feedback );
@@ -241,7 +241,7 @@ bool QgsSpatiaLiteProviderConnection::spatialIndexExists( const QString &schema,
   }
   const QList<QVariantList> res = executeSqlPrivate( QStringLiteral( "SELECT spatial_index_enabled FROM geometry_columns WHERE lower(f_table_name) = lower(%1) AND lower(f_geometry_column) = lower(%2)" )
                                   .arg( QgsSqliteUtils::quotedString( name ),
-                                        QgsSqliteUtils::quotedString( geometryColumn ) ) );
+                                        QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows();
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toInt() == 1;
 }
 
@@ -294,7 +294,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
 
       // Need to store it here because provider (and underlying gaia library) returns views as spatial table if they have geometries
       QStringList viewNames;
-      for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'view'" ) ) )
+      for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'view'" ) ).rows() )
       {
         viewNames.push_back( tn.first().toString() );
       }
@@ -302,7 +302,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
       // Another weirdness: table names are converted to lowercase when out of spatialite gaia functions, let's get them back to their real case here,
       // may need LAUNDER on open, but let's try to make it consistent with how GPKG works.
       QgsStringMap tableNotLowercaseNames;
-      for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ) )
+      for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ).rows() )
       {
         const QString tName { tn.first().toString() };
         tableNotLowercaseNames.insert( tName.toLower(), tName );
@@ -395,9 +395,9 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
   };
 }
 
-QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
-  QList<QVariantList> results;
+  QgsAbstractDatabaseProviderConnection::QueryResult results;
 
   if ( feedback && feedback->isCanceled() )
   {
@@ -433,6 +433,10 @@ QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QS
         if ( fields.isEmpty() )
         {
           fields = QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) );
+          for ( const auto &f : qgis::as_const( fields ) )
+          {
+            results.appendColumn( f.name() );
+          }
         }
         if ( ! fields.isEmpty() )
         {
@@ -451,7 +455,7 @@ QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QS
           }
         }
 
-        results.push_back( row );
+        results.appendRow( row );
       }
       GDALDatasetReleaseResultSet( hDS.get(), ogrLayer );
     }

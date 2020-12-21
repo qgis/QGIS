@@ -192,15 +192,21 @@ void QgsPostgresProviderConnection::renameSchema( const QString &name, const QSt
                      .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-QList<QVariantList> QgsPostgresProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return executeSqlPrivate( sql, true, feedback );
+  return execSqlPrivate( sql, true, feedback );
 }
 
 QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
-  QList<QVariantList> results;
+  QStringList columnNames;
+  return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
+}
+
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+{
+  QueryResult results;
 
   // Check feedback first!
   if ( feedback && feedback->isCanceled() )
@@ -261,8 +267,16 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
                    .arg( err );
       }
     }
+
     if ( res.PQntuples() > 0 )
     {
+
+      // Get column names
+      for ( int rowIdx = 0; rowIdx < res.PQnfields(); rowIdx++ )
+      {
+        results.appendColumn( res.PQfname( rowIdx ) );
+      }
+
       // Try to convert value types at least for basic simple types that can be directly mapped to Python
       QMap<int, QVariant::Type> typeMap;
       const int numFields { res.PQnfields() };
@@ -377,7 +391,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             row.push_back( res.PQgetvalue( rowIdx, colIdx ) );
           }
         }
-        results.push_back( row );
+        results.appendRow( row );
       }
     }
     if ( ! errCause.isEmpty() )
@@ -715,7 +729,7 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTy
 
 QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName ) const
 {
-  // Try the base implementation first and fall back to a more complex approch for the
+  // Try the base implementation first and fall back to a more complex approach for the
   // few PG-specific corner cases that do not work with the base implementation.
   try
   {
