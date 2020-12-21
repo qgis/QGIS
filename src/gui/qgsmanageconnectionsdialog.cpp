@@ -1456,25 +1456,12 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     //no dups detected or overwrite is allowed
     settings.beginGroup( "/HANA/connections/" + connectionName );
 
-    settings.setValue( QStringLiteral( "/driver" ), child.attribute( QStringLiteral( "driver" ) ) );
-    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
-    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
-    settings.setValue( QStringLiteral( "/identifierType" ), child.attribute( QStringLiteral( "identifierType" ) ) );
-    settings.setValue( QStringLiteral( "/identifier" ), child.attribute( QStringLiteral( "identifier" ) ) );
-    settings.setValue( QStringLiteral( "/multitenant" ), child.attribute( QStringLiteral( "multitenant" ) ) );
-    settings.setValue( QStringLiteral( "/schema" ), child.attribute( QStringLiteral( "schema" ) ) );
-    settings.setValue( QStringLiteral( "/userTablesOnly" ), child.attribute( QStringLiteral( "userTablesOnly" ) ) );
-    settings.setValue( QStringLiteral( "/allowGeometrylessTables" ), child.attribute( QStringLiteral( "allowGeometrylessTables" ) ) );
-    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
-    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
-    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
-    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
-    settings.setValue( QStringLiteral( "/sslEnabled" ), child.attribute( QStringLiteral( "sslEnabled" ) ) );
-    settings.setValue( QStringLiteral( "/sslCryptoProvider" ), child.attribute( QStringLiteral( "sslCryptoProvider" ) ) );
-    settings.setValue( QStringLiteral( "/sslKeyStore" ), child.attribute( QStringLiteral( "sslKeyStore" ) ) );
-    settings.setValue( QStringLiteral( "/sslTrustStore" ), child.attribute( QStringLiteral( "sslTrustStore" ) ) );
-    settings.setValue( QStringLiteral( "/sslValidateCertificate" ), child.attribute( QStringLiteral( "sslValidateCertificate" ) ) );
-    settings.setValue( QStringLiteral( "/sslHostNameInCertificate" ), child.attribute( QStringLiteral( "sslHostNameInCertificate" ) ) );
+    for ( const QString param :
+          {"driver", "host", "database", "identifierType", "identifier", "multitenant", "schema", "userTablesOnly",
+           "allowGeometrylessTables", "saveUsername", "username", "savePassword", "password", "sslEnabled",
+           "sslCryptoProvider", "sslKeyStore", "sslTrustStore", "sslValidateCertificate", "sslHostNameInCertificate"
+          } )
+      settings.setValue( QStringLiteral( "/" ) + param, child.attribute( param ) );
 
     settings.endGroup();
 
