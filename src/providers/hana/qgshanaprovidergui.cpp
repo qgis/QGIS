@@ -60,11 +60,6 @@ class QgsHanaProviderGuiMetadata : public QgsProviderGuiMetadata
       return QList<QgsDataItemGuiProvider *>()
              << new QgsHanaDataItemGuiProvider;
     }
-
-    void registerGui( QMainWindow *mainWindow ) override
-    {
-      QgsHanaRootItem::sMainWindow = mainWindow;
-    }
 };
 
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()

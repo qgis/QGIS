@@ -363,8 +363,6 @@ QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
   return connections;
 }
 
-QMainWindow *QgsHanaRootItem::sMainWindow = nullptr;
-
 QWidget *QgsHanaRootItem::paramWidget()
 {
   QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, nullptr,

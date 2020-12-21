@@ -40,8 +40,6 @@ class QgsHanaRootItem : public QgsConnectionsRootItem
 
     QWidget *paramWidget() override;
 
-    static QMainWindow *sMainWindow;
-
   public slots:
     void onConnectionsChanged();
 };
