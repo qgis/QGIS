@@ -79,12 +79,13 @@ Returns a translated, user visible name identifying the corresponding layout ite
 Returns an icon representing creation of the layout item type.
 %End
 
-    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) /Factory/;
+
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) /TransferBack/;
 %Docstring
 Creates a configuration widget for an ``item`` of this type. Can return ``None`` if no configuration GUI is required.
 %End
 
-    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) /Factory/;
+    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) /TransferBack/;
 %Docstring
 Creates a rubber band for use when creating layout items of this type. Can return ``None`` if no rubber band
 should be created. The default behavior is to create a rectangular rubber band.
@@ -92,7 +93,7 @@ should be created. The default behavior is to create a rectangular rubber band.
 .. seealso:: :py:func:`createNodeRubberBand`
 %End
 
-    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) /Factory/;
+    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) /TransferBack/;
 %Docstring
 Creates a rubber band for use when creating layout node based items of this type. Can return ``None`` if no rubber band
 should be created. The default behavior is to return ``None``.
@@ -100,7 +101,7 @@ should be created. The default behavior is to return ``None``.
 .. seealso:: :py:func:`createRubberBand`
 %End
 
-    virtual QgsLayoutItem *createItem( QgsLayout *layout ) /Factory/;
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) /TransferBack/;
 %Docstring
 Creates an instance of the corresponding item type.
 %End
@@ -212,7 +213,8 @@ Returns a reference to the item group with matching ``id``.
 .. seealso:: :py:func:`addItemGroup`
 %End
 
-    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const /Factory/;
+
+    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const /TransferBack/;
 %Docstring
 Creates a new instance of a layout item given the item metadata ``metadataId``, target ``layout``.
 %End
@@ -225,7 +227,8 @@ This is only called for additions which result from GUI operations - i.e. it is 
 called for items added from templates.
 %End
 
-    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /Factory/;
+
+    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /TransferBack/;
 %Docstring
 Creates a new instance of a layout item configuration widget for the specified ``item``.
 %End
