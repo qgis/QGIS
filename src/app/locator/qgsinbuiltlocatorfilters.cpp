@@ -1194,7 +1194,7 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
 }
 
 QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas )
-  : QgsGeocoderLocatorFilter( QStringLiteral( "nominatimgeocoder" ), tr( "Nominatim Geocoder" ), QStringLiteral( "nom" ), geocoder, canvas )
+  : QgsGeocoderLocatorFilter( QStringLiteral( "nominatimgeocoder" ), tr( "Nominatim Geocoder" ), QStringLiteral( ">" ), geocoder, canvas )
 {
   setFetchResultsDelay( 1000 );
   setUseWithoutPrefix( false );
