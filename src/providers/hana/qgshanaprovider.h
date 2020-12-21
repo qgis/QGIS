@@ -57,7 +57,6 @@ class QgsHanaProvider final : public QgsVectorDataProvider
 
     QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
                      QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
-    ~QgsHanaProvider() override;
 
     /* Functions inherited from QgsVectorDataProvider */
 

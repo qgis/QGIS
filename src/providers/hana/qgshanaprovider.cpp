@@ -311,11 +311,6 @@ QgsHanaProvider::QgsHanaProvider(
   QgsDebugMsgLevel( QStringLiteral( "Query source is: %1" ).arg( mQuerySource ), 4 );
 }
 
-QgsHanaProvider::~QgsHanaProvider()
-{
-  QgsDebugMsgLevel( QStringLiteral( "deconstructing." ), 4 );
-}
-
 QgsAbstractFeatureSource *QgsHanaProvider::featureSource() const
 {
   return new QgsHanaFeatureSource( this );
