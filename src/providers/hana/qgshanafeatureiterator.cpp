@@ -91,6 +91,7 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   try
   {
     mSqlQuery = buildSqlQuery( request );
+    mSqlQueryParams = buildSqlQueryParameters();
 
     rewind();
   }
@@ -111,15 +112,7 @@ bool QgsHanaFeatureIterator::rewind()
     return false;
 
   mResultSet.reset();
-  if ( !( mFilterRect.isNull() || mFilterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
-  {
-    QgsRectangle filterRect = getFilterRect();
-    QString ll = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( filterRect.xMinimum() ),  QString::number( filterRect.yMinimum() ) );
-    QString ur = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( filterRect.xMaximum() ),  QString::number( filterRect.yMaximum() ) );
-    mResultSet = mConnection->executeQuery( mSqlQuery, { ll, mSource->mSrid, ur, mSource->mSrid } );
-  }
-  else
-    mResultSet = mConnection->executeQuery( mSqlQuery );
+  mResultSet = mConnection->executeQuery( mSqlQuery, mSqlQueryParams );
 
   return true;
 }
@@ -427,6 +420,18 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   QgsDebugMsgLevel( "Query: " + sql, 4 );
 
   return sql;
+}
+
+QVariantList QgsHanaFeatureIterator::buildSqlQueryParameters( ) const
+{
+  if ( !( mFilterRect.isNull() || mFilterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
+  {
+    QgsRectangle filterRect = getFilterRect();
+    QString ll = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( filterRect.xMinimum() ),  QString::number( filterRect.yMinimum() ) );
+    QString ur = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( filterRect.xMaximum() ),  QString::number( filterRect.yMaximum() ) );
+    return { ll, mSource->mSrid, ur, mSource->mSrid };
+  }
+  return QVariantList();
 }
 
 QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
