@@ -80,3 +80,40 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentU
   }
   return items;
 }
+
+QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList<int> &itemTypes, QString &errorTitle, QString &errorText, const QMap<QString, QString> &requestHeaders, QgsFeedback *feedback, int pageSize )
+{
+  const QVariantList items = retrieveGroupContent( contentUrl, groupId, authcfg, errorTitle, errorText, requestHeaders, feedback, pageSize );
+
+  // filter results to desired types
+  QVariantList result;
+  for ( const QVariant &item : items )
+  {
+    const QVariantMap itemDef = item.toMap();
+    const QString itemType = itemDef.value( QStringLiteral( "type" ) ).toString();
+
+    for ( int filterType : itemTypes )
+    {
+      if ( typeToString( static_cast< ItemType >( filterType ) ).compare( itemType, Qt::CaseInsensitive ) == 0 )
+      {
+        result << item;
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+QString QgsArcGisPortalUtils::typeToString( QgsArcGisPortalUtils::ItemType type )
+{
+  switch ( type )
+  {
+    case QgsArcGisPortalUtils::FeatureService:
+      return QStringLiteral( "Feature Service" );
+    case QgsArcGisPortalUtils::MapService:
+      return QStringLiteral( "Map Service" );
+    case QgsArcGisPortalUtils::ImageService:
+      return QStringLiteral( "Image Service" );
+  }
+  return QString();
+}

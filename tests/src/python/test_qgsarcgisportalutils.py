@@ -218,6 +218,74 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
         self.assertEqual(res[0], [{'id': '74', 'title': 'Item 1'}, {'id': '20', 'title': 'Item 2'},
                                   {'id': '75', 'title': 'Item 3'}])
 
+    def test_retrieve_group_items_filtered(self):
+        """
+        Test retrieving group content
+        """
+        print(self.basetestpath)
+        endpoint = self.basetestpath + '/groupf_items_fake_qgis_http_endpoint'
+
+        with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=1&num=2'), 'wb') as f:
+            f.write("""{
+  "total": 3,
+  "start": 1,
+  "num": 2,
+  "nextStart": 3,
+  "items": [
+    {
+      "id": "74",
+      "title": "Item 1",
+      "type":"Feature Service"
+    },
+    {
+      "id": "20",
+      "title": "Item 2",
+      "type":"Map Service"
+    }
+  ]
+}""".encode('UTF-8'))
+
+            with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=3&num=2'), 'wb') as f:
+                f.write("""{
+          "total": 3,
+          "start": 3,
+          "num": 1,
+          "nextStart": 3,
+          "items": [
+            {
+              "id": "75",
+              "title": "Item 3",
+              "type":"Image Service"
+            }
+          ]
+        }""".encode('UTF-8'))
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
+                                                            [QgsArcGisPortalUtils.FeatureService], pageSize=2)
+        # no errors
+        self.assertFalse(res[1])
+        self.assertFalse(res[2])
+        self.assertEqual(res[0], [{'id': '74', 'title': 'Item 1', 'type': 'Feature Service'}])
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
+                                                            [QgsArcGisPortalUtils.MapService], pageSize=2)
+        # no errors
+        self.assertFalse(res[1])
+        self.assertFalse(res[2])
+        self.assertEqual(res[0], [{'id': '20', 'title': 'Item 2', 'type': 'Map Service'}])
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
+                                                            [QgsArcGisPortalUtils.ImageService], pageSize=2)
+        # no errors
+        self.assertFalse(res[1])
+        self.assertFalse(res[2])
+        self.assertEqual(res[0], [{'id': '75', 'title': 'Item 3', 'type': 'Image Service'}])
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
+                                                            [QgsArcGisPortalUtils.FeatureService,
+                                                             QgsArcGisPortalUtils.MapService], pageSize=2)
+        # no errors
+        self.assertFalse(res[1])
+        self.assertFalse(res[2])
+        self.assertEqual(res[0], [{'id': '74', 'title': 'Item 1', 'type': 'Feature Service'},
+                                  {'id': '20', 'title': 'Item 2', 'type': 'Map Service'}])
+
 
 if __name__ == '__main__':
     unittest.main()
