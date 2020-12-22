@@ -391,7 +391,7 @@ void QgsRelation::updateRelationStatus()
         }
         else if ( -1 == d->mReferencedLayer->fields().lookupField( pair.second ) )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencedg layer %2" ).arg( pair.second, d->mReferencedLayer->name() ) );
+          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayer->name() ) );
           d->mValid = false;
           break;
         }
@@ -400,3 +400,15 @@ void QgsRelation::updateRelationStatus()
 
   }
 }
+
+void QgsRelation::setPolymorphicRelationId( const QString polymorphicRelationId )
+{
+  d.detach();
+  d->mPolymorphicRelationId = polymorphicRelationId;
+}
+
+QString QgsRelation::polymorphicRelationId() const
+{
+  return d->mPolymorphicRelationId;
+}
+
