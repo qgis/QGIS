@@ -15,7 +15,6 @@
 
 #include "qgsarcgisrestdataitemguiprovider.h"
 #include "qgsarcgisrestdataitems.h"
-#include "qgsafssourceselect.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"
 #include "qgsowsconnection.h"

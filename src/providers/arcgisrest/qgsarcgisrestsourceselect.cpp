@@ -86,10 +86,6 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::Windo
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisRestSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add ArcGIS REST Layer" ) );
 
-  mBuildQueryButton = buttonBox->addButton( tr( "&Build query" ), QDialogButtonBox::ActionRole );
-  mBuildQueryButton->setDisabled( true );
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::buildQueryButtonClicked );
-
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( btnNew, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::addEntryToServerList );
   connect( btnEdit, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::modifyEntryOfServerList );
@@ -179,7 +175,6 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
   // provide a horizontal scroll bar instead of using ellipse (...) for longer items
   mBrowserView->setTextElideMode( Qt::ElideNone );
 
-  connect( mBrowserView, &QAbstractItemView::doubleClicked, this, &QgsArcGisRestSourceSelect::treeWidgetItemDoubleClicked );
   connect( mBrowserView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged );
 
   mBrowserView->expand( mProxyModel->index( 0, 0 ) );
@@ -286,7 +281,6 @@ void QgsArcGisRestSourceSelect::connectToServer()
 
   btnConnect->setEnabled( true );
   emit enableButtons( haveLayers );
-  mBuildQueryButton->setEnabled( haveLayers );
   updateCrsLabel();
 }
 
@@ -348,7 +342,6 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
     {
       const QString layerName = layerItem->name();
 
-      QString filter;// = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
       QgsRectangle layerExtent;
       if ( cbxFeatureCurrentViewExtent->isChecked() )
       {
@@ -359,7 +352,6 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
       uri.setParam( QStringLiteral( "crs" ), pCrsString );
       if ( qobject_cast< QgsArcGisFeatureServiceLayerItem *>( layerItem ) )
       {
-        uri.setParam( QStringLiteral( "filter" ), filter );
         if ( !layerExtent.isEmpty() )
         {
           uri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( layerExtent.xMinimum() ).arg( layerExtent.yMinimum() ).arg( layerExtent.xMaximum() ).arg( layerExtent.yMaximum() ) );
@@ -427,13 +419,6 @@ void QgsArcGisRestSourceSelect::cmbConnections_activated( int index )
   QgsOwsConnection::setSelectedConnection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
 }
 
-void QgsArcGisRestSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
-{
-  QgsDebugMsg( QStringLiteral( "double-click called" ) );
-  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
-  buildQuery( connection, index );
-}
-
 void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
@@ -441,18 +426,7 @@ void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &
   updateCrsLabel();
   updateImageEncodings();
 
-  if ( true ) // mServiceType == FeatureService )
-  {
-    mBuildQueryButton->setEnabled( current.isValid() );
-  }
   emit enableButtons( current.isValid() );
-}
-
-void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
-{
-  QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
-  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
-  buildQuery( connection, mBrowserView->selectionModel()->currentIndex() );
 }
 
 void QgsArcGisRestSourceSelect::filterChanged( const QString &text )
