@@ -7933,7 +7933,35 @@ void TestQgsGeometry::circle()
   QVERIFY( circ_tgt.isEmpty() );
   circ_tgt = QgsCircle().from3Tangents( QgsPoint( 5, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
   QVERIFY( circ_tgt.isEmpty() );
-
+  // with 2 parallels
+  const double epsilon = 1e-8;
+  circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) );
+  QVERIFY( circ_tgt.isEmpty() );
+  circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ), epsilon, QgsPoint( 2, 0 ) );
+  QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ_tgt.radius(), 2.5, 0.0001 );
+  circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ), epsilon, QgsPoint( 3, 0 ) );
+  QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 8.5355, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ_tgt.radius(), 2.5, 0.0001 );
+// from3tangentsMulti
+  QVector<QgsCircle> circles_tgt;
+  circles_tgt = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) );
+  QCOMPARE( circles_tgt.count(), 2 );
+  circ_tgt = circles_tgt.at( 0 );
+  QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 8.5355, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ_tgt.radius(), 2.5, 0.0001 );
+  circ_tgt = circles_tgt.at( 1 );
+  QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ_tgt.radius(), 2.5, 0.0001 );
+  circles_tgt = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ), epsilon, QgsPoint( 2, 0 ) );
+  QCOMPARE( circles_tgt.count(), 1 );
+  circ_tgt = circles_tgt.at( 0 );
+  QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ_tgt.radius(), 2.5, 0.0001 );
+  circles_tgt = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ), epsilon, QgsPoint( 3, 0 ) );
+  QCOMPARE( circles_tgt.count(), 1 );
+  circles_tgt = QgsCircle().from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 15, 5 ), QgsPoint( 20, 5 ) );
+  QVERIFY( circles_tgt.isEmpty() );
   // check that Z dimension is ignored in case of using tangents
   QgsCircle circ_tgt_z = QgsCircle().from3Tangents( QgsPoint( 0, 0, 333 ), QgsPoint( 0, 1, 1 ), QgsPoint( 2, 0, 2 ), QgsPoint( 3, 0, 3 ), QgsPoint( 5, 0, 4 ), QgsPoint( 0, 5, 5 ) );
   QCOMPARE( circ_tgt_z.center().is3D(), false );
