@@ -103,6 +103,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         qlonglong rowCount() const;
 
         /**
+         * Returns TRUE if there are more rows to fetch
+         */
+        bool hasNextRow() const;
+
+        /**
          * Returns the next result row or an empty row if there are no rows left
          */
         QList<QVariant> nextRow();
@@ -140,13 +145,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         struct QueryResultIterator SIP_SKIP
         {
           virtual QVariantList nextRow() = 0;
+          virtual bool hasNextRow() const = 0;
           virtual ~QueryResultIterator() = default;
         };
 
         /**
-         * Sets \a rowCount
-         * \note Not available in Python bindings
-         */
+          * Sets \a rowCount
+          * \note Not available in Python bindings
+          */
         void setRowCount( const qlonglong &rowCount ) SIP_SKIP;
 
         /**

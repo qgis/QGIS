@@ -378,7 +378,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
     if ( ogrLayer )
     {
 
-      auto iterator = std::make_shared<QgssGeoPackageProviderResultIterator>( std::move( hDS ), ogrLayer );
+      auto iterator = std::make_shared<QgsGeoPackageProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
       // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
       //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
@@ -407,7 +407,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
       }
 
       OGR_L_ResetReading( ogrLayer );
-
+      iterator->nextRow();
       return results;
     }
     errCause = CPLGetLastErrorMsg( );
@@ -425,7 +425,14 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
-QVariantList QgssGeoPackageProviderResultIterator::nextRow()
+QVariantList QgsGeoPackageProviderResultIterator::nextRow()
+{
+  const QVariantList currentRow { mNextRow };
+  mNextRow = nextRowPrivate();
+  return currentRow;
+}
+
+QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -454,7 +461,12 @@ QVariantList QgssGeoPackageProviderResultIterator::nextRow()
   return row;
 }
 
-void QgssGeoPackageProviderResultIterator::setFields( const QgsFields &fields )
+bool QgsGeoPackageProviderResultIterator::hasNextRow() const
+{
+  return ! mNextRow.isEmpty();
+}
+
+void QgsGeoPackageProviderResultIterator::setFields( const QgsFields &fields )
 {
   mFields = fields;
 }
@@ -474,7 +486,7 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
   return vl.dataProvider()->nativeTypes();
 }
 
-QgssGeoPackageProviderResultIterator::~QgssGeoPackageProviderResultIterator()
+QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()
 {
   GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
 }

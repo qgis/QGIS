@@ -26,6 +26,7 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
     {}
 
     QVariantList nextRow() override;
+    bool hasNextRow() const override;
 
     QMap<int, QVariant::Type> typeMap;
     std::unique_ptr<QgsPostgresResult> result;

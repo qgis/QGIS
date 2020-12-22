@@ -457,7 +457,7 @@ QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows
 
 QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
 {
-  if ( ! mResultIterator )
+  if ( ! mResultIterator && ! mResultIterator->hasNextRow() )
   {
     return QList<QVariant>();
   }
@@ -476,6 +476,15 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
 qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
 {
   return mRowCount;
+}
+
+bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
+{
+  if ( ! mResultIterator )
+  {
+    return false;
+  }
+  return mResultIterator->hasNextRow();
 }
 
 ///@cond PRIVATE

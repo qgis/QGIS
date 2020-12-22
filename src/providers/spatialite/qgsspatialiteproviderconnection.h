@@ -23,16 +23,17 @@
 #define SIP_NO_FILE
 
 
-struct QgssSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-    QgssSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+    QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
       : mHDS( std::move( hDS ) )
       , mOgrLayer( ogrLayer )
     {}
 
-    ~QgssSpatialiteProviderResultIterator();
+    ~QgsSpatialiteProviderResultIterator();
 
     QVariantList nextRow() override;
+    bool hasNextRow() const override;
 
     void setFields( const QgsFields &fields );
 
@@ -41,7 +42,9 @@ struct QgssSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderC
     gdal::ogr_datasource_unique_ptr mHDS;
     OGRLayerH mOgrLayer;
     QgsFields mFields;
+    QVariantList mNextRow;
 
+    QVariantList nextRowPrivate();
 };
 
 

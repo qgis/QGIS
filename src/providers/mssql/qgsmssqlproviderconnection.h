@@ -32,12 +32,16 @@ struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnec
     {}
 
     QVariantList nextRow() override;
+    bool hasNextRow() const override;
 
   private:
 
     bool mResolveTypes = true;
     int mColumnCount = 0;
     QSqlQuery mQuery;
+    QVariantList mNextRow;
+
+    QVariantList nextRowPrivate();
 
 };
 

@@ -25,16 +25,17 @@
 
 
 
-struct QgssGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-    QgssGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+    QgsGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
       : mHDS( std::move( hDS ) )
       , mOgrLayer( ogrLayer )
     {}
 
-    ~QgssGeoPackageProviderResultIterator();
+    ~QgsGeoPackageProviderResultIterator();
 
     QVariantList nextRow() override;
+    bool hasNextRow() const override;
 
     void setFields( const QgsFields &fields );
 
@@ -43,6 +44,9 @@ struct QgssGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderC
     gdal::ogr_datasource_unique_ptr mHDS;
     OGRLayerH mOgrLayer;
     QgsFields mFields;
+    QVariantList mNextRow;
+
+    QVariantList nextRowPrivate();
 
 };
 

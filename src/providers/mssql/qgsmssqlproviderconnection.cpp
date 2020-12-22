@@ -269,6 +269,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
       {
         results.appendColumn( rec.field( idx ).name() );
       }
+      iterator->nextRow();
       return results;
     }
 
@@ -278,6 +279,18 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
 
 QVariantList QgssMssqlProviderResultIterator::nextRow()
+{
+  const QVariantList currentRow { mNextRow };
+  mNextRow = nextRowPrivate();
+  return currentRow;
+}
+
+bool QgssMssqlProviderResultIterator::hasNextRow() const
+{
+  return ! mNextRow.isEmpty();
+}
+
+QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
 {
   QVariantList row;
   if ( mQuery.next() )

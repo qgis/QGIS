@@ -419,7 +419,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
     if ( ogrLayer )
     {
 
-      auto iterator = std::make_shared<QgssSpatialiteProviderResultIterator>( std::move( hDS ), ogrLayer );
+      auto iterator = std::make_shared<QgsSpatialiteProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
       // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
       //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
@@ -448,7 +448,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
       }
 
       OGR_L_ResetReading( ogrLayer );
-
+      iterator->nextRow();
       return results;
     }
     errCause = CPLGetLastErrorMsg( );
@@ -467,17 +467,24 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 }
 
 
-void QgssSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
+void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
 {
   mFields = fields;
 }
 
-QgssSpatialiteProviderResultIterator::~QgssSpatialiteProviderResultIterator()
+QgsSpatialiteProviderResultIterator::~QgsSpatialiteProviderResultIterator()
 {
   GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
 }
 
-QVariantList QgssSpatialiteProviderResultIterator::nextRow()
+QVariantList QgsSpatialiteProviderResultIterator::nextRow()
+{
+  const QVariantList currentRow { mNextRow };
+  mNextRow = nextRowPrivate();
+  return currentRow;
+}
+
+QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -504,6 +511,11 @@ QVariantList QgssSpatialiteProviderResultIterator::nextRow()
     }
   }
   return row;
+}
+
+bool QgsSpatialiteProviderResultIterator::hasNextRow() const
+{
+  return ! mNextRow.isEmpty();
 }
 
 bool QgsSpatiaLiteProviderConnection::executeSqlDirect( const QString &sql ) const

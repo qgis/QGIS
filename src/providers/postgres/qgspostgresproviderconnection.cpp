@@ -412,13 +412,18 @@ QVariantList QgsPostgresProviderResultIterator::nextRow()
   return row;
 }
 
+bool QgsPostgresProviderResultIterator::hasNextRow() const
+{
+  return mRowIndex < result->PQntuples();
+}
+
 
 void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::Vacuum );
   executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
-              .arg( QgsPostgresConn::quotedIdentifier( schema ) )
-              .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+              .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                    QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
 void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const

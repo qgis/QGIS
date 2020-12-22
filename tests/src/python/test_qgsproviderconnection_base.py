@@ -240,8 +240,11 @@ class TestPyQgsProviderConnectionBase():
                 old_rows = res.rows()
                 res = conn.execSql(sql)
                 rows = []
+                self.assertTrue(res.hasNextRow())
                 for row in res:
                     rows.append(row)
+
+                self.assertFalse(res.hasNextRow())
 
                 self.assertEqual(rows, old_rows)
                 self.assertEqual(rows, res.rows())

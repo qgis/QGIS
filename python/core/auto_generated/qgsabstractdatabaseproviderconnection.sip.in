@@ -72,6 +72,11 @@ Returns the row count
    the value may not be exact or it may be -1 if not known
 %End
 
+        bool hasNextRow() const;
+%Docstring
+Returns ``True`` if there are more rows to fetch
+%End
+
         QList<QVariant> nextRow();
 %Docstring
 Returns the next result row or an empty row if there are no rows left
