@@ -242,7 +242,7 @@ class CORE_EXPORT QgsProperty
     };
 
     /**
-     * Constructor for a QgsAbstractProperty. The property will be set to an InvalidProperty type.
+     * Constructor for a QgsProperty. The property will be set to an InvalidProperty type.
      */
     QgsProperty();
 
