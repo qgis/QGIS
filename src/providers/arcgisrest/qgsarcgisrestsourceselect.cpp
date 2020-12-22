@@ -113,15 +113,12 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( const QString &serviceName
   lineFilter->setShowSearchIcon( true );
 
   QgsSettings settings;
-  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
   mImageEncodingGroup = new QButtonGroup( this );
 }
 
 QgsArcGisRestSourceSelect::~QgsArcGisRestSourceSelect()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
 }
 
 void QgsArcGisRestSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
@@ -374,40 +371,47 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
   }
 
   //create layers that user selected from this feature source
-  QModelIndexList list = mBrowserView->selectionModel()->selectedRows();
-  for ( int i = 0; i < list.size(); i++ )
+  const QModelIndexList list = mBrowserView->selectionModel()->selectedRows();
+  for ( const QModelIndex &proxyIndex : list )
   {
-    //add a wfs layer to the map
-    QModelIndex idx; // = mModelProxy->mapToSource( list[i] );
-    if ( !idx.isValid() )
+    const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
+    if ( !sourceIndex.isValid() )
     {
       continue;
     }
 
-#if 0
-    int row = idx.row();
-    if ( !mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IsLayerRole ).toBool() )
+    QgsDataItem *item = mBrowserModel->dataItem( sourceIndex );
+    if ( !item )
       continue;
 
-    QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
-    QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
-    const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
-    const QString layerId = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IdRole ).toString();
-    QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
-    if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
+    if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
     {
-      layerName = layerTitle;
-    }
-    QgsRectangle layerExtent;
-    if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() ) )
-    {
-      layerExtent = extent;
-    }
-    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent, layerId );
+      const QString layerName = layerItem->name();
 
-    QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
-    addServiceLayer( uri, layerName );
-#endif
+      QString filter;// = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
+      QgsRectangle layerExtent;
+      if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() ) )
+      {
+        layerExtent = extent;
+      }
+
+      QgsDataSourceUri uri( layerItem->uri() );
+      uri.setParam( QStringLiteral( "crs" ), pCrsString );
+      if ( qobject_cast< QgsArcGisFeatureServiceLayerItem *>( layerItem ) )
+      {
+        uri.setParam( QStringLiteral( "filter" ), filter );
+        if ( !layerExtent.isEmpty() )
+        {
+          uri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( layerExtent.xMinimum() ).arg( layerExtent.yMinimum() ).arg( layerExtent.xMaximum() ).arg( layerExtent.yMaximum() ) );
+        }
+        emit addVectorLayer( uri.uri( false ), layerName );
+      }
+      else if ( qobject_cast< QgsArcGisMapServiceLayerItem *>( layerItem ) )
+      {
+        uri.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
+        emit addRasterLayer( uri.uri( false ), layerName, QStringLiteral( "arcgismapserver" ) );
+      }
+    }
   }
   accept();
 }

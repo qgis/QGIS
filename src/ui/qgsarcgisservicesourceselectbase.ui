@@ -172,13 +172,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="cbxUseTitleLayerName">
-     <property name="text">
-      <string>Use title for layer name</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QCheckBox" name="cbxFeatureCurrentViewExtent">
      <property name="text">
       <string>Only request features overlapping the current view extent</string>
@@ -283,7 +276,6 @@
   <tabstop>btnSave</tabstop>
   <tabstop>lineFilter</tabstop>
   <tabstop>mBrowserView</tabstop>
-  <tabstop>cbxUseTitleLayerName</tabstop>
   <tabstop>cbxFeatureCurrentViewExtent</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
  </tabstops>
