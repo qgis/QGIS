@@ -54,9 +54,9 @@ class CORE_EXPORT QgsRelation
   public:
 
     /**
-     * enum for the relation strength
-     * Association, Composition
-     */
+    * enum for the relation strength
+    * Association, Composition
+    */
     enum RelationStrength
     {
       Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
@@ -407,6 +407,7 @@ class CORE_EXPORT QgsRelation
     mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;
 
     QgsRelationContext mContext;
+    QString mPolymorphicRelationId;
 };
 
 // Register QgsRelation for usage with QVariant

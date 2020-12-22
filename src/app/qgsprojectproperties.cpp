@@ -1586,6 +1586,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), pythonMacros );
 
   QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
+  QgsProject::instance()->relationManager()->setPolymorphicRelations( mRelationManagerDlg->polymorphicRelations() );
 
   //save variables
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
