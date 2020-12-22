@@ -84,7 +84,7 @@ class PostGisDBPlugin(DBPlugin):
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
         try:
-            sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+            sslmode = settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer)
         except TypeError:
             sslmode = QgsDataSourceUri.SslPrefer
 
