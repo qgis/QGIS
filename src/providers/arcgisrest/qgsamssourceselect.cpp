@@ -160,18 +160,10 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
     const QString & /*filter*/,
     const QgsRectangle & /*bBox*/, const QString &layerId ) const
 {
-  QgsDataSourceUri ds = connection.uri();
-  QString url = layerTitle;
-  QString trimmedUrl = layerId.isEmpty() ? url : url.left( url.length() - 1 - layerId.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
-  ds.removeParam( QStringLiteral( "url" ) );
-  ds.setParam( QStringLiteral( "url" ), trimmedUrl );
-  ds.setParam( QStringLiteral( "layer" ), layerId );
-  ds.setParam( QStringLiteral( "crs" ), crs );
-  ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
-  return ds.uri( false );
+
 }
 
 void QgsAmsSourceSelect::addServiceLayer( QString uri, QString typeName )
 {
-  emit addRasterLayer( uri, typeName, QStringLiteral( "arcgismapserver" ) );
+
 }

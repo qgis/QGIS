@@ -37,13 +37,13 @@ class QgsMapCanvas;
 
 class QgsArcGisRestBrowserProxyModel : public QgsBrowserProxyModel
 {
-   Q_OBJECT
+    Q_OBJECT
 
-public:
+  public:
 
     explicit QgsArcGisRestBrowserProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    void setConnectionName(const QString &name);
+    void setConnectionName( const QString &name );
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
@@ -79,9 +79,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
   protected:
     QString mServiceName;
     ServiceType mServiceType;
-    QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
-    //  Available CRS for a server connection, key=typename, value=list("EPSG:XXXX")
-    QMap<QString, QStringList> mAvailableCRS;
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     QgsArcGisRestBrowserProxyModel *mProxyModel = nullptr;
@@ -113,15 +110,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     //! A layer is added from the dialog
     virtual void addServiceLayer( QString uri, QString typeName ) = 0;
 
-    /**
-     * Returns the best suited CRS from a set of authority ids
-     * 1. project CRS if contained in the set
-     * 2. WGS84 if contained in the set
-     * 3. the first entry in the set else
-     * \returns the authority id of the crs or an empty string in case of error
-    */
-    QString getPreferredCrs( const QSet<QString> &crsSet ) const;
-
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
@@ -133,8 +121,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     void modifyEntryOfServerList();
     void addButtonClicked() override;
     void buildQueryButtonClicked();
-    void changeCrs();
-    void changeCrsFilter();
+    void updateCrsLabel();
     void connectToServer();
     void disconnectFromServer();
     void filterChanged( const QString &text );
@@ -148,7 +135,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
 
     void refreshModel( const QModelIndex &index );
 
-private:
+  private:
 
     QString mConnectedService;
 };
