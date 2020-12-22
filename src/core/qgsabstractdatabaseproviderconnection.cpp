@@ -455,16 +455,6 @@ QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows
   return mRows;
 }
 
-void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QString &columnName )
-{
-  mColumns.push_back( columnName );
-}
-
-qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
-{
-  return mRowCount;
-}
-
 QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
 {
   if ( ! mResultIterator )
@@ -482,6 +472,19 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
   return row;
 }
 
+
+qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
+{
+  return mRowCount;
+}
+
+///@cond PRIVATE
+
+void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QString &columnName )
+{
+  mColumns.push_back( columnName );
+}
+
 void QgsAbstractDatabaseProviderConnection::QueryResult::setRowCount( const qlonglong &rowCount )
 {
   mRowCount = rowCount;
@@ -490,3 +493,5 @@ void QgsAbstractDatabaseProviderConnection::QueryResult::setRowCount( const qlon
 QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
   : mResultIterator( iterator )
 {}
+
+///@endcond private
