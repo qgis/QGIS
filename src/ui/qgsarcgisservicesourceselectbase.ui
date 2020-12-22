@@ -214,32 +214,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>441</width>
-          <height>23</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnChangeSpatialRefSys">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Change…</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -277,7 +251,6 @@
   <tabstop>lineFilter</tabstop>
   <tabstop>mBrowserView</tabstop>
   <tabstop>cbxFeatureCurrentViewExtent</tabstop>
-  <tabstop>btnChangeSpatialRefSys</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -103,11 +103,8 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( const QString &serviceName
   connect( btnConnect, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::connectToServer );
   connect( btnSave, &QPushButton::clicked, this, &QgsArcGisRestSourceSelect::btnSave_clicked );
   connect( btnLoad, &QPushButton::clicked, this, &QgsArcGisRestSourceSelect::btnLoad_clicked );
-  connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::changeCrs );
   connect( lineFilter, &QLineEdit::textChanged, this, &QgsArcGisRestSourceSelect::filterChanged );
   populateConnectionList();
-  mProjectionSelector = new QgsProjectionSelectionDialog( this );
-  mProjectionSelector->setMessage( QString() );
 
   lineFilter->setShowClearButton( true );
   lineFilter->setShowSearchIcon( true );
@@ -220,37 +217,6 @@ void QgsArcGisRestSourceSelect::populateConnectionList()
   }
 }
 
-QString QgsArcGisRestSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
-{
-  if ( crsSet.size() < 1 )
-  {
-    return QString();
-  }
-
-  //first: project CRS
-  QgsCoordinateReferenceSystem projectRefSys = QgsProject::instance()->crs();
-  //convert to EPSG
-  QString ProjectCRS;
-  if ( projectRefSys.isValid() )
-  {
-    ProjectCRS = projectRefSys.authid();
-  }
-
-  if ( !ProjectCRS.isEmpty() && crsSet.contains( ProjectCRS ) )
-  {
-    return ProjectCRS;
-  }
-
-  //second: WGS84
-  if ( crsSet.contains( geoEpsgCrsAuthId() ) )
-  {
-    return geoEpsgCrsAuthId();
-  }
-
-  //third: first entry in set
-  return *( crsSet.constBegin() );
-}
-
 void QgsArcGisRestSourceSelect::refresh()
 {
   populateConnectionList();
@@ -318,8 +284,6 @@ void QgsArcGisRestSourceSelect::connectToServer()
     onRefresh();
   }
 
-  mAvailableCRS.clear();
-
   setCursor( Qt::WaitCursor );
   connectToService( connection );
   unsetCursor();
@@ -327,7 +291,7 @@ void QgsArcGisRestSourceSelect::connectToServer()
   btnConnect->setEnabled( true );
   emit enableButtons( haveLayers );
   mBuildQueryButton->setEnabled( haveLayers );
-  btnChangeSpatialRefSys->setEnabled( haveLayers );
+  updateCrsLabel();
 }
 
 void QgsArcGisRestSourceSelect::disconnectFromServer()
@@ -416,46 +380,28 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
   accept();
 }
 
-void QgsArcGisRestSourceSelect::changeCrs()
-{
-  if ( mProjectionSelector->exec() )
-  {
-    QString crsString = mProjectionSelector->crs().authid();
-    labelCoordRefSys->setText( crsString );
-  }
-}
-
-void QgsArcGisRestSourceSelect::changeCrsFilter()
+void QgsArcGisRestSourceSelect::updateCrsLabel()
 {
   QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
-    QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
-    QgsDebugMsg( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ) );
-
-    QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
-    if ( crsIterator != mAvailableCRS.constEnd() )
+    const QModelIndex sourceIndex = mProxyModel->mapToSource( currentIndex );
+    if ( !sourceIndex.isValid() )
     {
-      QSet<QString> crsNames;
-      const QStringList crsNamesList = crsIterator.value();
-      for ( const QString &crsName : crsNamesList )
-      {
-        crsNames.insert( crsName );
-      }
-      if ( mProjectionSelector )
-      {
-        mProjectionSelector->setOgcWmsCrsFilter( crsNames );
-        QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
-        if ( !preferredCRS.isEmpty() )
-        {
-          QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
-          mProjectionSelector->setCrs( refSys );
+      labelCoordRefSys->clear();
+      return;
+    }
 
-          labelCoordRefSys->setText( preferredCRS );
-        }
-      }
+    if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( mBrowserModel->dataItem( sourceIndex ) ) )
+    {
+      QgsDataSourceUri uri( layerItem->uri() );
+      labelCoordRefSys->setText( uri.param( QStringLiteral( "crs" ) ) );
+    }
+    else
+    {
+      labelCoordRefSys->clear();
     }
   }
 }
@@ -477,7 +423,7 @@ void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &
 {
   Q_UNUSED( previous )
   QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
-  changeCrsFilter();
+  updateCrsLabel();
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton->setEnabled( current.isValid() );
