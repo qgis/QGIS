@@ -10,7 +10,7 @@ jobs:
     - uses: actions/stale@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        stale-issue-message: >
+        stale-pr-message: >
           The QGIS project highly values your contribution and would love to see
           this work merged!
           Unfortunately this PR has not had any activity in the last 14 days and
