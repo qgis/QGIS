@@ -1464,7 +1464,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListSVGPaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "svg/searchPathsForSVG" ), pathsList );
+  QgsApplication::setSvgPaths( pathsList );
 
   pathsList.clear();
   for ( int i = 0; i < mListComposerTemplatePaths->count(); ++i )

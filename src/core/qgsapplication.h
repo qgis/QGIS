@@ -316,6 +316,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the srs.db file.
     static QString srsDatabaseFilePath();
 
+    /**
+     * Sets the paths to svg directories and invalidates the svg path list cache.
+     *
+     * \since QGIS 3.18
+     */
+    static void setSvgPaths( const QStringList &svgPaths );
+
     //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
@@ -1005,6 +1012,8 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsBookmarkManager *mBookmarkManager = nullptr;
       QgsStyleModel *mStyleModel = nullptr;
       QString mNullRepresentation;
+      QStringList mSvgPathCache;
+      bool mSvgPathCacheValid = false;
 
       ApplicationMembers();
       ~ApplicationMembers();
