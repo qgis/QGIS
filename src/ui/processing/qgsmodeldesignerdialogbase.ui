@@ -117,6 +117,9 @@
    <addaction name="mActionSaveAs"/>
    <addaction name="mActionSaveInProject"/>
    <addaction name="separator"/>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionSelectMoveItem"/>
+   <addaction name="separator"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomActual"/>
@@ -709,6 +712,39 @@
     <string>Ctrl+Tab</string>
    </property>
   </action>
+  <action name="mActionPan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pan Layout</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
+   </property>
+  </action>
+  <action name="mActionSelectMoveItem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select/Move Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Select/Move item</string>
+   </property>
+   <property name="shortcut">
+    <string>V</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -751,8 +787,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
