@@ -46,9 +46,8 @@ set (AFS_SRCS
 )
 if (WITH_GUI)
   set(AFS_SRCS ${AFS_SRCS}
-    qgsafsprovidergui.cpp
-    qgsafssourceselect.cpp
     qgsarcgisrestdataitemguiprovider.cpp
+    qgsarcgisrestprovidergui.cpp
     qgsarcgisrestsourceselect.cpp
     qgsnewarcgisrestconnection.cpp
   )

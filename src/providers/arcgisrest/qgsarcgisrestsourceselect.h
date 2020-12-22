@@ -60,25 +60,13 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
 
   public:
 
-    enum Roles
-    {
-      UrlRole = Qt::UserRole + 1,
-      IsLayerRole,
-      IdRole,
-    };
-
-    //! Whether the dialog is for a map service or a feature service
-    enum ServiceType { MapService, FeatureService };
-
     //! Constructor
-    QgsArcGisRestSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsArcGisRestSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     //! Destructor
     ~QgsArcGisRestSourceSelect() override;
 
   protected:
-    QString mServiceName;
-    ServiceType mServiceType;
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     QgsArcGisRestBrowserProxyModel *mProxyModel = nullptr;
@@ -86,8 +74,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     QPushButton *mBuildQueryButton = nullptr;
     QButtonGroup *mImageEncodingGroup = nullptr;
 
-    //! To be implemented in the child class. Called when a new connection is initiated.
-    virtual bool connectToService( const QgsOwsConnection &connection ) = 0;
     //! May be implemented in child classes for services which support customized queries.
     virtual void buildQuery( const QgsOwsConnection &, const QModelIndex & ) {}
     //! To be implemented in the child class. Constructs an URI for the specified service layer.

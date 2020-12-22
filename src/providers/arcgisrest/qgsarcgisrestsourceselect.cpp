@@ -75,10 +75,8 @@ bool QgsArcGisRestBrowserProxyModel::filterAcceptsRow( int sourceRow, const QMod
 //
 // QgsArcGisRestSourceSelect
 //
-QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
-  , mServiceName( serviceName )
-  , mServiceType( serviceType )
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -86,14 +84,11 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( const QString &serviceName
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisRestSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisRestSourceSelect::showHelp );
-  setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
+  setWindowTitle( QStringLiteral( "Add ArcGIS REST Layer" ) );
 
-  if ( mServiceType == FeatureService )
-  {
-    mBuildQueryButton = buttonBox->addButton( tr( "&Build query" ), QDialogButtonBox::ActionRole );
-    mBuildQueryButton->setDisabled( true );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::buildQueryButtonClicked );
-  }
+  mBuildQueryButton = buttonBox->addButton( tr( "&Build query" ), QDialogButtonBox::ActionRole );
+  mBuildQueryButton->setDisabled( true );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::buildQueryButtonClicked );
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( btnNew, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::addEntryToServerList );
@@ -202,7 +197,7 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
 
 void QgsArcGisRestSourceSelect::populateConnectionList()
 {
-  const QStringList conns = QgsOwsConnection::connectionList( mServiceName );
+  const QStringList conns = QgsOwsConnection::connectionList( QStringLiteral( "ARCGISFEATURESERVER" ) );
   cmbConnections->clear();
   for ( const QString &item : conns )
   {
@@ -214,7 +209,7 @@ void QgsArcGisRestSourceSelect::populateConnectionList()
   btnSave->setEnabled( connectionsAvailable );
 
   //set last used connection
-  QString selectedConnection = QgsOwsConnection::selectedConnection( mServiceName );
+  QString selectedConnection = QgsOwsConnection::selectedConnection( QStringLiteral( "ARCGISFEATURESERVER" ) );
   int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
@@ -229,8 +224,8 @@ void QgsArcGisRestSourceSelect::refresh()
 
 void QgsArcGisRestSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  nc.setWindowTitle( tr( "Create a New ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
   {
@@ -241,8 +236,8 @@ void QgsArcGisRestSourceSelect::addEntryToServerList()
 
 void QgsArcGisRestSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
+  nc.setWindowTitle( tr( "Modify ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
   {
@@ -259,7 +254,7 @@ void QgsArcGisRestSourceSelect::deleteEntryOfServerList()
   QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
-    QgsOwsConnection::deleteConnection( mServiceName, selectedConnection );
+    QgsOwsConnection::deleteConnection( QStringLiteral( "ARCGISFEATURESERVER" ), selectedConnection );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
     bool connectionsAvailable = cmbConnections->count() > 0;
@@ -278,7 +273,7 @@ void QgsArcGisRestSourceSelect::connectToServer()
   btnConnect->setEnabled( false );
 
   mConnectedService = cmbConnections->currentText();
-  QgsOwsConnection connection( mServiceName, mConnectedService );
+  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnectedService );
 
   // find index of corresponding node
   if ( mBrowserModel && mProxyModel )
@@ -288,10 +283,6 @@ void QgsArcGisRestSourceSelect::connectToServer()
     mBrowserView->expand( mProxyModel->index( 0, 0, mBrowserView->rootIndex() ) );
     onRefresh();
   }
-
-  setCursor( Qt::WaitCursor );
-  connectToService( connection );
-  unsetCursor();
 
   btnConnect->setEnabled( true );
   emit enableButtons( haveLayers );
@@ -312,7 +303,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
     return;
   }
 
-  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
 
   QString pCrsString( labelCoordRefSys->text() );
   QgsCoordinateReferenceSystem pCrs( pCrsString );
@@ -359,7 +350,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
 
       QString filter;// = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
       QgsRectangle layerExtent;
-      if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() ) )
+      if ( cbxFeatureCurrentViewExtent->isChecked() )
       {
         layerExtent = extent;
       }
@@ -433,13 +424,13 @@ void QgsArcGisRestSourceSelect::updateImageEncodings()
 void QgsArcGisRestSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index )
-  QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection::setSelectedConnection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
 }
 
 void QgsArcGisRestSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
   QgsDebugMsg( QStringLiteral( "double-click called" ) );
-  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
   buildQuery( connection, index );
 }
 
@@ -450,7 +441,7 @@ void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &
   updateCrsLabel();
   updateImageEncodings();
 
-  if ( mServiceType == FeatureService )
+  if ( true ) // mServiceType == FeatureService )
   {
     mBuildQueryButton->setEnabled( current.isValid() );
   }
@@ -460,7 +451,7 @@ void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &
 void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
 {
   QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
-  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
+  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
   buildQuery( connection, mBrowserView->selectionModel()->currentIndex() );
 }
 
@@ -476,8 +467,7 @@ void QgsArcGisRestSourceSelect::showHelp()
 
 void QgsArcGisRestSourceSelect::btnSave_clicked()
 {
-  QgsManageConnectionsDialog::Type serverType = mServiceType == FeatureService ? QgsManageConnectionsDialog::ArcgisFeatureServer : QgsManageConnectionsDialog::ArcgisMapServer;
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, serverType );
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::ArcgisFeatureServer );
   dlg.exec();
 }
 
@@ -490,8 +480,7 @@ void QgsArcGisRestSourceSelect::btnLoad_clicked()
     return;
   }
 
-  QgsManageConnectionsDialog::Type serverType = mServiceType == FeatureService ? QgsManageConnectionsDialog::ArcgisFeatureServer : QgsManageConnectionsDialog::ArcgisMapServer;
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, serverType, fileName );
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::ArcgisFeatureServer, fileName );
   dlg.exec();
   populateConnectionList();
 }
