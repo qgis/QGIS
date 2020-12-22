@@ -256,6 +256,9 @@ class QgsArcGisMapServiceLayerItem : public QgsLayerItem
 class QgsArcGisRestDataItemProvider : public QgsDataItemProvider
 {
   public:
+
+    QgsArcGisRestDataItemProvider();
+
     QString name() override;
 
     int capabilities() const override;
