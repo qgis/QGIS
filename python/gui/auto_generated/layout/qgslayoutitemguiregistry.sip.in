@@ -36,7 +36,7 @@ the components related to the GUI behavior of a layout item.
     typedef QFlags<QgsLayoutItemAbstractGuiMetadata::Flag> Flags;
 
 
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = 0 );
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags() );
 %Docstring
 Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type``.
 
@@ -79,12 +79,13 @@ Returns a translated, user visible name identifying the corresponding layout ite
 Returns an icon representing creation of the layout item type.
 %End
 
-    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) /Factory/;
+
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) /TransferBack/;
 %Docstring
 Creates a configuration widget for an ``item`` of this type. Can return ``None`` if no configuration GUI is required.
 %End
 
-    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) /Factory/;
+    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) /TransferBack/;
 %Docstring
 Creates a rubber band for use when creating layout items of this type. Can return ``None`` if no rubber band
 should be created. The default behavior is to create a rectangular rubber band.
@@ -92,7 +93,7 @@ should be created. The default behavior is to create a rectangular rubber band.
 .. seealso:: :py:func:`createNodeRubberBand`
 %End
 
-    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) /Factory/;
+    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) /TransferBack/;
 %Docstring
 Creates a rubber band for use when creating layout node based items of this type. Can return ``None`` if no rubber band
 should be created. The default behavior is to return ``None``.
@@ -100,7 +101,7 @@ should be created. The default behavior is to return ``None``.
 .. seealso:: :py:func:`createRubberBand`
 %End
 
-    virtual QgsLayoutItem *createItem( QgsLayout *layout ) /Factory/;
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) /TransferBack/;
 %Docstring
 Creates an instance of the corresponding item type.
 %End
@@ -159,7 +160,7 @@ class QgsLayoutItemGuiRegistry : QObject
 Registry of available layout item GUI behavior.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.layoutItemGuiRegistry()`
+:py:func:`QgsGui.layoutItemGuiRegistry()`.
 
 This acts as a companion to :py:class:`QgsLayoutItemRegistry`, handling only
 the components related to the GUI behavior of layout items.
@@ -177,7 +178,7 @@ the components related to the GUI behavior of layout items.
 Creates a new empty item GUI registry.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.layoutItemGuiRegistry()`
+:py:func:`QgsGui.layoutItemGuiRegistry()`.
 %End
 
     ~QgsLayoutItemGuiRegistry();
@@ -197,7 +198,7 @@ Registers the gui metadata for a new layout item type. Takes ownership of the me
     bool addItemGroup( const QgsLayoutItemGuiGroup &group );
 %Docstring
 Registers a new item group with the registry. This must be done before calling
-addLayoutItemGuiMetadata() for any item types associated with the group.
+:py:func:`~QgsLayoutItemGuiRegistry.addLayoutItemGuiMetadata` for any item types associated with the group.
 
 Returns ``True`` if group was added, or ``False`` if group could not be added (e.g. due to
 duplicate id value).
@@ -212,7 +213,8 @@ Returns a reference to the item group with matching ``id``.
 .. seealso:: :py:func:`addItemGroup`
 %End
 
-    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const /Factory/;
+
+    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const /TransferBack/;
 %Docstring
 Creates a new instance of a layout item given the item metadata ``metadataId``, target ``layout``.
 %End
@@ -225,7 +227,8 @@ This is only called for additions which result from GUI operations - i.e. it is 
 called for items added from templates.
 %End
 
-    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /Factory/;
+
+    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /TransferBack/;
 %Docstring
 Creates a new instance of a layout item configuration widget for the specified ``item``.
 %End

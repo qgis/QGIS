@@ -74,13 +74,13 @@ and help text for the associated property.
     void changed();
 %Docstring
 Should be emitted whenever configuration changes happened on this symbol layer configuration.
-If the subsymbol is changed, symbolChanged() should be emitted instead.
+If the subsymbol is changed, :py:func:`~QgsSymbolLayerWidget.symbolChanged` should be emitted instead.
 %End
 
     void symbolChanged();
 %Docstring
 Should be emitted whenever the sub symbol changed on this symbol layer configuration.
-Normally changed() should be preferred.
+Normally :py:func:`~QgsSymbolLayerWidget.changed` should be preferred.
 
 .. seealso:: :py:func:`changed`
 %End
@@ -449,10 +449,30 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
+  public slots:
+    void setSvgPath( const QString &name );
+%Docstring
+Sets the SVG path
+%End
+
+
   protected:
 
-    void populateList();
-    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+ void populateList() /Deprecated/;
+%Docstring
+This method does nothing anymore, the loading is automatic
+
+.. deprecated:: QGIS 3.16
+%End
+
+    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors = false );
+%Docstring
+Updates the GUI to reflect the SVG marker symbol ``layer``.
+
+:param layer: SVG marker symbol layer
+:param skipDefaultColors: if ``True``, the default fill and outline colors of the SVG file will not overwrite
+                          the ones from the symbol layer
+%End
 
 
 };
@@ -569,7 +589,6 @@ Creates a new QgsSVGFillSymbolLayerWidget.
 
 
   protected:
-    void insertIcons();
 
     void updateParamGui( bool resetValues = true );
 %Docstring

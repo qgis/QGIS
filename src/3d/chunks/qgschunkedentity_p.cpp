@@ -70,13 +70,13 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mTau( tau )
-  , mMaxLevel( maxLevel )
   , mChunkLoaderFactory( loaderFactory )
+  , mOwnsFactory( ownsFactory )
 {
-  mRootNode = new QgsChunkNode( 0, 0, 0, rootBbox, rootError );
+  mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
   mReplacementQueue = new QgsChunkList;
 }
@@ -116,8 +116,10 @@ QgsChunkedEntity::~QgsChunkedEntity()
   delete mReplacementQueue;
   delete mRootNode;
 
-  // TODO: shall we own the factory or not?
-  //delete chunkLoaderFactory;
+  if ( mOwnsFactory )
+  {
+    delete mChunkLoaderFactory;
+  }
 }
 
 
@@ -131,7 +133,7 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   int oldJobsCount = pendingJobsCount();
 
-  QSet<QgsChunkNode *> activeBefore = QSet<QgsChunkNode *>::fromList( mActiveNodes );
+  QSet<QgsChunkNode *> activeBefore = qgis::listToSet( mActiveNodes );
   mActiveNodes.clear();
   mFrustumCulled = 0;
   mCurrentTime = QTime::currentTime();
@@ -183,7 +185,13 @@ void QgsChunkedEntity::update( const SceneState &state )
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
-//  qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
+  QgsDebugMsgLevel( QStringLiteral( "update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms" ).arg( mActiveNodes.count() )
+                    .arg( enabled )
+                    .arg( disabled )
+                    .arg( mFrustumCulled )
+                    .arg( mReplacementQueue->count() )
+                    .arg( unloaded )
+                    .arg( t.elapsed() ), 2 );
 }
 
 void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )
@@ -241,7 +249,11 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     return;
   }
 
-  node->ensureAllChildrenExist();
+  // ensure we have child nodes (at least skeletons) available, if any
+  if ( node->childCount() == -1 )
+  {
+    node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
+  }
 
   // make sure all nodes leading to children are always loaded
   // so that zooming out does not create issues
@@ -253,9 +265,14 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     return;
   }
 
-  //qDebug() << node->tileX() << "|" << node->tileY() << "|" << node->tileZ() << "  " << mTau << "  " << screenSpaceError(node, state);
-
-  if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
+  //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
+  if ( node->childCount() == 0 )
+  {
+    // there's no children available for this node, so regardless of whether it has an acceptable error
+    // or not, it's the best we'll ever get...
+    mActiveNodes << node;
+  }
+  else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
   {
     // acceptable error for the current chunk - let's render it
 
@@ -265,8 +282,16 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
   {
     // error is not acceptable and children are ready to be used - recursive descent
 
+    if ( mAdditiveStrategy )
+    {
+      // With additive strategy enabled, also all parent nodes are added to active nodes.
+      // This is desired when child nodes add more detailed data rather than just replace
+      // coarser data in parents. We use this e.g. with point cloud data.
+      mActiveNodes << node;
+    }
+
     QgsChunkNode *const *children = node->children();
-    for ( int i = 0; i < 4; ++i )
+    for ( int i = 0; i < node->childCount(); ++i )
       update( children[i], state );
   }
   else
@@ -275,12 +300,9 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
 
     mActiveNodes << node;
 
-    if ( node->level() < mMaxLevel )
-    {
-      QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < 4; ++i )
-        requestResidency( children[i] );
-    }
+    QgsChunkNode *const *children = node->children();
+    for ( int i = 0; i < node->childCount(); ++i )
+      requestResidency( children[i] );
   }
 }
 

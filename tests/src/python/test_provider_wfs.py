@@ -43,6 +43,9 @@ from qgis.testing import (start_app,
                           unittest
                           )
 from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 def sanitize(endpoint, x):
@@ -580,7 +583,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl.featureCount(), 1)
 
-        self.assertEqual(vl.dataProvider().capabilities(), QgsVectorDataProvider.SelectAtId)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -912,7 +915,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                          | QgsVectorDataProvider.ChangeAttributeValues
                          | QgsVectorDataProvider.ChangeGeometries
                          | QgsVectorDataProvider.DeleteFeatures
-                         | QgsVectorDataProvider.SelectAtId)
+                         | QgsVectorDataProvider.SelectAtId
+                         | QgsVectorDataProvider.ReloadData)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -3426,7 +3430,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl.featureCount(), 1)
 
-        self.assertEqual(vl.dataProvider().capabilities(), QgsVectorDataProvider.SelectAtId)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -4704,6 +4708,68 @@ Can't recognize service requested.
 
             self.assertEqual(len(logger.messages()), 1, logger.messages())
             self.assertTrue("InvalidFormat: Can't recognize service requested." in logger.messages()[0].decode('UTF-8'), logger.messages())
+
+    def testWFST11(self):
+        """Test WFS-T 1.1 (read-write) taken from a geoserver session"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_T_1_1_transaction'
+
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'getcapabilities.xml'), sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.1.0'))
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'describefeaturetype_polygons.xml'), sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=ws1:polygons'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='ws1:polygons' version='1.1.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 0)
+
+        self.assertEqual(vl.dataProvider().capabilities(),
+                         QgsVectorDataProvider.AddFeatures
+                         | QgsVectorDataProvider.ChangeAttributeValues
+                         | QgsVectorDataProvider.ChangeGeometries
+                         | QgsVectorDataProvider.DeleteFeatures
+                         | QgsVectorDataProvider.SelectAtId
+                         | QgsVectorDataProvider.ReloadData)
+
+        # Transaction response failure (no modifications)
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_empty.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Insert xmlns="http:__www.opengis.net_wfs"><polygons xmlns="ws1"_><_Insert><_Transaction>'))
+
+        (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
+        self.assertFalse(ret)
+        self.assertEqual(vl.featureCount(), 0)
+
+        # Test add features for real
+        # Transaction response with 1 feature added
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_added.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Insert xmlns="http:__www.opengis.net_wfs"><polygons xmlns="ws1"><name xmlns="ws1">one<_name><value xmlns="ws1">1<_value><geometry xmlns="ws1"><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">45 9 45 10 46 10 46 9 45 9<_gml:posList><_gml:LinearRing><_gml:exterior><_gml:Polygon><_geometry><_polygons><_Insert><_Transaction>'))
+
+        feat = QgsFeature(vl.fields())
+        feat.setAttribute('name', 'one')
+        feat.setAttribute('value', 1)
+        feat.setGeometry(QgsGeometry.fromWkt('Polygon ((9 45, 10 45, 10 46, 9 46, 9 45))'))
+        (ret, features) = vl.dataProvider().addFeatures([feat])
+        self.assertEqual(features[0].attributes(), ['one', 1])
+        self.assertEqual(vl.featureCount(), 1)
+
+        # Test change attributes
+        # Transaction response with 1 feature changed
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_changed.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Update xmlns="http://www.opengis.net/wfs" typeName="ws1:polygons"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">ws1:name</Name><Value xmlns="http://www.opengis.net/wfs">one-one-one</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">ws1:value</Name><Value xmlns="http://www.opengis.net/wfs">111</Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="123"/></Filter></Update></Transaction>'))
+
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {0: 'one-one-one', 1: 111}}))
+        self.assertEqual(next(vl.dataProvider().getFeatures()).attributes(), ['one-one-one', 111])
+
+        # Test change geometry
+        # Transaction response with 1 feature changed
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_changed.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Update xmlns="http:__www.opengis.net_wfs" typeName="ws1:polygons"><Property xmlns="http:__www.opengis.net_wfs"><Name xmlns="http:__www.opengis.net_wfs">ws1:geometry<_Name><Value xmlns="http:__www.opengis.net_wfs"><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">46 10 46 11 47 11 47 10 46 10<_gml:posList><_gml:LinearRing><_gml:exterior><_gml:Polygon><_Value><_Property><Filter xmlns="http:__www.opengis.net_ogc"><FeatureId xmlns="http:__www.opengis.net_ogc" fid="123"_><_Filter><_Update><_Transaction>'))
+
+        new_geom = QgsGeometry.fromWkt('Polygon ((10 46, 11 46, 11 47, 10 47, 10 46))')
+
+        self.assertTrue(vl.dataProvider().changeGeometryValues({1: new_geom}))
+        self.assertEqual(next(vl.dataProvider().getFeatures()).geometry().asWkt(), new_geom.asWkt())
+
+        # Test delete feature
+        # Transaction response with 1 feature deleted
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_deleted.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Delete xmlns="http://www.opengis.net/wfs" typeName="ws1:polygons"><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="123"/></Filter></Delete></Transaction>'))
+
+        self.assertTrue(vl.dataProvider().deleteFeatures([1]))
+        self.assertEqual(vl.featureCount(), 0)
 
 
 if __name__ == '__main__':

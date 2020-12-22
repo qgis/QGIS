@@ -112,7 +112,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Gets the expression string that has been set in the expression area.
-      * \returns The expression as a string. */
+     * \returns The expression as a string.
+     */
     QString expressionText();
 
     //! Sets the expression string for the widget

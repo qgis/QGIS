@@ -36,7 +36,13 @@
 #include "providers/gdal/qgsgdalprovider.h"
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
+
+#ifdef HAVE_EPT
+#include "providers/ept/qgseptprovider.h"
+#endif
+
 #include "qgsruntimeprofiler.h"
+#include "qgsfileutils.h"
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
@@ -137,6 +143,13 @@ void QgsProviderRegistry::init()
     QgsProviderMetadata *vt = new QgsVectorTileProviderMetadata();
     mProviders[ vt->key() ] = vt;
   }
+#ifdef HAVE_EPT
+  {
+    QgsScopedRuntimeProfile profile( QObject::tr( "Create EPT point cloud provider" ) );
+    QgsProviderMetadata *pc = new QgsEptProviderMetadata();
+    mProviders[ pc->key() ] = pc;
+  }
+#endif
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
@@ -188,6 +201,12 @@ void QgsProviderRegistry::init()
       }
     }
 
+    // Always skip authentication methods
+    if ( fi.fileName().contains( QStringLiteral( "authmethod" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      continue;
+    }
+
     QgsScopedRuntimeProfile profile( QObject::tr( "Load %1" ).arg( fi.fileName() ) );
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
@@ -196,12 +215,13 @@ void QgsProviderRegistry::init()
       continue;
     }
 
-    QFunctionPointer multi_func = myLib.resolve( QStringLiteral( "multipleProviderMetadataFactory" ).toLatin1().data() );
-    multiple_factory_function *multi_function = reinterpret_cast< multiple_factory_function * >( cast_to_fptr( multi_func ) );
-    if ( multi_function )
+    bool libraryLoaded { false };
+    QFunctionPointer func = myLib.resolve( QStringLiteral( "providerMetadataFactory" ).toLatin1().data() );
+    factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
+    if ( function )
     {
-      std::vector<QgsProviderMetadata *> *metadatas = multi_function();
-      for ( const auto meta : *metadatas )
+      QgsProviderMetadata *meta = function();
+      if ( meta )
       {
         if ( findMetadata_( mProviders, meta->key() ) )
         {
@@ -211,38 +231,43 @@ void QgsProviderRegistry::init()
         }
         // add this provider to the provider map
         mProviders[meta->key()] = meta;
+        libraryLoaded = true;
       }
-      delete metadatas;
     }
     else
     {
-      QFunctionPointer func = myLib.resolve( QStringLiteral( "providerMetadataFactory" ).toLatin1().data() );
-      factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
-      if ( !function )
+      QFunctionPointer multi_func = myLib.resolve( QStringLiteral( "multipleProviderMetadataFactory" ).toLatin1().data() );
+      multiple_factory_function *multi_function = reinterpret_cast< multiple_factory_function * >( cast_to_fptr( multi_func ) );
+      if ( multi_function )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...invalid (no providerMetadataFactory method)" ).arg( myLib.fileName() ), 2 );
-        continue;
+        std::vector<QgsProviderMetadata *> *metadatas = multi_function();
+        for ( const auto meta : *metadatas )
+        {
+          if ( findMetadata_( mProviders, meta->key() ) )
+          {
+            QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
+            delete meta;
+            continue;
+          }
+          // add this provider to the provider map
+          mProviders[meta->key()] = meta;
+          libraryLoaded = true;
+        }
+        delete metadatas;
       }
+    }
 
-      QgsProviderMetadata *meta = function();
-      if ( !meta )
-      {
-        QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no metadata returned)" ).arg( myLib.fileName() ) );
-        continue;
-      }
-
-      if ( findMetadata_( mProviders, meta->key() ) )
-      {
-        QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
-        delete meta;
-        continue;
-      }
-      // add this provider to the provider map
-      mProviders[meta->key()] = meta;
+    if ( ! libraryLoaded )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...invalid (no providerMetadataFactory method)" ).arg( myLib.fileName() ), 2 );
     }
   }
+
 #endif
   QgsDebugMsg( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ) );
+
+  QStringList pointCloudWildcards;
+  QStringList pointCloudFilters;
 
   // now initialize all providers
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
@@ -286,8 +311,33 @@ void QgsProviderRegistry::init()
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( key ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ), 2 );
     }
 
+    // now get point cloud file filters, if any
+    const QString filePointCloudFilters = meta->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+    if ( !filePointCloudFilters.isEmpty() )
+    {
+      QgsDebugMsgLevel( "point cloud filters: " + filePointCloudFilters, 2 );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+      const QStringList filters = filePointCloudFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+#else
+      const QStringList filters = filePointCloudFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+#endif
+      for ( const QString &filter : filters )
+      {
+        pointCloudFilters.append( filter );
+        pointCloudWildcards.append( QgsFileUtils::wildcardsFromFilter( filter ).split( ' ' ) );
+      }
+    }
+
     // call initProvider() - allows provider to register its services to QGIS
     meta->initProvider();
+  }
+
+  if ( !pointCloudFilters.empty() )
+  {
+    pointCloudFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( pointCloudWildcards.join( ' ' ) ) );
+    pointCloudFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
+    mPointCloudFileFilters = pointCloudFilters.join( QStringLiteral( ";;" ) );
   }
 
   // load database drivers (only OGR)
@@ -401,7 +451,9 @@ QDir QgsProviderRegistry::libraryDirectory() const
  *        It seems more sensible to provide the code in one place rather than
  *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
  */
-QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource,
+    const QgsDataProvider::ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -413,7 +465,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
     return nullptr;
   }
 
-  return metadata->createProvider( dataSource, options );
+  return metadata->createProvider( dataSource, options, flags );
 }
 
 int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
@@ -694,6 +746,11 @@ QString QgsProviderRegistry::fileMeshDatasetFilters() const
   return mMeshDatasetFileFilters;
 }
 
+QString QgsProviderRegistry::filePointCloudFilters() const
+{
+  return mPointCloudFileFilters;
+}
+
 QString QgsProviderRegistry::databaseDrivers() const
 {
   return mDatabaseDrivers;
@@ -722,4 +779,54 @@ QStringList QgsProviderRegistry::providerList() const
 QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &providerKey ) const
 {
   return findMetadata_( mProviders, providerKey );
+}
+
+QList<QgsProviderRegistry::ProviderCandidateDetails> QgsProviderRegistry::preferredProvidersForUri( const QString &uri ) const
+{
+  QList< QgsProviderRegistry::ProviderCandidateDetails > res;
+  int maxPriority = 0;
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    if ( !( it->second->capabilities() & QgsProviderMetadata::PriorityForUri ) )
+      continue;
+
+    const int thisProviderPriority = it->second->priorityForUri( uri );
+    if ( thisProviderPriority == 0 )
+      continue;
+
+    if ( thisProviderPriority > maxPriority )
+    {
+      res.clear();
+      maxPriority = thisProviderPriority;
+    }
+    if ( thisProviderPriority == maxPriority )
+    {
+      res.append( ProviderCandidateDetails( it->second, it->second->validLayerTypesForUri( uri ) ) );
+    }
+  }
+  return res;
+}
+
+bool QgsProviderRegistry::shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const
+{
+  const QList< ProviderCandidateDetails > providers = preferredProvidersForUri( uri );
+  if ( providers.empty() )
+    return false;
+
+  for ( const ProviderCandidateDetails &provider : providers )
+  {
+    if ( provider.metadata()->key() == providerKey )
+      return false;
+  }
+  return true;
+}
+
+bool QgsProviderRegistry::uriIsBlocklisted( const QString &uri ) const
+{
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    if ( it->second->uriIsBlocklisted( uri ) )
+      return true;
+  }
+  return false;
 }

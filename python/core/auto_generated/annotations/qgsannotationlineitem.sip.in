@@ -1,0 +1,96 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationlineitem.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAnnotationLineItem : QgsAnnotationItem
+{
+%Docstring
+An annotation item which renders a line symbol along a line geometry.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsannotationlineitem.h"
+%End
+  public:
+
+    QgsAnnotationLineItem( QgsCurve *curve /Transfer/ );
+%Docstring
+Constructor for QgsAnnotationLineItem, with the specified ``linestring``.
+%End
+    ~QgsAnnotationLineItem();
+
+    virtual QString type() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+
+    static QgsAnnotationLineItem *create() /Factory/;
+%Docstring
+Creates a new linestring annotation item.
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QgsRectangle boundingBox() const;
+
+
+    virtual QgsAnnotationLineItem *clone() /Factory/;
+
+
+    const QgsCurve *geometry() const;
+%Docstring
+Returns the geometry of the item.
+
+The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`setGeometry`
+%End
+
+    void setGeometry( QgsCurve *geometry /Transfer/ );
+%Docstring
+Sets the ``geometry`` of the item. Ownership of ``geometry`` is transferred.
+
+The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+.. seealso:: :py:func:`geometry`
+%End
+
+    const QgsLineSymbol *symbol() const;
+%Docstring
+Returns the symbol used to render the item.
+
+.. seealso:: :py:func:`setSymbol`
+%End
+
+    void setSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the marker item.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`symbol`
+%End
+
+  private:
+    QgsAnnotationLineItem( const QgsAnnotationLineItem &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationlineitem.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

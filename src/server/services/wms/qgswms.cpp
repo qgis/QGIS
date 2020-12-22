@@ -143,6 +143,13 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetPrint" ) )
         {
+          if ( mServerIface->serverSettings() && mServerIface->serverSettings()->getPrintDisabled() )
+          {
+            // GetPrint has been disabled
+            QgsDebugMsg( QStringLiteral( "WMS GetPrint request called, but it has been disabled." ) );
+            throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
+                                       QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+          }
           writeGetPrint( mServerIface, project, version, request, response );
         }
         else

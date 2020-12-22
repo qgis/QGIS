@@ -15,7 +15,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 import re
-import ogr
+from osgeo import ogr
 import codecs
 from io import BytesIO
 from zipfile import ZipFile
@@ -190,10 +190,22 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, 'labeling/test-labeling.qgs'))
 
-        # valid key, valid int value
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
+        # add a test entry list
+        prj.writeEntry("TestScope", "/TestListProperty", ["Entry1", "Entry2"])
+
+        # valid key, valid value
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1), (0, True))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/ProjectCrs"), ("EPSG:32613", True))
+        self.assertEqual(prj.readBoolEntry("PAL", "/ShowingCandidates"), (False, True))
+        self.assertEqual(prj.readNumEntry("PAL", "/CandidatesPolygon"), (8., True))
+        self.assertEqual(prj.readListEntry("TestScope", "/TestListProperty"), (["Entry1", "Entry2"], True))
+
         # invalid key
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1), (-1, False))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/InvalidKey", "wrong"), ("wrong", False))
+        self.assertEqual(prj.readBoolEntry("PAL", "/InvalidKey", True), (True, False))
+        self.assertEqual(prj.readDoubleEntry("PAL", "/InvalidKey", 42.), (42., False))
+        self.assertEqual(prj.readListEntry("TestScope", "/InvalidKey", ["Default1", "Default2"]), (["Default1", "Default2"], False))
 
     def testEmbeddedGroup(self):
         testdata_path = unitTestDataPath('embedded_groups') + '/'
@@ -795,6 +807,44 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(prj.crs().isValid())
         self.assertEqual(prj.crs().authid(), 'EPSG:2056')
 
+    def testSnappingChangedSignal(self):
+        """
+        Test the snappingConfigChanged signal
+        """
+        project = QgsProject()
+        spy = QSignalSpy(project.snappingConfigChanged)
+        l0 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "lines.shp"), "lines", "ogr")
+        l2 = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "polys.shp"), "polys", "ogr")
+        project.addMapLayers([l0, l1])
+        self.assertEqual(len(spy), 1)
+        project.addMapLayer(l2)
+        self.assertEqual(len(spy), 2)
+
+        self.assertEqual(len(project.snappingConfig().individualLayerSettings()), 3)
+
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project_snap.qgs".format(tmpDir.path())
+        self.assertTrue(project.write(tmpFile))
+
+        # only ONE signal!
+        project.clear()
+        self.assertEqual(len(spy), 3)
+
+        self.assertFalse(project.snappingConfig().individualLayerSettings())
+
+        p2 = QgsProject()
+        spy2 = QSignalSpy(p2.snappingConfigChanged)
+        p2.read(tmpFile)
+        # only ONE signal!
+        self.assertEqual(len(spy2), 1)
+
+        self.assertEqual(len(p2.snappingConfig().individualLayerSettings()), 3)
+
+        p2.removeAllMapLayers()
+        self.assertEqual(len(spy2), 2)
+        self.assertFalse(p2.snappingConfig().individualLayerSettings())
+
     def testRelativePaths(self):
         """
         Test whether paths to layer sources are stored as relative to the project path
@@ -860,7 +910,7 @@ class TestQgsProject(unittest.TestCase):
             zip_content = BytesIO(codecs.decode(f.GetFieldAsBinary(2), 'hex'))
             z = ZipFile(zip_content)
             qgs = z.read(z.filelist[0])
-            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[0],
+            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[1],
                              b'./relative_paths_gh30387.gpkg|layername=some_data')
 
         with TemporaryDirectory() as d:
@@ -1359,6 +1409,14 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(spy), 3)
         p.setUseProjectScales(False)
         self.assertEqual(len(spy), 4)
+
+    def testSetInstance(self):
+        """Test singleton API"""
+
+        p = QgsProject()
+        self.assertNotEqual(p, QgsProject.instance())
+        QgsProject.setInstance(p)
+        self.assertEqual(p, QgsProject.instance())
 
 
 if __name__ == '__main__':

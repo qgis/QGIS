@@ -56,7 +56,7 @@ QgsExpression TestQgsSQLiteExpressionCompiler::makeExpression( const int length 
   {
     expString.append( QStringLiteral( "(\"Z\" >= %1) AND (\"Bottom\" <= %2)" ).arg( i ).arg( i + 1 ) );
   }
-  QgsExpression exp( expString.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' ) );
+  QgsExpression exp( expString.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' ) );
   return exp;
 }
 

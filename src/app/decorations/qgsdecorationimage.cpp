@@ -199,7 +199,7 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       return;
   }
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
 
   // need width/height of paint device
   QPaintDevice *device = context.painter()->device();
@@ -276,6 +276,4 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       // nothing happening here, function already returned in the first switch
       break;
   }
-
-  context.painter()->restore();
 }

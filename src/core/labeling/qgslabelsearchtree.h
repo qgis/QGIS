@@ -63,17 +63,19 @@ class CORE_EXPORT QgsLabelSearchTree
      */
     Q_DECL_DEPRECATED void clear() SIP_DEPRECATED;
 
+    //TODO: why does this break bindings with QList<QgsLabelPosition>?
+
     /**
      * Returns label position(s) at a given point. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
      * \note not available in Python bindings
-     * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
     void label( const QgsPointXY &p, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
+
+    //TODO: why does this break bindings with QList<QgsLabelPosition>?
 
     /**
      * Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
      * \note not available in Python bindings
-     * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
     void labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
 

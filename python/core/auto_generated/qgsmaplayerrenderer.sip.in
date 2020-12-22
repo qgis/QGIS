@@ -24,13 +24,14 @@ the overhead of copying (both memory and CPU) will be kept low.
 Qt containers and various Qt classes use implicit sharing.
 
 The scenario will be:
-1. renderer job (doing preparation in the GUI thread) calls
-QgsMapLayer.createMapRenderer() and gets instance of this class.
-The instance is initialized at that point and should not need
-additional calls to QgsVectorLayer.
-2. renderer job (still in GUI thread) stores the renderer for later use.
-3. renderer job (in worker thread) calls :py:func:`QgsMapLayerRenderer.render()`
-4. renderer job (again in GUI thread) will check errors() and report them
+
+# renderer job (doing preparation in the GUI thread) calls
+  :py:func:`QgsMapLayer.createMapRenderer()` and gets instance of this class.
+  The instance is initialized at that point and should not need
+  additional calls to QgsVectorLayer.
+# renderer job (still in GUI thread) stores the renderer for later use.
+# renderer job (in worker thread) calls :py:func:`QgsMapLayerRenderer.render()`
+# renderer job (again in GUI thread) will check :py:func:`~errors` and report them
 
 .. versionadded:: 2.4
 %End
@@ -50,6 +51,24 @@ Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render 
     virtual bool render() = 0;
 %Docstring
 Do the rendering (based on data stored in the class)
+%End
+
+    virtual bool forceRasterRender() const;
+%Docstring
+Returns ``True`` if the renderer must be rendered to a raster paint device (e.g. QImage).
+
+Some layer settings require layers to be effectively "flattened" while rendering maps,
+which is achieved by first rendering the layer onto a raster paint device and then compositing
+the resultant image onto the final map render.
+
+E.g. if a layer contains features with transparency or alternative blending modes, and
+the effects of these opacity or blending modes should be restricted to only affect other
+features within the SAME layer, then a flattened raster based render is required.
+
+Subclasses should return ``True`` whenever their corresponding layer settings require the
+layer to always be rendered using a raster paint device.
+
+.. versionadded:: 3.18
 %End
 
     virtual QgsFeedback *feedback() const;
@@ -75,6 +94,7 @@ Returns the render context associated with the renderer.
 
 .. versionadded:: 3.10
 %End
+
 
   protected:
 

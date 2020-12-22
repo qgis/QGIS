@@ -1804,30 +1804,11 @@ struct QOCISpatialBatchColumn
   ub2 bindAs = 0;
   ub4 maxLen = 0;
   ub4 recordCount = 0;
-  char *data = nullptr;
-  ub2 *lengths = nullptr;
-  sb2 *indicators = nullptr;
+  std::vector<char> data;
+  std::vector<ub2> lengths;
+  std::vector<sb2> indicators;
   ub4 maxarr_len = 0;
   ub4 curelep = 0;
-};
-
-struct QOCISpatialBatchCleanupHandler
-{
-  explicit inline QOCISpatialBatchCleanupHandler( QVector<QOCISpatialBatchColumn> &columns )
-    : col( columns ) {}
-
-  ~QOCISpatialBatchCleanupHandler()
-  {
-    // deleting storage, length and indicator arrays
-    for ( int j = 0; j < col.count(); ++j )
-    {
-      delete[] col[j].lengths;
-      delete[] col[j].indicators;
-      delete[] col[j].data;
-    }
-  }
-
-  QVector<QOCISpatialBatchColumn> &col;
 };
 
 bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> &boundValues, bool arrayBind )
@@ -1856,7 +1837,6 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
   QList<QByteArray> tmpStorage;
   SizeArray tmpSizes( columnCount );
   QVector<QOCISpatialBatchColumn> columns( columnCount );
-  QOCISpatialBatchCleanupHandler cleaner( columns );
 
   // figuring out buffer sizes
   for ( i = 0; i < columnCount; ++i )
@@ -1867,11 +1847,11 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
 
       // not a list - create a deep-copy of the single value
       QOCISpatialBatchColumn &singleCol = columns[i];
-      singleCol.indicators = new sb2[1];
-      *singleCol.indicators = boundValues.at( i ).isNull() ? -1 : 0;
+      singleCol.indicators.resize( 1 );
+      singleCol.indicators[0] = boundValues.at( i ).isNull() ? -1 : 0;
 
       r = d->bindValue( d->sql, &singleCol.bindh, d->err, i,
-                        boundValues.at( i ), singleCol.indicators, &tmpSizes[i], tmpStorage );
+                        boundValues.at( i ), &singleCol.indicators[0], &tmpSizes[i], tmpStorage );
 
       if ( r != OCI_SUCCESS && r != OCI_SUCCESS_WITH_INFO )
       {
@@ -1887,8 +1867,8 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
     QOCISpatialBatchColumn &col = columns[i];
     col.recordCount = boundValues.at( i ).toList().count();
 
-    col.lengths = new ub2[col.recordCount];
-    col.indicators = new sb2[col.recordCount];
+    col.lengths.resize( col.recordCount );
+    col.indicators.resize( col.recordCount );
     col.maxarr_len = col.recordCount;
     col.curelep = col.recordCount;
 
@@ -1965,8 +1945,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
       }
     }
 
-    col.data = new char[col.maxLen * col.recordCount];
-    memset( col.data, 0, col.maxLen * col.recordCount );
+    col.data.resize( col.maxLen * col.recordCount );
 
     // we may now populate column with data
     for ( uint row = 0; row < col.recordCount; ++row )
@@ -1981,7 +1960,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
       else
       {
         columns[i].indicators[row] = 0;
-        char *dataPtr = columns[i].data + ( columns[i].maxLen * row );
+        char *dataPtr = &columns[i].data[0] + ( columns[i].maxLen * row );
         switch ( fieldTypes[i] )
         {
           case QVariant::Time:
@@ -2074,11 +2053,11 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
     // binding the column
     r = OCIBindByPos(
           d->sql, &bindColumn.bindh, d->err, i + 1,
-          bindColumn.data,
+          &bindColumn.data[0],
           bindColumn.maxLen,
           bindColumn.bindAs,
-          bindColumn.indicators,
-          bindColumn.lengths,
+          &bindColumn.indicators[0],
+          &bindColumn.lengths[0],
           nullptr,
           arrayBind ? bindColumn.maxarr_len : 0,
           arrayBind ? &bindColumn.curelep : nullptr,
@@ -2140,14 +2119,14 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
     if ( tp != QVariant::List )
     {
       qOraOutValue( boundValues[i], tmpStorage, d->err );
-      if ( *columns[i].indicators == -1 )
+      if ( columns[i].indicators[0] == -1 )
         boundValues[i] = QVariant( tp );
       continue;
     }
 
     QVariantList *list = static_cast<QVariantList *>( const_cast<void *>( boundValues.at( i ).data() ) );
 
-    char *data = columns[i].data;
+    const char *data = columns[i].data.data();
     for ( uint r = 0; r < columns[i].recordCount; ++r )
     {
 
@@ -2165,11 +2144,11 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
           break;
 
         case SQLT_INT:
-          ( *list )[r] =  *reinterpret_cast<int *>( data + r * columns[i].maxLen );
+          ( *list )[r] =  *reinterpret_cast<const int *>( data + r * columns[i].maxLen );
           break;
 
         case SQLT_UIN:
-          ( *list )[r] =  *reinterpret_cast<uint *>( data + r * columns[i].maxLen );
+          ( *list )[r] =  *reinterpret_cast<const uint *>( data + r * columns[i].maxLen );
           break;
 
         case SQLT_VNU:
@@ -2189,7 +2168,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
         }
 
         case SQLT_FLT:
-          ( *list )[r] =  *reinterpret_cast<double *>( data + r * columns[i].maxLen );
+          ( *list )[r] =  *reinterpret_cast<const double *>( data + r * columns[i].maxLen );
           break;
 
         case SQLT_STR:
@@ -2768,7 +2747,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     else
     {
       if ( isCurved )
-        *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurve;
+        *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurveZ;
       else
         *ptr.iPtr++ = nDims == 2 ? WKBMultiLineString : WKBMultiLineString25D;
       *ptr.iPtr++ = lines.size();

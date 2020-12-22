@@ -104,7 +104,9 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
 
     leServer->setSelection( 0, leServer->text().size() );
     pteSessionStatus->setReadOnly( true );
+    spinbxTimeout->setClearValue( 15 );
     spinbxTimeout->setValue( 15 );
+    spinbxPort->setClearValue( 443 );
 
     grpbxServer->setCollapsed( false );
     radioServerImport->setChecked( true );

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorRampShader : QgsRasterShaderFunction
 {
 %Docstring
@@ -48,11 +49,15 @@ Creates a new color ramp shader.
 :return: new QgsColorRampShader
 %End
 
+    ~QgsColorRampShader();
+
     QgsColorRampShader( const QgsColorRampShader &other );
 %Docstring
 Copy constructor
 %End
 
+
+    bool operator==( const QgsColorRampShader &other ) const;
 
     struct ColorRampItem
     {
@@ -70,6 +75,8 @@ convenience constructor
       QColor color;
 
       bool operator<( const QgsColorRampShader::ColorRampItem &other ) const;
+
+      bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const;
     };
 
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const;
@@ -160,14 +167,14 @@ Generates and new RGB value based on original RGB value
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes configuration to a new DOM element
 
 .. versionadded:: 3.4
 %End
 
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads configuration from the given DOM element
 
@@ -198,6 +205,26 @@ Sets whether the shader should not render values out of range.
 Returns whether the shader will clip values which are out of range.
 
 .. seealso:: :py:func:`setClip`
+%End
+
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+%Docstring
+Returns the color ramp shader legend settings.
+
+.. seealso:: :py:func:`setLegendSettings`
+
+.. versionadded:: 3.18
+%End
+
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings /Transfer/ );
+%Docstring
+Sets the color ramp shader legend ``settings``.
+
+Ownership of ``settings`` is transferred.
+
+.. seealso:: :py:func:`legendSettings`
+
+.. versionadded:: 3.18
 %End
 
   protected:

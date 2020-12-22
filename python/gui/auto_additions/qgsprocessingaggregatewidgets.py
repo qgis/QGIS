@@ -2,7 +2,7 @@
 # monkey patching scoped based enum
 QgsAggregateMappingModel.ColumnDataIndex.SourceExpression.__doc__ = "Expression"
 QgsAggregateMappingModel.ColumnDataIndex.Aggregate.__doc__ = "Aggregate name"
-QgsAggregateMappingModel.ColumnDataIndex.Delimiter.__doc__ = "Delimeter"
+QgsAggregateMappingModel.ColumnDataIndex.Delimiter.__doc__ = "Delimiter"
 QgsAggregateMappingModel.ColumnDataIndex.DestinationName.__doc__ = "Destination field name"
 QgsAggregateMappingModel.ColumnDataIndex.DestinationType.__doc__ = "Destination field QVariant::Type casted to (int)"
 QgsAggregateMappingModel.ColumnDataIndex.DestinationLength.__doc__ = "Destination field length"

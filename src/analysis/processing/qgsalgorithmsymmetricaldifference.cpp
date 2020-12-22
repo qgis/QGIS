@@ -29,6 +29,11 @@ QString QgsSymmetricalDifferenceAlgorithm::displayName() const
   return QObject::tr( "Symmetrical difference" );
 }
 
+QStringList QgsSymmetricalDifferenceAlgorithm::tags() const
+{
+  return QObject::tr( "difference,symdiff,not overlap" ).split( ',' );
+}
+
 QString QgsSymmetricalDifferenceAlgorithm::group() const
 {
   return QObject::tr( "Vector overlay" );

@@ -485,7 +485,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   mIndexMutex.lock();
   QgsRectangle searchBounds = geometry.boundingBox();
   searchBounds.grow( snapTolerance );
-  QgsFeatureIds refFeatureIds = mIndex.intersects( searchBounds ).toSet();
+  QgsFeatureIds refFeatureIds = qgis::listToSet( mIndex.intersects( searchBounds ) );
   mIndexMutex.unlock();
 
   QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setNoAttributes();
@@ -758,7 +758,7 @@ QgsGeometry QgsInternalGeometrySnapper::snapFeature( const QgsFeature &feature )
     // Get potential reference features and construct snap index
     QgsRectangle searchBounds = geometry.boundingBox();
     searchBounds.grow( mSnapTolerance );
-    QgsFeatureIds refFeatureIds = mProcessedIndex.intersects( searchBounds ).toSet();
+    QgsFeatureIds refFeatureIds = qgis::listToSet( mProcessedIndex.intersects( searchBounds ) );
     if ( !refFeatureIds.isEmpty() )
     {
       QList< QgsGeometry > refGeometries;

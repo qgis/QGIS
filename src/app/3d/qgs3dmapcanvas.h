@@ -56,7 +56,7 @@ class Qgs3DMapCanvas : public QWidget
     QgsCameraController *cameraController();
 
     //! Resets camera position to the default: looking down at the origin of world coordinates
-    void resetView();
+    void resetView( bool resetExtent = false );
 
     //! Sets camera position to look down at the given point (in map coordinates) in given distance from plane with zero elevation
     void setViewFromTop( const QgsPointXY &center, float distance, float rotation = 0 );
@@ -92,6 +92,11 @@ class Qgs3DMapCanvas : public QWidget
 
     //! Emitted when the the map setting is changed
     void mapSettingsChanged();
+
+    //! Emitted when the FPS count changes (at most every frame)
+    void fpsCountChanged( float fpsCount );
+    //! Emitted when the FPS counter is enabled or disabeld
+    void fpsCounterEnabledChanged( bool enabled );
 
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );

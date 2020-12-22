@@ -28,6 +28,16 @@ QgsMultiPoint::QgsMultiPoint()
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
+QgsPoint *QgsMultiPoint::pointN( int index )
+{
+  return qgsgeometry_cast< QgsPoint * >( geometryN( index ) );
+}
+
+const QgsPoint *QgsMultiPoint::pointN( int index ) const
+{
+  return qgsgeometry_cast< const QgsPoint * >( geometryN( index ) );
+}
+
 QString QgsMultiPoint::geometryType() const
 {
   return QStringLiteral( "MultiPoint" );

@@ -171,6 +171,14 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   double scaledWidth = mSymbolWidth;
   double scaledHeight = mSymbolHeight;
 
+  QColor brushColor = mColor;
+  brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
+  mBrush.setColor( brushColor );
+
+  QColor penColor = mStrokeColor;
+  penColor.setAlphaF( penColor.alphaF() * context.opacity() );
+  mPen.setColor( penColor );
+
   if ( mDataDefinedProperties.hasActiveProperties() )
   {
     bool ok;
@@ -183,6 +191,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
       {
         width = context.renderContext().convertToPainterUnits( width, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
         mPen.setWidthF( width );
+        mSelPen.setWidthF( width );
       }
     }
 
@@ -191,6 +200,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     if ( exprVal.isValid() )
     {
       mPen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
+      mSelPen.setStyle( mPen.style() );
     }
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
@@ -198,13 +208,18 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     if ( exprVal.isValid() )
     {
       mPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
+      mSelPen.setJoinStyle( mPen.joinStyle() );
     }
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    mBrush.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor ) );
+    QColor brushColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), mColor );
+    brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
+    mBrush.setColor( brushColor );
 
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
-    mPen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor ) );
+    QColor penColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mStrokeColor );
+    penColor.setAlphaF( penColor.alphaF() * context.opacity() );
+    mPen.setColor( penColor );
 
     if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
     {
@@ -238,8 +253,8 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
     transform.rotate( angle );
   }
 
-  p->setPen( mPen );
-  p->setBrush( mBrush );
+  p->setPen( context.selected() ? mSelPen : mPen );
+  p->setBrush( context.selected() ? mSelBrush : mBrush );
   p->drawPath( transform.map( mPainterPath ) );
 }
 
@@ -308,6 +323,18 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
   mBrush.setColor( mColor );
+
+  QColor selBrushColor = context.renderContext().selectionColor();
+  QColor selPenColor = selBrushColor == mColor ? selBrushColor : mStrokeColor;
+  if ( context.opacity() < 1  && !SELECTION_IS_OPAQUE )
+  {
+    selBrushColor.setAlphaF( context.opacity() );
+    selPenColor.setAlphaF( context.opacity() );
+  }
+  mSelBrush = QBrush( selBrushColor );
+  mSelPen = QPen( selPenColor );
+  mSelPen.setStyle( mStrokeStyle );
+  mSelPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 }
 
 void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & )
@@ -636,6 +663,14 @@ QgsUnitTypes::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
     return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
+}
+
+bool QgsEllipseSymbolLayer::usesMapUnits() const
+{
+  return mSymbolWidthUnit == QgsUnitTypes::RenderMapUnits || mSymbolWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mSymbolHeightUnit == QgsUnitTypes::RenderMapUnits || mSymbolHeightUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
 void QgsEllipseSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )

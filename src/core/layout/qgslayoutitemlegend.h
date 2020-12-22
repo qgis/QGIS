@@ -57,7 +57,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
     /**
      * Returns filtered list of active legend nodes attached to a particular layer node
-     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is TRUE)
      * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
      * \note Not available in Python bindings
      * \see layerOriginalLegendNodes()
@@ -317,6 +317,42 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * \see symbolWidth()
      */
     void setSymbolWidth( double width );
+
+    /**
+     * Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+     *
+     * \see setMaximumSymbolSize()
+     * \since QGIS 3.16
+     */
+    double maximumSymbolSize() const;
+
+    /**
+     * Set the maximum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no maximum is set.
+     *
+     * \see maximumSymbolSize()
+     * \since QGIS 3.16
+     */
+    void setMaximumSymbolSize( double size );
+
+    /**
+     * Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+     *
+     * \see setMinimumSymbolSize
+     * \since QGIS 3.16
+     */
+    double minimumSymbolSize() const;
+
+    /**
+     * Set the minimum symbol \a size for symbol (in millimeters).
+     *
+     * A symbol size of 0.0 indicates no minimum is set.
+     *
+     * \see minimumSymbolSize()
+     * \since QGIS 3.16
+     */
+    void setMinimumSymbolSize( double size );
 
     /**
      * Sets the \a alignment for placement of legend symbols.

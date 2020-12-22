@@ -52,7 +52,9 @@ QString QgsPackageAlgorithm::groupId() const
 void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypeVector ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination GeoPackage" ), QObject::tr( "GeoPackage files (*.gpkg)" ) ) );
+  QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination GeoPackage" ), QObject::tr( "GeoPackage files (*.gpkg)" ) );
+  outputParameter->setMetadata( QVariantMap( {{QStringLiteral( "widget_wrapper" ), QVariantMap( {{QStringLiteral( "dontconfirmoverwrite" ), true }} ) }} ) );
+  addParameter( outputParameter );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite existing GeoPackage" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SAVE_STYLES" ), QObject::tr( "Save layer styles into GeoPackage" ), true ) );
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within new package" ) ) );
@@ -178,9 +180,21 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         errored = true;
         break;
 
+      case QgsMapLayerType::PointCloudLayer:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging point cloud layers is not supported." ) );
+        errored = true;
+        break;
+
       case QgsMapLayerType::VectorTileLayer:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging vector tile layers is not supported." ) );
+        errored = true;
+        break;
+
+      case QgsMapLayerType::AnnotationLayer:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging annotation layers is not supported." ) );
         errored = true;
         break;
     }

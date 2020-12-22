@@ -30,7 +30,8 @@ class QgsGrassImportItem;
  * to keep common actions. QgsGrassItemActions must be children of data items, so that when a data item
  * is moved to to another thread, it moves also QgsGrassItemActions and signals work.
  * That is why each data item class keeps QgsGrassItemActions, instead of putting them to QgsGrassObjectItemBase,
- * because it would be ugly and dangerous to be parent of member's member. */
+ * because it would be ugly and dangerous to be parent of member's member.
+ */
 class QgsGrassItemActions : public QObject
 {
     Q_OBJECT

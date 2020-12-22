@@ -913,8 +913,8 @@ void TestQgsMapRendererJob::temporalRender()
   QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties * >( rasterLayer->temporalProperties() );
   temporalProperties->setIsActive( true );
   temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
-  temporalProperties->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-      QDateTime( QDate( 2020, 1, 5 ) ) ) );
+  temporalProperties->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
+      QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ) ) ) );
 
   // should still be visible -- map render job isn't temporal
   QgsMapRendererSequentialJob renderJob2( mapSettings );
@@ -925,8 +925,8 @@ void TestQgsMapRendererJob::temporalRender()
 
   // make render job temporal, outside of layer's fixed range
   mapSettings.setIsTemporal( true );
-  mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ) ),
-                                QDateTime( QDate( 2021, 1, 5 ) ) ) );
+  mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 0, 0 ) ),
+                                QDateTime( QDate( 2021, 1, 5 ), QTime( 0, 0, 0 ) ) ) );
   // should no longer be visible
   QgsMapRendererSequentialJob renderJob3( mapSettings );
   renderJob3.start();
@@ -935,8 +935,8 @@ void TestQgsMapRendererJob::temporalRender()
   QVERIFY( imageCheck( QStringLiteral( "temporal_render_invisible" ), img ) );
 
   // temporal range ok for layer
-  mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 2 ) ),
-                                QDateTime( QDate( 2020, 1, 3 ) ) ) );
+  mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ) ),
+                                QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ) ) ) );
   // should be visible
   QgsMapRendererSequentialJob renderJob4( mapSettings );
   renderJob4.start();

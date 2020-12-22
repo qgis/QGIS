@@ -46,7 +46,9 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
-#include "qgsquerybuilder.h"
+#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgssubsetstringeditorprovider.h"
+#include "qgssubsetstringeditorinterface.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontext.h"
@@ -60,7 +62,7 @@
 #include "qgssymbollayer.h"
 #include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
-#include "qgsvectorlayerloadstyledialog.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmessagebar.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -207,8 +209,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     labelingDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
     mOptsPage_Masks->setEnabled( false ); // disable masking item
-    mGeometryGroupBox->setEnabled( false );
-    mGeometryGroupBox->setVisible( false );
+    mGeomGroupBox->setEnabled( false );
+    mGeomGroupBox->setVisible( false );
+    mCrsGroupBox->setEnabled( false );
+    mCrsGroupBox->setVisible( false );
   }
 
   // Create the Actions dialog tab
@@ -388,7 +392,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       dependencySources << layer;
   }
 
-  mLayersDependenciesTreeModel = new DependenciesLayerTreeModel( mLayer, this );
+  mLayersDependenciesTreeModel = new QgsLayerTreeFilterProxyModel( this );
   mLayersDependenciesTreeModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayersDependenciesTreeModel ) );
   mLayersDependenciesTreeModel->setCheckedLayers( dependencySources );
   connect( QgsProject::instance(), &QObject::destroyed, this, [ = ] {mLayersDependenciesTreeView->setModel( nullptr );} );
@@ -498,7 +502,9 @@ void QgsVectorLayerProperties::syncToLayer()
   // using the query builder, either by typing it in by hand or using the buttons, etc
   // on the builder. If the ability to enter a query directly into the box is required,
   // a mechanism to check it must be implemented.
-  txtSubsetSQL->setEnabled( false );
+  txtSubsetSQL->setReadOnly( true );
+  txtSubsetSQL->setCaretWidth( 0 );
+  txtSubsetSQL->setCaretLineVisible( false );
   setPbnQueryBuilderEnabled();
 
   mMapTipWidget->setText( mLayer->mapTipTemplate() );
@@ -513,6 +519,7 @@ void QgsVectorLayerProperties::syncToLayer()
   const QgsVectorSimplifyMethod &simplifyMethod = mLayer->simplifyMethod();
   mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
+  mSimplifyDrawingSpinBox->setClearValue( 1.0 );
 
   QString remark = QStringLiteral( " (%1)" ).arg( tr( "Not supported" ) );
   const QgsVectorDataProvider *provider = mLayer->dataProvider();
@@ -578,6 +585,9 @@ void QgsVectorLayerProperties::syncToLayer()
   // set initial state for variable editor
   updateVariableEditor();
 
+  if ( diagramPropertiesDialog )
+    diagramPropertiesDialog->syncToLayer();
+
   // sync all plugin dialogs
   const auto constMLayerPropertiesPages = mLayerPropertiesPages;
   for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
@@ -589,7 +599,9 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mTemporalWidget->syncToLayer();
 
-} // syncToLayer()
+  mLegendWidget->setLayer( mLayer );
+
+}
 
 void QgsVectorLayerProperties::apply()
 {
@@ -607,7 +619,7 @@ void QgsVectorLayerProperties::apply()
   mMetadataFilled = false;
 
   // save masking settings
-  if ( mMaskingWidget )
+  if ( mMaskingWidget && mMaskingWidget->hasBeenPopulated() )
     mMaskingWidget->apply();
 
   //
@@ -615,10 +627,10 @@ void QgsVectorLayerProperties::apply()
   //
   mSubsetGroupBox->setEnabled( true );
 
-  if ( txtSubsetSQL->toPlainText() != mLayer->subsetString() )
+  if ( txtSubsetSQL->text() != mLayer->subsetString() )
   {
     // set the subset sql for the layer
-    mLayer->setSubsetString( txtSubsetSQL->toPlainText() );
+    mLayer->setSubsetString( txtSubsetSQL->text() );
     mMetadataFilled = false;
   }
   mOriginalSubsetSQL = mLayer->subsetString();
@@ -637,7 +649,7 @@ void QgsVectorLayerProperties::apply()
     }
   }
 
-  mLayer->setDisplayExpression( mDisplayExpressionWidget->currentField() );
+  mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
@@ -834,16 +846,16 @@ void QgsVectorLayerProperties::urlClicked( const QUrl &url )
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 {
   // launch the query builder
-  QgsQueryBuilder *qb = new QgsQueryBuilder( mLayer, this );
+  QgsSubsetStringEditorInterface *dialog = QgsGui::subsetStringEditorProviderRegistry()->createDialog( mLayer, this );
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
-  qb->setSql( txtSubsetSQL->toPlainText() );
+  dialog->setSubsetString( txtSubsetSQL->text() );
   // Open the query builder
-  if ( qb->exec() )
+  if ( dialog->exec() )
   {
     // if the sql is changed, update it in the prop subset text box
-    txtSubsetSQL->setText( qb->sql() );
+    txtSubsetSQL->setText( dialog->subsetString() );
     //TODO If the sql is changed in the prop dialog, the layer extent should be recalculated
 
     // The datasource for the layer needs to be updated with the new sql since this gets
@@ -851,7 +863,7 @@ void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 
   }
   // delete the query builder object
-  delete qb;
+  delete dialog;
 }
 
 void QgsVectorLayerProperties::pbnIndex_clicked()
@@ -1135,14 +1147,13 @@ void QgsVectorLayerProperties::saveStyleAs()
 
         mLayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
-        int messageTimeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
         if ( !msgError.isNull() )
         {
-          mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning, messageTimeout );
+          mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
         }
         else
         {
-          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Info, messageTimeout );
+          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Success );
         }
         break;
       }
@@ -1249,15 +1260,14 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             mLayer->saveStyleToDatabase( name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
 
-            const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
             if ( !msgError.isNull() )
             {
-              mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning, timeout );
+              mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
             }
             else
             {
               mMessageBar->pushMessage( infoWindowTitle, tr( "Style '%1' saved" ).arg( styleName ),
-                                        Qgis::Info, timeout );
+                                        Qgis::Success );
             }
             break;
           }
@@ -1290,7 +1300,7 @@ void QgsVectorLayerProperties::loadStyle()
 
   //get the list of styles in the db
   int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
-  QgsVectorLayerLoadStyleDialog dlg( mLayer );
+  QgsMapLayerLoadStyleDialog dlg( mLayer );
   dlg.initializeLists( ids, names, descriptions, sectionLimit );
 
   if ( dlg.exec() )
@@ -1538,7 +1548,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   childFields->setText( 0, QStringLiteral( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
-    childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );
+    childFields->setText( 1, QString::number( list->count() ) );
   else
     childFields->setText( 1, tr( "all" ) );
   joinItem->addChild( childFields );
@@ -1765,10 +1775,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
   if ( mRendererDialog )
   {
-    mRendererDialog->layout()->setMargin( 0 );
+    mRendererDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
-    widgetStackRenderers->currentWidget()->layout()->setMargin( 0 );
+    widgetStackRenderers->currentWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 }
 
@@ -2055,9 +2065,8 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
   else
   {
     const QString title = QObject::tr( "Delete Auxiliary Field" );
-    const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QStringLiteral( "\n  " ) );
+    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QLatin1String( "\n  " ) );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
-    mMessageBar->pushMessage( title, msg, Qgis::Warning, timeout );
+    mMessageBar->pushMessage( title, msg, Qgis::Warning );
   }
 }

@@ -59,9 +59,10 @@ class CORE_EXPORT QgsRasterIdentifyResult
 
     /**
      * Returns the identify results. Results are different for each format:
-     * QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
-     * QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
-     * QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+     *
+     * - QgsRaster::IdentifyFormatValue: a map of values for each band, where keys are band numbers (from 1).
+     * - QgsRaster::IdentifyFormatFeature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
+     * - QgsRaster::IdentifyFormatHtml: a map of WMS sublayer keys and HTML strings.
      */
     QMap<int, QVariant> results() const { return mResults; }
 
@@ -84,9 +85,10 @@ class CORE_EXPORT QgsRasterIdentifyResult
     //! \brief Results format
     QgsRaster::IdentifyFormat mFormat = QgsRaster::IdentifyFormatUndefined;
 
-    //! \brief Results
     // TODO: better hierarchy (sublayer multiple feature sets)?
     // TODO?: results are not consistent for different formats (per band x per sublayer)
+
+    //! \brief Results
     QMap<int, QVariant> mResults;
 
     //! \brief Additional params (e.g. request url used by WMS)

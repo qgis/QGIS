@@ -548,12 +548,12 @@ bool QgsLayoutGuideCollection::writeXml( QDomElement &parentElement, QDomDocumen
 bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument &, const QgsReadWriteContext & )
 {
   QDomElement element = e;
-  if ( element.nodeName() != QStringLiteral( "GuideCollection" ) )
+  if ( element.nodeName() != QLatin1String( "GuideCollection" ) )
   {
     element = element.firstChildElement( QStringLiteral( "GuideCollection" ) );
   }
 
-  if ( element.nodeName() != QStringLiteral( "GuideCollection" ) )
+  if ( element.nodeName() != QLatin1String( "GuideCollection" ) )
   {
     return false;
   }

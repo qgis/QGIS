@@ -194,25 +194,31 @@ Returns whether empty rows are drawn in the table.
 .. seealso:: :py:func:`setShowEmptyRows`
 %End
 
-    void setHeaderFont( const QFont &font );
+ void setHeaderFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used to draw header text in the table.
 
 .. seealso:: :py:func:`headerFont`
 
 .. seealso:: :py:func:`setContentFont`
+
+.. deprecated::
+   use setHeaderTextFormat() instead
 %End
 
-    QFont headerFont() const;
+ QFont headerFont() const /Deprecated/;
 %Docstring
 Returns the font used to draw header text in the table.
 
 .. seealso:: :py:func:`setHeaderFont`
 
 .. seealso:: :py:func:`contentFont`
+
+.. deprecated::
+   use headerTextFormat() instead
 %End
 
-    void setHeaderFontColor( const QColor &color );
+ void setHeaderFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the ``color`` used to draw header text in the table.
 
@@ -221,9 +227,12 @@ Sets the ``color`` used to draw header text in the table.
 .. seealso:: :py:func:`setHeaderFont`
 
 .. seealso:: :py:func:`setContentFontColor`
+
+.. deprecated::
+   use setHeaderTextFormat() instead
 %End
 
-    QColor headerFontColor() const;
+ QColor headerFontColor() const /Deprecated/;
 %Docstring
 Returns the color used to draw header text in the table.
 
@@ -232,6 +241,31 @@ Returns the color used to draw header text in the table.
 .. seealso:: :py:func:`headerFont`
 
 .. seealso:: :py:func:`contentFontColor`
+
+.. deprecated::
+   use headerTextFormat() instead
+%End
+
+    void setHeaderTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the ``format`` used to draw header text in the table.
+
+.. seealso:: :py:func:`headerTextFormat`
+
+.. seealso:: :py:func:`setContentTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+    QgsTextFormat headerTextFormat() const;
+%Docstring
+Returns the format used to draw header text in the table.
+
+.. seealso:: :py:func:`setHeaderTextFormat`
+
+.. seealso:: :py:func:`contentTextFormat`
+
+.. versionadded:: 3.16
 %End
 
     void setHeaderHAlignment( HeaderHAlignment alignment );
@@ -264,25 +298,31 @@ if and where headers are shown in the table.
 .. seealso:: :py:func:`setHeaderMode`
 %End
 
-    void setContentFont( const QFont &font );
+ void setContentFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used to draw text in table body cells.
 
 .. seealso:: :py:func:`contentFont`
 
 .. seealso:: :py:func:`setHeaderFont`
+
+.. deprecated::
+   use setContentTextFormat() instead
 %End
 
-    QFont contentFont() const;
+ QFont contentFont() const /Deprecated/;
 %Docstring
 Returns the font used to draw text in table body cells.
 
 .. seealso:: :py:func:`setContentFont`
 
 .. seealso:: :py:func:`headerFont`
+
+.. deprecated::
+   use contextTextFormat() instead
 %End
 
-    void setContentFontColor( const QColor &color );
+ void setContentFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the ``color`` used to draw text in table body cells.
 
@@ -291,9 +331,12 @@ Sets the ``color`` used to draw text in table body cells.
 .. seealso:: :py:func:`setContentFont`
 
 .. seealso:: :py:func:`setHeaderFontColor`
+
+.. deprecated::
+   use setContentTextFormat() instead
 %End
 
-    QColor contentFontColor() const;
+ QColor contentFontColor() const /Deprecated/;
 %Docstring
 Returns the color used to draw text in table body cells.
 
@@ -302,6 +345,31 @@ Returns the color used to draw text in table body cells.
 .. seealso:: :py:func:`contentFont`
 
 .. seealso:: :py:func:`headerFontColor`
+
+.. deprecated::
+   use contextTextFormat() instead
+%End
+
+    void setContentTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the ``format`` used to draw content text in the table.
+
+.. seealso:: :py:func:`contentTextFormat`
+
+.. seealso:: :py:func:`setHeaderTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+    QgsTextFormat contentTextFormat() const;
+%Docstring
+Returns the format used to draw content text in the table.
+
+.. seealso:: :py:func:`setContentTextFormat`
+
+.. seealso:: :py:func:`headerTextFormat`
+
+.. versionadded:: 3.16
 %End
 
     void setShowGrid( bool showGrid );
@@ -529,6 +597,13 @@ Returns the conditional style to use for the cell at ``row``, ``column``.
 .. versionadded:: 3.12
 %End
 
+    virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const /Factory/;
+%Docstring
+Creates a new QgsExpressionContextScope for the cell at ``row``, ``column``.
+
+.. versionadded:: 3.16
+%End
+
     QgsLayoutTableContents &contents();
 %Docstring
 Returns the current contents of the table. Excludes header cells.
@@ -586,8 +661,6 @@ new data.
 
 
 
-
-
     virtual bool calculateMaxColumnWidths();
 %Docstring
 Calculates the maximum width of text shown in columns.
@@ -602,11 +675,12 @@ Calculates the maximum height of text shown in rows.
 
     double totalHeight();
 
-    int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
+    int rowsVisible( QgsRenderContext &context, double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
 %Docstring
 Calculates how many content rows would be visible within a frame of the specified
 height.
 
+:param context: render context
 :param frameHeight: height of frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeHeader: set to ``True`` if frame would include a header row
@@ -617,10 +691,11 @@ height.
 :return: number of visible content rows (excluding header row)
 %End
 
-    int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
+    int rowsVisible( QgsRenderContext &context, int frameIndex, int firstRow, bool includeEmptyRows ) const;
 %Docstring
 Calculates how many content rows are visible within a given frame.
 
+:param context: render context
 :param frameIndex: index number for frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeEmptyRows: set to ``True`` to also include rows which would be empty in the returned count. For instance,
@@ -630,20 +705,21 @@ Calculates how many content rows are visible within a given frame.
 :return: number of visible content rows (excludes header rows)
 %End
 
-    QPair<int, int> rowRange( int frameIndex ) const;
+    QPair<int, int> rowRange( QgsRenderContext &context, int frameIndex ) const;
 %Docstring
 Calculates a range of rows which should be visible in a given frame.
 
+:param context: render context
 :param frameIndex: index number for frame
 
 :return: row range
 %End
 
-    void drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const;
+    void drawHorizontalGridLines( QgsLayoutItemRenderContext &context, int firstRow, int lastRow, bool drawHeaderLines ) const;
 %Docstring
 Draws the horizontal grid lines for the table.
 
-:param painter: destination painter for grid lines
+:param context: destination render context
 :param firstRow: index corresponding to first row shown in frame
 :param lastRow: index corresponding to last row shown in frame. If greater than the number of content rows in the
                 table, then the default row height will be used for the remaining rows.
@@ -666,6 +742,42 @@ Checks whether a table contents contains a given row
 :param row: row to check for
 
 :return: ``True`` if contents contains rows
+%End
+
+    virtual QgsTextFormat textFormatForCell( int row, int column ) const;
+%Docstring
+Returns the text format to use for the cell at the specified ``row`` and ``column``.
+
+.. seealso:: :py:func:`textFormatForHeader`
+
+.. versionadded:: 3.16
+%End
+
+    virtual QgsTextFormat textFormatForHeader( int column ) const;
+%Docstring
+Returns the text format to use for the header cell at the specified ``column``.
+
+.. seealso:: :py:func:`textFormatForCell`
+
+.. versionadded:: 3.16
+%End
+
+    virtual Qt::Alignment horizontalAlignmentForCell( int row, int column ) const;
+%Docstring
+Returns the horizontal alignment to use for the cell at the specified ``row`` and ``column``.
+
+.. seealso:: :py:func:`verticalAlignmentForCell`
+
+.. versionadded:: 3.16
+%End
+
+    virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
+%Docstring
+Returns the vertical alignment to use for the cell at the specified ``row`` and ``column``.
+
+.. seealso:: :py:func:`horizontalAlignmentForCell`
+
+.. versionadded:: 3.16
 %End
 
 };

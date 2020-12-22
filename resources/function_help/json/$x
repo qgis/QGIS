@@ -1,7 +1,8 @@
 {
   "name": "$x",
   "type": "function",
-  "description": "Returns the x coordinate of the current feature.",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the x coordinate of the current point feature. If the feature is a multipoint feature, then the x-coordinate of the first point will be returned.",
   "examples": [ { "expression":"$x", "returns":"42"}
   ]
 }

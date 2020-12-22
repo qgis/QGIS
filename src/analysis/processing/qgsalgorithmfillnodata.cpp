@@ -133,6 +133,9 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
 
+    if ( feedback && feedback->isCanceled() )
+      break;
+
     if ( !filledRasterBlock->hasNoDataValue() )
     {
       destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );

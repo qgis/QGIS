@@ -51,7 +51,7 @@ QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTran
 QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
 {
   QgsFields fields;
-  QStringList fieldsSorted = flds.toList();
+  QStringList fieldsSorted = qgis::setToList( flds );
   std::sort( fieldsSorted.begin(), fieldsSorted.end() );
   for ( const QString &fieldName : qgis::as_const( fieldsSorted ) )
   {
@@ -60,13 +60,17 @@ QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
   return fields;
 }
 
-
-int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom )
+double QgsVectorTileUtils::scaleToZoom( double mapScale )
 {
   double s0 = 559082264.0287178;   // scale denominator at zoom level 0 of GoogleCRS84Quad
   double tileZoom2 = log( s0 / mapScale ) / log( 2 );
   tileZoom2 -= 1;   // TODO: it seems that map scale is double (is that because of high-dpi screen?)
-  int tileZoom = static_cast<int>( round( tileZoom2 ) );
+  return tileZoom2;
+}
+
+int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom )
+{
+  int tileZoom = static_cast<int>( floor( scaleToZoom( mapScale ) ) );
 
   if ( tileZoom < sourceMinZoom )
     tileZoom = sourceMinZoom;
@@ -80,7 +84,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
 {
   QgsVectorTileMVTDecoder decoder;
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
-  QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
+  QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
   fieldNames << QStringLiteral( "_geom_type" );
   QMap<QString, QgsFields> perLayerFields;
   QgsFields fields = QgsVectorTileUtils::makeQgisFields( fieldNames );
@@ -108,6 +112,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
   vl->dataProvider()->addAttributes( fields.toList() );
   vl->updateFields();
   bool res = vl->dataProvider()->addFeatures( featuresList );
+  Q_UNUSED( res );
   Q_ASSERT( res );
   Q_ASSERT( featuresList.count() == vl->featureCount() );
   vl->updateExtents();

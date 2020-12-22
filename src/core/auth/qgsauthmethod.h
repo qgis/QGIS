@@ -173,9 +173,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * \note Non-public since this is an abstract base class
      */
     explicit QgsAuthMethod()
-      : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
-      , mDataProviders( QStringList() )
-      , mMutex( QMutex::RecursionMode::Recursive )
+      : mMutex( QMutex::RecursionMode::Recursive )
     {}
 
 
@@ -190,7 +188,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     //! Sets list of data providers this auth method supports
     void setDataProviders( const QStringList &dataproviders ) { mDataProviders = dataproviders; }
 
-    QgsAuthMethod::Expansions mExpansions;
+    QgsAuthMethod::Expansions mExpansions = QgsAuthMethod::Expansions();
     QStringList mDataProviders;
     int mVersion = 0;
     QMutex mMutex;

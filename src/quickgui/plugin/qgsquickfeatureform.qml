@@ -83,6 +83,32 @@ Item {
     }
 
   /**
+   * Support for custom callback on events happening in widgets
+   */
+  property var customWidgetCallback: QtObject {
+
+    /**
+     * Called when user clicks on valuerelation widget and combobox shall open
+     * \param widget valuerelation widget for specific field to send valueChanged signal.
+     * \param valueRelationModel model of type FeaturesListModel bears features of related layer.
+     */
+    property var valueRelationOpened: function valueRelationOpened( widget, valueRelationModel ) {}
+
+    /**
+     * Called when field for value relation is created, by default it returns value "combobox".
+     * Return value of this function sets corresponding widget type. Currently accepted values are:
+     *    - combobox -> QML combobox component.
+     *    - textfield -> custom text widget that shows only title of selected feature in value relation
+     *                   and calls function "valueRelationOpened" when it is clicked.
+     * \param widget valuerelation widget for specific field to send valueChanged signal.
+     * \param valueRelationModel model of type FeaturesListModel bears features of related layer.
+     */
+    property var getTypeOfWidget: function getTypeOfWidget( widget, valueRelationModel ) {
+      return "combobox"
+    }
+  }
+
+  /**
    * AttributeFormModel binded on a feature supporting auto-generated editor layouts and "tab" layout.
    */
   property QgsQuick.AttributeFormModel model
@@ -144,6 +170,16 @@ Item {
   }
 
   function save() {
+    if ( !model.constraintsHardValid )
+    {
+      console.log( qsTr( 'Constraints not valid') )
+      return
+    }
+    else if ( !model.constraintsSoftValid )
+    {
+      console.log( qsTr( 'Note: soft constraints were not met') )
+    }
+
     parent.focus = true
     if ( form.state === "Add" ) {
       model.create()
@@ -226,12 +262,14 @@ Item {
             rightPadding: 8 * QgsQuick.Utils.dp
             anchors.bottom: parent.bottom
 
-            width: contentItem.width + leftPadding + rightPadding
+            width: leftPadding + rightPadding
             height: form.style.tabs.buttonHeight
 
             contentItem: Text {
               // Make sure the width is derived from the text so we can get wider
               // than the parent item and the Flickable is useful
+              Component.onCompleted: tabButton.width = tabButton.width + paintedWidth
+
               width: paintedWidth
               text: tabButton.text
               color: !tabButton.enabled ? form.style.tabs.disabledColor : tabButton.down ||
@@ -324,7 +362,7 @@ Item {
             model: QgsQuick.SubModel {
               id: contentModel
               model: form.model
-              rootIndex: form.model.hasTabs ? form.model.index(currentIndex, 0) : undefined
+              rootIndex: form.model.hasTabs ? form.model.index(currentIndex, 0) : QgsQuick.Utils.invalidIndex()
             }
 
             delegate: fieldItem
@@ -354,9 +392,9 @@ Item {
       Label {
         id: fieldLabel
 
-        text: qsTr(Name) || ''
+        text: Name ? qsTr(Name) : ''
         font.bold: true
-        color: ConstraintValid ? form.style.constraint.validColor : form.style.constraint.invalidColor
+        color: ConstraintSoftValid && ConstraintHardValid ? form.style.constraint.validColor : form.style.constraint.invalidColor
       }
 
       Label {
@@ -367,10 +405,10 @@ Item {
           top: fieldLabel.bottom
         }
 
-        text: qsTr(ConstraintDescription)
-        height: ConstraintValid ? 0 : undefined
-        visible: !ConstraintValid
-
+        text: ConstraintDescription ? qsTr(ConstraintDescription) : ''
+        visible: !ConstraintHardValid || !ConstraintSoftValid
+        height: visible ? undefined : 0
+        wrapMode: Text.WordWrap
         color: form.style.constraint.descriptionColor
       }
 
@@ -385,21 +423,31 @@ Item {
           height: childrenRect.height
           anchors { left: parent.left; right: parent.right }
 
+          signal dataHasChanged() // to propagate signal to valuerelation model from model
+
           property var value: AttributeValue
           property var config: EditorWidgetConfig
           property var widget: EditorWidget
           property var field: Field
-          property var constraintValid: ConstraintValid
+          property var constraintHardValid: ConstraintHardValid
+          property var constraintSoftValid: ConstraintSoftValid
+          property bool constraintsHardValid: form.model.constraintsHardValid
+          property bool constraintsSoftValid: form.model.constraintsSoftValid
           property var homePath: form.project ? form.project.homePath : ""
           property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
           property var featurePair: form.model.attributeModel.featureLayerPair
           property var activeProject: form.project
+          property var customWidget: form.customWidgetCallback
 
           active: widget !== 'Hidden'
 
-          source: form.loadWidgetFn(widget.toLowerCase())
+          source: {
+            if ( widget !== undefined )
+               return form.loadWidgetFn(widget.toLowerCase())
+            else return ''
+          }
         }
 
         Connections {
@@ -410,10 +458,20 @@ Item {
         }
 
         Connections {
+          target: form.model
+          onDataChanged: {
+            if ( attributeEditorLoader.item && attributeEditorLoader.item.dataUpdated )
+            {
+              attributeEditorLoader.item.dataUpdated( form.model.attributeModel.featureLayerPair.feature )
+            }
+          }
+        }
+
+        Connections {
           target: form
           ignoreUnknownSignals: true
           onSaved: {
-            if (typeof attributeEditorLoader.item.callbackOnSave === "function") {
+            if (attributeEditorLoader.item && typeof attributeEditorLoader.item.callbackOnSave === "function") {
               attributeEditorLoader.item.callbackOnSave()
             }
           }
@@ -423,7 +481,7 @@ Item {
           target: form
           ignoreUnknownSignals: true
           onCanceled: {
-            if (typeof attributeEditorLoader.item.callbackOnCancel === "function") {
+            if (attributeEditorLoader.item && typeof attributeEditorLoader.item.callbackOnCancel === "function") {
               attributeEditorLoader.item.callbackOnCancel()
             }
           }
@@ -481,10 +539,10 @@ Item {
         }
 
         background: Rectangle {
-          color: model.constraintsValid ? form.style.toolbutton.backgroundColor : form.style.toolbutton.backgroundColorInvalid
+          color: model.constraintsSoftValid && model.constraintsHardValid ? form.style.toolbutton.backgroundColor : form.style.toolbutton.backgroundColorInvalid
         }
 
-        enabled: model.constraintsValid
+        enabled: model.constraintsHardValid
 
         onClicked: {
           form.save()
@@ -539,7 +597,7 @@ Item {
 
       ToolButton {
         id: closeButton
-        anchors.right: parent.right
+        Layout.alignment: Qt.AlignRight
 
         Layout.preferredWidth: form.style.toolbutton.size
         Layout.preferredHeight: form.style.toolbutton.size

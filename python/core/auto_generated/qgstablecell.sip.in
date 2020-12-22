@@ -80,6 +80,32 @@ Set an invalid ``color`` if a default color should be used for the foreground.
 .. seealso:: :py:func:`foregroundColor`
 %End
 
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the cell's text format.
+
+.. note::
+
+   The text format will only be used if :py:func:`~QgsTableCell.hasTextFormat` returns ``True``.
+
+.. seealso:: :py:func:`setTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the cell's text ``format``.
+
+.. note::
+
+   The text format will only be used if :py:func:`~QgsTableCell.hasTextFormat` returns ``True``.
+
+.. seealso:: :py:func:`textFormat`
+
+.. versionadded:: 3.16
+%End
+
     const QgsNumericFormat *numericFormat() const;
 %Docstring
 Returns the numeric format used for numbers in the cell, or ``None`` if no format is set.
@@ -94,6 +120,50 @@ Sets the numeric ``format`` used for numbers in the cell, or ``None`` if no spec
 Ownership of ``format`` is transferred to the cell.
 
 .. seealso:: :py:func:`numericFormat`
+%End
+
+    Qt::Alignment horizontalAlignment() const;
+%Docstring
+Returns the horizontal alignment for text in the cell.
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setHorizontalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the horizontal ``alignment`` for text in the cell.
+
+.. seealso:: :py:func:`horizontalAlignment`
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    Qt::Alignment verticalAlignment() const;
+%Docstring
+Returns the vertical alignment for text in the cell.
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. seealso:: :py:func:`horizontalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setVerticalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the vertical ``alignment`` for text in the cell.
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+
+.. versionadded:: 3.16
 %End
 
     QVariantMap properties( const QgsReadWriteContext &context ) const;

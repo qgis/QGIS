@@ -16,7 +16,9 @@ from qgis.core import (QgsProject,
                        QgsPrintLayout,
                        QgsLayoutItemMap,
                        QgsLayoutItemLabel,
-                       QgsLayoutItemRegistry)
+                       QgsLayoutItemRegistry,
+                       QgsLayoutItemShape,
+                       QgsLayoutItem)
 from qgis.gui import QgsLayoutItemComboBox
 from qgis.PyQt.QtCore import Qt, QModelIndex
 from qgis.testing import start_app, unittest
@@ -241,6 +243,23 @@ class TestQgsLayoutItemComboBox(unittest.TestCase):
         self.assertEqual(combo.count(), 0)
         self.assertIsNone(combo.currentItem())
         self.assertEqual(combo.currentIndex(), -1)
+
+        combo.setItemType(QgsLayoutItemRegistry.LayoutItem)
+        self.assertEqual(combo.count(), 2)
+        combo.setItemFlags(QgsLayoutItem.FlagProvidesClipPath)
+        self.assertEqual(combo.count(), 0)
+        shape = QgsLayoutItemShape(layout)
+        shape.setId('shape 1')
+        layout.addLayoutItem(shape)
+        self.assertEqual(combo.count(), 1)
+        shape2 = QgsLayoutItemShape(layout)
+        shape2.setId('shape 2')
+        layout.addLayoutItem(shape2)
+        self.assertEqual(combo.count(), 2)
+        self.assertEqual(combo.itemText(0), 'shape 1')
+        self.assertEqual(combo.itemText(1), 'shape 2')
+        combo.setItemFlags(QgsLayoutItem.Flags())
+        self.assertEqual(combo.count(), 4)
 
 
 if __name__ == '__main__':

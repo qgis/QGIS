@@ -1,6 +1,7 @@
 {
   "name": "map_concat",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Returns a map containing all the entries of the given maps. If two maps contain the same key, the value of the second map is taken.",
   "variableLenArguments": true,
   "arguments": [

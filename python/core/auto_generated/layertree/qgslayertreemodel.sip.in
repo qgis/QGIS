@@ -291,7 +291,7 @@ so that legend nodes that use map units can be scaled correctly
     void legendMapViewData( double *mapUnitsPerPixel /Out/, int *dpi /Out/, double *scale  /Out/ ) const;
 %Docstring
 Gets hints about map view - to be used in legend nodes. Arguments that are not ``None`` will receive values.
-If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
+If there are no valid map view data (from previous call to :py:func:`~QgsLayerTreeModel.setLegendMapViewData`), returned values are zeros.
 
 .. versionadded:: 2.6
 %End
@@ -351,6 +351,13 @@ Updates model when node's name has changed
     void nodeLayerWillBeUnloaded();
     void layerLegendChanged();
 
+    void layerFlagsChanged();
+%Docstring
+Emitted when layer flags have changed.
+
+.. versionadded:: 3.18
+%End
+
     void layerNeedsUpdate();
 
     void legendNodeDataChanged();
@@ -371,13 +378,13 @@ Updates model when node's name has changed
 
     void recursivelyEmitDataChanged( const QModelIndex &index = QModelIndex() );
 %Docstring
-emit dataChanged() for layer tree node items
+emit :py:func:`~QgsLayerTreeModel.dataChanged` for layer tree node items
 %End
 
-    void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex() );
+    void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex(), double previousScale = 0.0 );
 %Docstring
 Updates layer data for scale dependent layers, should be called when map scale changes.
-Emits dataChanged() for all scale dependent layers.
+Emits :py:func:`~QgsLayerTreeModel.dataChanged` for all scale dependent layers.
 
 .. versionadded:: 2.16
 %End
@@ -404,6 +411,7 @@ Filter nodes from QgsMapLayerLegend according to the current filtering rules
     void legendInvalidateMapBasedData();
 
   protected:
+
 
 
 

@@ -55,7 +55,11 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
       <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtDatabase"/>
+       <widget class="QLineEdit" name="txtDatabase">
+        <property name="toolTip">
+         <string>Database name, or service name (described in tnsnames.ora) if no host and port has been set</string>
+        </property>
+       </widget>
       </item>
       <item row="3" column="1" colspan="2">
        <widget class="QLineEdit" name="txtPort">

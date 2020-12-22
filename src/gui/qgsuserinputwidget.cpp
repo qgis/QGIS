@@ -23,6 +23,7 @@ QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   //TODO add title tr( "User Input Panel" )
 
   QFrame *f = new QFrame();
+  f->setObjectName( QStringLiteral( "mUserInputContainer" ) );
 
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -74,14 +75,14 @@ void QgsUserInputWidget::widgetDestroyed( QObject *obj )
   if ( obj->isWidgetType() )
   {
     QWidget *w = qobject_cast<QWidget *>( obj );
-    QMap<QWidget *, QFrame *>::iterator i = mWidgetList.find( w );
-    while ( i != mWidgetList.end() )
+    auto it = mWidgetList.find( w );
+    if ( it != mWidgetList.end() )
     {
-      if ( i.value() )
+      if ( QFrame *frame = it.value() )
       {
-        i.value()->deleteLater();
+        frame->deleteLater();
       }
-      i = mWidgetList.erase( i );
+      mWidgetList.erase( it );
     }
   }
   if ( mWidgetList.count() == 0 )
@@ -98,9 +99,9 @@ void QgsUserInputWidget::setLayoutDirection( QBoxLayout::Direction direction )
   QMap<QWidget *, QFrame *>::const_iterator i = mWidgetList.constBegin();
   while ( i != mWidgetList.constEnd() )
   {
-    if ( i.value() )
+    if ( auto *lValue = i.value() )
     {
-      i.value()->setFrameShape( horizontal ? QFrame::VLine : QFrame::HLine );
+      lValue->setFrameShape( horizontal ? QFrame::VLine : QFrame::HLine );
     }
     ++i;
   }

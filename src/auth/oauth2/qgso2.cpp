@@ -21,8 +21,11 @@
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsblockingnetworkrequest.h"
 
 #include <QDir>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
@@ -64,7 +67,7 @@ void QgsO2::initOAuthConfig()
   }
 
   // common properties to all grant flows
-  QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QStringLiteral( "% 1" ), QStringLiteral( "%1" ) );
+  QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
   QgsDebugMsg( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
@@ -81,24 +84,23 @@ void QgsO2::initOAuthConfig()
   setApiKey( mOAuth2Config->apiKey() );
   setExtraRequestParams( mOAuth2Config->queryPairs() );
 
-  O2::GrantFlow o2flow;
   switch ( mOAuth2Config->grantFlow() )
   {
     case QgsAuthOAuth2Config::AuthCode:
-      o2flow = O2::GrantFlowAuthorizationCode;
+      setGrantFlow( O2::GrantFlowAuthorizationCode );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );
 
       break;
     case QgsAuthOAuth2Config::Implicit:
-      o2flow = O2::GrantFlowImplicit;
+      setGrantFlow( O2::GrantFlowImplicit );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
 
       break;
     case QgsAuthOAuth2Config::ResourceOwner:
-      o2flow = O2::GrantFlowResourceOwnerPasswordCredentials;
+      setGrantFlow( O2::GrantFlowResourceOwnerPasswordCredentials );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );
       setUsername( mOAuth2Config->username() );
@@ -106,7 +108,6 @@ void QgsO2::initOAuthConfig()
 
       break;
   }
-  setGrantFlow( o2flow );
 
   setSettingsStore( mOAuth2Config->persistToken() );
 
@@ -135,7 +136,7 @@ void QgsO2::setVerificationResponseContent()
 bool QgsO2::isLocalHost( const QUrl redirectUrl ) const
 {
   QString hostName = redirectUrl.host();
-  if ( hostName == QStringLiteral( "localhost" ) || hostName == QStringLiteral( "127.0.0.1" ) || hostName == QStringLiteral( "[::1]" ) )
+  if ( hostName == QLatin1String( "localhost" ) || hostName == QLatin1String( "127.0.0.1" ) || hostName == QLatin1String( "[::1]" ) )
   {
     return true;
   }
@@ -189,9 +190,12 @@ void QgsO2::link()
                                   QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_CLIENT_ID ), clientId_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_REDIRECT_URI ), redirectUri_ ) );
-    parameters.append( qMakePair( QString( O2_OAUTH2_SCOPE ), scope_ ) );
-    parameters.append( qMakePair( O2_OAUTH2_STATE, state_ ) );
-    parameters.append( qMakePair( QString( O2_OAUTH2_API_KEY ), apiKey_ ) );
+    if ( !scope_.isEmpty() )
+      parameters.append( qMakePair( QString( O2_OAUTH2_SCOPE ), scope_ ) );
+    if ( !state_.isEmpty() )
+      parameters.append( qMakePair( O2_OAUTH2_STATE, state_ ) );
+    if ( !apiKey_.isEmpty() )
+      parameters.append( qMakePair( QString( O2_OAUTH2_API_KEY ), apiKey_ ) );
 
     for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
@@ -218,8 +222,10 @@ void QgsO2::link()
     parameters.append( O0RequestParameter( O2_OAUTH2_USERNAME, username_.toUtf8() ) );
     parameters.append( O0RequestParameter( O2_OAUTH2_PASSWORD, password_.toUtf8() ) );
     parameters.append( O0RequestParameter( O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_GRANT_TYPE_PASSWORD ) );
-    parameters.append( O0RequestParameter( O2_OAUTH2_SCOPE, scope_.toUtf8() ) );
-    parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
+    if ( !scope_.isEmpty() )
+      parameters.append( O0RequestParameter( O2_OAUTH2_SCOPE, scope_.toUtf8() ) );
+    if ( !apiKey_.isEmpty() )
+      parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
 
 
     for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
@@ -344,4 +350,90 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 QNetworkAccessManager *QgsO2::getManager()
 {
   return QgsNetworkAccessManager::instance();
+}
+
+/// Parse JSON data into a QVariantMap
+static QVariantMap parseTokenResponse( const QByteArray &data )
+{
+  QJsonParseError err;
+  QJsonDocument doc = QJsonDocument::fromJson( data, &err );
+  if ( err.error != QJsonParseError::NoError )
+  {
+    qWarning() << "parseTokenResponse: Failed to parse token response due to err:" << err.errorString();
+    return QVariantMap();
+  }
+
+  if ( !doc.isObject() )
+  {
+    qWarning() << "parseTokenResponse: Token response is not an object";
+    return QVariantMap();
+  }
+
+  return doc.object().toVariantMap();
+}
+
+// Code adapted from O2::refresh(), but using QgsBlockingNetworkRequest
+void QgsO2::refreshSynchronous()
+{
+  qDebug() << "O2::refresh: Token: ..." << refreshToken().right( 7 );
+
+  if ( refreshToken().isEmpty() )
+  {
+    qWarning() << "O2::refresh: No refresh token";
+    onRefreshError( QNetworkReply::AuthenticationRequiredError );
+    return;
+  }
+  if ( refreshTokenUrl_.isEmpty() )
+  {
+    qWarning() << "O2::refresh: Refresh token URL not set";
+    onRefreshError( QNetworkReply::AuthenticationRequiredError );
+    return;
+  }
+
+  QNetworkRequest refreshRequest( refreshTokenUrl_ );
+  refreshRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
+  QMap<QString, QString> parameters;
+  parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
+  parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+  parameters.insert( O2_OAUTH2_REFRESH_TOKEN, refreshToken() );
+  parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_REFRESH_TOKEN );
+
+  QByteArray data = buildRequestBody( parameters );
+
+  QgsBlockingNetworkRequest blockingRequest;
+  QgsBlockingNetworkRequest::ErrorCode errCode = blockingRequest.post( refreshRequest, data, true );
+  if ( errCode == QgsBlockingNetworkRequest::NoError )
+  {
+    QByteArray reply = blockingRequest.reply().content();
+    QVariantMap tokens = parseTokenResponse( reply );
+    if ( tokens.contains( QStringLiteral( "error" ) ) )
+    {
+      qDebug() << " Error refreshing token" << tokens.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "message" ) ).toString().toLocal8Bit().constData();
+      unlink();
+    }
+    else
+    {
+      setToken( tokens.value( O2_OAUTH2_ACCESS_TOKEN ).toString() );
+      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() );
+      const QString refreshToken = tokens.value( O2_OAUTH2_REFRESH_TOKEN ).toString();
+      if ( !refreshToken.isEmpty() )
+        setRefreshToken( refreshToken );
+      setLinked( true );
+      qDebug() << " New token expires in" << expires() << "seconds";
+      emit linkingSucceeded();
+    }
+    emit refreshFinished( QNetworkReply::NoError );
+  }
+  else
+  {
+    unlink();
+    qDebug() << "O2::onRefreshFinished: Error" << blockingRequest.errorMessage();
+    emit refreshFinished( blockingRequest.reply().error() );
+  }
+}
+
+void QgsO2::computeExpirationDelay()
+{
+  const int lExpires = expires();
+  mExpirationDelay = lExpires > 0 ? lExpires - static_cast<int>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0;
 }

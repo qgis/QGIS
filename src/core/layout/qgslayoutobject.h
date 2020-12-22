@@ -174,6 +174,14 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapGridLabelDistance, //!< Map grid label distance
       MapGridCrossSize, //!< Map grid cross size
       MapGridFrameLineThickness, //!< Map grid frame line thickness
+      MapGridAnnotationDisplayLeft, //!< Map annotation display left
+      MapGridAnnotationDisplayRight, //!< Map annotation display right
+      MapGridAnnotationDisplayTop, //!< Map annotation display top
+      MapGridAnnotationDisplayBottom, //!< Map annotation display bottom
+      MapGridFrameDivisionsLeft, //!< Map frame division display left
+      MapGridFrameDivisionsRight, //!< Map frame division display right
+      MapGridFrameDivisionsTop, //!< Map frame division display top
+      MapGridFrameDivisionsBottom, //!< Map frame division display bottom
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color

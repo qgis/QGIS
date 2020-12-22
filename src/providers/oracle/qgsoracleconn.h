@@ -179,9 +179,13 @@ class QgsOracleConn : public QObject
 
     bool hasSpatial();
 
+    /**
+     * \returns Oracle database major version, -1 if an error occurred
+     */
+    int version();
+
     static const int sGeomTypeSelectLimit;
 
-    static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );
 
     static QString databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type wkbType );

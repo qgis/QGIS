@@ -589,7 +589,6 @@ void TestQgsRasterCalculator::findNodes()
   node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "max(-1,1)" ), errorString );
   QVERIFY( node );
   QVERIFY( errorString.isEmpty() );
-
 }
 
 void TestQgsRasterCalculator::testRasterEntries()
@@ -743,6 +742,12 @@ void TestQgsRasterCalculator::toString()
   // Test regression #32477
   QCOMPARE( _test( QStringLiteral( R"raw(("r@1"<100.09)*0.1)raw" ), true ),
             QString( R"raw(( float ) ( ( float ) "r@1" < ( float ) 100.09 ) * ( float ) 0.1)raw" ) );
+
+  QString error;
+  std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "min( \"raster@1\" )" ), error ) );
+  QVERIFY( calcNode == nullptr );
+  calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "max( \"raster@1\" )" ), error ) );
+  QVERIFY( calcNode == nullptr );
 }
 
 void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()

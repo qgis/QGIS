@@ -119,7 +119,7 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
         Returns true if bbox is completely outside the current viewing volume.
@@ -169,14 +169,11 @@ class _3D_EXPORT Qgs3DUtils
      */
     static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
 
-    //! Returns a new 3D symbol based on given geometry type (or NULLPTR if geometry type is not supported)
-    static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
-
     //! Returns expression context for use in preparation of 3D data of a layer
     static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
 
-    //! Returns phong material object based on the material settings
-    static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
+    //! Returns phong material settings object based on the Qt3D material
+    static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 };
 
 #endif // QGS3DUTILS_H

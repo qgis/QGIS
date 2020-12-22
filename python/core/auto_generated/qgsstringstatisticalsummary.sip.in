@@ -16,10 +16,10 @@ class QgsStringStatisticalSummary
 %Docstring
 Calculator for summary statistics and aggregates for a list of strings.
 
-Statistics are calculated by calling calculate() and passing a list of strings. The
+Statistics are calculated by calling :py:func:`~calculate` and passing a list of strings. The
 individual statistics can then be retrieved using the associated methods. Note that not all statistics
 are calculated by default. Statistics which require slower computations are only calculated by
-specifying the statistic in the constructor or via setStatistics().
+specifying the statistic in the constructor or via :py:func:`~setStatistics`.
 
 .. versionadded:: 2.16
 %End
@@ -104,18 +104,18 @@ non-string variants will be ignored.
 Adds a single string to the statistics calculation. Calling this method
 allows strings to be added to the calculation one at a time. For large
 quantities of strings this may be more efficient then first adding all the
-strings to a list and calling calculate().
+strings to a list and calling :py:func:`~QgsStringStatisticalSummary.calculate`.
 
 :param string: string to add
 
 .. note::
 
-   call reset() before adding the first string using this method
+   call :py:func:`~QgsStringStatisticalSummary.reset` before adding the first string using this method
    to clear the results from any previous calculations
 
 .. note::
 
-   finalize() must be called after adding the final string and before
+   :py:func:`~QgsStringStatisticalSummary.finalize` must be called after adding the final string and before
    retrieving calculated statistics.
 
 .. seealso:: :py:func:`calculate`
@@ -130,18 +130,18 @@ strings to a list and calling calculate().
 Adds a single variant to the statistics calculation. Calling this method
 allows variants to be added to the calculation one at a time. For large
 quantities of variants this may be more efficient then first adding all the
-variants to a list and calling calculateFromVariants().
+variants to a list and calling :py:func:`~QgsStringStatisticalSummary.calculateFromVariants`.
 
 :param value: variant to add
 
 .. note::
 
-   call reset() before adding the first string using this method
+   call :py:func:`~QgsStringStatisticalSummary.reset` before adding the first string using this method
    to clear the results from any previous calculations
 
 .. note::
 
-   finalize() must be called after adding the final value and before
+   :py:func:`~QgsStringStatisticalSummary.finalize` must be called after adding the final value and before
    retrieving calculated statistics.
 
 .. seealso:: :py:func:`calculateFromVariants`
@@ -151,7 +151,7 @@ variants to a list and calling calculateFromVariants().
 
     void finalize();
 %Docstring
-Must be called after adding all strings with addString() and before retrieving
+Must be called after adding all strings with :py:func:`~QgsStringStatisticalSummary.addString` and before retrieving
 any calculated string statistics.
 
 .. seealso:: :py:func:`addString`

@@ -110,9 +110,20 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
 QString QgsClassificationLogarithmic::valueToLabel( double value ) const
 {
   if ( value <= 0 )
-    return QString( QStringLiteral( "%1" ) ).arg( value );
+  {
+    return QString::number( value );
+  }
   else
-    return QString( QStringLiteral( "10^%1" ) ).arg( std::log10( value ) );
+  {
+    if ( std::isnan( value ) )
+    {
+      return QObject::tr( "invalid (0 or negative values in the data)" );
+    }
+    else
+    {
+      return QString( QStringLiteral( "10^%1" ) ).arg( std::log10( value ) );
+    }
+  }
 }
 
 QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double upperValue, QgsClassificationMethod::ClassPosition position ) const

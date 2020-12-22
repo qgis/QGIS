@@ -34,7 +34,7 @@ class QgsOracleOwnerItem;
 class QgsOracleLayerItem;
 class QgsProxyProgressTask;
 
-class QgsOracleRootItem : public QgsDataCollectionItem
+class QgsOracleRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

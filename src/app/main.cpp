@@ -386,6 +386,11 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
       break;
     case QtCriticalMsg:
       myPrint( "Critical: %s\n", msg.toLocal8Bit().constData() );
+
+#ifdef QGISDEBUG
+      dumpBacktrace( 20 );
+#endif
+
       break;
     case QtWarningMsg:
     {
@@ -1038,31 +1043,30 @@ int main( int argc, char *argv[] )
   {
     // Note: this flag is ka version number so that we can reset it once we change the version.
     // Note2: Is this a good idea can we do it better.
-
-    QgsSettings migSettings;
-    int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
-    bool showWelcome = ( firstRunVersion == 0  || Qgis::versionInt() > firstRunVersion );
-
-    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
-    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
+    // Note3: Updated to only show if we have a migration from QGIS 2 - see https://github.com/qgis/QGIS/pull/38616
+    QString path = QSettings( "QGIS", "QGIS2" ).fileName() ;
+    if ( QFile::exists( path ) )
     {
-      bool runMigration = true;
-      if ( !settingsMigrationForce && showWelcome )
+      QgsSettings migSettings;
+      int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
+      bool showWelcome = ( firstRunVersion == 0  || Qgis::versionInt() > firstRunVersion );
+      std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
+      if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
       {
-        QgsFirstRunDialog dlg;
-        if ( ! QFile::exists( QSettings( "QGIS", "QGIS2" ).fileName() ) )
+        bool runMigration = true;
+        if ( !settingsMigrationForce && showWelcome )
         {
-          dlg.hideMigration();
+          QgsFirstRunDialog dlg;
+          dlg.exec();
+          runMigration = dlg.migrateSettings();
+          migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::versionInt() );
         }
-        dlg.exec();
-        runMigration = dlg.migrateSettings();
-        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::versionInt() );
-      }
 
-      if ( runMigration )
-      {
-        QgsDebugMsg( QStringLiteral( "RUNNING MIGRATION" ) );
-        migration->runMigration();
+        if ( runMigration )
+        {
+          QgsDebugMsg( QStringLiteral( "RUNNING MIGRATION" ) );
+          migration->runMigration();
+        }
       }
     }
   }
@@ -1193,22 +1197,24 @@ int main( int argc, char *argv[] )
   QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACX
-  // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
-  // is not already defined, use the GDAL plugins in the application bundle.
-  QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
-  if ( QFile::exists( gdalPlugins ) && !getenv( "GDAL_DRIVER_PATH" ) )
+  if ( !getenv( "GDAL_DRIVER_PATH" ) )
   {
-    setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+    // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
+    // is not already defined, use the GDAL plugins in the application bundle.
+    QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
+    if ( QFile::exists( gdalPlugins ) )
+    {
+      setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+    }
   }
 
   // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
   if ( !getenv( "GDAL_DATA" ) )
   {
     QStringList gdalShares;
-    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-               << appResources.append( "/share/gdal" )
-               << appResources.append( "/gdal" );
+               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
+               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
     const auto constGdalShares = gdalShares;
     for ( const QString &gdalShare : constGdalShares )
     {
@@ -1217,6 +1223,15 @@ int main( int argc, char *argv[] )
         setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
         break;
       }
+    }
+  }
+
+  // Point PYTHONHOME to embedded interpreter if present in the bundle
+  if ( !getenv( "PYTHONHOME" ) )
+  {
+    if ( QFile::exists( QCoreApplication::applicationDirPath().append( "/bin/python3" ) ) )
+    {
+      setenv( "PYTHONHOME", QCoreApplication::applicationDirPath().toUtf8().constData(), 1 );
     }
   }
 #endif
@@ -1375,6 +1390,9 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( ! sProjectFileName.isEmpty() )
   {
+    // in case the project contains broken layers, interactive
+    // "Handle Bad Layers" is displayed that could be blocked by splash screen
+    mypSplash->hide();
     qgis->openProject( sProjectFileName );
   }
 

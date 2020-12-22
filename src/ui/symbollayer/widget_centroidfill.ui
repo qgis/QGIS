@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
+    <width>382</width>
     <height>242</height>
    </rect>
   </property>
@@ -15,65 +15,55 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_1">
-     <item>
-      <widget class="QCheckBox" name="mDrawInsideCheckBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Force point inside polygon</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QCheckBox" name="mDrawInsideCheckBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Force placement of markers inside polygons</string>
+     </property>
+    </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QCheckBox" name="mDrawAllPartsCheckBox">
-       <property name="toolTip">
-        <string>When unchecked, a single point will be drawn on the biggest part of multi-part features</string>
-       </property>
-       <property name="text">
-        <string>Draw point on every part of multi-part features</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QCheckBox" name="mDrawAllPartsCheckBox">
+     <property name="toolTip">
+      <string>When unchecked, a single marker will be drawn on the biggest part of multi-part features</string>
+     </property>
+     <property name="text">
+      <string>Draw markers on every part of multi-part features</string>
+     </property>
+    </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QCheckBox" name="mClipPointsCheckBox">
-       <property name="text">
-        <string>Clip markers to polygon boundary</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QCheckBox" name="mClipPointsCheckBox">
+     <property name="text">
+      <string>Clip markers to polygon boundary</string>
+     </property>
+    </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QCheckBox" name="mClipOnCurrentPartOnlyCheckBox">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Clip markers to current part boundary only</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QCheckBox" name="mClipOnCurrentPartOnlyCheckBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Clip markers to current part boundary only</string>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </spacer>
    </item>

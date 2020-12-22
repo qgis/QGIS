@@ -1,6 +1,7 @@
 {
   "name": "day",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Extracts the day from a date, or the number of days from an interval.",
   "variants": [
   { "variant": "Date variant",

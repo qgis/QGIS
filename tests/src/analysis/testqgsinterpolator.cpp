@@ -15,7 +15,7 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgstest.h"
 
 #include "qgsapplication.h"
-#include "DualEdgeTriangulation.h"
+#include "qgsdualedgetriangulation.h"
 
 class TestQgsInterpolator : public QObject
 {
@@ -56,22 +56,22 @@ void TestQgsInterpolator::cleanup()
 
 void TestQgsInterpolator::dualEdge()
 {
-  DualEdgeTriangulation tri;
-  QVERIFY( !tri.getPoint( 0 ) );
-  QVERIFY( !tri.getPoint( 1 ) );
-  QCOMPARE( tri.getNumberOfPoints(), 0 );
+  QgsDualEdgeTriangulation tri;
+  QVERIFY( !tri.point( 0 ) );
+  QVERIFY( !tri.point( 1 ) );
+  QCOMPARE( tri.pointsCount(), 0 );
 
   tri.addPoint( QgsPoint( 1, 2, 3 ) );
-  QCOMPARE( *tri.getPoint( 0 ), QgsPoint( 1, 2, 3 ) );
-  QCOMPARE( tri.getNumberOfPoints(), 1 );
+  QCOMPARE( *tri.point( 0 ), QgsPoint( 1, 2, 3 ) );
+  QCOMPARE( tri.pointsCount(), 1 );
 
   tri.addPoint( QgsPoint( 3, 0, 4 ) );
-  QCOMPARE( *tri.getPoint( 1 ), QgsPoint( 3, 0, 4 ) );
-  QCOMPARE( tri.getNumberOfPoints(), 2 );
+  QCOMPARE( *tri.point( 1 ), QgsPoint( 3, 0, 4 ) );
+  QCOMPARE( tri.pointsCount(), 2 );
 
   tri.addPoint( QgsPoint( 4, 4, 5 ) );
-  QCOMPARE( *tri.getPoint( 2 ), QgsPoint( 4, 4, 5 ) );
-  QCOMPARE( tri.getNumberOfPoints(), 3 );
+  QCOMPARE( *tri.point( 2 ), QgsPoint( 4, 4, 5 ) );
+  QCOMPARE( tri.pointsCount(), 3 );
 
   QgsPoint p1( 0, 0, 0 );
   QgsPoint p2( 0, 0, 0 );
@@ -80,26 +80,26 @@ void TestQgsInterpolator::dualEdge()
   int n2 = 0;
   int n3 = 0;
   QVERIFY( !tri.pointInside( 0, 1 ) );
-  QVERIFY( !tri.getTriangle( 0, 1, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 0, 1, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 0, 1, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 0, 1, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( !tri.pointInside( 1, 1 ) );
-  QVERIFY( !tri.getTriangle( 1, 1, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 1, 1, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 1, 1, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 1, 1, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( !tri.pointInside( 4, 1 ) );
-  QVERIFY( !tri.getTriangle( 4, 1, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 4, 1, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 4, 1, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 4, 1, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( !tri.pointInside( 2, 4 ) );
-  QVERIFY( !tri.getTriangle( 2, 4, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 2, 4, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 2, 4, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 2, 4, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( !tri.pointInside( 3, -1 ) );
-  QVERIFY( !tri.getTriangle( 3, -1, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 3, -1, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 3, -1, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 3, -1, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( tri.pointInside( 2, 2 ) );
-  QVERIFY( tri.getTriangle( 2, 2, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 2, 2, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
-  QVERIFY( tri.getTriangle( 2, 2, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 2, 2, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
@@ -107,11 +107,11 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 1 );
   QCOMPARE( n3, 2 );
   QVERIFY( tri.pointInside( 3, 1 ) );
-  QVERIFY( tri.getTriangle( 3, 1, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 3, 1, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
-  QVERIFY( tri.getTriangle( 3, 1, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 3, 1, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
@@ -119,11 +119,11 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 1 );
   QCOMPARE( n3, 2 );
   QVERIFY( tri.pointInside( 3.5, 3.5 ) );
-  QVERIFY( tri.getTriangle( 3.5, 3.5, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 3.5, 3.5, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
-  QVERIFY( tri.getTriangle( 3.5, 3.5, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 3.5, 3.5, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
@@ -131,36 +131,36 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 1 );
   QCOMPARE( n3, 2 );
 
-  QCOMPARE( tri.getOppositePoint( 0, 1 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 0, 2 ), 1 );
-  QCOMPARE( tri.getOppositePoint( 1, 0 ), 2 );
-  QCOMPARE( tri.getOppositePoint( 1, 2 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 2, 0 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 2, 1 ), 0 );
+  QCOMPARE( tri.oppositePoint( 0, 1 ), -1 );
+  QCOMPARE( tri.oppositePoint( 0, 2 ), 1 );
+  QCOMPARE( tri.oppositePoint( 1, 0 ), 2 );
+  QCOMPARE( tri.oppositePoint( 1, 2 ), -1 );
+  QCOMPARE( tri.oppositePoint( 2, 0 ), -1 );
+  QCOMPARE( tri.oppositePoint( 2, 1 ), 0 );
 
   // add another point
   tri.addPoint( QgsPoint( 2, 4, 6 ) );
-  QCOMPARE( *tri.getPoint( 3 ), QgsPoint( 2, 4, 6 ) );
-  QCOMPARE( tri.getNumberOfPoints(), 4 );
+  QCOMPARE( *tri.point( 3 ), QgsPoint( 2, 4, 6 ) );
+  QCOMPARE( tri.pointsCount(), 4 );
   QVERIFY( !tri.pointInside( 2, 4.5 ) );
-  QVERIFY( !tri.getTriangle( 2, 4.5, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 2, 4.5, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 2, 4.5, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 2, 4.5, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( !tri.pointInside( 1, 4 ) );
-  QVERIFY( !tri.getTriangle( 1, 4, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 1, 4, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 1, 4, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 1, 4, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( tri.pointInside( 2, 3.5 ) );
-  QVERIFY( tri.getTriangle( 2, 3.5, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 2, 3.5, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 4, 4, 5 ) );
   QCOMPARE( p3, QgsPoint( 2, 4, 6 ) );
-  QVERIFY( tri.getTriangle( 2, 3.5, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 2, 3.5, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 4, 4, 5 ) );
   QCOMPARE( p3, QgsPoint( 2, 4, 6 ) );
   QCOMPARE( n1, 0 );
   QCOMPARE( n2, 2 );
   QCOMPARE( n3, 3 );
-  QVERIFY( tri.getTriangle( 2, 2, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 2, 2, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
@@ -168,36 +168,36 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 1 );
   QCOMPARE( n3, 2 );
 
-  QCOMPARE( tri.getOppositePoint( 0, 1 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 0, 2 ), 1 );
-  QCOMPARE( tri.getOppositePoint( 0, 3 ), 2 );
-  QCOMPARE( tri.getOppositePoint( 1, 0 ), 2 );
-  QCOMPARE( tri.getOppositePoint( 1, 2 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 1, 3 ), -10 );
-  QCOMPARE( tri.getOppositePoint( 2, 0 ), 3 );
-  QCOMPARE( tri.getOppositePoint( 2, 1 ), 0 );
-  QCOMPARE( tri.getOppositePoint( 2, 3 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 3, 0 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 3, 1 ), -10 );
-  QCOMPARE( tri.getOppositePoint( 3, 2 ), 0 );
+  QCOMPARE( tri.oppositePoint( 0, 1 ), -1 );
+  QCOMPARE( tri.oppositePoint( 0, 2 ), 1 );
+  QCOMPARE( tri.oppositePoint( 0, 3 ), 2 );
+  QCOMPARE( tri.oppositePoint( 1, 0 ), 2 );
+  QCOMPARE( tri.oppositePoint( 1, 2 ), -1 );
+  QCOMPARE( tri.oppositePoint( 1, 3 ), -10 );
+  QCOMPARE( tri.oppositePoint( 2, 0 ), 3 );
+  QCOMPARE( tri.oppositePoint( 2, 1 ), 0 );
+  QCOMPARE( tri.oppositePoint( 2, 3 ), -1 );
+  QCOMPARE( tri.oppositePoint( 3, 0 ), -1 );
+  QCOMPARE( tri.oppositePoint( 3, 1 ), -10 );
+  QCOMPARE( tri.oppositePoint( 3, 2 ), 0 );
 
 
   // add another point
   tri.addPoint( QgsPoint( 2, 2, 7 ) );
-  QCOMPARE( *tri.getPoint( 4 ), QgsPoint( 2, 2, 7 ) );
-  QCOMPARE( tri.getNumberOfPoints(), 5 );
+  QCOMPARE( *tri.point( 4 ), QgsPoint( 2, 2, 7 ) );
+  QCOMPARE( tri.pointsCount(), 5 );
   QVERIFY( !tri.pointInside( 2, 4.5 ) );
-  QVERIFY( !tri.getTriangle( 2, 4.5, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 2, 4.5, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 2, 4.5, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 2, 4.5, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( !tri.pointInside( 1, 4 ) );
-  QVERIFY( !tri.getTriangle( 1, 4, p1, p2, p3 ) );
-  QVERIFY( !tri.getTriangle( 1, 4, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( !tri.triangleVertices( 1, 4, p1, p2, p3 ) );
+  QVERIFY( !tri.triangleVertices( 1, 4, p1, n1, p2, n2, p3, n3 ) );
   QVERIFY( tri.pointInside( 2, 3.5 ) );
-  QVERIFY( tri.getTriangle( 2, 3.5, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 2, 3.5, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 2, 4, 6 ) );
   QCOMPARE( p2, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p3, QgsPoint( 2, 2, 7 ) );
-  QVERIFY( tri.getTriangle( 2, 3.5, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 2, 3.5, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 2, 4, 6 ) );
   QCOMPARE( p2, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p3, QgsPoint( 2, 2, 7 ) );
@@ -205,11 +205,11 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 0 );
   QCOMPARE( n3, 4 );
   QVERIFY( tri.pointInside( 2, 1.5 ) );
-  QVERIFY( tri.getTriangle( 2, 1.5, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 2, 1.5, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 2, 2, 7 ) );
-  QVERIFY( tri.getTriangle( 2, 1.5, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 2, 1.5, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 1, 2, 3 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 2, 2, 7 ) );
@@ -217,11 +217,11 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 1 );
   QCOMPARE( n3, 4 );
   QVERIFY( tri.pointInside( 3.1, 1 ) );
-  QVERIFY( tri.getTriangle( 3.1, 1, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 3.1, 1, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 2, 2, 7 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
-  QVERIFY( tri.getTriangle( 3.1, 1, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 3.1, 1, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 2, 2, 7 ) );
   QCOMPARE( p2, QgsPoint( 3, 0, 4 ) );
   QCOMPARE( p3, QgsPoint( 4, 4, 5 ) );
@@ -229,11 +229,11 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 1 );
   QCOMPARE( n3, 2 );
   QVERIFY( tri.pointInside( 2.5, 3.5 ) );
-  QVERIFY( tri.getTriangle( 2.5, 3.5, p1, p2, p3 ) );
+  QVERIFY( tri.triangleVertices( 2.5, 3.5, p1, p2, p3 ) );
   QCOMPARE( p1, QgsPoint( 2, 2, 7 ) );
   QCOMPARE( p2, QgsPoint( 4, 4, 5 ) );
   QCOMPARE( p3, QgsPoint( 2, 4, 6 ) );
-  QVERIFY( tri.getTriangle( 2.5, 3.5, p1, n1, p2, n2, p3, n3 ) );
+  QVERIFY( tri.triangleVertices( 2.5, 3.5, p1, n1, p2, n2, p3, n3 ) );
   QCOMPARE( p1, QgsPoint( 2, 2, 7 ) );
   QCOMPARE( p2, QgsPoint( 4, 4, 5 ) );
   QCOMPARE( p3, QgsPoint( 2, 4, 6 ) );
@@ -241,29 +241,45 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( n2, 2 );
   QCOMPARE( n3, 3 );
 
-  QCOMPARE( tri.getOppositePoint( 0, 1 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 0, 2 ), -10 );
-  QCOMPARE( tri.getOppositePoint( 0, 3 ), 4 );
-  QCOMPARE( tri.getOppositePoint( 0, 4 ), 1 );
-  QCOMPARE( tri.getOppositePoint( 1, 0 ), 4 );
-  QCOMPARE( tri.getOppositePoint( 1, 2 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 1, 3 ), -10 );
-  QCOMPARE( tri.getOppositePoint( 1, 4 ), 2 );
-  QCOMPARE( tri.getOppositePoint( 2, 0 ), -10 );
-  QCOMPARE( tri.getOppositePoint( 2, 1 ), 4 );
-  QCOMPARE( tri.getOppositePoint( 2, 3 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 2, 4 ), 3 );
-  QCOMPARE( tri.getOppositePoint( 3, 0 ), -1 );
-  QCOMPARE( tri.getOppositePoint( 3, 1 ), -10 );
-  QCOMPARE( tri.getOppositePoint( 3, 2 ), 4 );
-  QCOMPARE( tri.getOppositePoint( 3, 4 ), 0 );
-  QCOMPARE( tri.getOppositePoint( 4, 0 ), 3 );
-  QCOMPARE( tri.getOppositePoint( 4, 1 ), 0 );
-  QCOMPARE( tri.getOppositePoint( 4, 2 ), 1 );
-  QCOMPARE( tri.getOppositePoint( 4, 3 ), 2 );
+  QCOMPARE( tri.oppositePoint( 0, 1 ), -1 );
+  QCOMPARE( tri.oppositePoint( 0, 2 ), -10 );
+  QCOMPARE( tri.oppositePoint( 0, 3 ), 4 );
+  QCOMPARE( tri.oppositePoint( 0, 4 ), 1 );
+  QCOMPARE( tri.oppositePoint( 1, 0 ), 4 );
+  QCOMPARE( tri.oppositePoint( 1, 2 ), -1 );
+  QCOMPARE( tri.oppositePoint( 1, 3 ), -10 );
+  QCOMPARE( tri.oppositePoint( 1, 4 ), 2 );
+  QCOMPARE( tri.oppositePoint( 2, 0 ), -10 );
+  QCOMPARE( tri.oppositePoint( 2, 1 ), 4 );
+  QCOMPARE( tri.oppositePoint( 2, 3 ), -1 );
+  QCOMPARE( tri.oppositePoint( 2, 4 ), 3 );
+  QCOMPARE( tri.oppositePoint( 3, 0 ), -1 );
+  QCOMPARE( tri.oppositePoint( 3, 1 ), -10 );
+  QCOMPARE( tri.oppositePoint( 3, 2 ), 4 );
+  QCOMPARE( tri.oppositePoint( 3, 4 ), 0 );
+  QCOMPARE( tri.oppositePoint( 4, 0 ), 3 );
+  QCOMPARE( tri.oppositePoint( 4, 1 ), 0 );
+  QCOMPARE( tri.oppositePoint( 4, 2 ), 1 );
+  QCOMPARE( tri.oppositePoint( 4, 3 ), 2 );
 
 //  QVERIFY( tri.getSurroundingTriangles( 0 ).empty() );
+
+  QgsMesh mesh = tri.triangulationToMesh();
+  QCOMPARE( mesh.faceCount(), 4 );
+  QCOMPARE( mesh.vertexCount(), 5 );
+
+  QCOMPARE( mesh.vertex( 0 ), QgsMeshVertex( 1.0, 2.0, 3.0 ) );
+  QCOMPARE( mesh.vertex( 1 ), QgsMeshVertex( 3.0, 0.0, 4.0 ) );
+  QCOMPARE( mesh.vertex( 2 ), QgsMeshVertex( 4.0, 4.0, 5.0 ) );
+  QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 2.0, 4.0, 6.0 ) );
+  QCOMPARE( mesh.vertex( 4 ), QgsMeshVertex( 2.0, 2.0, 7.0 ) );
+
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 4, 3} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {4, 2, 3} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 4, 0} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {2, 4, 1} ) ) );
 }
+
 
 QGSTEST_MAIN( TestQgsInterpolator )
 #include "testqgsinterpolator.moc"

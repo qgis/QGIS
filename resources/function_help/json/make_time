@@ -1,6 +1,7 @@
 {
   "name": "make_time",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Creates a time value from hour, minute and second numbers.",
   "arguments": [
     {"arg":"hour", "description":"Hour number"},

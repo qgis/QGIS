@@ -656,27 +656,32 @@ void Problem::chain_search()
 
 QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled )
 {
-  QList<LabelPosition *> solList;
+  QList<LabelPosition *> finalLabelPlacements;
 
+  // loop through all features to be labeled
   for ( std::size_t i = 0; i < mFeatureCount; i++ )
   {
-    if ( mSol.activeLabelIds[i] != -1 )
+    const int labelId = mSol.activeLabelIds[i];
+    const bool foundNonOverlappingPlacement = labelId != -1;
+    const int startIndexForLabelPlacements = mFeatStartId[i];
+    const bool foundCandidatesForFeature = startIndexForLabelPlacements < static_cast< int >( mLabelPositions.size() );
+
+    if ( foundNonOverlappingPlacement )
     {
-      solList.push_back( mLabelPositions[ mSol.activeLabelIds[i] ].get() ); // active labels
+      finalLabelPlacements.push_back( mLabelPositions[ labelId ].get() ); // active labels
     }
-    else if ( returnInactive
-              || ( mFeatStartId[i] < static_cast< int >( mLabelPositions.size() ) &&
-                   ( mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->layer()->displayAll()
-                     || mLabelPositions.at( mFeatStartId[i] )->getFeaturePart()->alwaysShow() ) ) )
+    else if ( foundCandidatesForFeature &&
+              ( returnInactive // allowing any overlapping labels regardless of where they are from
+                || mLabelPositions.at( startIndexForLabelPlacements )->getFeaturePart()->layer()->displayAll() // allowing overlapping labels for the layer
+                || mLabelPositions.at( startIndexForLabelPlacements )->getFeaturePart()->alwaysShow() ) ) // allowing overlapping labels for the feature
     {
-      solList.push_back( mLabelPositions[ mFeatStartId[i] ].get() ); // unplaced label
+      finalLabelPlacements.push_back( mLabelPositions[ startIndexForLabelPlacements ].get() ); // unplaced label
     }
     else if ( unlabeled )
     {
-      const int startPos = mFeatStartId[i];
       // need to be careful here -- if the next feature's start id is the same as this one, then this feature had no candidates!
-      if ( startPos < static_cast< int >( mLabelPositions.size() ) && ( i == mFeatureCount - 1 || startPos != mFeatStartId[i + 1] ) )
-        unlabeled->push_back( mLabelPositions[ startPos ].get() );
+      if ( foundCandidatesForFeature && ( i == mFeatureCount - 1 || startIndexForLabelPlacements != mFeatStartId[i + 1] ) )
+        unlabeled->push_back( mLabelPositions[ startIndexForLabelPlacements ].get() );
     }
   }
 
@@ -687,7 +692,7 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
       unlabeled->append( position.get() );
   }
 
-  return solList;
+  return finalLabelPlacements;
 }
 
 void Problem::solution_cost()

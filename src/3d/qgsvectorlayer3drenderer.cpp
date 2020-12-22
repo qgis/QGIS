@@ -17,13 +17,12 @@
 
 #include "qgs3dutils.h"
 #include "qgschunkedentity_p.h"
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
 #include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
+#include "qgsapplication.h"
+#include "qgs3dsymbolregistry.h"
 
 
 QgsVectorLayer3DRendererMetadata::QgsVectorLayer3DRendererMetadata()
@@ -74,7 +73,7 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   double zMin, zMax;
   Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
 
-  return new QgsVectorLayerChunkedEntity( vl, zMin, zMax, tilingSettings(), mSymbol.get(), map );
+  return new QgsVectorLayerChunkedEntity( vl, zMin + map.terrainElevationOffset(), zMax +  + map.terrainElevationOffset(), tilingSettings(), mSymbol.get(), map );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -98,15 +97,7 @@ void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
 
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
   QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
-  QgsAbstract3DSymbol *symbol = nullptr;
-  if ( symbolType == QLatin1String( "polygon" ) )
-    symbol = new QgsPolygon3DSymbol;
-  else if ( symbolType == QLatin1String( "point" ) )
-    symbol = new QgsPoint3DSymbol;
-  else if ( symbolType == QLatin1String( "line" ) )
-    symbol = new QgsLine3DSymbol;
-
-  if ( symbol )
-    symbol->readXml( elemSymbol, context );
-  mSymbol.reset( symbol );
+  mSymbol.reset( QgsApplication::symbol3DRegistry()->createSymbol( symbolType ) );
+  if ( mSymbol )
+    mSymbol->readXml( elemSymbol, context );
 }

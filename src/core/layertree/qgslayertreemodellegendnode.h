@@ -22,11 +22,9 @@
 #include <QIcon>
 #include <QObject>
 
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
 
@@ -49,21 +47,54 @@ class QgsRenderContext;
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
-    Q_OBJECT
+#ifdef SIP_RUN
+#include "qgscolorramplegendnode.h"
+#endif
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
       sipType = sipType_QgsSymbolLegendNode;
+    else if ( qobject_cast<QgsDataDefinedSizeLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsDataDefinedSizeLegendNode;
+    else if ( qobject_cast<QgsImageLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsImageLegendNode;
+    else if ( qobject_cast<QgsRasterSymbolLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsRasterSymbolLegendNode;
+    else if ( qobject_cast<QgsSimpleLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsSimpleLegendNode;
+    else if ( qobject_cast<QgsWmsLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsWmsLegendNode;
+    else if ( qobject_cast<QgsColorRampLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsColorRampLegendNode;
     else
       sipType = 0;
     SIP_END
 #endif
+
+    Q_OBJECT
+
   public:
 
+    //! Legend node data roles
     enum LegendNodeRoles
     {
-      RuleKeyRole = Qt::UserRole,     //!< Rule key of the node (QString)
-      ParentRuleKeyRole               //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+      RuleKeyRole = Qt::UserRole, //!< Rule key of the node (QString)
+      ParentRuleKeyRole, //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+      NodeTypeRole, //!< Type of node. Added in 3.16
+    };
+
+    //! Types of legend nodes
+    enum NodeTypes
+    {
+      SimpleLegend, //!< Simple label with icon legend node type
+      SymbolLegend, //!< Vector symbol legend node type
+      RasterSymbolLegend, //!< Raster symbol legend node type
+      ImageLegend, //!< Raster image legend node type
+      WmsLegend, //!< WMS legend node type
+      DataDefinedSizeLegend, //!< Marker symbol legend node type
+      EmbeddedWidget, //!< Embedded widget placeholder node type
+      ColorRampLegend, //!< Color ramp legend (since QGIS 3.18)
     };
 
     //! Returns pointer to the parent layer node
@@ -107,7 +138,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \see userPatchSize()
      * \since QGIS 3.14
      */
-    virtual void setUserPatchSize( QSizeF size ) { mUserSize = size; }
+    virtual void setUserPatchSize( QSizeF size );
 
     /**
      * Sets whether a forced column break should occur before the node.
@@ -129,7 +160,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Notification from model that information from associated map view has changed.
-     *  Default implementation does nothing. */
+     *  Default implementation does nothing.
+    */
     virtual void invalidateMapBasedData() {}
 
     struct ItemContext
@@ -250,9 +282,42 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
+  public slots:
+
+    /**
+     * Checks all checkable items belonging to the same layer as this node.
+     * \see uncheckAllItems()
+     * \see toggleAllItems()
+     * \since QGIS 3.18 (previously was available in QgsSymbolLegendNode subclass only)
+     */
+    void checkAllItems();
+
+    /**
+     * Unchecks all checkable items belonging to the same layer as this node.
+     * \see checkAllItems()
+     * \see toggleAllItems()
+     * \since QGIS 3.18 (previously was available in QgsSymbolLegendNode subclass only)
+     */
+    void uncheckAllItems();
+
+    /**
+     * Toggle all checkable items belonging to the same layer as this node.
+     * \see checkAllItems()
+     * \see uncheckAllItems()
+     * \since QGIS 3.18 (previously was available in QgsSymbolLegendNode subclass only)
+     */
+    void toggleAllItems();
+
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
     void dataChanged();
+
+    /**
+     * Emitted when the size of this node changes.
+     *
+     * \since QGIS 3.16
+     */
+    void sizeChanged();
 
   protected:
     //! Construct the node with pointer to its parent layer node
@@ -268,7 +333,16 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QgsLegendPatchShape mPatchShape;
     QSizeF mUserSize;
     bool mColumnBreakBeforeNode = false;
+
+  private:
+
+    /**
+     * Sets all items belonging to the same layer as this node to the same check state.
+     * \param state check state
+     */
+    void checkAll( bool state );
 };
+Q_DECLARE_METATYPE( QgsLayerTreeModelLegendNode::NodeTypes )
 
 #include "qgslegendsymbolitem.h"
 #include "qgstextformat.h"
@@ -284,8 +358,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
     Q_OBJECT
 
-
   public:
+
+    static double MINIMUM_SIZE;
+    static double MAXIMUM_SIZE;
 
     /**
      * Constructor for QgsSymbolLegendNode.
@@ -430,32 +506,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
 
-  public slots:
-
-    /**
-     * Checks all items belonging to the same layer as this node.
-     * \see uncheckAllItems()
-     * \see toggleAllItems()
-     * \since QGIS 2.14
-     */
-    void checkAllItems();
-
-    /**
-     * Unchecks all items belonging to the same layer as this node.
-     * \see checkAllItems()
-     * \see toggleAllItems()
-     * \since QGIS 2.14
-     */
-    void uncheckAllItems();
-
-    /**
-     * Toggle all items belonging to the same layer as this node.
-     * \see checkAllItems()
-     * \see uncheckAllItems()
-     * \since QGIS 3.6
-     */
-    void toggleAllItems();
-
   private:
     void updateLabel();
 
@@ -464,6 +514,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     mutable QPixmap mPixmap; // cached symbol preview
     QString mLabel;
     bool mSymbolUsesMapUnits;
+
     QSize mIconSize;
 
     QString mTextOnSymbolLabel;
@@ -480,11 +531,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsExpressionContextScope *createSymbolScope() const SIP_FACTORY;
 
-    /**
-     * Sets all items belonging to the same layer as this node to the same check state.
-     * \param state check state
-     */
-    void checkAll( bool state );
 };
 
 
@@ -568,18 +614,36 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param color color
      * \param label label
      * \param parent attach a parent QObject to the legend node.
+     * \param isCheckable set to TRUE to enable the checkbox for the node (since QGIS 3.18)
+     * \param ruleKey optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
      */
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr, bool isCheckable = false, const QString &ruleKey = QString() );
 
+    Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;
-
+    bool setData( const QVariant &value, int role ) override;
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
-
     QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
+
+    /**
+     * Returns the unique identifier of node for identification of the item within renderer.
+     *
+     * \since QGIS 3.18
+     */
+    QString ruleKey() const { return mRuleKey; }
+
+    /**
+     * Returns whether the item is user-checkable - whether renderer supports enabling/disabling it.
+     *
+     * \since QGIS 3.18
+     */
+    bool isCheckable() const { return mCheckable; }
 
   private:
     QColor mColor;
     QString mLabel;
+    bool mCheckable = false;
+    QString mRuleKey;
 };
 
 class QgsImageFetcher;
@@ -602,6 +666,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
      * \param parent attach a parent QObject to the legend node.
      */
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    ~QgsWmsLegendNode() override;
 
     QVariant data( int role ) const override;
 

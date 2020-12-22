@@ -130,6 +130,11 @@ QgsMapSettings QgsQuickMapSettings::mapSettings() const
   return mMapSettings;
 }
 
+void QgsQuickMapSettings::setTransformContext( const QgsCoordinateTransformContext &ctx )
+{
+  mMapSettings.setTransformContext( ctx );
+}
+
 QSize QgsQuickMapSettings::outputSize() const
 {
   return mMapSettings.outputSize();

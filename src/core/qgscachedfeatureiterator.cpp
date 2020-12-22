@@ -53,7 +53,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       break;
 
     default:
-      mFeatureIds = mVectorLayerCache->mCache.keys().toSet();
+      mFeatureIds = qgis::listToSet( mVectorLayerCache->mCache.keys() );
       break;
   }
 

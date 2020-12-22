@@ -165,7 +165,7 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     ~QgsBookmarkManager() override;
 
     /**
-     * @brief initialize
+     * Initializes the bookmark manager.
      */
     void initialize( const QString &filePath );
 

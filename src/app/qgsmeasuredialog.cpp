@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 
+#include <QClipboard>
 #include <QCloseEvent>
 #include <QLocale>
 #include <QPushButton>
@@ -54,6 +55,13 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   QPushButton *cb = new QPushButton( tr( "&Configuration" ) );
   buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
   connect( cb, &QAbstractButton::clicked, this, &QgsMeasureDialog::openConfigTab );
+
+  if ( !mMeasureArea )
+  {
+    QPushButton *cpb = new QPushButton( tr( "Copy &All" ) );
+    buttonBox->addButton( cpb, QDialogButtonBox::ActionRole );
+    connect( cpb, &QAbstractButton::clicked, this, &QgsMeasureDialog::copyMeasurements );
+  }
 
   repopulateComboBoxUnits( mMeasureArea );
   if ( mMeasureArea )
@@ -646,6 +654,18 @@ double QgsMeasureDialog::convertArea( double area, QgsUnitTypes::AreaUnit toUnit
   return mDa.convertAreaMeasurement( area, toUnit );
 }
 
+void QgsMeasureDialog::copyMeasurements()
+{
+  QClipboard *clipboard = QApplication::clipboard();
+  QString text;
+  QTreeWidgetItemIterator it( mTable );
+  while ( *it )
+  {
+    text += ( *it )->text( 0 ) + QStringLiteral( "\n" );
+    it++;
+  }
+  clipboard->setText( text );
+}
 
 void QgsMeasureDialog::reject()
 {

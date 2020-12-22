@@ -1,0 +1,77 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsapplicationexitblockerinterface.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsApplicationExitBlockerInterface
+{
+%Docstring
+An interface that may be implemented to allow plugins or scripts to temporarily block
+the QGIS application from exiting.
+
+This interface allows plugins to implement custom logic to determine whether it is safe
+for the application to exit, e.g. by checking whether the plugin or script has any
+unsaved changes which should be saved or discarded before allowing QGIS to exit.
+
+QgsApplicationExitBlockerInterface are registered via the iface object:
+
+Example
+-------
+
+.. code-block:: python
+
+       class MyPluginExitBlocker(QgsApplicationExitBlockerInterface):
+
+          def allowExit(self):
+              if self.has_unsaved_changes():
+                  # show a warning prompt
+                  # ...
+                  # prevent QGIS application from exiting
+                  return False
+
+              # allow QGIS application to exit
+              return True
+
+       my_blocker = MyPluginExitBlocker()
+       iface.registerApplicationExitBlocker(my_blocker)
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsapplicationexitblockerinterface.h"
+%End
+  public:
+
+    virtual ~QgsApplicationExitBlockerInterface();
+
+    virtual bool allowExit() = 0;
+%Docstring
+Called whenever the QGIS application has been asked to exit by a user.
+
+The subclass can use this method to implement custom logic handling whether it is safe
+for the application to exit, e.g. by checking whether the plugin or script has any unsaved
+changes which should be saved or discarded before allowing QGIS to exit.
+
+The implementation should return ``True`` if it is safe for QGIS to exit, or ``False`` if it
+wishes to prevent the application from exiting.
+
+.. note::
+
+   It is safe to use GUI widgets in implementations of this function, including message
+   boxes or custom dialogs with event loops.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsapplicationexitblockerinterface.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

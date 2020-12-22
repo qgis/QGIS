@@ -86,7 +86,7 @@ Returns map scene. May be ``None`` if not yet configured.
 
     void assignFreeId();
 %Docstring
-Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
+Sets the map :py:func:`~QgsLayoutItem3DMap.id` to a number not yet used in the layout. The existing :py:func:`~QgsLayoutItem3DMap.id` is kept if it is not in use.
 %End
 
     virtual QString displayName() const;

@@ -31,6 +31,9 @@
 Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
 {
   setupUi( this );
+  mFpsSpinBox->setClearValue( 30 );
+  mWidthSpinBox->setClearValue( 800 );
+  mHeightSpinBox->setClearValue( 600 );
   QgsSettings settings;
 
   const QString templateText = settings.value( QStringLiteral( "Export3DAnimation/fileNameTemplate" ),

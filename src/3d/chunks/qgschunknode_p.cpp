@@ -22,12 +22,10 @@
 
 ///@cond PRIVATE
 
-QgsChunkNode::QgsChunkNode( int x, int y, int z, const QgsAABB &bbox, float error, QgsChunkNode *parent )
+QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent )
   : mBbox( bbox )
   , mError( error )
-  , mTileX( x )
-  , mTileY( y )
-  , mTileZ( z )
+  , mNodeId( nodeId )
   , mParent( parent )
   , mState( Skeleton )
   , mLoaderQueueEntry( nullptr )
@@ -37,7 +35,8 @@ QgsChunkNode::QgsChunkNode( int x, int y, int z, const QgsAABB &bbox, float erro
   , mUpdaterFactory( nullptr )
   , mUpdater( nullptr )
 {
-  for ( int i = 0; i < 4; ++i )
+  // TODO: still using a fixed size array. Use QVector instead?
+  for ( int i = 0; i < 8; ++i )
     mChildren[i] = nullptr;
 }
 
@@ -50,13 +49,15 @@ QgsChunkNode::~QgsChunkNode()
   Q_ASSERT( !mEntity ); // should be deleted when removed from replacement queue
   Q_ASSERT( !mUpdater );
   Q_ASSERT( !mUpdaterFactory );
-  for ( int i = 0; i < 4; ++i )
+
+  for ( int i = 0; i < childCount(); ++i )
     delete mChildren[i];
 }
 
 bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
 {
-  for ( int i = 0; i < 4; ++i )
+  Q_ASSERT( mChildCount != -1 );
+  for ( int i = 0; i < childCount(); ++i )
   {
     if ( !mChildren[i] )
       return false;  // not even a skeleton
@@ -69,24 +70,12 @@ bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
   return true;
 }
 
-void QgsChunkNode::ensureAllChildrenExist()
+void QgsChunkNode::populateChildren( const QVector<QgsChunkNode *> &children )
 {
-  float childError = mError / 2;
-  float xc = mBbox.xCenter(), zc = mBbox.zCenter();
-  float ymin = mBbox.yMin;
-  float ymax = mBbox.yMax;
-
-  if ( !mChildren[0] )
-    mChildren[0] = new QgsChunkNode( mTileX * 2 + 0, mTileY * 2 + 1, mTileZ + 1, QgsAABB( mBbox.xMin, ymin, mBbox.zMin, xc, ymax, zc ), childError, this );
-
-  if ( !mChildren[1] )
-    mChildren[1] = new QgsChunkNode( mTileX * 2 + 0, mTileY * 2 + 0, mTileZ + 1, QgsAABB( mBbox.xMin, ymin, zc, xc, ymax, mBbox.zMax ), childError, this );
-
-  if ( !mChildren[2] )
-    mChildren[2] = new QgsChunkNode( mTileX * 2 + 1, mTileY * 2 + 1, mTileZ + 1, QgsAABB( xc, ymin, mBbox.zMin, mBbox.xMax, ymax, zc ), childError, this );
-
-  if ( !mChildren[3] )
-    mChildren[3] = new QgsChunkNode( mTileX * 2 + 1, mTileY * 2 + 0, mTileZ + 1, QgsAABB( xc, ymin, zc, mBbox.xMax, ymax, mBbox.zMax ), childError, this );
+  Q_ASSERT( mChildCount == -1 );
+  mChildCount = children.count();
+  for ( int i = 0; i < mChildCount; ++i )
+    mChildren[i] = children[i];
 }
 
 int QgsChunkNode::level() const
@@ -106,7 +95,7 @@ QList<QgsChunkNode *> QgsChunkNode::descendants()
   QList<QgsChunkNode *> lst;
   lst << this;
 
-  for ( int i = 0; i < 4; ++i )
+  for ( int i = 0; i < childCount(); ++i )
   {
     if ( mChildren[i] )
       lst << mChildren[i]->descendants();
@@ -182,8 +171,9 @@ void QgsChunkNode::unloadChunk()
   Q_ASSERT( mEntity );
   Q_ASSERT( mReplacementQueueEntry );
 
-  mEntity->deleteLater();
+  delete mEntity;
   mEntity = nullptr;
+
   delete mReplacementQueueEntry;
   mReplacementQueueEntry = nullptr;
   mState = QgsChunkNode::Skeleton;

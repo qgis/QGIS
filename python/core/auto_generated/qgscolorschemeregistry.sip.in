@@ -15,7 +15,7 @@ class QgsColorSchemeRegistry
 Registry of color schemes
 
 A registry of QgsColorScheme color schemes. This class can be created directly, or
-accessed via a :py:func:`QgsApplication.colorSchemeRegistry()`
+accessed via a :py:func:`QgsApplication.colorSchemeRegistry()`.
 
 .. versionadded:: 2.5
 %End
@@ -118,9 +118,9 @@ Sets the color ``scheme`` to use when fetching random colors to use for symbol s
 ``scheme`` should match a color scheme which is already present in the registry.
 
 Note that calling this method takes a snapshot of the colors from the scheme's
-QgsColorScheme.fetchColors() list. Accordingly, any future changes to the colors
-in ``scheme`` are not automatically reflected by calls to fetchRandomStyleColor().
-If ``scheme`` is updated, then another call to setRandomStyleColorScheme() must
+:py:func:`QgsColorScheme.fetchColors()` list. Accordingly, any future changes to the colors
+in ``scheme`` are not automatically reflected by calls to :py:func:`~QgsColorSchemeRegistry.fetchRandomStyleColor`.
+If ``scheme`` is updated, then another call to :py:func:`~QgsColorSchemeRegistry.setRandomStyleColorScheme` must
 be made in order to update the cached list of available style colors.
 
 .. seealso:: :py:func:`randomStyleColorScheme`
@@ -148,16 +148,16 @@ This may be ``None``, in which case totally random colors are used for styles.
 Returns a random color for use with a new symbol style (e.g. for a newly created
 map layer).
 
-If a randomStyleColorScheme() is set then this color will be randomly taken from that
-color scheme. If no randomStyleColorScheme() is set then a totally random color
+If a :py:func:`~QgsColorSchemeRegistry.randomStyleColorScheme` is set then this color will be randomly taken from that
+color scheme. If no :py:func:`~QgsColorSchemeRegistry.randomStyleColorScheme` is set then a totally random color
 will be generated.
 
-Note that calling setRandomStyleColorScheme() takes a snapshot of the colors from the scheme's
-QgsColorScheme.fetchColors() list. Accordingly, any future changes to the colors
-in the scheme are not automatically reflected by calls to fetchRandomStyleColor().
-If the scheme is updated, then another call to setRandomStyleColorScheme() must
+Note that calling :py:func:`~QgsColorSchemeRegistry.setRandomStyleColorScheme` takes a snapshot of the colors from the scheme's
+:py:func:`QgsColorScheme.fetchColors()` list. Accordingly, any future changes to the colors
+in the scheme are not automatically reflected by calls to :py:func:`~QgsColorSchemeRegistry.fetchRandomStyleColor`.
+If the scheme is updated, then another call to :py:func:`~QgsColorSchemeRegistry.setRandomStyleColorScheme` must
 be made in order to update the cached list of available style colors from which
-fetchRandomStyleColor() selects colors.
+:py:func:`~QgsColorSchemeRegistry.fetchRandomStyleColor` selects colors.
 
 This method is thread safe.
 

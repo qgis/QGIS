@@ -98,7 +98,7 @@
        </widget>
       </item>
       <item row="0" column="2" rowspan="3">
-       <widget class="QDoubleSpinBox" name="mScalarEdgeStrokeWidthSpinBox">
+       <widget class="QgsDoubleSpinBox" name="mScalarEdgeStrokeWidthSpinBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -223,6 +223,11 @@
    <extends>QWidget</extends>
    <header>raster/qgscolorrampshaderwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsMeshVariableStrokeWidthButton</class>

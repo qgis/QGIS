@@ -104,7 +104,8 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
 
     /**
      * Set line/stroke to color, polygon fill to color with alpha = 63.
-     *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
+     * This is legacy function, use setFillColor() after setColor() if different fill color is required.
+    */
     void setColor( const QColor &color );
 
     /**

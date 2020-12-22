@@ -149,6 +149,42 @@ QVariant QgsImportPhotosAlgorithm::extractDirectionFromMetadata( const QVariantM
   return direction;
 }
 
+QVariant QgsImportPhotosAlgorithm::extractOrientationFromMetadata( const QVariantMap &metadata )
+{
+  QVariant orientation;
+  if ( metadata.contains( QStringLiteral( "EXIF_Orientation" ) ) )
+  {
+    switch ( metadata.value( QStringLiteral( "EXIF_Orientation" ) ).toInt() )
+    {
+      case 1:
+        orientation = 0;
+        break;
+      case 2:
+        orientation = 0;
+        break;
+      case 3:
+        orientation = 180;
+        break;
+      case 4:
+        orientation = 180;
+        break;
+      case 5:
+        orientation = 90;
+        break;
+      case 6:
+        orientation = 90;
+        break;
+      case 7:
+        orientation = 270;
+        break;
+      case 8:
+        orientation = 270;
+        break;
+    }
+  }
+  return orientation;
+}
+
 QVariant QgsImportPhotosAlgorithm::extractTimestampFromMetadata( const QVariantMap &metadata )
 {
   QVariant ts;
@@ -236,13 +272,17 @@ class SetEditorWidgetForPhotoAttributePostProcessor : public QgsProcessingLayerP
         // photo field shows picture viewer
         config.insert( QStringLiteral( "DocumentViewer" ), 1 );
         config.insert( QStringLiteral( "FileWidget" ), true );
-        vl->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
+        config.insert( QStringLiteral( "UseLink" ), true );
+        config.insert( QStringLiteral( "FullUrl" ), true );
+        vl->setEditorWidgetSetup( vl->fields().lookupField( QStringLiteral( "photo" ) ), QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
 
         config.clear();
         // path field is a directory link
         config.insert( QStringLiteral( "FileWidgetButton" ), true );
         config.insert( QStringLiteral( "StorageMode" ), 1 );
-        vl->setEditorWidgetSetup( 2, QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
+        config.insert( QStringLiteral( "UseLink" ), true );
+        config.insert( QStringLiteral( "FullUrl" ), true );
+        vl->setEditorWidgetSetup( vl->fields().lookupField( QStringLiteral( "directory" ) ), QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
       }
     }
 };
@@ -265,6 +305,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   outFields.append( QgsField( QStringLiteral( "directory" ), QVariant::String ) );
   outFields.append( QgsField( QStringLiteral( "altitude" ), QVariant::Double ) );
   outFields.append( QgsField( QStringLiteral( "direction" ), QVariant::Double ) );
+  outFields.append( QgsField( QStringLiteral( "rotation" ), QVariant::Int ) );
   outFields.append( QgsField( QStringLiteral( "longitude" ), QVariant::String ) );
   outFields.append( QgsField( QStringLiteral( "latitude" ), QVariant::String ) );
   outFields.append( QgsField( QStringLiteral( "timestamp" ), QVariant::DateTime ) );
@@ -362,6 +403,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       attributes
           << altitude
           << extractDirectionFromMetadata( metadata )
+          << extractOrientationFromMetadata( metadata )
           << tag.x()
           << tag.y()
           << extractTimestampFromMetadata( metadata );

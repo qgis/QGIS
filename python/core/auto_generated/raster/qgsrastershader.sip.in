@@ -113,12 +113,12 @@ Sets the minimum ``value`` for the raster shader.
 .. seealso:: :py:func:`minimumValue`
 %End
 
-    void writeXml( QDomDocument &doc, QDomElement &parent ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parent, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes shader state to an XML element.
 %End
 
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads shader state from an XML element.
 %End

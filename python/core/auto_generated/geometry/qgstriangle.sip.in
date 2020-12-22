@@ -21,9 +21,13 @@ Triangle geometry type.
 #include "qgstriangle.h"
 %End
   public:
-    QgsTriangle();
 
-    QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
+    QgsTriangle() /HoldGIL/;
+%Docstring
+Constructor for an empty triangle geometry.
+%End
+
+    QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 ) /HoldGIL/;
 %Docstring
 Construct a QgsTriangle from three :py:class:`QgsPointV2`.
 
@@ -32,7 +36,7 @@ Construct a QgsTriangle from three :py:class:`QgsPointV2`.
 :param p3: third point
 %End
 
-    explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
+    explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 ) /HoldGIL/;
 %Docstring
 Construct a QgsTriangle from three :py:class:`QgsPoint`.
 
@@ -41,7 +45,7 @@ Construct a QgsTriangle from three :py:class:`QgsPoint`.
 :param p3: third point
 %End
 
-    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 );
+    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 ) /HoldGIL/;
 %Docstring
 Construct a QgsTriangle from three QPointF.
 
@@ -50,10 +54,10 @@ Construct a QgsTriangle from three QPointF.
 :param p3: third point
 %End
 
-    bool operator==( const QgsTriangle &other ) const;
-    bool operator!=( const QgsTriangle &other ) const;
+    bool operator==( const QgsTriangle &other ) const /HoldGIL/;
+    bool operator!=( const QgsTriangle &other ) const /HoldGIL/;
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsTriangle *clone() const /Factory/;
 
@@ -101,7 +105,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 
 
 
-    QgsPoint vertexAt( int atVertex ) const;
+    QgsPoint vertexAt( int atVertex ) const /HoldGIL/;
 %Docstring
 Returns coordinates of a vertex.
 
@@ -110,7 +114,7 @@ Returns coordinates of a vertex.
 :return: Coordinates of the vertex or empty :py:class:`QgsPoint`() on error (``atVertex`` < 0 or > 3).
 %End
 
-    QVector<double> lengths() const;
+    QVector<double> lengths() const /HoldGIL/;
 %Docstring
 Returns the three lengths of the triangle.
 
@@ -129,7 +133,7 @@ Example
        # []
 %End
 
-    QVector<double> angles() const;
+    QVector<double> angles() const /HoldGIL/;
 %Docstring
 Returns the three angles of the triangle.
 
@@ -148,7 +152,7 @@ Example
        # []
 %End
 
-    bool isDegenerate();
+    bool isDegenerate() /HoldGIL/;
 %Docstring
 Convenient method checking if the geometry is degenerate (have duplicate or colinear point(s)).
 
@@ -173,7 +177,7 @@ Example
        # True
 %End
 
-    bool isIsocele( double lengthTolerance = 0.0001 ) const;
+    bool isIsocele( double lengthTolerance = 0.0001 ) const /HoldGIL/;
 %Docstring
 Is the triangle isocele (two sides with the same length)?
 
@@ -196,7 +200,7 @@ Example
        # False
 %End
 
-    bool isEquilateral( double lengthTolerance = 0.0001 ) const;
+    bool isEquilateral( double lengthTolerance = 0.0001 ) const /HoldGIL/;
 %Docstring
 Is the triangle equilateral (three sides with the same length)?
 
@@ -219,7 +223,7 @@ Example
        # False
 %End
 
-    bool isRight( double angleTolerance = 0.0001 ) const;
+    bool isRight( double angleTolerance = 0.0001 ) const /HoldGIL/;
 %Docstring
 Is the triangle right-angled?
 
@@ -242,7 +246,7 @@ Example
        # False
 %End
 
-    bool isScalene( double lengthTolerance = 0.0001 ) const;
+    bool isScalene( double lengthTolerance = 0.0001 ) const /HoldGIL/;
 %Docstring
 Is the triangle scalene (all sides have different lengths)?
 
@@ -265,7 +269,7 @@ Example
        # False
 %End
 
-    QVector<QgsLineString> altitudes() const;
+    QVector<QgsLineString> altitudes() const /HoldGIL/;
 %Docstring
 An altitude is a segment (defined by a :py:class:`QgsLineString`) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
 
@@ -284,7 +288,7 @@ Example
        # []
 %End
 
-    QVector<QgsLineString> medians() const;
+    QVector<QgsLineString> medians() const /HoldGIL/;
 %Docstring
 A median is a segment (defined by a :py:class:`QgsLineString`) from a vertex to the midpoint of the opposite side.
 
@@ -303,7 +307,7 @@ Example
        # []
 %End
 
-    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
+    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const /HoldGIL/;
 %Docstring
 The segment (defined by a :py:class:`QgsLineString`) returned bisect the angle of a vertex to the opposite side.
 
@@ -324,7 +328,7 @@ Example
        # []
 %End
 
-    QgsTriangle medial() const;
+    QgsTriangle medial() const /HoldGIL/;
 %Docstring
 Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
 
@@ -343,7 +347,7 @@ Example
        # 'Triangle ( )'
 %End
 
-    QgsPoint orthocenter( double lengthTolerance = 0.0001 ) const;
+    QgsPoint orthocenter( double lengthTolerance = 0.0001 ) const /HoldGIL/;
 %Docstring
 An orthocenter is the point of intersection of the altitudes of a triangle.
 
@@ -364,7 +368,7 @@ Example
        # 'Point (0 0)'
 %End
 
-    QgsPoint circumscribedCenter() const;
+    QgsPoint circumscribedCenter() const /HoldGIL/;
 %Docstring
 Center of the circumscribed circle of the triangle.
 
@@ -383,7 +387,7 @@ Example
        # 'Point (0 0)'
 %End
 
-    double circumscribedRadius() const;
+    double circumscribedRadius() const /HoldGIL/;
 %Docstring
 Radius of the circumscribed circle of the triangle.
 
@@ -402,7 +406,7 @@ Example
        # 0.0
 %End
 
-    QgsCircle circumscribedCircle() const;
+    QgsCircle circumscribedCircle() const /HoldGIL/;
 %Docstring
 Circumscribed circle of the triangle.
 
@@ -421,7 +425,7 @@ Example
        # QgsCircle()
 %End
 
-    QgsPoint inscribedCenter() const;
+    QgsPoint inscribedCenter() const /HoldGIL/;
 %Docstring
 Center of the inscribed circle of the triangle. Z dimension is
 supported and is retrieved from the first 3D point amongst vertices.
@@ -441,7 +445,7 @@ Example
        # 'Point (0 0)'
 %End
 
-    double inscribedRadius() const;
+    double inscribedRadius() const /HoldGIL/;
 %Docstring
 Radius of the inscribed circle of the triangle.
 
@@ -460,7 +464,7 @@ Example
        # 0.0
 %End
 
-    QgsCircle inscribedCircle() const;
+    QgsCircle inscribedCircle() const /HoldGIL/;
 %Docstring
 Inscribed circle of the triangle.
 

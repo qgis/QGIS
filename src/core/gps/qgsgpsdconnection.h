@@ -25,7 +25,8 @@
 
 /**
  * \ingroup core
- * Evaluates NMEA sentences coming from gpsd*/
+ * Evaluates NMEA sentences coming from gpsd
+ */
 class CORE_EXPORT QgsGpsdConnection: public QgsNmeaConnection
 {
     Q_OBJECT

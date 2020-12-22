@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsoffscreen3dengine.h"
+#include "qgslogger.h"
 
 #include <QOffscreenSurface>
 #include <QSurfaceFormat>
@@ -239,7 +240,7 @@ void QgsOffscreen3DEngine::requestCaptureImage()
 {
   if ( mReply )
   {
-    qDebug() << "already having a pending capture, skipping";
+    QgsDebugMsgLevel( QStringLiteral( "already having a pending capture, skipping" ), 2 );
     return;
   }
   mReply = mRenderCapture->requestCapture();

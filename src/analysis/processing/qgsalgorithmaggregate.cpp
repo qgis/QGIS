@@ -77,7 +77,7 @@ bool QgsAggregateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mGroupBy = parameterAsExpression( parameters, QStringLiteral( "GROUP_BY" ), context );
 
   mDa.setSourceCrs( mSource->sourceCrs(), context.transformContext() );
-  mDa.setEllipsoid( context.project()->ellipsoid() );
+  mDa.setEllipsoid( context.ellipsoid() );
 
   mGroupByExpression = createExpression( mGroupBy, context );
   mGeometryExpression = createExpression( QStringLiteral( "collect($geometry, %1)" ).arg( mGroupBy ), context );
@@ -278,8 +278,8 @@ QgsExpression QgsAggregateAlgorithm::createExpression( const QString &expression
 {
   QgsExpression expr( expressionString );
   expr.setGeomCalculator( &mDa );
-  expr.setDistanceUnits( context.project()->distanceUnits() );
-  expr.setAreaUnits( context.project()->areaUnits() );
+  expr.setDistanceUnits( context.distanceUnit() );
+  expr.setAreaUnits( context.areaUnit() );
   if ( expr.hasParserError() )
   {
     throw QgsProcessingException(

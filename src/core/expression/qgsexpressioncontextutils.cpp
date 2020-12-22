@@ -29,6 +29,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutmultiframe.h"
+#include "qgsfeatureid.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -288,6 +289,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_name" ), layer->name(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_id" ), layer->id(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "_layer_crs" ), QVariant::fromValue<QgsCoordinateReferenceSystem>( layer->crs() ), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_crs" ), layer->crs().authid(), true, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer >( QgsWeakMapLayerPointer( const_cast<QgsMapLayer *>( layer ) ) ), true, true ) );
 
   const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer );
@@ -509,6 +511,15 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), s.height(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), s.width(), true ) );
   }
+
+  QVariantList offsets;
+  for ( int i = 0; i < layout->pageCollection()->pageCount(); i++ )
+  {
+    QPointF p = layout->pageCollection()->pagePositionToLayoutPosition( i, QgsLayoutPoint( 0, 0 ) );
+    offsets << p.y();
+  }
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageoffsets" ), offsets, true ) );
+
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), layout->renderContext().dpi(), true ) );
 
   scope->addFunction( QStringLiteral( "item_variables" ), new GetLayoutItemVariables( layout ) );
@@ -525,7 +536,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
     QgsFeature atlasFeature = layout->reportContext().feature();
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), atlasFeature.id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), FID_IS_NULL( atlasFeature.id() ) ? QVariant() : atlasFeature.id(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( atlasFeature.geometry() ), true ) );
   }
 
@@ -576,7 +587,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayou
     //users that these variables are available even if they have no current value
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), QString(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( QgsFeature() ), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), 0, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), QVariant(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( QgsGeometry() ), true ) );
     return scope;
   }
@@ -599,7 +610,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayou
     QgsFeature atlasFeature = atlas->layout()->reportContext().feature();
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), atlasFeature.id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), FID_IS_NULL( atlasFeature.id() ) ? QVariant() : atlasFeature.id(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( atlasFeature.geometry() ), true ) );
   }
 

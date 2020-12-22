@@ -620,7 +620,7 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   }
 
   emit featureChanged( mCurrentFeature );
-  emit messagePushed( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
+  emit messagePushed( tr( "Atlas feature %1 of %2" ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 
   return mCurrentFeature.isValid();
 }

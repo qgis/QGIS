@@ -585,6 +585,13 @@ class Database(DbItemObject):
 
         ret = self.connector.createTable((schema, table), field_defs, pk_name)
         if ret is not False:
+            # Add comments if any, because definition does not include
+            # the comment
+            for f in fields:
+                if f.comment:
+                    self.connector.updateTableColumn(
+                        (schema, table), f.name, comment=f.comment
+                    )
             self.refresh()
         return ret
 

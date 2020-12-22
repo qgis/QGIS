@@ -1,6 +1,7 @@
 {
   "name": "make_line",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a line geometry from a series of point geometries.",
   "variants": [
    { "variant": "List of arguments variant",

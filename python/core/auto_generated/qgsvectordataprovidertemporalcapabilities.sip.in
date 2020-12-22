@@ -72,7 +72,7 @@ Returns the datetime range extent from which temporal data is available from the
 %Docstring
 Returns the name of the start datetime field, which contains the start time for the feature's time spans.
 
-If mode() is ProviderStoresFeatureDateTimeInstantInField, then this field stores both the start AND end times.
+If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is ProviderStoresFeatureDateTimeInstantInField, then this field stores both the start AND end times.
 
 .. seealso:: :py:func:`setStartField`
 
@@ -83,7 +83,7 @@ If mode() is ProviderStoresFeatureDateTimeInstantInField, then this field stores
 %Docstring
 Sets the name of the start datetime ``field``, which stores the start time for the feature's time spans.
 
-If mode() is ModeFeatureDateTimeInstantFromField, then this field stores both the start AND end times.
+If :py:func:`~QgsVectorDataProviderTemporalCapabilities.mode` is ModeFeatureDateTimeInstantFromField, then this field stores both the start AND end times.
 
 .. seealso:: :py:func:`startField`
 

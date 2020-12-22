@@ -26,7 +26,7 @@ QString QgsLoadLayerAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsLoadLayerAlgorithm::flags() const
 {
-  return FlagHideFromToolbox;
+  return FlagHideFromToolbox | FlagNotAvailableInStandaloneTool;
 }
 
 QString QgsLoadLayerAlgorithm::displayName() const
@@ -78,7 +78,9 @@ QVariantMap QgsLoadLayerAlgorithm::processAlgorithm( const QVariantMap &paramete
     throw QgsProcessingException( QObject::tr( "Invalid (empty) layer name" ) );
 
   layer->setName( name );
-  context.addLayerToLoadOnCompletion( layer->id(), QgsProcessingContext::LayerDetails( name, context.project(), name ) );
+  QgsProcessingContext::LayerDetails details( name, context.project(), name );
+  details.forceName = true;
+  context.addLayerToLoadOnCompletion( layer->id(), details );
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), layer->id() );

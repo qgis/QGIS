@@ -1,6 +1,7 @@
 
 {
   "name": "sha256",
+  "groups": ["Conversions"],
   "type": "function",
   "description": "Creates a sha256 hash from a string.",
   "variableLenArguments": false,

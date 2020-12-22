@@ -64,7 +64,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     /**
      * Gets current number of lines.
-     *   \returns number of lines */
+     *   \returns number of lines
+    */
     int numLines();
     int numAreas();
     // 3D map with z coordinates
@@ -91,7 +92,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     /**
      * Gets geometry of line.
-     * \returns geometry (point,line or polygon(GV_FACE)) or 0 */
+     * \returns geometry (point,line or polygon(GV_FACE)) or 0
+    */
     QgsAbstractGeometry *lineGeometry( int id );
     QgsAbstractGeometry *nodeGeometry( int id );
     QgsAbstractGeometry *areaGeometry( int id );
@@ -118,18 +120,21 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     /**
      * Gets layer, layer is created and loaded if not yet.
      *  \param field
-     *  \returns pointer to layer or 0 if layer doe not exist */
+     *  \returns pointer to layer or 0 if layer doe not exist
+    */
     QgsGrassVectorMapLayer *openLayer( int field );
 
     /**
      * Close layer and release cached data if there are no more users and close map
      *  if there are no more map users.
-     *  \param layer */
+     *  \param layer
+    */
     void closeLayer( QgsGrassVectorMapLayer *layer );
 
     /**
      * Update map. Close and reopen vector and refresh layers.
-     *  Instances of QgsGrassProvider are not updated and should call update() method */
+     *  Instances of QgsGrassProvider are not updated and should call update() method
+    */
     void update();
 
     /**
@@ -150,7 +155,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     /**
      * Gets topology symbol code
      * \param lid line or area number
-     * \param type geometry type */
+     * \param type geometry type
+    */
     TopoSymbol topoSymbol( int lid );
 
     static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ) ; }
@@ -161,7 +167,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     /**
      * Ask all iterators to cancel iteration when possible. Connected to iterators with
-     * Qt::DirectConnection (non blocking) */
+     * Qt::DirectConnection (non blocking)
+    */
     void cancelIterators();
 
     //! Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection
@@ -238,7 +245,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     /**
      * Open map.
      *  \param grassObject
-     *  \returns map, the map may be invalid  */
+     *  \returns map, the map may be invalid
+    */
     QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );
 
   private:

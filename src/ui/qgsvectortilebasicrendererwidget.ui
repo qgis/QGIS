@@ -93,6 +93,23 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QLabel" name="mLabelCurrentZoom">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mCheckVisibleOnly">
+       <property name="toolTip">
+        <string>Hides any rules which are invisible because they fall outside the current map canvas zoom level</string>
+       </property>
+       <property name="text">
+        <string>Visible rules only</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

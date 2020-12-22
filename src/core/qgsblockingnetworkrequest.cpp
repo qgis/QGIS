@@ -61,8 +61,50 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkReq
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh, QgsFeedback *feedback )
 {
-  mPostData = data;
+  mPayloadData = data;
   return doRequest( Post, request, forceRefresh, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::head( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
+{
+  return doRequest( Head, request, forceRefresh, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback )
+{
+  mPayloadData = data;
+  return doRequest( Put, request, true, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::deleteResource( QNetworkRequest &request, QgsFeedback *feedback )
+{
+  return doRequest( Delete, request, true, feedback );
+}
+
+void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetworkRequest &request )
+{
+  switch ( mMethod )
+  {
+    case Get:
+      mReply = QgsNetworkAccessManager::instance()->get( request );
+      break;
+
+    case Post:
+      mReply = QgsNetworkAccessManager::instance()->post( request, mPayloadData );
+      break;
+
+    case Head:
+      mReply = QgsNetworkAccessManager::instance()->head( request );
+      break;
+
+    case Put:
+      mReply = QgsNetworkAccessManager::instance()->put( request, mPayloadData );
+      break;
+
+    case Delete:
+      mReply = QgsNetworkAccessManager::instance()->deleteResource( request );
+      break;
+  };
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBlockingNetworkRequest::Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
@@ -114,16 +156,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
 
     success = true;
 
-    switch ( mMethod )
-    {
-      case Get:
-        mReply = QgsNetworkAccessManager::instance()->get( request );
-        break;
-
-      case Post:
-        mReply = QgsNetworkAccessManager::instance()->post( request, mPostData );
-        break;
-    };
+    sendRequestToNetworkAccessManager( request );
 
     if ( mFeedback )
       connect( mFeedback, &QgsFeedback::canceled, mReply, &QNetworkReply::abort );
@@ -166,6 +199,10 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
 #endif
       }
       QEventLoop loop;
+      // connecting to aboutToQuit avoids an on-going request to remain stalled
+      // when QThreadPool::globalInstance()->waitForDone()
+      // is called at process termination
+      connect( qApp, &QCoreApplication::aboutToQuit, &loop, &QEventLoop::quit, Qt::DirectConnection );
       connect( this, &QgsBlockingNetworkRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
       loop.exec();
     }
@@ -295,16 +332,8 @@ void QgsBlockingNetworkRequest::replyFinished()
           mReply = nullptr;
 
           QgsDebugMsgLevel( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 2 );
-          switch ( mMethod )
-          {
-            case Get:
-              mReply = QgsNetworkAccessManager::instance()->get( request );
-              break;
 
-            case Post:
-              mReply = QgsNetworkAccessManager::instance()->post( request, mPostData );
-              break;
-          };
+          sendRequestToNetworkAccessManager( request );
 
           if ( mFeedback )
             connect( mFeedback, &QgsFeedback::canceled, mReply, &QNetworkReply::abort );
@@ -361,7 +390,7 @@ void QgsBlockingNetworkRequest::replyFinished()
 
         mReplyContent = QgsNetworkReplyContent( mReply );
         const QByteArray content = mReply->readAll();
-        if ( content.isEmpty() && !mGotNonEmptyResponse )
+        if ( content.isEmpty() && !mGotNonEmptyResponse && mMethod == Get )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
           mErrorCode = ServerExceptionError;

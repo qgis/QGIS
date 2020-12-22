@@ -129,7 +129,6 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
     QgsVectorLayer *mLayer = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsMessageBar *mMessageBar = nullptr;
-    int mMessageBarTimeout = 0;
 };
 
 #endif // QGSFEATUREFILTERWIDGET_P_H

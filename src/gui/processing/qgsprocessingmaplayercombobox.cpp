@@ -42,7 +42,6 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   , mParameter( parameter->clone() )
 {
   QHBoxLayout *layout = new QHBoxLayout();
-  layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 6 );
 
@@ -106,12 +105,11 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   }
 
   QVBoxLayout *vl = new QVBoxLayout();
-  vl->setMargin( 0 );
   vl->setContentsMargins( 0, 0, 0, 0 );
   vl->setSpacing( 6 );
   vl->addLayout( layout );
 
-  QgsMapLayerProxyModel::Filters filters = nullptr;
+  QgsMapLayerProxyModel::Filters filters = QgsMapLayerProxyModel::Filters();
 
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
@@ -253,7 +251,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     }
     else
     {
-      val = val.value< QgsProperty >().valueAsString( context.expressionContext(), mParameter->defaultValue().toString() );
+      val = val.value< QgsProperty >().valueAsString( context.expressionContext(), mParameter->defaultValueForGui().toString() );
     }
   }
 

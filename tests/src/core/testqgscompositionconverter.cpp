@@ -699,6 +699,7 @@ void TestQgsCompositionConverter::importComposerAtlas()
   QCOMPARE( layout->name(), QStringLiteral( "composer atlas" ) );
 
   QVERIFY( layout->atlas()->enabled() );
+  QVERIFY( layout->atlas()->updateFeatures() > 0 );
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 

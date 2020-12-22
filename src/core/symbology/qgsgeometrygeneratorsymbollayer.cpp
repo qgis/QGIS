@@ -96,6 +96,28 @@ void QgsGeometryGeneratorSymbolLayer::stopRender( QgsSymbolRenderContext &contex
     mSymbol->stopRender( context.renderContext() );
 }
 
+void QgsGeometryGeneratorSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = true;
+  mHasRenderedFeature = false;
+}
+
+void QgsGeometryGeneratorSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = false;
+}
+
+bool QgsGeometryGeneratorSymbolLayer::usesMapUnits() const
+{
+  if ( mFillSymbol )
+    return mFillSymbol->usesMapUnits();
+  else if ( mLineSymbol )
+    return mLineSymbol->usesMapUnits();
+  else if ( mMarkerSymbol )
+    return mMarkerSymbol->usesMapUnits();
+  return false;
+}
+
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 {
   QgsGeometryGeneratorSymbolLayer *clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );
@@ -192,6 +214,9 @@ bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol 
 }
 void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
 {
+  if ( mRenderingFeature && mHasRenderedFeature )
+    return;
+
   if ( context.feature() )
   {
     QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
@@ -205,6 +230,9 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
     subSymbolExpressionContextScope->setFeature( f );
 
     mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
+
+    if ( mRenderingFeature )
+      mHasRenderedFeature = true;
   }
 }
 

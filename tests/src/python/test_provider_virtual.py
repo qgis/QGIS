@@ -23,14 +23,16 @@ from qgis.core import (QgsVectorLayer,
                        QgsVirtualLayerDefinitionUtils,
                        QgsWkbTypes,
                        QgsProject,
-                       QgsVectorLayerJoinInfo
+                       QgsVectorLayerJoinInfo,
+                       QgsVectorFileWriter,
+                       QgsVirtualLayerDefinitionUtils
                        )
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QUrl, QVariant
+from qgis.PyQt.QtCore import QUrl, QVariant, QTemporaryDir
 
 from qgis.utils import spatialite_connect
 
@@ -355,7 +357,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
                (3, "POLYGON", "((0 0,1 0,1 1,0 0))"),
                (4, "MULTIPOINT", "((1 1))"),
                (5, "MULTILINESTRING", "((0 0,1 0),(0 1,1 1))"),
-               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))")]
+               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))"),
+               (9, "COMPOUNDCURVE", "(CIRCULARSTRING(0 0, 1 0, 1 1))"),
+               (10, "CURVEPOLYGON", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)))"),
+               (11, "MULTICURVE", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)),COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3)))"),
+               (12, "MULTISURFACE", "(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1))),CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3))))")]
         for wkb_type, wkt_type, wkt in geo:
             l = QgsVectorLayer("%s?crs=epsg:4326" % wkt_type, "m1", "memory", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l.isValid(), True)
@@ -370,7 +376,13 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
             l2 = QgsVectorLayer("?layer_ref=%s" % l.id(), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l2.isValid(), True)
             self.assertEqual(l2.dataProvider().featureCount(), 1)
-            self.assertEqual(l2.dataProvider().wkbType(), wkb_type)
+            # we ensure the geom type matches the original (segmentized) type
+            self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.linearType(wkb_type))
+
+            # we ensure the geometry still matches the original (segmentized) geometry
+            f2 = QgsFeature()
+            l2.getFeatures().nextFeature(f2)
+            self.assertEqual(f2.geometry().asWkt(), f1.geometry().constGet().segmentize().asWkt())
 
             QgsProject.instance().removeMapLayer(l.id())
 
@@ -833,7 +845,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().setFileName(temp)
         QgsProject.instance().write()
 
-        QgsProject.instance().removeAllMapLayers()
         QgsProject.instance().clear()
         self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
 
@@ -841,7 +852,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         percent_path_relative = toPercent("./france_parts.shp")
         with open(temp, 'r') as f:
             content = ''.join(f.readlines())
-            print(content)
             self.assertTrue('<datasource>?layer=ogr:{}'.format(percent_path_relative) in content)
 
         # Check that project is correctly re-read with all layers
@@ -854,7 +864,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().writeEntryBool('Paths', '/Absolute', True)
         QgsProject.instance().write()
 
-        QgsProject.instance().removeAllMapLayers()
         QgsProject.instance().clear()
         self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
 
@@ -1163,6 +1172,159 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(features), 16)
 
         QgsProject.instance().removeMapLayer(pl)
+
+    def test_subset_string(self):
+        """Test that subset strings are stored and restored correctly from the project
+        See: GH #26189
+        """
+
+        project = QgsProject.instance()
+        project.clear()
+        data_layer = QgsVectorLayer('Point?crs=epsg:4326&field=fid:integer&field=value:integer&field=join_pk:integer', 'data', 'memory')
+        join_layer = QgsVectorLayer('NoGeometry?field=fid:integer&field=value:string', 'join', 'memory')
+        tempdir = QTemporaryDir()
+        gpkg_path = os.path.join(tempdir.path(), 'test_subset.gpkg')
+        project_path = os.path.join(tempdir.path(), 'test_subset.qgs')
+        self.assertTrue(data_layer.isValid())
+        self.assertTrue(join_layer.isValid())
+        self.assertFalse(join_layer.isSpatial())
+
+        f = QgsFeature(data_layer.fields())
+        f.setAttributes([1, 20, 2])
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45'))
+        self.assertTrue(data_layer.dataProvider().addFeature(f))
+
+        f = QgsFeature(data_layer.fields())
+        f.setAttributes([2, 10, 1])
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45'))
+        self.assertTrue(data_layer.dataProvider().addFeature(f))
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+        options.layerName = 'data'
+
+        _, _ = QgsVectorFileWriter.writeAsVectorFormatV2(
+            data_layer,
+            gpkg_path,
+            data_layer.transformContext(),
+            options
+        )
+
+        f = QgsFeature(join_layer.fields())
+        f.setAttributes([1, "ten"])
+        self.assertTrue(join_layer.dataProvider().addFeature(f))
+        f.setAttributes([2, "twenty"])
+        self.assertTrue(join_layer.dataProvider().addFeature(f))
+
+        options.layerName = 'join'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+
+        _, _ = QgsVectorFileWriter.writeAsVectorFormatV2(
+            join_layer,
+            gpkg_path,
+            join_layer.transformContext(),
+            options
+        )
+
+        gpkg_join_layer = QgsVectorLayer(gpkg_path + '|layername=join', 'join', 'ogr')
+        gpkg_data_layer = QgsVectorLayer(gpkg_path + '|layername=data', 'data', 'ogr')
+
+        self.assertTrue(gpkg_join_layer.isValid())
+        self.assertTrue(gpkg_data_layer.isValid())
+        self.assertEqual(gpkg_data_layer.featureCount(), 2)
+        self.assertEqual(gpkg_join_layer.featureCount(), 2)
+
+        self.assertTrue(project.addMapLayers([gpkg_data_layer, gpkg_join_layer]))
+
+        joinInfo = QgsVectorLayerJoinInfo()
+        joinInfo.setTargetFieldName("join_pk")
+        joinInfo.setJoinLayer(gpkg_join_layer)
+        joinInfo.setJoinFieldName("fid")
+        gpkg_data_layer.addJoin(joinInfo)
+        self.assertEqual(len(gpkg_data_layer.fields()), 4)
+
+        self.assertTrue(project.write(project_path))
+
+        # Reload project
+        self.assertTrue(project.read(project_path))
+        gpkg_data_layer = project.mapLayersByName('data')[0]
+        gpkg_join_layer = project.mapLayersByName('join')[0]
+
+        self.assertEqual(gpkg_data_layer.vectorJoins()[0], joinInfo)
+
+        # Now set a subset filter -> virtual layer
+        virtual_def = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(gpkg_data_layer)
+        virtual = QgsVectorLayer(virtual_def.toString(), "virtual_data", "virtual")
+        self.assertTrue(virtual.isValid())
+        project.addMapLayers([virtual])
+
+        self.assertEqual(virtual.featureCount(), 2)
+        self.assertTrue(virtual.setSubsetString('"join_value" = \'twenty\''))
+        self.assertEqual(virtual.featureCount(), 1)
+        self.assertEqual([f.attributes() for f in virtual.getFeatures()], [[1, 20, 2, 'twenty']])
+
+        # Store and reload the project
+        self.assertTrue(project.write(project_path))
+        self.assertTrue(project.read(project_path))
+        gpkg_virtual_layer = project.mapLayersByName('virtual_data')[0]
+        self.assertEqual(gpkg_virtual_layer.featureCount(), 1)
+        self.assertEqual(gpkg_virtual_layer.subsetString(), '"join_value" = \'twenty\'')
+
+    def test_feature_count_on_error(self):
+        """Test that triggered exception while getting feature count on a badly defined
+        virtual layer is correctly caught (see https://github.com/qgis/QGIS/issues/34378)"""
+
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select error')
+
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), False)
+        self.assertEqual(vl.featureCount(), 0)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 0)
+
+        QgsProject.instance().removeMapLayer(l1.id())
+
+    def test_bool_fields(self):
+
+        ml = QgsVectorLayer("NoGeometry?field=a:int&field=b:boolean", "mem", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        f1 = QgsFeature(ml.fields())
+        f1.setAttribute('a', 1)
+        f1.setAttribute('b', True)
+        f2 = QgsFeature(ml.fields())
+        f2.setAttribute('a', 2)
+        f2.setAttribute('b', False)
+        ml.addFeatures([f1, f2])
+        ml.commitChanges()
+
+        self.assertEqual([(f['a'], f['b']) for f in ml.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where not b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(2, False)])
+
+        QgsProject.instance().removeMapLayer(ml.id())
 
 
 if __name__ == '__main__':

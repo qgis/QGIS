@@ -150,6 +150,19 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
     if ( bandNo == 0 || static_cast<unsigned int>( bandNo ) == bandCnt )
     {
       result[ QStringLiteral( "band%1" ).arg( bandCnt )] = wkb.mid( offset, result[ QStringLiteral( "dataSize" ) ].toUInt() );
+      // Invert rows?
+      if ( result[ QStringLiteral( "scaleY" ) ].toDouble( ) > 0 )
+      {
+        const unsigned int numRows { result[ QStringLiteral( "height" ) ].toUInt() };
+        const auto rowSize { result[ QStringLiteral( "dataSize" ) ].toUInt() / numRows };
+        const QByteArray &oldBa { result[ QStringLiteral( "band%1" ).arg( bandCnt )].toByteArray() };
+        QByteArray ba;
+        for ( qlonglong rowOffset = ( numRows - 1 ) * rowSize; rowOffset >= 0; rowOffset -= rowSize )
+        {
+          ba.append( oldBa.mid( rowOffset, rowSize ) );
+        }
+        result[ QStringLiteral( "band%1" ).arg( bandCnt )] = ba;
+      }
     }
     else
     {

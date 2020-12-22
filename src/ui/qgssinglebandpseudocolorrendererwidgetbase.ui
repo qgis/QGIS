@@ -93,6 +93,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mBandComboBox</tabstop>
+  <tabstop>mMinLineEdit</tabstop>
+  <tabstop>mMaxLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

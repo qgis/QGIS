@@ -176,21 +176,17 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
     std::unique_ptr< MemoryMesh > mesh(
       new MemoryMesh(
         name(),
-        vertices.size(),
-        0,
-        faces.size(),
         3,
-        computeExtent( vertices ),
         uri
       )
     );
 
     //move the faces and the vertices in the mesh
-    mesh->faces = std::move( faces );
-    mesh->vertices = std::move( vertices );
+    mesh->setFaces( std::move( faces ) );
+    mesh->setVertices( std::move( vertices ) );
 
     //create the "Altitude" dataset
-    addBedElevationDatasetGroup( mesh.get(), mesh->vertices );
+    addBedElevationDatasetGroup( mesh.get(), mesh->vertices() );
     mesh->datasetGroups.back()->setName( "Altitude" );
 
     std::string crs = getCrsWkt( uri );

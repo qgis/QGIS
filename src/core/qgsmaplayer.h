@@ -48,6 +48,7 @@ class QgsMapLayerStyleManager;
 class QgsProject;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
+class QgsMapLayerElevationProperties;
 
 class QDomDocument;
 class QKeyEvent;
@@ -70,7 +71,9 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   RasterLayer,
   PluginLayer,
   MeshLayer,      //!< Added in 3.2
-  VectorTileLayer //!< Added in 3.14
+  VectorTileLayer, //!< Added in 3.14
+  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
+  PointCloudLayer, //!< Added in 3.18
 };
 
 /**
@@ -86,6 +89,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
+    Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
+    Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -111,6 +117,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
           break;
         case QgsMapLayerType::VectorTileLayer:
           sipType = sipType_QgsVectorTileLayer;
+          break;
+        case QgsMapLayerType::AnnotationLayer:
+          sipType = sipType_QgsAnnotationLayer;
+          break;
+        case QgsMapLayerType::PointCloudLayer:
+          sipType = sipType_QgsPointCloudLayer;
           break;
         default:
           sipType = nullptr;
@@ -142,6 +154,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Identifiable = 1 << 0, //!< If the layer is identifiable using the identify map tool and as a WMS layer.
       Removable = 1 << 1,    //!< If the layer can be removed from the project. The layer will not be removable from the legend menu entry but can still be removed with an API call.
       Searchable = 1 << 2,   //!< Only for vector-layer, determines if the layer is used in the 'search all layers' locator.
+      Private = 1 << 3,       //!< Determines if the layer is meant to be exposed to the GUI, i.e. visible in the layer legend tree.
     };
     Q_ENUM( LayerFlag )
     Q_DECLARE_FLAGS( LayerFlags, LayerFlag )
@@ -167,9 +180,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
       CustomProperties   = 1 << 11, //!< Custom properties (by plugins for instance)
       GeometryOptions    = 1 << 12, //!< Geometry validation configuration
       Relations          = 1 << 13, //!< Relations
-      Temporal           = 1 << 14, //!< Temporal properties
+      Temporal           = 1 << 14, //!< Temporal properties (since QGIS 3.14)
+      Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
+      Elevation          = 1 << 16, //!< Elevation settings (since QGIS 3.18)
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -214,7 +229,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the flags for this layer.
-      \note Flags are options specified by the user used for the UI but are not preventing any API call.
+     * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
      * \since QGIS 3.4
@@ -247,7 +262,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the layer's data provider, it may be NULLPTR.
      */
-    virtual QgsDataProvider *dataProvider();
+    Q_INVOKABLE virtual QgsDataProvider *dataProvider();
 
     /**
      * Returns the layer's data provider in a const-correct manner, it may be NULLPTR.
@@ -462,13 +477,33 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     QPainter::CompositionMode blendMode() const;
 
+    /**
+     * Sets the \a opacity for the layer, where \a opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see opacity()
+     * \see opacityChanged()
+     * \note Prior to QGIS 3.18, this method was available for vector layers only
+     * \since QGIS 3.18
+     */
+    virtual void setOpacity( double opacity );
+
+    /**
+     * Returns the opacity for the layer, where opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see setOpacity()
+     * \see opacityChanged()
+     * \note Prior to QGIS 3.18, this method was available for vector layers only
+     * \since QGIS 3.18
+     */
+    virtual double opacity() const;
+
     //! Returns if this layer is read only.
     bool readOnly() const { return isReadOnly(); }
 
     /**
      * Synchronises with changes in the datasource
-        */
-    virtual void reload() {}
+     */
+    Q_INVOKABLE virtual void reload() {}
 
     /**
      * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -532,8 +567,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns TRUE if the layer is considered a temporary layer.
      *
-     * These include memory-only layers such as those created by the "memory" data provider, or layers
-     * stored inside a local temporary folder (such as the "/tmp" folder on Linux).
+     * These include memory-only layers such as those created by the "memory" data provider, layers
+     * stored inside a local temporary folder (such as the "/tmp" folder on Linux)
+     * or layer with temporary data (as temporary mesh layer dataset)
      *
      * \since QGIS 3.10.1
      */
@@ -546,6 +582,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     enum ReadFlag
     {
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
+      FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -566,7 +603,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns TRUE if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = nullptr );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
 
     /**
      * Stores state in DOM node
@@ -641,7 +678,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the layer's spatial reference system.
-    \since QGIS 1.4
+     * \since QGIS 1.4
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -732,7 +769,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns a QString with any status messages
      * \since QGIS 3.0
      */
-    QString loadDefaultMetadata( bool &resultFlag );
+    virtual QString loadDefaultMetadata( bool &resultFlag );
 
     /**
      * Retrieve a named metadata for this layer from a sqlite database.
@@ -1193,6 +1230,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QgsMapLayerTemporalProperties *temporalProperties() { return nullptr; }
 
+    /**
+     * Returns the layer's elevation properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
+
   public slots:
 
     /**
@@ -1235,6 +1279,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
      */
     void triggerRepaint( bool deferredUpdate = false );
+
+    /**
+     * Will advise any 3D maps that this layer requires to be updated in the scene.
+     * Will emit a request3DUpdate() signal.
+     *
+     * \since QGIS 3.18
+     */
+    void trigger3DUpdate();
 
     /**
      * Triggers an emission of the styleChanged() signal.
@@ -1324,6 +1376,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void blendModeChanged( QPainter::CompositionMode blendMode );
 
     /**
+     * Emitted when the layer's opacity is changed, where \a opacity is a value between 0 (transparent)
+     * and 1 (opaque).
+     * \see setOpacity()
+     * \see opacity()
+     * \note Prior to QGIS 3.18, this signal was available for vector layers only
+     * \since QGIS 3.18
+     */
+    void opacityChanged( double opacity );
+
+    /**
      * Signal emitted when renderer is changed.
      * \see styleChanged()
     */
@@ -1349,6 +1411,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     void renderer3DChanged();
+
+    /**
+     * Signal emitted when a layer requires an update in any 3D maps.
+     *
+     * \since QGIS 3.18
+     */
+    void request3DUpdate();
 
     /**
      * Emitted whenever the configuration is changed. The project listens to this signal
@@ -1408,6 +1477,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void styleLoaded( QgsMapLayer::StyleCategories categories );
 
+    /**
+     * Emitted when the validity of this layer changed.
+     *
+     * \since QGIS 3.16
+     */
+    void isValidChanged();
+
+    /**
+     * Emitted when a custom property of the layer has been changed or removed.
+     *
+     * \since QGIS 3.18
+     */
+    void customPropertyChanged( const QString &key );
 
   private slots:
 
@@ -1425,7 +1507,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets the extent
     virtual void setExtent( const QgsRectangle &rect );
 
-    //! Sets whether layer is valid or not - should be used in constructor.
+    //! Sets whether layer is valid or not
     void setValid( bool valid );
 
     /**
@@ -1469,8 +1551,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Read custom properties from project file.
-      \param layerNode note to read from
-      \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
+     * \param layerNode note to read from
+     * \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
+    */
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 
     //! Write custom properties to project file.
@@ -1555,7 +1638,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Checks whether a new set of dependencies will introduce a cycle
-     * this method is now deprecated and always return false, because circular dependencies are now correctly managed.
+     * this method is now deprecated and always return FALSE, because circular dependencies are now correctly managed.
      * \deprecated since QGIS 3.10
      */
     Q_DECL_DEPRECATED bool hasDependencyCycle( const QSet<QgsMapLayerDependency> & ) const {return false;}
@@ -1569,7 +1652,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //TODO QGIS 4 - move to readXml as a new argument (breaks API)
 
     //! Read flags. It's up to the subclass to respect these when restoring state from XML
-    QgsMapLayer::ReadFlags mReadFlags = nullptr;
+    QgsMapLayer::ReadFlags mReadFlags = QgsMapLayer::ReadFlags();
 
     /**
      * TRUE if the layer's CRS should be validated and invalid CRSes are not permitted.
@@ -1577,6 +1660,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.10
      */
     bool mShouldValidateCrs = true;
+
+    /**
+     * Layer opacity.
+     *
+     * \since QGIS 3.18
+     */
+    double mLayerOpacity = 1.0;
 
   private:
 
@@ -1595,7 +1685,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Layer's spatial reference system.
-        private to make sure setCrs must be used and crsChanged() is emitted */
+     * private to make sure setCrs must be used and crsChanged() is emitted.
+    */
     QgsCoordinateReferenceSystem mCRS;
 
     //! Unique ID of this layer - used to refer to this layer in map layer registry
@@ -1621,7 +1712,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! A flag that tells us whether to use the above vars to restrict layer visibility
     bool mScaleBasedVisibility = false;
 
-    //! Collection of undoable operations for this layer. *
+    //! Collection of undoable operations for this layer.
     QUndoStack *mUndoStack = nullptr;
 
     QUndoStack *mUndoStackStyles = nullptr;

@@ -1,0 +1,113 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsarcgisportalutils.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsArcGisPortalUtils
+{
+%Docstring
+Utility functions for working with ArcGIS REST services.
+
+.. seealso:: :py:class:`QgsArcGisRestUtils`
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsarcgisportalutils.h"
+%End
+  public:
+
+    enum ItemType
+    {
+      FeatureService,
+      MapService,
+      ImageService,
+    };
+
+    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0 );
+%Docstring
+Retrieves JSON user info for the specified user name.
+
+If ``user`` is blank then the user associated with the current logon details will be retrieved
+
+:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current user
+:param authcfg: authentication configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+
+:return: - JSON user info
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+%End
+
+    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0 );
+%Docstring
+Retrieves JSON definitions for all groups which the specified user name is a member of.
+
+If ``user`` is blank then the user associated with the current logon details will be retrieved
+
+:param communityUrl: should be set to the Portal's community URL, e.g. https://mysite.com/portal/sharing/rest/community
+:param user: username to query, or an empty string to query the current user
+:param authcfg: authentication configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+
+:return: - a list of JSON group info
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+%End
+
+    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0, int pageSize = 100 );
+%Docstring
+Retrieves JSON definitions for all items which belong the the specified ``groupId``.
+
+:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param groupId: ID of group to query
+:param authcfg: authentication configuration ID
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+
+:return: - a list of JSON item info for all items within the group
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+%End
+
+    static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
+        const QList< int > &itemTypes,
+        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QString > &requestHeaders = QMap< QString, QString >(), QgsFeedback *feedback = 0, int pageSize = 100 );
+%Docstring
+Retrieves JSON definitions for all items which belong the the specified ``groupId``.
+
+:param contentUrl: should be set to the Portal's content URL, e.g. https://mysite.com/portal/sharing/rest/content
+:param groupId: ID of group to query
+:param authcfg: authentication configuration ID
+:param itemTypes: list of desired item types (using QgsArcGisPortalUtils.ItemType values)
+:param requestHeaders: optional additional request headers
+:param feedback: optional feedback argument for cancellation support
+:param pageSize: number of results to retrieve for each request. Maximum value is 100.
+
+:return: - a list of JSON item info for all items within the group
+         - errorTitle: title summary of any encountered errors
+         - errorText: error text of any encountered errors
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/arcgis/qgsarcgisportalutils.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -20,6 +20,7 @@
 #include <QMutex>
 
 #include "qgsspatialiteutils.h"
+#include "qgsvectordataprovider.h"
 
 extern "C"
 {
@@ -80,6 +81,15 @@ class QgsSpatiaLiteConnection : public QObject
     //! Updates the Internal Statistics
     bool updateStatistics();
 
+    /**
+     * Returns a list of supported nativeTypes for this connection.
+     * \since QGIS 3.16
+     */
+    static QList<QgsVectorDataProvider::NativeType> nativeTypes();
+
+    static const QString SPATIALITE_ARRAY_PREFIX;
+    static const QString SPATIALITE_ARRAY_SUFFIX;
+
   protected:
     // SpatiaLite DB open / close
     sqlite3 *openSpatiaLiteDb( const QString &path );
@@ -90,7 +100,8 @@ class QgsSpatiaLiteConnection : public QObject
 
     /**
      * Inserts information about the spatial tables into mTables
-      \returns true if querying of tables was successful, false on error */
+     * \returns true if querying of tables was successful, false on error
+    */
     bool getTableInfo( sqlite3 *handle, bool loadGeometrylessTables );
 
     /**

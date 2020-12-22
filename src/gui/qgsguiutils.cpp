@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsguiutils.h"
 
+#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
@@ -23,6 +24,7 @@
 #include <QImageWriter>
 #include <QFontDialog>
 #include <QApplication>
+#include <QRegularExpression>
 
 
 namespace QgsGuiUtils
@@ -131,7 +133,7 @@ namespace QgsGuiUtils
     QString outputFileName;
     QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
-    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, QStringList( filterMap.keys() ).join( QStringLiteral( ";;" ) ), &selectedFilter );
+    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, QStringList( filterMap.keys() ).join( QLatin1String( ";;" ) ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
     {
@@ -243,9 +245,7 @@ namespace QgsGuiUtils
 
   int scaleIconSize( int standardSize )
   {
-    QFontMetrics fm( ( QFont() ) );
-    const double scale = 1.1 * standardSize / 24;
-    return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+    return QgsApplication::scaleIconSize( standardSize );
   }
 
   QSize iconSize( bool dockableToolbar )
@@ -274,6 +274,59 @@ namespace QgsGuiUtils
       adjustedSize = 24;
     }
     return QSize( adjustedSize, adjustedSize );
+  }
+
+  QString displayValueWithMaximumDecimals( const Qgis::DataType dataType, const double value, bool displayTrailingZeroes )
+  {
+    const int precision { significantDigits( dataType ) };
+    QString result { QLocale().toString( value, 'f', precision ) };
+    if ( ! displayTrailingZeroes )
+    {
+      const QRegularExpression zeroesRe { QStringLiteral( R"raw(\%1\d*?(0+$))raw" ).arg( QLocale().decimalPoint() ) };
+      if ( zeroesRe.match( result ).hasMatch() )
+      {
+        result.truncate( zeroesRe.match( result ).capturedStart( 1 ) );
+        if ( result.endsWith( QLocale().decimalPoint( ) ) )
+        {
+          result.chop( 1 );
+        }
+      }
+    }
+    return result;
+  }
+
+  int significantDigits( const Qgis::DataType rasterDataType )
+  {
+    switch ( rasterDataType )
+    {
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+      {
+        return 0;
+      }
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::CFloat32:
+      {
+        return std::numeric_limits<float>::digits10 + 1;
+      }
+      case Qgis::DataType::Float64:
+      case Qgis::DataType::CFloat64:
+      {
+        return std::numeric_limits<double>::digits10 + 1;
+      }
+      case Qgis::DataType::UnknownDataType:
+      {
+        return std::numeric_limits<double>::digits10 + 1;
+      }
+    }
+    return 0;
   }
 }
 

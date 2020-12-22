@@ -20,7 +20,7 @@
 #include <QGridLayout>
 #include <QToolButton>
 
-#include "qwt_compass.h"
+class QwtCompass;
 
 #include "qgs3dmapcanvas.h"
 #include "qgscameracontroller.h"

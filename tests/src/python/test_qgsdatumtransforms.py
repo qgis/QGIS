@@ -237,17 +237,15 @@ class TestPyQgsDatumTransform(unittest.TestCase):
     @unittest.skipIf(QgsProjUtils.projVersionMajor() < 7, 'Not a proj >= 7 build')
     def testNoLasLos(self):
         """
-        Test that operations which rely on an las/los grid shift file (which are unsupported by Proj6) are not returned
+        Test that operations which rely on an NADCON5 grid shift file (which are unsupported by Proj... at time of writing !) are not returned
         """
-        ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem('EPSG:3035'),
-                                           QgsCoordinateReferenceSystem('EPSG:5514'))
-        self.assertEqual(len(ops), 3)
+        ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem('EPSG:4138'),
+                                           QgsCoordinateReferenceSystem('EPSG:4269'))
+        self.assertEqual(len(ops), 2)
         self.assertTrue(ops[0].name)
         self.assertTrue(ops[0].proj)
         self.assertTrue(ops[1].name)
         self.assertTrue(ops[1].proj)
-        self.assertTrue(ops[2].name)
-        self.assertTrue(ops[2].proj)
 
 
 if __name__ == '__main__':

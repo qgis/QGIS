@@ -165,16 +165,16 @@ class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod: public QgsMesh3dAveragingMe
      * Constructs multi level averaging method
      * \param startLevel starting vertical level index numbered from 1
      * \param endLevel ending vertical level index numbered from 1 (higher or equal than startLevel)
-     * \param countedFromTop if true, the startLevel index is counted from surface (index 1 is the top layer).
-     *                       if false, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+     * \param countedFromTop if TRUE, the startLevel index is counted from surface (index 1 is the top layer).
+     *                       if FALSE, the startLevel index is counted from the bed level (index 1 is the bottom layer)
      */
     QgsMeshMultiLevelsAveragingMethod( int startLevel, int endLevel, bool countedFromTop );
 
     /**
      * Constructs single level averaging method
      * \param verticalLevel vertical level index numbered from 1
-     * \param countedFromTop if true, the startLevel index is counted from surface (index 1 is the top layer).
-     *                       if false, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+     * \param countedFromTop if TRUE, the startLevel index is counted from surface (index 1 is the top layer).
+     *                       if FALSE, the startLevel index is counted from the bed level (index 1 is the bottom layer)
      */
     QgsMeshMultiLevelsAveragingMethod( int verticalLevel, bool countedFromTop );
 
@@ -307,8 +307,8 @@ class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3dAveragin
      * Constructs the depth/height averaging method
      * \param startHeight starting depth/height, higher or equal than 0
      * \param endHeight ending depth/height, higher or equal than startDepth
-     * \param countedFromTop if true, the startLength and endLength is relative to surface (0 is surface level).
-     *                       if false, the startLength and endLength is relative to bed (0 is bed level).
+     * \param countedFromTop if TRUE, the startLength and endLength is relative to surface (0 is surface level).
+     *                       if FALSE, the startLength and endLength is relative to bed (0 is bed level).
      */
     QgsMeshRelativeHeightAveragingMethod( double startHeight, double endHeight, bool countedFromTop );
 

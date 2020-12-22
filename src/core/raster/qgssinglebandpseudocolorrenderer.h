@@ -77,7 +77,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
                        const QgsRectangle &extent = QgsRectangle() );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
+    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
     QList<int> usesBands() const override;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;

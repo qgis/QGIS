@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswidgetstatehelper_p.h"
+#include <QWindow>
 #include <QWidget>
 #include <QEvent>
 #include <QObject>
@@ -28,7 +29,9 @@ QgsWidgetStateHelper::QgsWidgetStateHelper( QObject *parent ) : QObject( parent 
 
 bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
 {
-  if ( event->type() == QEvent::Close || event->type() == QEvent::Destroy )
+  if ( event->type() == QEvent::Close ||
+       event->type() == QEvent::Destroy ||
+       event->type() == QEvent::Hide )
   {
     QWidget *widget = qobject_cast<QWidget *>( object );
 
@@ -44,8 +47,28 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
   {
     QWidget *widget = qobject_cast<QWidget *>( object );
     QString name = widgetSafeName( widget );
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    // If window is already maximized by Window Manager,
+    // there is no need to restore its geometry as it might lead to
+    // an incorrect state of QFlags<Qt::WindowState>(WindowMinimized|WindowMaximized)
+    // thus minimizing window after it just has been restored by WM.
+    // Inability to restore minimzed windows has been observed with
+    // KWin 5.19 and Qt 5.15 running under X11.
+    QWindow *win = widget->windowHandle();
+    if ( !win )
+      return QObject::eventFilter( object, event );
+
+    if ( !( win->windowStates() & Qt::WindowMaximized ) )
+    {
+      QString key = mKeys[name];
+      QgsGuiUtils::restoreGeometry( widget, key );
+    }
+#else
     QString key = mKeys[name];
     QgsGuiUtils::restoreGeometry( widget, key );
+#endif
+
     widget->setProperty( "widgetStateHelperWasShown", QVariant( true ) );
   }
   return QObject::eventFilter( object, event );

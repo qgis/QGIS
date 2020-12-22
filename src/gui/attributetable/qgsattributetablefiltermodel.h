@@ -258,6 +258,12 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void visibleReloaded();
 
+    /**
+     * Emitted when an error occurred while filtering features
+     * \since QGIS 3.18
+     */
+    void filterError( const QString &errorMessage );
+
   protected:
 
     /**

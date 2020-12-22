@@ -100,7 +100,7 @@ QWidget *QgsAuthOAuth2Edit::parentWidget() const
   const QMetaObject *metaObject = window()->metaObject();
   QString parentclass = metaObject->className();
   //QgsDebugMsg( QStringLiteral( "parent class: %1" ).arg( parentclass ) );
-  if ( parentclass != QStringLiteral( "QgsAuthConfigEdit" ) )
+  if ( parentclass != QLatin1String( "QgsAuthConfigEdit" ) )
   {
     QgsDebugMsg( QStringLiteral( "Parent widget not QgsAuthConfigEdit instance" ) );
     return nullptr;
@@ -185,6 +185,8 @@ void QgsAuthOAuth2Edit::setupConnections()
            this, &QgsAuthOAuth2Edit::updateConfigAccessMethod );
   connect( spnbxRequestTimeout, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
            mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestTimeout );
+
+  connect( mTokenHeaderLineEdit, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setCustomHeader );
 
   connect( mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::validityChanged, this, &QgsAuthOAuth2Edit::configValidityChanged );
 
@@ -397,6 +399,7 @@ void QgsAuthOAuth2Edit::loadFromOAuthConfig( const QgsAuthOAuth2Config *config )
     lePassword->setText( config->password() );
     leScope->setText( config->scope() );
     leApiKey->setText( config->apiKey() );
+    mTokenHeaderLineEdit->setText( config->customHeader() );
 
     // advanced
     chkbxTokenPersist->setChecked( config->persistToken() );
@@ -868,6 +871,18 @@ void QgsAuthOAuth2Edit::populateAccessMethods()
 void QgsAuthOAuth2Edit::updateConfigAccessMethod( int indx )
 {
   mOAuthConfigCustom->setAccessMethod( static_cast<QgsAuthOAuth2Config::AccessMethod>( indx ) );
+  switch ( static_cast<QgsAuthOAuth2Config::AccessMethod>( indx ) )
+  {
+    case QgsAuthOAuth2Config::Header:
+      mTokenHeaderLineEdit->setVisible( true );
+      mTokenHeaderLabel->setVisible( true );
+      break;
+    case QgsAuthOAuth2Config::Form:
+    case QgsAuthOAuth2Config::Query:
+      mTokenHeaderLineEdit->setVisible( false );
+      mTokenHeaderLabel->setVisible( false );
+      break;
+  }
 }
 
 void QgsAuthOAuth2Edit::addQueryPairRow( const QString &key, const QString &val )
@@ -1166,7 +1181,7 @@ void QgsAuthOAuth2Edit::updatePredefinedLocationsTooltip()
     locationListHtml += QStringLiteral( "<li><a href=\"%1\">%2</a></li>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir );
   }
   if ( !locationListHtml.isEmpty() )
-    locationListHtml += QStringLiteral( "</ul>" );
+    locationListHtml += QLatin1String( "</ul>" );
 
   QString tip = QStringLiteral( "<p>" ) + tr( "Defined configurations are JSON-formatted files, with a single configuration per file. "
                 "This allows configurations to be swapped out via filesystem tools without affecting user "

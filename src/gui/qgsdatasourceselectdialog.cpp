@@ -325,6 +325,10 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( QgsBrowserGuiModel *browse
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   connect( mWidget, &QgsDataSourceSelectWidget::validationChanged, buttonBox->button( QDialogButtonBox::Ok ), &QWidget::setEnabled );
   connect( mWidget, &QgsDataSourceSelectWidget::itemTriggered, this, &QDialog::accept );
+
+  // pressing escape should reject the dialog
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   vl->addWidget( buttonBox );
   setLayout( vl );
 }

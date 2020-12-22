@@ -15,10 +15,13 @@
 
 #include "qgsprojectviewsettings.h"
 #include "qgis.h"
+#include "qgsproject.h"
+#include "qgslogger.h"
 #include <QDomElement>
 
-QgsProjectViewSettings::QgsProjectViewSettings( QObject *parent )
-  : QObject( parent )
+QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
+  : QObject( project )
+  , mProject( project )
 {
 
 }
@@ -26,6 +29,12 @@ QgsProjectViewSettings::QgsProjectViewSettings( QObject *parent )
 void QgsProjectViewSettings::reset()
 {
   mDefaultViewExtent = QgsReferencedRectangle();
+
+  const bool fullExtentChanged = !mPresetFullExtent.isNull();
+  mPresetFullExtent = QgsReferencedRectangle();
+  if ( fullExtentChanged )
+    emit presetFullExtentChanged();
+
   if ( mUseProjectScales || !mMapScales.empty() )
   {
     mUseProjectScales = false;
@@ -42,6 +51,96 @@ QgsReferencedRectangle QgsProjectViewSettings::defaultViewExtent() const
 void QgsProjectViewSettings::setDefaultViewExtent( const QgsReferencedRectangle &extent )
 {
   mDefaultViewExtent = extent;
+}
+
+QgsReferencedRectangle QgsProjectViewSettings::presetFullExtent() const
+{
+  return mPresetFullExtent;
+}
+
+void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &extent )
+{
+  if ( extent == mPresetFullExtent )
+    return;
+
+  mPresetFullExtent = extent;
+  emit presetFullExtentChanged();
+}
+
+QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
+{
+  if ( !mProject )
+    return mPresetFullExtent;
+
+  if ( !mPresetFullExtent.isNull() )
+  {
+    QgsCoordinateTransform ct( mPresetFullExtent.crs(), mProject->crs(), mProject->transformContext() );
+    ct.setBallparkTransformsAreAppropriate( true );
+    return QgsReferencedRectangle( ct.transformBoundingBox( mPresetFullExtent ), mProject->crs() );
+  }
+  else
+  {
+    // reset the map canvas extent since the extent may now be smaller
+    // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
+    QgsRectangle fullExtent;
+    fullExtent.setMinimal();
+
+    // iterate through the map layers and test each layers extent
+    // against the current min and max values
+    const QMap<QString, QgsMapLayer *> layers = mProject->mapLayers( true );
+    QgsDebugMsgLevel( QStringLiteral( "Layer count: %1" ).arg( layers.count() ), 5 );
+    for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+    {
+      QgsDebugMsgLevel( "Updating extent using " + it.value()->name(), 5 );
+      QgsDebugMsgLevel( "Input extent: " + it.value()->extent().toString(), 5 );
+
+      if ( it.value()->extent().isNull() )
+        continue;
+
+      // Layer extents are stored in the coordinate system (CS) of the
+      // layer. The extent must be projected to the canvas CS
+      QgsCoordinateTransform ct( it.value()->crs(), mProject->crs(), mProject->transformContext() );
+      ct.setBallparkTransformsAreAppropriate( true );
+      try
+      {
+        const QgsRectangle extent = ct.transformBoundingBox( it.value()->extent() );
+
+        QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
+        fullExtent.combineExtentWith( extent );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not reproject layer extent" ) );
+      }
+    }
+
+    if ( fullExtent.width() == 0.0 || fullExtent.height() == 0.0 )
+    {
+      // If all of the features are at the one point, buffer the
+      // rectangle a bit. If they are all at zero, do something a bit
+      // more crude.
+
+      if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 &&
+           fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
+      {
+        fullExtent.set( -1.0, -1.0, 1.0, 1.0 );
+      }
+      else
+      {
+        const double padFactor = 1e-8;
+        double widthPad = fullExtent.xMinimum() * padFactor;
+        double heightPad = fullExtent.yMinimum() * padFactor;
+        double xmin = fullExtent.xMinimum() - widthPad;
+        double xmax = fullExtent.xMaximum() + widthPad;
+        double ymin = fullExtent.yMinimum() - heightPad;
+        double ymax = fullExtent.yMaximum() + heightPad;
+        fullExtent.set( xmin, ymin, xmax, ymax );
+      }
+    }
+
+    QgsDebugMsgLevel( "Full extent: " + fullExtent.toString(), 5 );
+    return QgsReferencedRectangle( fullExtent, mProject->crs() );
+  }
 }
 
 void QgsProjectViewSettings::setMapScales( const QVector<double> &scales )
@@ -116,6 +215,22 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
     mDefaultViewExtent = QgsReferencedRectangle();
   }
 
+  QDomElement presetViewElement = element.firstChildElement( QStringLiteral( "PresetFullExtent" ) );
+  if ( !presetViewElement.isNull() )
+  {
+    double xMin = presetViewElement.attribute( QStringLiteral( "xmin" ) ).toDouble();
+    double yMin = presetViewElement.attribute( QStringLiteral( "ymin" ) ).toDouble();
+    double xMax = presetViewElement.attribute( QStringLiteral( "xmax" ) ).toDouble();
+    double yMax = presetViewElement.attribute( QStringLiteral( "ymax" ) ).toDouble();
+    QgsCoordinateReferenceSystem crs;
+    crs.readXml( presetViewElement );
+    setPresetFullExtent( QgsReferencedRectangle( QgsRectangle( xMin, yMin, xMax, yMax ), crs ) );
+  }
+  else
+  {
+    setPresetFullExtent( QgsReferencedRectangle() );
+  }
+
   return true;
 }
 
@@ -142,6 +257,17 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
     defaultViewElement.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mDefaultViewExtent.yMaximum() ) );
     mDefaultViewExtent.crs().writeXml( defaultViewElement, doc );
     element.appendChild( defaultViewElement );
+  }
+
+  if ( !mPresetFullExtent.isNull() )
+  {
+    QDomElement presetViewElement = doc.createElement( QStringLiteral( "PresetFullExtent" ) );
+    presetViewElement.setAttribute( QStringLiteral( "xmin" ), qgsDoubleToString( mPresetFullExtent.xMinimum() ) );
+    presetViewElement.setAttribute( QStringLiteral( "ymin" ), qgsDoubleToString( mPresetFullExtent.yMinimum() ) );
+    presetViewElement.setAttribute( QStringLiteral( "xmax" ), qgsDoubleToString( mPresetFullExtent.xMaximum() ) );
+    presetViewElement.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mPresetFullExtent.yMaximum() ) );
+    mPresetFullExtent.crs().writeXml( presetViewElement, doc );
+    element.appendChild( presetViewElement );
   }
 
   return element;

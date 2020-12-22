@@ -69,6 +69,10 @@ void QgsDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
                         QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
   fieldNameParam->setFlags( fieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( fieldNameParam.release() );
+  auto sizeFieldNameParam = qgis::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ),
+                            QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
+  sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( sizeFieldNameParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clusters" ), QgsProcessing::TypeVectorPoint ) );
 
@@ -113,9 +117,11 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   const bool borderPointsAreNoise = parameterAsBoolean( parameters, QStringLiteral( "DBSCAN*" ), context );
 
   QgsFields outputFields = source->fields();
-  const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   QgsFields newFields;
+  const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   newFields.append( QgsField( clusterFieldName, QVariant::Int ) );
+  const QString clusterSizeFieldName = parameterAsString( parameters, QStringLiteral( "SIZE_FIELD_NAME" ), context );
+  newFields.append( QgsField( clusterSizeFieldName, QVariant::Int ) );
   outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
 
   QString dest;
@@ -135,9 +141,11 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   idToCluster.reserve( index.size() );
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
   const long featureCount = source->featureCount();
+  dbscan( minSize, eps, borderPointsAreNoise, featureCount, features, index, idToCluster, feedback );
 
-  int clusterCount = 0;
-  dbscan( minSize, eps, borderPointsAreNoise, featureCount, features, index, idToCluster, clusterCount, feedback );
+  // cluster size
+  std::unordered_map< int, int> clusterSize;
+  std::for_each( idToCluster.begin(), idToCluster.end(), [ &clusterSize ]( std::pair< QgsFeatureId, int > idCluster ) { clusterSize[ idCluster.second ]++; } );
 
   // write clusters
   const double writeStep = featureCount > 0 ? 10.0 / featureCount : 1;
@@ -157,11 +165,11 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     auto cluster = idToCluster.find( feat.id() );
     if ( cluster != idToCluster.end() )
     {
-      attr << cluster->second;
+      attr << cluster->second  << clusterSize[ cluster->second ];
     }
     else
     {
-      attr << QVariant();
+      attr << QVariant() << QVariant();
     }
     feat.setAttributes( attr );
     sink->addFeature( feat, QgsFeatureSink::FastInsert );
@@ -169,7 +177,7 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  outputs.insert( QStringLiteral( "NUM_CLUSTERS" ), clusterCount );
+  outputs.insert( QStringLiteral( "NUM_CLUSTERS" ), static_cast< unsigned int >( clusterSize.size() ) );
   return outputs;
 }
 
@@ -181,7 +189,6 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
     QgsFeatureIterator features,
     QgsSpatialIndexKDBush &index,
     std::unordered_map< QgsFeatureId, int> &idToCluster,
-    int &clusterCount,
     QgsProcessingFeedback *feedback )
 {
   const double step = featureCount > 0 ? 90.0 / featureCount : 1;
@@ -191,7 +198,7 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
 
   QgsFeature feat;
   int i = 0;
-  clusterCount = 0;
+  int clusterCount = 0;
 
   while ( features.nextFeature( feat ) )
   {

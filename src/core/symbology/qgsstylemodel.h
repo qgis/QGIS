@@ -27,6 +27,68 @@
 
 class QgsSymbol;
 
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \class QgsAbstractStyleEntityIconGenerator
+ *
+ * An abstract base class for icon generators for a QgsStyleModel.
+ *
+ * This base class allows for creation of specialized icon generators for
+ * entities in a style database, and allows for deferred icon generation.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsAbstractStyleEntityIconGenerator, with the specified \a parent
+     * object.
+     */
+    QgsAbstractStyleEntityIconGenerator( QObject *parent );
+
+    /**
+     * Triggers generation of an icon for an entity from the specified \a style database,
+     * with matching entity \a type and \a name.
+     */
+    virtual void generateIcon( QgsStyle *style, QgsStyle::StyleEntity type, const QString &name ) = 0;
+
+    /**
+     * Sets the list of icon \a sizes to generate.
+     *
+     * \see iconSizes()
+     */
+    void setIconSizes( const QList< QSize > &sizes );
+
+    /**
+     * Returns the list of icon \a sizes to generate.
+     *
+     * \see setIconSizes()
+     */
+    QList< QSize > iconSizes() const;
+
+  signals:
+
+    /**
+     * Emitted when the \a icon for the style entity with matching \a type and \a name
+     * has been generated.
+     */
+    void iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon );
+
+  private:
+
+    QList< QSize > mIconSizes;
+
+};
+
+#endif
+
 /**
  * \ingroup core
  * \class QgsStyleModel
@@ -63,6 +125,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
       SymbolTypeRole, //!< Symbol type (for symbol or legend patch shape entities)
       IsFavoriteRole, //!< Whether entity is flagged as a favorite
       LayerTypeRole, //!< Layer type (for label settings entities)
+      CompatibleGeometryTypesRole, //!< Compatible layer geometry types (for 3D symbols)
     };
 
     /**
@@ -98,6 +161,16 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
      */
     void addDesiredIconSize( QSize size );
 
+    /**
+     * Sets the icon \a generator to use for deferred style entity icon generation.
+     *
+     * Currently this is used for 3D symbol icons only.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.16
+     */
+    static void setIconGenerator( QgsAbstractStyleEntityIconGenerator *generator ) SIP_SKIP;
+
   private slots:
 
     void onEntityAdded( QgsStyle::StyleEntity type, const QString &name );
@@ -106,6 +179,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void onEntityRename( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName );
     void onTagsChanged( int entity, const QString &name, const QStringList &tags );
     void rebuildSymbolIcons();
+    void iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon );
 
   private:
 
@@ -117,6 +191,9 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
 
     mutable QHash< QgsStyle::StyleEntity, QHash< QString, QIcon > > mIconCache;
+
+    static QgsAbstractStyleEntityIconGenerator *sIconGenerator;
+    mutable QSet< QString > mPending3dSymbolIcons;
 
     QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
 
@@ -251,7 +328,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * Returns the layer type filter, or QgsWkbTypes::UnknownGeometry if no
      * layer type filter is present.
      *
-     * This setting has no effect on non-label settings entities (i.e. color ramps).
+     * This setting has an effect on label settings entities and 3d symbols only.
      *
      * \see setLayerType()
      */

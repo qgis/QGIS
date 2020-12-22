@@ -342,7 +342,7 @@ class LayoutContextSettingsRestorer
   private:
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
-    QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
+    QgsLayoutRenderContext::Flags mPreviousFlags = QgsLayoutRenderContext::Flags();
     QgsRenderContext::TextRenderFormat mPreviousTextFormat = QgsRenderContext::TextFormatAlwaysOutlines;
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
@@ -528,7 +528,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   }
 
   std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
     geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
@@ -542,21 +542,21 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 
   ExportResult result = Success;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
   {
     mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
 
     // here we need to export layers to individual PDFs
     PdfExportSettings subSettings = settings;
     subSettings.writeGeoPdf = false;
-    subSettings.exportLayersAsSeperateFiles = false;
+    subSettings.exportLayersAsSeperateFiles = false;  //#spellok
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
 
     QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > pdfComponents;
 
-    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();
-    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();
+    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();  //#spellok
+    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();  //#spellok
 
     auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter, &settings, &baseDir, &baseFileName]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
     {
@@ -1593,14 +1593,14 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
           creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
         }
       }
-      GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
-      GDALSetMetadataItem( outputDS.get(), "AUTHOR", mLayout->project()->metadata().author().toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "AUTHOR", mLayout->project()->metadata().author().toUtf8().constData(), nullptr );
       const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-      GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
-      GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
-      GDALSetMetadataItem( outputDS.get(), "SUBJECT", mLayout->project()->metadata().abstract().toLocal8Bit().constData(), nullptr );
-      GDALSetMetadataItem( outputDS.get(), "TITLE", mLayout->project()->metadata().title().toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toUtf8().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toUtf8().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "SUBJECT", mLayout->project()->metadata().abstract().toUtf8().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "TITLE", mLayout->project()->metadata().title().toUtf8().constData(), nullptr );
 
       const QgsAbstractMetadataBase::KeywordMap keywords = mLayout->project()->metadata().keywords();
       QStringList allKeywords;
@@ -1609,7 +1609,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
         allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
       }
       const QString keywordString = allKeywords.join( ';' );
-      GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toLocal8Bit().constData(), nullptr );
+      GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toUtf8().constData(), nullptr );
     }
 
     if ( t )
@@ -1655,7 +1655,7 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
           currentLayerItemTypes.append( QObject::tr( "Other" ) );
       }
     }
-    return currentLayerItemTypes.join( QStringLiteral( ", " ) );
+    return currentLayerItemTypes.join( QLatin1String( ", " ) );
   }
   return QObject::tr( "Layer %1" ).arg( layerId );
 }

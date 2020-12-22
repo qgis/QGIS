@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QList>
 #include <QWidget>
 #include <QMimeData>
@@ -132,7 +133,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
 
     /**
      * Tries to permanently delete map layer representing the given item.
-     * Returns true if the layer was successfully deleted.
+     * Returns TRUE if the layer was successfully deleted.
      *
      * Items which implement this method should return the QgsDataItem::Delete capability.
      *
@@ -174,6 +175,19 @@ class GUI_EXPORT QgsDataItemGuiProvider
      * \since QGIS 3.10
      */
     virtual QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) SIP_FACTORY;
+
+    /**
+     * Notify the user showing a \a message with \a title and \a level
+     * If the context has a message bar the message will be shown in the message bar
+     * else a message dialog will be used.
+     *
+     * Since QGIS 3.18, the optional \a duration argument can be used to specify the message timeout in seconds. If \a duration
+     * is set to 0, then the message must be manually dismissed by the user. A duration of -1 indicates that
+     * the default timeout for the message \a level should be used.
+     *
+     * \since QGIS 3.16
+     */
+    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info, int duration = -1, QWidget *parent = nullptr );
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H

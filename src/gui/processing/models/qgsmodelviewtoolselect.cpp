@@ -85,7 +85,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     //not clicking over an item, so start marquee selection
     mIsSelecting = true;
     mMousePressStartPos = event->pos();
-    mRubberBand->start( event->modelPoint(), nullptr );
+    mRubberBand->start( event->modelPoint(), Qt::KeyboardModifiers() );
     return;
   }
 
@@ -147,7 +147,7 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
 {
   if ( mIsSelecting )
   {
-    mRubberBand->update( event->modelPoint(), nullptr );
+    mRubberBand->update( event->modelPoint(), Qt::KeyboardModifiers() );
   }
   else
   {

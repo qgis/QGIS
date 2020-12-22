@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/processing/qgsalgorithmbatchgeocode.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsBatchGeocodeAlgorithm : QgsProcessingFeatureBasedAlgorithm
+{
+%Docstring
+
+A base class for batch geocoder algorithms, which takes a QgsGeocoderInterface object and exposes it as
+a Processing algorithm for batch geocoding operations.
+
+Example
+-------
+
+.. code-block:: python
+
+       # create a class which implements the QgsGeocoderInterface interface:
+       class MyGeocoder(QgsGeocoderInterface):
+
+          def geocodeString(self, string, context, feedback):
+             # calculate and return results...
+
+       my_geocoder = MyGeocoder()
+
+       # create an algorithm which allows for batch geocoding operations using the custom geocoder interface
+       # and implement the few required pure virtual methods
+       class MyGeocoderAlgorithm(QgsBatchGeocodeAlgorithm):
+
+           def __init__(self):
+               super().__init__(my_geocoder)
+
+           def displayName(self):
+               return "My Geocoder"
+
+           def name(self):
+               return "my_geocoder_alg"
+
+           def createInstance(self):
+               return MyGeocoderAlgorithm()
+
+           # optionally, the group(), groupId(), tags(), shortHelpString() and other metadata style methods can be overridden and customized:
+           def tags(self):
+               return 'geocode,my service,batch'
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsalgorithmbatchgeocode.h"
+%End
+  public:
+
+    QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocoder );
+%Docstring
+Constructor for QgsBatchGeocodeAlgorithm.
+
+The ``geocoder`` must specify an instance of a class which implements the :py:class:`QgsGeocoderInterface`
+interface. Ownership of ``geocoder`` is not transferred, and the caller must ensure that ``geocoder``
+exists for the lifetime of this algorithm.
+%End
+
+    virtual void initParameters( const QVariantMap &configuration = QVariantMap() );
+
+    virtual QStringList tags() const;
+
+    virtual QString group() const;
+
+    virtual QString groupId() const;
+
+    virtual QList<int> inputLayerTypes() const;
+
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
+
+  protected:
+    virtual QString outputName() const;
+
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+
+    virtual QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback );
+
+    virtual QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const;
+
+    virtual QgsFields outputFields( const QgsFields &inputFields ) const;
+
+    virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
+
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/processing/qgsalgorithmbatchgeocode.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

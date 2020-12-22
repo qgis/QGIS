@@ -434,12 +434,12 @@ bool QgsLayoutSnapper::writeXml( QDomElement &parentElement, QDomDocument &docum
 bool QgsLayoutSnapper::readXml( const QDomElement &e, const QDomDocument &, const QgsReadWriteContext & )
 {
   QDomElement element = e;
-  if ( element.nodeName() != QStringLiteral( "Snapper" ) )
+  if ( element.nodeName() != QLatin1String( "Snapper" ) )
   {
     element = element.firstChildElement( QStringLiteral( "Snapper" ) );
   }
 
-  if ( element.nodeName() != QStringLiteral( "Snapper" ) )
+  if ( element.nodeName() != QLatin1String( "Snapper" ) )
   {
     return false;
   }

@@ -706,7 +706,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Snapping indicator
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
-    CadCapacities mCapacities = nullptr;
+    CadCapacities mCapacities = CadCapacities();
 
     bool mCurrentMapToolSupportsCad = false;
 

@@ -1,0 +1,456 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPointCloudRenderContext
+{
+%Docstring
+
+Encapsulates the render context for a 2D point cloud rendering operation.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrenderer.h"
+%End
+  public:
+
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
+                                double zValueScale, double zValueFixedOffset );
+%Docstring
+Constructor for QgsPointCloudRenderContext.
+
+The ``scale`` and ``offset`` arguments specify the scale and offset of the layer's int32 coordinates
+compared to CRS coordinates respectively.
+
+The ``zValueScale`` argument specifies any constant scaling factor which must be applied to z values
+taken from the point cloud index.
+
+The ``zValueFixedOffset`` argument specifies any constant offset value which must be added to z values
+taken from the point cloud index.
+%End
+
+
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+%End
+
+
+    QgsVector3D scale() const;
+%Docstring
+Returns the scale of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    QgsVector3D offset() const;
+%Docstring
+Returns the offset of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    long pointsRendered() const;
+%Docstring
+Returns the total number of points rendered.
+%End
+
+    void incrementPointsRendered( long count );
+%Docstring
+Increments the count of points rendered by the specified amount.
+
+It is a point cloud renderer's responsibility to correctly call this after
+rendering a block of points.
+%End
+
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns the attributes associated with the rendered block.
+
+.. seealso:: :py:func:`setAttributes`
+%End
+
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
+%Docstring
+Sets the ``attributes`` associated with the rendered block.
+
+.. seealso:: :py:func:`attributes`
+%End
+
+    int pointRecordSize() const;
+%Docstring
+Returns the size of a single point record.
+%End
+
+    int xOffset() const;
+%Docstring
+Returns the offset for the x value in a point record.
+
+.. seealso:: :py:func:`yOffset`
+
+.. seealso:: :py:func:`zOffset`
+%End
+
+    int yOffset() const;
+%Docstring
+Returns the offset for the y value in a point record.
+
+.. seealso:: :py:func:`xOffset`
+
+.. seealso:: :py:func:`zOffset`
+%End
+
+    int zOffset() const;
+%Docstring
+Returns the offset for the y value in a point record.
+
+.. seealso:: :py:func:`xOffset`
+
+.. seealso:: :py:func:`yOffset`
+%End
+
+    double zValueScale() const;
+%Docstring
+Returns any constant scaling factor which must be applied to z values taken from the point cloud index.
+
+.. note::
+
+   Scaling of z values should be applied before the :py:func:`~QgsPointCloudRenderContext.zValueFixedOffset`.
+%End
+
+    double zValueFixedOffset() const;
+%Docstring
+Returns any constant offset which must be applied to z values taken from the point cloud index.
+
+.. note::
+
+   Scaling of z values via :py:func:`~QgsPointCloudRenderContext.zValueScale` should be applied before the :py:func:`~QgsPointCloudRenderContext.zValueFixedOffset`.
+%End
+
+
+  private:
+    QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
+};
+
+
+class QgsPointCloudRenderer
+{
+%Docstring
+
+Abstract base class for 2d point cloud renderers.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudrenderer.h"
+%End
+%ConvertToSubClassCode
+
+    const QString type = sipCpp->type();
+
+    if ( type == QLatin1String( "rgb" ) )
+      sipType = sipType_QgsPointCloudRgbRenderer;
+    else if ( type == QLatin1String( "ramp" ) )
+      sipType = sipType_QgsPointCloudAttributeByRampRenderer;
+    else if ( type == QLatin1String( "classified" ) )
+      sipType = sipType_QgsPointCloudClassifiedRenderer;
+    else if ( type == QLatin1String( "extent" ) )
+      sipType = sipType_QgsPointCloudExtentRenderer;
+    else
+      sipType = 0;
+%End
+  public:
+
+    enum PointSymbol
+    {
+      Square,
+      Circle,
+    };
+
+    QgsPointCloudRenderer();
+%Docstring
+Constructor for QgsPointCloudRenderer.
+%End
+
+    virtual ~QgsPointCloudRenderer();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the identifier of the renderer type.
+%End
+
+    virtual QgsPointCloudRenderer *clone() const = 0 /Factory/;
+%Docstring
+Create a deep copy of this renderer. Should be implemented by all subclasses
+and generate a proper subclass.
+%End
+
+
+
+    virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
+%Docstring
+Renders a ``block`` of point cloud data using the specified render ``context``.
+%End
+
+    static QgsPointCloudRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a renderer from an XML ``element``.
+
+Caller takes ownership of the returned renderer.
+
+.. seealso:: :py:func:`save`
+%End
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Saves the renderer configuration to an XML element.
+
+.. seealso:: :py:func:`load`
+%End
+
+    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+%Docstring
+Returns a list of attributes required by this renderer. Attributes not listed in here may
+not be requested from the provider at rendering time.
+
+.. note::
+
+   the "X" and "Y" attributes will always be fetched and do not need to be explicitly
+   returned here.
+%End
+
+    virtual void startRender( QgsPointCloudRenderContext &context );
+%Docstring
+Must be called when a new render cycle is started. A call to :py:func:`~QgsPointCloudRenderer.startRender` must always
+be followed by a corresponding call to :py:func:`~QgsPointCloudRenderer.stopRender` after all features have been rendered.
+
+.. seealso:: :py:func:`stopRender`
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsPointCloudRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsPointCloudRenderer.startRender`/:py:func:`~QgsPointCloudRenderer.stopRender` called on the clone.
+%End
+
+    virtual void stopRender( QgsPointCloudRenderContext &context );
+%Docstring
+Must be called when a render cycle has finished, to allow the renderer to clean up.
+
+Calls to :py:func:`~QgsPointCloudRenderer.stopRender` must always be preceded by a call to :py:func:`~QgsPointCloudRenderer.startRender`.
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsPointCloudRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsPointCloudRenderer.startRender`/:py:func:`~QgsPointCloudRenderer.stopRender` called on the clone.
+
+.. seealso:: :py:func:`startRender`
+%End
+
+    virtual bool legendItemChecked( const QString &key );
+%Docstring
+Returns ``True`` if the legend item with the specified ``key`` is checked.
+
+.. seealso:: :py:func:`checkLegendItem`
+%End
+
+    virtual void checkLegendItem( const QString &key, bool state = true );
+%Docstring
+Called when the check state of the legend item with the specified ``key`` is changed.
+
+.. seealso:: :py:func:`legendItemChecked`
+%End
+
+    void setPointSize( double size );
+%Docstring
+Sets the point ``size``. Point size units are specified via :py:func:`~QgsPointCloudRenderer.setPointSizeUnit`.
+
+.. seealso:: :py:func:`pointSize`
+
+.. seealso:: :py:func:`setPointSizeUnit`
+
+.. seealso:: :py:func:`setPointSizeMapUnitScale`
+%End
+
+    double pointSize() const;
+%Docstring
+Returns the point size.
+
+The point size units are retrieved by calling :py:func:`~QgsPointCloudRenderer.pointSizeUnit`.
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. seealso:: :py:func:`pointSizeMapUnitScale`
+%End
+
+    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units );
+%Docstring
+Sets the ``units`` used for the point size.
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. seealso:: :py:func:`setPointSizeMapUnitScale`
+%End
+
+    QgsUnitTypes::RenderUnit pointSizeUnit() const;
+%Docstring
+Returns the units used for the point size.
+
+.. seealso:: :py:func:`setPointSizeUnit`
+
+.. seealso:: :py:func:`pointSize`
+
+.. seealso:: :py:func:`pointSizeMapUnitScale`
+%End
+
+    void setPointSizeMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` used for the point size.
+
+.. seealso:: :py:func:`pointSizeMapUnitScale`
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`setPointSizeUnit`
+%End
+
+    const QgsMapUnitScale &pointSizeMapUnitScale() const;
+%Docstring
+Returns the map unit scale used for the point size.
+
+.. seealso:: :py:func:`setPointSizeMapUnitScale`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. seealso:: :py:func:`pointSize`
+%End
+
+    PointSymbol pointSymbol() const;
+%Docstring
+Returns the symbol used by the renderer for drawing points.
+
+.. seealso:: :py:func:`setPointSymbol`
+%End
+
+    void setPointSymbol( PointSymbol symbol );
+%Docstring
+Sets the ``symbol`` used by the renderer for drawing points.
+
+.. seealso:: :py:func:`pointSymbol`
+%End
+
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum screen error allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+Units are retrieved via :py:func:`~QgsPointCloudRenderer.maximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum screen ``error`` allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+Units are set via :py:func:`~QgsPointCloudRenderer.setMaximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+%End
+
+    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const;
+%Docstring
+Returns the unit for the maximum screen error allowed when rendering the point cloud.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+%End
+
+    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the maximum screen error allowed when rendering the point cloud.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+%Docstring
+Creates a set of legend nodes representing the renderer.
+%End
+
+    virtual QStringList legendRuleKeys() const;
+%Docstring
+Returns a list of all rule keys for legend nodes created by the renderer.
+%End
+
+  protected:
+
+    static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
+%Docstring
+Retrieves the x and y coordinate for the point at index ``i``.
+%End
+
+    static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i );
+%Docstring
+Retrieves the z value for the point at index ``i``.
+%End
+
+    void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const;
+%Docstring
+Draws a point using a ``color`` at the specified ``x`` and ``y`` (in map coordinates).
+%End
+
+    void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
+%Docstring
+Copies common point cloud properties (such as point size and screen error) to the ``destination`` renderer.
+%End
+
+    void restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Restores common renderer properties (such as point size and screen error) from the
+specified DOM ``element``.
+
+.. seealso:: :py:func:`saveCommonProperties`
+%End
+
+    void saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Saves common renderer properties (such as point size and screen error) to the
+specified DOM ``element``.
+
+.. seealso:: :py:func:`restoreCommonProperties`
+%End
+
+  private:
+    QgsPointCloudRenderer( const QgsPointCloudRenderer &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

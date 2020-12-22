@@ -21,6 +21,7 @@
 #include "qgslayouttablecolumn.h"
 #include "qgsnumericformat.h"
 #include "qgsxmlutils.h"
+#include "qgsexpressioncontextutils.h"
 
 //
 // QgsLayoutItemManualTable
@@ -63,18 +64,30 @@ bool QgsLayoutItemManualTable::getTableContents( QgsLayoutTableContents &content
 
   QgsNumericFormatContext numericContext;
 
+  QgsExpressionContext context = createExpressionContext();
+
+  int rowNumber = 0;
   for ( const QgsTableRow &row : qgis::as_const( mContents ) )
   {
     QgsLayoutTableRow currentRow;
 
-    for ( int i = 0; i < mColumns.count(); ++i )
+    for ( int columnNumber = 0; columnNumber < mColumns.count(); ++columnNumber )
     {
-      if ( i < row.count() )
+      if ( columnNumber < row.count() )
       {
-        if ( row.at( i ).numericFormat() )
-          currentRow << row.at( i ).numericFormat()->formatDouble( row.at( i ).content().toDouble(), numericContext );
+        QVariant cellContent = row.at( columnNumber ).content();
+
+        if ( cellContent.canConvert< QgsProperty >() )
+        {
+          // expression based cell content, evaluate now
+          QgsExpressionContextScopePopper popper( context, scopeForCell( rowNumber, columnNumber ) );
+          cellContent = cellContent.value< QgsProperty >().value( context );
+        }
+
+        if ( row.at( columnNumber ).numericFormat() )
+          currentRow << row.at( columnNumber ).numericFormat()->formatDouble( cellContent.toDouble(), numericContext );
         else
-          currentRow << row.at( i ).content().toString();
+          currentRow << cellContent.toString();
       }
       else
       {
@@ -82,6 +95,7 @@ bool QgsLayoutItemManualTable::getTableContents( QgsLayoutTableContents &content
       }
     }
     contents << currentRow;
+    rowNumber++;
   }
 
   recalculateTableSize();
@@ -302,6 +316,36 @@ bool QgsLayoutItemManualTable::calculateMaxRowHeights()
   }
   mMaxRowHeightMap = newHeights;
   return true;
+}
+
+QgsTextFormat QgsLayoutItemManualTable::textFormatForHeader( int column ) const
+{
+//  if ( mHeaders.value( column ).)
+  return QgsLayoutTable::textFormatForHeader( column );
+}
+
+QgsTextFormat QgsLayoutItemManualTable::textFormatForCell( int row, int column ) const
+{
+  if ( mContents.value( row ).value( column ).textFormat().isValid() )
+    return mContents.value( row ).value( column ).textFormat();
+
+  return QgsLayoutTable::textFormatForCell( row, column );
+}
+
+Qt::Alignment QgsLayoutItemManualTable::horizontalAlignmentForCell( int row, int column ) const
+{
+  if ( row < mContents.size() && column < mContents.at( row ).size() )
+    return mContents.value( row ).value( column ).horizontalAlignment();
+
+  return QgsLayoutTable::horizontalAlignmentForCell( row, column );
+}
+
+Qt::Alignment QgsLayoutItemManualTable::verticalAlignmentForCell( int row, int column ) const
+{
+  if ( row < mContents.size() && column < mContents.at( row ).size() )
+    return mContents.value( row ).value( column ).verticalAlignment();
+
+  return QgsLayoutTable::verticalAlignmentForCell( row, column );
 }
 
 void QgsLayoutItemManualTable::refreshColumns()

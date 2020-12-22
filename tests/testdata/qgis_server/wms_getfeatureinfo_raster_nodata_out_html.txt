@@ -1,0 +1,13 @@
+*****
+Content-Type: text/html; charset=utf-8
+
+<HEAD>
+<TITLE> GetFeatureInfo results </TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+</HEAD>
+<BODY>
+<TABLE border=1 width=100%>
+<TR><TH width=25%>Layer</TH><TD>requires_warped_vrt</TD></TR>
+</BR></TABLE>
+<BR></BR>
+</BODY>

@@ -69,7 +69,7 @@ void QgsLayoutViewToolZoom::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
     return;
   }
 
-  mRubberBand->update( event->layoutPoint(), nullptr );
+  mRubberBand->update( event->layoutPoint(), Qt::KeyboardModifiers() );
 }
 
 void QgsLayoutViewToolZoom::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
@@ -143,5 +143,5 @@ void QgsLayoutViewToolZoom::startMarqueeZoom( QPointF scenePoint )
   mMarqueeZoom = true;
 
   mRubberBandStartPos = scenePoint;
-  mRubberBand->start( scenePoint, nullptr );
+  mRubberBand->start( scenePoint, Qt::KeyboardModifiers() );
 }

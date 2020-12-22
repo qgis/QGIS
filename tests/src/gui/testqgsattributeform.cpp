@@ -50,6 +50,7 @@ class TestQgsAttributeForm : public QObject
     void testConstraintsOnJoinedFields();
     void testEditableJoin();
     void testUpsertOnEdit();
+    void testFixAttributeForm();
     void testAttributeFormInterface();
     void testDefaultValueUpdate();
     void testDefaultValueUpdateRecursion();
@@ -876,6 +877,41 @@ void TestQgsAttributeForm::testUpsertOnEdit()
   delete layerA;
   delete layerB;
   delete layerC;
+}
+
+void TestQgsAttributeForm::testFixAttributeForm()
+{
+  QString def = QStringLiteral( "Point?field=id:integer&field=col1:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+
+  QVERIFY( layer );
+
+  QgsFeature f( layer->fields() );
+  f.setAttribute( 0, 1 );
+  f.setAttribute( 1, 681 );
+
+  QgsAttributeForm form( layer );
+
+  form.setMode( QgsAttributeEditorContext::FixAttributeMode );
+  form.setFeature( f );
+
+  QgsEditorWidgetWrapper *ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  QCOMPARE( ww->field().name(), QString( "col1" ) );
+  QCOMPARE( ww->value(), QVariant( 681 ) );
+
+  // now change the value
+  ww->setValue( QVariant( 630 ) );
+
+  // the value should be updated
+  QCOMPARE( ww->value(), QVariant( 630 ) );
+  // the feature is not saved yet, so contains the old value
+  QCOMPARE( form.feature().attribute( QStringLiteral( "col1" ) ), QVariant( 681 ) );
+  // now save the feature and enjoy its new value, but don't update the layer
+  QVERIFY( form.save() );
+  QCOMPARE( form.feature().attribute( QStringLiteral( "col1" ) ), QVariant( 630 ) );
+  QCOMPARE( ( int )layer->featureCount(), 0 );
+
+  delete layer;
 }
 
 void TestQgsAttributeForm::testAttributeFormInterface()

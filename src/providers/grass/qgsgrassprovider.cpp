@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QElapsedTimer>
 
 #include "qgis.h"
 #include "qgsdataprovider.h"
@@ -114,7 +115,7 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
     return;
   }
 
-  QTime time;
+  QElapsedTimer time;
   time.start();
 
   mPoints = Vect_new_line_struct();
@@ -249,6 +250,10 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
                   // TODO:
                   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
                 );
+
+  // Assign default encoding
+  if ( !textEncoding() )
+    QgsVectorDataProvider::setEncoding( QStringLiteral( "UTF-8" ) );
 
   mValid = true;
 
@@ -953,8 +958,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 
   dbString dbstr;
   db_init_string( &dbstr );
-  QString query;
-  query.sprintf( "select * from %s where %s = %d", fi->table, fi->key, cat );
+  QString query = QStringLiteral( "select * from %1 where %2=%3" ).arg( fi->table, fi->key ).arg( cat );
   db_set_string( &dbstr, query.toUtf8().constData() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );

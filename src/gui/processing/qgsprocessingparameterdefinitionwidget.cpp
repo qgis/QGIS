@@ -93,7 +93,7 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
 QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::createParameter( const QString &name ) const
 {
   std::unique_ptr< QgsProcessingParameterDefinition > param;
-  QgsProcessingParameterDefinition::Flags flags = nullptr;
+  QgsProcessingParameterDefinition::Flags flags = QgsProcessingParameterDefinition::Flags();
 
   if ( !mRequiredCheckBox->isChecked() )
     flags |= QgsProcessingParameterDefinition::FlagOptional;

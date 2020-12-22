@@ -1,6 +1,7 @@
 {
   "name": "array_last",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns the last value of an array.",
   "arguments": [ {"arg":"array","description":"an array"} ],
   "examples": [ { "expression":"array_last(array('a','b','c'))", "returns":"'c'"}]

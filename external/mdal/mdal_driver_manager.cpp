@@ -11,6 +11,8 @@
 #include "frmts/mdal_binary_dat.hpp"
 #include "frmts/mdal_selafin.hpp"
 #include "frmts/mdal_esri_tin.hpp"
+#include "frmts/mdal_ply.hpp"
+#include "frmts/mdal_dynamic_driver.hpp"
 #include "mdal_utils.hpp"
 
 #ifdef HAVE_HDF5
@@ -204,6 +206,7 @@ MDAL::DriverManager::DriverManager()
   mDrivers.push_back( std::make_shared<MDAL::DriverXmsTin>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSelafin>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverEsriTin>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverPly>() );
 
 #ifdef HAVE_HDF5
   mDrivers.push_back( std::make_shared<MDAL::DriverFlo2D>() );
@@ -238,5 +241,25 @@ MDAL::DriverManager::DriverManager()
 #if defined HAVE_HDF5 && defined HAVE_XML
   mDrivers.push_back( std::make_shared<MDAL::DriverXdmf>() );
 #endif
+
+  loadDynamicDrivers();
+}
+
+void MDAL::DriverManager::loadDynamicDrivers()
+{
+  std::string dirPath = MDAL::getEnvVar( "MDAL_DRIVER_PATH" );
+  if ( dirPath.empty() )
+    return;
+  dirPath += '/';
+  std::vector<std::string> libList = MDAL::Library::libraryFilesInDir( dirPath );
+  for ( const std::string &libFile : libList )
+  {
+    std::shared_ptr<MDAL::Driver> driver( MDAL::DriverDynamic::create( dirPath + libFile ) );
+
+    if ( driver )
+      mDrivers.push_back( driver );
+
+  }
+
 }
 

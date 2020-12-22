@@ -18,6 +18,7 @@
 #include "qgsidentifymenu.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
+#include "qgsdataitem.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsactionmenu.h"
@@ -131,7 +132,9 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
         break;
 
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::PointCloudLayer:
         break;
     }
   }
@@ -293,7 +296,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     // case 1
     QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
-      featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
+      featureTitle = QString::number( results[0].mFeature.id() );
     layerAction = new QAction( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
   }
   else
@@ -315,7 +318,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       {
         QString featureTitle = exp.evaluate( &context ).toString();
         if ( featureTitle.isEmpty() )
-          featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
+          featureTitle = QString::number( results[0].mFeature.id() );
         layerMenu = new QMenu( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
       }
       layerAction = layerMenu->menuAction();
@@ -325,21 +328,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   // case 1 or 2
   if ( layerAction )
   {
-    // icons
-    switch ( layer->geometryType() )
-    {
-      case QgsWkbTypes::PointGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ) );
-        break;
-      case QgsWkbTypes::LineGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ) );
-        break;
-      case QgsWkbTypes::PolygonGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ) );
-        break;
-      default:
-        break;
-    }
+    layerAction->setIcon( QgsLayerItem::iconForWkbType( layer->wkbType() ) );
 
     // add layer action to the top menu
     layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
@@ -376,7 +365,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     context.setFeature( result.mFeature );
     QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
-      featureTitle = QStringLiteral( "%1" ).arg( result.mFeature.id() );
+      featureTitle = QString::number( result.mFeature.id() );
 
     if ( customFeatureActions.isEmpty() && ( !featureActionMenu || featureActionMenu->actions().isEmpty() ) )
     {

@@ -1,6 +1,7 @@
 {
   "name": "sum",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the aggregate summed value from a field or expression.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

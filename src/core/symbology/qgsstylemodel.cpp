@@ -25,7 +25,34 @@
 
 const double ICON_PADDING_FACTOR = 0.16;
 
-const auto ENTITIES = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity, QgsStyle::LegendPatchShapeEntity };
+const auto ENTITIES = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity, QgsStyle::LegendPatchShapeEntity, QgsStyle::Symbol3DEntity };
+
+QgsAbstractStyleEntityIconGenerator *QgsStyleModel::sIconGenerator = nullptr;
+
+//
+// QgsAbstractStyleEntityIconGenerator
+//
+
+QgsAbstractStyleEntityIconGenerator::QgsAbstractStyleEntityIconGenerator( QObject *parent )
+  : QObject( parent )
+{
+
+}
+
+void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes )
+{
+  mIconSizes = sizes;
+}
+
+QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const
+{
+  return mIconSizes;
+}
+
+
+//
+// QgsStyleModel
+//
 
 QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   : QAbstractItemModel( parent )
@@ -55,6 +82,9 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
   // need updating to reflect the new colors
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsStyleModel::rebuildSymbolIcons );
+
+  if ( sIconGenerator )
+    connect( sIconGenerator, &QgsAbstractStyleEntityIconGenerator::iconGenerated, this, &QgsStyleModel::iconGenerated, Qt::QueuedConnection );
 }
 
 QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
@@ -92,7 +122,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
           if ( role == Qt::ToolTipRole )
           {
             QString tooltip = QStringLiteral( "<h3>%1</h3><p><i>%2</i>" ).arg( name,
-                              tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) );
+                              tags.count() > 0 ? tags.join( QLatin1String( ", " ) ) : tr( "Not tagged" ) );
 
             switch ( entityType )
             {
@@ -175,6 +205,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               case QgsStyle::ColorrampEntity:
               case QgsStyle::TagEntity:
               case QgsStyle::SmartgroupEntity:
+              case QgsStyle::Symbol3DEntity:
                 break;
             }
             return tooltip;
@@ -185,7 +216,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
           }
         }
         case Tags:
-          return mStyle->tagsOfSymbol( entityType, name ).join( QStringLiteral( ", " ) );
+          return mStyle->tagsOfSymbol( entityType, name ).join( QLatin1String( ", " ) );
       }
       return QVariant();
     }
@@ -315,6 +346,33 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
             }
 
+            case QgsStyle::Symbol3DEntity:
+            {
+              // hack for now -- we just use a generic "3d icon" svg file.
+              // TODO - render proper thumbnails
+
+              // use cached icon if possible
+              QIcon icon = mIconCache[ entityType ].value( name );
+              if ( !icon.isNull() )
+                return icon;
+
+              if ( sIconGenerator && !mPending3dSymbolIcons.contains( name ) )
+              {
+                mPending3dSymbolIcons.insert( name );
+                sIconGenerator->generateIcon( mStyle, QgsStyle::Symbol3DEntity, name );
+              }
+
+              // TODO - use hourglass icon
+              if ( mAdditionalSizes.isEmpty() )
+                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), QSize( 24, 24 ) );
+              for ( const QSize &s : mAdditionalSizes )
+              {
+                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), s );
+              }
+              mIconCache[ entityType ].insert( name, icon );
+              return icon;
+            }
+
             case QgsStyle::TagEntity:
             case QgsStyle::SmartgroupEntity:
               return QVariant();
@@ -354,6 +412,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::SmartgroupEntity:
         case QgsStyle::LabelSettingsEntity:
         case QgsStyle::TextFormatEntity:
+        case QgsStyle::Symbol3DEntity:
           return QVariant();
       }
       return QVariant();
@@ -361,10 +420,49 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
     case LayerTypeRole:
     {
-      if ( entityType != QgsStyle::LabelSettingsEntity )
-        return QVariant();
+      switch ( entityType )
+      {
+        case QgsStyle::LabelSettingsEntity:
+          return mStyle->labelSettingsLayerType( name );
 
-      return mStyle->labelSettingsLayerType( name );
+        case QgsStyle::Symbol3DEntity:
+        case QgsStyle::SymbolEntity:
+        case QgsStyle::LegendPatchShapeEntity:
+        case QgsStyle::TagEntity:
+        case QgsStyle::ColorrampEntity:
+        case QgsStyle::SmartgroupEntity:
+        case QgsStyle::TextFormatEntity:
+          return QVariant();
+      }
+      return QVariant();
+    }
+
+    case CompatibleGeometryTypesRole:
+    {
+      switch ( entityType )
+      {
+        case QgsStyle::Symbol3DEntity:
+        {
+          QVariantList res;
+          const QList< QgsWkbTypes::GeometryType > types = mStyle->symbol3DCompatibleGeometryTypes( name );
+          res.reserve( types.size() );
+          for ( QgsWkbTypes::GeometryType type : types )
+          {
+            res << static_cast< int >( type );
+          }
+          return res;
+        }
+
+        case QgsStyle::LabelSettingsEntity:
+        case QgsStyle::SymbolEntity:
+        case QgsStyle::LegendPatchShapeEntity:
+        case QgsStyle::TagEntity:
+        case QgsStyle::ColorrampEntity:
+        case QgsStyle::SmartgroupEntity:
+        case QgsStyle::TextFormatEntity:
+          return QVariant();
+      }
+      return QVariant();
     }
 
     default:
@@ -492,7 +590,17 @@ void QgsStyleModel::addDesiredIconSize( QSize size )
     return;
 
   mAdditionalSizes << size;
+
+  if ( sIconGenerator )
+    sIconGenerator->setIconSizes( mAdditionalSizes );
+
   mIconCache.clear();
+}
+
+void QgsStyleModel::setIconGenerator( QgsAbstractStyleEntityIconGenerator *generator )
+{
+  sIconGenerator = generator;
+  connect( sIconGenerator, &QgsAbstractStyleEntityIconGenerator::iconGenerated, QgsApplication::defaultStyleModel(), &QgsStyleModel::iconGenerated, Qt::QueuedConnection );
 }
 
 void QgsStyleModel::onEntityAdded( QgsStyle::StyleEntity type, const QString &name )
@@ -588,6 +696,29 @@ void QgsStyleModel::rebuildSymbolIcons()
   mIconCache[ QgsStyle::SymbolEntity ].clear();
   mExpressionContext.reset();
   emit dataChanged( index( 0, 0 ), index( mEntityNames[ QgsStyle::SymbolEntity ].count() - 1, 0 ), QVector<int>() << Qt::DecorationRole );
+}
+
+void QgsStyleModel::iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon )
+{
+  int row = mEntityNames[type].indexOf( name ) + offsetForEntity( type );
+
+  switch ( type )
+  {
+    case QgsStyle::Symbol3DEntity:
+      mPending3dSymbolIcons.remove( name );
+      mIconCache[ QgsStyle::Symbol3DEntity ].insert( name, icon );
+      emit dataChanged( index( row, 0 ), index( row, 0 ) );
+      break;
+
+    case QgsStyle::SymbolEntity:
+    case QgsStyle::TagEntity:
+    case QgsStyle::ColorrampEntity:
+    case QgsStyle::LegendPatchShapeEntity:
+    case QgsStyle::TextFormatEntity:
+    case QgsStyle::SmartgroupEntity:
+    case QgsStyle::LabelSettingsEntity:
+      break;
+  }
 }
 
 QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
@@ -696,9 +827,34 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
-  if ( styleEntityType == QgsStyle::LabelSettingsEntity && mLayerType != QgsWkbTypes::UnknownGeometry &&
-       mLayerType != static_cast< QgsWkbTypes::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
-    return false;
+  if ( mLayerType != QgsWkbTypes::UnknownGeometry )
+  {
+    switch ( styleEntityType )
+    {
+      case QgsStyle::SymbolEntity:
+      case QgsStyle::TextFormatEntity:
+      case QgsStyle::TagEntity:
+      case QgsStyle::ColorrampEntity:
+      case QgsStyle::SmartgroupEntity:
+      case QgsStyle::LegendPatchShapeEntity:
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+      {
+        if ( mLayerType != static_cast< QgsWkbTypes::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
+          return false;
+        break;
+      }
+
+      case QgsStyle::Symbol3DEntity:
+      {
+        const QVariantList types = sourceModel()->data( index, QgsStyleModel::CompatibleGeometryTypesRole ).toList();
+        if ( !types.empty() && !types.contains( mLayerType ) )
+          return false;
+        break;
+      }
+    }
+  }
 
   if ( mTagId >= 0 && !mTaggedSymbolNames.contains( name ) )
     return false;
@@ -860,3 +1016,4 @@ void QgsStyleProxyModel::setEntityFilters( const QList<QgsStyle::StyleEntity> &f
   mEntityFilters = filters;
   invalidateFilter();
 }
+

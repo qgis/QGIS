@@ -25,6 +25,7 @@
  */
 class ANALYSIS_EXPORT QgsGeometryLineIntersectionCheck : public QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryLineIntersectionCheck )
   public:
     QgsGeometryLineIntersectionCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )

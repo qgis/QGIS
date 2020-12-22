@@ -14,6 +14,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import time
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from qgis.core import (
     QgsWkbTypes,
@@ -24,6 +25,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsRasterLayer,
     QgsDataSourceUri,
+    QgsSettings,
 )
 from qgis.testing import unittest
 from osgeo import gdal
@@ -36,6 +38,9 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     uri = ''
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = 'postgres'
+
+    # Provider test cases can define a slowQuery for executeSql cancellation test
+    slowQuery = "select pg_sleep(30)"
 
     @classmethod
     def setUpClass(cls):
@@ -68,6 +73,16 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
         self.assertTrue(rl.isValid())
+
+    def test_sslmode_store(self):
+        """Test that sslmode is stored as a string in the settings"""
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection('database=\'mydb\' username=\'myuser\' password=\'mypasswd\' sslmode=verify-ca', {})
+        conn.store('my_sslmode_test')
+        settings = QgsSettings()
+        settings.beginGroup('/PostgreSQL/connections/my_sslmode_test')
+        self.assertEqual(settings.value("sslmode"), 'SslVerifyCa')
+        self.assertEqual(settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer), QgsDataSourceUri.SslVerifyCa)
 
     def test_postgis_geometry_filter(self):
         """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""
@@ -294,17 +309,74 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         service = uri.service()
 
         foreign_table_definition = """
-CREATE EXTENSION IF NOT EXISTS postgres_fdw;
-CREATE SERVER IF NOT EXISTS postgres_fdw_test_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (service '{service}', dbname '{dbname}', host '{host}', port '{port}');
-DROP SCHEMA  IF EXISTS foreign_schema CASCADE;
-CREATE SCHEMA IF NOT EXISTS foreign_schema;
-CREATE USER MAPPING IF NOT EXISTS FOR CURRENT_USER SERVER postgres_fdw_test_server OPTIONS (user '{user}', password '{password}');
-IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
-  FROM SERVER postgres_fdw_test_server
-  INTO foreign_schema;
-""".format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
+        CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+        CREATE SERVER IF NOT EXISTS postgres_fdw_test_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (service '{service}', dbname '{dbname}', host '{host}', port '{port}');
+        DROP SCHEMA  IF EXISTS foreign_schema CASCADE;
+        CREATE SCHEMA IF NOT EXISTS foreign_schema;
+        CREATE USER MAPPING IF NOT EXISTS FOR CURRENT_USER SERVER postgres_fdw_test_server OPTIONS (user '{user}', password '{password}');
+        IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
+        FROM SERVER postgres_fdw_test_server
+        INTO foreign_schema;
+        """.format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
         conn.executeSql(foreign_table_definition)
         self.assertEquals(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.Foreign)[0].tableName(), 'someData')
+
+    def test_fields(self):
+        """Test fields"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields('qgis_test', 'someData')
+        self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time', 'geom'])
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.gh_37666;
+        CREATE TABLE qgis_test.gh_37666 (id SERIAL PRIMARY KEY);
+        ALTER TABLE qgis_test.gh_37666 ADD COLUMN geom geometry(POINT,4326);
+        ALTER TABLE qgis_test.gh_37666 ADD COLUMN geog geography(POINT,4326);
+        INSERT INTO qgis_test.gh_37666 (id, geom) VALUES (221, ST_GeomFromText('point(9 45)', 4326));
+        UPDATE qgis_test.gh_37666 SET geog = ST_GeogFromWKB(st_asewkb(geom));
+        """
+
+        conn.executeSql(sql)
+        fields = conn.fields('qgis_test', 'gh_37666')
+        self.assertEqual([f.name() for f in fields], ['id', 'geom', 'geog'])
+        self.assertEqual([f.typeName() for f in fields], ['int4', 'geometry', 'geography'])
+        table = conn.table('qgis_test', 'gh_37666')
+        self.assertEqual(table.primaryKeyColumns(), ['id'])
+
+    def test_fields_no_pk(self):
+        """Test issue: no fields are exposed for raster_columns"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        self.assertTrue(conn.tableExists('public', 'raster_columns'))
+        fields = conn.fields("public", "raster_columns")
+        self.assertTrue(set(fields.names()).issuperset({
+            'r_table_catalog',
+            'r_table_schema',
+            'r_table_name',
+            'r_raster_column',
+            'srid',
+            'scale_x',
+            'scale_y',
+            'blocksize_x',
+            'blocksize_y',
+            'same_alignment',
+            'regular_blocking',
+            'num_bands',
+            'pixel_types',
+            'nodata_values',
+            'out_db',
+            'spatial_index'}))
+
+    def test_exceptions(self):
+        """Test that exception are converted to Python QgsProviderConnectionException"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.table('my_not_existent_schema', 'my_not_existent_table')
 
 
 if __name__ == '__main__':

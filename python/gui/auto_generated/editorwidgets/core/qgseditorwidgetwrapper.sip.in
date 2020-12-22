@@ -180,7 +180,7 @@ Gets the current constraint status.
 
     bool isBlockingCommit() const;
 %Docstring
-Returns true if the widget is preventing the feature from being committed. This may be ``True`` as a result
+Returns ``True`` if the widget is preventing the feature from being committed. This may be ``True`` as a result
 of attribute values failing enforced field constraints.
 
 .. seealso:: :py:func:`isValidConstraint`
@@ -283,17 +283,27 @@ Emit this signal when the constraint result visibility changed.
 %Docstring
 Will be called when the feature changes
 
-Is forwarded to the slot setValues()
+Is forwarded to the slot :py:func:`~QgsEditorWidgetWrapper.setValues`
 
 :param feature: The new feature
 %End
 
+
     virtual void setValue( const QVariant &value ) /Deprecated/;
+%Docstring
+Is called when the value of the widget needs to be changed. Updates the widget representation
+to reflect the new value.
+
+:param value: The new value of the attribute
+
+.. deprecated:: QGIS 3.10
+  
+%End
 
     void setValues( const QVariant &value, const QVariantList &additionalValues );
 %Docstring
-Is called, when the value of the widget or additional field values
-needs to be changed. Update the widget representation
+Is called when the value of the widget or additional field values
+needs to be changed. Updates the widget representation
 to reflect the new values.
 
 .. versionadded:: 3.10
@@ -301,7 +311,7 @@ to reflect the new values.
 
     void emitValueChanged();
 %Docstring
-Will call the value() method to determine the emitted value
+Will call the :py:func:`~QgsEditorWidgetWrapper.value` method to determine the emitted value
 %End
 
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );

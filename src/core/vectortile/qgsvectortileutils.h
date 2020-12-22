@@ -51,10 +51,23 @@ class CORE_EXPORT QgsVectorTileUtils
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, const QPointF &center );
 
-    //! Returns polygon (made by four corners of the tile) in screen coordinates
+    /**
+     * Returns polygon (made by four corners of the tile) in screen coordinates
+     *
+     * \throws QgsCsException
+     */
     static QPolygon tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp );
+
     //! Returns QgsFields instance based on the set of field names
     static QgsFields makeQgisFields( QSet<QString> flds );
+
+    /**
+     * Finds zoom level (assuming GoogleCRS84Quad tile matrix set) given map scale denominator.
+     *
+     * \since QGIS 3.16
+     */
+    static double scaleToZoom( double mapScale );
+
     //! Finds best fitting zoom level (assuming GoogleCRS84Quad tile matrix set) given map scale denominator and allowed zoom level range
     static int scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom );
     //! Returns a temporary vector layer for given sub-layer of tile in vector tile layer

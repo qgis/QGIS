@@ -1,6 +1,7 @@
 {
   "name": "single_sided_buffer",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a geometry formed by buffering out just one side of a linestring geometry. Distances are in the Spatial Reference System of this geometry.",
   "arguments": [ {"arg":"geometry","description":"a (multi)linestring geometry"},
                  {"arg":"distance","description":"buffer distance. Positive values will be buffered to the left of lines, negative values to the right"},

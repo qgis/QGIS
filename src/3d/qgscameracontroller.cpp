@@ -181,7 +181,10 @@ void QgsCameraController::resetView( float distance )
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
   QgsCameraPose camPose;
-  camPose.setCenterPoint( QgsVector3D( worldX, 0, worldY ) );
+  if ( mTerrainEntity )
+    camPose.setCenterPoint( QgsVector3D( worldX, mTerrainEntity->terrainElevationOffset(), worldY ) );
+  else
+    camPose.setCenterPoint( QgsVector3D( worldX, 0.0f, worldY ) );
   camPose.setDistanceFromCenterPoint( distance );
   camPose.setHeadingAngle( yaw );
 
@@ -248,7 +251,7 @@ void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
   if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
   {
     // something went horribly wrong but we need to at least try to fix it somehow
-    qDebug() << "camera position got NaN!";
+    qWarning() << "camera position got NaN!";
     mCameraPose.setCenterPoint( QgsVector3D( 0, 0, 0 ) );
   }
 
@@ -274,6 +277,12 @@ void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
       mCameraPose.setDistanceFromCenterPoint( dist );
       mCameraPose.setCenterPoint( QgsVector3D( intersectionPoint ) );
       mCameraPose.updateCamera( mCamera );
+    }
+    else
+    {
+      QgsVector3D centerPoint = mCameraPose.centerPoint();
+      centerPoint.set( centerPoint.x(), mTerrainEntity->terrainElevationOffset(), centerPoint.z() );
+      mCameraPose.setCenterPoint( centerPoint );
     }
   }
 

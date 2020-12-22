@@ -93,7 +93,24 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
+    /**
+     * Sets an \a offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     */
     void setOffset( QPointF offset ) { mOffset = offset; }
+
+    /**
+     * Returns the offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     */
     QPointF offset() { return mOffset; }
 
     /**
@@ -113,8 +130,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     /**
-     * Sets the units for the fill's offset.
-     * \param unit offset units
+     * Sets the \a unit for the fill's offset.
+     * \see offset()
      * \see offsetUnit()
     */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
@@ -122,14 +139,27 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Returns the units for the fill's offset.
      * \see setOffsetUnit()
+     * \see offset()
     */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
+    /**
+     * Sets the map unit \a scale for the fill's offset.
+     * \see setOffset()
+     * \see offsetMapUnitScale()
+    */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the fill's offset.
+     * \see offset()
+     * \see setOffsetMapUnitScale()
+    */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -290,19 +320,57 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     void setReferencePoint2IsCentroid( bool isCentroid ) { mReferencePoint2IsCentroid = isCentroid; }
     bool referencePoint2IsCentroid() const { return mReferencePoint2IsCentroid; }
 
-    //! Offset for gradient fill
+    /**
+     * Sets an \a offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     */
     void setOffset( QPointF offset ) { mOffset = offset; }
+
+    /**
+     * Returns the offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     */
     QPointF offset() const { return mOffset; }
 
-    //! Units for gradient fill offset
+    /**
+     * Sets the \a unit for the fill's offset.
+     * \see offset()
+     * \see offsetUnit()
+    */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
+    /**
+     * Returns the units for the fill's offset.
+     * \see setOffsetUnit()
+     * \see offset()
+    */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
+    /**
+     * Sets the map unit \a scale for the fill's offset.
+     * \see setOffset()
+     * \see offsetMapUnitScale()
+    */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the fill's offset.
+     * \see offset()
+     * \see setOffsetMapUnitScale()
+    */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -595,6 +663,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -642,7 +711,8 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
 /**
  * \ingroup core
- * Base class for polygon renderers generating texture images*/
+ * Base class for polygon renderers generating texture images
+*/
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 {
   public:
@@ -710,6 +780,13 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
 
+    /**
+     * Returns TRUE if the image brush should be transformed using the render context's texture origin.
+     *
+     * \since QGIS 3.16
+     */
+    virtual bool applyBrushTransformFromContext() const;
+
   private:
 #ifdef SIP_RUN
     QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer &other );
@@ -760,6 +837,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsStringMap properties() const override;
     QgsRasterFillSymbolLayer *clone() const override SIP_FACTORY;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    bool usesMapUnits() const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     QgsSymbol *subSymbol() override { return nullptr; }
@@ -922,7 +1000,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
   protected:
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
+    bool applyBrushTransformFromContext() const override;
   private:
 
     //! Path to the image file
@@ -988,6 +1066,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsStringMap properties() const override;
     QgsSVGFillSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    bool usesMapUnits() const override;
 
     /**
      * Sets the path to the SVG file to render in the fill.
@@ -1420,6 +1499,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
@@ -1682,6 +1762,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -1774,6 +1855,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -1915,6 +1997,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     bool mClipPoints = false;
 
     bool mRenderingFeature = false;
+    double mFeatureSymbolOpacity = 1;
 };
 
 
@@ -1961,6 +2044,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
+    bool usesMapUnits() const override;
 
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -1974,13 +2058,15 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * \see pointOnAllParts()
-     * \since QGIS 2.16 */
+     * \since QGIS 2.16
+    */
     void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
 
     /**
      * Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * \see setPointOnAllParts()
-     * \since QGIS 2.16 */
+     * \since QGIS 2.16
+    */
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
     /**
@@ -2027,6 +2113,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     bool mClipOnCurrentPartOnly = false;
 
     bool mRenderingFeature = false;
+    double mFeatureSymbolOpacity = 1;
 
     QgsFeatureId mCurrentFeatureId = -1;
     int mBiggestPartIndex = -1;

@@ -18,6 +18,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"
+#include "qgsattributeform.h"
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -62,6 +63,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
+    mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
   }
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
 

@@ -63,9 +63,10 @@ class CORE_EXPORT QgsGdalUtils
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
      * Ideally the source dataset should cover the whole area or the destination dataset.
+     * \returns TRUE on success
      * \since QGIS 3.8
      */
-    static void resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
+    static bool resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation );
 
     /**
      * Resamples a QImage \a image using GDAL resampler.
@@ -115,6 +116,16 @@ class CORE_EXPORT QgsGdalUtils
       GDALResampleAlg eResampleAlg,
       double dfMaxError,
       const GDALWarpOptions *psOptionsIn );
+
+    /**
+     * This is a wrapper around GDALCreateGenImgProjTransformer2() that takes into account RPC
+     * georeferencing (it sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF).
+     * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
+     * the image would not be shown in the correct location.
+     *
+     * \since QGIS 3.16
+     */
+    static void *rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS = nullptr, char **papszOptions = nullptr );
 
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables

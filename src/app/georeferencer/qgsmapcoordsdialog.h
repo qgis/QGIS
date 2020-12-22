@@ -20,6 +20,8 @@
 #include "qgspointxy.h"
 #include "qgsmapcanvas.h"
 #include "qgspointlocator.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgscoordinatereferencesystem.h"
 
 
 #include "ui_qgsmapcoordsdialogbase.h"
@@ -57,7 +59,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent = nullptr );
+    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent = nullptr );
     ~QgsMapCoordsDialog() override;
 
   private slots:
@@ -70,16 +72,20 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     void setPrevTool();
 
   signals:
-    void pointAdded( const QgsPointXY &, const QgsPointXY & );
+    void pointAdded( const QgsPointXY &a, const QgsPointXY &b, const QgsCoordinateReferenceSystem &crs );
 
   private:
     double dmsToDD( const QString &dms );
 
     QPushButton *mPointFromCanvasPushButton = nullptr;
 
+    //QgsProjectionSelectionWidget *mProjSelect = nullptr;
+
     QgsGeorefMapToolEmitPoint *mToolEmitPoint = nullptr;
     QgsMapTool *mPrevMapTool = nullptr;
     QgsMapCanvas *mQgisCanvas = nullptr;
+
+    QgsCoordinateReferenceSystem mRasterCrs;
 
     QgsPointXY mPixelCoords;
 };

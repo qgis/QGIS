@@ -1,0 +1,153 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsabstractmaterialsettings.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+enum class QgsMaterialSettingsRenderingTechnique
+  {
+  Triangles,
+  Lines,
+  InstancedPoints,
+  Points,
+  TrianglesWithFixedTexture,
+  TrianglesFromModel,
+  TrianglesDataDefined,
+};
+
+
+class QgsMaterialContext
+{
+%Docstring
+Context settings for a material.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsabstractmaterialsettings.h"
+%End
+  public:
+
+    bool isSelected() const;
+%Docstring
+Returns ``True`` if the material should represent a selected state.
+
+.. seealso:: :py:func:`setIsSelected`
+%End
+
+    void setIsSelected( bool isSelected );
+%Docstring
+Sets whether the material should represent a selected state.
+
+.. seealso:: :py:func:`isSelected`
+%End
+
+    QColor selectionColor() const;
+%Docstring
+Returns the color for representing materials in a selected state.
+
+.. seealso:: :py:func:`setSelectionColor`
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets the color for representing materials in a selected state.
+
+.. seealso:: :py:func:`selectionColor`
+%End
+
+};
+
+
+class QgsAbstractMaterialSettings /Abstract/
+{
+%Docstring
+Abstract base class for material settings.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstractmaterialsettings.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == QLatin1String( "gooch" ) )
+    {
+      sipType = sipType_QgsGoochMaterialSettings;
+    }
+    else if ( sipCpp->type() == QLatin1String( "phong" ) )
+    {
+      sipType = sipType_QgsPhongMaterialSettings;
+    }
+    else if ( sipCpp->type() == "phongtextured" )
+    {
+      sipType = sipType_QgsPhongTexturedMaterialSettings;
+    }
+    else if ( sipCpp->type() == "simpleline" )
+    {
+      sipType = sipType_QgsSimpleLineMaterialSettings;
+    }
+    else if ( sipCpp->type() == "null" )
+    {
+      sipType = sipType_QgsNullMaterialSettings;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    virtual ~QgsAbstractMaterialSettings();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the unique type name for the material.
+%End
+
+    virtual QgsAbstractMaterialSettings *clone() const = 0 /Factory/;
+%Docstring
+Clones the material settings.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext & );
+%Docstring
+Reads settings from a DOM ``element``
+%End
+
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
+%Docstring
+Writes settings to a DOM ``element``
+%End
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsabstractmaterialsettings.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

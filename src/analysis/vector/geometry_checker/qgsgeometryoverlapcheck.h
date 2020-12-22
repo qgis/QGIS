@@ -92,6 +92,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
  */
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryOverlapCheck )
   public:
 
     /**

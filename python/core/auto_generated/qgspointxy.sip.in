@@ -33,12 +33,12 @@ supports Z and M values.
   public:
     QgsPointXY();
 
-    QgsPointXY( const QgsPointXY &p );
+    QgsPointXY( const QgsPointXY &p ) /HoldGIL/;
 %Docstring
 Create a point from another point
 %End
 
-    QgsPointXY( double x, double y );
+    QgsPointXY( double x, double y ) /HoldGIL/;
 %Docstring
 Create a point from x,y coordinates
 
@@ -46,7 +46,7 @@ Create a point from x,y coordinates
 :param y: y coordinate
 %End
 
-    QgsPointXY( QPointF point );
+    QgsPointXY( QPointF point ) /HoldGIL/;
 %Docstring
 Create a point from a QPointF
 
@@ -55,7 +55,7 @@ Create a point from a QPointF
 .. versionadded:: 2.7
 %End
 
-    QgsPointXY( QPoint point );
+    QgsPointXY( QPoint point ) /HoldGIL/;
 %Docstring
 Create a point from a QPoint
 
@@ -64,7 +64,7 @@ Create a point from a QPoint
 .. versionadded:: 2.7
 %End
 
-    QgsPointXY( const QgsPoint &point );
+    QgsPointXY( const QgsPoint &point ) /HoldGIL/;
 %Docstring
 Create a new point.
 Z and M values will be dropped.
@@ -74,33 +74,33 @@ Z and M values will be dropped.
 
     ~QgsPointXY();
 
-    void setX( double x );
+    void setX( double x ) /HoldGIL/;
 %Docstring
 Sets the x value of the point
 
 :param x: x coordinate
 %End
 
-    void setY( double y );
+    void setY( double y ) /HoldGIL/;
 %Docstring
 Sets the y value of the point
 
 :param y: y coordinate
 %End
 
-    void set( double x, double y );
+    void set( double x, double y ) /HoldGIL/;
 %Docstring
 Sets the x and y value of the point
 %End
 
-    double x() const;
+    double x() const /HoldGIL/;
 %Docstring
 Gets the x value of the point
 
 :return: x coordinate
 %End
 
-    double y() const;
+    double y() const /HoldGIL/;
 %Docstring
 Gets the y value of the point
 
@@ -128,21 +128,21 @@ Returns the well known text representation for the point (e.g. "POINT(x y)").
 The wkt is created without an SRID.
 %End
 
-    double sqrDist( double x, double y ) const;
+    double sqrDist( double x, double y ) const /HoldGIL/;
 %Docstring
 Returns the squared distance between this point a specified x, y coordinate.
 
 .. seealso:: :py:func:`distance`
 %End
 
-    double sqrDist( const QgsPointXY &other ) const;
+    double sqrDist( const QgsPointXY &other ) const /HoldGIL/;
 %Docstring
 Returns the squared distance between this point another point.
 
 .. seealso:: :py:func:`distance`
 %End
 
-    double distance( double x, double y ) const;
+    double distance( double x, double y ) const /HoldGIL/;
 %Docstring
 Returns the distance between this point and a specified x, y coordinate.
 
@@ -154,7 +154,7 @@ Returns the distance between this point and a specified x, y coordinate.
 .. versionadded:: 2.16
 %End
 
-    double distance( const QgsPointXY &other ) const;
+    double distance( const QgsPointXY &other ) const /HoldGIL/;
 %Docstring
 Returns the distance between this point and another point.
 
@@ -165,17 +165,17 @@ Returns the distance between this point and another point.
 .. versionadded:: 2.16
 %End
 
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const /HoldGIL/;
 %Docstring
 Returns the minimum distance between this point and a segment
 %End
 
-    double azimuth( const QgsPointXY &other ) const;
+    double azimuth( const QgsPointXY &other ) const /HoldGIL/;
 %Docstring
 Calculates azimuth between this point and other one (clockwise in degree, starting from north)
 %End
 
-    QgsPointXY project( double distance, double bearing ) const;
+    QgsPointXY project( double distance, double bearing ) const /HoldGIL/;
 %Docstring
 Returns a new point which corresponds to this point projected by a specified distance
 in a specified bearing.
@@ -186,7 +186,7 @@ in a specified bearing.
 .. versionadded:: 2.16
 %End
 
-    bool isEmpty() const;
+    bool isEmpty() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is empty.
 Unlike :py:class:`QgsPoint`, this class is also used to retrieve graphical coordinates like QPointF.
@@ -196,7 +196,7 @@ A QgsPointXY is considered empty, when the coordinates have not been explicitly 
 .. versionadded:: 3.10
 %End
 
-    bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
+    bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const /HoldGIL/;
 %Docstring
 Compares this point with another point with a fuzzy tolerance
 
@@ -208,11 +208,11 @@ Compares this point with another point with a fuzzy tolerance
 .. versionadded:: 2.9
 %End
 
-    bool operator==( const QgsPointXY &other );
+    bool operator==( const QgsPointXY &other ) /HoldGIL/;
 
-    bool operator!=( const QgsPointXY &other ) const;
+    bool operator!=( const QgsPointXY &other ) const /HoldGIL/;
 
-    void multiply( double scalar );
+    void multiply( double scalar ) /HoldGIL/;
 %Docstring
 Multiply x and y by the given value
 %End

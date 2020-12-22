@@ -157,6 +157,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mTemplateLineEdit</tabstop>
+  <tabstop>mFpsSpinBox</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
  </tabstops>

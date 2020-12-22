@@ -181,7 +181,7 @@ QString QgsCrashReport::htmlToMarkdown( const QString &html )
   int offset = 0;
   while ( hrefRegEx.indexIn( converted, offset ) != -1 )
   {
-    QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
+    QString url = hrefRegEx.cap( 1 ).replace( QLatin1String( "\"" ), QString() );
     url.replace( '\'', QString() );
     QString name = hrefRegEx.cap( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );

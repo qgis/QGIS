@@ -43,6 +43,13 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
+        <xs:element name="CLUSTER_SIZE" nillable="true" minOccurs="0" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:integer">
+              <xs:totalDigits value="10"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>

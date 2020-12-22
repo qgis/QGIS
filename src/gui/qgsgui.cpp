@@ -57,7 +57,8 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsnumericformatguiregistry.h"
-
+#include "qgscodeeditorcolorschemeregistry.h"
+#include "qgssubsetstringeditorproviderregistry.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -78,6 +79,11 @@ QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
 QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
 {
   return instance()->mSourceSelectProviderRegistry;
+}
+
+QgsSubsetStringEditorProviderRegistry *QgsGui::subsetStringEditorProviderRegistry()
+{
+  return instance()->mSubsetStringEditorProviderRegistry;
 }
 
 QgsShortcutsManager *QgsGui::shortcutsManager()
@@ -108,6 +114,11 @@ QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
 QgsNumericFormatGuiRegistry *QgsGui::numericFormatGuiRegistry()
 {
   return instance()->mNumericFormatGuiRegistry;
+}
+
+QgsCodeEditorColorSchemeRegistry *QgsGui::codeEditorColorSchemeRegistry()
+{
+  return instance()->mCodeEditorColorSchemeRegistry;
 }
 
 QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
@@ -158,7 +169,7 @@ QgsGui::HigFlags QgsGui::higFlags()
   }
   else
   {
-    return nullptr;
+    return QgsGui::HigFlags();
   }
 }
 
@@ -178,6 +189,8 @@ QgsGui::~QgsGui()
   delete mWidgetStateHelper;
   delete mProjectStorageGuiRegistry;
   delete mProviderGuiRegistry;
+  delete mCodeEditorColorSchemeRegistry;
+  delete mSubsetStringEditorProviderRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -223,16 +236,20 @@ QgsGui::QgsGui()
   mNative = new QgsNative();
 #endif
 
+  mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
+
   // provider gui registry initialize QgsProviderRegistry too
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );
   mProjectStorageGuiRegistry = new QgsProjectStorageGuiRegistry();
   mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry();
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mNumericFormatGuiRegistry = new QgsNumericFormatGuiRegistry();
+  mSubsetStringEditorProviderRegistry = new QgsSubsetStringEditorProviderRegistry();
 
   mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();
@@ -316,3 +333,10 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
   }
   return false;
 }
+
+///@cond PRIVATE
+void QgsGui::emitOptionsChanged()
+{
+  emit optionsChanged();
+}
+///@endcond

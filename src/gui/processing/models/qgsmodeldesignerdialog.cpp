@@ -77,13 +77,14 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   : QMainWindow( parent, flags )
 {
   setupUi( this );
-  QgsGui::enableAutoGeometryRestore( this );
 
   setAttribute( Qt::WA_DeleteOnClose );
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
   setWindowFlags( Qt::WindowMinimizeButtonHint |
                   Qt::WindowMaximizeButtonHint |
                   Qt::WindowCloseButtonHint );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   mModel = qgis::make_unique< QgsProcessingModelAlgorithm >();
   mModel->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
@@ -156,6 +157,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   {
     mScene->selectAll();
   } );
+
+  QStringList docksTitle = settings.value( QStringLiteral( "ModelDesigner/hiddenDocksTitle" ), QStringList(), QgsSettings::App ).toStringList();
+  QStringList docksActive = settings.value( QStringLiteral( "ModelDesigner/hiddenDocksActive" ), QStringList(), QgsSettings::App ).toStringList();
+  if ( !docksTitle.isEmpty() )
+  {
+    for ( const auto &title : docksTitle )
+    {
+      mPanelStatus.insert( title, PanelStatus( true, docksActive.contains( title ) ) );
+    }
+  }
+  mActionHidePanels->setChecked( !docksTitle.isEmpty() );
+  connect( mActionHidePanels, &QAction::toggled, this, &QgsModelDesignerDialog::setPanelVisibility );
 
   mUndoAction = mUndoStack->createUndoAction( this );
   mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
@@ -339,11 +352,40 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     repaintModel();
     endUndoCommand();
   } );
+
   updateWindowTitle();
+
+  // restore the toolbar and dock widgets positions using Qt settings API
+  restoreState( settings.value( QStringLiteral( "ModelDesigner/state" ), QByteArray(), QgsSettings::App ).toByteArray() );
 }
 
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
 {
+  QgsSettings settings;
+  if ( !mPanelStatus.isEmpty() )
+  {
+    QStringList docksTitle;
+    QStringList docksActive;
+
+    for ( const auto &panel : mPanelStatus.toStdMap() )
+    {
+      if ( panel.second.isVisible )
+        docksTitle << panel.first;
+      if ( panel.second.isActive )
+        docksActive << panel.first;
+    }
+    settings.setValue( QStringLiteral( "ModelDesigner/hiddenDocksTitle" ), docksTitle, QgsSettings::App );
+    settings.setValue( QStringLiteral( "ModelDesigner/hiddenDocksActive" ), docksActive, QgsSettings::App );
+  }
+  else
+  {
+    settings.remove( QStringLiteral( "ModelDesigner/hiddenDocksTitle" ), QgsSettings::App );
+    settings.remove( QStringLiteral( "ModelDesigner/hiddenDocksActive" ), QgsSettings::App );
+  }
+
+  // store the toolbar/dock widget settings using Qt settings API
+  settings.setValue( QStringLiteral( "ModelDesigner/state" ), saveState(), QgsSettings::App );
+
   mIgnoreUndoStackChanges++;
   delete mSelectTool; // delete mouse handles before everything else
 }
@@ -586,7 +628,7 @@ void QgsModelDesignerDialog::exportToImage()
 
   img.save( filename );
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as image to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 5 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as image to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
   repaintModel( true );
 }
 
@@ -614,7 +656,7 @@ void QgsModelDesignerDialog::exportToPdf()
   mView->scene()->render( &painter, printerRect, totalRect );
   painter.end();
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as PDF to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 5 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as PDF to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
   repaintModel( true );
 }
 
@@ -642,7 +684,7 @@ void QgsModelDesignerDialog::exportToSvg()
   mView->scene()->render( &painter, svgRect, totalRect );
   painter.end();
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as SVG to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 5 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as SVG to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
   repaintModel( true );
 }
 
@@ -665,7 +707,7 @@ void QgsModelDesignerDialog::exportAsPython()
   fout << text;
   outFile.close();
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as Python script to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 5 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as Python script to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
 }
 
 void QgsModelDesignerDialog::toggleComments( bool show )
@@ -786,6 +828,56 @@ void QgsModelDesignerDialog::populateZoomToMenu()
   }
 }
 
+void QgsModelDesignerDialog::setPanelVisibility( bool hidden )
+{
+  const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  const QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+
+  if ( hidden )
+  {
+    mPanelStatus.clear();
+    //record status of all docks
+    for ( QDockWidget *dock : docks )
+    {
+      mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
+      dock->setVisible( false );
+    }
+
+    //record active dock tabs
+    for ( QTabBar *tabBar : tabBars )
+    {
+      QString currentTabTitle = tabBar->tabText( tabBar->currentIndex() );
+      mPanelStatus[ currentTabTitle ].isActive = true;
+    }
+  }
+  else
+  {
+    //restore visibility of all docks
+    for ( QDockWidget *dock : docks )
+    {
+      if ( mPanelStatus.contains( dock->windowTitle() ) )
+      {
+        dock->setVisible( mPanelStatus.value( dock->windowTitle() ).isVisible );
+      }
+    }
+
+    //restore previously active dock tabs
+    for ( QTabBar *tabBar : tabBars )
+    {
+      //loop through all tabs in tab bar
+      for ( int i = 0; i < tabBar->count(); ++i )
+      {
+        QString tabTitle = tabBar->tabText( i );
+        if ( mPanelStatus.contains( tabTitle ) && mPanelStatus.value( tabTitle ).isActive )
+        {
+          tabBar->setCurrentIndex( i );
+        }
+      }
+    }
+    mPanelStatus.clear();
+  }
+}
+
 void QgsModelDesignerDialog::validate()
 {
   QStringList issues;
@@ -807,7 +899,7 @@ void QgsModelDesignerDialog::validate()
       {
         longMessage += QStringLiteral( "<li>%1</li>" ).arg( issue );
       }
-      longMessage += QStringLiteral( "</ul>" );
+      longMessage += QLatin1String( "</ul>" );
 
       dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
       dialog->showMessage();
@@ -875,7 +967,6 @@ QgsModelChildDependenciesWidget::QgsModelChildDependenciesWidget( QWidget *paren
   , mChildId( childId )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();

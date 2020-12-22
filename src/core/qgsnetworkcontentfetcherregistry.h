@@ -88,7 +88,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     void download( bool redownload = false );
 
     /**
-     * @brief Cancel the download operation
+     * Cancel the download operation.
      */
     void cancel();
 

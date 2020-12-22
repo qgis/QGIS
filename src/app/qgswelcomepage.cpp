@@ -50,7 +50,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QgsSettings settings;
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
-  mainLayout->setMargin( 0 );
   mainLayout->setContentsMargins( 0, 0, 0, 0 );
   setLayout( mainLayout );
 
@@ -60,7 +59,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QWidget *leftContainer = new QWidget();
   QVBoxLayout *leftLayout = new QVBoxLayout;
   leftLayout->setContentsMargins( 0, 0, 0, 0 );
-  leftLayout->setMargin( 0 );
 
   int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.4 );
   mRecentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
@@ -90,7 +88,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QWidget *rightContainer = new QWidget();
   QVBoxLayout *rightLayout = new QVBoxLayout;
   rightLayout->setContentsMargins( 0, 0, 0, 0 );
-  rightLayout->setMargin( 0 );
 
   if ( !QgsSettings().value( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QStringLiteral( FEED_URL ) ) ), false, QgsSettings::Core ).toBool() )
   {
@@ -99,7 +96,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     QWidget *newsContainer = new QWidget();
     QVBoxLayout *newsLayout = new QVBoxLayout();
     newsLayout->setContentsMargins( 0, 0, 0, 0 );
-    newsLayout->setMargin( 0 );
     mNewsFeedTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "News" ) ) );
     mNewsFeedTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
     newsLayout->addWidget( mNewsFeedTitle, 0 );
@@ -127,7 +123,6 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QWidget *templateContainer = new QWidget();
   QVBoxLayout *templateLayout = new QVBoxLayout();
   templateLayout->setContentsMargins( 0, 0, 0, 0 );
-  templateLayout->setMargin( 0 );
   QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Project Templates" ) ) );
   templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
   templateLayout->addWidget( templatesTitle, 0 );
@@ -308,7 +303,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     menu->addAction( rescanAction );
 
     bool showClosestPath = storage ? false : true;
-    if ( storage && ( storage->type() == QStringLiteral( "geopackage" ) ) )
+    if ( storage && ( storage->type() == QLatin1String( "geopackage" ) ) )
     {
       QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
       QRegularExpressionMatch matchGpkg = reGpkg.match( path );
@@ -438,6 +433,11 @@ void QgsWelcomePage::updateNewsFeedVisibility()
   else
   {
     mSplitter2->restoreState( QgsSettings().value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
+    if ( mSplitter2->sizes().first() == 0 )
+    {
+      int splitSize = mSplitter2->height() / 2;
+      mSplitter2->setSizes( QList< int > { splitSize, splitSize} );
+    }
   }
 }
 

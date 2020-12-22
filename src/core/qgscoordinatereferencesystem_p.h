@@ -111,7 +111,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     //! The official proj4 acronym for the projection family
     QString mProjectionAcronym;
 
-    //! The official proj4 acronym for the ellipoid
+    //! The official proj4 acronym for the ellipsoid
     QString mEllipsoidAcronym;
 
     //! Whether this is a geographic or projected coordinate system

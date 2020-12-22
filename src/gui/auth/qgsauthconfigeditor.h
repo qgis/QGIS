@@ -95,7 +95,6 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
   private:
     bool mRelayMessages;
     QgsMessageBar *messageBar();
-    int messageTimeout();
     QString selectedConfigId();
 
     QSqlTableModel *mConfigModel = nullptr;

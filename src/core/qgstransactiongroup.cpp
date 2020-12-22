@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
+#include "qgslogger.h"
 
 #include <QTimer>
 
@@ -85,7 +86,7 @@ void QgsTransactionGroup::onEditingStarted()
   {
     mTransaction->addLayer( layer );
     layer->startEditing();
-    connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
 }
@@ -95,14 +96,14 @@ void QgsTransactionGroup::onLayerDeleted()
   mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) );
 }
 
-void QgsTransactionGroup::onCommitChanges()
+void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
 {
   if ( mEditingStopping )
     return;
 
   mEditingStopping = true;
 
-  QgsVectorLayer *triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
+  const QgsVectorLayer *triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
 
   QString errMsg;
   if ( mTransaction->commit( errMsg ) )
@@ -110,17 +111,29 @@ void QgsTransactionGroup::onCommitChanges()
     const auto constMLayers = mLayers;
     for ( QgsVectorLayer *layer : constMLayers )
     {
-      if ( layer != sender() )
-        layer->commitChanges();
+      if ( layer != triggeringLayer )
+      {
+        layer->commitChanges( stopEditing );
+      }
     }
 
-    disableTransaction();
+    if ( stopEditing )
+    {
+      disableTransaction();
+    }
+    else
+    {
+      if ( ! mTransaction->begin( errMsg ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not restart a transaction for %1: %2" ).arg( triggeringLayer->name() ).arg( errMsg ) );
+      }
+    }
+
   }
   else
   {
     emit commitError( errMsg );
-    // Restart editing the calling layer in the next event loop cycle
-    QTimer::singleShot( 0, triggeringLayer, &QgsVectorLayer::startEditing );
+    restartTransaction( triggeringLayer );
   }
   mEditingStopping = false;
 }
@@ -147,8 +160,7 @@ void QgsTransactionGroup::onRollback()
   }
   else
   {
-    // Restart editing the calling layer in the next event loop cycle
-    QTimer::singleShot( 0, triggeringLayer, &QgsVectorLayer::startEditing );
+    restartTransaction( triggeringLayer );
   }
   mEditingStopping = false;
 }
@@ -160,9 +172,15 @@ void QgsTransactionGroup::disableTransaction()
   const auto constMLayers = mLayers;
   for ( QgsVectorLayer *layer : constMLayers )
   {
-    disconnect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    disconnect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     disconnect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
+}
+
+void QgsTransactionGroup::restartTransaction( const QgsVectorLayer *layer )
+{
+  // Restart editing the calling layer in the next event loop cycle
+  QTimer::singleShot( 0, layer, &QgsVectorLayer::startEditing );
 }
 
 QString QgsTransactionGroup::providerKey() const

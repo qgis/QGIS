@@ -31,6 +31,7 @@
 #include "qgsauthmanager.h"
 #include "qgstilecache.h"
 #include "qgsstringutils.h"
+#include "qgsarcgisrestquery.h"
 
 #include <cstring>
 #include <QFontMetrics>
@@ -189,8 +190,8 @@ void QgsAmsLegendFetcher::handleFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options )
-  : QgsRasterDataProvider( uri, options )
+QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsRasterDataProvider( uri, options, flags )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
   const QString referer = dataSource.param( QStringLiteral( "referer" ) );
@@ -203,7 +204,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   const QString authcfg = dataSource.authConfigId();
 
   const QString serviceUrl = dataSource.param( QStringLiteral( "url" ) );
-  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
+  mServiceInfo = QgsArcGisRestQueryUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
 
   QString layerUrl;
   if ( dataSource.param( QStringLiteral( "layer" ) ).isEmpty() )
@@ -216,7 +217,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   else
   {
     layerUrl = dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) );
-    mLayerInfo = QgsArcGisRestUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
+    mLayerInfo = QgsArcGisRestQueryUtils::getLayerInfo( layerUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
   }
 
   QVariantMap extentData;
@@ -232,7 +233,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   mExtent.setYMinimum( extentData[QStringLiteral( "ymin" )].toDouble() );
   mExtent.setXMaximum( extentData[QStringLiteral( "xmax" )].toDouble() );
   mExtent.setYMaximum( extentData[QStringLiteral( "ymax" )].toDouble() );
-  mCrs = QgsArcGisRestUtils::parseSpatialReference( extentData[QStringLiteral( "spatialReference" )].toMap() );
+  mCrs = QgsArcGisRestUtils::convertSpatialReference( extentData[QStringLiteral( "spatialReference" )].toMap() );
   if ( !mCrs.isValid() )
   {
     appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AMSProvider" ) ) );
@@ -338,7 +339,7 @@ QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvid
 
 QgsRasterDataProvider::ProviderCapabilities QgsAmsProvider::providerCapabilities() const
 {
-  return QgsRasterDataProvider::ReadLayerMetadata;
+  return ProviderCapability::ReadLayerMetadata | ProviderCapability::ReloadData;
 }
 
 QString QgsAmsProvider::name() const { return AMS_PROVIDER_KEY; }
@@ -412,7 +413,7 @@ QgsLayerMetadata QgsAmsProvider::layerMetadata() const
   return mLayerMetadata;
 }
 
-QgsRasterInterface *QgsAmsProvider::clone() const
+QgsAmsProvider *QgsAmsProvider::clone() const
 {
   QgsDataProvider::ProviderOptions options;
   options.transformContext = transformContext();
@@ -447,7 +448,7 @@ static inline QString dumpVariantMap( const QVariantMap &variantMap, const QStri
           result += QStringLiteral( "<li>%1</li>" ).arg( QgsStringUtils::insertLinks( v.toString() ) );
         }
       }
-      result += QStringLiteral( "</ul></td></tr>" );
+      result += QLatin1String( "</ul></td></tr>" );
     }
     else if ( !childMap.isEmpty() )
     {
@@ -739,7 +740,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         mError.clear();
         mErrorTitle.clear();
         QString contentType;
-        QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
+        QByteArray reply = QgsArcGisRestQueryUtils::queryService( requestUrl, authcfg, mErrorTitle, mError, mRequestHeaders, feedback, &contentType );
         if ( !mError.isEmpty() )
         {
           p.end();
@@ -839,7 +840,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   queryUrl.setQuery( query );
 
   const QString authcfg = dataSource.authConfigId();
-  const QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, authcfg, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
+  const QVariantList queryResults = QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
 
   QMap<int, QVariant> entries;
 
@@ -872,7 +873,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
         featureAttributes.append( it.value().toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs );
+      std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs ) );
       QgsFeature feature( fields );
       feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
       feature.setAttributes( featureAttributes );
@@ -883,7 +884,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
       params[QStringLiteral( "featureType" )] = attributesMap[resultMap[QStringLiteral( "displayFieldName" )].toString()].toString();
       store.setParams( params );
       store.addFeature( feature );
-      entries.insert( entries.size(), qVariantFromValue( QList<QgsFeatureStore>() << store ) );
+      entries.insert( entries.size(), QVariant::fromValue( QList<QgsFeatureStore>() << store ) );
     }
   }
   return QgsRasterIdentifyResult( format, entries );
@@ -1253,12 +1254,12 @@ QList<QgsDataItemProvider *> QgsAmsProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsAmsProvider( uri, options );
+  return new QgsAmsProvider( uri, options, flags );
 }
 
-QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri ) const
 {
   QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
@@ -1267,11 +1268,11 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
   return components;
 }
 
-QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
-  return dsUri.uri();
+  return dsUri.uri( false );
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

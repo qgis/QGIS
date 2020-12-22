@@ -230,12 +230,22 @@ class TestCase(_TestCase):
         if use_asserts:
             _TestCase.assertTrue(
                 self,
-                equal,
-                'Features (Expected fid: {}, Result fid: {}) differ in geometry: \n\n Expected geometry:\n {}\n\n Result geometry:\n {}'.format(
+                equal, ''
+                ' Features (Expected fid: {}, Result fid: {}) differ in geometry with method {}: \n\n'
+                '  At given precision ({}):\n'
+                '   Expected geometry: {}\n'
+                '   Result geometry:   {}\n\n'
+                '  Full precision:\n'
+                '   Expected geometry : {}\n'
+                '   Result geometry:   {}\n\n'.format(
                     geom0_id,
                     geom1_id,
+                    'geos' if topo_equal_check else 'wkt',
+                    precision,
                     geom0.constGet().asWkt(precision) if not geom0.isNull() else 'NULL',
-                    geom1.constGet().asWkt(precision) if not geom1.isNull() else 'NULL'
+                    geom1.constGet().asWkt(precision) if not geom1.isNull() else 'NULL',
+                    geom0.constGet().asWkt() if not geom1.isNull() else 'NULL',
+                    geom1.constGet().asWkt() if not geom0.isNull() else 'NULL'
                 )
             )
         else:
@@ -269,19 +279,22 @@ class TestCase(_TestCase):
             field_result = [fld for fld in fields_expected.toList() if fld.name() == field_expected.name()][0]
 
             # Cast field to a given type
+            isNumber = False
             if 'cast' in cmp:
                 if cmp['cast'] == 'int':
                     attr_expected = int(attr_expected) if attr_expected else None
                     attr_result = int(attr_result) if attr_result else None
+                    isNumber = True
                 if cmp['cast'] == 'float':
                     attr_expected = float(attr_expected) if attr_expected else None
                     attr_result = float(attr_result) if attr_result else None
+                    isNumber = True
                 if cmp['cast'] == 'str':
                     attr_expected = str(attr_expected) if attr_expected else None
                     attr_result = str(attr_result) if attr_result else None
 
             # Round field (only numeric so it works with __all__)
-            if 'precision' in cmp and field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong]:
+            if 'precision' in cmp and (field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong] or isNumber):
                 if not attr_expected == NULL:
                     attr_expected = round(attr_expected, cmp['precision'])
                 if not attr_result == NULL:

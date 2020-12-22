@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgslayoutmultiframe.h"
 #include "qgsconditionalstyle.h"
+#include "qgstextformat.h"
 #include <QFont>
 #include <QColor>
 #include <QPair>
@@ -237,31 +238,51 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the \a font used to draw header text in the table.
      * \see headerFont()
      * \see setContentFont()
+     * \deprecated use setHeaderTextFormat() instead
      */
-    void setHeaderFont( const QFont &font );
+    Q_DECL_DEPRECATED void setHeaderFont( const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Returns the font used to draw header text in the table.
      * \see setHeaderFont()
      * \see contentFont()
+     * \deprecated use headerTextFormat() instead
      */
-    QFont headerFont() const { return mHeaderFont; }
+    Q_DECL_DEPRECATED QFont headerFont() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used to draw header text in the table.
      * \see headerFontColor()
      * \see setHeaderFont()
      * \see setContentFontColor()
+     * \deprecated use setHeaderTextFormat() instead
      */
-    void setHeaderFontColor( const QColor &color );
+    Q_DECL_DEPRECATED void setHeaderFontColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used to draw header text in the table.
      * \see setHeaderFontColor()
      * \see headerFont()
      * \see contentFontColor()
+     * \deprecated use headerTextFormat() instead
      */
-    QColor headerFontColor() const { return mHeaderFontColor; }
+    Q_DECL_DEPRECATED QColor headerFontColor() const SIP_DEPRECATED;
+
+    /**
+     * Sets the \a format used to draw header text in the table.
+     * \see headerTextFormat()
+     * \see setContentTextFormat()
+     * \since QGIS 3.16
+     */
+    void setHeaderTextFormat( const QgsTextFormat &format );
+
+    /**
+     * Returns the format used to draw header text in the table.
+     * \see setHeaderTextFormat()
+     * \see contentTextFormat()
+     * \since QGIS 3.16
+     */
+    QgsTextFormat headerTextFormat() const;
 
     /**
      * Sets the horizontal \a alignment for table headers.
@@ -293,31 +314,51 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the \a font used to draw text in table body cells.
      * \see contentFont()
      * \see setHeaderFont()
+     * \deprecated use setContentTextFormat() instead
      */
-    void setContentFont( const QFont &font );
+    Q_DECL_DEPRECATED void setContentFont( const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Returns the font used to draw text in table body cells.
      * \see setContentFont()
      * \see headerFont()
+     * \deprecated use contextTextFormat() instead
      */
-    QFont contentFont() const { return mContentFont; }
+    Q_DECL_DEPRECATED QFont contentFont() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used to draw text in table body cells.
      * \see contentFontColor()
      * \see setContentFont()
      * \see setHeaderFontColor()
+     * \deprecated use setContentTextFormat() instead
      */
-    void setContentFontColor( const QColor &color );
+    Q_DECL_DEPRECATED void setContentFontColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used to draw text in table body cells.
      * \see setContentFontColor()
      * \see contentFont()
      * \see headerFontColor()
+     * \deprecated use contextTextFormat() instead
      */
-    QColor contentFontColor() const { return mContentFontColor; }
+    Q_DECL_DEPRECATED QColor contentFontColor() const SIP_DEPRECATED;
+
+    /**
+     * Sets the \a format used to draw content text in the table.
+     * \see contentTextFormat()
+     * \see setHeaderTextFormat()
+     * \since QGIS 3.16
+     */
+    void setContentTextFormat( const QgsTextFormat &format );
+
+    /**
+     * Returns the format used to draw content text in the table.
+     * \see setContentTextFormat()
+     * \see headerTextFormat()
+     * \since QGIS 3.16
+     */
+    QgsTextFormat contentTextFormat() const;
 
     /**
      * Sets whether grid lines should be drawn in the table
@@ -497,6 +538,13 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 
     /**
+     * Creates a new QgsExpressionContextScope for the cell at \a row, \a column.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const SIP_FACTORY;
+
+    /**
      * Returns the current contents of the table. Excludes header cells.
      */
     QgsLayoutTableContents &contents() { return mTableContents; }
@@ -535,11 +583,6 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     //! True if empty rows should be shown in the table
     bool mShowEmptyRows = false;
 
-    //! Header font
-    QFont mHeaderFont;
-
-    //! Header font color
-    QColor mHeaderFontColor = Qt::black;
 
     //! Alignment for table headers
     HeaderHAlignment mHeaderHAlignment = FollowColumn;
@@ -547,11 +590,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     //! Header display mode
     HeaderMode mHeaderMode = FirstFrame;
 
-    //! Table contents font
-    QFont mContentFont;
-
-    //! Table contents font color
-    QColor mContentFontColor = Qt::black;
+    QgsTextFormat mHeaderTextFormat;
+    QgsTextFormat mContentTextFormat;
 
     //! True if grid should be shown
     bool mShowGrid = true;
@@ -620,6 +660,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     /**
      * Calculates how many content rows would be visible within a frame of the specified
      * height.
+     * \param context render context
      * \param frameHeight height of frame
      * \param firstRow index of first row visible in frame (where 0 = first row in table)
      * \param includeHeader set to TRUE if frame would include a header row
@@ -628,10 +669,11 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * to TRUE would also include a count of these extra blank rows.
      * \returns number of visible content rows (excluding header row)
      */
-    int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
+    int rowsVisible( QgsRenderContext &context, double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
 
     /**
      * Calculates how many content rows are visible within a given frame.
+     * \param context render context
      * \param frameIndex index number for frame
      * \param firstRow index of first row visible in frame (where 0 = first row in table)
      * \param includeEmptyRows set to TRUE to also include rows which would be empty in the returned count. For instance,
@@ -639,29 +681,30 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * to TRUE would also include a count of these extra blank rows.
      * \returns number of visible content rows (excludes header rows)
      */
-    int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
+    int rowsVisible( QgsRenderContext &context, int frameIndex, int firstRow, bool includeEmptyRows ) const;
 
     /**
      * Calculates a range of rows which should be visible in a given frame.
+     * \param context render context
      * \param frameIndex index number for frame
      * \returns row range
      */
-    QPair<int, int> rowRange( int frameIndex ) const;
+    QPair<int, int> rowRange( QgsRenderContext &context, int frameIndex ) const;
 
     /**
      * Draws the horizontal grid lines for the table.
-     * \param painter destination painter for grid lines
+     * \param context destination render context
      * \param firstRow index corresponding to first row shown in frame
      * \param lastRow index corresponding to last row shown in frame. If greater than the number of content rows in the
      * table, then the default row height will be used for the remaining rows.
      * \param drawHeaderLines set to TRUE to include for the table header
      * \see drawVerticalGridLines()
      */
-    void drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const;
+    void drawHorizontalGridLines( QgsLayoutItemRenderContext &context, int firstRow, int lastRow, bool drawHeaderLines ) const;
 
     /**
      * Draws the vertical grid lines for the table.
-     * \param painter destination painter for grid lines
+     * \param context destination render context
      * \param maxWidthMap QMap of int to double, where the int contains the column number and the double is the
      * maximum width of text present in the column.
      * \param firstRow index corresponding to first row shown in frame
@@ -674,7 +717,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see calculateMaxColumnWidths()
      * \note not available in Python bindings
      */
-    void drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells = false ) const SIP_SKIP;
+    void drawVerticalGridLines( QgsLayoutItemRenderContext &context, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells = false ) const SIP_SKIP;
 
     /**
      * Recalculates and updates the size of the table and all table frames.
@@ -689,6 +732,38 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      */
     bool contentsContainsRow( const QgsLayoutTableContents &contents, const QgsLayoutTableRow &row ) const;
 
+    /**
+     * Returns the text format to use for the cell at the specified \a row and \a column.
+     *
+     * \see textFormatForHeader()
+     * \since QGIS 3.16
+     */
+    virtual QgsTextFormat textFormatForCell( int row, int column ) const;
+
+    /**
+     * Returns the text format to use for the header cell at the specified \a column.
+     *
+     * \see textFormatForCell()
+     * \since QGIS 3.16
+     */
+    virtual QgsTextFormat textFormatForHeader( int column ) const;
+
+    /**
+     * Returns the horizontal alignment to use for the cell at the specified \a row and \a column.
+     *
+     * \see verticalAlignmentForCell()
+     * \since QGIS 3.16
+     */
+    virtual Qt::Alignment horizontalAlignmentForCell( int row, int column ) const;
+
+    /**
+     * Returns the vertical alignment to use for the cell at the specified \a row and \a column.
+     *
+     * \see horizontalAlignmentForCell()
+     * \since QGIS 3.16
+     */
+    virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
+
   private:
 
     QMap< CellStyleGroup, QString > mCellStyleNames;
@@ -696,9 +771,9 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     //! Initializes cell style map
     void initStyles();
 
-    bool textRequiresWrapping( const QString &text, double columnWidth, const QFont &font ) const;
+    bool textRequiresWrapping( QgsRenderContext &context, const QString &text, double columnWidth, const QgsTextFormat &format ) const;
 
-    QString wrappedText( const QString &value, double columnWidth, const QFont &font ) const;
+    QStringList wrappedText( QgsRenderContext &context, const QString &value, double columnWidth, const QgsTextFormat &format ) const;
 
     /**
      * Returns the calculated background color for a row and column combination.

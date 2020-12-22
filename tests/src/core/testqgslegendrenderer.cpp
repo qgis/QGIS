@@ -41,6 +41,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
 #include "qgsdiagramrenderer.h"
+#include "qgspalettedrasterrenderer.h"
 #include "diagram/qgspiediagram.h"
 #include "qgspropertytransformer.h"
 
@@ -118,7 +119,30 @@ static bool _verifyImage( const QString &testName, QString &report, int diff = 3
   return equal;
 }
 
+class TestRasterRenderer : public QgsPalettedRasterRenderer
+{
+  public:
 
+    TestRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes )
+      : QgsPalettedRasterRenderer( input, bandNumber, classes )
+    {}
+
+    // don't create the default legend nodes for this layer!
+    QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override
+    {
+      QList<QgsLayerTreeModelLegendNode *> res;
+
+      const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+      res.reserve( res.size() + items.size() );
+      for ( const QPair< QString, QColor > &item : items )
+      {
+        res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      }
+
+      return res;
+    }
+
+};
 
 class TestQgsLegendRenderer : public QObject
 {
@@ -141,6 +165,7 @@ class TestQgsLegendRenderer : public QObject
     void testSpacing();
     void testEffects();
     void testBigMarker();
+    void testBigMarkerMaxSize();
     void testOverrideSymbol();
 
     void testRightAlignText();
@@ -260,6 +285,14 @@ void TestQgsLegendRenderer::init()
   static const char RASTER_ARRAY[] = { 1, 2, 2, 1 };
   QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg( ( qulonglong ) RASTER_ARRAY );
   mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
+
+  std::unique_ptr< TestRasterRenderer > rasterRenderer( new  TestRasterRenderer( mRL->dataProvider(), 1,
+  {
+    QgsPalettedRasterRenderer::Class( 1, QColor( 0, 0, 0 ), QStringLiteral( "1" ) ),
+    QgsPalettedRasterRenderer::Class( 2, QColor( 255, 255, 255 ), QStringLiteral( "2" ) )
+  } ) );
+  mRL->setRenderer( rasterRenderer.release() );
+
   QgsProject::instance()->addMapLayer( mRL );
 
   QgsCategoryList cats;
@@ -491,6 +524,24 @@ void TestQgsLegendRenderer::testBigMarker()
   QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testBigMarkerMaxSize()
+{
+  QString testName = QStringLiteral( "legend_big_marker_max_size" );
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+  settings.setMaximumSymbolSize( 5 ); //restrict maximum size to 5 mm
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
@@ -915,6 +966,8 @@ void TestQgsLegendRenderer::testColumns_data()
   QTest::newRow( "5 items, 3 columns" ) << "legend_5_by_3" << 5 << 3;
   QTest::newRow( "6 items, 3 columns" ) << "legend_6_by_3" << 6 << 3;
   QTest::newRow( "7 items, 3 columns" ) << "legend_7_by_3" << 7 << 3;
+  QTest::newRow( "27 items, 3 columns" ) << "legend_27_by_3" << 27 << 3;
+  QTest::newRow( "27 items, 9 columns" ) << "legend_27_by_9" << 27 << 9;
 }
 
 void TestQgsLegendRenderer::testColumns()

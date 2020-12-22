@@ -1,6 +1,7 @@
 {
   "name": "array_append",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array with the given value added at the end.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"value","description":"the value to add"}],

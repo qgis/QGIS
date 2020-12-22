@@ -30,40 +30,6 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
 
-struct CORE_EXPORT QgsMeshMemoryDataset
-{
-  QgsMeshMemoryDataset();
-  QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const;
-  QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const;
-
-  QVector<QgsMeshDatasetValue> values;
-  QVector<int> active;
-  double time = -1;
-  bool valid = false;
-  double minimum = std::numeric_limits<double>::quiet_NaN();
-  double maximum = std::numeric_limits<double>::quiet_NaN();
-};
-
-struct CORE_EXPORT QgsMeshMemoryDatasetGroup
-{
-  QgsMeshMemoryDatasetGroup( const QString &nm, QgsMeshDatasetGroupMetadata::DataType dataType );
-  QgsMeshMemoryDatasetGroup( const QString &nm );
-  QgsMeshMemoryDatasetGroup();
-  QgsMeshDatasetGroupMetadata groupMetadata() const;
-  int datasetCount() const;
-  void addDataset( std::shared_ptr<QgsMeshMemoryDataset> dataset );
-  void clearDatasets();
-  std::shared_ptr<const QgsMeshMemoryDataset> constDataset( int index ) const;
-
-  QMap<QString, QString> metadata;
-  QVector<std::shared_ptr<QgsMeshMemoryDataset>> datasets;
-  QString name;
-  bool isScalar = true;
-  QgsMeshDatasetGroupMetadata::DataType type = QgsMeshDatasetGroupMetadata::DataOnVertices;
-  double minimum = std::numeric_limits<double>::quiet_NaN();
-  double maximum = std::numeric_limits<double>::quiet_NaN();
-};
-
 /**
  * \ingroup core
  * Provides data stored in-memory for QgsMeshLayer. Useful for plugins or tests.
@@ -117,7 +83,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      *    );
      * \endcode
      */
-    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
+                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     bool isValid() const override;
     QString name() const override;
@@ -180,16 +147,22 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
                               const QVector<double> &times
                             ) override;
 
+    virtual bool persistDatasetGroup( const QString &outputFilePath,
+                                      const QString &outputDriver,
+                                      QgsMeshDatasetSourceInterface *source,
+                                      int datasetGroupIndex
+                                    ) override;
+
     //! Returns the memory provider key
     static QString providerKey();
     //! Returns the memory provider description
     static QString providerDescription();
     //! Provider factory
-    static QgsMeshMemoryDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    static QgsMeshMemoryDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &providerOptions,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
   private:
-    void calculateMinMaxForDatasetGroup( QgsMeshMemoryDatasetGroup &grp ) const;
-    void calculateMinMaxForDataset( std::shared_ptr<QgsMeshMemoryDataset> &dataset ) const;
     QgsRectangle calculateExtent( ) const;
 
     bool splitMeshSections( const QString &uri );

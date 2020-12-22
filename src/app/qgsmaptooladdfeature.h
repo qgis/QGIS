@@ -31,7 +31,8 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
     void digitized( const QgsFeature &f ) override;
 
     /**
-     * Check if CaptureMode matches layer type. Default is true.
-     * \since QGIS 2.12 */
+     * Check if CaptureMode matches layer type. Default is TRUE.
+     * \since QGIS 2.12
+    */
     bool mCheckGeometryType;
 };

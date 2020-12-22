@@ -1,6 +1,7 @@
 {
   "name": "array_remove_at",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array with the given index removed.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"pos","description":"the position to remove (0 based)"}],

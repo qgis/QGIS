@@ -494,7 +494,7 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
 
   Q_ASSERT( layerProperty.size() == 1 );
   QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
-  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsOracleConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
+  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::translatedDisplayString( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
 
   QgsLayerItem::LayerType layerType;
   switch ( wkbType )
@@ -536,7 +536,7 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
 
 // ---------------------------------------------------------------------------
 QgsOracleRootItem::QgsOracleRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ORACLE" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "ORACLE" ) )
 {
   mIconName = QStringLiteral( "mIconOracle.svg" );
   populate();

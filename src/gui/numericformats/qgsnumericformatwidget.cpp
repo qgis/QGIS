@@ -33,6 +33,7 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
   setupUi( this );
   setFormat( format->clone() );
 
+  mDecimalsSpinBox->setClearValue( 6 );
   mThousandsLineEdit->setShowClearButton( true );
   mDecimalLineEdit->setShowClearButton( true );
 
@@ -140,6 +141,7 @@ QgsBearingNumericFormatWidget::QgsBearingNumericFormatWidget( const QgsNumericFo
 {
   setupUi( this );
 
+  mDecimalsSpinBox->setClearValue( 6 );
   mFormatComboBox->addItem( QObject::tr( "0 to 180°, with E/W suffix" ), QgsBearingNumericFormat::UseRange0To180WithEWDirectionalSuffix );
   mFormatComboBox->addItem( QObject::tr( "-180 to +180°" ), QgsBearingNumericFormat::UseRangeNegative180ToPositive180 );
   mFormatComboBox->addItem( QObject::tr( "0 to 360°" ), QgsBearingNumericFormat::UseRange0To360 );
@@ -223,6 +225,7 @@ QgsCurrencyNumericFormatWidget::QgsCurrencyNumericFormatWidget( const QgsNumeric
   : QgsNumericFormatWidget( parent )
 {
   setupUi( this );
+  mDecimalsSpinBox->setClearValue( 2 );
   setFormat( format->clone() );
 
   connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
@@ -300,6 +303,7 @@ QgsPercentageNumericFormatWidget::QgsPercentageNumericFormatWidget( const QgsNum
 {
   setupUi( this );
 
+  mDecimalsSpinBox->setClearValue( 6 );
   mScalingComboBox->addItem( QObject::tr( "Values are Percentages (e.g. 50)" ), QgsPercentageNumericFormat::ValuesArePercentage );
   mScalingComboBox->addItem( QObject::tr( "Values are Fractions (e.g. 0.5)" ), QgsPercentageNumericFormat::ValuesAreFractions );
 
@@ -368,6 +372,7 @@ QgsScientificNumericFormatWidget::QgsScientificNumericFormatWidget( const QgsNum
   : QgsNumericFormatWidget( parent )
 {
   setupUi( this );
+  mDecimalsSpinBox->setClearValue( 6 );
   setFormat( format->clone() );
 
   connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )

@@ -97,13 +97,13 @@ struct QgsWcsAuthorization
 };
 
 /**
-
-  \brief Data provider for OGC WCS layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a OGC Web Map Service.
-
+ *
+ * \brief Data provider for OGC WCS layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a OGC Web Map Service.
+ *
 */
 class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 {
@@ -121,7 +121,7 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      * \param options generic data provider options
      */
-    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags );
 
     //! copy constructor
     explicit QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
@@ -187,6 +187,7 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QString lastErrorFormat() override;
     QString name() const override;
     QString description() const override;
+    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
     int colorInterpretation( int bandNo ) const override;
@@ -296,8 +297,9 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     /**
      * \brief Gdal data types used to represent data in in QGIS,
-               may be longer than source data type to keep nulls
-               indexed from 0 */
+     *          may be longer than source data type to keep nulls
+     *          indexed from 0.
+     */
     QList<GDALDataType> mGdalDataType;
 
     //! GDAL source data types, indexed from 0
@@ -442,7 +444,7 @@ class QgsWcsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWcsProviderMetadata();
-    QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
 

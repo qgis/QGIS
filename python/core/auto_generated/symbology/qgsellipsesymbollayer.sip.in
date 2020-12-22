@@ -12,7 +12,7 @@
 class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 {
 %Docstring
-A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*
+A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
 %End
 
 %TypeHeaderCode
@@ -151,6 +151,8 @@ Returns the units for the symbol's stroke width.
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
+
+    virtual bool usesMapUnits() const;
 
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );

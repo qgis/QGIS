@@ -155,9 +155,10 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
     /**
      * Sets the map canvas to enable dragging of extent on a canvas.
      * \param canvas the map canvas
+     * \param drawOnCanvasOption set to false to disable to draw on canvas option
      * \since QGIS 3.0
      */
-    void setMapCanvas( QgsMapCanvas *canvas );
+    void setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption = true );
 
     /**
      * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.

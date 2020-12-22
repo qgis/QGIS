@@ -92,12 +92,12 @@ void QgsLegendFilterButton::updateMenu()
   if ( !mExpression.isEmpty() )
   {
     mClearExpressionAction->setEnabled( true );
-    mSetExpressionAction->setText( QString( tr( "Edit filter expression (current: %1)" ) ).arg( mExpression ) );
+    mSetExpressionAction->setText( tr( "Edit Filter Expression (current: %1)" ).arg( mExpression ) );
   }
   else
   {
     mClearExpressionAction->setEnabled( false );
-    mSetExpressionAction->setText( tr( "Edit filter expression" ) );
+    mSetExpressionAction->setText( tr( "Edit Filter Expression" ) );
   }
 }
 

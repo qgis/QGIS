@@ -34,6 +34,7 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
 %End
   public:
 
+
     QgsRelationEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 
@@ -108,46 +109,123 @@ Defines if a title label should be shown for this widget.
 .. versionadded:: 2.18
 %End
 
-    bool showLinkButton() const;
+ bool showLinkButton() const /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowLinkButton( bool showLinkButton );
+ void setShowLinkButton( bool showLinkButton ) /Deprecated/;
 %Docstring
 Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    bool showUnlinkButton() const;
+ bool showUnlinkButton() const /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
 %End
 
-    void setShowUnlinkButton( bool showUnlinkButton );
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    void setShowSaveChildEditsButton( bool showChildEdits );
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
 %Docstring
 Determines if the "Save child layer edits" button should be shown
 
 .. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use setVisibleButtons() instead
 %End
 
-    bool showSaveChildEditsButton() const;
+ bool showSaveChildEditsButton() const /Deprecated/;
 %Docstring
 Determines if the "Save child layer edits" button should be shown
 
 .. versionadded:: 3.14
+
+.. deprecated:: QGIS 3.16
+   use visibleButtons() instead
+%End
+
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+
+.. versionadded:: 3.16
+%End
+
+    bool forceSuppressFormPopup() const;
+%Docstring
+Determines the force suppress form popup status that is configured for this widget
+
+.. versionadded:: 3.16
+%End
+
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Sets force suppress form popup status with ``forceSuppressFormPopup``
+configured for this widget
+
+.. versionadded:: 3.16
+%End
+
+    QVariant nmRelationId() const;
+%Docstring
+Determines the relation id of the second relation involved in an N:M relation.
+
+.. versionadded:: 3.16
+%End
+
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+%Docstring
+Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
+If it's empty, then it's considered as a 1:M relationship.
+
+.. versionadded:: 3.16
+%End
+
+    QString label() const;
+%Docstring
+Determines the label of this element
+
+.. versionadded:: 3.16
+%End
+
+    void setLabel( const QString &label = QString() );
+%Docstring
+Sets ``label`` for this element
+If it's empty it takes the relation id as label
+
+.. versionadded:: 3.16
 %End
 
     QgsFeature feature() const;
@@ -167,6 +245,7 @@ Called when an ``attribute`` value in the parent widget has changed to ``newValu
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

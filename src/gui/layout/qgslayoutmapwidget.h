@@ -24,6 +24,7 @@
 #include "qgis_gui.h"
 #include "ui_qgslayoutmapwidgetbase.h"
 #include "ui_qgslayoutmaplabelingwidgetbase.h"
+#include "ui_qgslayoutmapclippingwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmapgrid.h"
 
@@ -31,6 +32,7 @@ class QgsMapLayer;
 class QgsLayoutItemMap;
 class QgsLayoutItemMapOverview;
 class QgsLayoutMapLabelingWidget;
+class QgsLayoutMapClippingWidget;
 class QgsBookmarkManagerProxyModel;
 
 /**
@@ -136,6 +138,7 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
     void mapCrsChanged( const QgsCoordinateReferenceSystem &crs );
     void overviewSymbolChanged();
     void showLabelSettings();
+    void showClipSettings();
     void switchToMoveContentTool();
     void aboutToShowBookmarkMenu();
 
@@ -145,8 +148,10 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QgsLayoutDesignerInterface *mInterface = nullptr;
     QPointer< QgsLayoutMapLabelingWidget > mLabelWidget;
+    QPointer< QgsLayoutMapClippingWidget > mClipWidget;
     QMenu *mBookmarkMenu = nullptr;
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
+    QString mReportTypeString;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();
@@ -240,6 +245,38 @@ class GUI_EXPORT QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, pri
 
   private:
     QPointer< QgsLayoutItemMap > mMapItem;
+};
+
+/**
+ * \ingroup gui
+ * Allows configuration of layout map clipping settings.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.16
+ */
+class GUI_EXPORT QgsLayoutMapClippingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapClippingWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    //! constructor
+    explicit QgsLayoutMapClippingWidget( QgsLayoutItemMap *map );
+
+    void setReportTypeString( const QString &string ) override;
+
+  protected:
+    bool setNewItem( QgsLayoutItem *item ) override;
+
+  private slots:
+    void updateGuiElements();
+    void atlasLayerChanged( QgsVectorLayer *layer );
+    void atlasToggled( bool atlasEnabled );
+
+  private:
+    QPointer< QgsLayoutItemMap > mMapItem;
+    QgsMapLayerModel *mLayerModel = nullptr;
+
+    bool mBlockUpdates = false;
 };
 
 #endif

@@ -28,6 +28,7 @@
 #include <QStringList>
 #include <QSize>
 #include <QAbstractItemModel>
+#include <QDebug>
 
 /*!
     Connect to all of the models signals.  Whenever anything happens
@@ -442,11 +443,19 @@ void ModelTest::data()
   }
 
   // General Purpose roles that should return a QColor
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   QVariant colorVariant = model->data( model->index( 0, 0 ), Qt::BackgroundColorRole );
+#else
+  QVariant colorVariant = model->data( model->index( 0, 0 ), Qt::BackgroundRole );
+#endif
   if ( colorVariant.isValid() )
     Q_ASSERT( colorVariant.canConvert( QVariant::Color ) );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   colorVariant = model->data( model->index( 0, 0 ), Qt::TextColorRole );
+#else
+  colorVariant = model->data( model->index( 0, 0 ), Qt::ForegroundRole );
+#endif
   if ( colorVariant.isValid() )
     Q_ASSERT( colorVariant.canConvert( QVariant::Color ) );
 
@@ -485,17 +494,18 @@ void ModelTest::rowsAboutToBeInserted( const QModelIndex &parent, int start, int
 void ModelTest::rowsInserted( const QModelIndex &parent, int start, int end )
 {
   Changing c = insert.pop();
-  Q_ASSERT( c.parent == parent );
-  Q_ASSERT( c.oldSize + ( end - start + 1 ) == model->rowCount( parent ) );
-  Q_ASSERT( c.last == model->data( model->index( start - 1, 0, c.parent ) ) );
-  /*
-  if (c.next != model->data(model->index(end + 1, 0, c.parent))) {
-      qDebug() << start << end;
-      for (int i=0; i < model->rowCount(); ++i)
-          qDebug() << model->index(i, 0).data().toString();
-      qDebug() << c.next << model->data(model->index(end + 1, 0, c.parent));
+  //*
+  if ( c.next != model->data( model->index( end + 1, 0, c.parent ) ) )
+  {
+    qDebug() << start << end;
+    for ( int i = 0; i < model->rowCount(); ++i )
+      qDebug() << model->index( i, 0 ).data().toString();
+    qDebug() << c.next << model->data( model->index( end + 1, 0, c.parent ) );
   }
-  */
+  //*/
+  Q_ASSERT( c.parent == parent );
+  Q_ASSERT_X( c.oldSize + ( end - start + 1 ) == model->rowCount( parent ), "Rows inserted", QStringLiteral( "%1 != %2" ).arg( c.oldSize + ( end - start + 1 ) ).arg( model->rowCount( parent ) ).toStdString().c_str() );
+  Q_ASSERT( c.last == model->data( model->index( start - 1, 0, c.parent ) ) );
   Q_ASSERT( c.next == model->data( model->index( end + 1, 0, c.parent ) ) );
 }
 
@@ -539,7 +549,7 @@ void ModelTest::rowsRemoved( const QModelIndex &parent, int start, int end )
 {
   Changing c = remove.pop();
   Q_ASSERT( c.parent == parent );
-  Q_ASSERT( c.oldSize - ( end - start + 1 ) == model->rowCount( parent ) );
+  Q_ASSERT_X( c.oldSize - ( end - start + 1 ) == model->rowCount( parent ), "Rows removed", QStringLiteral( "%1 != %2" ).arg( c.oldSize + ( end - start + 1 ) ).arg( model->rowCount( parent ) ).toStdString().c_str() );
   Q_ASSERT( c.last == model->data( model->index( start - 1, 0, c.parent ) ) );
   Q_ASSERT( c.next == model->data( model->index( start, 0, c.parent ) ) );
 }

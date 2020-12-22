@@ -40,6 +40,11 @@ class QgsVectorLayerFeatureSource;
 class QgsAbstract3DSymbol;
 class QgsFeature3DHandler;
 
+namespace Qt3DCore
+{
+  class QTransform;
+}
+
 #include <QFutureWatcher>
 
 
@@ -50,11 +55,11 @@ class QgsFeature3DHandler;
  *
  * \since QGIS 3.12
  */
-class QgsVectorLayerChunkLoaderFactory : public QgsChunkLoaderFactory
+class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 {
   public:
     //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel );
+    QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -112,6 +117,11 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
     explicit QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map );
 
     ~QgsVectorLayerChunkedEntity();
+  private slots:
+    void onTerrainElevationOffsetChanged( float newOffset );
+
+  private:
+    Qt3DCore::QTransform *mTransform = nullptr;
 };
 
 /// @endcond

@@ -17,9 +17,10 @@
 #include "qgsdb2dataitems.h"
 #include "qgsdb2newconnection.h"
 #include "qgsdb2sourceselect.h"
-
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssettings.h"
 
+#include <QFileDialog>
 
 void QgsDb2DataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
@@ -28,6 +29,14 @@ void QgsDb2DataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
+
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
+    menu->addAction( actionSaveServers );
+
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
+    menu->addAction( actionLoadServers );
   }
   else if ( QgsDb2ConnectionItem *connItem = qobject_cast< QgsDb2ConnectionItem * >( item ) )
   {
@@ -112,4 +121,24 @@ void QgsDb2DataItemGuiProvider::deleteConnection( QgsDataItem *item )
 void QgsDb2DataItemGuiProvider::refreshConnection( QgsDataItem *item )
 {
   item->refresh();
+}
+
+void QgsDb2DataItemGuiProvider::saveConnections()
+{
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::DB2 );
+  dlg.exec();
+}
+
+void QgsDb2DataItemGuiProvider::loadConnections( QgsDataItem *item )
+{
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::DB2, fileName );
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

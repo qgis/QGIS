@@ -58,7 +58,7 @@ int NormVecDecorator::addPoint( const QgsPoint &p )
     {
       estimateFirstDerivative( pointno );
       //update also the neighbours of the new point
-      const QList<int> list = mTIN->getSurroundingTriangles( pointno );
+      const QList<int> list = mTIN->surroundingTriangles( pointno );
       auto it = list.constBegin();//iterate through the list and analyze it
       while ( it != list.constEnd() )
       {
@@ -80,7 +80,7 @@ int NormVecDecorator::addPoint( const QgsPoint &p )
   return -1;
 }
 
-bool NormVecDecorator::calcNormal( double x, double y, Vector3D *result )
+bool NormVecDecorator::calcNormal( double x, double y, QgsPoint &result )
 {
   if ( !alreadyestimated )
   {
@@ -100,7 +100,7 @@ bool NormVecDecorator::calcNormal( double x, double y, Vector3D *result )
   }
 }
 
-bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector3D *result )
+bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, Vector3D *result )
 {
   if ( !alreadyestimated )
   {
@@ -121,7 +121,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
     result->setY( 0 );
     result->setZ( 0 );
 
-    const QList<int> vlist = getSurroundingTriangles( point );//get the value list
+    const QList<int> vlist = surroundingTriangles( pointIndex );//get the value list
     if ( vlist.empty() )//an error occurred in 'getSurroundingTriangles'
     {
       return false;
@@ -162,13 +162,13 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
         if ( p1 != -1 && p2 != -1 && p3 != -1 )
         {
-          if ( MathUtils::pointInsideTriangle( x, y, getPoint( p1 ), getPoint( p2 ), getPoint( p3 ) ) )
+          if ( MathUtils::pointInsideTriangle( x, y, point( p1 ), point( p2 ), point( p3 ) ) )
           {
             pointfound = true;
           }
 
           Vector3D addvec( 0, 0, 0 );
-          MathUtils::normalFromPoints( getPoint( p1 ), getPoint( p2 ), getPoint( p3 ), &addvec );
+          MathUtils::normalFromPoints( point( p1 ), point( p2 ), point( p3 ), &addvec );
           result->setX( result->getX() + addvec.getX() );
           result->setY( result->getY() + addvec.getY() );
           result->setZ( result->getZ() + addvec.getZ() );
@@ -254,7 +254,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, Vector3D *
     int nr2 = 0;
     int nr3 = 0;
 
-    if ( TriDecorator::getTriangle( x, y, p1, nr1, p2, nr2, p3, nr3 ) )//everything alright
+    if ( TriDecorator::triangleVertices( x, y, p1, nr1, p2, nr2, p3, nr3 ) )//everything alright
     {
       if ( ( *mNormVec )[ nr1 ] && ( *mNormVec )[ nr2 ] && ( *mNormVec )[ nr3 ] )
       {
@@ -308,7 +308,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, int &ptn1,
 {
   if ( v1 && v2 && v3 && state1 && state2 && state3 )
   {
-    if ( TriDecorator::getTriangle( x, y, p1, ptn1, p2, ptn2, p3, ptn3 ) )//everything alright
+    if ( TriDecorator::triangleVertices( x, y, p1, ptn1, p2, ptn2, p3, ptn3 ) )//everything alright
     {
       v1->setX( ( *mNormVec )[( ptn1 )]->getX() );
       v1->setY( ( *mNormVec )[( ptn1 )]->getY() );
@@ -360,7 +360,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   double currentweight = 0;//current weight
   PointState status;
 
-  const QList<int> vlist = getSurroundingTriangles( pointno );//get the value list
+  const QList<int> vlist = surroundingTriangles( pointno );//get the value list
 
   if ( vlist.empty() )
   {
@@ -418,11 +418,11 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 
     if ( p1 != -1 && p2 != -1 && p3 != -1 )//don't calculate normal, if a point is a virtual point
     {
-      MathUtils::normalFromPoints( getPoint( p1 ), getPoint( p2 ), getPoint( p3 ), &part );
-      double dist1 = getPoint( p3 )->distance3D( *getPoint( p1 ) );
-      double dist2 = getPoint( p3 )->distance3D( *getPoint( p2 ) );
+      MathUtils::normalFromPoints( point( p1 ), point( p2 ), point( p3 ), &part );
+      double dist1 = point( p3 )->distance3D( *point( p1 ) );
+      double dist2 = point( p3 )->distance3D( *point( p2 ) );
       //don't add the normal if the triangle is horizontal
-      if ( ( getPoint( p1 )->z() != getPoint( p2 )->z() ) || ( getPoint( p1 )->z() != getPoint( p3 )->z() ) )
+      if ( ( point( p1 )->z() != point( p2 )->z() ) || ( point( p1 )->z() != point( p3 )->z() ) )
       {
         currentweight = 1 / ( dist1 * dist1 * dist2 * dist2 );
         total.setX( total.getX() + part.getX()*currentweight );
@@ -493,7 +493,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 //weighted method of little
 bool NormVecDecorator::estimateFirstDerivatives( QgsFeedback *feedback )
 {
-  int numberPoints = getNumberOfPoints();
+  int numberPoints = pointsCount();
   for ( int i = 0; i < numberPoints; i++ )
   {
     if ( feedback )
@@ -545,16 +545,14 @@ bool NormVecDecorator::swapEdge( double x, double y )
     bool b = false;
     if ( alreadyestimated )
     {
-      QList<int> *list = getPointsAroundEdge( x, y );
-      if ( list )
+      const QList<int> list = pointsAroundEdge( x, y );
+      if ( !list.empty() )
       {
         b = mTIN->swapEdge( x, y );
-        QList<int>::iterator it;
-        for ( it = list->begin(); it != list->end(); ++it )
+        for ( int i : list )
         {
-          estimateFirstDerivative( ( *it ) );
+          estimateFirstDerivative( i );
         }
-        delete list;
       }
     }
     else
@@ -577,5 +575,14 @@ bool NormVecDecorator::saveTriangulation( QgsFeatureSink *sink, QgsFeedback *fee
     return false;
   }
   return mTIN->saveTriangulation( sink, feedback );
+}
+
+QgsMesh NormVecDecorator::triangulationToMesh( QgsFeedback *feedback ) const
+{
+  if ( !mTIN )
+  {
+    return QgsMesh();
+  }
+  return mTIN->triangulationToMesh( feedback );
 }
 

@@ -23,7 +23,10 @@ from qgis.core import (QgsRenderContext,
                        QgsRectangle,
                        QgsVectorSimplifyMethod,
                        QgsRenderedFeatureHandlerInterface,
-                       QgsDateTimeRange)
+                       QgsDateTimeRange,
+                       QgsMapClippingRegion,
+                       QgsGeometry,
+                       QgsDoubleRange)
 from qgis.PyQt.QtCore import QSize, QDateTime
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -56,6 +59,10 @@ class TestQgsRenderContext(unittest.TestCase):
         c.setMapExtent(QgsRectangle(1, 2, 3, 4))
         self.assertEqual(c.mapExtent(), QgsRectangle(1, 2, 3, 4))
 
+        self.assertTrue(c.zRange().isInfinite())
+        c.setZRange(QgsDoubleRange(1, 10))
+        self.assertEqual(c.zRange(), QgsDoubleRange(1, 10))
+
     def testCopyConstructor(self):
         """
         Test the copy constructor
@@ -64,10 +71,12 @@ class TestQgsRenderContext(unittest.TestCase):
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         c1.setMapExtent(QgsRectangle(1, 2, 3, 4))
+        c1.setZRange(QgsDoubleRange(1, 10))
 
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
         self.assertEqual(c2.mapExtent(), QgsRectangle(1, 2, 3, 4))
+        self.assertEqual(c2.zRange(), QgsDoubleRange(1, 10))
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
@@ -95,6 +104,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), False)
+        self.assertEqual(c.testFlag(QgsRenderContext.LosslessImageRendering), False)
         self.assertAlmostEqual(c.scaleFactor(), 88 / 25.4, 3)
 
         im = QImage(1000, 600, QImage.Format_RGB32)
@@ -103,9 +113,16 @@ class TestQgsRenderContext(unittest.TestCase):
         im.setDotsPerMeterY(dots_per_m)
         p = QPainter(im)
         p.setRenderHint(QPainter.Antialiasing)
+        try:
+            p.setRenderHint(QPainter.LosslessImageRendering)
+            supports_lossless = True
+        except AttributeError:
+            supports_lossless = False
+
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Antialiasing), True)
+        self.assertEqual(c.testFlag(QgsRenderContext.LosslessImageRendering), supports_lossless)
         self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
 
     def testFromMapSettings(self):
@@ -116,14 +133,24 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setOutputSize(QSize(1000, 1000))
         ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         ms.setExtent(QgsRectangle(10000, 20000, 30000, 40000))
+        ms.setFlag(QgsMapSettings.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.LosslessImageRendering, True)
+        ms.setFlag(QgsMapSettings.Render3DMap, True)
+        ms.setZRange(QgsDoubleRange(1, 10))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
+        self.assertTrue(rc.testFlag(QgsRenderContext.Antialiasing))
+        self.assertTrue(rc.testFlag(QgsRenderContext.LosslessImageRendering))
+        self.assertTrue(rc.testFlag(QgsRenderContext.Render3DMap))
+        self.assertEqual(ms.zRange(), QgsDoubleRange(1, 10))
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
+        ms.setZRange(QgsDoubleRange())
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
+        self.assertTrue(ms.zRange().isInfinite())
 
         self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
 
@@ -214,6 +241,11 @@ class TestQgsRenderContext(unittest.TestCase):
         result_test_meters = r.convertFromMapUnits(meters_test_mapunits, QgsUnitTypes.RenderMetersInMapUnits)
         self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceMeters, True),
                          QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceMeters, True))
+
+        # attempting to convert to meters in map units when no extent is available should fallback to a very
+        # approximate degrees -> meters conversion
+        r.setExtent(QgsRectangle())
+        self.assertAlmostEqual(r.convertToPainterUnits(5555, QgsUnitTypes.RenderMetersInMapUnits), 0.0499, 3)
 
     def testConvertSingleUnit(self):
         ms = QgsMapSettings()
@@ -501,6 +533,49 @@ class TestQgsRenderContext(unittest.TestCase):
         rc = QgsRenderContext()
         self.assertEqual(rc.isTemporal(), False)
         self.assertIsNotNone(rc.temporalRange())
+
+    def testClippingRegion(self):
+        ms = QgsMapSettings()
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertFalse(rc.clippingRegions())
+        ms.addClippingRegion(QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))')))
+        ms.addClippingRegion(QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon(( 10 0, 11 0 , 11 1 , 10 1, 10 0 ))')))
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(len(rc.clippingRegions()), 2)
+        self.assertEqual(rc.clippingRegions()[0].geometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        self.assertEqual(rc.clippingRegions()[1].geometry().asWkt(), 'Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))')
+
+    def testFeatureClipGeometry(self):
+        rc = QgsRenderContext()
+        self.assertTrue(rc.featureClipGeometry().isNull())
+        rc.setFeatureClipGeometry(QgsGeometry.fromWkt('Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))'))
+        self.assertEqual(rc.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        rc2 = QgsRenderContext(rc)
+        self.assertEqual(rc2.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+
+    def testSetPainterFlags(self):
+        rc = QgsRenderContext()
+        p = QPainter()
+        im = QImage(1000, 600, QImage.Format_RGB32)
+        p.begin(im)
+        rc.setPainterFlagsUsingContext(p)
+        self.assertFalse(p.testRenderHint(QPainter.Antialiasing))
+        try:
+            self.assertFalse(p.testRenderHint(QPainter.LosslessImageRendering))
+        except AttributeError:
+            pass
+
+        rc.setPainter(p)
+        rc.setFlag(QgsRenderContext.Antialiasing, True)
+        rc.setFlag(QgsRenderContext.LosslessImageRendering, True)
+        rc.setPainterFlagsUsingContext(p)
+        self.assertTrue(p.testRenderHint(QPainter.Antialiasing))
+        try:
+            self.assertTrue(p.testRenderHint(QPainter.LosslessImageRendering))
+        except AttributeError:
+            pass
+
+        p.end()
 
 
 if __name__ == '__main__':

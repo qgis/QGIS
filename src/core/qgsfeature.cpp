@@ -18,6 +18,8 @@ email                : sherman at mrcc.com
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsfield_p.h" // for approximateMemoryUsage()
+#include "qgsfields_p.h" // for approximateMemoryUsage()
 
 #include "qgsmessagelog.h"
 
@@ -124,6 +126,11 @@ QgsAttributes QgsFeature::attributes() const
   return d->attributes;
 }
 
+int QgsFeature::attributeCount() const
+{
+  return d->attributes.size();
+}
+
 void QgsFeature::setAttributes( const QgsAttributes &attrs )
 {
   if ( attrs == d->attributes )
@@ -208,6 +215,24 @@ void QgsFeature::initAttributes( int fieldCount )
   d->attributes.resize( fieldCount );
 }
 
+void QgsFeature::resizeAttributes( int fieldCount )
+{
+  if ( fieldCount == d->attributes.size() )
+    return;
+
+  d.detach();
+  d->attributes.resize( fieldCount );
+}
+
+void QgsFeature::padAttributes( int count )
+{
+  if ( count == 0 )
+    return;
+
+  d.detach();
+  d->attributes.resize( d->attributes.size() + count );
+}
+
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
@@ -278,6 +303,58 @@ int QgsFeature::fieldNameIndex( const QString &fieldName ) const
 {
   return d->fields.lookupField( fieldName );
 }
+
+static size_t qgsQStringApproximateMemoryUsage( const QString &str )
+{
+  return sizeof( QString ) + str.size() * sizeof( QChar );
+}
+
+static size_t qgsQVariantApproximateMemoryUsage( const QVariant &v )
+{
+  // A QVariant has a private structure that is a union of things whose larger
+  // size if a long long, and a int
+  size_t s = sizeof( QVariant ) + sizeof( long long ) + sizeof( int );
+  if ( v.type() == QVariant::String )
+  {
+    s += qgsQStringApproximateMemoryUsage( v.toString() );
+  }
+  else if ( v.type() == QVariant::StringList )
+  {
+    for ( const QString &str : v.toStringList() )
+      s += qgsQStringApproximateMemoryUsage( str );
+  }
+  else if ( v.type() == QVariant::List )
+  {
+    for ( const QVariant &subV : v.toList() )
+      s += qgsQVariantApproximateMemoryUsage( subV );
+  }
+  return s;
+}
+
+int QgsFeature::approximateMemoryUsage() const
+{
+  size_t s = sizeof( *this ) + sizeof( *d );
+
+  // Attributes
+  for ( const QVariant &attr : qgis::as_const( d->attributes ) )
+  {
+    s += qgsQVariantApproximateMemoryUsage( attr );
+  }
+
+  // Geometry
+  s += sizeof( QAtomicInt ) + sizeof( void * ); // ~ sizeof(QgsGeometryPrivate)
+  // For simplicity we consider that the RAM usage is the one of the WKB
+  // representation
+  s += d->geometry.wkbSize();
+
+  // Fields
+  s += sizeof( QgsFieldsPrivate );
+  // TODO potentially: take into account the length of the name, comment, default value, etc...
+  s += d->fields.size() * ( sizeof( QgsField )  + sizeof( QgsFieldPrivate ) );
+
+  return static_cast<int>( s );
+}
+
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

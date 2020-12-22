@@ -161,7 +161,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     QgsFeatureRequest::OrderBy mOrderBy;
 
   private:
-    bool mDockMode;
+    bool mDockMode = false;
 
     friend class QgsAppScreenShots;
 };

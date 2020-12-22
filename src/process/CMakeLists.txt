@@ -1,37 +1,41 @@
 ########################################################
 # Files
 
-SET(QGIS_PROCESS_SRCS
+set(QGIS_PROCESS_SRCS
   main.cpp
   qgsprocess.cpp
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
 )
 
-IF (UNIX AND NOT ANDROID)
-  SET(QGIS_PROCESS_SRCS ${QGIS_PROCESS_SRCS}
+if (UNIX AND NOT ANDROID)
+  set(QGIS_PROCESS_SRCS ${QGIS_PROCESS_SRCS}
     ${CMAKE_SOURCE_DIR}/external/qt-unix-signals/sigwatch.cpp
   )
-ENDIF (UNIX AND NOT ANDROID)
+endif()
 
 ########################################################
 # Build
 
-ADD_EXECUTABLE (qgis_process MACOSX_BUNDLE WIN32 ${QGIS_PROCESS_SRCS} )
+add_executable (qgis_process MACOSX_BUNDLE ${QGIS_PROCESS_SRCS})
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
 )
 
-IF (UNIX AND NOT ANDROID)
-  INCLUDE_DIRECTORIES(SYSTEM
+if (UNIX AND NOT ANDROID)
+  include_directories(SYSTEM
     ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
   )
-ENDIF (UNIX AND NOT ANDROID)
+endif()
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -39,45 +43,51 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/external/nlohmann
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
 )
 
-IF (WITH_3D)
-  INCLUDE_DIRECTORIES(
+if (WITH_3D)
+  include_directories(
     ${CMAKE_SOURCE_DIR}/src/core/3d
     ${CMAKE_SOURCE_DIR}/src/3d/processing
     ${CMAKE_BINARY_DIR}/src/3d
   )
-  INCLUDE_DIRECTORIES(SYSTEM
+  include_directories(SYSTEM
     ${QT5_3DEXTRA_INCLUDE_DIR}
   )
-ENDIF (WITH_3D)
+endif()
 
-IF (WITH_BINDINGS)
-  TARGET_LINK_LIBRARIES(qgis_process qgispython)
-ENDIF(WITH_BINDINGS)
+if (WITH_BINDINGS)
+  target_link_libraries(qgis_process qgispython)
+endif()
 
-TARGET_LINK_LIBRARIES(qgis_process
+target_link_libraries(qgis_process
   qgis_core
   qgis_analysis
   ${Qt5Core_LIBRARIES}
+  ${PROJ_LIBRARY}
+  ${GEOS_LIBRARY}
+  ${GDAL_LIBRARY}
 )
 
-IF (WITH_3D)
-  TARGET_LINK_LIBRARIES(qgis_process
+if (WITH_3D)
+  target_link_libraries(qgis_process
     qgis_3d
   )
-ENDIF (WITH_3D)
+endif()
 
 # install
 
-INSTALL (TARGETS qgis_process
+install (TARGETS qgis_process
   BUNDLE DESTINATION ${QGIS_BIN_DIR}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
 )

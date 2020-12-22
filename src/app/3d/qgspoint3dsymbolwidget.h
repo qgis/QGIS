@@ -16,29 +16,27 @@
 #ifndef QGSPOINT3DSYMBOLWIDGET_H
 #define QGSPOINT3DSYMBOLWIDGET_H
 
-#include <QWidget>
-
+#include "qgs3dsymbolwidget.h"
 #include "ui_point3dsymbolwidget.h"
 
 class QgsPoint3DSymbol;
 
+
 //! A widget for configuration of 3D symbol for points
-class QgsPoint3DSymbolWidget : public QWidget, private Ui::Point3DSymbolWidget
+class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymbolWidget
 {
     Q_OBJECT
   public:
     explicit QgsPoint3DSymbolWidget( QWidget *parent = nullptr );
 
-    void setSymbol( const QgsPoint3DSymbol &symbol );
-    QgsPoint3DSymbol symbol() const;
+    static Qgs3DSymbolWidget *create( QgsVectorLayer *layer );
 
-  signals:
-    void changed();
+    void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
+    QgsAbstract3DSymbol *symbol() override;
+    QString symbolType() const override;
 
   private slots:
     void onShapeChanged();
-    void onChooseModelClicked( bool checked = false );
-    void onOverwriteMaterialChecked( int state );
 };
 
 #endif // QGSPOINT3DSYMBOLWIDGET_H

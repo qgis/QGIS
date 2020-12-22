@@ -31,7 +31,7 @@
 #include "qgsrendererpropertiesdialog.h"
 #include "qgs25drendererwidget.h"
 #include "qgsapplication.h"
-#include "qgsoptions.h"
+#include "options/qgsoptions.h"
 #include "qgsguiutils.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsrasterlayer.h"
@@ -317,11 +317,13 @@ void QgsAppScreenShots::takeGlobalOptions()
   }
   // -----------------
   // advanced settings
-  dlg->mOptionsListWidget->setCurrentRow( 15 );
+  dlg->mOptionsListWidget->setCurrentRow( dlg->mOptionsListWidget->count() - 1 );
   QCoreApplication::processEvents();
   Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
             == QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ).pixmap( 24, 24 ).toImage() );
-  dlg->mAdvancedSettingsEditor->show();
+  QWidget *editor = dlg->findChild< QWidget * >( QStringLiteral( "mAdvancedSettingsEditor" ) );
+  if ( editor )
+    editor->show();
   QCoreApplication::processEvents();
   QCoreApplication::processEvents(); // seems a second call is needed, the tabble might not be fully displayed otherwise
   takeScreenshot( QStringLiteral( "advanced_with_settings_shown" ), folder, dlg );

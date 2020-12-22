@@ -31,6 +31,7 @@
 #include <QClipboard>
 #include <QMessageBox>
 
+const double ICON_PADDING_FACTOR = 0.16;
 
 static QList<QgsExpressionContextScope *> _globalProjectAtlasMapLayerScopes( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer )
 {
@@ -291,8 +292,8 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex &index, int role ) c
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->settings() )
   {
-    // TODO return QgsSymbolLayerUtils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) );
-    return QVariant();
+    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+    return QgsPalLayerSettings::labelSettingsPreviewPixmap( *rule->settings(), QSize( iconSize, iconSize ), QString(),  static_cast< int >( iconSize * ICON_PADDING_FACTOR ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {

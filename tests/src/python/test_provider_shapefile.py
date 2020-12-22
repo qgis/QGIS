@@ -22,12 +22,14 @@ import sys
 from osgeo import gdal
 from qgis.core import (
     QgsApplication,
+    QgsDataProvider,
     QgsSettings,
     QgsFeature,
     QgsField,
     QgsGeometry,
     QgsVectorLayer,
     QgsFeatureRequest,
+    QgsProviderRegistry,
     QgsVectorDataProvider,
     QgsWkbTypes,
     QgsVectorLayerExporter,
@@ -1053,6 +1055,46 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             del vl
 
             osgeo.ogr.GetDriverByName('ESRI Shapefile').DeleteDataSource(tmpfile)
+
+    def testEncoding(self):
+        """ Test that CP852 shapefile is read/written correctly """
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        for file in glob.glob(os.path.join(TEST_DATA_DIR, 'test_852.*')):
+            shutil.copy(os.path.join(TEST_DATA_DIR, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'test_852.shp')
+
+        vl = QgsVectorLayer(datasource, 'test')
+        self.assertTrue(vl.isValid())
+        self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ']])
+
+        f = QgsFeature()
+        f.setAttributes(['abcŐabcŐabcŐ'])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # read it back in
+        vl = QgsVectorLayer(datasource, 'test')
+        self.assertTrue(vl.isValid())
+        self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ'], ['abcŐabcŐabcŐ']])
+
+    def testSkipFeatureCountOnFeatureCount(self):
+        """Test QgsDataProvider.SkipFeatureCount on featureCount()"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+        provider = QgsProviderRegistry.instance().createProvider('ogr', testPath, QgsDataProvider.ProviderOptions(), QgsDataProvider.SkipFeatureCount)
+        self.assertTrue(provider.isValid())
+        self.assertEqual(provider.featureCount(), QgsVectorDataProvider.UnknownCount)
+
+    def testSkipFeatureCountOnSubLayers(self):
+        """Test QgsDataProvider.SkipFeatureCount on subLayers()"""
+
+        datasource = os.path.join(TEST_DATA_DIR, 'shapefile')
+        provider = QgsProviderRegistry.instance().createProvider('ogr', datasource, QgsDataProvider.ProviderOptions(), QgsDataProvider.SkipFeatureCount)
+        self.assertTrue(provider.isValid())
+        sublayers = provider.subLayers()
+        self.assertTrue(len(sublayers) > 1)
+        self.assertEqual(sublayers[0].split(QgsDataProvider.sublayerSeparator())[2], '-1')
 
 
 if __name__ == '__main__':

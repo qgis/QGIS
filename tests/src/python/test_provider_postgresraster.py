@@ -77,7 +77,10 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         cls._load_test_table('public', 'raster_3035_tiled_composite_pk')
         cls._load_test_table('public', 'raster_3035_untiled_multiple_rows')
         cls._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
-        cls._load_test_table('public', 'int16_regression_36689', 'bug_36689_pg_raster')
+        cls._load_test_table(
+            'public', 'int16_regression_36689', 'bug_36689_pg_raster')
+        cls._load_test_table('public', 'bug_37968_dem_linear_cdn_extract')
+        cls._load_test_table('public', 'bug_39017_untiled_no_metadata')
 
         # Fix timing issues in backend
         # time.sleep(1)
@@ -480,6 +483,77 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
         self.assertEqual(data, [55, 52, 46, 39, 33, 30, 58, 54, 49, 45, 41, 37, 58, 54, 50,
                                 47, 45, 43, 54, 51, 49, 47, 46, 44, 47, 47, 47, 47, 46, 45, 41, 43, 45, 48, 49, 46])
+
+    def testNegativeScaleY(self):
+        """Test regression https://github.com/qgis/QGIS/issues/37968
+        Y is growing south
+        """
+
+        rl = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='bug_37968_dem_linear_cdn_extract', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(
+        ), 'POLYGON((-40953 170588, -40873 170588, -40873 170668, -40953 170668, -40953 170588))', 1))
+        block = rl.dataProvider().block(1, rl.extent(), 6, 6)
+        data = []
+        for i in range(6):
+            for j in range(6):
+                data.append(int(block.value(i, j)))
+
+        self.assertEqual(data, [52, 52, 52, 52, 44, 43, 52, 52, 52, 48, 44, 44, 49, 52, 49, 44, 44, 44, 43, 47, 46, 44, 44, 44, 42, 42, 43, 44, 44, 48, 42, 43, 43, 44, 44, 47])
+
+    def testUntiledMosaicNoMetadata(self):
+        """Test regression https://github.com/qgis/QGIS/issues/39017
+
+            +-----------+------------------------------+
+            |           |                              |
+            |  rid = 1  |          rid = 2             |
+            |           |                              |
+            +-----------+------------------------------+
+
+        """
+
+        rl = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='bug_39017_untiled_no_metadata', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(
+        ), 'POLYGON((47.061 40.976, 47.123 40.976, 47.123 41.000, 47.061 41.000, 47.061 40.976))', 0.01))
+
+        rl1 = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"rid\"=1".format(
+                table='bug_39017_untiled_no_metadata', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl1.isValid())
+        self.assertTrue(compareWkt(rl1.extent().asWktPolygon(
+        ), 'POLYGON((47.061 40.976, 47.070 40.976, 47.070 41.000, 47.061 41.000, 47.061 40.976))', 0.01))
+
+        rl2 = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"rid\"=2".format(
+                table='bug_39017_untiled_no_metadata', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl2.isValid())
+        self.assertTrue(compareWkt(rl2.extent().asWktPolygon(
+        ), 'POLYGON((47.061 40.976, 47.123 40.976, 47.123 41.000, 47.070 41.000, 47.070 40.976))', 0.01))
+
+        extent_1 = rl1.extent()
+        extent_2 = rl2.extent()
+
+        def _6x6_block_data(layer, extent):
+            block = layer.dataProvider().block(1, extent, 6, 6)
+            data = []
+            for i in range(6):
+                for j in range(6):
+                    data.append(int(block.value(i, j)))
+            return data
+
+        rl_r1 = _6x6_block_data(rl, extent_1)
+        r1_r1 = _6x6_block_data(rl1, extent_1)
+        self.assertEqual(rl_r1, r1_r1)
+
+        rl_r2 = _6x6_block_data(rl, extent_2)
+        r2_r2 = _6x6_block_data(rl2, extent_2)
+        self.assertEqual(rl_r2, r2_r2)
 
 
 if __name__ == '__main__':

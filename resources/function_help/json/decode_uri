@@ -1,6 +1,7 @@
 {
   "name": "decode_uri",
   "type": "function",
+  "groups": ["Map Layers"],
   "description": "Takes a layer and decodes the uri of the underlying data provider. It depends on the dataprovider, which data is available.",
   "arguments": [ {"arg":"layer","description":"The layer for which the uri should be decoded."},
                  {"arg":"part","description":"The part of the uri to return. If unspecified, a map with all uri parts will be returned.","optional":true} ],

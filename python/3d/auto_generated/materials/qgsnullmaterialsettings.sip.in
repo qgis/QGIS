@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsnullmaterialsettings.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsNullMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring
+Null shading material used for rendering models and scenes with native textures.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.16.2
+%End
+
+%TypeHeaderCode
+#include "qgsnullmaterialsettings.h"
+%End
+  public:
+
+    QgsNullMaterialSettings();
+%Docstring
+Constructor for QgsNullMaterialSettings.
+%End
+
+    virtual QString type() const;
+
+
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the material.
+%End
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsNullMaterialSettings.
+%End
+
+    virtual QgsNullMaterialSettings *clone() const /Factory/;
+
+
+    virtual QMap<QString, QString> toExportParameters() const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgsnullmaterialsettings.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

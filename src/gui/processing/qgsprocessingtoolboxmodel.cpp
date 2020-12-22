@@ -328,7 +328,7 @@ QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgor
 Qt::ItemFlags QgsProcessingToolboxModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
-    return nullptr;
+    return Qt::ItemFlags();
 
   return QAbstractItemModel::flags( index );
 }

@@ -28,6 +28,7 @@
 #define QGSOGRSOURCESELECT_H
 
 #include <QDialog>
+#include <vector>
 
 #include "ui_qgsogrsourceselectbase.h"
 #include "qgshelp.h"
@@ -49,7 +50,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     Q_OBJECT
 
   public:
-    QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
     //! Opens a dialog to select a directory datasource*/
@@ -111,6 +112,11 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void showHelp();
 
   private:
+
+    void computeDataSources( bool interactive );
+    void clearOpenOptions();
+    void fillOpenOptions();
+    std::vector<QWidget *> mOpenOptionsWidgets;
 
     QString mVectorPath;
 

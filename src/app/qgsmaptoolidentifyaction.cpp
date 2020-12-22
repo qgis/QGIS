@@ -22,6 +22,7 @@
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsidentifycontext.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
@@ -129,14 +130,17 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
 
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers );
+  QgsIdentifyContext identifyContext;
+  if ( mCanvas->mapSettings().isTemporal() )
+    identifyContext.setTemporalRange( mCanvas->temporalRange() );
+  QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers, identifyContext );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   if ( results.isEmpty() )
   {
     resultsDialog()->clear();
-    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features found at this position." ), 2000 );
   }
   else
   {

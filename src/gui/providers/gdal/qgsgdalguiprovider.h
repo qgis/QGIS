@@ -46,7 +46,7 @@ class QgsGdalItemGuiProvider : public QObject, public QgsDataItemGuiProvider
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   protected slots:
-    void onDeleteLayer();
+    void onDeleteLayer( QgsDataItemGuiContext context );
 };
 
 class QgsGdalGuiProviderMetadata: public QgsProviderGuiMetadata

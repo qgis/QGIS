@@ -56,6 +56,8 @@ def algorithmHelp(id):
         print('----------------')
         for p in alg.parameterDefinitions():
             print('\n{}: {}'.format(p.name(), p.description()))
+            if p.help():
+                print('\n\t{}'.format(p.help()))
 
             print('\n\tParameter type:\t{}'.format(p.__class__.__name__))
 

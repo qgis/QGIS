@@ -53,12 +53,12 @@ The ``mapSettings`` argument dictates the overall map settings such as extent
 and size, while animation and export specific settings are specified via the ``settings``
 argument.
 
-An optional ``feedback`` argument can be used to provide progress reports and cancelation
+An optional ``feedback`` argument can be used to provide progress reports and cancellation
 support.
 
 :param mapSettings: settings controlling the map render
 :param settings: animation and export settings
-:param feedback: optional feedback object for progress reports and cancelation checks
+:param feedback: optional feedback object for progress reports and cancellation checks
 
 :return: - ``True`` if the export was successful.
          - error: will be set to a descriptive error message if the export fails

@@ -45,7 +45,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       // find an uid name
       QString uid = QStringLiteral( "uid" );
       while ( fields.lookupField( uid ) != -1 )
-        uid += QLatin1String( "_" ); // add "_" each time this name already exists
+        uid += QLatin1Char( '_' ); // add "_" each time this name already exists
 
       // add a column
       columns << "t.rowid AS " + uid;
@@ -69,9 +69,9 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
 
     leftJoins << QStringLiteral( "LEFT JOIN \"%1\" AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
-    if ( join.joinFieldNamesSubset() )
+    if ( auto *lJoinFieldNamesSubset = join.joinFieldNamesSubset() )
     {
-      const QStringList joinFieldNamesSubset { *join.joinFieldNamesSubset() };
+      const QStringList joinFieldNamesSubset { *lJoinFieldNamesSubset };
       for ( const QString &f : joinFieldNamesSubset )
       {
         columns << joinName + ".\"" + f + "\" AS \"" + prefix + f + "\"";
@@ -89,7 +89,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     }
   }
 
-  QString query = "SELECT " + columns.join( QStringLiteral( ", " ) ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QStringLiteral( " " ) );
+  QString query = "SELECT " + columns.join( QLatin1String( ", " ) ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QLatin1Char( ' ' ) );
   def.setQuery( query );
 
   return def;

@@ -1,0 +1,109 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgspointcloudlayer3drenderer.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsPointCloudLayer3DRenderer : QgsAbstract3DRenderer
+{
+%Docstring
+3D renderer that renders all points from a point cloud layer
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayer3drenderer.h"
+%End
+  public:
+    explicit QgsPointCloudLayer3DRenderer();
+%Docstring
+Takes ownership of the symbol object
+%End
+
+    void setLayer( QgsPointCloudLayer *layer );
+%Docstring
+Sets point cloud layer associated with the renderer
+%End
+    QgsPointCloudLayer *layer() const;
+%Docstring
+Returns point cloud layer associated with the renderer
+%End
+
+    virtual QString type() const;
+
+    virtual QgsPointCloudLayer3DRenderer *clone() const /Factory/;
+
+
+    void setSymbol( QgsPointCloud3DSymbol *symbol /Transfer/ );
+%Docstring
+Sets the 3D ``symbol`` associated with the renderer.
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`symbol`
+%End
+    const QgsPointCloud3DSymbol *symbol() const;
+%Docstring
+Returns 3D symbol associated with the renderer
+%End
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void resolveReferences( const QgsProject &project );
+
+
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum screen error allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum screen ``error`` allowed when rendering the point cloud.
+
+Larger values result in a faster render with less points rendered.
+
+.. seealso:: :py:func:`maximumScreenError`
+%End
+
+    bool showBoundingBoxes() const;
+%Docstring
+Returns whether bounding boxes will be visible when rendering the point cloud.
+
+.. seealso:: :py:func:`setShowBoundingBoxes`
+%End
+
+    void setShowBoundingBoxes( bool showBoundingBoxes );
+%Docstring
+Sets whether bounding boxes will be visible when rendering the point cloud.
+
+.. seealso:: :py:func:`showBoundingBoxes`
+%End
+
+  private:
+    QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
+    QgsPointCloudLayer3DRenderer &operator=( const QgsPointCloudLayer3DRenderer & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgspointcloudlayer3drenderer.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

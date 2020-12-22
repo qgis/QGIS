@@ -1,6 +1,7 @@
 {
   "name": "map_to_hstore",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Merge map elements into a hstore-formatted string.",
   "arguments": [
     {"arg":"map", "description":"the input map"}],

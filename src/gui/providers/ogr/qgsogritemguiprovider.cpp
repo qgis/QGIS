@@ -32,7 +32,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
   QgsDataItem *item,
   QMenu *menu,
   const QList<QgsDataItem *> &,
-  QgsDataItemGuiContext )
+  QgsDataItemGuiContext context )
 {
   if ( QgsOgrLayerItem *layerItem = qobject_cast< QgsOgrLayerItem * >( item ) )
   {
@@ -45,7 +45,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
     data.insert( QStringLiteral( "name" ), layerItem->name() );
     data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
     actionDeleteLayer->setData( data );
-    connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrItemGuiProvider::onDeleteLayer );
+    connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
     menu->addAction( actionDeleteLayer );
   }
 
@@ -60,12 +60,12 @@ void QgsOgrItemGuiProvider::populateContextMenu(
     data.insert( QStringLiteral( "path" ), collectionItem->path() );
     data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( collectionItem->parent() ) ) );
     actionDeleteCollection->setData( data );
-    connect( actionDeleteCollection, &QAction::triggered, this, &QgsOgrItemGuiProvider::deleteCollection );
+    connect( actionDeleteCollection, &QAction::triggered, this, [ = ] { deleteCollection( context ); } );
     menu->addAction( actionDeleteCollection );
   }
 }
 
-void QgsOgrItemGuiProvider::onDeleteLayer()
+void QgsOgrItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
@@ -106,23 +106,23 @@ void QgsOgrItemGuiProvider::onDeleteLayer()
     bool res = QgsOgrProviderUtils::deleteLayer( uri, errCause );
     if ( !res )
     {
-      QMessageBox::warning( nullptr, title, errCause );
+      notify( title, errCause, context, Qgis::MessageLevel::Critical );
     }
     else
     {
-      QMessageBox::information( nullptr, title, isSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ) );
+      notify( title, isSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ), context, Qgis::MessageLevel::Success );
       if ( parent )
         parent->refresh();
     }
   }
   else
   {
-    QMessageBox::warning( nullptr, title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
-                          " remove it from the project and retry." ).arg( name, projectLayer->name() ) );
+    notify( title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                                " remove it from the project and retry." ).arg( name, projectLayer->name() ), context, Qgis::MessageLevel::Warning );
   }
 }
 
-void QgsOgrItemGuiProvider::deleteCollection()
+void QgsOgrItemGuiProvider::deleteCollection( QgsDataItemGuiContext context )
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
@@ -166,19 +166,19 @@ void QgsOgrItemGuiProvider::deleteCollection()
     }
     if ( !res )
     {
-      QMessageBox::warning( nullptr, title, tr( "Could not delete %1." ).arg( type ) );
+      notify( title, tr( "Could not delete %1." ).arg( type ), context, Qgis::MessageLevel::Warning );
     }
     else
     {
-      QMessageBox::information( nullptr, title, tr( "%1 deleted successfully." ).arg( typeCaps ) );
+      notify( title, tr( "%1 deleted successfully." ).arg( typeCaps ), context, Qgis::MessageLevel::Success );
       if ( parent )
         parent->refresh();
     }
   }
   else
   {
-    QMessageBox::warning( nullptr, title, QObject::tr( "The %1 '%2' cannot be deleted because it is in the current project as '%3',"
-                          " remove it from the project and retry." ).arg( type, path, projectLayer->name() ) );
+    notify( title, tr( "The %1 '%2' cannot be deleted because it is in the current project as '%3',"
+                       " remove it from the project and retry." ).arg( type, path, projectLayer->name() ), context, Qgis::MessageLevel::Warning );
   }
 }
 ///@endcond

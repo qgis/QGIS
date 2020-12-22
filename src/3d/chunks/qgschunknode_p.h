@@ -44,17 +44,39 @@ class QgsChunkQueueJob;
 class QgsChunkQueueJobFactory;
 
 
-//! Helper class to store X,Y,Z integer coordinates of a node
+/**
+ * Helper class to store integer coordinates of a chunk node.
+ *
+ * - "d" is the depth of the tree
+ * - when used with a quadtree, "x" and "y" are the coordinates within the depth level of the tree ("z" coordinate is always -1)
+ * - when used with an octree, "x", "y" and "z" are the coordinates within the depth level of the tree
+ */
 struct QgsChunkNodeId
 {
   //! Constructs node ID
-  QgsChunkNodeId( int _x = -1, int _y = -1, int _z = -1 )
-    : x( _x ), y( _y ), z( _z ) {}
+  QgsChunkNodeId( int _d = -1, int _x = -1, int _y = -1, int _z = -1 )
+    : d( _d ), x( _x ), y( _y ), z( _z ) {}
 
-  int x, y, z;
+  int d, x, y, z;
 
   //! Returns textual representation of the node ID in form of "Z/X/Y"
-  QString text() const { return QStringLiteral( "%1/%2/%3" ).arg( z ).arg( x ).arg( y ); }
+  QString text() const
+  {
+    if ( z == -1 )
+      return QStringLiteral( "%1/%2/%3" ).arg( d ).arg( x ).arg( y );   // quadtree
+    else
+      return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z );   // octree
+  }
+
+  bool operator==( const QgsChunkNodeId &other ) const
+  {
+    return d == other.d && x == other.x && y == other.y && z == other.z;
+  }
+
+  bool operator!=( const QgsChunkNodeId &other ) const
+  {
+    return !( *this == other );
+  }
 };
 
 /**
@@ -74,8 +96,9 @@ struct QgsChunkNodeId
 class QgsChunkNode
 {
   public:
+
     //! constructs a skeleton chunk
-    QgsChunkNode( int tileX, int tileY, int tileZ, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
+    QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
     ~QgsChunkNode();
 
@@ -111,16 +134,12 @@ class QgsChunkNode
     QgsAABB bbox() const { return mBbox; }
     //! Returns measure geometric/texture error of the chunk (in world coordinates)
     float error() const { return mError; }
-    //! Returns chunk tile X coordinate of the tiling scheme
-    int tileX() const { return mTileX; }
-    //! Returns chunk tile Y coordinate of the tiling scheme
-    int tileY() const { return mTileY; }
-    //! Returns chunk tile Z coordinate of the tiling scheme
-    int tileZ() const { return mTileZ; }
     //! Returns chunk tile coordinates of the tiling scheme
-    QgsChunkNodeId tileId() const { return QgsChunkNodeId( mTileX, mTileY, mTileZ ); }
+    QgsChunkNodeId tileId() const { return mNodeId; }
     //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
+    //! Returns number of children of the node (returns -1 if the node has not yet been populated with populateChildren())
+    int childCount() const { return mChildCount; }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet
     QgsChunkNode *const *children() const { return mChildren; }
     //! Returns current state of the node
@@ -140,8 +159,8 @@ class QgsChunkNode
     //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( QTime currentTime ) const;
 
-    //! make sure that all child nodes are at least skeleton nodes
-    void ensureAllChildrenExist();
+    //! Sets child nodes of this node. Takes ownership of all objects. Must be only called once.
+    void populateChildren( const QVector<QgsChunkNode *> &children );
 
     //! how deep is the node in the tree (zero means root node, every level adds one)
     int level() const;
@@ -198,10 +217,11 @@ class QgsChunkNode
     QgsAABB mBbox;      //!< Bounding box in world coordinates
     float mError;    //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
 
-    int mTileX, mTileY, mTileZ;  //!< Chunk coordinates (for use with a tiling scheme)
+    QgsChunkNodeId mNodeId;  //!< Chunk coordinates (for use with a tiling scheme)
 
     QgsChunkNode *mParent;        //!< TODO: should be shared pointer
-    QgsChunkNode *mChildren[4];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
+    QgsChunkNode *mChildren[8];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
+    int mChildCount = -1;         //! Number of children (-1 == not yet populated)
 
     State mState;  //!< State of the node
 

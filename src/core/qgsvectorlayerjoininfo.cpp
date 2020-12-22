@@ -22,10 +22,10 @@ QString QgsVectorLayerJoinInfo::prefixedFieldName( const QgsField &f ) const
 {
   QString name;
 
-  if ( joinLayer() )
+  if ( auto *lJoinLayer = joinLayer() )
   {
     if ( prefix().isNull() )
-      name = joinLayer()->name() + '_';
+      name = lJoinLayer->name() + '_';
     else
       name = prefix();
 
@@ -63,11 +63,11 @@ QgsFeature QgsVectorLayerJoinInfo::extractJoinedFeature( const QgsFeature &featu
 {
   QgsFeature joinFeature;
 
-  if ( joinLayer() )
+  if ( auto *lJoinLayer = joinLayer() )
   {
     const QVariant idFieldValue = feature.attribute( targetFieldName() );
-    joinFeature.initAttributes( joinLayer()->fields().count() );
-    joinFeature.setFields( joinLayer()->fields() );
+    joinFeature.initAttributes( lJoinLayer->fields().count() );
+    joinFeature.setFields( lJoinLayer->fields() );
     joinFeature.setAttribute( joinFieldName(), idFieldValue );
 
     const QgsFields joinFields = joinFeature.fields();
@@ -100,11 +100,15 @@ QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJo
     }
     else
     {
-      for ( const QgsField &f : info.joinLayer()->fields() )
+      if ( auto *lJoinLayer = info.joinLayer() )
       {
-        if ( !info.joinFieldNamesBlockList().contains( f.name() )
-             && f.name() != info.joinFieldName() )
-          fieldNames.append( f.name() );
+        const QgsFields fields { lJoinLayer->fields() };
+        for ( const QgsField &f : fields )
+        {
+          if ( !info.joinFieldNamesBlockList().contains( f.name() )
+               && f.name() != info.joinFieldName() )
+            fieldNames.append( f.name() );
+        }
       }
     }
   }

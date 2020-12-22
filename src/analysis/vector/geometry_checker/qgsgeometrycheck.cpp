@@ -44,7 +44,7 @@ bool QgsGeometryCheck::isCompatible( QgsVectorLayer *layer ) const
 
 QgsGeometryCheck::Flags QgsGeometryCheck::flags() const
 {
-  return nullptr;
+  return QgsGeometryCheck::Flags();
 }
 
 void QgsGeometryCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const

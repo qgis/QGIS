@@ -81,6 +81,8 @@ class TestQgsGeometryUtils: public QObject
     void testWeightedPointInTriangle_data();
     void testWeightedPointInTriangle();
     void testPointContinuesArc();
+    void testBisector();
+    void testAngleBisector();
 };
 
 
@@ -1495,6 +1497,44 @@ void TestQgsGeometryUtils::testPointContinuesArc()
   QVERIFY( QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.1, 0.05 ) );
   QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.1, 0.000001 ) );
   QVERIFY( !QgsGeometryUtils::pointContinuesArc( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ), QgsPoint( 1.01, -1 ), 0.000000001, 0.05 ) );
+}
+
+void TestQgsGeometryUtils::testBisector()
+{
+  double x, y;
+  QVERIFY( QgsGeometryUtils::bisector( 5, 5, 0, 0, -7, 11, x, y ) );
+  QGSCOMPARENEAR( x, -2.416, 10e-3 );
+  QGSCOMPARENEAR( y, 3.797, 10e-3 );
+
+  QVERIFY( QgsGeometryUtils::bisector( 2.5, 2, 0, 0, 5, 0, x, y ) );
+  QGSCOMPARENEAR( x, 2.5, 10e-3 );
+  QGSCOMPARENEAR( y, 0, 10e-3 );
+
+  // collinear
+  QVERIFY( !QgsGeometryUtils::bisector( 5, 5, 0, 0, 1, 1, x, y ) );
+}
+
+void TestQgsGeometryUtils::testAngleBisector()
+{
+  double x, y, angle;
+  QVERIFY( QgsGeometryUtils::angleBisector( 0, 0, 0, 5, 0, 0, 5, 0, x, y, angle ) );
+  QGSCOMPARENEAR( x, 0.0, 10e-3 );
+  QGSCOMPARENEAR( y, 0.0, 10e-3 );
+  QGSCOMPARENEAR( angle, 45.0, 10e-3 );
+
+  QVERIFY( QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 2.5, 0, 7.5, 5, x, y, angle ) );
+  QGSCOMPARENEAR( x, 2.5, 10e-3 );
+  QGSCOMPARENEAR( y, 0.0, 10e-3 );
+  QGSCOMPARENEAR( angle, 67.5, 10e-3 );
+
+  QVERIFY( QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 15, -5, 7.5, 5, x, y, angle ) );
+  QGSCOMPARENEAR( x, 11.25, 10e-3 );
+  QGSCOMPARENEAR( y, 0.0, 10e-3 );
+  QGSCOMPARENEAR( angle, 26.565, 10e-3 );
+
+  // collinear
+  QVERIFY( !QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 5, 5, 10, 5, x, y, angle ) );
+  QVERIFY( !QgsGeometryUtils::angleBisector( 0, 0, 5, 0, 6, 0, 10, 0, x, y, angle ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

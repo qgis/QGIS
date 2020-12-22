@@ -174,6 +174,16 @@ bool QgsArrowSymbolLayer::hasDataDefinedProperties() const
   return false;
 }
 
+bool QgsArrowSymbolLayer::usesMapUnits() const
+{
+  return mArrowWidthUnit == QgsUnitTypes::RenderMapUnits || mArrowWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mArrowStartWidthUnit == QgsUnitTypes::RenderMapUnits || mArrowStartWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mHeadLengthUnit == QgsUnitTypes::RenderMapUnits || mHeadLengthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mHeadThicknessUnit == QgsUnitTypes::RenderMapUnits || mHeadThicknessUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   mExpressionScope.reset( new QgsExpressionContextScope() );
@@ -334,7 +344,7 @@ inline qreal clampAngle( qreal a )
 
 /**
  * Compute the circumscribed circle from three points
- * \return false if the three points are colinear
+ * \return FALSE if the three points are colinear
  */
 bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &radius )
 {
@@ -693,6 +703,10 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
   context.renderContext().expressionContext().appendScope( mExpressionScope.get() );
   mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size() + 1, true ) );
   mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
+
+  const double prevOpacity = mSymbol->opacity();
+  mSymbol->setOpacity( prevOpacity * context.opacity() );
+
   if ( isCurved() )
   {
     _resolveDataDefined( context );
@@ -793,10 +807,13 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
         QPointF pd( points.at( pIdx + 1 ) );
 
         QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
+
         mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, context.selected() );
       }
     }
   }
+
+  mSymbol->setOpacity( prevOpacity );
   context.renderContext().expressionContext().popScope();
 }
 

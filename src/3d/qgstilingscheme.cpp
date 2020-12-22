@@ -15,6 +15,7 @@
 
 #include "qgstilingscheme.h"
 
+#include "qgschunknode_p.h"
 #include "qgsrectangle.h"
 
 QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs )
@@ -44,6 +45,11 @@ QgsRectangle QgsTilingScheme::tileToExtent( int x, int y, int z ) const
   QgsPointXY pt0 = tileToMap( x, y, z );
   QgsPointXY pt1 = tileToMap( x + 1, y + 1, z );
   return QgsRectangle( pt0, pt1 );
+}
+
+QgsRectangle QgsTilingScheme::tileToExtent( const QgsChunkNodeId &nodeId ) const
+{
+  return tileToExtent( nodeId.x, nodeId.y, nodeId.d );
 }
 
 void QgsTilingScheme::extentToTile( const QgsRectangle &extent, int &x, int &y, int &z ) const

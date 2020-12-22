@@ -76,6 +76,13 @@ void QgsAlignmentComboBox::populate()
   if ( mAlignments & Qt::AlignJustify )
     addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignJustify.svg" ) ), tr( "Justify" ), Qt::AlignJustify );
 
+  if ( mAlignments & Qt::AlignTop )
+    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignTop.svg" ) ), tr( "Top" ), Qt::AlignTop );
+  if ( mAlignments & Qt::AlignVCenter )
+    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignVCenter.svg" ) ), tr( "Vertical Center" ), Qt::AlignVCenter );
+  if ( mAlignments & Qt::AlignBottom )
+    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignBottom.svg" ) ), tr( "Bottom" ), Qt::AlignBottom );
+
   const int index = findData( QVariant( prevAlign ) );
   if ( index >= 0 )
     setCurrentIndex( index );

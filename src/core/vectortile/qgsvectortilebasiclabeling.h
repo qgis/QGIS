@@ -150,6 +150,7 @@ class QgsVectorTileBasicLabelProvider : public QgsVectorTileLabelProvider
     // virtual functions from QgsVectorTileLabelProvider
     void registerTileFeatures( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
     QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext &context, int tileZoom ) const override;
+    QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const override;
     void setFields( const QMap<QString, QgsFields> &perLayerFields ) override;
 
   private:

@@ -29,7 +29,8 @@ from qgis.core import (
     QgsRectangle,
     QgsTestUtils,
     QgsFeatureSource,
-    QgsProjUtils
+    QgsProjUtils,
+    QgsFeatureSink,
 )
 
 from qgis.testing import (
@@ -691,6 +692,118 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
         self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
         self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
+
+    def testTypeValidation(self):
+        """Test that incompatible types in attributes raise errors"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+        invalid = QgsFeature(vl.fields())
+        invalid.setAttribute('int', 'A string')
+        invalid.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        self.assertTrue(vl.startEditing())
+        # Validation happens on commit
+        self.assertTrue(vl.addFeatures([invalid]))
+        self.assertFalse(vl.commitChanges())
+        self.assertTrue(vl.rollBack())
+        self.assertFalse(vl.hasFeatures())
+
+        # Add a valid feature
+        valid = QgsFeature(vl.fields())
+        valid.setAttribute('int', 123)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([valid]))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 1)
+
+        f = vl.getFeature(1)
+        self.assertEqual(f.attribute('int'), 123)
+
+        # Add both
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+        self.assertEqual(vl.featureCount(), 0)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([valid, invalid]))
+        self.assertFalse(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 2)
+        self.assertTrue(vl.rollBack())
+        self.assertEqual(vl.featureCount(), 0)
+
+        # Add both swapped
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([invalid, valid]))
+        self.assertFalse(vl.commitChanges())
+        self.assertEqual(vl.featureCount(), 2)
+        self.assertTrue(vl.rollBack())
+        self.assertEqual(vl.featureCount(), 0)
+
+        # Change attribute value
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([valid]))
+        self.assertTrue(vl.commitChanges())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValue(1, 0, 'A string'))
+        self.assertFalse(vl.commitChanges())
+        f = vl.getFeature(1)
+        self.assertEqual(f.attribute('int'), 'A string')
+        self.assertTrue(vl.rollBack())
+
+        f = vl.getFeature(1)
+        self.assertEqual(f.attribute('int'), 123)
+
+        # Change attribute values
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([valid]))
+        self.assertTrue(vl.commitChanges())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeAttributeValues(1, {0: 'A string'}))
+        self.assertFalse(vl.commitChanges())
+        f = vl.getFeature(1)
+        self.assertEqual(f.attribute('int'), 'A string')
+        self.assertTrue(vl.rollBack())
+
+        f = vl.getFeature(1)
+        self.assertEqual(f.attribute('int'), 123)
+
+        ##############################################
+        # Test direct data provider calls
+
+        # No rollback (old behavior)
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+        dp = vl.dataProvider()
+        self.assertFalse(dp.addFeatures([valid, invalid])[0])
+        self.assertEqual([f.attributes() for f in dp.getFeatures()], [[123]])
+        f = vl.getFeature(1)
+        self.assertEqual(f.attribute('int'), 123)
+
+        # Roll back
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=int:integer',
+            'test', 'memory')
+        dp = vl.dataProvider()
+        self.assertFalse(dp.addFeatures([valid, invalid], QgsFeatureSink.RollBackOnErrors)[0])
+        self.assertFalse(dp.hasFeatures())
+
+        # Expected behavior for changeAttributeValues is to always roll back
+        self.assertTrue(dp.addFeatures([valid])[0])
+        self.assertFalse(dp.changeAttributeValues({1: {0: 'A string'}}))
+        f = vl.getFeature(1)
+        self.assertEqual(f.attribute('int'), 123)
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

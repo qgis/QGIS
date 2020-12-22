@@ -162,8 +162,8 @@ class SymbolLayerItem : public QStandardItem
         icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, mSize );
       setIcon( icon );
 
-      if ( parent() )
-        static_cast<SymbolLayerItem *>( parent() )->updatePreview();
+      if ( auto *lParent = parent() )
+        static_cast<SymbolLayerItem *>( lParent )->updatePreview();
     }
 
     int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
@@ -305,40 +305,25 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   setPanelTitle( tr( "Symbol Selector" ) );
 
-  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, [ = ]
-  {
-    // when a remote svg has been fetched, update the widget's previews
-    // this is required if the symbol utilizes remote svgs, and the current previews
-    // have been generated using the temporary "downloading" svg. In this case
-    // we require the preview to be regenerated to use the correct fetched
-    // svg
-    mBlockModified = true;
-    symbolChanged();
-    updatePreview();
-    mBlockModified = false;
-  } );
-  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, [ = ]
-  {
-    // when a remote image has been fetched, update the widget's previews
-    // this is required if the symbol utilizes remote images, and the current previews
-    // have been generated using the temporary "downloading" image. In this case
-    // we require the preview to be regenerated to use the correct fetched
-    // image
-    mBlockModified = true;
-    symbolChanged();
-    updatePreview();
-    mBlockModified = false;
-  } );
+  // when a remote svg has been fetched, update the widget's previews
+  // this is required if the symbol utilizes remote svgs, and the current previews
+  // have been generated using the temporary "downloading" svg. In this case
+  // we require the preview to be regenerated to use the correct fetched
+  // svg
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsSymbolSelectorWidget::projectDataChanged );
 
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [ = ]
-  {
-    // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
-    // need updating to reflect the new colors
-    mBlockModified = true;
-    symbolChanged();
-    updatePreview();
-    mBlockModified = false;
-  } );
+  // when a remote image has been fetched, update the widget's previews
+  // this is required if the symbol utilizes remote images, and the current previews
+  // have been generated using the temporary "downloading" image. In this case
+  // we require the preview to be regenerated to use the correct fetched
+  // image
+  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsSymbolSelectorWidget::projectDataChanged );
+
+  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+  // need updating to reflect the new colors
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
+
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
 }
 
 QMenu *QgsSymbolSelectorWidget::advancedMenu()
@@ -356,9 +341,9 @@ void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext &context 
 {
   mContext = context;
 
-  if ( mContext.expressionContext() )
+  if ( auto *lExpressionContext = mContext.expressionContext() )
   {
-    mPreviewExpressionContext = *mContext.expressionContext();
+    mPreviewExpressionContext = *lExpressionContext;
     if ( mVectorLayer )
       mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
 
@@ -938,4 +923,20 @@ QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
 void QgsSymbolSelectorDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "style_library/symbol_selector.html" ) );
+}
+
+void QgsSymbolSelectorWidget::projectDataChanged()
+{
+  mBlockModified = true;
+  symbolChanged();
+  updatePreview();
+  mBlockModified = false;
+}
+
+void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers )
+{
+  if ( mVectorLayer && layers.contains( mVectorLayer ) )
+  {
+    disconnect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
+  }
 }

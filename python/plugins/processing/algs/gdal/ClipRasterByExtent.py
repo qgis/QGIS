@@ -33,6 +33,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -43,6 +44,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class ClipRasterByExtent(GdalAlgorithm):
     INPUT = 'INPUT'
     EXTENT = 'PROJWIN'
+    OVERCRS = 'OVERCRS'
     NODATA = 'NODATA'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
@@ -60,6 +62,9 @@ class ClipRasterByExtent(GdalAlgorithm):
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Clipping extent')))
+        self.addParameter(QgsProcessingParameterBoolean(self.OVERCRS,
+                                                        self.tr('Override the projection for the output file'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -118,6 +123,7 @@ class ClipRasterByExtent(GdalAlgorithm):
             raise QgsProcessingException('Invalid input layer {}'.format(parameters[self.INPUT] if self.INPUT in parameters else 'INPUT'))
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
+        override_crs = self.parameterAsBoolean(parameters, self.OVERCRS, context)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
             nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         else:
@@ -132,6 +138,10 @@ class ClipRasterByExtent(GdalAlgorithm):
         arguments.append(str(bbox.yMaximum()))
         arguments.append(str(bbox.xMaximum()))
         arguments.append(str(bbox.yMinimum()))
+
+        crs = inLayer.crs()
+        if override_crs and crs.isValid():
+            arguments.append('-a_srs {}'.format(GdalUtils.gdal_crs_string(crs)))
 
         if nodata is not None:
             arguments.append('-a_nodata {}'.format(nodata))

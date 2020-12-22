@@ -28,6 +28,7 @@
 #include "qgis_gui.h"
 
 class QgsRasterLayer;
+class QgsLocaleAwareNumericLineEditDelegate;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -111,6 +112,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     void setClassData( const QgsPalettedRasterRenderer::ClassData &data );
 
     QgsPalettedRasterRenderer::ClassData classData() const { return mData; }
+    QgsPalettedRasterRenderer::Class classAtIndex( const QModelIndex &index ) const { return mData.at( index.row() ); }
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
@@ -143,6 +145,34 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 
 
 };
+
+class QgsPalettedRendererProxyModel: public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsPalettedRendererProxyModel( QObject *parent = 0 )
+      : QSortFilterProxyModel( parent )
+    {
+    }
+
+    //! Return sorted class data
+    QgsPalettedRasterRenderer::ClassData classData() const;
+
+  protected:
+
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
+    {
+      const QModelIndex lv { left.model()->index( left.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), left.parent() ) };
+      const QModelIndex rv { right.model()->index( right.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), right.parent() ) };
+      const double leftData { sourceModel()->data( lv ).toDouble( ) };
+      const double rightData { sourceModel()->data( rv ).toDouble( ) };
+      return leftData < rightData;
+    }
+
+};
+
 ///@endcond PRIVATE
 #endif
 
@@ -170,12 +200,14 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     QMenu *mAdvancedMenu = nullptr;
     QAction *mLoadFromLayerAction = nullptr;
     QgsPalettedRendererModel *mModel = nullptr;
-    QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
+    QgsPalettedRendererProxyModel *mProxyModel = nullptr;
 
     //! Background class gatherer thread
     QgsPalettedRendererClassGatherer *mGatherer = nullptr;
 
     int mBand = -1;
+
+    QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
 
     void setSelectionColor( const QItemSelection &selection, const QColor &color );
 

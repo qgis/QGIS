@@ -20,7 +20,7 @@ A widget for configuration of a map extent.
 Besides allowing the user to enter the extent manually, it comes with options to use
 original extent or extent defined by the current view in map canvas.
 
-When using the widget, make sure to call setOriginalExtent(), setCurrentExtent() and setOutputCrs() during initialization.
+When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func:`~setCurrentExtent` and :py:func:`~setOutputCrs` during initialization.
 
 .. seealso:: :py:class:`QgsExtentGroupBox`
 
@@ -135,11 +135,12 @@ Returns the current output CRS, used in the display.
 Returns the currently selected state for the widget's extent.
 %End
 
-    void setMapCanvas( QgsMapCanvas *canvas );
+    void setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption = true );
 %Docstring
 Sets the map canvas to enable dragging of extent on a canvas.
 
 :param canvas: the map canvas
+:param drawOnCanvasOption: set to false to disable to draw on canvas option
 %End
 
     QSize ratio() const;

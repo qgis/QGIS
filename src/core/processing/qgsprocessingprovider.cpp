@@ -43,7 +43,7 @@ QString QgsProcessingProvider::svgIconPath() const
 
 QgsProcessingProvider::Flags QgsProcessingProvider::flags() const
 {
-  return nullptr;
+  return QgsProcessingProvider::Flags();
 }
 
 QString QgsProcessingProvider::helpId() const

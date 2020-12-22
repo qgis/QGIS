@@ -104,7 +104,7 @@ animating the project.
 Returns the project's time step (length of one animation frame), which is used as the default value when
 animating the project.
 
-Units are specified via timeStepUnit()
+Units are specified via :py:func:`~QgsProjectTimeSettings.timeStepUnit`
 
 .. seealso:: :py:func:`setTimeStep`
 
@@ -116,7 +116,7 @@ Units are specified via timeStepUnit()
 Sets the project's time ``step`` (length of one animation frame), which is used as the default value when
 animating the project.
 
-Units are specified via setTimeStepUnit()
+Units are specified via :py:func:`~QgsProjectTimeSettings.setTimeStepUnit`
 
 .. seealso:: :py:func:`timeStep`
 

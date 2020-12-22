@@ -116,9 +116,8 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   if ( !enabled() )
     return;
 
-  context.painter()->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    context.painter()->setRenderHint( QPainter::Antialiasing, true );
+  QgsScopedQPainterState painterState( context.painter() );
+  context.setPainterFlagsUsingContext();
 
   QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
   QStringList displayStringList = displayString.split( '\n' );
@@ -201,7 +200,5 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
 
   //Paint label to canvas
   QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
-
-  context.painter()->restore();
 }
 

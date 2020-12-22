@@ -348,7 +348,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     {
       if ( provider->doesStrictFeatureTypeCheck() )
       {
-        for ( const auto &f : qgis::as_const( mAddedFeatures ) )
+        for ( const QgsFeature &f : qgis::as_const( mAddedFeatures ) )
         {
           if ( ( ! f.hasGeometry() ) ||
                ( f.geometry().wkbType() == provider->wkbType() ) )
@@ -397,7 +397,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   bool attributesChanged = false;
   if ( !mDeletedAttributeIds.isEmpty() )
   {
-    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( mDeletedAttributeIds.toSet() ) )
+    if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( qgis::listToSet( mDeletedAttributeIds ) ) )
     {
       commitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
 
@@ -581,8 +581,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       {
         commitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
         // TODO[MD]: we should not need this here
-        const auto constMDeletedFeatureIds = mDeletedFeatureIds;
-        for ( QgsFeatureId id : constMDeletedFeatureIds )
+        for ( QgsFeatureId id : qgis::as_const( mDeletedFeatureIds ) )
         {
           mChangedAttributeValues.remove( id );
           mChangedGeometries.remove( id );
@@ -628,7 +627,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
           QgsVectorLayerUtils::matchAttributesToFields( featuresToAdd[i], provider->fields() );
         }
 
-        if ( provider->addFeatures( featuresToAdd ) )
+        if ( provider->addFeatures( featuresToAdd, QgsFeatureSink::Flag::RollBackOnErrors ) )
         {
           commitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", featuresToAdd.size() );
 

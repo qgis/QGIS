@@ -22,10 +22,13 @@
 #include "qgsmapmouseevent.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgsproject.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
   , mQgisCanvas( qgisCanvas )
+  , mRasterCrs( rasterCrs )
   , mPixelCoords( pixelCoords )
 {
   setupUi( this );
@@ -38,6 +41,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   mPointFromCanvasPushButton = new QPushButton( QgsApplication::getThemeIcon( "georeferencer/mPushButtonPencil.png" ), tr( "From Map Canvas" ) );
   mPointFromCanvasPushButton->setCheckable( true );
   buttonBox->addButton( mPointFromCanvasPushButton, QDialogButtonBox::ActionRole );
+  mPointFromCanvasPushButton->setFocus();
 
   // User can input either DD or DMS coords (from QGIS mapcanvas we take DD coords)
   QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( this );
@@ -58,6 +62,9 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
 
   connect( leXCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
   connect( leYCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
+
+  mProjectionSelector->setCrs( mRasterCrs );
+
   updateOK();
 }
 
@@ -92,7 +99,7 @@ void QgsMapCoordsDialog::buttonBox_accepted()
   if ( !ok )
     y = dmsToDD( leYCoord->text() );
 
-  emit pointAdded( mPixelCoords, QgsPointXY( x, y ) );
+  emit pointAdded( mPixelCoords, QgsPointXY( x, y ), mProjectionSelector->crs().isValid() ? mProjectionSelector->crs() : mRasterCrs );
   close();
 }
 
@@ -109,9 +116,14 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton butto
     leYCoord->setText( qgsDoubleToString( mapCoordPoint.y() ) );
   }
 
-  parentWidget()->showNormal();
+  // only restore window if it was minimized
+  if ( parentWidget()->windowState().testFlag( Qt::WindowMinimized ) )
+    parentWidget()->showNormal();
   parentWidget()->activateWindow();
   parentWidget()->raise();
+
+  // set CRS to match canvas' point coordinates
+  mProjectionSelector->setCrs( mQgisCanvas->mapSettings().destinationCrs() );
 
   mPointFromCanvasPushButton->setChecked( false );
   buttonBox->button( QDialogButtonBox::Ok )->setFocus();

@@ -80,7 +80,7 @@ void QgsColorRampButton::showColorRampDialog()
 
   setColorRampName( QString() );
 
-  if ( currentRamp->type() == QLatin1String( "gradient" ) )
+  if ( currentRamp->type() == QgsGradientColorRamp::typeString() )
   {
     QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( currentRamp.get() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
@@ -90,7 +90,7 @@ void QgsColorRampButton::showColorRampDialog()
       setColorRamp( dlg.ramp().clone() );
     }
   }
-  else if ( currentRamp->type() == QLatin1String( "random" ) )
+  else if ( currentRamp->type() == QgsLimitedRandomColorRamp::typeString() )
   {
     QgsLimitedRandomColorRamp *randRamp = static_cast<QgsLimitedRandomColorRamp *>( currentRamp.get() );
     if ( panelMode )
@@ -109,7 +109,7 @@ void QgsColorRampButton::showColorRampDialog()
       }
     }
   }
-  else if ( currentRamp->type() == QLatin1String( "preset" ) )
+  else if ( currentRamp->type() == QgsPresetSchemeColorRamp::typeString() )
   {
     QgsPresetSchemeColorRamp *presetRamp = static_cast<QgsPresetSchemeColorRamp *>( currentRamp.get() );
     if ( panelMode )
@@ -128,7 +128,7 @@ void QgsColorRampButton::showColorRampDialog()
       }
     }
   }
-  else if ( currentRamp->type() == QLatin1String( "colorbrewer" ) )
+  else if ( currentRamp->type() == QgsColorBrewerColorRamp::typeString() )
   {
     QgsColorBrewerColorRamp *brewerRamp = static_cast<QgsColorBrewerColorRamp *>( currentRamp.get() );
     if ( panelMode )
@@ -147,7 +147,7 @@ void QgsColorRampButton::showColorRampDialog()
       }
     }
   }
-  else if ( currentRamp->type() == QLatin1String( "cpt-city" ) )
+  else if ( currentRamp->type() == QgsCptCityColorRamp::typeString() )
   {
     QgsCptCityColorRamp *cptCityRamp = static_cast<QgsCptCityColorRamp *>( currentRamp.get() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
@@ -274,7 +274,7 @@ void QgsColorRampButton::prepareMenu()
   {
     std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
 
-    if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
+    if ( !mShowGradientOnly || ( ramp->type() == QgsGradientColorRamp::typeString() || ramp->type() == QgsCptCityColorRamp::typeString() ) )
     {
       QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
       QAction *ra = new QAction( *it, this );
@@ -294,7 +294,7 @@ void QgsColorRampButton::prepareMenu()
   {
     std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
 
-    if ( !mShowGradientOnly || ( ramp->type() == QLatin1String( "gradient" ) || ramp->type() == QLatin1String( "cpt-city" ) ) )
+    if ( !mShowGradientOnly || ( ramp->type() == QgsGradientColorRamp::typeString() || ramp->type() == QgsCptCityColorRamp::typeString() ) )
     {
       QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( iconSize, iconSize ) );
       QAction *ra = new QAction( *it, this );
@@ -334,43 +334,49 @@ void QgsColorRampButton::loadColorRamp()
 
 void QgsColorRampButton::createColorRamp()
 {
-  QStringList rampTypes;
-  QString rampType;
+
   bool ok = true;
 
+  QList< QPair< QString, QString > > rampTypes = QgsColorRamp::rampTypes();
+  QStringList rampTypeNames;
+  rampTypeNames.reserve( rampTypes.size() );
   if ( mShowGradientOnly )
   {
-    rampTypes << tr( "Gradient" ) << tr( "Catalog: cpt-city" );
+    rampTypes.erase( std::remove_if( rampTypes.begin(), rampTypes.end(), []( const QPair< QString, QString > &type )
+    {
+      return type.first != QgsGradientColorRamp::typeString() && type.first != QgsCptCityColorRamp::typeString();
+    } ), rampTypes.end() );
   }
-  else
-  {
-    rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
-    rampTypes << tr( "Catalog: ColorBrewer" );
-  }
-  rampType = QInputDialog::getItem( this, tr( "Color ramp type" ),
-                                    tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
 
-  if ( !ok || rampType.isEmpty() )
+  for ( const QPair< QString, QString > &type : rampTypes )
+    rampTypeNames << type.second;
+
+  const QString selectedRampTypeName = QInputDialog::getItem( this, tr( "Color ramp type" ),
+                                       tr( "Please select color ramp type:" ), rampTypeNames, 0, false, &ok );
+
+  if ( !ok || selectedRampTypeName.isEmpty() )
     return;
 
-  QgsColorRamp  *ramp = nullptr;
-  if ( rampType == tr( "Gradient" ) )
+  const QString rampType = rampTypes.value( rampTypeNames.indexOf( selectedRampTypeName ) ).first;
+
+  QgsColorRamp *ramp = nullptr;
+  if ( rampType == QgsGradientColorRamp::typeString() )
   {
     ramp = new QgsGradientColorRamp();
   }
-  else if ( rampType == tr( "Random" ) )
+  else if ( rampType == QgsLimitedRandomColorRamp::typeString() )
   {
     ramp = new QgsLimitedRandomColorRamp();
   }
-  else if ( rampType == tr( "Catalog: ColorBrewer" ) )
+  else if ( rampType == QgsColorBrewerColorRamp::typeString() )
   {
     ramp = new QgsColorBrewerColorRamp();
   }
-  else if ( rampType == tr( "Color presets" ) )
+  else if ( rampType == QgsPresetSchemeColorRamp::typeString() )
   {
     ramp = new QgsPresetSchemeColorRamp();
   }
-  else if ( rampType == tr( "Catalog: cpt-city" ) )
+  else if ( rampType == QgsCptCityColorRamp::typeString() )
   {
     ramp = new QgsCptCityColorRamp( QString(), QString() );
   }

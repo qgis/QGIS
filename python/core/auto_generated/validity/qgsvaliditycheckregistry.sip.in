@@ -14,7 +14,7 @@ This class keeps a list of QgsAbstractValidityCheck checks which can be used whe
 performing validity checks.
 
 QgsValidityCheckRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.validityCheckRegistry()`
+:py:func:`QgsApplication.validityCheckRegistry()`.
 
 .. versionadded:: 3.6
 %End

@@ -26,187 +26,187 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QGroupBox" name="srcGroupBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title">
-       <string>Source type</string>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout1">
-       <item>
-        <widget class="QRadioButton" name="radioSrcFile">
-         <property name="text">
-          <string>F&amp;ile</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioSrcProtocol">
-         <property name="text">
-          <string>Protoco&amp;l: HTTP(S), cloud, etc.</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="fileGroupBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title">
-       <string>Source</string>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Raster Dataset(s)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsFileWidget" name="mFileWidget"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="protocolGroupBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Protocol</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_21">
-       <item row="0" column="1">
-        <widget class="QComboBox" name="cmbProtocolTypes"/>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Type</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="labelProtocolURI">
-         <property name="text">
-          <string>&amp;URI</string>
-         </property>
-         <property name="buddy">
-          <cstring>protocolURI</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="protocolURI"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="labelBucket">
-         <property name="text">
-          <string>Bucket or container</string>
-         </property>
-         <property name="buddy">
-          <cstring>mBucket</cstring>
-         </property>
-        </widget>       
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="mBucket"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="labelKey">
-         <property name="text">
-          <string>Object key</string>
-         </property>
-         <property name="buddy">
-          <cstring>mKey</cstring>
-         </property>
-        </widget>       
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="mKey"/>
-       </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QLabel" name="mAuthWarning">
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <property name="openExternalLinks">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>…</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QGroupBox" name="mAuthGroupBox">
-         <property name="title">
-          <string>Authentication</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="leftMargin">
-           <number>6</number>
+     <item>
+      <widget class="QGroupBox" name="srcGroupBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Source Type</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout1">
+        <item>
+         <widget class="QRadioButton" name="radioSrcFile">
+          <property name="text">
+           <string>F&amp;ile</string>
           </property>
-          <property name="topMargin">
-           <number>6</number>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioSrcProtocol">
+          <property name="text">
+           <string>Protoco&amp;l: HTTP(S), cloud, etc.</string>
           </property>
-          <property name="rightMargin">
-           <number>6</number>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="bottomMargin">
-           <number>6</number>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
           </property>
-          <item>
-           <widget class="QgsAuthSettingsWidget" name="mAuthSettingsProtocol" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="fileGroupBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>Source</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Raster dataset(s)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="protocolGroupBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Protocol</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_21">
+        <item row="0" column="1">
+         <widget class="QComboBox" name="cmbProtocolTypes"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelProtocolURI">
+          <property name="text">
+           <string>&amp;URI</string>
+          </property>
+          <property name="buddy">
+           <cstring>protocolURI</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="protocolURI"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelBucket">
+          <property name="text">
+           <string>Bucket or container</string>
+          </property>
+          <property name="buddy">
+           <cstring>mBucket</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="mBucket"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="labelKey">
+          <property name="text">
+           <string>Object key</string>
+          </property>
+          <property name="buddy">
+           <cstring>mKey</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="mKey"/>
+        </item>
+        <item row="4" column="0" colspan="2">
+         <widget class="QLabel" name="mAuthWarning">
+          <property name="text">
+           <string>…</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="2">
+         <widget class="QGroupBox" name="mAuthGroupBox">
+          <property name="title">
+           <string>Authentication</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="leftMargin">
+            <number>6</number>
+           </property>
+           <property name="topMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
+            <number>6</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QgsAuthSettingsWidget" name="mAuthSettingsProtocol" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="1" column="0">

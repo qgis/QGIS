@@ -65,6 +65,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
   protected:
     void blockInitSignals( bool block );
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   private slots:
 
@@ -85,13 +86,13 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
   private:
 
-    QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
     QgsPalLayerSettings mSettings;
     LabelMode mMode;
     QgsFeature mPreviewFeature;
     QgsMapCanvas *mCanvas = nullptr;
 
     QgsLabelObstacleSettings mObstacleSettings;
+    QgsLabelLineSettings mLineSettings;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -100,6 +101,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void initCalloutWidgets();
     void updateCalloutWidget( QgsCallout *callout );
     void showObstacleSettings();
+    void showLineAnchorSettings();
 
 };
 

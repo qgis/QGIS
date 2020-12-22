@@ -118,12 +118,12 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster,
                                         const bool geoPDF, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails )
-  : QgsTask( fileFormat == QStringLiteral( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ) )
+  : QgsTask( fileFormat == QLatin1String( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ) )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
   , mForceRaster( forceRaster )
-  , mGeoPDF( geoPDF && mFileFormat == QStringLiteral( "PDF" ) && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
+  , mGeoPDF( geoPDF && mFileFormat == QLatin1String( "PDF" ) && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
   , mGeoPdfExportDetails( geoPdfExportDetails )
 {
   prepare();
@@ -273,8 +273,8 @@ bool QgsMapRendererTask::run()
       continue;
     }
 
-    context.painter()->save();
-    context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
+    QgsScopedQPainterState painterState( context.painter() );
+    context.setPainterFlagsUsingContext();
 
     double itemX, itemY;
     if ( annotation->hasFixedMapPosition() )
@@ -291,14 +291,13 @@ bool QgsMapRendererTask::run()
     context.painter()->translate( itemX, itemY );
 
     annotation->render( context );
-    context.painter()->restore();
   }
 
   if ( !mFileName.isEmpty() )
   {
     mDestPainter->end();
 
-    if ( mFileFormat == QStringLiteral( "PDF" ) )
+    if ( mFileFormat == QLatin1String( "PDF" ) )
     {
 #ifndef QT_NO_PRINTER
       if ( mForceRaster )
@@ -346,14 +345,14 @@ bool QgsMapRendererTask::run()
                 creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
               }
             }
-            GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
-            GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeoPdfExportDetails.author.toLocal8Bit().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeoPdfExportDetails.author.toUtf8().constData(), nullptr );
             const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-            GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
-            GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
-            GDALSetMetadataItem( outputDS.get(), "SUBJECT", mGeoPdfExportDetails.subject.toLocal8Bit().constData(), nullptr );
-            GDALSetMetadataItem( outputDS.get(), "TITLE", mGeoPdfExportDetails.title.toLocal8Bit().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toUtf8().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toUtf8().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "SUBJECT", mGeoPdfExportDetails.subject.toUtf8().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "TITLE", mGeoPdfExportDetails.title.toUtf8().constData(), nullptr );
 
             const QgsAbstractMetadataBase::KeywordMap keywords = mGeoPdfExportDetails.keywords;
             QStringList allKeywords;
@@ -362,7 +361,7 @@ bool QgsMapRendererTask::run()
               allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
             }
             const QString keywordString = allKeywords.join( ';' );
-            GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toLocal8Bit().constData(), nullptr );
+            GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toUtf8().constData(), nullptr );
           }
         }
         CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", nullptr );
@@ -372,7 +371,7 @@ bool QgsMapRendererTask::run()
       return false;
 #endif // !QT_NO_PRINTER
     }
-    else if ( mFileFormat != QStringLiteral( "PDF" ) )
+    else if ( mFileFormat != QLatin1String( "PDF" ) )
     {
       bool success = mImage.save( mFileName, mFileFormat.toLocal8Bit().data() );
       if ( !success )
@@ -388,7 +387,7 @@ bool QgsMapRendererTask::run()
         // build the world file name
         QString outputSuffix = info.suffix();
         bool skipWorldFile = false;
-        if ( outputSuffix == QStringLiteral( "tif" ) || outputSuffix == QStringLiteral( "tiff" ) )
+        if ( outputSuffix == QLatin1String( "tif" ) || outputSuffix == QLatin1String( "tiff" ) )
         {
           gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
           if ( outputDS )
@@ -466,7 +465,7 @@ void QgsMapRendererTask::prepare()
 
   mDestPainter = mPainter;
 
-  if ( mFileFormat == QStringLiteral( "PDF" ) )
+  if ( mFileFormat == QLatin1String( "PDF" ) )
   {
 #ifndef QT_NO_PRINTER
     mPrinter.reset( new QPrinter() );

@@ -20,9 +20,12 @@
 #include "qgsprocessingfeedback.h"
 #include "qgspythonrunner.h"
 #include "qgspythonutils.h"
+#include "qgsunittypes.h"
 #include <QElapsedTimer>
 
 class QgsApplication;
+
+class QgsProcessingAlgorithm;
 
 class ConsoleFeedback : public QgsProcessingFeedback
 {
@@ -33,16 +36,18 @@ class ConsoleFeedback : public QgsProcessingFeedback
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
-    ConsoleFeedback();
+    ConsoleFeedback( bool useJson );
 
   public slots:
 
     void setProgressText( const QString &text ) override;
     void reportError( const QString &error, bool fatalError ) override;
+    void pushWarning( const QString &warning ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
+    QVariantMap jsonLog() const;
 
   private slots:
     void showTerminalProgress( double progress );
@@ -50,6 +55,8 @@ class ConsoleFeedback : public QgsProcessingFeedback
   private:
     QElapsedTimer mTimer;
     int mLastTick = -1;
+    bool mUseJson = false;
+    QVariantMap mJsonLog;
 };
 
 
@@ -65,12 +72,23 @@ class QgsProcessingExec
 
     void showUsage( const QString &appName );
     void loadPlugins();
-    void listAlgorithms();
-    void listPlugins();
-    int showAlgorithmHelp( const QString &id );
-    int execute( const QString &algId, const QVariantMap &parameters );
+    void listAlgorithms( bool useJson );
+    void listPlugins( bool useJson );
+    int showAlgorithmHelp( const QString &id, bool useJson );
+    int execute( const QString &algId,
+                 const QVariantMap &parameters,
+                 const QString &ellipsoid,
+                 QgsUnitTypes::DistanceUnit distanceUnit,
+                 QgsUnitTypes::AreaUnit areaUnit,
+                 bool useJson,
+                 const QString &projectPath = QString() );
+
+    void addVersionInformation( QVariantMap &json );
+    void addAlgorithmInformation( QVariantMap &json, const QgsProcessingAlgorithm *algorithm );
+    void addProviderInformation( QVariantMap &json, QgsProcessingProvider *provider );
 
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
+    std::unique_ptr<QgsPythonUtils> loadPythonSupport();
 };
 
 #endif // QGSPROCESS_H

@@ -1,0 +1,29 @@
+version: '3'
+services:
+
+  nginx:
+    image: nginx:1.13
+    container_name: qgis_server_nginx
+    ports:
+      - 8089:80
+    networks:
+      - qgis
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./../../data/metadata:/var/www/html/wms13/metadata
+    depends_on:
+      - qgis-server
+
+  qgis-server:
+    image: qgis_server_deps
+    container_name: qgis_server_deps
+    volumes:
+      - ./../../:/usr/src/qgis/
+      - ./../../data:/data
+    networks:
+      - qgis
+    privileged: true
+
+networks:
+  qgis:
+    driver: bridge

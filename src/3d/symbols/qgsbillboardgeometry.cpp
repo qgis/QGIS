@@ -31,6 +31,8 @@ QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   mPositionAttribute->setBuffer( mVertexBuffer );
   mPositionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
+  mPositionAttribute->setByteOffset( 0 );
+  mPositionAttribute->setByteStride( 3 * sizeof( float ) );
   mPositionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
 
   addAttribute( mPositionAttribute );

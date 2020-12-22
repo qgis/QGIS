@@ -176,8 +176,8 @@ namespace QgsWms
         QString key = metaEnum.valueToKey( code );
 
         // remove prefix
-        key.replace( QStringLiteral( "OGC_" ), QString() );
-        key.replace( QStringLiteral( "QGIS_" ), QString() );
+        key.replace( QLatin1String( "OGC_" ), QString() );
+        key.replace( QLatin1String( "QGIS_" ), QString() );
 
         return key;
       }

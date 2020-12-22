@@ -664,6 +664,10 @@ QRadioButton::indicator:checked:disabled {
     image: url(@theme_path/icons/qradiobox-checked-disabled.svg);
 }
 
+QRadioButton:disabled {
+    background-color: transparent;
+}
+
 /* ==================================================================================== */
 /* CHECKBOX                                                                             */
 /* ==================================================================================== */
@@ -691,6 +695,10 @@ QCheckBox::indicator:checked:disabled {
     image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 
+QCheckBox:disabled {
+    background-color: transparent;
+}
+
 /* ==================================================================================== */
 /* SLIDER                                                                                */
 /* ==================================================================================== */
@@ -701,12 +709,19 @@ QSlider::groove:horizontal {
     background-color: @itembackground;
     margin: 0.15em 1px;
 }
-
+QSlider::groove:horizontal[invertedAppearance="true"] {
+    border-color: @selection;
+    background-color: @selection;
+}
 QSlider::groove:vertical  {
-    border: 1px solid @itembackground;
+    border: 1px solid @selection;
     width: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
-    background-color: @itembackground;
+    background-color: @selection;
     margin: 1px 0.15em;
+}
+QSlider::groove:vertical[invertedAppearance="true"] {
+    border-color: @itembackground;
+    background-color: @itembackground;
 }
 
 QSlider::handle:horizontal {
@@ -728,12 +743,19 @@ QSlider::sub-page:horizontal {
     background-color: @selection;
     margin: 0.15em 1px;
 }
-
+QSlider::sub-page:horizontal[invertedAppearance="true"] {
+    border-color: @itembackground;
+    background-color: @itembackground;
+}
 QSlider::sub-page:vertical {
-    border: 1px solid @selection;
+    border: 1px solid @itembackground;
     height: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
-    background-color: @selection;
+    background-color: @itembackground;
     margin: 1px 0.15em;
+}
+QSlider::sub-page:vertical[invertedAppearance="true"] {
+    border-color: @selection;
+    background-color: @selection;
 }
 
 /* ==================================================================================== */
@@ -760,6 +782,15 @@ QAbstractItemView:disabled, QListView:disabled
 QAbstractItemView::selected, QListView::selected {
     border: 0px;
     outline: none;
+}
+
+QAbstractItemView::indicator:checked, QListView::indicator:checked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QAbstractItemView::indicator:unchecked, QListView::indicator:unchecked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
 /* ==================================================================================== */
@@ -852,6 +883,7 @@ QTreeView#viewGraduated::indicator:unchecked,
 QTreeView#viewCategories::indicator:unchecked,
 QTreeView#viewRules::indicator:unchecked 
 {
+    border: none;
     image: url(@theme_path/icons/eye-blocked.svg);
 }
 
@@ -860,6 +892,7 @@ QTreeView#viewGraduated::indicator:checked,
 QTreeView#viewCategories::indicator:checked, 
 QTreeView#viewRules::indicator:checked 
 {
+    border: none;
     image: url(@theme_path/icons/eye.svg);
 }
 
@@ -1059,4 +1092,8 @@ QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab QTabBar::tab 
 
 QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
     min-width:2.3em;
+}
+
+QFrame#mUserInputContainer { 
+    background-color: @background;
 }

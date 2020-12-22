@@ -74,7 +74,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
                           QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
                           const QString &baseKey = "qgis/connections-wms/",
                           const QString &connectionName = QString(),
-                          QgsNewHttpConnection::Flags flags = nullptr,
+                          QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(),
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /**
@@ -149,6 +149,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * \since QGIS 3.2
      */
     QCheckBox *wfsPagingEnabledCheckBox() SIP_SKIP;
+
+    /**
+     * Returns the "Use GML2 encoding for transactions" checkbox
+     * \since QGIS 3.16
+     */
+    QCheckBox *wfsUseGml2EncodingForTransactions() SIP_SKIP;
 
     /**
      * Returns the "WFS page size" edit

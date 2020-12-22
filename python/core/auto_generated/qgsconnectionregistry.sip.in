@@ -18,7 +18,7 @@ A registry for saved data provider connections, allowing retrieval of
 saved connections by name and provider type.
 
 QgsConnectionRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.connectionRegistry()`
+:py:func:`QgsApplication.connectionRegistry()`.
 
 .. versionadded:: 3.14
 %End

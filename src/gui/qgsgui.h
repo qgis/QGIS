@@ -38,7 +38,9 @@ class QgsDataItemGuiProviderRegistry;
 class QgsProviderGuiRegistry;
 class QgsProjectStorageGuiRegistry;
 class QgsNumericFormatGuiRegistry;
+class QgsCodeEditorColorSchemeRegistry;
 class QgsMessageBar;
+class QgsSubsetStringEditorProviderRegistry;
 
 /**
  * \ingroup gui
@@ -123,6 +125,12 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the global code editor color scheme registry, used for registering the color schemes for QgsCodeEditor widgets.
+     * \since QGIS 3.16
+     */
+    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
      * \since QGIS 3.4
      */
@@ -146,6 +154,12 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.10
      */
     static QgsProviderGuiRegistry *providerGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the registry of subset string editors of data providers
+     * \since QGIS 3.18
+     */
+    static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
@@ -201,7 +215,7 @@ class GUI_EXPORT QgsGui : public QObject
     static QScreen *findScreenAt( QPoint point );
 
     /**
-     * Returns true if python macros are currently allowed to be run
+     * Returns TRUE if python macros are currently allowed to be run
      * If the global option is to ask user, a modal dialog will be shown
      * \param lambda a pointer to a lambda method. If specified, the dialog is not modal,
      * a message is shown with a button to enable macro.
@@ -210,6 +224,24 @@ class GUI_EXPORT QgsGui : public QObject
      * \param messageBar the message bar must be provided if a lambda method is used.
      */
     static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
+
+    ///@cond PRIVATE
+    void emitOptionsChanged() SIP_SKIP;
+    ///@endcond
+
+  signals:
+
+    /**
+     * This signal is emitted whenever the application options have been changed.
+     *
+     * This signal is a "blanket" signal, and will be emitted whenever the options dialog
+     * has been accepted regardless of whether or not individual settings are changed.
+     * It is designed as a "last resort" fallback only, allowing widgets to respond
+     * to possible settings changes.
+     *
+     * \since QGIS 3.16
+     */
+    void optionsChanged();
 
   private:
 
@@ -228,7 +260,9 @@ class GUI_EXPORT QgsGui : public QObject
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
     QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;
     QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
+    QgsCodeEditorColorSchemeRegistry *mCodeEditorColorSchemeRegistry = nullptr;
     QgsProjectStorageGuiRegistry *mProjectStorageGuiRegistry = nullptr;
+    QgsSubsetStringEditorProviderRegistry *mSubsetStringEditorProviderRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN

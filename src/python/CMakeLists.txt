@@ -1,30 +1,30 @@
-SET(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
+set(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${PYTHON_INCLUDE_PATH}
 )
 
-ADD_LIBRARY (qgispython SHARED ${QGISPYTHON_SRCS})
+add_library (qgispython SHARED ${QGISPYTHON_SRCS})
 
-SET_TARGET_PROPERTIES(qgispython PROPERTIES
+set_target_properties(qgispython PROPERTIES
   CLEAN_DIRECT_OUTPUT 1
 )
 
 #generate unversioned libs for android
-IF (NOT ANDROID)
-  SET_TARGET_PROPERTIES(qgispython PROPERTIES
+if (NOT ANDROID)
+  set_target_properties(qgispython PROPERTIES
     VERSION ${COMPLETE_VERSION}
     SOVERSION ${COMPLETE_VERSION}
   )
-ENDIF (NOT ANDROID)
+endif()
 
-TARGET_LINK_LIBRARIES(qgispython
+target_link_libraries(qgispython
   qgis_core
   ${PYTHON_LIBRARY}
   ${OPENPTY_LIBRARY}
@@ -36,11 +36,11 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_python.h
  )
 
-IF (APPLE)
-  SET_TARGET_PROPERTIES(qgispython PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-ENDIF (APPLE)
+if (APPLE)
+  set_target_properties(qgispython PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+endif()
 
-INSTALL(TARGETS qgispython
+install(TARGETS qgispython
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
 )

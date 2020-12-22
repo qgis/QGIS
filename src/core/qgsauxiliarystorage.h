@@ -80,6 +80,14 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 
     QgsAuxiliaryLayer &operator=( QgsAuxiliaryLayer const &rhs ) = delete;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsAuxiliaryLayer: '%1'>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Returns a new instance equivalent to this one. The underlying table
      * is duplicate for the layer given in parameter. Note that the current

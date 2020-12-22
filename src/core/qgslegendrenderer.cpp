@@ -442,15 +442,18 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   double totalHeight = 0;
   qreal maxGroupHeight = 0;
   int forcedColumnBreaks = 0;
+  double totalSpaceAboveGroups = 0;
   for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
   {
     totalHeight += spaceAboveGroup( group );
+    totalSpaceAboveGroups += spaceAboveGroup( group );
     totalHeight += group.size.height();
     maxGroupHeight = std::max( group.size.height(), maxGroupHeight );
 
     if ( group.placeColumnBreakBeforeGroup )
       forcedColumnBreaks++;
   }
+  double averageGroupHeight = ( totalHeight - totalSpaceAboveGroups ) / componentGroups.size();
 
   if ( mSettings.columnCount() == 0 && forcedColumnBreaks == 0 )
     return 0;
@@ -472,22 +475,37 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   double closedColumnsHeight = 0;
   int autoPlacedBreaks = 0;
 
+  // Calculate the expected average space between items
+  double averageSpaceAboveGroups = 0;
+  if ( componentGroups.size() > targetNumberColumns )
+    averageSpaceAboveGroups = totalSpaceAboveGroups / ( componentGroups.size() );
+  // Correct the totalHeight using the number of columns because the first item
+  // in each column does not get any space above it
+  totalHeight -= targetNumberColumns * averageSpaceAboveGroups;
+
   for ( int i = 0; i < componentGroups.size(); i++ )
   {
-    // Recalc average height for remaining columns including current
-    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( numberAutoPlacedBreaks + 1 - autoPlacedBreaks );
-
     LegendComponentGroup group = componentGroups.at( i );
     double currentHeight = currentColumnHeight;
     if ( currentColumnGroupCount > 0 )
       currentHeight += spaceAboveGroup( group );
     currentHeight += group.size.height();
 
+    int numberRemainingGroups = componentGroups.size() - i;
+
+    // Recalc average height for remaining columns including current
+    int numberRemainingColumns = numberAutoPlacedBreaks + 1 - autoPlacedBreaks;
+    double avgColumnHeight = ( currentHeight + numberRemainingGroups * averageGroupHeight + ( numberRemainingGroups - numberRemainingColumns - 1 ) *  averageSpaceAboveGroups ) / numberRemainingColumns;
+    // Round up to the next full number of groups to put in one column
+    // This ensures that earlier columns contain more elements than later columns
+    int averageGroupsPerColumn = std::ceil( avgColumnHeight / ( averageGroupHeight + averageSpaceAboveGroups ) );
+    avgColumnHeight = averageGroupsPerColumn * ( averageGroupHeight + averageSpaceAboveGroups ) - averageSpaceAboveGroups;
+
     bool canCreateNewColumn = ( currentColumnGroupCount > 0 )  // do not leave empty column
                               && ( currentColumn < targetNumberColumns - 1 ) // must not exceed max number of columns
                               && ( autoPlacedBreaks < numberAutoPlacedBreaks );
 
-    bool shouldCreateNewColumn = ( currentHeight - avgColumnHeight ) > group.size.height() / 2  // center of current group is over average height
+    bool shouldCreateNewColumn = currentHeight  > avgColumnHeight  // current group height is greater than expected group height
                                  && currentColumnGroupCount > 0 // do not leave empty column
                                  && currentHeight > maxGroupHeight  // no sense to make smaller columns than max group height
                                  && currentHeight > maxColumnHeight; // no sense to make smaller columns than max column already created
@@ -562,9 +580,9 @@ QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::
   QStringList lines = mSettings.splitStringForWrapping( mSettings.title() );
   double y = top;
 
-  if ( context.painter() )
+  if ( auto *lPainter = context.painter() )
   {
-    context.painter()->setPen( mSettings.fontColor() );
+    lPainter->setPen( mSettings.fontColor() );
   }
 
   //calculate width and left pos of rectangle to draw text into
@@ -756,8 +774,8 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
 
   double y = top;
 
-  if ( context.painter() )
-    context.painter()->setPen( mSettings.layerFontColor() );
+  if ( auto *lPainter = context.painter() )
+    lPainter->setPen( mSettings.layerFontColor() );
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
@@ -813,8 +831,8 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
 
   double y = top;
 
-  if ( context.painter() )
-    context.painter()->setPen( mSettings.fontColor() );
+  if ( auto *lPainter = context.painter() )
+    lPainter->setPen( mSettings.fontColor() );
 
   QFont groupFont = mSettings.style( nodeLegendStyle( nodeGroup ) ).font();
 

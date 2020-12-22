@@ -27,9 +27,11 @@ class QgsLayerTreeModelLegendNode;
 class QgsMeshLayer;
 class QgsPluginLayer;
 class QgsRasterLayer;
+class QgsPointCloudLayer;
 class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsLegendPatchShape;
+class QgsColorRampLegendNodeSettings;
 class QgsSymbol;
 
 #include "qgis_core.h"
@@ -80,6 +82,12 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 
     //! Create new legend implementation for mesh layer
     static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) SIP_FACTORY;
+
+    /**
+     * Create new legend implementation for a point cloud \a layer.
+     * \since QGIS 3.18
+     */
+    static QgsMapLayerLegend *defaultPointCloudLegend( QgsPointCloudLayer *layer ) SIP_FACTORY;
 
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
@@ -143,7 +151,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
     static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
     /**
-     * Sets a custom legend \a symbol size for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     * Sets a custom legend \a symbol for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
      *
      * If \a symbol is non-NULLPTR, it will be used in place of the default symbol when rendering
      * the legend node.
@@ -165,6 +173,35 @@ class CORE_EXPORT QgsMapLayerLegendUtils
      * \since QGIS 3.14
      */
     static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
+
+    /**
+     * Sets a custom legend color ramp \a settings for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If the corresponding legend node is not a QgsColorRampLegendNode then calling this method will have no effect.
+     *
+     * If \a settings is non-NULLPTR, they will be used in place of the default settigns when rendering
+     * the legend node.
+     *
+     * \see legendNodeColorRampSettings()
+     * \since QGIS 3.18
+     */
+    static void setLegendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsColorRampLegendNodeSettings *settings );
+
+    /**
+     * Returns the custom legend color ramp settings for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If the corresponding legend node is not a QgsColorRampLegendNode then calling this method will return NULLPTR.
+     *
+     * If the returned value is non-NULLPTR, they will be used in place of the default settings when rendering
+     * the legend node.
+     *
+     * Caller takes ownership of the returned settings.
+     *
+     * \see setLegendNodeColorRampSettings()
+     * \since QGIS 3.18
+     */
+    static QgsColorRampLegendNodeSettings *legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
+
 
     /**
      * Sets whether a forced column break should occur before the node.
@@ -295,6 +332,25 @@ class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
 
   private:
     QgsMeshLayer *mLayer = nullptr;
+};
+
+/**
+ * \ingroup core
+ * Default legend implementation for point cloud layers
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsDefaultPointCloudLayerLegend : public QgsMapLayerLegend
+{
+    Q_OBJECT
+
+  public:
+    //! Creates an instance for the given point cloud layer
+    explicit QgsDefaultPointCloudLayerLegend( QgsPointCloudLayer *layer );
+
+    QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
+
+  private:
+    QgsPointCloudLayer *mLayer = nullptr;
 };
 
 

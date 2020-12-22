@@ -54,6 +54,7 @@
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmaplayerelevationproperties.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -124,6 +125,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
+  layer->setOpacity( mLayerOpacity );
 }
 
 QgsMapLayerType QgsMapLayer::type() const
@@ -214,6 +216,19 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
   return mBlendMode;
 }
 
+void QgsMapLayer::setOpacity( double opacity )
+{
+  if ( qgsDoubleNear( mLayerOpacity, opacity ) )
+    return;
+  mLayerOpacity = opacity;
+  emit opacityChanged( opacity );
+  emit styleChanged();
+}
+
+double QgsMapLayer::opacity() const
+{
+  return mLayerOpacity;
+}
 
 bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
 {
@@ -257,7 +272,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QDomNode srsNode = layerElement.namedItem( QStringLiteral( "srs" ) );
   mCRS.readXml( srsNode );
   mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
-  if ( isSpatial() )
+  if ( isSpatial() && type() != QgsMapLayerType::AnnotationLayer )
     mCRS.validate();
   savedCRS = mCRS;
 
@@ -334,7 +349,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     {
       kwdList << n.toElement().text();
     }
-    mKeywordList = kwdList.join( QStringLiteral( ", " ) );
+    mKeywordList = kwdList.join( QLatin1String( ", " ) );
   }
 
   //metadataUrl
@@ -580,10 +595,18 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.appendChild( layerFlagsElem );
   }
 
-  if ( categories.testFlag( Temporal ) && const_cast< QgsMapLayer * >( this )->temporalProperties() )
+  if ( categories.testFlag( Temporal ) )
   {
-    const_cast< QgsMapLayer * >( this )->temporalProperties()->writeXml( layerElement, document, context );
+    if ( QgsMapLayerTemporalProperties *properties = const_cast< QgsMapLayer * >( this )->temporalProperties() )
+      properties->writeXml( layerElement, document, context );
   }
+
+  if ( categories.testFlag( Elevation ) )
+  {
+    if ( QgsMapLayerElevationProperties *properties = const_cast< QgsMapLayer * >( this )->elevationProperties() )
+      properties->writeXml( layerElement, document, context );
+  }
+
 
   // custom properties
   if ( categories.testFlag( CustomProperties ) )
@@ -770,7 +793,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 {
   mCRS = srs;
 
-  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() )
+  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() && type() != QgsMapLayerType::AnnotationLayer )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
@@ -782,7 +805,8 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 
 QgsCoordinateTransformContext QgsMapLayer::transformContext() const
 {
-  return dataProvider() ? dataProvider()->transformContext() : QgsCoordinateTransformContext();
+  const QgsDataProvider *lDataProvider = dataProvider();
+  return lDataProvider ? lDataProvider->transformContext() : QgsCoordinateTransformContext();
 }
 
 QString QgsMapLayer::formatLayerName( const QString &name )
@@ -1679,9 +1703,16 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     setFlags( flags );
   }
 
-  if ( categories.testFlag( Temporal ) && temporalProperties() )
+  if ( categories.testFlag( Temporal ) )
   {
-    temporalProperties()->readXml( layerElement.toElement(), context );
+    if ( QgsMapLayerTemporalProperties *properties = temporalProperties() )
+      properties->readXml( layerElement.toElement(), context );
+  }
+
+  if ( categories.testFlag( Elevation ) )
+  {
+    if ( QgsMapLayerElevationProperties *properties = elevationProperties() )
+      properties->readXml( layerElement.toElement(), context );
   }
 }
 
@@ -1702,7 +1733,11 @@ QStringList QgsMapLayer::customPropertyKeys() const
 
 void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {
-  mCustomProperties.setValue( key, value );
+  if ( !mCustomProperties.contains( key ) || mCustomProperties.value( key ) != value )
+  {
+    mCustomProperties.setValue( key, value );
+    emit customPropertyChanged( key );
+  }
 }
 
 void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
@@ -1722,7 +1757,12 @@ QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defa
 
 void QgsMapLayer::removeCustomProperty( const QString &key )
 {
-  mCustomProperties.remove( key );
+
+  if ( mCustomProperties.contains( key ) )
+  {
+    mCustomProperties.remove( key );
+    emit customPropertyChanged( key );
+  }
 }
 
 QgsError QgsMapLayer::error() const
@@ -1769,7 +1809,11 @@ bool QgsMapLayer::isTemporary() const
 
 void QgsMapLayer::setValid( bool valid )
 {
+  if ( mValid == valid )
+    return;
+
   mValid = valid;
+  emit isValidChanged();
 }
 
 void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
@@ -1807,6 +1851,7 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   delete m3DRenderer;
   m3DRenderer = renderer;
   emit renderer3DChanged();
+  trigger3DUpdate();
 }
 
 QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
@@ -1822,6 +1867,11 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
   mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
   mRepaintRequestedFired = false;
+}
+
+void QgsMapLayer::trigger3DUpdate()
+{
+  emit request3DUpdate();
 }
 
 void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
@@ -1914,18 +1964,19 @@ bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 
 void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
 {
-  if ( !dataProvider() )
+  QgsDataProvider *lDataProvider = dataProvider();
+  if ( !lDataProvider )
     return;
 
   if ( enabled && !isRefreshOnNotifyEnabled() )
   {
-    dataProvider()->setListening( enabled );
-    connect( dataProvider(), &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    lDataProvider->setListening( enabled );
+    connect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
   }
   else if ( !enabled && isRefreshOnNotifyEnabled() )
   {
     // we don't want to disable provider listening because someone else could need it (e.g. actions)
-    disconnect( dataProvider(), &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    disconnect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
   }
   mIsRefreshOnNofifyEnabled = enabled;
 }

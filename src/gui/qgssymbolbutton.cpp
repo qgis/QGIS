@@ -111,7 +111,7 @@ void QgsSymbolButton::showSettingsDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), mLayer, nullptr );
+    QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), mLayer, panel );
     d->setPanelTitle( mDialogTitle );
     d->setContext( symbolContext );
     connect( d, &QgsPanelWidget::widgetChanged, this, &QgsSymbolButton::updateSymbolFromWidget );
@@ -647,7 +647,7 @@ void QgsSymbolButton::showColorDialog()
     return;
   }
 
-  QgsColorDialog dialog( this, nullptr, mSymbol->color() );
+  QgsColorDialog dialog( this, Qt::WindowFlags(), mSymbol->color() );
   dialog.setTitle( tr( "Symbol Color" ) );
   dialog.setAllowOpacity( true );
 

@@ -14,12 +14,51 @@ import qgis  # NOQA
 
 from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
-from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
-    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
-    QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
-    QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
-    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
-    QgsVertexId
+from qgis.core import (
+    QgsGeometry,
+    QgsPoint,
+    QgsPointXY,
+    QgsCircle,
+    QgsCircularString,
+    QgsCompoundCurve,
+    QgsCurvePolygon,
+    QgsEllipse,
+    QgsLineString,
+    QgsMultiCurve,
+    QgsRectangle,
+    QgsExpression,
+    QgsField,
+    QgsError,
+    QgsMimeDataUtils,
+    QgsVector,
+    QgsVector3D,
+    QgsVectorLayer,
+    QgsReferencedPointXY,
+    QgsReferencedRectangle,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsProject,
+    QgsClassificationRange,
+    QgsBookmark,
+    QgsLayoutMeasurement,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsUnitTypes,
+    QgsConditionalStyle,
+    QgsTableCell,
+    QgsProperty,
+    QgsVertexId,
+    QgsReferencedGeometry,
+    QgsProviderRegistry,
+    QgsRasterLayer,
+    QgsAnnotationLayer,
+    QgsPointCloudLayer,
+    QgsVectorTileLayer,
+    QgsMeshLayer,
+    QgsDataSourceUri,
+    QgsDoubleRange,
+    QgsIntRange
+)
 
 start_app()
 
@@ -138,6 +177,10 @@ class TestPython__repr__(unittest.TestCase):
         r = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(r.__repr__(), '<QgsReferencedRectangle: 1 2, 3 4 (EPSG:4326)>')
 
+    def testQgsReferencedGeometryRepr(self):
+        g = QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(g.__repr__(), '<QgsReferencedGeometry: Point (1 2) (EPSG:4326)>')
+
     def testQgsCoordinateReferenceSystem(self):
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
@@ -183,7 +226,17 @@ class TestPython__repr__(unittest.TestCase):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
             'QGIS搖滾', 'memory')
-        self.assertEqual(vl.__repr__(), "<QgsMapLayer: 'QGIS搖滾' (memory)>")
+        self.assertEqual(vl.__repr__(), "<QgsVectorLayer: 'QGIS搖滾' (memory)>")
+        rl = QgsRasterLayer('', 'QGIS搖滾', 'gdal')
+        self.assertEqual(rl.__repr__(), "<QgsRasterLayer: 'QGIS搖滾' (gdal)>")
+        ml = QgsMeshLayer('', 'QGIS搖滾', 'mdal')
+        self.assertEqual(ml.__repr__(), "<QgsMeshLayer: 'QGIS搖滾' (Invalid)>")
+        al = QgsAnnotationLayer('QGIS搖滾', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertEqual(al.__repr__(), "<QgsAnnotationLayer: 'QGIS搖滾'>")
+        pcl = QgsPointCloudLayer('', 'QGIS搖滾', 'pc')
+        self.assertEqual(pcl.__repr__(), "<QgsPointCloudLayer: 'QGIS搖滾' (Invalid)>")
+        vtl = QgsVectorTileLayer('', 'QGIS搖滾')
+        self.assertEqual(vtl.__repr__(), "<QgsVectorTileLayer: 'QGIS搖滾'>")
 
     def testQgsProjectRepr(self):
         p = QgsProject()
@@ -249,6 +302,28 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3>')
         v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 CurveVertex>')
+
+    def testProviderMetadata(self):
+        self.assertEqual(QgsProviderRegistry.instance().providerMetadata('ogr').__repr__(), '<QgsProviderMetadata: ogr>')
+
+    def testDataSourceUri(self):
+        ds = QgsDataSourceUri()
+        ds.setConnection(aHost='my_host', aPort='2322', aDatabase='my_db', aUsername='user', aPassword='pw')
+        self.assertEqual(ds.__repr__(), "<QgsDataSourceUri: dbname='my_db' host=my_host port=2322 user='user' password='pw'>")
+
+    def testDoubleRange(self):
+        self.assertEqual(QgsDoubleRange(1, 10).__repr__(), "<QgsDoubleRange: [1, 10]>")
+        self.assertEqual(QgsDoubleRange(1, 10, False).__repr__(),
+                         "<QgsDoubleRange: (1, 10]>")
+        self.assertEqual(QgsDoubleRange(1, 10, True, False).__repr__(),
+                         "<QgsDoubleRange: [1, 10)>")
+
+    def testIntRange(self):
+        self.assertEqual(QgsIntRange(1, 10).__repr__(), "<QgsIntRange: [1, 10]>")
+        self.assertEqual(QgsIntRange(1, 10, False).__repr__(),
+                         "<QgsIntRange: (1, 10]>")
+        self.assertEqual(QgsIntRange(1, 10, True, False).__repr__(),
+                         "<QgsIntRange: [1, 10)>")
 
 
 if __name__ == "__main__":

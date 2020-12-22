@@ -31,7 +31,7 @@ Simple constructor
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
 
-:param properties: A property map to deserialize saved information from properties()
+:param properties: A property map to deserialize saved information from :py:func:`~QgsMaskMarkerSymbolLayer.properties`
 
 :return: A new QgsMaskMarkerSymbolLayer
 %End
@@ -58,6 +58,8 @@ Create a new QgsMaskMarkerSymbolLayer
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
+
+    virtual bool usesMapUnits() const;
 
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );

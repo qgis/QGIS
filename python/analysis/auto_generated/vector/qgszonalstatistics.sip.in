@@ -42,6 +42,17 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
     typedef QFlags<QgsZonalStatistics::Statistic> Statistics;
 
 
+    enum Result
+    {
+      Success,
+      LayerTypeWrong,
+      LayerInvalid,
+      RasterInvalid,
+      RasterBandInvalid,
+      FailedToCreateField,
+      Canceled
+    };
+
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,
                         QgsRasterLayer *rasterLayer,
                         const QString &attributePrefix = QString(),
@@ -95,11 +106,10 @@ added to ``polygonLayer`` for each statistic calculated.
 .. versionadded:: 3.2
 %End
 
-    int calculateStatistics( QgsFeedback *feedback );
-%Docstring
-Starts the calculation
 
-:return: 0 in case of success
+    QgsZonalStatistics::Result calculateStatistics( QgsFeedback *feedback );
+%Docstring
+Runs the calculation.
 %End
 
     static QString displayName( QgsZonalStatistics::Statistic statistic );
@@ -118,6 +128,16 @@ Returns a short, friendly display name for a ``statistic``, suitable for use in 
 .. seealso:: :py:func:`displayName`
 
 .. versionadded:: 3.12
+%End
+
+    static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
+%Docstring
+Calculates the specified ``statistics`` for the pixels of ``rasterBand``
+in ``rasterInterface`` (a raster layer :py:func:`~QgsZonalStatistics.dataProvider` ) within polygon ``geometry``.
+
+Returns a map of statistic to result value.
+
+.. versionadded:: 3.16
 %End
 
       public:

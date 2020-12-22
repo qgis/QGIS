@@ -20,6 +20,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgsfeature.h"
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
@@ -78,10 +79,16 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
   if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
     order = Qt::AscendingOrder;
-
-  int myColumn = mColumnMapping.at( column );
-  masterModel()->prefetchColumnData( myColumn );
-  QSortFilterProxyModel::sort( myColumn, order );
+  if ( column < 0 || column >= mColumnMapping.size() )
+  {
+    sort( QString() );
+  }
+  else
+  {
+    int myColumn = mColumnMapping.at( column );
+    masterModel()->prefetchColumnData( myColumn );
+    QSortFilterProxyModel::sort( myColumn, order );
+  }
   emit sortColumnChanged( column, order );
 }
 
@@ -337,6 +344,7 @@ void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
   {
     case ShowVisible:
       disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      disconnect( mCanvas, &QgsMapCanvas::temporalRangeChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       break;
@@ -359,6 +367,7 @@ void QgsAttributeTableFilterModel::connectFilterModeConnections( QgsAttributeTab
   {
     case ShowVisible:
       connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      connect( mCanvas, &QgsMapCanvas::temporalRangeChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
       generateListOfVisibleFeatures();
@@ -494,6 +503,9 @@ void QgsAttributeTableFilterModel::filterFeatures()
 
   QgsFeature f;
 
+  // Record the first evaluation error
+  QString error;
+
   while ( featIt.nextFeature( f ) )
   {
     mFilterExpressionContext.setFeature( f );
@@ -501,8 +513,10 @@ void QgsAttributeTableFilterModel::filterFeatures()
       filteredFeatures << f.id();
 
     // check if there were errors during evaluating
-    if ( mFilterExpression.hasEvalError() )
-      break;
+    if ( mFilterExpression.hasEvalError() && error.isEmpty() )
+    {
+      error = mFilterExpression.evalErrorString( );
+    }
   }
 
   featIt.close();
@@ -512,6 +526,12 @@ void QgsAttributeTableFilterModel::filterFeatures()
   QApplication::restoreOverrideCursor();
 
   emit featuresFiltered();
+
+  if ( ! error.isEmpty() )
+  {
+    emit filterError( error );
+  }
+
 }
 
 
@@ -601,6 +621,19 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   {
     r.setFilterRect( rect );
   }
+
+  if ( mCanvas->mapSettings().isTemporal() )
+  {
+    if ( !layer()->temporalProperties()->isVisibleInTemporalRange( mCanvas->mapSettings().temporalRange() ) )
+      return;
+
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( layer() );
+    const QString temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer()->temporalProperties() )->createFilterString( temporalContext, mCanvas->mapSettings().temporalRange() );
+    if ( !temporalFilter.isEmpty() )
+      r.setFilterExpression( temporalFilter );
+  }
+
   QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( r );
 
   QgsFeature f;

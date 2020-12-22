@@ -152,6 +152,74 @@ QString QgsWkbTypes::displayString( Type type )
   return it->mName;
 }
 
+QString QgsWkbTypes::translatedDisplayString( Type type )
+{
+  switch ( type )
+  {
+    case Unknown: return QObject::tr( "Unknown" );
+    case Point: return QObject::tr( "Point" );
+    case LineString: return QObject::tr( "LineString" );
+    case Polygon: return QObject::tr( "Polygon" );
+    case Triangle: return QObject::tr( "Triangle" );
+    case MultiPoint: return QObject::tr( "MultiPoint" );
+    case MultiLineString: return QObject::tr( "MultiLine" );
+    case MultiPolygon: return QObject::tr( "MultiPolygon" );
+    case GeometryCollection: return QObject::tr( "GeometryCollection" );
+    case CircularString: return QObject::tr( "CircularString" );
+    case CompoundCurve: return QObject::tr( "CompoundCurve" );
+    case CurvePolygon: return QObject::tr( "CurvePolygon" );
+    case MultiCurve: return QObject::tr( "MultiCurve" );
+    case MultiSurface: return QObject::tr( "MultiSurface" );
+    case NoGeometry: return QObject::tr( "No Geometry" );
+    case PointZ: return QObject::tr( "PointZ" );
+    case LineStringZ: return QObject::tr( "LineStringZ" );
+    case PolygonZ: return QObject::tr( "PolygonZ" );
+    case TriangleZ: return QObject::tr( "TriangleZ" );
+    case MultiPointZ: return QObject::tr( "MultiPointZ" );
+    case MultiLineStringZ: return QObject::tr( "MultiLineZ" );
+    case MultiPolygonZ: return QObject::tr( "MultiPolygonZ" );
+    case GeometryCollectionZ: return QObject::tr( "GeometryCollectionZ" );
+    case CircularStringZ: return QObject::tr( "CircularStringZ" );
+    case CompoundCurveZ: return QObject::tr( "CompoundCurveZ" );
+    case CurvePolygonZ: return QObject::tr( "CurvePolygonZ" );
+    case MultiCurveZ: return QObject::tr( "MultiCurveZ" );
+    case MultiSurfaceZ: return QObject::tr( "MultiSurfaceZ" );
+    case PointM: return QObject::tr( "PointM" );
+    case LineStringM: return QObject::tr( "LineStringM" );
+    case PolygonM: return QObject::tr( "PolygonM" );
+    case TriangleM: return QObject::tr( "TriangleM" );
+    case MultiPointM: return QObject::tr( "MultiPointM" );
+    case MultiLineStringM: return QObject::tr( "MultiLineStringM" );
+    case MultiPolygonM: return QObject::tr( "MultiPolygonM" );
+    case GeometryCollectionM: return QObject::tr( "GeometryCollectionM" );
+    case CircularStringM: return QObject::tr( "CircularStringM" );
+    case CompoundCurveM: return QObject::tr( "CompoundCurveM" );
+    case CurvePolygonM: return QObject::tr( "CurvePolygonM" );
+    case MultiCurveM: return QObject::tr( "MultiCurveM" );
+    case MultiSurfaceM: return QObject::tr( "MultiSurfaceM" );
+    case PointZM: return QObject::tr( "PointZM" );
+    case LineStringZM: return QObject::tr( "LineStringZM" );
+    case PolygonZM: return QObject::tr( "PolygonZM" );
+    case MultiPointZM: return QObject::tr( "MultiPointZM" );
+    case MultiLineStringZM: return QObject::tr( "MultiLineZM" );
+    case MultiPolygonZM: return QObject::tr( "MultiPolygonZM" );
+    case GeometryCollectionZM: return QObject::tr( "GeometryCollectionZM" );
+    case CircularStringZM: return QObject::tr( "CircularStringZM" );
+    case CompoundCurveZM: return QObject::tr( "CompoundCurveZM" );
+    case CurvePolygonZM: return QObject::tr( "CurvePolygonZM" );
+    case MultiCurveZM: return QObject::tr( "MultiCurveZM" );
+    case MultiSurfaceZM: return QObject::tr( "MultiSurfaceZM" );
+    case TriangleZM: return QObject::tr( "TriangleZM" );
+    case Point25D: return QObject::tr( "Point25D" );
+    case LineString25D: return QObject::tr( "LineString25D" );
+    case Polygon25D: return QObject::tr( "Polygon25D" );
+    case MultiPoint25D: return QObject::tr( "MultiPoint25D" );
+    case MultiLineString25D: return QObject::tr( "MultiLineString25D" );
+    case MultiPolygon25D: return QObject::tr( "MultiPolygon25D" );
+  }
+  return QString();
+}
+
 QString QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType type )
 {
 

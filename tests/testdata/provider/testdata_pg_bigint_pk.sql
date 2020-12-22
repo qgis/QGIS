@@ -104,20 +104,60 @@ INSERT INTO qgis_test.provider_bigint_nonfirst_pk  (zeroth_field, key1, key2, pr
 (1, 2, 3, 4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
-/* -- PostgreSQL 12 or later
+CREATE TABLE qgis_test.tb_test_compound_pk
+(
+    pk1 INTEGER,
+    pk2 BIGINT,
+    value VARCHAR(16),
+    geom geometry(Point, 4326),
+    PRIMARY KEY (pk1, pk2)
+);
 
-DROP TABLE IF EXISTS qgis_test.bigint_partitioned;
+INSERT INTO qgis_test.tb_test_compound_pk (pk1, pk2, value, geom) VALUES
+    (1, 1, 'test 1', ST_SetSRID(ST_Point(-47.930, -15.818), 4326)),
+    (1, 2, 'test 2', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (2, 1, 'test 3', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
+    (2, 2, 'test 4', ST_SetSRID(ST_Point(-47.952, -15.781), 4326));
 
-CREATE TABLE qgis_test.bigint_partitioned (
-  pk BIGSERIAL NOT NULL,
-  value varchar(8),
-  geom geometry(Point, 4326)
-) PARTITION BY RANGE(pk);
+CREATE TABLE qgis_test.tb_test_composite_float_pk
+(
+    pk1 INTEGER,
+    pk2 BIGINT,
+    pk3 REAL,
+    value VARCHAR(16),
+    geom geometry(Point, 4326),
+    PRIMARY KEY (pk1, pk2, pk3)
+);
 
-CREATE TABLE qgis_test.bigint_partitioned_positive PARTITION OF qgis_test.bigint_partitioned
-  FOR VALUES FROM 1 TO 1000;
-CREATE TABLE qgis_test.bigint_partitioned_nonpositive PARTITION OF qgis_test.bigint_partitioned
-  FOR VALUES FROM -1 TO 0;
+INSERT INTO qgis_test.tb_test_composite_float_pk (pk1, pk2, pk3, value, geom) VALUES
+    (1, 1, 1.0,         'test 1', ST_SetSRID(ST_Point(-47.930, -15.818), 4326)),
+    (1, 2, 3.141592741, 'test 2', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (2, 2, 2.718281828, 'test 3', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
+    (2, 2, 1.0,         'test 4', ST_SetSRID(ST_Point(-47.952, -15.781), 4326));
 
-ALTER TABLE qgis_test.bigint_partitioned ADD PRIMARY KEY(pk);
-*/
+CREATE TABLE qgis_test.tb_test_float_pk
+(
+    pk REAL PRIMARY KEY,
+    value VARCHAR(16),
+    geom geometry(Point, 4326)
+);
+-- those values (pi, Euler's, and a third) will be truncated/rounded to fit
+-- PostgreSQL's internal type size. REAL is IEEE-754 4 bytes (32 bit).
+INSERT INTO qgis_test.tb_test_float_pk (pk, value, geom) VALUES
+    (3.141592653589793238462643383279502884197169399375105820974944592307816406286, 'first teste', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (2.718281828459045235360287471352662497757247093699959574966967627724076630353, 'second test', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
+    (1.333333333333333333333333333333333333333333333333333333333333333333333333333, 'third teste', ST_SetSRID(ST_Point(-47.751, -15.644), 4326));
+
+CREATE TABLE qgis_test.tb_test_double_pk
+(
+    pk DOUBLE PRECISION PRIMARY KEY,
+    value VARCHAR(16),
+    geom geometry(Point, 4326)
+);
+-- those values (pi, Euler's, and a third) will be truncated/rounded to fit
+-- PostgreSQL's internal type size. DOUBLE PRECISION is IEEE-754 8 bytes (64 bit).
+INSERT INTO qgis_test.tb_test_double_pk (pk, value, geom) VALUES
+    (3.141592653589793238462643383279502884197169399375105820974944592307816406286, 'first teste', ST_SetSRID(ST_Point(-47.887, -15.864), 4326)),
+    (2.718281828459045235360287471352662497757247093699959574966967627724076630353, 'second test', ST_SetSRID(ST_Point(-47.902, -15.763), 4326)),
+    (1.333333333333333333333333333333333333333333333333333333333333333333333333333, 'third teste', ST_SetSRID(ST_Point(-47.751, -15.644), 4326));
+

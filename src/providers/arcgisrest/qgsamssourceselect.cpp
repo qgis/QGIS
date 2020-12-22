@@ -21,6 +21,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsowsconnection.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsarcgisrestquery.h"
 
 #include <QMessageBox>
 
@@ -45,7 +46,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
   std::function< bool( const QString &, QStandardItem * )> visitItemsRecursive;
   visitItemsRecursive = [this, &hasPopulatedImageFormats, &visitItemsRecursive, baseUrl, authcfg, headers, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem ) -> bool
   {
-    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage, headers );
+    const QVariantMap serviceInfoMap = QgsArcGisRestQueryUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage, headers );
 
     if ( serviceInfoMap.isEmpty() )
     {
@@ -64,7 +65,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
     bool res = true;
 
-    QgsArcGisRestUtils::visitFolderItems( [ =, &res ]( const QString & name, const QString & url )
+    QgsArcGisRestQueryUtils::visitFolderItems( [ =, &res ]( const QString & name, const QString & url )
     {
       QStandardItem *nameItem = new QStandardItem( name );
       nameItem->setToolTip( url );
@@ -77,7 +78,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
         res = false;
     }, serviceInfoMap, baseUrl );
 
-    QgsArcGisRestUtils::visitServiceItems(
+    QgsArcGisRestQueryUtils::visitServiceItems(
       [ =, &res]( const QString & name, const QString & url )
     {
       QStandardItem *nameItem = new QStandardItem( name );
@@ -89,12 +90,12 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
       if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
-    }, serviceInfoMap, baseUrl, QgsArcGisRestUtils::Raster );
+    }, serviceInfoMap, baseUrl, QgsArcGisRestQueryUtils::Raster );
 
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
 
-    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool, const QString & authid, const QString & )
+    QgsArcGisRestQueryUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool, const QString & authid, const QString & )
     {
       if ( !parentLayerId.isEmpty() )
         parents.insert( layerId, parentLayerId );
@@ -119,7 +120,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
       mAvailableCRS[name] = QList<QString>()  << authid;
 
       layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
-    }, serviceInfoMap, baseItemUrl, QgsArcGisRestUtils::Raster );
+    }, serviceInfoMap, baseItemUrl, QgsArcGisRestQueryUtils::Raster );
 
     // create layer groups
     for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
@@ -166,7 +167,7 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
   ds.setParam( QStringLiteral( "layer" ), layerId );
   ds.setParam( QStringLiteral( "crs" ), crs );
   ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
-  return ds.uri();
+  return ds.uri( false );
 }
 
 void QgsAmsSourceSelect::addServiceLayer( QString uri, QString typeName )

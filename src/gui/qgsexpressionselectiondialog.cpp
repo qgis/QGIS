@@ -41,6 +41,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   connect( mActionSelectIntersect, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionSelectIntersect_triggered );
   connect( mButtonZoomToFeatures, &QToolButton::clicked, this, &QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked );
   connect( mPbnClose, &QPushButton::clicked, this, &QgsExpressionSelectionDialog::mPbnClose_clicked );
+  connect( mLayer, &QgsVectorLayer::willBeDeleted, this, &QgsExpressionSelectionDialog::close );
 
   setWindowTitle( tr( "%1 — Select by Expression" ).arg( layer->name() ) );
 
@@ -134,19 +135,18 @@ void QgsExpressionSelectionDialog::pushSelectedFeaturesMessage()
   if ( !mMessageBar )
     return;
 
-  const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   const int count = mLayer->selectedFeatureCount();
   if ( count > 0 )
   {
     mMessageBar->pushMessage( QString(),
                               tr( "%n matching feature(s) selected", "matching features", count ),
-                              Qgis::Info, timeout );
+                              Qgis::Info );
   }
   else
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Warning, timeout );
+                              Qgis::Info );
   }
 }
 
@@ -179,8 +179,6 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
   }
   features.close();
 
-  QgsSettings settings;
-  int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   if ( featureCount > 0 )
   {
     mMapCanvas->zoomToFeatureExtent( bbox );
@@ -188,16 +186,14 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
     {
       mMessageBar->pushMessage( QString(),
                                 tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ),
-                                Qgis::Info,
-                                timeout );
+                                Qgis::Info );
     }
   }
   else if ( mMessageBar )
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Info,
-                              timeout );
+                              Qgis::Info );
   }
   saveRecent();
 }

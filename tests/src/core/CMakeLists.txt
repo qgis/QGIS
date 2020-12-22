@@ -1,12 +1,13 @@
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/callouts
@@ -21,8 +22,10 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/pal
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
+  ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
   ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
@@ -37,7 +40,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 
   ${CMAKE_BINARY_DIR}/src/core
 )
-INCLUDE_DIRECTORIES(SYSTEM
+include_directories(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
@@ -48,9 +51,9 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR}
   )
 
-IF(HAVE_OPENCL)
-    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
-ENDIF(HAVE_OPENCL)
+if(HAVE_OPENCL)
+    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+endif()
 
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
@@ -61,14 +64,14 @@ ENDIF(HAVE_OPENCL)
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST TESTSRC)
-  SET (TESTNAME  ${TESTSRC})
-  STRING(REPLACE "test" "" TESTNAME ${TESTNAME})
-  STRING(REPLACE "qgs" "" TESTNAME ${TESTNAME})
-  STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
-  SET (TESTNAME  "qgis_${TESTNAME}test")
-  ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
-  TARGET_LINK_LIBRARIES(${TESTNAME}
+macro (ADD_QGIS_TEST TESTSRC)
+  set (TESTNAME  ${TESTSRC})
+  string(REPLACE "test" "" TESTNAME ${TESTNAME})
+  string(REPLACE "qgs" "" TESTNAME ${TESTNAME})
+  string(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
+  set (TESTNAME  "qgis_${TESTNAME}test")
+  add_executable(${TESTNAME} ${TESTSRC} ${util_SRCS})
+  target_link_libraries(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
@@ -78,15 +81,17 @@ MACRO (ADD_QGIS_TEST TESTSRC)
     ${GDAL_LIBRARY}
     ${SPATIALINDEX_LIBRARY}
     qgis_core)
-  ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
-ENDMACRO (ADD_QGIS_TEST)
+  add_test(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
+endmacro (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
-SET(TESTS
+set(TESTS
  testqgs25drenderer.cpp
+ testqgsannotationitemregistry.cpp
  testqgsapplication.cpp
+ testqgsarcgisrestutils.cpp
  testqgsauthcrypto.cpp
  testqgsauthcertutils.cpp
  testqgsauthconfig.cpp
@@ -117,6 +122,7 @@ SET(TESTS
  testqgsexpressioncontext.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgsexpression.cpp
+ testqgsoverlayexpression.cpp
  testqgsfeature.cpp
  testqgsfields.cpp
  testqgsfield.cpp
@@ -198,6 +204,8 @@ SET(TESTS
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
+ testqgspointcloudattribute.cpp
+ testqgspointcloudrendererregistry.cpp
  testqgsproject.cpp
  testqgsprojectstorage.cpp
  testqgsprojutils.cpp
@@ -218,6 +226,7 @@ SET(TESTS
  testqgsrelationreferencefieldformatter.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
+ testqgsruntimeprofiler.cpp
  testqgssettings.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
@@ -259,19 +268,19 @@ SET(TESTS
  testqgsweakrelation.cpp
 )
 
-IF(WITH_QTWEBKIT)
-  SET(TESTS ${TESTS})
-ENDIF(WITH_QTWEBKIT)
+if(WITH_QTWEBKIT)
+  set(TESTS ${TESTS})
+endif()
 
-IF(HAVE_OPENCL)
-  SET(TESTS ${TESTS}
+if(HAVE_OPENCL)
+  set(TESTS ${TESTS}
     testqgsopenclutils.cpp
      )
-ENDIF(HAVE_OPENCL)
+endif()
 
 
-FOREACH(TESTSRC ${TESTS})
+foreach(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})
-ENDFOREACH(TESTSRC)
+endforeach(TESTSRC)
 
-ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)
+add_dependencies(qgis_coordinatereferencesystemtest synccrsdb)

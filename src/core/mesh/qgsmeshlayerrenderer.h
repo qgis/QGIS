@@ -34,6 +34,7 @@ class QgsMeshLayer;
 #include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshtracerenderer.h"
+#include "qgsmapclippingregion.h"
 
 class QgsRenderContext;
 
@@ -96,6 +97,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     ~QgsMeshLayerRenderer() override = default;
     QgsFeedback *feedback() const override;
     bool render() override;
+    bool forceRasterRender() const override;
 
   private:
     void renderMesh();
@@ -146,8 +148,14 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     // copy of rendering settings
     QgsMeshRendererSettings mRendererSettings;
 
+    QList< QgsMapClippingRegion > mClippingRegions;
+
     // output screen size
     QSize mOutputSize;
+
+  private:
+
+    double mLayerOpacity = 1.0;
 };
 
 

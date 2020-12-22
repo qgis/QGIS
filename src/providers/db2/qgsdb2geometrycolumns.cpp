@@ -65,7 +65,7 @@ QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &t
     QgsDebugMsg( QStringLiteral( "SQLCODE: %1" ).arg( nativeError ) );
     /* The MIN_X, MIN_Y, MAX_X, and MAX_Y columns are not available on z/OS (and LUW 9.5)
        so SQLCODE -206 is returned when specifying non-existent columns. */
-    if ( mQuery.lastError().nativeErrorCode() == QStringLiteral( "-206" ) )
+    if ( mQuery.lastError().nativeErrorCode() == QLatin1String( "-206" ) )
     {
       QgsDebugMsg( QStringLiteral( "Try query with no extents" ) );
       mQuery.clear();

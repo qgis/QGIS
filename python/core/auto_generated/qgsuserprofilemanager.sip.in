@@ -79,11 +79,11 @@ Returns the path to the root profiles location.
     void setNewProfileNotificationEnabled( bool enabled );
 %Docstring
 Sets whether the manager should watch for the creation of new user profiles and emit
-the profilesChanged() signal when this occurs. By default new profile notification
+the :py:func:`~QgsUserProfileManager.profilesChanged` signal when this occurs. By default new profile notification
 is disabled.
 
 Before calling this, ensure that the correct root location has been set via
-calling setRootLocation().
+calling :py:func:`~QgsUserProfileManager.setRootLocation`.
 
 .. seealso:: :py:func:`isNewProfileNotificationEnabled`
 %End
@@ -91,7 +91,7 @@ calling setRootLocation().
     bool isNewProfileNotificationEnabled() const;
 %Docstring
 Returns whether the manager is watching for the creation of new user profiles and emitting
-the profilesChanged() signal when this occurs. By default new profile notification
+the :py:func:`~QgsUserProfileManager.profilesChanged` signal when this occurs. By default new profile notification
 is disabled.
 
 .. seealso:: :py:func:`setNewProfileNotificationEnabled`
@@ -203,7 +203,7 @@ Starts a new instance of QGIS for the given profile.
 %Docstring
 Emitted when the list of profiles is changed.
 
-This signal will only be emitted when isNewProfileNotificationEnabled() is ``True``.
+This signal will only be emitted when :py:func:`~QgsUserProfileManager.isNewProfileNotificationEnabled` is ``True``.
 By default new profile notification is disabled.
 
 .. seealso:: :py:func:`isNewProfileNotificationEnabled`

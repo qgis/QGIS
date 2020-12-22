@@ -21,7 +21,7 @@ QGIS application uses QgsMessageLog class for logging messages in a dockable
 window for the user.
 
 QgsMessageLog is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.messageLog()`
+:py:func:`QgsApplication.messageLog()`.
 %End
 
 %TypeHeaderCode
@@ -70,7 +70,7 @@ temporarily suppressed.
 class QgsMessageLogNotifyBlocker
 {
 %Docstring
-Temporarily blocks the application QgsMessageLog (see QgsApplication.messageLog()) from emitting the messageReceived( bool )
+Temporarily blocks the application QgsMessageLog (see :py:func:`QgsApplication.messageLog()`) from emitting the messageReceived( bool )
 signal for the lifetime of the object.
 
 Using this blocker allows messages to be logged without causing user interface hints flagging message log

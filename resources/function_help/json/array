@@ -1,6 +1,7 @@
 {
   "name": "array",
   "type": "function",
+  "groups": ["Arrays"],
   "description": "Returns an array containing all the values passed as parameter.",
   "variableLenArguments": true,
   "arguments": [

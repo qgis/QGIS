@@ -1,6 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-<rect fill="#ce1126" width="600" height="400"/>
-<rect fill="#002868" y="100" width="600" height="200"/>
-<circle fill="#fff" cx="300" cy="200" r="80"/>
-</svg>
+<svg height="400" width="600" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h600v400h-600z" fill="#ce1126"/><path d="m0 100h600v200h-600z" fill="#002868"/><circle cx="300" cy="200" fill="#fff" r="80"/></svg>

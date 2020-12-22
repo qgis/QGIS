@@ -82,7 +82,9 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   //default values for field width and precision
   mOutputFieldWidthSpinBox->setValue( 10 );
+  mOutputFieldWidthSpinBox->setClearValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
+  mOutputFieldPrecisionSpinBox->setClearValue( 3 );
   setPrecisionMinMax();
 
   if ( vl->providerType() == QLatin1String( "ogr" ) && vl->storageType() == QLatin1String( "ESRI Shapefile" ) )
@@ -349,6 +351,8 @@ void QgsFieldCalculator::populateOutputFieldTypes()
     return;
   }
 
+  int oldDataType = mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_ROLE_IDX ).toInt();
+
   mOutputFieldTypeComboBox->blockSignals( true );
 
   // Standard subset of fields in case of virtual
@@ -382,8 +386,18 @@ void QgsFieldCalculator::populateOutputFieldTypes()
     mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mSubType ), Qt::UserRole + FTC_SUBTYPE_IDX );
   }
   mOutputFieldTypeComboBox->blockSignals( false );
-  mOutputFieldTypeComboBox->setCurrentIndex( 0 );
-  mOutputFieldTypeComboBox_activated( 0 );
+
+  int idx = mOutputFieldTypeComboBox->findData( oldDataType, Qt::UserRole + FTC_TYPE_ROLE_IDX );
+  if ( idx != -1 )
+  {
+    mOutputFieldTypeComboBox->setCurrentIndex( idx );
+    mOutputFieldTypeComboBox_activated( idx );
+  }
+  else
+  {
+    mOutputFieldTypeComboBox->setCurrentIndex( 0 );
+    mOutputFieldTypeComboBox_activated( 0 );
+  }
 }
 
 void QgsFieldCalculator::mNewFieldGroupBox_toggled( bool on )

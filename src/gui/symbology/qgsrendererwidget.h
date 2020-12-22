@@ -119,7 +119,8 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     /**
      * Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
-      and by connecting the slot contextMenuViewCategories(const QPoint&)*/
+     * and by connecting the slot contextMenuViewCategories(const QPoint&).
+    */
     virtual QList<QgsSymbol *> selectedSymbols() { return QList<QgsSymbol *>(); }
     virtual void refreshSymbolView() {}
 

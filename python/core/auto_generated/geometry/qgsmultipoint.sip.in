@@ -20,7 +20,33 @@ Multi point geometry collection.
 #include "qgsmultipoint.h"
 %End
   public:
-    QgsMultiPoint();
+
+    QgsMultiPoint() /HoldGIL/;
+%Docstring
+Constructor for an empty multipoint geometry.
+%End
+
+
+    SIP_PYOBJECT pointN( int index ) /TypeHint="QgsPoint"/;
+%Docstring
+Returns the point with the specified ``index``.
+
+An IndexError will be raised if no point with the specified index exists.
+
+.. versionadded:: 3.16
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->pointN( a0 ), sipType_QgsPoint, NULL );
+    }
+%End
+
 
     virtual QString geometryType() const;
 
@@ -36,7 +62,7 @@ Multi point geometry collection.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual int nCoordinates() const;
+    virtual int nCoordinates() const /HoldGIL/;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
@@ -48,7 +74,7 @@ Multi point geometry collection.
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const /HoldGIL/;
 
 
 

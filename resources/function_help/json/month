@@ -1,6 +1,7 @@
 {
   "name": "month",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Extracts the month part from a date, or the number of months from an interval.",
   "variants": [
   { "variant": "Date variant",

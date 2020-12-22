@@ -19,6 +19,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -266,23 +267,44 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   {
     if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
     {
-      if ( redBlock->isNoData( i ) ||
-           greenBlock->isNoData( i ) ||
-           blueBlock->isNoData( i ) )
+      if ( hasByteRgb )
       {
-        outputBlock->setColor( i, myDefaultColor );
-      }
-      else
-      {
-        if ( hasByteRgb )
+        if ( redBlock->isNoData( i ) ||
+             greenBlock->isNoData( i ) ||
+             blueBlock->isNoData( i ) )
         {
-          outputBlockColorData[i] = qRgb( redData[i], greenData[i], blueData[i] );
+          outputBlock->setColor( i, myDefaultColor );
         }
         else
         {
-          int redVal = static_cast<int>( redBlock->value( i ) );
-          int greenVal = static_cast<int>( greenBlock->value( i ) );
-          int blueVal = static_cast<int>( blueBlock->value( i ) );
+          outputBlockColorData[i] = qRgb( redData[i], greenData[i], blueData[i] );
+        }
+      }
+      else
+      {
+        bool redIsNoData = false;
+        bool greenIsNoData = false;
+        bool blueIsNoData = false;
+        int redVal = 0;
+        int greenVal = 0;
+        int blueVal = 0;
+
+        redVal = redBlock->valueAndNoData( i, redIsNoData );
+        // as soon as any channel has a no data value, don't do any more work -- the result will
+        // always be the nodata color!
+        if ( !redIsNoData )
+          greenVal = greenBlock->valueAndNoData( i, greenIsNoData );
+        if ( !redIsNoData && !greenIsNoData )
+          blueVal = blueBlock->valueAndNoData( i, blueIsNoData );
+
+        if ( redIsNoData ||
+             greenIsNoData ||
+             blueIsNoData )
+        {
+          outputBlock->setColor( i, myDefaultColor );
+        }
+        else
+        {
           outputBlockColorData[i] = qRgb( redVal, greenVal, blueVal );
         }
       }
@@ -416,6 +438,25 @@ QList<int> QgsMultiBandColorRenderer::usesBands() const
     bandList << mBlueBand;
   }
   return bandList;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsMultiBandColorRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> res;
+  if ( mRedBand != -1 )
+  {
+    res << new QgsRasterSymbolLegendNode( nodeLayer, QColor( 255, 0, 0 ), displayBandName( mRedBand ) );
+  }
+  if ( mGreenBand != -1 )
+  {
+    res << new QgsRasterSymbolLegendNode( nodeLayer, QColor( 0, 255, 0 ), displayBandName( mGreenBand ) );
+  }
+  if ( mBlueBand != -1 )
+  {
+    res << new QgsRasterSymbolLegendNode( nodeLayer, QColor( 0, 0, 255 ), displayBandName( mBlueBand ) );
+  }
+
+  return res;
 }
 
 void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const

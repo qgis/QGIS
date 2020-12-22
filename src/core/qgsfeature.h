@@ -176,9 +176,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( qint64 id = 0 );
+    QgsFeature( qint64 id = FID_NULL );
 #endif
 
     /**
@@ -187,9 +187,9 @@ class CORE_EXPORT QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
-    QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( const QgsFields &fields, QgsFeatureId id = FID_NULL );
 #else
-    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+    QgsFeature( const QgsFields &fields, qint64 id = FID_NULL );
 #endif
 
     /**
@@ -236,6 +236,12 @@ class CORE_EXPORT QgsFeature
      * \since QGIS 2.9
      */
     QgsAttributes attributes() const;
+
+    /**
+     * Returns the number of attributes attached to the feature.
+     * \since QGIS 3.18
+     */
+    int attributeCount() const;
 
     /**
      * Sets the feature's attributes.
@@ -285,8 +291,33 @@ class CORE_EXPORT QgsFeature
     /**
      * Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * \param fieldCount Number of fields to initialize
+     *
+     * \see resizeAttributes()
      */
     void initAttributes( int fieldCount );
+
+    /**
+     * Resizes the attributes attached to this feature to the given number of fields.
+     *
+     * If the new \a fieldCount is greater than the original number of fields then the additional attributes will
+     * be filled with NULL values. All existing attributes will remain unchanged.
+     *
+     * If the new \a fieldCount is less than the original number of fields then the unwanted values will be discarded from the
+     * end of the existing attributes.
+     *
+     * \see initAttributes()
+     * \see padAttributes()
+     * \since QGIS 3.18
+     */
+    void resizeAttributes( int fieldCount );
+
+    /**
+     * Resizes the attributes attached to this feature by appending the specified \a count of NULL values to the end of the existing attributes.
+     *
+     * \see resizeAttributes()
+     * \since QGIS 3.18
+     */
+    void padAttributes( int count );
 
     /**
      * Deletes an attribute and its value.
@@ -535,6 +566,17 @@ class CORE_EXPORT QgsFeature
      *  \see setFields
      */
     int fieldNameIndex( const QString &fieldName ) const;
+
+    /**
+     * Returns the approximate RAM usage of the feature, in bytes.
+     *
+     * This method takes into account the size of variable elements (strings,
+     * geometry, ...), but the value returned should be considered as a lower
+     * bound estimation.
+     *
+     * \since QGIS 3.16
+     */
+    int approximateMemoryUsage() const;
 
     //! Allows direct construction of QVariants from features.
     operator QVariant() const

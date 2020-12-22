@@ -93,6 +93,7 @@ Display a timed message bar noting the active layer is not vector.
 %Docstring
 Display a timed message bar noting the active vector layer is not editable.
 %End
+
 };
 
 /************************************************************************

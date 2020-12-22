@@ -178,12 +178,12 @@ void TestQgsGpsInformationWidget::testStorePreferredFields()
   std::unique_ptr<QgsGpsInformationWidget> widget = prepareWidget();
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
   canvas->setCurrentLayer( tempLayerDateTime );
-  int fieldIdx = tempLayerDateTime->fields().indexOf( QStringLiteral( "datetimef" ) );
+  int fieldIdx = tempLayerDateTime->fields().indexOf( QLatin1String( "datetimef" ) );
   QVERIFY( fieldIdx != -1 );
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "datetimef" ) ) );
 
   canvas->setCurrentLayer( tempLayerString );
-  fieldIdx = tempLayerString->fields().indexOf( QStringLiteral( "stringf" ) );
+  fieldIdx = tempLayerString->fields().indexOf( QLatin1String( "stringf" ) );
   QVERIFY( fieldIdx != -1 );
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "stringf" ) ) );
 
@@ -208,7 +208,7 @@ void TestQgsGpsInformationWidget::testTimestamp()
   // Test datetime layer
   canvas->setCurrentLayer( tempLayerDateTime );
 
-  int fieldIdx { tempLayerDateTime->fields().indexOf( QStringLiteral( "datetimef" ) ) };
+  int fieldIdx { tempLayerDateTime->fields().indexOf( QLatin1String( "datetimef" ) ) };
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "datetimef" ) ) );
   QVERIFY( fieldIdx != -1 );
   // UTC
@@ -230,7 +230,7 @@ void TestQgsGpsInformationWidget::testTimestamp()
   ///////////////////////////////////////////
   // Test string
   canvas->setCurrentLayer( tempLayerString );
-  fieldIdx = tempLayerString->fields().indexOf( QStringLiteral( "stringf" ) );
+  fieldIdx = tempLayerString->fields().indexOf( QLatin1String( "stringf" ) );
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "stringf" ) ) );
 
   // UTC

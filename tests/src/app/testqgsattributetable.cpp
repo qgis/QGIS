@@ -20,6 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgsattributetabledialog.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
@@ -54,6 +55,7 @@ class TestQgsAttributeTable : public QObject
     void testSortByDisplayExpression();
     void testOrderColumn();
     void testFilteredFeatures();
+    void testVisibleTemporal();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -208,6 +210,47 @@ void TestQgsAttributeTable::testNoGeom()
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
 
+}
+
+void TestQgsAttributeTable::testVisibleTemporal()
+{
+  // test attribute table opening in show feature visible mode
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=pk:int&field=col1:date" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsPolylineXY line;
+  line << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
+  QgsGeometry geometry = QgsGeometry::fromPolylineXY( line ) ;
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( geometry );
+  f1.setAttributes( QgsAttributes() << 1 << QDate( 2020, 1, 1 ) );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setGeometry( geometry );
+  f2.setAttributes( QgsAttributes() << 2 << QDate( 2020, 3, 1 ) );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  line.clear();
+  line << QgsPointXY( -3, -3 ) << QgsPointXY( -2, -2 );
+  geometry = QgsGeometry::fromPolylineXY( line );
+  f3.setGeometry( geometry );
+  f3.setAttributes( QgsAttributes() << 3 << QDate( 2020, 1, 1 ) );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  QgsVectorLayerTemporalProperties *temporalProperties = qobject_cast< QgsVectorLayerTemporalProperties *>( tempLayer->temporalProperties() );
+  temporalProperties->setIsActive( true );
+  temporalProperties->setMode( QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields );
+  temporalProperties->setStartField( QStringLiteral( "col1" ) );
+
+  mQgisApp->mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  mQgisApp->mapCanvas()->resize( 500, 500 );
+  mQgisApp->mapCanvas()->setLayers( QList< QgsMapLayer *>() << tempLayer.get() );
+  mQgisApp->mapCanvas()->setExtent( QgsRectangle( -1, -1, 1, 1 ) );
+  mQgisApp->mapCanvas()->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 2, 1 ), QTime( 0, 0, 0 ) ) ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible ) );
+
+  // feature id 2 is filtered out due to being out of temporal range
+  // feature id 3 is filtered out due to being out of visible extent
+  QCOMPARE( dlg->mMainView->filteredFeatures(), QgsFeatureIds() << 1 );
 }
 
 void TestQgsAttributeTable::testSelected()

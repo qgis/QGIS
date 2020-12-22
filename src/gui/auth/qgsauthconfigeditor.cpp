@@ -121,38 +121,38 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
 void QgsAuthConfigEditor::setMasterPassword()
 {
-  QgsAuthGuiUtils::setMasterPassword( messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::setMasterPassword( messageBar() );
 }
 
 void QgsAuthConfigEditor::clearCachedMasterPassword()
 {
-  QgsAuthGuiUtils::clearCachedMasterPassword( messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::clearCachedMasterPassword( messageBar() );
 }
 
 void QgsAuthConfigEditor::resetMasterPassword()
 {
-  QgsAuthGuiUtils::resetMasterPassword( messageBar(), messageTimeout(), this );
+  QgsAuthGuiUtils::resetMasterPassword( messageBar(), this );
 }
 
 void QgsAuthConfigEditor::clearCachedAuthenticationConfigs()
 {
-  QgsAuthGuiUtils::clearCachedAuthenticationConfigs( messageBar(), messageTimeout() );
+  QgsAuthGuiUtils::clearCachedAuthenticationConfigs( messageBar() );
 }
 
 void QgsAuthConfigEditor::removeAuthenticationConfigs()
 {
-  QgsAuthGuiUtils::removeAuthenticationConfigs( messageBar(), messageTimeout(), this );
+  QgsAuthGuiUtils::removeAuthenticationConfigs( messageBar(), this );
 }
 
 void QgsAuthConfigEditor::eraseAuthenticationDatabase()
 {
-  QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), messageTimeout(), this );
+  QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), this );
 }
 
 void QgsAuthConfigEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   int levelint = static_cast<int>( level );
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
+  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
 }
 
 void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
@@ -271,12 +271,6 @@ void QgsAuthConfigEditor::btnRemoveConfig_clicked()
 QgsMessageBar *QgsAuthConfigEditor::messageBar()
 {
   return mMsgBar;
-}
-
-int QgsAuthConfigEditor::messageTimeout()
-{
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }
 
 QString QgsAuthConfigEditor::selectedConfigId()

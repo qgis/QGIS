@@ -35,6 +35,7 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilebasicrendererwidget.h"
@@ -101,6 +102,13 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
   connect( mLiveApplyCheck, &QAbstractButton::toggled, this, &QgsLayerStylingWidget::liveApplyToggled );
 
+  mLayerCombo->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry
+                           | QgsMapLayerProxyModel::Filter::RasterLayer
+                           | QgsMapLayerProxyModel::Filter::PluginLayer
+                           | QgsMapLayerProxyModel::Filter::MeshLayer
+                           | QgsMapLayerProxyModel::Filter::VectorTileLayer
+                           | QgsMapLayerProxyModel::Filter::PointCloudLayer );
+
   mStackedWidget->setCurrentIndex( 0 );
 }
 
@@ -135,6 +143,10 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
     return;
+
+
+  // when current layer is changed, apply the main panel stack to allow it to gracefully clean up
+  mWidgetStack->acceptAllPanels();
 
   if ( mCurrentLayer )
   {
@@ -241,12 +253,13 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
     }
 
+    case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       break;
   }
 
-  const auto constMPageFactories = mPageFactories;
-  for ( QgsMapLayerConfigWidgetFactory *factory : constMPageFactories )
+  for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
@@ -425,6 +438,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     QgsMapLayerConfigWidget *panel = mUserPages[row]->createWidget( mCurrentLayer, mMapCanvas, true, mWidgetStack );
     if ( panel )
     {
+      panel->setDockMode( true );
       connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
       mWidgetStack->setMainPanel( panel );
     }
@@ -489,7 +503,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             if ( !mVector3DWidget )
             {
-              mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+              mVector3DWidget = new QgsVectorLayer3DRendererWidget( vlayer, mMapCanvas, mWidgetStack );
               mVector3DWidget->setDockMode( true );
               connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
@@ -606,7 +620,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
               mMesh3DWidget->setDockMode( true );
               connect( mMesh3DWidget, &QgsMeshLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
-            mMesh3DWidget->setLayer( meshLayer );
+            mMesh3DWidget->syncToLayer( meshLayer );
             mWidgetStack->setMainPanel( mMesh3DWidget );
             break;
           }
@@ -644,7 +658,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
       }
 
+      case QgsMapLayerType::PointCloudLayer:
+      {
+        break;
+      }
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::AnnotationLayer:
       {
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
         break;
@@ -672,6 +691,9 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
   {
+    // when current layer is removed, apply the main panel stack to allow it to gracefully clean up
+    mWidgetStack->acceptAllPanels();
+
     mAutoApplyTimer->stop();
     setLayer( nullptr );
   }
@@ -769,9 +791,9 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
       return true;
 
     case QgsMapLayerType::VectorTileLayer:
-      return false;  // TODO
-
+    case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       return false;
   }
   return false; // no warnings

@@ -82,7 +82,7 @@ The coordinate reference system of this layer.
 %Docstring
 Returns the name of the layer.
 
-Should be preferred over layer().name() because it can directly be run on
+Should be preferred over :py:func:`~QgsFeaturePool.layer`.name() because it can directly be run on
 the background thread.
 %End
 

@@ -93,9 +93,9 @@ void QgsMaskMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // since we need to swap the regular painter with the mask painter during rendering,
   // effects won't work. So we cheat by handling effects ourselves in renderPoint
-  if ( paintEffect() )
+  if ( auto *lPaintEffect = paintEffect() )
   {
-    mEffect.reset( paintEffect()->clone() );
+    mEffect.reset( lPaintEffect->clone() );
     setPaintEffect( nullptr );
   }
   mSymbol->startRender( context.renderContext() );
@@ -118,6 +118,12 @@ void QgsMaskMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context,
 QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
   return mSymbol->bounds( point, context.renderContext() );
+}
+
+bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
+{
+  return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || ( mSymbol && mSymbol->usesMapUnits() );
 }
 
 void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )

@@ -18,6 +18,9 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
+#include "qgscolorramplegendnode.h"
+#include "qgscolorramplegendnodesettings.h"
+#include "qgsreadwritecontext.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -29,6 +32,7 @@ QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input,
   , mGrayBand( grayBand )
   , mGradient( BlackToWhite )
   , mContrastEnhancement( nullptr )
+  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
 {
 }
 
@@ -42,6 +46,7 @@ QgsSingleBandGrayRenderer *QgsSingleBandGrayRenderer::clone() const
   {
     renderer->setContrastEnhancement( new QgsContrastEnhancement( *mContrastEnhancement ) );
   }
+  renderer->setLegendSettings( mLegendSettings ? new QgsColorRampLegendNodeSettings( *mLegendSettings.get() ) : new QgsColorRampLegendNodeSettings() );
   return renderer;
 }
 
@@ -69,6 +74,11 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
     ce->readXml( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }
+
+  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+  legendSettings->readXml( elem, QgsReadWriteContext() );
+  r->setLegendSettings( legendSettings.release() );
+
   return r;
 }
 
@@ -195,11 +205,16 @@ void QgsSingleBandGrayRenderer::writeXml( QDomDocument &doc, QDomElement &parent
     mContrastEnhancement->writeXml( doc, contrastElem );
     rasterRendererElem.appendChild( contrastElem );
   }
+
+  if ( mLegendSettings )
+    mLegendSettings->writeXml( doc, rasterRendererElem, QgsReadWriteContext() );
+
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsSingleBandGrayRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
+QList<QPair<QString, QColor> > QgsSingleBandGrayRenderer::legendSymbologyItems() const
 {
+  QList<QPair<QString, QColor> >  symbolItems;
   if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
   {
     QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
@@ -207,6 +222,28 @@ void QgsSingleBandGrayRenderer::legendSymbologyItems( QList< QPair< QString, QCo
     symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->minimumValue() ), minColor ) );
     symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), maxColor ) );
   }
+  return symbolItems;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsSingleBandGrayRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> res;
+  if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+  {
+    const QString name = displayBandName( mGrayBand );
+    if ( !name.isEmpty() )
+    {
+      res << new QgsSimpleLegendNode( nodeLayer, name );
+    }
+
+    const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
+    const QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
+    res << new QgsColorRampLegendNode( nodeLayer, new QgsGradientColorRamp( minColor, maxColor ),
+                                       mLegendSettings ? *mLegendSettings : QgsColorRampLegendNodeSettings(),
+                                       mContrastEnhancement->minimumValue(),
+                                       mContrastEnhancement->maximumValue() );
+  }
+  return res;
 }
 
 QList<int> QgsSingleBandGrayRenderer::usesBands() const
@@ -264,16 +301,16 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   channelElem.appendChild( sourceChannelNameElem );
 
   // set ContrastEnhancement
-  if ( contrastEnhancement() )
+  if ( auto *lContrastEnhancement = contrastEnhancement() )
   {
     QDomElement contrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
-    contrastEnhancement()->toSld( doc, contrastEnhancementElem );
+    lContrastEnhancement->toSld( doc, contrastEnhancementElem );
 
     // do changes to minValue/maxValues depending on stretching algorithm. This is necessary because
     // geoserver does a first stretch on min/max, then applies color map rules.
     // In some combination it is necessary to use real min/max values and in
     // others the actual edited min/max values
-    switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
+    switch ( lContrastEnhancement->contrastEnhancementAlgorithm() )
     {
       case QgsContrastEnhancement::StretchAndClipToMinimumMaximum:
       case QgsContrastEnhancement::ClipToMinimumMaximum:
@@ -282,14 +319,14 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
         QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), QgsRasterBandStats::Min | QgsRasterBandStats::Max );
 
         // if minimum range differ from the real minimum => set is in exported SLD vendor option
-        if ( !qgsDoubleNear( contrastEnhancement()->minimumValue(), myRasterBandStats.minimumValue ) )
+        if ( !qgsDoubleNear( lContrastEnhancement->minimumValue(), myRasterBandStats.minimumValue ) )
         {
           // look for VendorOption tag to look for that with minValue attribute
           const QDomNodeList vendorOptions = contrastEnhancementElem.elementsByTagName( QStringLiteral( "sld:VendorOption" ) );
           for ( int i = 0; i < vendorOptions.size(); ++i )
           {
             QDomElement vendorOption = vendorOptions.at( i ).toElement();
-            if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "minValue" ) )
+            if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QLatin1String( "minValue" ) )
               continue;
 
             // remove old value and add the new one
@@ -312,8 +349,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 
   // for each color set a ColorMapEntry tag nested into "sld:ColorMap" tag
   // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
-  QList< QPair< QString, QColor > > classes;
-  legendSymbologyItems( classes );
+  QList< QPair< QString, QColor > > classes = legendSymbologyItems();
 
   // add ColorMap tag
   QDomElement colorMapElem = doc.createElement( QStringLiteral( "sld:ColorMap" ) );
@@ -368,4 +404,16 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       lowColorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( it->second.alpha() ) );
     }
   }
+}
+
+const QgsColorRampLegendNodeSettings *QgsSingleBandGrayRenderer::legendSettings() const
+{
+  return mLegendSettings.get();
+}
+
+void QgsSingleBandGrayRenderer::setLegendSettings( QgsColorRampLegendNodeSettings *settings )
+{
+  if ( settings == mLegendSettings.get() )
+    return;
+  mLegendSettings.reset( settings );
 }

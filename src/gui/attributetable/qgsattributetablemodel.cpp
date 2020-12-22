@@ -642,8 +642,13 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != Qt::EditRole
          && role != FeatureIdRole
          && role != FieldIndexRole
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
          && role != Qt::BackgroundColorRole
          && role != Qt::TextColorRole
+#else
+         && role != Qt::BackgroundRole
+         && role != Qt::ForegroundRole
+#endif
          && role != Qt::DecorationRole
          && role != Qt::FontRole
          && role < SortRole
@@ -705,7 +710,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return val;
 
     case Qt::BackgroundRole:
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
     case Qt::TextColorRole:
+#else
+    case Qt::ForegroundRole:
+#endif
     case Qt::DecorationRole:
     case Qt::FontRole:
     {
@@ -731,7 +740,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       {
         if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
           return style.backgroundColor();
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
         if ( role == Qt::TextColorRole && style.validTextColor() )
+#else
+        if ( role == Qt::ForegroundRole && style.validTextColor() )
+#endif
           return style.textColor();
         if ( role == Qt::DecorationRole )
           return style.icon();
@@ -753,10 +766,10 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !index.isValid() || index.column() >= mFieldCount || role != Qt::EditRole || !layer()->isEditable() )
     return false;
 
+  mRowStylesMap.remove( mFeat.id() );
+
   if ( !layer()->isModified() )
     return false;
-
-  mRowStylesMap.remove( mFeat.id() );
 
   return true;
 }
@@ -851,7 +864,7 @@ void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction *action, c
 
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
-  QgsFeature f;
+  QgsFeature f( mLayerCache->layer()->fields() );
   f.initAttributes( mAttributes.size() );
   f.setId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )

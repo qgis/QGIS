@@ -30,7 +30,7 @@ start_app()
 class TestQgsFeature(unittest.TestCase):
 
     def test_CreateFeature(self):
-        feat = QgsFeature()
+        feat = QgsFeature(0)
         feat.initAttributes(1)
         feat.setAttribute(0, "text")
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
@@ -38,6 +38,24 @@ class TestQgsFeature(unittest.TestCase):
         myExpectedId = 0
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedId, myId)
         assert myId == myExpectedId, myMessage
+
+    def test_FeatureDefaultConstructor(self):
+        """Test for FID_IS_NULL default constructors See: https://github.com/qgis/QGIS/issues/36962"""
+        feat = QgsFeature()
+        # it should be FID_NULL std::numeric_limits<QgsFeatureId>::min(),
+        # not sure if I can test the exact value in python
+        self.assertNotEqual(feat.id(), 0)
+        self.assertTrue(feat.id() < 0)
+
+        feat = QgsFeature(QgsFields())
+        self.assertNotEqual(feat.id(), 0)
+        self.assertTrue(feat.id() < 0)
+
+        feat = QgsFeature(1234)
+        self.assertEqual(feat.id(), 1234)
+
+        feat = QgsFeature(QgsFields(), 1234)
+        self.assertEqual(feat.id(), 1234)
 
     def test_ValidFeature(self):
         myPath = os.path.join(unitTestDataPath(), 'points.shp')
@@ -146,6 +164,36 @@ class TestQgsFeature(unittest.TestCase):
         # set from QgsAbstractGeometry
         feat.setGeometry(QgsPoint(12, 34))
         self.assertEqual(feat.geometry().asWkt(), 'Point (12 34)')
+
+    def testAttributeCount(self):
+        f = QgsFeature()
+        self.assertEqual(f.attributeCount(), 0)
+        f.setAttributes([1, 2, 3])
+        self.assertEqual(f.attributeCount(), 3)
+
+    def testResizeAttributes(self):
+        f = QgsFeature()
+        f.resizeAttributes(3)
+        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
+        f.setAttributes([1, 2, 3])
+        f.resizeAttributes(3)
+        self.assertEqual(f.attributes(), [1, 2, 3])
+        f.resizeAttributes(5)
+        self.assertEqual(f.attributes(), [1, 2, 3, NULL, NULL])
+        f.resizeAttributes(2)
+        self.assertEqual(f.attributes(), [1, 2])
+
+    def testPadAttributes(self):
+        f = QgsFeature()
+        f.padAttributes(3)
+        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
+        f.setAttributes([1, 2, 3])
+        f.padAttributes(0)
+        self.assertEqual(f.attributes(), [1, 2, 3])
+        f.padAttributes(2)
+        self.assertEqual(f.attributes(), [1, 2, 3, NULL, NULL])
+        f.padAttributes(3)
+        self.assertEqual(f.attributes(), [1, 2, 3, NULL, NULL, NULL, NULL, NULL])
 
 
 if __name__ == '__main__':

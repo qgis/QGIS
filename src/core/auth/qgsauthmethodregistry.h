@@ -33,15 +33,15 @@ class QgsAuthMethodMetadata;
 
 /**
  * \ingroup core
-  * A registry / canonical manager of authentication methods.
-
-  This is a Singleton class that manages authentication method plugin access.
-
-  Loaded auth methods may be restricted using QGIS_AUTHMETHOD_FILE environment variable.
-  QGIS_AUTHMETHOD_FILE is regexp pattern applied to auth method file name (not auth method key).
-  For example, if the variable is set to basic|pkipaths it will load only auth methods
-  basic, and pkipaths.
-  \note not available in Python bindings
+ * A registry / canonical manager of authentication methods.
+ *
+ * This is a Singleton class that manages authentication method plugin access.
+ *
+ * Loaded auth methods may be restricted using QGIS_AUTHMETHOD_FILE environment variable.
+ * QGIS_AUTHMETHOD_FILE is regexp pattern applied to auth method file name (not auth method key).
+ * For example, if the variable is set to basic|pkipaths it will load only auth methods
+ * basic, and pkipaths.
+ * \note not available in Python bindings
 */
 class CORE_EXPORT QgsAuthMethodRegistry
 {
@@ -67,8 +67,8 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
     /**
      * Create an instance of the auth method
-        \param authMethodKey identificator of the auth method
-        \returns instance of auth method or nullptr on error
+     * \param authMethodKey identificator of the auth method
+     * \returns instance of auth method or nullptr on error
      */
     std::unique_ptr< QgsAuthMethod > authMethod( const QString &authMethodKey );
 
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
     /**
      * Returns the auth method capabilities
-        \param authMethodKey identificator of the auth method
+     * \param authMethodKey identificator of the auth method
      */
     // int authMethodCapabilities( const QString& authMethodKey ) const;
 #endif
@@ -90,9 +90,9 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
     /**
      * Gets pointer to auth method function
-        \param authMethodKey identificator of the auth method
-        \param functionName name of function
-        \returns pointer to function or nullptr on error
+     * \param authMethodKey identificator of the auth method
+     * \param functionName name of function
+     * \returns pointer to function or nullptr on error
      */
     QFunctionPointer function( const QString &authMethodKey,
                                const QString &functionName );

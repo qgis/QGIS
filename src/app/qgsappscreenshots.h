@@ -59,7 +59,7 @@ class QgsAppScreenShots
     QgsAppScreenShots( const QString &saveDirectory );
 
     //! if categories is null, then takes all categories
-    void takePicturesOf( Categories categories = nullptr );
+    void takePicturesOf( Categories categories = Categories() );
 
     //! set gradient size
     void setGradientSize( int size );
@@ -91,6 +91,8 @@ class QgsAppScreenShots
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
     QgsRasterLayer *mRasterLayer = nullptr;
+
+    Q_DISABLE_COPY( QgsAppScreenShots )
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppScreenShots::Categories )

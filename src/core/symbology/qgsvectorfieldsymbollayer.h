@@ -24,7 +24,8 @@
 
 /**
  * \ingroup core
- * A symbol layer class for displaying displacement arrows based on point layer attributes*/
+ * A symbol layer class for displaying displacement arrows based on point layer attributes.
+*/
 class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 {
   public:
@@ -66,6 +67,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 
     QgsVectorFieldSymbolLayer *clone() const override SIP_FACTORY;
     QgsStringMap properties() const override;
+    bool usesMapUnits() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 

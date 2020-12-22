@@ -32,11 +32,12 @@
 #include "qgsfeature3dhandler_p.h"
 
 class QgsLine3DSymbol;
+class QgsAbstract3DSymbol;
 
 namespace Qgs3DSymbolImpl
 {
   //! factory method for QgsLine3DSymbol
-  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );
+  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
 
   //! convenience function to create a complete entity from QgsPolygon3DSymbol (will run getFeatures() on the layer)
   Qt3DCore::QEntity *entityForLine3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol );

@@ -808,7 +808,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || ( prop.propertyType() == QgsProperty::ExpressionBasedProperty && overwriteExpression ) )
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
       changed = true;
@@ -860,7 +860,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || ( prop.propertyType() == QgsProperty::ExpressionBasedProperty && overwriteExpression ) )
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
       changed = true;

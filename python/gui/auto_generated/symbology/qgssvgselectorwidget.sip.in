@@ -84,6 +84,13 @@ Constructor for QgsSvgSelectorWidget
 
     QString currentSvgPath() const;
 
+    QgsSvgSourceLineEdit *sourceLineEdit() const;
+%Docstring
+Returns the source line edit
+
+.. versionadded:: 3.16
+%End
+
   public slots:
     void setSvgPath( const QString &svgPath );
 %Docstring

@@ -177,18 +177,17 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         props.setFixedDuration(3)
         props.setDurationUnits(QgsUnitTypes.TemporalDays)
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
-        self.assertEqual(props.createFilterString(context, range), '("start_field" >= make_datetime(2019,3,1,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(context, range), '("start_field" >= make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         props.setDurationUnits(QgsUnitTypes.TemporalMinutes)
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
-        self.assertEqual(props.createFilterString(context, range),
-                         '("start_field" >= make_datetime(2019,3,4,11,9,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,4,11,9,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         # accumulate mode
         props.setAccumulateFeatures(True)

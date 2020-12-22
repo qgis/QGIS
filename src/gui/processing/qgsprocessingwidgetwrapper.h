@@ -646,4 +646,49 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
 
 };
 
+/**
+ * \class QgsProcessingHiddenWidgetWrapper
+ *
+ * An widget wrapper for hidden widgets.
+ *
+ * The hidden widget wrapper allows for creation of a widget wrapper which does not provide
+ * a graphical widget, yet still implements the QgsAbstractProcessingParameterWidgetWrapper
+ * interface.
+ *
+ * \ingroup gui
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsProcessingHiddenWidgetWrapper: public QgsAbstractProcessingParameterWidgetWrapper
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
+     * \a parameter definition and dialog \a type.
+     */
+    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard,
+                                      QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    const QgsVectorLayer *linkedVectorLayer() const override;
+
+    /**
+     * Sets the vector layer linked to the wrapper.
+     */
+    void setLinkedVectorLayer( const QgsVectorLayer *layer );
+
+  protected:
+    QWidget *createWidget() override;
+    QLabel *createLabel() override;
+
+  private:
+
+    QVariant mValue;
+    QPointer < const QgsVectorLayer > mLayer;
+
+};
+
 #endif // QGSPROCESSINGWIDGETWRAPPER_H

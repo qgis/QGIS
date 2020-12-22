@@ -35,6 +35,7 @@ QgsMapToolCircle2TangentsPoint::QgsMapToolCircle2TangentsPoint( QgsMapToolCaptur
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddCircle( parentTool, canvas, mode )
 {
+  mToolName = tr( "Add circle from 2 tangents and a point" );
 }
 
 QgsMapToolCircle2TangentsPoint::~QgsMapToolCircle2TangentsPoint()
@@ -81,7 +82,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
       if ( !isIntersect )
       {
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
-            Qgis::Critical, QgisApp::instance()->messageTimeout() );
+            Qgis::Critical );
         deactivate();
         activate();
       }

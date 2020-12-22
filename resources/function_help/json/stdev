@@ -1,6 +1,7 @@
 {
   "name": "stdev",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the aggregate standard deviation value from a field or expression.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

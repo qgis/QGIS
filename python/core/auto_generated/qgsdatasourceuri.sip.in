@@ -147,6 +147,9 @@ Sets the URI database name.
                         const QString &aKeyColumn = QString() );
 %Docstring
 Sets all data source related members at once.
+
+The ``aSql`` argument represents a subset filter string to be applied to the source, and should take the
+form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
 %End
 
     void setAuthConfigId( const QString &authcfg );
@@ -191,7 +194,12 @@ Returns the table name stored in the URI.
 
     QString sql() const;
 %Docstring
-Returns the SQL query stored in the URI, if set.
+Returns the SQL filter stored in the URI, if set.
+
+This represents a subset filter string to be applied to the source, and takes the
+form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+
+.. seealso:: :py:func:`setSql`
 %End
 
     QString geometryColumn() const;
@@ -233,7 +241,12 @@ Sets the ``scheme`` for the URI.
 
     void setSql( const QString &sql );
 %Docstring
-Sets the SQL query for the URI.
+Sets the ``sql`` filter for the URI.
+
+The ``sql`` represents a subset filter string to be applied to the source, and should take the
+form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
+
+.. seealso:: :py:func:`sql`
 %End
 
     QString host() const;
@@ -334,6 +347,12 @@ Sets table to ``table``
 Sets geometry column name to ``geometryColumn``
 
 .. versionadded:: 3.10
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 };

@@ -157,6 +157,9 @@ void QgsBlurWidget::initGui()
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
+  mBlurUnitWidget->setUnit( mEffect->blurUnit() );
+  mBlurUnitWidget->setMapUnitScale( mEffect->blurMapUnitScale() );
+
   blockSignals( false );
 }
 
@@ -847,6 +850,7 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   mBrightnessSpinBox->setClearValue( 0 );
   mContrastSpinBox->setClearValue( 0 );
   mSaturationSpinBox->setClearValue( 0 );
+  mColorizeStrengthSpinBox->setClearValue( 100 );
   mColorizeColorButton->setAllowOpacity( false );
 
   mGrayscaleCombo->addItem( tr( "Off" ), QgsImageOperation::GrayscaleOff );

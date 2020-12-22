@@ -52,7 +52,6 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   {
     // shuffle stuff around
     QVBoxLayout *newLayout = new QVBoxLayout();
-    newLayout->setMargin( 0 );
     newLayout->setContentsMargins( 0, 0, 0, 0 );
     newLayout->addWidget( mTabWidget );
     newLayout->addWidget( mSlidersWidget );
@@ -292,7 +291,6 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
 
 QgsCompoundColorWidget::~QgsCompoundColorWidget()
 {
-  saveSettings();
   if ( !mDiscarded )
   {
     QgsRecentColorScheme::addRecentColor( color() );
@@ -395,7 +393,7 @@ void QgsCompoundColorWidget::importPalette()
 bool QgsCompoundColorWidget::removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent )
 {
   if ( QMessageBox::question( parent, tr( "Remove Color Palette" ),
-                              QString( tr( "Are you sure you want to remove %1?" ) ).arg( scheme->schemeName() ),
+                              tr( "Are you sure you want to remove %1?" ).arg( scheme->schemeName() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
   {
     //user canceled
@@ -739,6 +737,12 @@ void QgsCompoundColorWidget::setPreviousColor( const QColor &color )
 {
   mOldColorLabel->setVisible( color.isValid() );
   mColorPreview->setColor2( color );
+}
+
+void QgsCompoundColorWidget::hideEvent( QHideEvent *e )
+{
+  saveSettings();
+  QWidget::hideEvent( e );
 }
 
 void QgsCompoundColorWidget::mousePressEvent( QMouseEvent *e )

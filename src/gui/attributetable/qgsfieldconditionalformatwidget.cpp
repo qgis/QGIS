@@ -364,9 +364,9 @@ void QgsEditConditionalFormatRuleWidget::setFormattingFromStyle( const QgsCondit
 {
   btnBackgroundColor->setColor( style.backgroundColor() );
   btnTextColor->setColor( style.textColor() );
-  if ( style.symbol() )
+  if ( auto *lSymbol = style.symbol() )
   {
-    btnChangeIcon->setSymbol( style.symbol()->clone() );
+    btnChangeIcon->setSymbol( lSymbol->clone() );
     checkIcon->setChecked( true );
   }
   else

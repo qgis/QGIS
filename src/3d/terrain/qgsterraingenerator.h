@@ -44,8 +44,9 @@ class QgsProject;
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
+class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 {
+    Q_OBJECT
   public:
 
     //! Enumeration of the available terrain generators
@@ -68,6 +69,9 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
 
     //! extent of the terrain in terrain's CRS
     virtual QgsRectangle extent() const = 0;
+
+    //! sets the extent of the terrain in terrain's CRS
+    virtual void setExtent( const QgsRectangle &extent ) { Q_UNUSED( extent ) }
 
     //! Returns bounding box of the root chunk
     virtual QgsAABB rootChunkBbox( const Qgs3DMapSettings &map ) const;
@@ -102,11 +106,18 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     //! Returns whether the terrain generator is valid
     bool isValid() const;
 
+  signals:
+
+    //! Emitted when the terrain extent has changed
+    void extentChanged();
+
   protected:
+
     QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
 
     bool mIsValid = true;
+
 };
 
 

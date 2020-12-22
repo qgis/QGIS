@@ -16,7 +16,8 @@ import qgis  # NOQA
 
 from qgis.core import (
     QgsTextFragment,
-    QgsTextCharacterFormat
+    QgsTextCharacterFormat,
+    QgsStringUtils
 )
 from qgis.PyQt.QtGui import QColor
 from qgis.testing import start_app, unittest
@@ -48,6 +49,11 @@ class TestQgsTextFragment(unittest.TestCase):
         fragment.setCharacterFormat(format)
         self.assertTrue(fragment.characterFormat().textColor().isValid())
         self.assertEqual(fragment.characterFormat().textColor().name(), '#ff0000')
+
+    def testCapitalize(self):
+        fragment = QgsTextFragment('ludicrous gibs!')
+        fragment.applyCapitalization(QgsStringUtils.TitleCase)
+        self.assertEqual(fragment.text(), 'Ludicrous Gibs!')
 
 
 if __name__ == '__main__':

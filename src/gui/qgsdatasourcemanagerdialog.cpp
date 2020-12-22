@@ -38,7 +38,6 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
 {
   ui->setupUi( this );
   ui->verticalLayout_2->setSpacing( 6 );
-  ui->verticalLayout_2->setMargin( 0 );
   ui->verticalLayout_2->setContentsMargins( 0, 0, 0, 0 );
 
   mMessageBar = new QgsMessageBar( this );
@@ -190,6 +189,8 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, &QgsDataSourceManagerDialog::addMeshLayer );
   // Vector tile
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, &QgsDataSourceManagerDialog::addVectorTileLayer );
+  // Point Cloud
+  connect( dlg, &QgsAbstractDataSourceWidget::addPointCloudLayer, this, &QgsDataSourceManagerDialog::addPointCloudLayer );
   // Virtual
   connect( dlg, &QgsAbstractDataSourceWidget::replaceVectorLayer,
            this, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer );

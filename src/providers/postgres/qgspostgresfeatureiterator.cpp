@@ -108,8 +108,8 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
       QgsAttributeList attrs = mRequest.subsetOfAttributes();
       //ensure that all fields required for filter expressions are prepared
       QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-      attributeIndexes += attrs.toSet();
-      mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+      attributeIndexes += qgis::listToSet( attrs );
+      mRequest.setSubsetOfAttributes( qgis::setToList( attributeIndexes ) );
     }
     mFilterRequiresGeometry = request.filterExpression()->needsGeometry();
 
@@ -199,11 +199,11 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     if ( !mOrderByCompiled )
       limitAtProvider = false;
 
-    bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+    bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QLatin1Char( ',' ) ) );
     if ( !success && useFallbackWhereClause )
     {
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
-      success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+      success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QLatin1Char( ',' ) ) );
       if ( success )
       {
         mExpressionCompiled = false;
@@ -783,8 +783,16 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         QgsField fld = mSource->mFields.at( idx );
+        QVariant v;
 
-        QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+        if ( fld.type() == QVariant::LongLong )
+        {
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+        }
+        else
+        {
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+        }
         primaryKeyVals << v;
 
         if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )

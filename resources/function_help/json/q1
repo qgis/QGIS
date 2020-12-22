@@ -1,6 +1,7 @@
 {
   "name": "q1",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the calculated first quartile from a field or expression.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

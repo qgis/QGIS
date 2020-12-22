@@ -15,7 +15,7 @@ class QgsNumericFormatRegistry
 The QgsNumericFormatRegistry manages registered classes of QgsNumericFormat.
 
 A reference to the QgsFieldFormatterRegistry can be obtained from
-:py:func:`QgsApplication.numericFormatRegistry()`
+:py:func:`QgsApplication.numericFormatRegistry()`.
 
 .. versionadded:: 3.12
 %End
@@ -29,7 +29,7 @@ A reference to the QgsFieldFormatterRegistry can be obtained from
 %Docstring
 You should not normally need to create your own numeric format registry.
 
-Use the one provided by `QgsApplication.numericFormatRegistry()` instead.
+Use the one provided by `:py:func:`QgsApplication.numericFormatRegistry()`` instead.
 %End
     ~QgsNumericFormatRegistry();
 

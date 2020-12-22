@@ -161,7 +161,7 @@ Set map rotation in degrees (clockwise)
 
     double mapRotation() const;
 %Docstring
-Returns current map rotation in degrees
+Returns current map rotation in degrees (clockwise)
 
 .. versionadded:: 2.8
 %End

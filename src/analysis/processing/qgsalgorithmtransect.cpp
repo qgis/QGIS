@@ -173,7 +173,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
     const QgsMultiLineString *multiLine = static_cast< const QgsMultiLineString *  >( inputGeometry.constGet() );
     for ( int id = 0; id < multiLine->numGeometries(); ++id )
     {
-      const QgsLineString *line = static_cast< const QgsLineString * >( multiLine->geometryN( id ) );
+      const QgsLineString *line = multiLine->lineStringN( id );
       QgsAbstractGeometry::vertex_iterator it = line->vertices_begin();
       while ( it != line->vertices_end() )
       {

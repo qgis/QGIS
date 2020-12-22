@@ -32,6 +32,8 @@
 #include "qgsfieldconstraints.h"
 #include "qgseditorwidgetsetup.h"
 #include "qgsdefaultvalue.h"
+#include "qgsfield.h"
+
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
@@ -73,8 +75,10 @@ class QgsFieldPrivate : public QSharedData
       , precision( other.precision )
       , comment( other.comment )
       , alias( other.alias )
+      , flags( other.flags )
       , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
+      , isReadOnly( other.isReadOnly )
     {
     }
 
@@ -85,7 +89,8 @@ class QgsFieldPrivate : public QSharedData
       return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
                && ( length == other.length ) && ( precision == other.precision )
                && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
-               && ( constraints == other.constraints ) );
+               && ( constraints == other.constraints )  && ( flags == other.flags )
+               && ( isReadOnly == other.isReadOnly ) );
     }
 
     //! Name
@@ -112,6 +117,9 @@ class QgsFieldPrivate : public QSharedData
     //! Alias for field name (friendly name shown to users)
     QString alias;
 
+    //! Flags for the field (searchable, …)
+    QgsField::ConfigurationFlags flags = QgsField::ConfigurationFlag::None;
+
     //! Default value
     QgsDefaultValue defaultValueDefinition;
 
@@ -119,6 +127,9 @@ class QgsFieldPrivate : public QSharedData
     QgsFieldConstraints constraints;
 
     QgsEditorWidgetSetup editorWidgetSetup;
+
+    //! Read-only
+    bool isReadOnly = false;
 
   private:
     QgsFieldPrivate &operator=( const QgsFieldPrivate & ) = delete;

@@ -102,18 +102,38 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "f" ); }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
+    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+    bool hasConfigWidget() const override {return true;}
+    void openConfigWidget( QWidget *parent ) override;
+
+    enum class ResultType
+    {
+      Feature,
+      FieldRestriction,
+    };
+    Q_ENUM( ResultType )
 
   private:
 
+    /**
+     * Returns the field restriction if defined (starting with @)
+     * The \a searchString is modified accordingly by removing the field restriction
+     */
+    static QString fieldRestriction( QString &searchString, bool *isRestricting = nullptr );
+
     QgsExpression mDispExpression;
     QgsExpressionContext mContext;
-    QgsFeatureIterator mIterator;
+    QgsFeatureIterator mDisplayTitleIterator;
+    QgsFeatureIterator mFieldIterator;
     QString mLayerId;
     QIcon mLayerIcon;
     QStringList mAttributeAliases;
+    QStringList mFieldsCompletion;
+    int mMaxTotalResults = 30;
+
+    friend class TestQgsAppLocatorFilters;
 };
 
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
@@ -143,21 +163,21 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsAllLayersFeaturesLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "allfeatures" ); }
-    QString displayName() const override { return tr( "Features In All Layers" ); }
+    QString displayName() const override { return tr( "Features in All Layers" ); }
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "af" ); }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
+    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
     void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
+    bool hasConfigWidget() const override {return true;}
+    void openConfigWidget( QWidget *parent ) override;
 
   private:
-    int mMaxResultsPerLayer = 6;
-    int mMaxTotalResults = 12;
+    int mMaxResultsPerLayer = 8;
+    int mMaxTotalResults = 15;
     QList<std::shared_ptr<PreparedLayer>> mPreparedLayers;
-
-
 };
 
 class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
@@ -217,6 +237,26 @@ class APP_EXPORT QgsSettingsLocatorFilter : public QgsLocatorFilter
   private:
 
     QMap<QString, QString> settingsPage( const QString &type,  const QString &page );
+};
+
+class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+
+    QgsGotoLocatorFilter( QObject *parent = nullptr );
+    QgsGotoLocatorFilter *clone() const override;
+    virtual QString name() const override { return QStringLiteral( "goto" ); }
+    virtual QString displayName() const override { return tr( "Go to Coordinate" ); }
+    virtual Priority priority() const override { return Medium; }
+    QString prefix() const override { return QStringLiteral( "go" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
 };
 
 #endif // QGSINBUILTLOCATORFILTERS_H

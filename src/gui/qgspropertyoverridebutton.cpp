@@ -134,7 +134,7 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &proper
 
   if ( !ts.isEmpty() )
   {
-    mDataTypesString = ts.join( QStringLiteral( ", " ) );
+    mDataTypesString = ts.join( QLatin1String( ", " ) );
     mActionDataTypes->setText( tr( "Field type: " ) + mDataTypesString );
   }
 

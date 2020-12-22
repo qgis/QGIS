@@ -459,6 +459,11 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -475,11 +480,6 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
    <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
@@ -489,6 +489,18 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mTemporalGroupBox</tabstop>
+  <tabstop>mModeComboBox</tabstop>
+  <tabstop>mStartTemporalDateTimeEdit</tabstop>
+  <tabstop>mEndTemporalDateTimeEdit</tabstop>
+  <tabstop>mSingleFieldComboBox</tabstop>
+  <tabstop>mFixedDurationSpinBox</tabstop>
+  <tabstop>mFixedDurationUnitsComboBox</tabstop>
+  <tabstop>mAccumulateCheckBox</tabstop>
+  <tabstop>mStartFieldComboBox</tabstop>
+  <tabstop>mEndFieldComboBox</tabstop>
+  <tabstop>mDurationStartFieldComboBox</tabstop>
+  <tabstop>mDurationFieldComboBox</tabstop>
+  <tabstop>mDurationUnitsComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

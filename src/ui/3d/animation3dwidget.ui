@@ -253,9 +253,9 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QToolButton" name="btnPlayPause">
+      <widget class="QPushButton" name="btnPlayPause">
        <property name="text">
-        <string>&gt;</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -276,12 +276,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="btnRepeat">
+      <widget class="QCheckBox" name="mLoopingCheckBox">
        <property name="toolTip">
-        <string>Repeat</string>
+        <string>Automatically reset and repeat the animation endlessly</string>
        </property>
        <property name="text">
-        <string>…</string>
+        <string>Loop</string>
        </property>
       </widget>
      </item>
@@ -298,7 +298,6 @@
   <tabstop>cboInterpolation</tabstop>
   <tabstop>btnPlayPause</tabstop>
   <tabstop>sliderTime</tabstop>
-  <tabstop>btnRepeat</tabstop>
  </tabstops>
  <resources/>
  <connections/>

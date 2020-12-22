@@ -107,7 +107,6 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     void setupUtilitiesMenu();
 
     QgsMessageBar *messageBar();
-    int messageTimeout();
 
     QMenu *mAuthUtilitiesMenu = nullptr;
     QAction *mActionSetMasterPassword = nullptr;

@@ -120,7 +120,11 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler *r )
 
 QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  Q_UNUSED( bandNo )
+  if ( !mOn && mInput )
+    return mInput->block( bandNo, extent, width, height, feedback );
+
+  const int bandNumber = 1;
+
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
@@ -150,8 +154,6 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   }
 
   QgsDebugMsgLevel( QStringLiteral( "oversampling %1" ).arg( oversampling ), 4 );
-
-  int bandNumber = 1;
 
   // Do no oversampling if no resampler for zoomed in / zoomed out (nearest neighbour)
   // We do mZoomedInResampler if oversampling == 1 (otherwise for example reprojected
@@ -302,5 +304,9 @@ void QgsRasterResampleFilter::readXml( const QDomElement &filterElem )
   if ( zoomedOutResamplerType == QLatin1String( "bilinear" ) )
   {
     mZoomedOutResampler.reset( new QgsBilinearRasterResampler() );
+  }
+  else if ( zoomedOutResamplerType == QLatin1String( "cubic" ) )
+  {
+    mZoomedOutResampler.reset( new QgsCubicRasterResampler() );
   }
 }

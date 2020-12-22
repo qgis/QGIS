@@ -167,7 +167,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
   if ( errorMsg.isEmpty() )
   {
-    //children.append( new QgsFavouritesItem(this, "connection successful", mPath + "/success"));
+    //children.append( new QgsFavoritesItem(this, "connection successful", mPath + "/success"));
     QgsDebugMsg( "DB open successful for connection " + db.connectionName() );
   }
   else
@@ -182,12 +182,12 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
 
   /* Enabling the DB2 Spatial Extender creates the DB2GSE schema and tables,
      so the Extender is either not enabled or set up if SQLCODE -204 is returned. */
-  if ( sqlcode == QStringLiteral( "-204" ) )
+  if ( sqlcode == QLatin1String( "-204" ) )
   {
     children.append( new QgsErrorItem( this, tr( "DB2 Spatial Extender is not enabled or set up." ), mPath + "/error" ) );
     return children;
   }
-  else if ( !sqlcode.isEmpty() && sqlcode != QStringLiteral( "0" ) )
+  else if ( !sqlcode.isEmpty() && sqlcode != QLatin1String( "0" ) )
   {
     children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
     return children;
@@ -326,7 +326,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to DB2 database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
 
@@ -334,7 +334,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
 }
 
 QgsDb2RootItem::QgsDb2RootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "DB2" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "DB2" ) )
 {
   mIconName = QStringLiteral( "mIconDb2.svg" );
   populate();

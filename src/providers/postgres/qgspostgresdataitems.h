@@ -30,7 +30,7 @@ class QgsPGConnectionItem;
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
 
-class QgsPGRootItem : public QgsDataCollectionItem
+class QgsPGRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:
@@ -39,8 +39,6 @@ class QgsPGRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
     QVariant sortKey() const override { return 3; }
-
-    static QMainWindow *sMainWindow;
 
   public slots:
     void onConnectionsChanged();
@@ -67,7 +65,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 
 };
 
-class QgsPGSchemaItem : public QgsDataCollectionItem
+class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 {
     Q_OBJECT
   public:
@@ -100,9 +98,14 @@ class QgsPGLayerItem : public QgsLayerItem
 
     const QgsPostgresLayerProperty &layerInfo() const { return mLayerProperty; }
 
+    QVector<QgsDataItem *> createChildren() override;
+
   private:
     QgsPostgresLayerProperty mLayerProperty;
+
 };
+
+
 
 //! Provider for Postgres data item
 class QgsPostgresDataItemProvider : public QgsDataItemProvider

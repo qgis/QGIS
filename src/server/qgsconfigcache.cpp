@@ -39,14 +39,36 @@ QgsConfigCache::QgsConfigCache()
 }
 
 
-const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSettings *settings )
+const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerSettings *settings )
 {
   if ( ! mProjectCache[ path ] )
   {
+
     std::unique_ptr<QgsProject> prj( new QgsProject() );
+
+    // This is required by virtual layers that call QgsProject::instance() inside the constructor :(
+    QgsProject::setInstance( prj.get() );
+
     QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
     prj->setBadLayerHandler( badLayerHandler );
-    if ( prj->read( path ) )
+
+    // Always skip original styles storage
+    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ;
+    if ( settings )
+    {
+      // Activate trust layer metadata flag
+      if ( settings->trustLayerMetadata() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+      }
+      // Activate don't load layouts flag
+      if ( settings->getPrintDisabled() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+      }
+    }
+
+    if ( prj->read( path, readFlags ) )
     {
       if ( !badLayerHandler->badLayers().isEmpty() )
       {
@@ -73,14 +95,14 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
           if ( ! settings || ! settings->ignoreBadLayers() )
           {
             QgsMessageLog::logMessage(
-              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QStringLiteral( ", " ) ), path ),
+              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
               QStringLiteral( "Server" ), Qgis::Critical );
             throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
           }
           else
           {
             QgsMessageLog::logMessage(
-              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QStringLiteral( ", " ) ), path ),
+              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
               QStringLiteral( "Server" ), Qgis::Warning );
           }
         }
@@ -95,9 +117,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
         QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
-  QgsProject::setInstance( mProjectCache[ path ] );
   return mProjectCache[ path ];
-
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )

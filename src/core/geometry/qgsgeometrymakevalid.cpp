@@ -815,7 +815,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidCollection( const GEOSGeometry *gin, Q
   int nvgeoms = GEOSGetNumGeometries_r( handle, gin );
   if ( nvgeoms == -1 )
   {
-    errorMessage = QStringLiteral( "GEOSGetNumGeometries: %1" ).arg( QStringLiteral( "?" ) );
+    errorMessage = QStringLiteral( "GEOSGetNumGeometries: %1" ).arg( QLatin1String( "?" ) );
     return nullptr;
   }
 

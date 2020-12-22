@@ -16,7 +16,7 @@
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
         <xs:element name="geometryProperty" type="gml:PointPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="rvalue_1" nillable="true" minOccurs="0" maxOccurs="1">
+        <xs:element name="SAMPLE_1" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:decimal">
             </xs:restriction>

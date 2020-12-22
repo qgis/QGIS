@@ -211,7 +211,7 @@
           <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Feature limit for GetFeatureInfo</string>
+             <string>Maximum number of GetFeatureInfo results</string>
             </property>
             <property name="buddy">
              <cstring>mFeatureCount</cstring>
@@ -219,7 +219,11 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="mTileWidth"/>
+           <widget class="QLineEdit" name="mTileWidth">
+            <property name="toolTip">
+             <string>Tile width</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="2">
            <widget class="QLineEdit" name="mFeatureCount">
@@ -228,28 +232,12 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
-           <widget class="QPushButton" name="btnChangeSpatialRefSys">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Change…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QLabel" name="labelCoordRefSys">
-            <property name="text">
-             <string>Coordinate Reference System</string>
-            </property>
-            <property name="buddy">
-             <cstring>btnChangeSpatialRefSys</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="2">
-           <widget class="QLineEdit" name="mTileHeight"/>
+           <widget class="QLineEdit" name="mTileHeight">
+            <property name="toolTip">
+             <string>Tile height</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_4">
@@ -262,10 +250,32 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="mStepWidth"/>
+           <widget class="QLineEdit" name="mStepWidth">
+            <property name="toolTip">
+             <string>Step width</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QLineEdit" name="mStepHeight"/>
+           <widget class="QLineEdit" name="mStepHeight">
+            <property name="toolTip">
+             <string>Step height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QLabel" name="labelCoordRefSys">
+            <property name="text">
+             <string>Coordinate Reference System</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -329,7 +339,7 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="showSearchIcon">
+           <property name="showSearchIcon" stdset="0">
             <bool>true</bool>
            </property>
            <property name="qgisRelation" stdset="0">
@@ -480,7 +490,7 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="showSearchIcon">
+           <property name="showSearchIcon" stdset="0">
             <bool>true</bool>
            </property>
            <property name="qgisRelation" stdset="0">
@@ -503,23 +513,37 @@
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>tabServers</tabstop>
   <tabstop>cmbConnections</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>btnNew</tabstop>
+  <tabstop>btnEdit</tabstop>
+  <tabstop>btnDelete</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
+  <tabstop>mLayersFilterLineEdit</tabstop>
   <tabstop>lstLayers</tabstop>
   <tabstop>mTileWidth</tabstop>
   <tabstop>mTileHeight</tabstop>
   <tabstop>mStepWidth</tabstop>
   <tabstop>mStepHeight</tabstop>
   <tabstop>mFeatureCount</tabstop>
-  <tabstop>btnChangeSpatialRefSys</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>mContextualLegendCheckbox</tabstop>
   <tabstop>leLayerName</tabstop>
-  <tabstop>lstTilesets</tabstop>
-  <tabstop>mLayerOrderTreeWidget</tabstop>
-  <tabstop>mLayerDownButton</tabstop>
   <tabstop>mLayerUpButton</tabstop>
+  <tabstop>mLayerDownButton</tabstop>
+  <tabstop>mLayerOrderTreeWidget</tabstop>
+  <tabstop>mTilesetsFilterLineEdit</tabstop>
+  <tabstop>lstTilesets</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -32,7 +32,7 @@ QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider
 
 void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {
-  QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+  QgsLayerTreeNode *node = mLayerTreeView->index2node( index );
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 

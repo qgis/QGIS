@@ -72,7 +72,7 @@ QVariantMap QgsStringConcatenationAlgorithm::processAlgorithm( const QVariantMap
   QString input_2 = parameterAsString( parameters, QStringLiteral( "INPUT_2" ), context );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "CONCATENATION" ), input_1 + input_2 );
+  outputs.insert( QStringLiteral( "CONCATENATION" ), QString( input_1 + input_2 ) );
   return outputs;
 }
 

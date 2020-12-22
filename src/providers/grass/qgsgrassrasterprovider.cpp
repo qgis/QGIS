@@ -167,7 +167,7 @@ QgsGrassRasterProvider::~QgsGrassRasterProvider()
   QgsDebugMsg( "QgsGrassRasterProvider: deconstructing." );
 }
 
-QgsRasterInterface *QgsGrassRasterProvider::clone() const
+QgsGrassRasterProvider *QgsGrassRasterProvider::clone() const
 {
   QgsGrassRasterProvider *provider = new QgsGrassRasterProvider( dataSourceUri() );
   provider->copyBaseSettings( *this );

@@ -23,7 +23,8 @@ QgsQuickAttributeFormModel::QgsQuickAttributeFormModel( QObject *parent )
   setSourceModel( mSourceModel );
   connect( mSourceModel, &QgsQuickAttributeFormModelBase::hasTabsChanged, this, &QgsQuickAttributeFormModel::hasTabsChanged );
   connect( mSourceModel, &QgsQuickAttributeFormModelBase::attributeModelChanged, this, &QgsQuickAttributeFormModel::attributeModelChanged );
-  connect( mSourceModel, &QgsQuickAttributeFormModelBase::constraintsValidChanged, this, &QgsQuickAttributeFormModel::constraintsValidChanged );
+  connect( mSourceModel, &QgsQuickAttributeFormModelBase::constraintsHardValidChanged, this, &QgsQuickAttributeFormModel::constraintsHardValidChanged );
+  connect( mSourceModel, &QgsQuickAttributeFormModelBase::constraintsSoftValidChanged, this, &QgsQuickAttributeFormModel::constraintsSoftValidChanged );
 }
 
 bool QgsQuickAttributeFormModel::hasTabs() const
@@ -46,9 +47,14 @@ void QgsQuickAttributeFormModel::setAttributeModel( QgsQuickAttributeModel *attr
   mSourceModel->setAttributeModel( attributeModel );
 }
 
-bool QgsQuickAttributeFormModel::constraintsValid() const
+bool QgsQuickAttributeFormModel::constraintsHardValid() const
 {
-  return mSourceModel->constraintsValid();
+  return mSourceModel->constraintsHardValid();
+}
+
+bool QgsQuickAttributeFormModel::constraintsSoftValid() const
+{
+  return mSourceModel->constraintsSoftValid();
 }
 
 void QgsQuickAttributeFormModel::save()
@@ -64,6 +70,11 @@ void QgsQuickAttributeFormModel::create()
 QVariant QgsQuickAttributeFormModel::attribute( const QString &name ) const
 {
   return mSourceModel->attribute( name );
+}
+
+void QgsQuickAttributeFormModel::forceClean()
+{
+  mSourceModel->forceClean();
 }
 
 bool QgsQuickAttributeFormModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const

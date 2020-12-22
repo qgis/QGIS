@@ -22,6 +22,7 @@
 #include "qgsowsconnection.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
+#include "qgsarcgisrestquery.h"
 
 #include <QMessageBox>
 
@@ -45,7 +46,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   std::function< bool( const QString &, QStandardItem * )> visitItemsRecursive;
   visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, headers, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem ) -> bool
   {
-    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage, headers );
+    const QVariantMap serviceInfoMap = QgsArcGisRestQueryUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage, headers );
 
     if ( serviceInfoMap.isEmpty() )
     {
@@ -54,7 +55,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
     bool res = true;
 
-    QgsArcGisRestUtils::visitFolderItems( [ =, &res ]( const QString & name, const QString & url )
+    QgsArcGisRestQueryUtils::visitFolderItems( [ =, &res ]( const QString & name, const QString & url )
     {
       QStandardItem *nameItem = new QStandardItem( name );
       nameItem->setToolTip( url );
@@ -67,7 +68,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
         res = false;
     }, serviceInfoMap, baseUrl );
 
-    QgsArcGisRestUtils::visitServiceItems(
+    QgsArcGisRestQueryUtils::visitServiceItems(
       [ =, &res]( const QString & name, const QString & url )
     {
       QStandardItem *nameItem = new QStandardItem( name );
@@ -79,12 +80,12 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
       if ( !visitItemsRecursive( url, nameItem ) )
         res = false;
-    }, serviceInfoMap, baseUrl, QgsArcGisRestUtils::Vector );
+    }, serviceInfoMap, baseUrl, QgsArcGisRestQueryUtils::Vector );
 
     QMap< QString, QList<QStandardItem *> > layerItems;
     QMap< QString, QString > parents;
 
-    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid, const QString & )
+    QgsArcGisRestQueryUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid, const QString & )
     {
       if ( !parentLayerId.isEmpty() )
         parents.insert( layerId, parentLayerId );
@@ -118,7 +119,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
         layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
       }
-    }, serviceInfoMap, baseItemUrl, QgsArcGisRestUtils::Vector );
+    }, serviceInfoMap, baseItemUrl, QgsArcGisRestQueryUtils::Vector );
 
     // create layer groups
     for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
@@ -165,7 +166,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   ds.removeParam( QStringLiteral( "url" ) );
   ds.setParam( QStringLiteral( "url" ), url );
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsAfsProvider provider( ds.uri(), providerOptions );
+  QgsAfsProvider provider( ds.uri( false ), providerOptions );
   if ( !provider.isValid() )
   {
     return;
@@ -201,7 +202,7 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
   {
     ds.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
-  return ds.uri();
+  return ds.uri( false );
 }
 
 

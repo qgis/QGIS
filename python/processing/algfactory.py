@@ -50,6 +50,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterPoint,
+                       QgsProcessingParameterGeometry,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
@@ -193,6 +194,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
         kwargs['description'] = kwargs.pop("label", "")
         kwargs['defaultValue'] = kwargs.pop("default", None)
         advanced = kwargs.pop("advanced", False)
+        help_str = kwargs.pop("help", "")
         try:
             if output:
                 try:
@@ -207,6 +209,8 @@ class AlgWrapper(QgsProcessingAlgorithm):
             parm = make_func(**kwargs)
             if advanced:
                 parm.setFlags(parm.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            if not output:
+                parm.setHelp(help_str)
             return parm
         except KeyError as ex:
             raise NotImplementedError("{} not supported".format(str(type)))
@@ -326,6 +330,7 @@ class ProcessingAlgFactory():
     FIELD = "FIELD",
     MATRIX = "MATRIX",
     POINT = "POINT",
+    GEOMETRY = "GEOMETRY",
     RANGE = "RANGE",
     AUTH_CFG = "AUTH_CFG"
     SCALE = "SCALE"
@@ -462,6 +467,7 @@ class ProcessingAlgFactory():
             alg.MATRIX: QgsProcessingParameterMatrix
             alg.MULTILAYER: QgsProcessingParameterMultipleLayers
             alg.POINT: QgsProcessingParameterPoint
+            alg.GEOMETRY: QgsProcessingParameterGeometry
             alg.RANGE: QgsProcessingParameterRange
             alg.VECTOR_LAYER: QgsProcessingParameterVectorLayer
             alg.AUTH_CFG: QgsProcessingParameterAuthConfig
@@ -519,6 +525,7 @@ input_type_mapping = {
     ProcessingAlgFactory.MATRIX: QgsProcessingParameterMatrix,
     ProcessingAlgFactory.MULTILAYER: QgsProcessingParameterMultipleLayers,
     ProcessingAlgFactory.POINT: QgsProcessingParameterPoint,
+    ProcessingAlgFactory.GEOMETRY: QgsProcessingParameterGeometry,
     ProcessingAlgFactory.RANGE: QgsProcessingParameterRange,
     ProcessingAlgFactory.VECTOR_LAYER: QgsProcessingParameterVectorLayer,
     ProcessingAlgFactory.AUTH_CFG: QgsProcessingParameterAuthConfig,

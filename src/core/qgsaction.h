@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAction
      * \param description   A human readable description string
      * \param command       The action text. Its interpretation depends on the type
      * \param capture       If this is set to TRUE, the output will be captured when an action is run
-     * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode
+     * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
      */
 #ifndef SIP_RUN
     QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false, bool enabledOnlyWhenEditable = false )
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAction
      * \param shortTitle           A short string used to label user interface elements like buttons
      * \param actionScopes         A set of scopes in which this action will be available
      * \param notificationMessage  A particular message which reception will trigger the action
-     * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode
+     * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
      */
 #ifndef SIP_RUN
     QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable = false )
@@ -171,6 +171,13 @@ class CORE_EXPORT QgsAction
 
     //! Returns whether only enabled in editable mode
     bool isEnabledOnlyWhenEditable() const { return mIsEnabledOnlyWhenEditable; }
+
+    /**
+     * Set whether the action is only enabled in editable mode
+     *
+     * \since QGIS 3.16
+     */
+    void setEnabledOnlyWhenEditable( bool enable ) { mIsEnabledOnlyWhenEditable = enable; };
 
 
     //! Checks if the action is runable on the current platform

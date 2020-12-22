@@ -1,83 +1,83 @@
 #############################################################
 # CMake settings
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
-SET(CMAKE_COLOR_MAKEFILE ON)
-SET(CMAKE_AUTORCC ON)
+cmake_minimum_required(VERSION 3.10.0)
+set(CMAKE_COLOR_MAKEFILE ON)
+set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-CMAKE_POLICY (SET CMP0048 NEW)
-CMAKE_POLICY (SET CMP0053 NEW)
-CMAKE_POLICY (SET CMP0071 NEW)
+cmake_policy (SET CMP0048 NEW)
+cmake_policy (SET CMP0053 NEW)
+cmake_policy (SET CMP0071 NEW)
 
 # don't relink it only the shared object changes
-SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
+set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
 #############################################################
 # Project and version
-SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "13")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-SET(RELEASE_NAME "Master")
-PROJECT(qgis VERSION ${COMPLETE_VERSION})
+set(CPACK_PACKAGE_VERSION_MAJOR "3")
+set(CPACK_PACKAGE_VERSION_MINOR "17")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
+set(RELEASE_NAME "Master")
+project(qgis VERSION ${COMPLETE_VERSION})
 
-IF (APPLE)
-  SET(QGIS_APP_NAME "QGIS")
-ELSE (APPLE)
-  SET(QGIS_APP_NAME "qgis")
-ENDIF (APPLE)
+if (APPLE)
+  set(QGIS_APP_NAME "QGIS")
+else()
+  set(QGIS_APP_NAME "qgis")
+endif()
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
-MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
-MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
+math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
+message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
 #############################################################
-IF (APPLE)
+if (APPLE)
   # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
   # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
   # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
-  SET (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
+  set (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
 
   # Setup LIB_DIR and CMAKE_PREFIX_PATH to help CMake's
   # find_packages to look for these libraries instead of system libraries
-  IF ( QGIS_MAC_DEPS_DIR )
-    SET(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
-    LIST(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
-  ENDIF ( QGIS_MAC_DEPS_DIR )
-ENDIF (APPLE)
+  if ( QGIS_MAC_DEPS_DIR )
+    set(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
+    list(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
+  endif()
+endif()
 
 #############################################################
 # Configure OpenCL if available
-SET(HAVE_OPENCL FALSE)
-IF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "BSD$")
-  OPTION(USE_OPENCL "Use OpenCL" OFF)
-ELSE (${CMAKE_HOST_SYSTEM_NAME} MATCHES "BSD$")
-  OPTION(USE_OPENCL "Use OpenCL" ON)
-ENDIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "BSD$")
-IF (USE_OPENCL)
-    FIND_PACKAGE(OpenCL)
-    IF(${OpenCL_FOUND})
-        SET(HAVE_OPENCL TRUE)
+set(HAVE_OPENCL FALSE)
+if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "BSD$")
+  option(USE_OPENCL "Use OpenCL" OFF)
+else()
+  option(USE_OPENCL "Use OpenCL" ON)
+endif()
+if (USE_OPENCL)
+    find_package(OpenCL)
+    if(${OpenCL_FOUND})
+        set(HAVE_OPENCL TRUE)
         # Fixup for standard FindOpenCL module not assigning proper framework headers directory
-        IF (APPLE AND "${OpenCL_INCLUDE_DIR}" MATCHES "OpenCL\\.framework/?$")
-            SET(OpenCL_INCLUDE_DIR "${OpenCL_INCLUDE_DIR}/Headers" CACHE PATH "" FORCE)
-            SET(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIR})
-        ENDIF ()
-        FIND_PACKAGE(OpenCLhpp)
-        IF(NOT OPENCL_HPP_FOUND)
+        if (APPLE AND "${OpenCL_INCLUDE_DIR}" MATCHES "OpenCL\\.framework/?$")
+            set(OpenCL_INCLUDE_DIR "${OpenCL_INCLUDE_DIR}/Headers" CACHE PATH "" FORCE)
+            set(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIR})
+        endif()
+        find_package(OpenCLhpp)
+        if(NOT OPENCL_HPP_FOUND)
             # Use internal headers copied from OpenCL-CLHPP project
-            SET(OPENCL_HPP_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/opencl-clhpp/include CACHE PATH "" FORCE)
-            MESSAGE(STATUS "Couldn't find OpenCL C++ headers, using internal: ${OPENCL_HPP_INCLUDE_DIR}")
-        ENDIF(NOT OPENCL_HPP_FOUND)
-        SET(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIRS} ${OPENCL_HPP_INCLUDE_DIR})
-    ELSE(${OpenCL_FOUND})
-        MESSAGE(STATUS "Couldn't find OpenCL: support DISABLED")
-    ENDIF(${OpenCL_FOUND})
-ENDIF(USE_OPENCL)
+            set(OPENCL_HPP_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/opencl-clhpp/include CACHE PATH "" FORCE)
+            message(STATUS "Couldn't find OpenCL C++ headers, using internal: ${OPENCL_HPP_INCLUDE_DIR}")
+        endif()
+        set(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIRS} ${OPENCL_HPP_INCLUDE_DIR})
+    else()
+        message(STATUS "Couldn't find OpenCL: support DISABLED")
+    endif()
+endif()
 
 # Configure CCache if available
-IF(NOT MSVC)
+if(NOT MSVC)
   option(USE_CCACHE "Use ccache" ON)
   if (USE_CCACHE)
     find_program(CCACHE_FOUND ccache)
@@ -88,169 +88,182 @@ IF(NOT MSVC)
   endif(USE_CCACHE)
 endif(NOT MSVC)
 
-IF (IOS)
-    SET (DEFAULT_FORCE_STATIC_LIBS TRUE)
-    SET (DEFAULT_FORCE_STATIC_PROVIDERS TRUE)
-ELSE (IOS)
-    SET (DEFAULT_FORCE_STATIC_LIBS FALSE)
-    SET (DEFAULT_FORCE_STATIC_PROVIDERS FALSE)
-ENDIF (IOS)
+if (IOS)
+    set (DEFAULT_FORCE_STATIC_LIBS TRUE)
+    set (DEFAULT_FORCE_STATIC_PROVIDERS TRUE)
+else()
+    set (DEFAULT_FORCE_STATIC_LIBS FALSE)
+    set (DEFAULT_FORCE_STATIC_PROVIDERS FALSE)
+endif()
 
-SET (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
-MARK_AS_ADVANCED(FORCE_STATIC_LIBS)
-IF (FORCE_STATIC_LIBS)
-  SET (LIBRARY_TYPE STATIC)
-ELSE (FORCE_STATIC_LIBS)
-  SET (LIBRARY_TYPE SHARED)
-ENDIF (FORCE_STATIC_LIBS)
+set (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
+mark_as_advanced(FORCE_STATIC_LIBS)
+if (FORCE_STATIC_LIBS)
+  set (LIBRARY_TYPE STATIC)
+else()
+  set (LIBRARY_TYPE SHARED)
+endif()
 
-SET (FORCE_STATIC_PROVIDERS ${DEFAULT_FORCE_STATIC_PROVIDERS} CACHE BOOL "Determines whether data providers should be static only")
-MARK_AS_ADVANCED(FORCE_STATIC_PROVIDERS)
-IF (FORCE_STATIC_PROVIDERS)
+set (FORCE_STATIC_PROVIDERS ${DEFAULT_FORCE_STATIC_PROVIDERS} CACHE BOOL "Determines whether data providers should be static only")
+mark_as_advanced(FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_PROVIDERS)
   # following variable is used in qgsconfig.h
-  SET (HAVE_STATIC_PROVIDERS TRUE)
-ENDIF (FORCE_STATIC_PROVIDERS)
+  set (HAVE_STATIC_PROVIDERS TRUE)
+endif()
 
 # in generated makefiles use relative paths so the project dir is moveable
 # Note commented out since it cause problems but it would be nice to resolve these and enable
 #
-# issue is caused by INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}) near the end of this file generating incorrect path
-#SET (CMAKE_USE_RELATIVE_PATHS ON)
+# issue is caused by include_directories(${CMAKE_BINARY_DIR}) near the end of this file generating incorrect path
+#set (CMAKE_USE_RELATIVE_PATHS ON)
 
-SET (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
-MARK_AS_ADVANCED(WITH_CORE)
+set (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
+mark_as_advanced(WITH_CORE)
 
-IF(WITH_CORE)
+if(WITH_CORE)
   # Only GRASS 7 is currently supported but we keep dual version support in cmake for possible future switch to GRASS 8.
   # Try to configure and build GRASS plugin by default
-  FOREACH (GRASS_SEARCH_VERSION 7)
+  foreach (GRASS_SEARCH_VERSION 7)
     # Legacy note:
     # For GRASS 6 there were used cached variables without version suffix so that existing caches didn't have to be reconfigured.
     # Cached variables were: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
     # Everywhere else each variable has version major appended.
     # Normal variables were: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
     # In addition there is also GRASS_FOUND, which is TRUE if at least one version of GRASS was found
-    SET (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
-    SET (WITH_GRASS${GRASS_CACHE_VERSION} TRUE CACHE BOOL "Determines whether GRASS ${GRASS_SEARCH_VERSION} plugin should be built")
-    IF (WITH_GRASS${GRASS_CACHE_VERSION})
-      FIND_PACKAGE(GRASS ${GRASS_SEARCH_VERSION})
-      SET (GRASS_PREFIX${GRASS_CACHE_VERSION} ${GRASS_PREFIX${GRASS_SEARCH_VERSION}} CACHE PATH "Path to GRASS ${GRASS_SEARCH_VERSION} base directory")
-    ENDIF (WITH_GRASS${GRASS_CACHE_VERSION})
-  ENDFOREACH (GRASS_SEARCH_VERSION)
+    set (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
+    set (WITH_GRASS${GRASS_CACHE_VERSION} TRUE CACHE BOOL "Determines whether GRASS ${GRASS_SEARCH_VERSION} plugin should be built")
+    if (WITH_GRASS${GRASS_CACHE_VERSION})
+      find_package(GRASS ${GRASS_SEARCH_VERSION})
+      set (GRASS_PREFIX${GRASS_CACHE_VERSION} ${GRASS_PREFIX${GRASS_SEARCH_VERSION}} CACHE PATH "Path to GRASS ${GRASS_SEARCH_VERSION} base directory")
+    endif()
+  endforeach (GRASS_SEARCH_VERSION)
 
-  SET (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
+  set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
-  SET (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
+  set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
-  SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+  set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
-  SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
+  set (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
-  SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
+  set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
-  SET (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+  set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 
   # try to configure and build python bindings by default
-  SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
-  IF (WITH_BINDINGS)
+  set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+  if (WITH_BINDINGS)
     # By default bindings will be installed only to QGIS directory
     # Someone might want to install it to python site-packages directory
     # as otherwise user has to use PYTHONPATH environment variable to add
     # QGIS bindings to package search path
-    SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
-    SET (SIP_GLOBAL_INSTALL FALSE CACHE BOOL "Install sip source files to system sip directory? (might need root)")
-    SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
-    SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
+    set (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    set (SIP_GLOBAL_INSTALL FALSE CACHE BOOL "Install sip source files to system sip directory? (might need root)")
+    set (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
+    set (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
     # concatenate QScintilla2 API files
-    IF (WITH_GUI)
-      SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
+    if (WITH_GUI)
+      set (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
       # keep casual users from updating their source tree via WITH_QSCIAPI
-      MARK_AS_ADVANCED (WITH_QSCIAPI)
-    ENDIF (WITH_GUI)
-    ADD_DEFINITIONS(-DWITH_BINDINGS)
-  ENDIF (WITH_BINDINGS)
+      mark_as_advanced (WITH_QSCIAPI)
+    endif()
+    add_definitions(-DWITH_BINDINGS)
+  endif()
 
   # server disabled default because it needs FastCGI (which is optional dependency)
-  SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
-  IF(WITH_SERVER)
-    SET (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
+  set (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
+  if(WITH_SERVER)
+    set (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
-    SET (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
-    IF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
-      MESSAGE(FATAL_ERROR "Server plugins are not supported without python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
-    ENDIF(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
-    IF(WITH_SERVER_PLUGINS)
-      SET(HAVE_SERVER_PYTHON_PLUGINS TRUE)
-    ENDIF(WITH_SERVER_PLUGINS)
-  ENDIF(WITH_SERVER)
+    set (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    if(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
+      message(FATAL_ERROR "Server plugins are not supported without python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
+    endif()
+    if(WITH_SERVER_PLUGINS)
+      set(HAVE_SERVER_PYTHON_PLUGINS TRUE)
+    endif()
+  endif()
 
   # Custom widgets
-  SET (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
+  set (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
 
-  IF (NOT WITH_GUI)
-    SET (HAVE_GUI FALSE)    # used in qgsconfig.h
+  if (NOT WITH_GUI)
+    set (HAVE_GUI FALSE)    # used in qgsconfig.h
     # force value of some options
-    IF(WITH_DESKTOP)
-      MESSAGE(FATAL_ERROR "Desktop cannot be built without gui. Enable WITH_GUI or disable WITH_DESKTOP.")
-    ENDIF(WITH_DESKTOP)
-    IF(WITH_CUSTOM_WIDGETS)
-      MESSAGE(FATAL_ERROR "Custom widgets cannot be built without gui. Enable WITH_GUI or disable WITH_CUSTOM_WIDGETS.")
-    ENDIF(WITH_CUSTOM_WIDGETS)
-  ELSE ()
-    SET (HAVE_GUI TRUE)     # used in qgsconfig.h
-  ENDIF()
+    if(WITH_DESKTOP)
+      message(FATAL_ERROR "Desktop cannot be built without gui. Enable WITH_GUI or disable WITH_DESKTOP.")
+    endif()
+    if(WITH_CUSTOM_WIDGETS)
+      message(FATAL_ERROR "Custom widgets cannot be built without gui. Enable WITH_GUI or disable WITH_CUSTOM_WIDGETS.")
+    endif()
+  else()
+    set (HAVE_GUI TRUE)     # used in qgsconfig.h
+  endif()
 
-  IF ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
-    MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
-  ENDIF()
+  if ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
+    message(FATAL_ERROR "Desktop cannot be built without analysis")
+  endif()
 
-  IF ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
-    MESSAGE(FATAL_ERROR "Process tool cannot be built without analysis")
-  ENDIF()
+  if ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
+    message(FATAL_ERROR "Process tool cannot be built without analysis")
+  endif()
 
-  IF ( WITH_DESKTOP )
+  if ( WITH_DESKTOP )
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
-    ADD_CUSTOM_TARGET(qgis_desktop
+    add_custom_target(qgis_desktop
       DEPENDS qgis qgispython pycore pygui pyanalysis postgresprovider staged-plugins pyplugin-installer resources svg doc icons
     )
-  ENDIF ()
+  endif()
 
   # try to configure and build MDAL support
-  SET (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL support should be built")
-  IF (NOT WITH_INTERNAL_MDAL)
-    SET (MDAL_PREFIX "" CACHE PATH "Path to MDAL base directory")
-  ENDIF (NOT WITH_INTERNAL_MDAL)
+  set (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL should be built from internal copy")
+  if (NOT WITH_INTERNAL_MDAL)
+    set (MDAL_PREFIX "" CACHE PATH "Path to MDAL base directory")
+  endif()
+
+  # try to configure and build POLY2TRI support
+  set (WITH_INTERNAL_POLY2TRI TRUE CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
 
   # try to configure and build POSTGRESQL support
-  SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
-  IF (WITH_POSTGRESQL)
-    SET (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
-  ENDIF (WITH_POSTGRESQL)
+  set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
+  if (WITH_POSTGRESQL)
+    set (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
+  endif()
 
-  SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
 
-  SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
-  IF(WITH_ORACLE)
-    SET(HAVE_ORACLE TRUE)
-    SET(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
-    SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
-  ENDIF(WITH_ORACLE)
+  set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+  if(WITH_ORACLE)
+    set(HAVE_ORACLE TRUE)
+    set(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
+    set(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
+  endif()
+
+  set (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
+  if(WITH_PDAL)
+    set(HAVE_PDAL TRUE)
+  endif()
+
+  set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
+  if(WITH_EPT)
+    set(HAVE_EPT TRUE)
+  endif()
 
   #BUILD WITH QtMobility by default on android only. Other platform can force it
-  IF (ANDROID)
-      SET (DEFAULT_WITH_QTMOBILITY TRUE)
-  ELSE (ANDROID)
-      SET (DEFAULT_WITH_QTMOBILITY FALSE)
-  ENDIF (ANDROID)
-  SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
+  if (ANDROID)
+      set (DEFAULT_WITH_QTMOBILITY TRUE)
+  else()
+      set (DEFAULT_WITH_QTMOBILITY FALSE)
+  endif()
+  set (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
 
-  SET (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
+  set (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
 
-  SET (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
-  MARK_AS_ADVANCED(WITH_THREAD_LOCAL)
+  set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
+  mark_as_advanced(WITH_THREAD_LOCAL)
 
-  IF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+  if (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
     # MingW has broken support for thread_local, so force disabling it
     # see
     # https://sourceforge.net/p/mingw-w64/bugs/445/
@@ -259,258 +272,272 @@ IF(WITH_CORE)
 
     # also OpenBSD has no thread_local support, see https://github.com/qgis/QGIS/issues/25248
 
-  ELSE (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
-    IF (WITH_THREAD_LOCAL)
-      SET (USE_THREAD_LOCAL TRUE)  # used in qgsconfig.h
-    ENDIF (WITH_THREAD_LOCAL)
-  ENDIF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+  else()
+    if (WITH_THREAD_LOCAL)
+      set (USE_THREAD_LOCAL TRUE)  # used in qgsconfig.h
+    endif()
+  endif()
 
   # Compile flag. Make it possible to turn it off.
-  SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
+  set (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
   # whether coverage tests should be performed
-  SET (ENABLE_COVERAGE FALSE CACHE BOOL "Perform coverage tests?")
+  set (ENABLE_COVERAGE FALSE CACHE BOOL "Perform coverage tests?")
 
   # whether coverage documentation should be generated
-  SET (GENERATE_COVERAGE_DOCS FALSE CACHE BOOL "Generate coverage docs (requires lcov)?")
+  set (GENERATE_COVERAGE_DOCS FALSE CACHE BOOL "Generate coverage docs (requires lcov)?")
 
   # hide this variable because building of python bindings might fail
   # if set to other directory than expected
-  MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
+  mark_as_advanced(LIBRARY_OUTPUT_PATH)
 
-  IF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
+  if (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
     # following variable is also used in qgsconfig.h
-    SET (USING_NMAKE TRUE)
-  ENDIF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
+    set (USING_NMAKE TRUE)
+  endif()
 
-  IF (CMAKE_GENERATOR MATCHES "Ninja")
+  if (CMAKE_GENERATOR MATCHES "Ninja")
     # following variable is also used in qgsconfig.h
-    SET (USING_NINJA TRUE)
-  ENDIF (CMAKE_GENERATOR MATCHES "Ninja")
+    set (USING_NINJA TRUE)
+  endif()
 
   #############################################################
   # check if lexer and parser are not missing
   # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
 
-  INCLUDE(Flex)
+  include(Flex)
 
   FIND_FLEX()
 
-  IF (NOT FLEX_EXECUTABLE)
-    MESSAGE(FATAL_ERROR "Couldn't find Flex")
-  ENDIF (NOT FLEX_EXECUTABLE)
+  if (NOT FLEX_EXECUTABLE)
+    message(FATAL_ERROR "Couldn't find Flex")
+  endif()
 
-  INCLUDE(Bison)
+  include(Bison)
 
   FIND_BISON()
 
-  IF (NOT BISON_EXECUTABLE)
-    MESSAGE(FATAL_ERROR "Couldn't find Bison")
-  ENDIF (NOT BISON_EXECUTABLE)
+  if (NOT BISON_EXECUTABLE)
+    message(FATAL_ERROR "Couldn't find Bison")
+  endif()
 
   #############################################################
   # search for dependencies
 
-  IF(NOT WIN32 AND NOT ANDROID)
-    INCLUDE(CheckFunctionExists)
+  if(NOT WIN32 AND NOT ANDROID)
+    include(CheckFunctionExists)
     CHECK_FUNCTION_EXISTS(openpty OPENPTY_IN_LIBC)
-    IF(NOT OPENPTY_IN_LIBC)
-      SET(CMAKE_REQUIRED_INCLUDES util.h)
-      SET(CMAKE_REQUIRED_LIBRARIES util)
+    if(NOT OPENPTY_IN_LIBC)
+      set(CMAKE_REQUIRED_INCLUDES util.h)
+      set(CMAKE_REQUIRED_LIBRARIES util)
       CHECK_FUNCTION_EXISTS(openpty NEED_LIBUTIL)
-      IF(NEED_LIBUTIL)
-        SET(OPENPTY_LIBRARY util)
-      ELSE(NEED_LIBUTIL)
-        MESSAGE (SEND_ERROR "openpty not found!")
-      ENDIF(NEED_LIBUTIL)
-    ENDIF(NOT OPENPTY_IN_LIBC)
-  ENDIF(NOT WIN32 AND NOT ANDROID)
+      if(NEED_LIBUTIL)
+        set(OPENPTY_LIBRARY util)
+      else()
+        message (SEND_ERROR "openpty not found!")
+      endif()
+    endif()
+  endif()
 
   # required
-  FIND_PACKAGE(Proj)
-  FIND_PACKAGE(GEOS)
-  FIND_PACKAGE(GDAL)
-  FIND_PACKAGE(Expat REQUIRED)
-  FIND_PACKAGE(Spatialindex REQUIRED)
-  IF (WITH_GUI)
-    FIND_PACKAGE(Qwt REQUIRED)
-  ENDIF (WITH_GUI)
-  FIND_PACKAGE(LibZip REQUIRED)
+  find_package(Proj)
+  find_package(GEOS)
+  find_package(GDAL)
+  find_package(Expat REQUIRED)
+  find_package(Spatialindex REQUIRED)
+  if (WITH_GUI)
+    find_package(Qwt REQUIRED)
+  endif()
+  find_package(LibZip REQUIRED)
 
-  FIND_PACKAGE(Sqlite3)
-  IF (NOT SQLITE3_FOUND)
-    MESSAGE (SEND_ERROR "sqlite3 dependency was not found!")
-  ENDIF (NOT SQLITE3_FOUND)
+  find_package(Sqlite3)
+  if (NOT SQLITE3_FOUND)
+    message (SEND_ERROR "sqlite3 dependency was not found!")
+  endif()
 
-  FIND_PACKAGE(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
-  MESSAGE(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
-  IF (NOT Protobuf_PROTOC_EXECUTABLE)
-    MESSAGE (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
-  ENDIF ()
-  FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
-  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+  find_package(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
+  message(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
+  if (NOT Protobuf_PROTOC_EXECUTABLE)
+    message (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
+  endif()
+  find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
+  message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
   # optional
-  IF (WITH_POSTGRESQL)
-    FIND_PACKAGE(Postgres) # PostgreSQL provider
-  ENDIF (WITH_POSTGRESQL)
+  if (WITH_POSTGRESQL)
+    find_package(Postgres) # PostgreSQL provider
+  endif()
 
-  IF (NOT WITH_INTERNAL_MDAL)
-    FIND_PACKAGE(MDAL REQUIRED) # MDAL provider
-  ENDIF (NOT WITH_INTERNAL_MDAL)
+  if (NOT WITH_INTERNAL_MDAL)
+    find_package(MDAL REQUIRED) # MDAL provider
+  endif()
 
-  FIND_PACKAGE(SpatiaLite REQUIRED)
+  if (NOT WITH_INTERNAL_POLY2TRI)
+    find_package(Poly2Tri REQUIRED)
+  endif()
 
-  IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
-    MESSAGE (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")
-  ENDIF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
+  find_package(SpatiaLite REQUIRED)
 
-  IF (POSTGRES_FOUND)
+  if (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
+    message (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")
+  endif()
+
+  if (POSTGRES_FOUND)
     # following variable is used in qgsconfig.h
-    SET (HAVE_POSTGRESQL TRUE)
-  ENDIF (POSTGRES_FOUND)
+    set (HAVE_POSTGRESQL TRUE)
+  endif()
 
-  SET (WITH_QTWEBKIT TRUE CACHE BOOL "Enable QtWebkit support")
-  IF (WITH_QTWEBKIT)
-    ADD_DEFINITIONS(-DWITH_QTWEBKIT)
-    MESSAGE(STATUS "Qt WebKit support enabled")
-  ELSE (WITH_QTWEBKIT)
-    MESSAGE(STATUS "Qt WebKit support DISABLED.")
-  ENDIF(WITH_QTWEBKIT)
+  set (WITH_QTWEBKIT TRUE CACHE BOOL "Enable QtWebkit support")
+  if (WITH_QTWEBKIT)
+    add_definitions(-DWITH_QTWEBKIT)
+    message(STATUS "Qt WebKit support enabled")
+  else()
+    message(STATUS "Qt WebKit support DISABLED.")
+  endif()
+
+  if (WITH_EPT)  # EPT provider
+    find_package(ZSTD) # for decompression of point clouds
+    if (NOT ZSTD_FOUND)
+      message(FATAL_ERROR "ZSTD not found - EPT provider cannot be built")
+    endif()
+    find_package(LazPerf) # for decompression of point clouds
+    if (NOT LazPerf_FOUND)
+      message(STATUS "Using embedded laz-perf")
+    endif()
+    set(HAVE_EPT TRUE)  # used in qgsconfig.h
+  endif()
+
+  if (WITH_PDAL)
+    if (NOT WITH_EPT)
+      message(FATAL_ERROR "PDAL provider cannot be built with EPT disabled")
+    endif()
+    find_package(PDAL) # PDAL provider
+  endif()
+  if (PDAL_FOUND)
+    set(HAVE_PDAL TRUE)  # used in qgsconfig.h
+  endif()
+
   #############################################################
   # search for Qt5
-  SET(QT_MIN_VERSION 5.9.0)
+  set(QT_MIN_VERSION 5.9.0)
 
   # Use Qt5SerialPort optionally for GPS
-  SET (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
-  IF (WITH_QT5SERIALPORT)
-      FIND_PACKAGE(Qt5SerialPort REQUIRED)
+  set (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
+  if (WITH_QT5SERIALPORT)
+      find_package(Qt5 COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
-      SET (HAVE_QT5SERIALPORT TRUE)
-  ENDIF(WITH_QT5SERIALPORT)
+      set (HAVE_QT5SERIALPORT TRUE)
+  endif()
 
-  FIND_PACKAGE(Qt5Core QUIET)
-  FIND_PACKAGE(Qt5Gui REQUIRED)
-  FIND_PACKAGE(Qt5Widgets REQUIRED)
-  FIND_PACKAGE(Qt5Network REQUIRED)
-  FIND_PACKAGE(Qt5Xml REQUIRED)
-  FIND_PACKAGE(Qt5Svg REQUIRED)
-  FIND_PACKAGE(Qt5Concurrent REQUIRED)
-  IF (NOT IOS)
-    FIND_PACKAGE(Qt5PrintSupport REQUIRED)
-  ELSE(NOT IOS)
-    ADD_DEFINITIONS(-DQT_NO_PRINTER)
-  ENDIF(NOT IOS)
-  FIND_PACKAGE(Qt5Positioning)
-  IF (WITH_QTWEBKIT)
-    FIND_PACKAGE(Qt5WebKit REQUIRED)
-    FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
-  ENDIF(WITH_QTWEBKIT)
-  FIND_PACKAGE(Qt5Test REQUIRED)
-  FIND_PACKAGE(Qt5UiTools REQUIRED)
-  FIND_PACKAGE(Qt5Sql REQUIRED)
-  IF (WITH_3D)
-    FIND_PACKAGE(Qt53DCore REQUIRED)
-    FIND_PACKAGE(Qt53DRender REQUIRED)
-    FIND_PACKAGE(Qt53DInput REQUIRED)
-    FIND_PACKAGE(Qt53DLogic REQUIRED)
-    FIND_PACKAGE(Qt53DExtras REQUIRED)
-    SET(HAVE_3D TRUE)  # used in qgsconfig.h
-  ENDIF (WITH_3D)
-  IF (APPLE)
-    FIND_PACKAGE(Qt5MacExtras REQUIRED)
-  ENDIF (APPLE)
+  find_package(Qt5 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  if (NOT IOS)
+    find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
+  else()
+    add_definitions(-DQT_NO_PRINTER)
+  endif()
+  find_package(Qt5 COMPONENTS Positioning)
+  if (WITH_QTWEBKIT)
+    find_package(Qt5WebKit REQUIRED)
+    find_package(Qt5WebKitWidgets REQUIRED)
+  endif()
+  if (WITH_3D)
+    find_package(Qt5 COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
+    set(HAVE_3D TRUE)  # used in qgsconfig.h
+  endif()
+  if (APPLE)
+    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+  endif()
 
   # get the Qt plugins directory
-  GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
-  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE QT_PLUGINS_DIR )
+  get_target_property(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
+  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
+  set (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
-  MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
-  IF (WITH_QUICK)
-    FIND_PACKAGE(Qt5Qml REQUIRED)
-    FIND_PACKAGE(Qt5Quick REQUIRED)
-    IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        FIND_PACKAGE(Qt5AndroidExtras)
-    ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        FIND_PACKAGE(QtQmlTools)
-    ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+  message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  if (WITH_QUICK)
+    find_package(Qt5 COMPONENTS Qml Quick REQUIRED)
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+        find_package(Qt5 COMPONENTS AndroidExtras)
+    else()
+        find_package(QtQmlTools)
+    endif()
 
     # following variable is used in qgsconfig.h
-    SET (HAVE_QUICK TRUE)
-  ENDIF (WITH_QUICK)
+    set (HAVE_QUICK TRUE)
+  endif()
 
-  IF(WITH_QTWEBKIT)
-    SET(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
-  ENDIF(WITH_QTWEBKIT)
+  if(WITH_QTWEBKIT)
+    set(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
+  endif()
 
-  IF (WITH_QTMOBILITY)
-    FIND_PACKAGE(QtMobility 1.1.0)
-  ENDIF (WITH_QTMOBILITY)
+  if (WITH_QTMOBILITY)
+    find_package(QtMobility 1.1.0)
+  endif()
 
   # search for QScintilla2 (C++ lib)
-  IF (WITH_GUI)
-    FIND_PACKAGE(QScintilla REQUIRED)
-  ENDIF (WITH_GUI)
+  if (WITH_GUI)
+    find_package(QScintilla REQUIRED)
+  endif()
 
   # Password helper
-  FIND_PACKAGE(QtKeychain REQUIRED)
+  find_package(QtKeychain REQUIRED)
   # Master password hash and authentication encryption
-  FIND_PACKAGE(QCA REQUIRED)
+  find_package(QCA REQUIRED)
   # Check for runtime dependency of qca-ossl plugin
   # REQUIRED if unit tests are to be run from build directory
-  IF(NOT MSVC)
+  if(NOT MSVC)
   include(QCAMacros)
   FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
-  ENDIF(NOT MSVC)
+  endif()
 
-  IF (APPLE)
+  if (APPLE)
     # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
-    FIND_PACKAGE(Libtasn1 REQUIRED)
-  ENDIF (APPLE)
+    find_package(Libtasn1 REQUIRED)
+  endif()
 
-  IF (SUPPRESS_QT_WARNINGS)
+  if (SUPPRESS_QT_WARNINGS)
     # Newer versions of UseQt4.cmake include Qt with -isystem automatically
     # This can be used to force this behavior on older systems
     # Can be removed as soon as Travis-CI updates from precise
-    INCLUDE_DIRECTORIES(SYSTEM ${QT_INCLUDE_DIR})
-  ENDIF (SUPPRESS_QT_WARNINGS)
+    include_directories(SYSTEM ${QT_INCLUDE_DIR})
+  endif()
 
   # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
   # (Keeps code compatible with Qt/Mac/64bit)
-  ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
-ENDIF(WITH_CORE)
+  add_definitions(-DQT_NO_CAST_TO_ASCII)
+endif()
 
-SET(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
+set (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
-SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
+set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
 
 #############################################################
 # testing
 # whether unit tests should be build
-SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
-IF (ENABLE_TESTS)
-SET( QT_USE_QTTEST  TRUE )
-ENABLE_TESTING()
+set (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
+if (ENABLE_TESTS)
+set( QT_USE_QTTEST  TRUE )
+enable_testing()
 # Adds some testing specific build targets e.g. make Experimental
-INCLUDE(Dart)
+include(Dart)
 # Additional test configuration options e.g. max upload size of test report
-CONFIGURE_FILE(
+configure_file(
   "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
   "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
   IMMEDIATE @ONLY)
 # For server side testing we have no X, we can use xvfb as a fake x
 # sudo apt-get install xvfb
 add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
-ENDIF(ENABLE_TESTS)
+endif()
 
-IF (WITH_CORE)
+if (WITH_CORE)
 # ModelTest
-  SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
-ENDIF (WITH_CORE)
+  set(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
+endif()
 
 #############################################################
 # enable use of c++11 features where available
@@ -519,420 +546,423 @@ ENDIF (WITH_CORE)
 #   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
 #   https://gist.github.com/yamaya/2924292
 
-SET(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 
 #############################################################
 # enable warnings
 
-IF (PEDANTIC)
-  MESSAGE (STATUS "Pedantic compiler settings enabled")
-  IF(MSVC)
-    SET(_warnings "")
-    IF (NOT USING_NMAKE AND NOT USING_NINJA)
-      SET(_warnings "${_warnings} /W4" )
-    ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
+if (PEDANTIC)
+  message (STATUS "Pedantic compiler settings enabled")
+  if(MSVC)
+    set(_warnings "")
+    if (NOT USING_NMAKE AND NOT USING_NINJA)
+      set(_warnings "${_warnings} /W4" )
+    endif()
 
     # disable warnings
-    SET(_warnings "${_warnings} /wd4091 ")  # 'typedef': ignored on left of '' when no variable is declared (occurs in MS DbgHelp.h header)
-    SET(_warnings "${_warnings} /wd4100 ")  # unused formal parameters
-    SET(_warnings "${_warnings} /wd4127 ")  # constant conditional expressions (used in Qt template classes)
-    SET(_warnings "${_warnings} /wd4190 ")  # 'identifier' has C-linkage specified, but returns UDT 'identifier2' which is incompatible with C
-    SET(_warnings "${_warnings} /wd4231 ")  # nonstandard extension used : 'identifier' before template explicit instantiation (used in Qt template classes)
-    SET(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
-    SET(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
-    SET(_warnings "${_warnings} /wd4267 ")  # 'argument': conversion from 'size_t' to 'int', possible loss of data
-    SET(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
-    SET(_warnings "${_warnings} /wd4290 ")  # c++ exception specification ignored except to indicate a function is not __declspec(nothrow) (occurs in sip generated bindings)
-    SET(_warnings "${_warnings} /wd4456 ")  # declaration of '...' hides previous local declaration
-    SET(_warnings "${_warnings} /wd4457 ")  # declaration of '...' hides a function parameter
-    SET(_warnings "${_warnings} /wd4458 ")  # declaration of '...' hides class member
-    SET(_warnings "${_warnings} /wd4505 ")  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
-    SET(_warnings "${_warnings} /wd4510 ")  # default constructor could not be generated (sqlite3_index_info, QMap)
-    SET(_warnings "${_warnings} /wd4512 ")  # assignment operator could not be generated (sqlite3_index_info)
-    SET(_warnings "${_warnings} /wd4610 ")  # user defined constructor required (sqlite3_index_info)
-    SET(_warnings "${_warnings} /wd4706 ")  # assignment within conditional expression (pal)
-    SET(_warnings "${_warnings} /wd4714 ")  # function '...' marked as __forceinline not inlined (QString::toLower/toUpper/trimmed)
-    SET(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
-    SET(_warnings "${_warnings} /wd4996 ")  # '...': was declared deprecated (unfortunately triggered when implementing deprecated interfaces even when it is deprecated too)
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
-  ELSE (MSVC)
+    set(_warnings "${_warnings} /wd4091 ")  # 'typedef': ignored on left of '' when no variable is declared (occurs in MS DbgHelp.h header)
+    set(_warnings "${_warnings} /wd4100 ")  # unused formal parameters
+    set(_warnings "${_warnings} /wd4127 ")  # constant conditional expressions (used in Qt template classes)
+    set(_warnings "${_warnings} /wd4190 ")  # 'identifier' has C-linkage specified, but returns UDT 'identifier2' which is incompatible with C
+    set(_warnings "${_warnings} /wd4231 ")  # nonstandard extension used : 'identifier' before template explicit instantiation (used in Qt template classes)
+    set(_warnings "${_warnings} /wd4244 ")  # conversion from '...' to '...' possible loss of data
+    set(_warnings "${_warnings} /wd4251 ")  # needs to have dll-interface to be used by clients of class (occurs in Qt template classes)
+    set(_warnings "${_warnings} /wd4267 ")  # 'argument': conversion from 'size_t' to 'int', possible loss of data
+    set(_warnings "${_warnings} /wd4275 ")  # non dll-interface class '...' used as base for dll-interface class '...'
+    set(_warnings "${_warnings} /wd4290 ")  # c++ exception specification ignored except to indicate a function is not __declspec(nothrow) (occurs in sip generated bindings)
+    set(_warnings "${_warnings} /wd4456 ")  # declaration of '...' hides previous local declaration
+    set(_warnings "${_warnings} /wd4457 ")  # declaration of '...' hides a function parameter
+    set(_warnings "${_warnings} /wd4458 ")  # declaration of '...' hides class member
+    set(_warnings "${_warnings} /wd4505 ")  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
+    set(_warnings "${_warnings} /wd4510 ")  # default constructor could not be generated (sqlite3_index_info, QMap)
+    set(_warnings "${_warnings} /wd4512 ")  # assignment operator could not be generated (sqlite3_index_info)
+    set(_warnings "${_warnings} /wd4610 ")  # user defined constructor required (sqlite3_index_info)
+    set(_warnings "${_warnings} /wd4706 ")  # assignment within conditional expression (pal)
+    set(_warnings "${_warnings} /wd4714 ")  # function '...' marked as __forceinline not inlined (QString::toLower/toUpper/trimmed)
+    set(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    set(_warnings "${_warnings} /wd4996 ")  # '...': was declared deprecated (unfortunately triggered when implementing deprecated interfaces even when it is deprecated too)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
+  else()
     # add warnings via flags (not as definitions as on Mac -Wall can not be overridden per language )
-    SET(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
+    set(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
 
-    SET(WERROR FALSE CACHE BOOL "Treat build warnings as errors.")
-    IF (WERROR)
-      SET(_warnings "${_warnings} -Werror")
-    ENDIF(WERROR)
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
+    set(WERROR FALSE CACHE BOOL "Treat build warnings as errors.")
+    if (WERROR)
+      set(_warnings "${_warnings} -Werror")
+    endif()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
 
     # c++ only warnings
 
-    SET(_warnings "${_warnings} -Wnon-virtual-dtor")
+    set(_warnings "${_warnings} -Wnon-virtual-dtor")
 
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
-    SET(_warnings "${_warnings} -Wno-redundant-move")
+    set(_warnings "${_warnings} -Wno-redundant-move")
 
-    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
       # heaps of these thrown by Qt headers at the moment (sep 2019)
-      SET(_warnings "${_warnings} -Wno-deprecated-copy")
-    ENDIF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
+      set(_warnings "${_warnings} -Wno-deprecated-copy")
+    endif()
 
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
 
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # There are redundant declarations in Qt and GDAL
-    # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
+    # add_definitions( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
-    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual -Wimplicit-fallthrough")
-    ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual -Wimplicit-fallthrough")
+    endif()
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
     # command line -D option overrides environment variable
     # e.g. useful for suppressing transient upstream warnings in dependencies, like Qt
-    SET(CXX_EXTRA_FLAGS "" CACHE STRING "Additional appended CXXFLAGS")
-    IF ("${CXX_EXTRA_FLAGS}" STREQUAL "" AND DEFINED $ENV{CXX_EXTRA_FLAGS})
-      SET(CXX_EXTRA_FLAGS "$ENV{CXX_EXTRA_FLAGS}")
-    ENDIF ("${CXX_EXTRA_FLAGS}" STREQUAL "" AND DEFINED $ENV{CXX_EXTRA_FLAGS})
-    IF (NOT "${CXX_EXTRA_FLAGS}" STREQUAL "")
-      MESSAGE (STATUS "Appending CXX_EXTRA_FLAGS")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_EXTRA_FLAGS}")
-    ENDIF (NOT "${CXX_EXTRA_FLAGS}" STREQUAL "")
-  ENDIF (MSVC)
+    set(CXX_EXTRA_FLAGS "" CACHE STRING "Additional appended CXXFLAGS")
+    if ("${CXX_EXTRA_FLAGS}" STREQUAL "" AND DEFINED $ENV{CXX_EXTRA_FLAGS})
+      set(CXX_EXTRA_FLAGS "$ENV{CXX_EXTRA_FLAGS}")
+    endif()
+    if (NOT "${CXX_EXTRA_FLAGS}" STREQUAL "")
+      message (STATUS "Appending CXX_EXTRA_FLAGS")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_EXTRA_FLAGS}")
+    endif()
+  endif()
 
-ENDIF (PEDANTIC)
+endif()
 
-IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
-  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
-  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
-  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
-ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
+endif()
 
-IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
-  ADD_DEFINITIONS( -fno-strict-aliasing )
-ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
+  add_definitions( -fno-strict-aliasing )
+endif()
 
-IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-  MESSAGE (STATUS "Debug output enabled")
-  SET(QGISDEBUG TRUE)
-ELSE (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-  SET(QGISDEBUG FALSE)
-ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+if (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+  message (STATUS "Debug output enabled")
+  set(QGISDEBUG TRUE)
+else()
+  set(QGISDEBUG FALSE)
+endif()
 
-IF(MSVC)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
-  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+if(MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()
-  ADD_DEFINITIONS(-DNOMINMAX)
-ENDIF(MSVC)
+  add_definitions(-DNOMINMAX)
+endif()
 
 # Prevent build when Qt api deprecated before this Qt version is used:
-ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
+add_definitions(-DQT_DEPRECATED_WARNINGS)
 # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
-ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 
-IF (WITH_GEOREFERENCER)
-  FIND_PACKAGE(GSL REQUIRED)
-  SET(HAVE_GEOREFERENCER TRUE)
-ENDIF (WITH_GEOREFERENCER)
+# For fast string concatenation
+add_definitions(-DQT_USE_QSTRINGBUILDER)
 
-IF(ENABLE_COVERAGE)
-  INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
-  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
-  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
-  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+if (WITH_GEOREFERENCER)
+  find_package(GSL REQUIRED)
+  set(HAVE_GEOREFERENCER TRUE)
+endif()
+
+if(ENABLE_COVERAGE)
+  include("cmake/modules/coverage/CodeCoverage.cmake")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
   SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
-ENDIF(ENABLE_COVERAGE)
+endif()
 
 #############################################################
 # platform specific stuff
-IF (WITH_CORE)
-  IF (WIN32)
-    SET (DEFAULT_LIB_SUBDIR     lib)
-    SET (DEFAULT_LIBEXEC_SUBDIR .)
-    SET (DEFAULT_DATA_SUBDIR    .)
-    SET (DEFAULT_PLUGIN_SUBDIR  plugins)
-    SET (DEFAULT_INCLUDE_SUBDIR include)
-    SET (DEFAULT_QML_SUBDIR     qml)
+if (WITH_CORE)
+  if (WIN32)
+    set (DEFAULT_LIB_SUBDIR     lib)
+    set (DEFAULT_LIBEXEC_SUBDIR .)
+    set (DEFAULT_DATA_SUBDIR    .)
+    set (DEFAULT_PLUGIN_SUBDIR  plugins)
+    set (DEFAULT_INCLUDE_SUBDIR include)
+    set (DEFAULT_QML_SUBDIR     qml)
 
-    SET (DEFAULT_SERVER_MODULE_SUBDIR server)
+    set (DEFAULT_SERVER_MODULE_SUBDIR server)
 
-    IF (MSVC)
-      SET (DEFAULT_BIN_SUBDIR bin)
-      SET (DEFAULT_CGIBIN_SUBDIR bin)
+    if (MSVC)
+      set (DEFAULT_BIN_SUBDIR bin)
+      set (DEFAULT_CGIBIN_SUBDIR bin)
       # put all the build products into a single directory
       # under build (doesn't affect install target) to make for
       # easier debugging.
 
       # Turn on defines for non standard maths stuff
-      ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
+      add_definitions(-D_USE_MATH_DEFINES)
 
       # Turn off deprecation warnings
-      ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
-      ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
+      add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+      add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
 
-      IF (INSTALL_DEPS)
-        INSTALL(DIRECTORY ${INSTALL_DEPS} DESTINATION .)
-      ENDIF (INSTALL_DEPS)
-    ELSE(MSVC)
-      SET (DEFAULT_BIN_SUBDIR .)
-      SET (DEFAULT_CGIBIN_SUBDIR .)
-    ENDIF(MSVC)
-  ELSE (WIN32)
+      if (INSTALL_DEPS)
+        install(DIRECTORY ${INSTALL_DEPS} DESTINATION .)
+      endif()
+    else()
+      set (DEFAULT_BIN_SUBDIR .)
+      set (DEFAULT_CGIBIN_SUBDIR .)
+    endif()
+  else()
 
-    IF (APPLE)
-      IF (POLICY CMP0042) # in CMake 3.0.0+
-        SET (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
-      ENDIF (POLICY CMP0042)
-      IF (POLICY CMP0068) # in CMake 3.9.0+
+    if (APPLE)
+      if (POLICY CMP0042) # in CMake 3.0.0+
+        set (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
+      endif()
+      if (POLICY CMP0068) # in CMake 3.9.0+
         cmake_policy(SET CMP0068 NEW)
-      ENDIF (POLICY CMP0068)
+      endif()
       # for Mac OS X, everything is put inside an application bundle
       # save the root install prefix for the app later
-      SET (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-      SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
+      set (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+      set (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
       # common prefix for components, let cmake handle it
-      SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
+      set (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
       # 5 bundling levels, each includes previous
       #  -1  nothing
       #   0  fixup the library paths for all QGIS libraries with @loader_path
       #   1  Qt frameworks
       #   2  non-system libraries, "standard"
       #   3  non-system frameworks, "standalone"
-      SET (QGIS_MACAPP_BUNDLE 1 CACHE STRING "What to bundle into app package")
-      SET (QGIS_MACAPP_BUNDLE_USER "" CACHE STRING "Path to user bundling script")
-      SET (QGIS_MACAPP_INSTALL_DEV FALSE CACHE BOOL "Install developer frameworks")
-      SET (QGIS_MACAPP_DEV_PREFIX "/Library/Frameworks" CACHE STRING "Path to install developer frameworks")
+      set (QGIS_MACAPP_BUNDLE 1 CACHE STRING "What to bundle into app package")
+      set (QGIS_MACAPP_BUNDLE_USER "" CACHE STRING "Path to user bundling script")
+      set (QGIS_MACAPP_INSTALL_DEV FALSE CACHE BOOL "Install developer frameworks")
+      set (QGIS_MACAPP_DEV_PREFIX "/Library/Frameworks" CACHE STRING "Path to install developer frameworks")
       # if we have @loader_path, >=OSX 10.5 (darwin 9+)
-      IF (CMAKE_SYSTEM_VERSION VERSION_GREATER 9.0.0 OR CMAKE_SYSTEM_VERSION VERSION_EQUAL 9.0.0)
-          SET (OSX_HAVE_LOADERPATH 1)
-      ELSE ()
-          SET (OSX_HAVE_LOADERPATH 0)
-      ENDIF ()
+      if (CMAKE_SYSTEM_VERSION VERSION_GREATER 9.0.0 OR CMAKE_SYSTEM_VERSION VERSION_EQUAL 9.0.0)
+          set (OSX_HAVE_LOADERPATH 1)
+      else()
+          set (OSX_HAVE_LOADERPATH 0)
+      endif()
 
-      SET (DEFAULT_BIN_SUBDIR      bin)
-      SET (QGIS_BIN_SUBDIR_REV     ..)
-      SET (DEFAULT_CGIBIN_SUBDIR   fcgi-bin)
-      SET (QGIS_CGIBIN_SUBDIR_REV  ..)
-      SET (DEFAULT_LIB_SUBDIR      lib)
-      SET (QGIS_LIB_SUBDIR_REV     ..)
-      SET (QGIS_FW_SUBDIR          ../Frameworks)
-      SET (QGIS_FW_SUBDIR_REV      ../MacOS)
-      SET (DEFAULT_DATA_SUBDIR     ../Resources)
-      SET (QGIS_DATA_SUBDIR_REV    ../MacOS)
-      SET (DEFAULT_LIBEXEC_SUBDIR  lib/qgis)
-      SET (QGIS_LIBEXEC_SUBDIR_REV ../..)
-      SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
-      SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
-      SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
-      SET (DEFAULT_QML_SUBDIR     qml)
+      set (DEFAULT_BIN_SUBDIR      bin)
+      set (QGIS_BIN_SUBDIR_REV     ..)
+      set (DEFAULT_CGIBIN_SUBDIR   fcgi-bin)
+      set (QGIS_CGIBIN_SUBDIR_REV  ..)
+      set (DEFAULT_LIB_SUBDIR      lib)
+      set (QGIS_LIB_SUBDIR_REV     ..)
+      set (QGIS_FW_SUBDIR          ../Frameworks)
+      set (QGIS_FW_SUBDIR_REV      ../MacOS)
+      set (DEFAULT_DATA_SUBDIR     ../Resources)
+      set (QGIS_DATA_SUBDIR_REV    ../MacOS)
+      set (DEFAULT_LIBEXEC_SUBDIR  lib/qgis)
+      set (QGIS_LIBEXEC_SUBDIR_REV ../..)
+      set (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
+      set (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
+      set (DEFAULT_INCLUDE_SUBDIR  include/qgis)
+      set (DEFAULT_QML_SUBDIR     qml)
 
       # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
-      SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
+      set (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
 
       # path for framework references when running from build directory
       # changed later to reference in-app resources upon install
-      SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
+      set (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
       # recent cmakes force SDKs, recent SDKs don't have user symlinks
       # need to find non-system frameworks
       # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
       # a framework, so these need to be manually handled with LINK_FLAGS options
-      SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -F/Library/Frameworks")
-      SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -F/Library/Frameworks")
-      SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -F/Library/Frameworks")
+      set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -F/Library/Frameworks")
+      set (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -F/Library/Frameworks")
+      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -F/Library/Frameworks")
 
-    ELSE (APPLE)
+    else()
       # UNIX
-      SET (DEFAULT_BIN_SUBDIR     bin)
-      SET (DEFAULT_CGIBIN_SUBDIR  bin)
-      SET (DEFAULT_LIB_SUBDIR     lib${LIB_SUFFIX})
-      SET (DEFAULT_DATA_SUBDIR    share/qgis)
-      SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
-      SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
-      SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
-      SET (DEFAULT_QML_SUBDIR     qml)
+      set (DEFAULT_BIN_SUBDIR     bin)
+      set (DEFAULT_CGIBIN_SUBDIR  bin)
+      set (DEFAULT_LIB_SUBDIR     lib${LIB_SUFFIX})
+      set (DEFAULT_DATA_SUBDIR    share/qgis)
+      set (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
+      set (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
+      set (DEFAULT_INCLUDE_SUBDIR include/qgis)
+      set (DEFAULT_QML_SUBDIR     qml)
 
-      SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
-    ENDIF (APPLE)
+      set (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
+    endif()
 
-  ENDIF (WIN32)
+  endif()
 
-  IF (ANDROID)
-    SET (DEFAULT_PLUGIN_SUBDIR  lib)
-    SET (DEFAULT_DATA_SUBDIR    files/share)
+  if (ANDROID)
+    set (DEFAULT_PLUGIN_SUBDIR  lib)
+    set (DEFAULT_DATA_SUBDIR    files/share)
     string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
-  ENDIF (ANDROID)
+  endif()
 
   #assume we have escaped compiler directives
   #eventually we want to change this to new
   #since we don't need to jump through so many
   #hoops to escape compiler directives then
-  IF(COMMAND cmake_policy)
+  if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
-    IF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
+    if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
       cmake_policy(SET CMP0063 NEW)
-    ENDIF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
-    IF(MSVC)
+    endif()
+    if(MSVC)
       cmake_policy(SET CMP0020 NEW)
-    ENDIF(MSVC)
-  ENDIF(COMMAND cmake_policy)
+    endif()
+  endif()
 
   if("${CMAKE_SYSTEM_NAME}"  MATCHES "Linux")
-    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-    SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
   endif() #"${CMAKE_SYSTEM_NAME}"  MATCHES "Linux")
 
-  SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
-  INCLUDE(GenerateExportHeader)
+  set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+  include(GenerateExportHeader)
 
-  SET (ADD_CLAZY_CHECKS ${DEFAULT_MANUAL_SUBDIR} CACHE STRING "Add default set of clazy checks which should not raise any warnings")
-  MARK_AS_ADVANCED (ADD_CLAZY_CHECKS)
-  IF (ADD_CLAZY_CHECKS)
-  SET(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
-  SET(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lambda-in-connect,lowercase-qml-type-name,qcolor-from-literal,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,missing-qobject-macro,isempty-vs-count")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
-  ENDIF (ADD_CLAZY_CHECKS)
-ENDIF (WITH_CORE)
+  set (ADD_CLAZY_CHECKS ${DEFAULT_MANUAL_SUBDIR} CACHE STRING "Add default set of clazy checks which should not raise any warnings")
+  mark_as_advanced (ADD_CLAZY_CHECKS)
+  if (ADD_CLAZY_CHECKS)
+  set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
+  set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lambda-in-connect,lowercase-qml-type-name,qcolor-from-literal,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,missing-qobject-macro,isempty-vs-count")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+  endif()
+endif()
 
 #############################################################
 # user-changeable settings which can be used to customize
 # layout of QGIS installation
 # (default values are platform-specific)
 
-SET (QGIS_BIN_SUBDIR     ${DEFAULT_BIN_SUBDIR}     CACHE STRING "Subdirectory where executables will be installed")
-SET (QGIS_CGIBIN_SUBDIR  ${DEFAULT_CGIBIN_SUBDIR}  CACHE STRING "Subdirectory where CGI executables will be installed")
-SET (QGIS_LIB_SUBDIR     ${DEFAULT_LIB_SUBDIR}     CACHE STRING "Subdirectory where libraries will be installed")
-SET (QGIS_LIBEXEC_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR} CACHE STRING "Subdirectory where private executables will be installed")
-SET (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory where QGIS data will be installed")
-SET (QGIS_PLUGIN_SUBDIR  ${DEFAULT_PLUGIN_SUBDIR}  CACHE STRING "Subdirectory where plugins will be installed")
-SET (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
-SET (QGIS_QML_SUBDIR     ${DEFAULT_QML_SUBDIR}     CACHE STRING "Subdirectory where qml files/libraries will be installed")
+set (QGIS_BIN_SUBDIR     ${DEFAULT_BIN_SUBDIR}     CACHE STRING "Subdirectory where executables will be installed")
+set (QGIS_CGIBIN_SUBDIR  ${DEFAULT_CGIBIN_SUBDIR}  CACHE STRING "Subdirectory where CGI executables will be installed")
+set (QGIS_LIB_SUBDIR     ${DEFAULT_LIB_SUBDIR}     CACHE STRING "Subdirectory where libraries will be installed")
+set (QGIS_LIBEXEC_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR} CACHE STRING "Subdirectory where private executables will be installed")
+set (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory where QGIS data will be installed")
+set (QGIS_PLUGIN_SUBDIR  ${DEFAULT_PLUGIN_SUBDIR}  CACHE STRING "Subdirectory where plugins will be installed")
+set (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
+set (QGIS_QML_SUBDIR     ${DEFAULT_QML_SUBDIR}     CACHE STRING "Subdirectory where qml files/libraries will be installed")
 
-SET (QGIS_SERVER_MODULE_SUBDIR  ${DEFAULT_SERVER_MODULE_SUBDIR}  CACHE STRING "Subdirectory where server modules will be installed")
+set (QGIS_SERVER_MODULE_SUBDIR  ${DEFAULT_SERVER_MODULE_SUBDIR}  CACHE STRING "Subdirectory where server modules will be installed")
 
 # mark *_SUBDIR variables as advanced as this is not something
 # that an average user would use
-MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_CGIBIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
+mark_as_advanced (QGIS_BIN_SUBDIR QGIS_CGIBIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
 
 # full paths for the installation
-SET (QGIS_BIN_DIR     ${QGIS_BIN_SUBDIR})
-SET (QGIS_CGIBIN_DIR  ${QGIS_CGIBIN_SUBDIR})
-SET (QGIS_LIB_DIR     ${QGIS_LIB_SUBDIR})
-SET (QGIS_LIBEXEC_DIR ${QGIS_LIBEXEC_SUBDIR})
-SET (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
-SET (QGIS_PLUGIN_DIR  ${QGIS_PLUGIN_SUBDIR})
-SET (QGIS_INCLUDE_DIR ${QGIS_INCLUDE_SUBDIR})
-SET (QGIS_QML_DIR     ${QGIS_QML_SUBDIR})
+set (QGIS_BIN_DIR     ${QGIS_BIN_SUBDIR})
+set (QGIS_CGIBIN_DIR  ${QGIS_CGIBIN_SUBDIR})
+set (QGIS_LIB_DIR     ${QGIS_LIB_SUBDIR})
+set (QGIS_LIBEXEC_DIR ${QGIS_LIBEXEC_SUBDIR})
+set (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
+set (QGIS_PLUGIN_DIR  ${QGIS_PLUGIN_SUBDIR})
+set (QGIS_INCLUDE_DIR ${QGIS_INCLUDE_SUBDIR})
+set (QGIS_QML_DIR     ${QGIS_QML_SUBDIR})
 
-SET (QGIS_SERVER_MODULE_DIR ${QGIS_SERVER_MODULE_SUBDIR})
+set (QGIS_SERVER_MODULE_DIR ${QGIS_SERVER_MODULE_SUBDIR})
 
 # set the default locations where the targets (executables, libraries) will land when compiled
 # this is to allow running qgis from the source tree without having to actually do a "make install"
-SET (QGIS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
-SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR})
-SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
+set (QGIS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR})
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 
 # write a marker with source directory path into the output's bin directory
 # if run from the build directory QGIS will detect it and alter the paths
-FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
+file(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
 
 # manual page - makes sense only on unix systems
-IF (UNIX AND NOT APPLE)
-  SET (DEFAULT_MANUAL_SUBDIR  man)
-  SET (QGIS_MANUAL_SUBDIR  ${DEFAULT_MANUAL_SUBDIR}  CACHE STRING "Subdirectory where manual files will be installed")
-  MARK_AS_ADVANCED (QGIS_MANUAL_SUBDIR)
-  SET (QGIS_MANUAL_DIR  ${CMAKE_INSTALL_PREFIX}/${QGIS_MANUAL_SUBDIR})
-ENDIF (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
+  set (DEFAULT_MANUAL_SUBDIR  man)
+  set (QGIS_MANUAL_SUBDIR  ${DEFAULT_MANUAL_SUBDIR}  CACHE STRING "Subdirectory where manual files will be installed")
+  mark_as_advanced (QGIS_MANUAL_SUBDIR)
+  set (QGIS_MANUAL_DIR  ${CMAKE_INSTALL_PREFIX}/${QGIS_MANUAL_SUBDIR})
+endif()
 
-SET (DISABLE_DEPRECATED FALSE CACHE BOOL "If set to true, it will disable deprecated functionality to prepare for the next generation of QGIS")
-IF (DISABLE_DEPRECATED)
-  ADD_DEFINITIONS(-DQGIS_DISABLE_DEPRECATED)
-ENDIF (DISABLE_DEPRECATED)
+set (DISABLE_DEPRECATED FALSE CACHE BOOL "If set to true, it will disable deprecated functionality to prepare for the next generation of QGIS")
+if (DISABLE_DEPRECATED)
+  add_definitions(-DQGIS_DISABLE_DEPRECATED)
+endif()
 
 
 #############################################################
 # Python build dependency
 
-FIND_PACKAGE(PythonLibrary REQUIRED)
+find_package(PythonLibrary REQUIRED)
 
 #############################################################
 # Python bindings
 
-IF (WITH_CORE AND WITH_BINDINGS)
+if (WITH_CORE AND WITH_BINDINGS)
 
-  FIND_PACKAGE(PythonLibrary REQUIRED)
+  find_package(PythonLibrary REQUIRED)
 
   # python support: check for interpreter, sip, pyqt5
-  FIND_PACKAGE(PyQt5 REQUIRED)
-  SET(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
-  SET(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
-  SEPARATE_ARGUMENTS(PYQT_SIP_FLAGS) # convert space separated values to a list
+  find_package(PyQt5 REQUIRED)
+  set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
+  set(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
+  separate_arguments(PYQT_SIP_FLAGS) # convert space separated values to a list
 
-  FIND_PACKAGE(SIP REQUIRED)
-  FIND_PACKAGE(Qsci REQUIRED)
-  INCLUDE(PythonMacros)
-  INCLUDE(PyQtMacros)
-  INCLUDE(SIPMacros)
+  find_package(SIP REQUIRED)
+  find_package(Qsci REQUIRED)
+  include(PythonMacros)
+  include(PyQtMacros)
+  include(SIPMacros)
 
-  SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  SET(SIP_CONCAT_PARTS 6)
+  set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
+  set(SIP_CONCAT_PARTS 11)
 
-  IF (NOT BINDINGS_GLOBAL_INSTALL)
-    SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
-  ENDIF (NOT BINDINGS_GLOBAL_INSTALL)
+  if (NOT BINDINGS_GLOBAL_INSTALL)
+    set(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
+  endif()
 
-  IF (WITH_CUSTOM_WIDGETS)
-    SET(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
-  ENDIF (WITH_CUSTOM_WIDGETS)
+  if (WITH_CUSTOM_WIDGETS)
+    set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
+  endif()
 
-ENDIF (WITH_CORE AND WITH_BINDINGS)
+endif()
 
 #############################################################
 # create qgsconfig.h
 # installed with app target
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
+configure_file(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
+include_directories(${CMAKE_BINARY_DIR})
 
 #############################################################
 # create qgsversion.h
-INCLUDE(CreateQgsVersion)
+include(CreateQgsVersion)
 CREATE_QGSVERSION()
 
 ####################################################
 # Added by Jef to prevent python core and gui libs linking to other qgisCore and qgisGui libs
 # that may be in the same install prefix
-IF (WITH_CORE)
-  LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
-ENDIF (WITH_CORE)
+if (WITH_CORE)
+  link_directories(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
+endif()
 
 ####################################################
 # clang-tidy
-SET (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
-MARK_AS_ADVANCED(WITH_CLANG_TIDY)
-IF (WITH_CORE)
-  IF(WITH_CLANG_TIDY)
-    FIND_PROGRAM(
+set (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
+mark_as_advanced(WITH_CLANG_TIDY)
+if (WITH_CORE)
+  if(WITH_CLANG_TIDY)
+    find_program(
       CLANG_TIDY_EXE
       NAMES "clang-tidy"
       DOC "Path to clang-tidy executable"
       )
-    IF(NOT CLANG_TIDY_EXE)
-      MESSAGE(STATUS "clang-tidy not found.")
-    ELSE(NOT CLANG_TIDY_EXE)
-      MESSAGE(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-      SET(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
-    ENDIF(NOT CLANG_TIDY_EXE)
-  ENDIF(WITH_CLANG_TIDY)
-ENDIF (WITH_CORE)
+    if(NOT CLANG_TIDY_EXE)
+      message(STATUS "clang-tidy not found.")
+    else()
+      message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+      set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
+    endif()
+  endif()
+endif()
 
 #############################################################
 # process subdirs
@@ -941,107 +971,107 @@ ENDIF (WITH_CORE)
 #so that unit tests can use TEST_DATA_DIR to locate
 #the test data. See CMakeLists in test dirs for more info
 #TEST_DATA_DIR is also used by QgsRenderChecker currently in core
-SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
+set (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
 
-ADD_SUBDIRECTORY(doc)
+add_subdirectory(doc)
 
-IF (WITH_CORE)
-  ADD_SUBDIRECTORY(src)
-  ADD_SUBDIRECTORY(images)
-  ADD_SUBDIRECTORY(resources)
-  ADD_SUBDIRECTORY(i18n)
+if (WITH_CORE)
+  add_subdirectory(src)
+  add_subdirectory(images)
+  add_subdirectory(resources)
+  add_subdirectory(i18n)
 
-  IF (WITH_BINDINGS)
-    ADD_SUBDIRECTORY(python)
-  ENDIF (WITH_BINDINGS)
+  if (WITH_BINDINGS)
+    add_subdirectory(python)
+  endif()
 
-  IF (APPLE)
+  if (APPLE)
     # must be last for install, so install_name_tool can do its work
-    ADD_SUBDIRECTORY(mac)
+    add_subdirectory(mac)
 
     # allow QGIS to be run directly from build directory and to run unit tests
-    EXECUTE_PROCESS(COMMAND /bin/mkdir -p "${QGIS_OUTPUT_DIRECTORY}/lib")
-    EXECUTE_PROCESS(
+    execute_process(COMMAND /bin/mkdir -p "${QGIS_OUTPUT_DIRECTORY}/lib")
+    execute_process(
       COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass6.framework lib/
       WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
     )
-    EXECUTE_PROCESS(
+    execute_process(
       COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass7.framework lib/
       WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
     )
-  ENDIF (APPLE)
+  endif()
 
   # manual page - makes sense only on unix systems
-  IF (UNIX AND NOT APPLE)
-    INSTALL (FILES qgis.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
-  ENDIF (UNIX AND NOT APPLE)
+  if (UNIX AND NOT APPLE)
+    install (FILES qgis.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
+  endif()
 
-  INSTALL(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
-ENDIF (WITH_CORE)
+  install(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
+endif()
 
-IF (WITH_ASTYLE)
-  ADD_SUBDIRECTORY(external/astyle)
-ENDIF(WITH_ASTYLE)
+if (WITH_ASTYLE)
+  add_subdirectory(external/astyle)
+endif()
 
-IF (ENABLE_TESTS)
-  ADD_SUBDIRECTORY(tests)
-  SET (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
-  MESSAGE (STATUS "Ctest Binary Directory set to: ${CTEST_BINARY_DIRECTORY}")
-ENDIF (ENABLE_TESTS)
+if (ENABLE_TESTS)
+  add_subdirectory(tests)
+  set (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
+  message (STATUS "Ctest Binary Directory set to: ${CTEST_BINARY_DIRECTORY}")
+endif()
 
 #############################################################
 # Post-install commands
-IF (WITH_CORE)
-  ADD_SUBDIRECTORY(postinstall)
-ENDIF (WITH_CORE)
+if (WITH_CORE)
+  add_subdirectory(postinstall)
+endif()
 
 #############################################################
 # Uninstall stuff see: http://www.vtk.org/Wiki/CMake_FAQ
-IF (WITH_CORE)
-  CONFIGURE_FILE(
+if (WITH_CORE)
+  configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_templates/cmake_uninstall.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
     IMMEDIATE @ONLY)
 
-  ADD_CUSTOM_TARGET(uninstall
+  add_custom_target(uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
-ENDIF (WITH_CORE)
+endif()
 
 #############################################################
 # Enable packaging
-IF (WITH_CORE)
+if (WITH_CORE)
   # Do not warn about runtime libs when building using VS Express
-  IF(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
-    SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
-  ENDIF()
-  INCLUDE(InstallRequiredSystemLibraries)
+  if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
+    set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
+  endif()
+  include(InstallRequiredSystemLibraries)
 
-  SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "QGIS")
-  SET(CPACK_PACKAGE_VENDOR "Open Source Geospatial Foundation")
-  SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-  SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
-  SET(CPACK_PACKAGE_INSTALL_DIRECTORY "QGIS ${COMPLETE_VERSION}")
-  IF(WIN32 AND NOT UNIX)
+  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "QGIS")
+  set(CPACK_PACKAGE_VENDOR "Open Source Geospatial Foundation")
+  set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
+  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+  set(CPACK_PACKAGE_INSTALL_DIRECTORY "QGIS ${COMPLETE_VERSION}")
+  if(WIN32 AND NOT UNIX)
     # There is a bug in NSI that does not handle full unix paths properly. Make
     # sure there is at least one set of four (4) backslashes.
-    SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/win_build\\\\sidebar.bmp")
-    SET(CPACK_NSIS_INSTALLED_ICON_NAME "\\\\qgis.exe")
-    SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
-    SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
-    SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
-    SET(CPACK_NSIS_CONTACT "info@qgis.org")
-    SET(CPACK_NSIS_MODIFY_PATH ON)
+    set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/win_build\\\\sidebar.bmp")
+    set(CPACK_NSIS_INSTALLED_ICON_NAME "\\\\qgis.exe")
+    set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
+    set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
+    set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
+    set(CPACK_NSIS_CONTACT "info@qgis.org")
+    set(CPACK_NSIS_MODIFY_PATH ON)
 
-  #  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "  !include \\\"${CMAKE_SOURCE_DIR}\\\\win_build\\\\extra.nsh\\\"")
-  ELSE(WIN32 AND NOT UNIX)
-    #SET(CPACK_STRIP_FILES "QGIS")
-    #SET(CPACK_SOURCE_STRIP_FILES "")
-  ENDIF(WIN32 AND NOT UNIX)
-  SET(CPACK_PACKAGE_EXECUTABLES "qgis" "QGIS")
-  SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
-  INCLUDE(CPack)
-ENDIF (WITH_CORE)
+  #  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "  !include \\\"${CMAKE_SOURCE_DIR}\\\\win_build\\\\extra.nsh\\\"")
+  else()
+    #set(CPACK_STRIP_FILES "QGIS")
+    #set(CPACK_SOURCE_STRIP_FILES "")
+  endif()
+  set(CPACK_PACKAGE_EXECUTABLES "qgis" "QGIS")
+  set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
+  include(CPack)
+endif()
 
-IF (UNIX AND NOT APPLE)
-  ADD_SUBDIRECTORY(linux)
-ENDIF (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
+  add_subdirectory(linux)
+endif()

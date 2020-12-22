@@ -88,7 +88,7 @@ void QgsRasterShader::setMinimumValue( double value )
   }
 }
 
-void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent ) const
+void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent, const QgsReadWriteContext &context ) const
 {
   if ( parent.isNull() || !mRasterShaderFunction )
   {
@@ -99,19 +99,20 @@ void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent ) const
   QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( mRasterShaderFunction.get() );
   if ( colorRampShader )
   {
-    rasterShaderElem.appendChild( colorRampShader->writeXml( doc ) );
+    rasterShaderElem.appendChild( colorRampShader->writeXml( doc, context ) );
   }
   parent.appendChild( rasterShaderElem );
 }
 
-void QgsRasterShader::readXml( const QDomElement &elem )
+void QgsRasterShader::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   //only colorrampshader
   QDomElement colorRampShaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   if ( !colorRampShaderElem.isNull() )
   {
     QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-    colorRampShader->readXml( colorRampShaderElem );
+    colorRampShader->readXml( colorRampShaderElem, context );
     setRasterShaderFunction( colorRampShader );
   }
 }
+

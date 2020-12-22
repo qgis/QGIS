@@ -50,6 +50,13 @@ class QgsInternalGeometryEngine
     explicit QgsInternalGeometryEngine( const QgsGeometry &geometry );
 
     /**
+     * Returns an error string referring to the last error encountered.
+     *
+     * \since QGIS 3.16
+     */
+    QString lastError() const;
+
+    /**
      * Will extrude a line or (segmentized) curve by a given offset and return a polygon
      * representation of it.
      *
@@ -150,7 +157,9 @@ class QgsInternalGeometryEngine
     QgsGeometry variableWidthBufferByM( int segments ) const;
 
     /**
-     * Returns a list of \a count random points generated inside a \a polygon geometry.
+     * Returns a list of \a count random points generated inside a \a polygon geometry
+     * (if \a acceptPoint is specified, and restrictive, the number of points returned may
+     * be less than \a count).
      *
      * Optionally, a specific random \a seed can be used when generating points. If \a seed
      * is 0, then a completely random sequence of points will be generated.
@@ -161,10 +170,14 @@ class QgsInternalGeometryEngine
      * The optional \a feedback argument can be used to provide cancellation support during
      * the point generation.
      *
+     * When \a acceptPoint is specified, \a maxTriesPerPoint
+     * defines how many attempts to perform before giving up generating
+     * a point.
+     *
      * \since QGIS 3.10
      */
     static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
-        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 );
 
     /**
      * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
@@ -183,8 +196,22 @@ class QgsInternalGeometryEngine
      */
     QgsGeometry convertToCurves( double distanceTolerance, double angleTolerance ) const;
 
+    /**
+     * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
+     * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
+     * width and height of the rotated bounding box will also be returned.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling lastError().
+     *
+     * \since QGIS 3.16
+     */
+    QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
+
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
+
+    mutable QString mLastError;
 };
 
 /**

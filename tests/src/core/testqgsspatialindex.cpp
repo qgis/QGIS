@@ -24,6 +24,7 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include "qgslinestring.h"
+#include "qgslogger.h"
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
@@ -188,7 +189,7 @@ class TestQgsSpatialIndex : public QObject
         vl->dataProvider()->addFeatures( flist );
       }
 
-      QTime t;
+      QElapsedTimer t;
       QgsSpatialIndex *indexBulk = nullptr;
       QgsSpatialIndex *indexInsert = nullptr;
 
@@ -199,14 +200,14 @@ class TestQgsSpatialIndex : public QObject
         while ( fi.nextFeature( f ) )
           ;
       }
-      qDebug( "iter only: %d ms", t.elapsed() );
+      QgsDebugMsg( QStringLiteral( "iter only: %1 ms" ).arg( t.elapsed() ) );
 
       t.start();
       {
         QgsFeatureIterator fi = vl->getFeatures();
         indexBulk = new QgsSpatialIndex( fi );
       }
-      qDebug( "bulk load: %d ms", t.elapsed() );
+      QgsDebugMsg( QStringLiteral( "bulk load: %1 ms" ).arg( t.elapsed() ) );
 
       t.start();
       {
@@ -216,7 +217,7 @@ class TestQgsSpatialIndex : public QObject
         while ( fi.nextFeature( f ) )
           indexInsert->addFeature( f );
       }
-      qDebug( "insert:    %d ms", t.elapsed() );
+      QgsDebugMsg( QStringLiteral( "insert:    %1 ms" ).arg( t.elapsed() ) );
 
       // test whether a query will give us the same results
       QgsRectangle rect( 4.9, 4.9, 5.1, 5.1 );

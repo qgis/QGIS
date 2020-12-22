@@ -64,7 +64,7 @@ typedef struct _nmeaGPGGA
 typedef struct _nmeaGPGST
 {
   nmeaTIME utc;       //!< UTC of position fix
-  double  rms_pr;     //!< RMS value of the pseudorange residuals;
+  double  rms_pr;     //!< RMS value of the pseudorange residuals; Includes carrier phase residuals during periods of RTK (float) and RTK (fixed) processing
   double  err_major;  //!< Error ellipse semi-major axis 1 sigma error, in meters
   double  err_minor;  //!< Error ellipse semi-minor axis 1 sigma error, in meters
   double  err_ori;    //!< Error ellipse orientation, degrees from true north

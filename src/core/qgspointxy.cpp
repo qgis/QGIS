@@ -70,7 +70,7 @@ QString QgsPointXY::asWkt() const
 {
   QString wkt = QStringLiteral( "POINT" );
   if ( isEmpty() )
-    wkt += QStringLiteral( " EMPTY" );
+    wkt += QLatin1String( " EMPTY" );
   else
     wkt += QStringLiteral( "(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
 

@@ -26,6 +26,7 @@ class QgsDiagramLayerSettings;
 
 class QgsFeatureIterator;
 class QgsSingleSymbolRenderer;
+class QgsMapClippingRegion;
 
 #define SIP_NO_FILE
 
@@ -77,6 +78,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context );
     ~QgsVectorLayerRenderer() override;
     QgsFeedback *feedback() const override;
+    bool forceRasterRender() const override;
 
     /**
      * Returns the feature renderer.
@@ -91,8 +93,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     /**
      * Registers label and diagram layer
-      \param layer diagram layer
-      \param attributeNames attributes needed for labeling and diagrams will be added to the list
+     * \param layer diagram layer
+     * \param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
     void prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames );
     void prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames );
@@ -158,6 +160,16 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsVectorSimplifyMethod mSimplifyMethod;
     bool mSimplifyGeometry;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
+    QgsGeometry mClipFilterGeom;
+    bool mApplyClipFilter = false;
+    QgsGeometry mClipFeatureGeom;
+    bool mApplyClipGeometries = false;
+    QgsGeometry mLabelClipFeatureGeom;
+    bool mApplyLabelClipGeometries = false;
+    bool mForceRasterRender = false;
+
 };
 
 

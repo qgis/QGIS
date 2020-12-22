@@ -65,7 +65,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void setShowNoProjection( bool show );
 
     /**
-     * Sets whether to show the bounnds preview map.
+     * Sets whether to show the bounds preview map.
      * \see showBoundsMap()
      * \since QGIS 3.0
      */
@@ -78,6 +78,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \since QGIS 3.0
      */
     bool showNoProjection() const;
+
+    /**
+     * Sets the text to show for the not set option. Note that this option is not shown
+     * by default and must be set visible by calling setShowNoProjection().
+     * \since QGIS 3.16
+     */
+    void setNotSetText( const QString &text );
 
     /**
      * Returns whether the bounds preview map is shown.

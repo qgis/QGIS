@@ -56,10 +56,11 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
+    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
+
     /**
      * Different ways a source select dialog can be used
      */
-    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
     enum WidgetMode
     {
 
@@ -87,7 +88,7 @@ class CORE_EXPORT QgsProviderRegistry
     //! Means of accessing canonical single instance
     static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
 
-    virtual ~QgsProviderRegistry();
+    ~QgsProviderRegistry();
 
     /**
      * Returns path for the library of the provider.
@@ -115,19 +116,21 @@ class CORE_EXPORT QgsProviderRegistry
      * \param providerKey identifier of the provider
      * \param dataSource  string containing data source for the provider
      * \param options provider options
+     * \param flags provider flags since QGIS 3.16
      * \returns new instance of provider or NULLPTR on error
      *
      * \see createRasterDataProvider()
      */
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ) SIP_FACTORY;
+                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
 
     /**
      * Returns the provider capabilities
-        \param providerKey identifier of the provider
-        \since QGIS 2.6
-        \deprecated QGIS 3.10 (use instead capabilities() method of individual data item provider)
+     * \param providerKey identifier of the provider
+     * \since QGIS 2.6
+     * \deprecated QGIS 3.10 (use instead capabilities() method of individual data item provider)
      */
     Q_DECL_DEPRECATED int providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
 
@@ -144,7 +147,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see createProvider()
      * \since QGIS 3.10
      */
-    virtual QgsRasterDataProvider *createRasterDataProvider(
+    QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,
       const QString &format,
@@ -280,69 +283,175 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
-     * Returns vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      fileVectorFilters to a string, which is then returned.
-
-      \note
-
-      It'd be nice to eventually be raster/vector neutral.
+     * \ingroup core
+     *
+     * Contains information pertaining to a candidate provider.
+     *
+     * \since QGIS 3.18
      */
-    virtual QString fileVectorFilters() const;
+    class CORE_EXPORT ProviderCandidateDetails
+    {
+
+      public:
+
+        /**
+         * Constructor for ProviderCandidateDetails, with the specified provider \a metadata and valid candidate \a layerTypes.
+         */
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes )
+          : mMetadata( metadata )
+          , mLayerTypes( layerTypes )
+        {}
+
+        /**
+         * Returns the candidate provider metadata.
+         */
+        QgsProviderMetadata *metadata() const { return mMetadata; }
+
+        /**
+         * Returns a list of map layer types which are valid options for opening the
+         * target using this candidate provider.
+         */
+        QList<QgsMapLayerType> layerTypes() const { return mLayerTypes; }
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+      private:
+        QgsProviderMetadata *mMetadata = nullptr;
+
+        QList< QgsMapLayerType > mLayerTypes;
+
+    };
 
     /**
-     * Returns raster file filter string
-
-      Returns a string suitable for a QFileDialog of raster file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      buildSupportedRasterFileFilter to a string, which is then returned.
-
-      \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+     * Returns the details for the preferred provider(s) for opening the specified \a uri.
+     *
+     * The preferred provider is determined by comparing the priority returned by
+     * QgsProviderMetadata::priorityForUri() for all registered providers, and selecting
+     * the provider with the largest non-zero priority.
+     *
+     * An empty list may be returned, which indicates that no providers are available which
+     * returned a non-zero priority for the specified URI.
+     *
+     * In the case that multiple providers returned the same priority for the URI then
+     * all of these providers will be returned.
+     *
+     * \see shouldDeferUriForOtherProviders()
+     * \since QGIS 3.18
      */
-    virtual QString fileRasterFilters() const;
+    QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
 
     /**
-     * Returns mesh file filter string
-
-      Returns a string suitable for a QFileDialog of mesh file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      fileMeshFilters to a string, which is then returned.
-
-      \see fileMeshDatasetFilters()
-
-      \since QGIS 3.6
+     * Returns TRUE if the provider with matching \a providerKey should defer handling of
+     * the specified \a uri to another provider.
+     *
+     * This method tests whether any providers are listed as the preferred provider for \a uri
+     * (see preferredProvidersForUri()), and if so tests whether the specified provider is
+     * included in that preferred providers list. Returns TRUE only if the specified provider
+     * is calculated as one of the preferred providers for the URI.
+     *
+     * In the case that there is no registered preferred provider for the URI then FALSE will be
+     * returned, and the provider must use another metric to determine whether it should
+     * handle the URI.
+     *
+     * \see preferredProvidersForUri()
+     * \since QGIS 3.18
      */
-    virtual QString fileMeshFilters() const;
+    bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
 
     /**
-     * Returns mesh's dataset file filter string
-
-      Returns a string suitable for a QFileDialog of mesh datasets file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      fileMeshFilters to a string, which is then returned.
-
-      \see fileMeshFilters()
-
-      \since QGIS 3.6
+     * Returns TRUE if the specified \a uri is known by any registered provider to be something which should
+     * be blocklisted from the QGIS interface, e.g. an internal detail only.
+     *
+     * Specifically, this method can be utilized by the browser panel to hide noisy internal details
+     * for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
+     * or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
+     *
+     * This method tests whether any of the registered providers return TRUE for the their
+     * QgsProviderMetadata::uriIsBlocklisted() implementation for the specified URI.
+     *
+     * \since QGIS 3.18
      */
-    virtual QString fileMeshDatasetFilters() const;
+    bool uriIsBlocklisted( const QString &uri ) const;
+
+    /**
+     * Returns a file filter string for supported vector files.
+     *
+     * Returns a string suitable for a QFileDialog of vector file formats
+     * supported by all data providers.
+     *
+     * \see fileRasterFilters()
+     * \see fileMeshFilters()
+     * \see filePointCloudFilters()
+     */
+    QString fileVectorFilters() const;
+
+    /**
+     * Returns a file filter string for supported raster files.
+     *
+     * Returns a string suitable for a QFileDialog of raster file formats
+     * supported by all data providers.
+     *
+     * \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+     *
+     * \see fileVectorFilters()
+     * \see fileMeshFilters()
+     * \see filePointCloudFilters()
+     */
+    QString fileRasterFilters() const;
+
+    /**
+     * Returns a file filter string for supported mesh files.
+     *
+     * Returns a string suitable for a QFileDialog of mesh file formats
+     * supported by all data providers.
+     *
+     * \see fileMeshDatasetFilters()
+     * \see fileRasterFilters()
+     * \see fileVectorFilters()
+     * \see filePointCloudFilters()
+     *
+     * \since QGIS 3.6
+     */
+    QString fileMeshFilters() const;
+
+    /**
+     * Returns a file filter string for supported mesh dataset files.
+     *
+     * Returns a string suitable for a QFileDialog of mesh datasets file formats
+     * supported by all data providers.
+     *
+     * \see fileMeshFilters()
+     *
+     * \since QGIS 3.6
+     */
+    QString fileMeshDatasetFilters() const;
+
+    /**
+     * Returns a file filter string for supported point clouds.
+     *
+     * Returns a string suitable for a QFileDialog of point cloud file formats
+     * supported by all data providers.
+     *
+     * \see fileMeshFilters()
+     * \see fileRasterFilters()
+     * \see fileVectorFilters()
+     *
+     * \since QGIS 3.18
+     */
+    QString filePointCloudFilters() const;
 
     //! Returns a string containing the available database drivers
-    virtual QString databaseDrivers() const;
+    QString databaseDrivers() const;
     //! Returns a string containing the available directory drivers
-    virtual QString directoryDrivers() const;
+    QString directoryDrivers() const;
     //! Returns a string containing the available protocol drivers
-    virtual QString protocolDrivers() const;
+    QString protocolDrivers() const;
 
     /**
      * \deprecated since QGIS 3.10 - does nothing - use QgsGui::providerGuiRegistry()
@@ -402,6 +511,11 @@ class CORE_EXPORT QgsProviderRegistry
      * File filter string for raster files
      */
     QString mMeshDatasetFileFilters;
+
+    /**
+     * File filter string for point cloud files
+     */
+    QString mPointCloudFileFilters;
 
     /**
      * Available database drivers string for vector databases

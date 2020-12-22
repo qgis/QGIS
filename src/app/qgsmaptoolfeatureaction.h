@@ -27,7 +27,7 @@ class QgsVectorLayer;
 class QgsFeature;
 
 /**
-  \brief Map tool for running feature actions on the current layer
+ * \brief Map tool for running feature actions on the current layer
 */
 class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
 {

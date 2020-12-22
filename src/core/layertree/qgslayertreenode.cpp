@@ -48,6 +48,23 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
   qDeleteAll( mChildren );
 }
 
+QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
+{
+  const QList<QgsLayerTreeNode *> orphans { mChildren };
+  mChildren.clear();
+  for ( auto orphan : qgis::as_const( orphans ) )
+  {
+    orphan->makeOrphan( );
+  }
+  return orphans;
+}
+
+void QgsLayerTreeNode::makeOrphan()
+{
+  disconnect();
+  mParent = nullptr;
+}
+
 QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsLayerTreeNode *node = nullptr;
@@ -231,12 +248,15 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode 
   if ( index < 0 || index >= mChildren.count() )
     index = mChildren.count();
 
-  int indexTo = index + nodes.count() - 1;
-  emit willAddChildren( this, index, indexTo );
   for ( int i = 0; i < nodes.count(); ++i )
   {
     QgsLayerTreeNode *node = nodes.at( i );
+
+    const QList<QgsLayerTreeNode *> orphans { node->abandonChildren() };
+
+    emit willAddChildren( this, index + i, index + i );
     mChildren.insert( index + i, node );
+    emit addedChildren( this, index + i, index + i );
 
     // forward the signal towards the root
     connect( node, &QgsLayerTreeNode::willAddChildren, this, &QgsLayerTreeNode::willAddChildren );
@@ -247,8 +267,14 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode 
     connect( node, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeNode::visibilityChanged );
     connect( node, &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeNode::expandedChanged );
     connect( node, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeNode::nameChanged );
+
+    // Now add children
+    if ( ! orphans.isEmpty() )
+    {
+      node->insertChildrenPrivate( -1, orphans );
+    }
+
   }
-  emit addedChildren( this, index, indexTo );
 }
 
 void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy )
@@ -256,18 +282,35 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy 
   if ( from < 0 || count <= 0 )
     return;
 
-  int to = from + count - 1;
+  const int to = from + count - 1;
   if ( to >= mChildren.count() )
     return;
-  emit willRemoveChildren( this, from, to );
+
+  // Remove in reverse order
   while ( --count >= 0 )
   {
-    QgsLayerTreeNode *node = mChildren.takeAt( from );
-    node->mParent = nullptr;
+    const int last { from + count };
+    Q_ASSERT( last >= 0 && last < mChildren.count( ) );
+    QgsLayerTreeNode *node = mChildren.at( last );
+
+    // Remove children first
+    if ( ! node->children().isEmpty() )
+    {
+      node->removeChildrenPrivate( 0, node->children().count( ), destroy );
+    }
+
+    emit willRemoveChildren( this, last, last );
+    node = mChildren.takeAt( last );
     if ( destroy )
+    {
       delete node;
+    }
+    else
+    {
+      node->makeOrphan();
+    }
+    emit removedChildren( this, last, last );
   }
-  emit removedChildren( this, from, to );
 }
 
 bool QgsLayerTreeNode::takeChild( QgsLayerTreeNode *node )

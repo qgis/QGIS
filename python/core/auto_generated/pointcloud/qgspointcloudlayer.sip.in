@@ -1,0 +1,146 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayer.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsPointCloudLayer : QgsMapLayer
+{
+%Docstring
+
+Represents a map layer supporting display of point clouds
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayer.h"
+%End
+  public:
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+%Docstring
+Constructor for LayerOptions with optional ``transformContext``.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+      bool loadDefaultStyle;
+
+      bool skipCrsValidation;
+
+      bool skipIndexGeneration;
+    };
+
+
+    explicit QgsPointCloudLayer( const QString &path = QString(),
+                                 const QString &baseName = QString(),
+                                 const QString &providerLib = QStringLiteral( "pointcloud" ),
+                                 const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
+%Docstring
+Constructor - creates a point cloud layer
+%End
+
+    ~QgsPointCloudLayer();
+
+
+    SIP_PYOBJECT __repr__();
+%Docstring
+QgsPointCloudLayer cannot be copied.
+%End
+%MethodCode
+    QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QgsPointCloudLayer *clone() const /Factory/;
+
+    virtual QgsRectangle extent() const;
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+
+    virtual QgsPointCloudDataProvider *dataProvider();
+
+
+    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
+
+
+    virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) ${SIP_FINAL};
+
+
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const ${SIP_FINAL};
+
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
+    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
+
+    virtual QString htmlMetadata() const;
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
+
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns the attributes available from the layer.
+%End
+
+    int pointCount() const;
+%Docstring
+Returns the total number of points available in the layer.
+%End
+
+    QgsPointCloudRenderer *renderer();
+%Docstring
+Returns the 2D renderer for the point cloud.
+
+.. seealso:: :py:func:`setRenderer`
+%End
+
+
+    void setRenderer( QgsPointCloudRenderer *renderer /Transfer/ );
+%Docstring
+Sets the 2D ``renderer`` for the point cloud.
+
+Ownership of ``renderer`` is transferred to the layer.
+
+.. seealso:: :py:func:`renderer`
+%End
+
+  private:
+    QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayer.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

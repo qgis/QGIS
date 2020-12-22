@@ -44,6 +44,16 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      */
     double defaultZValue() const;
 
+  private slots:
+    //! Vector layers' editingStopped SIGNAL will eventually trigger a clean
+    void connectLayers( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Makes sure rubber bands are removed if there
+     * is no editable layer left in the project
+     */
+    void cleanCanvas();
+
   protected:
 
     //! Returns stroke color for rubber bands (from global settings)
@@ -93,6 +103,10 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     void notifyNotVectorLayer();
     //! Display a timed message bar noting the active vector layer is not editable.
     void notifyNotEditableLayer();
+
+  private:
+    //! Returns a list of layers filtered to just editable spatial vector layers
+    QList<QgsVectorLayer *> editableVectorLayers();
 };
 
 #endif

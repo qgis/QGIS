@@ -2,17 +2,17 @@
 ########################################################
 # Files
 
-SET (dummy_SRCS
+set (dummy_SRCS
   dummy.cpp
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (dummy MODULE ${dummy_SRCS})
+add_library (dummy MODULE ${dummy_SRCS})
 
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
@@ -32,7 +32,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-TARGET_LINK_LIBRARIES(dummy
+target_link_libraries(dummy
   qgis_core
   qgis_server
 )
@@ -41,7 +41,7 @@ TARGET_LINK_LIBRARIES(dummy
 ########################################################
 # Install
 
-INSTALL(TARGETS dummy
+install(TARGETS dummy
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )

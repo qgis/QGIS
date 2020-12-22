@@ -1,6 +1,7 @@
 {
   "name": "map_delete",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Returns a map with the given key and its corresponding value deleted.",
   "arguments": [ {"arg":"map","description":"a map"},
                  {"arg":"key","description":"the key to delete"}],

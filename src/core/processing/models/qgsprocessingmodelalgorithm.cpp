@@ -264,11 +264,20 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 {
   QSet< QString > toExecute;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  QSet< QString > broken;
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
-    if ( childIt->isActive() && childIt->algorithm() )
-      toExecute.insert( childIt->childId() );
+    if ( childIt->isActive() )
+    {
+      if ( childIt->algorithm() )
+        toExecute.insert( childIt->childId() );
+      else
+        broken.insert( childIt->childId() );
+    }
   }
+
+  if ( !broken.empty() )
+    throw QgsProcessingException( QCoreApplication::translate( "QgsProcessingModelAlgorithm", "Cannot run model, the following algorithms are not available on this system: %1" ).arg( broken.values().join( QLatin1String( ", " ) ) ) );
 
   QElapsedTimer totalTime;
   totalTime.start();
@@ -338,7 +347,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( feedback && !skipGenericLogging )
       {
         feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
-        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
+        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QLatin1String( ", " ) ) ) );
       }
 
       QElapsedTimer childTime;
@@ -838,7 +847,23 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterExpression::typeName()
       << QgsProcessingParameterField::typeName()
       << QgsProcessingParameterString::typeName()
-      << QgsProcessingParameterAuthConfig::typeName(),
+      << QgsProcessingParameterAuthConfig::typeName()
+      << QgsProcessingParameterCrs::typeName()
+      << QgsProcessingParameterRange::typeName()
+      << QgsProcessingParameterPoint::typeName()
+      << QgsProcessingParameterGeometry::typeName()
+      << QgsProcessingParameterFile::typeName()
+      << QgsProcessingParameterFolderDestination::typeName()
+      << QgsProcessingParameterBand::typeName()
+      << QgsProcessingParameterLayout::typeName()
+      << QgsProcessingParameterLayoutItem::typeName()
+      << QgsProcessingParameterColor::typeName()
+      << QgsProcessingParameterCoordinateOperation::typeName()
+      << QgsProcessingParameterMapTheme::typeName()
+      << QgsProcessingParameterDateTime::typeName()
+      << QgsProcessingParameterProviderConnection::typeName()
+      << QgsProcessingParameterDatabaseSchema::typeName()
+      << QgsProcessingParameterDatabaseTable::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
       << QgsProcessingOutputString::typeName()
       << QgsProcessingOutputBoolean::typeName() );
@@ -1323,6 +1348,9 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   QVariantMap paramDefMap;
   for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
+    if ( def->name() == QStringLiteral( "VERBOSE_LOG" ) )
+      continue;
+
     paramDefMap.insert( def->name(), def->toVariantMap() );
   }
   map.insert( QStringLiteral( "parameterDefinitions" ), paramDefMap );
@@ -1395,7 +1423,12 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
     // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
     // with no way for users to repair them
     if ( param )
+    {
+      if ( param->name() == QLatin1String( "VERBOSE_LOG" ) )
+        return; // internal parameter -- some versions of QGIS incorrectly stored this in the model definition file
+
       addParameter( param.release() );
+    }
     else
     {
       QVariantMap map = value.toMap();
@@ -1918,4 +1951,3 @@ QVariantMap QgsProcessingModelAlgorithm::designerParameterValues() const
 }
 
 ///@endcond
-

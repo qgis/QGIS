@@ -23,6 +23,7 @@ __copyright__ = '(C) 2018, Nyall Dawson'
 
 import qgis  # NOQA
 
+import os
 from utilities import unitTestDataPath
 
 from qgis.PyQt.QtCore import QDir, Qt, QSize
@@ -35,6 +36,7 @@ from qgis.core import (QgsGeometry,
                        QgsFeature,
                        QgsMapSettings,
                        QgsRenderChecker,
+                       QgsVectorLayer,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsSimpleMarkerSymbolLayer,
@@ -50,7 +52,9 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayer,
                        QgsProperty,
                        QgsRectangle,
-                       QgsUnitTypes
+                       QgsUnitTypes,
+                       QgsMultiRenderChecker,
+                       QgsSingleSymbolRenderer
                        )
 
 from qgis.testing import unittest, start_app
@@ -339,6 +343,145 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 0 10)')
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('markerline_segmentcenter', 'markerline_segmentcenter', rendered_image)
+
+    def testMarkerAngleDD(self):
+        """Test issue https://github.com/qgis/QGIS/issues/38716"""
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setRotateSymbols(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Arrow, 10)
+        marker.setAngle(90)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 20 20)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image)
+
+        # Now with DD
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setRotateSymbols(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Arrow, 10)
+        # Note: set this to a different value than the reference test (90)
+        marker.setAngle(30)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        # This is the same value of the reference test
+        marker_symbol.setDataDefinedAngle(QgsProperty.fromExpression('90'))
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 20 20)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image)
+
+    def testOpacityWithDataDefinedColor(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        simple_marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 10)
+        simple_marker.setColor(QColor(0, 255, 0))
+        simple_marker.setStrokeColor(QColor(255, 0, 0))
+        simple_marker.setStrokeWidth(1)
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'magenta', 'blue')"))
+
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, simple_marker)
+        marker_symbol.setOpacity(0.5)
+        marker_line.setSubSymbol(marker_symbol)
+        s.appendSymbolLayer(marker_line.clone())
+
+        # set opacity on both the symbol and subsymbol, to test that they get combined
+        s.setOpacity(0.5)
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_markerline')
+        renderchecker.setControlName('expected_markerline_opacityddcolor')
+        res = renderchecker.runTest('expected_markerline_opacityddcolor')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+
+    def testDataDefinedOpacity(self):
+        line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
+        self.assertTrue(line_layer.isValid())
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        simple_marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 10)
+        simple_marker.setColor(QColor(0, 255, 0))
+        simple_marker.setStrokeColor(QColor(255, 0, 0))
+        simple_marker.setStrokeWidth(1)
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'red', 'green')"))
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Arterial', 'magenta', 'blue')"))
+
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, simple_marker)
+        marker_symbol.setOpacity(0.5)
+        marker_line.setSubSymbol(marker_symbol)
+        s.appendSymbolLayer(marker_line.clone())
+
+        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+
+        line_layer.setRenderer(QgsSingleSymbolRenderer(s))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-118.5, 19.0, -81.4, 50.4))
+        ms.setLayers([line_layer])
+
+        # Test rendering
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_markerline')
+        renderchecker.setControlName('expected_markerline_ddopacity')
+        res = renderchecker.runTest('expected_markerline_ddopacity')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()

@@ -91,7 +91,7 @@ search mode.
 
 .. note::
 
-   the search widget wrapper should be created using searchWidgetFrame()
+   the search widget wrapper should be created using :py:func:`~QgsAttributeFormWidget.searchWidgetFrame`
    as its parent
 
 .. note::
@@ -109,7 +109,7 @@ Used to register a secondary search widget as used for "between" searches.
     QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
 %Docstring
 Returns the search widget wrapper used in this widget. The wrapper must
-first be created using createSearchWidgetWrapper()
+first be created using :py:func:`~QgsAttributeFormWidget.createSearchWidgetWrapper`
 
 .. note::
 

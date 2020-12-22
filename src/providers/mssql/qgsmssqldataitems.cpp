@@ -466,7 +466,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to MSSQL database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
 
@@ -481,7 +481,7 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
 {
   mCapabilities |= Delete;
   mUri = createUri();
-  setState( Populated );
+  setState( NotPopulated );
 }
 
 
@@ -520,7 +520,7 @@ QString QgsMssqlLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   //not fertile, since children are created by QgsMssqlConnectionItem
@@ -592,14 +592,31 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   if ( refresh )
     addChildItem( layerItem, true );
   else
+  {
     addChild( layerItem );
+    layerItem->setParent( this );
+  }
 
   return layerItem;
 }
 
+void QgsMssqlSchemaItem::refresh()
+{
+  if ( auto *lParent = parent() )
+    lParent->refresh();
+}
+
+
+QVector<QgsDataItem *> QgsMssqlLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  return children;
+}
+
 // ---------------------------------------------------------------------------
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconMssql.svg" );
   populate();
@@ -621,7 +638,7 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
 #ifdef HAVE_GUI
 QWidget *QgsMssqlRootItem::paramWidget()
 {
-  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsMssqlSourceSelect::connectionsChanged, this, &QgsMssqlRootItem::onConnectionsChanged );
   return select;
 }
@@ -658,4 +675,3 @@ bool QgsMssqlSchemaItem::layerCollection() const
 {
   return true;
 }
-

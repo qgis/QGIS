@@ -31,6 +31,7 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
+  mSpinZMax->setClearValue( 14 );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
@@ -47,6 +48,13 @@ void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QS
   mSpinZMin->setValue( conn.zMin != -1 ? conn.zMin : 0 );
   mCheckBoxZMax->setChecked( conn.zMax != -1 );
   mSpinZMax->setValue( conn.zMax != -1 ? conn.zMax : 14 );
+
+  mAuthSettings->setUsername( conn.username );
+  mAuthSettings->setPassword( conn.password );
+  mEditReferer->setText( conn.referer );
+  mAuthSettings->setConfigId( conn.authCfg );
+
+  mEditStyleUrl->setText( conn.styleUrl );
 }
 
 QString QgsVectorTileConnectionDialog::connectionUri() const
@@ -57,6 +65,11 @@ QString QgsVectorTileConnectionDialog::connectionUri() const
     conn.zMin = mSpinZMin->value();
   if ( mCheckBoxZMax->isChecked() )
     conn.zMax = mSpinZMax->value();
+  conn.username = mAuthSettings->username();
+  conn.password = mAuthSettings->password();
+  conn.referer = mEditReferer->text();
+  conn.authCfg = mAuthSettings->configId( );
+  conn.styleUrl = mEditStyleUrl->text();
   return QgsVectorTileProviderConnection::encodedUri( conn );
 }
 

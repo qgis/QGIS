@@ -129,7 +129,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="p1">
       <layout class="QVBoxLayout" name="verticalLayoutP1">
@@ -327,6 +327,9 @@
              <normaloff>:/images/themes/default/temporal_navigation/pause.svg</normaloff>:/images/themes/default/temporal_navigation/pause.svg</iconset>
            </property>
            <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
             <bool>true</bool>
            </property>
           </widget>
@@ -555,8 +558,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

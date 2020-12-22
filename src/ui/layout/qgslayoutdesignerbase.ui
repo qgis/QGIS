@@ -242,10 +242,11 @@
       <string>&amp;Preview</string>
      </property>
      <addaction name="mActionPreviewModeOff"/>
-     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewModeMono"/>
+     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewProtanope"/>
      <addaction name="mActionPreviewDeuteranope"/>
+     <addaction name="mActionPreviewTritanope"/>
     </widget>
     <addaction name="mActionRefreshView"/>
     <addaction name="menuPreview"/>
@@ -1085,20 +1086,20 @@
     <string>Normal</string>
    </property>
   </action>
-  <action name="mActionPreviewModeGrayscale">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Simulate Photocopy (&amp;Grayscale)</string>
-   </property>
-  </action>
   <action name="mActionPreviewModeMono">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Fax (&amp;Mono)</string>
+    <string>Simulate Monochrome</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeGrayscale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Achromatopsia Color Blindness (&amp;Grayscale)</string>
    </property>
   </action>
   <action name="mActionPreviewProtanope">
@@ -1106,7 +1107,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (&amp;Protanope)</string>
+    <string>Simulate Protonopia Color Blindness (&amp;No Red)</string>
    </property>
   </action>
   <action name="mActionPreviewDeuteranope">
@@ -1114,11 +1115,19 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (&amp;Deuteranope)</string>
+    <string>Simulate Deuteranopia Color Blindness (&amp;No Green)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewTritanope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Tritanopia Color Blindness (&amp;No Blue)</string>
    </property>
   </action>
   <action name="mActionShowPage">
-   <property name="checkable">
+   <property name="checkable">q
     <bool>true</bool>
    </property>
    <property name="text">

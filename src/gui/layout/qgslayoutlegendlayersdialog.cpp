@@ -20,6 +20,7 @@
 #include "qgsmaplayerproxymodel.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   : QDialog( parent )
@@ -39,6 +40,7 @@ QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
 
   connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
   connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsLayoutLegendLayersDialog::filterVisible );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutLegendLayersDialog::showHelp );
 
   mFilterLineEdit->setFocus();
 }
@@ -74,4 +76,9 @@ void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
     mModel->setLayerAllowlist( mVisibleLayers );
   else
     mModel->setLayerAllowlist( QList< QgsMapLayer * >() );
+}
+
+void QgsLayoutLegendLayersDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_legend.html#legend-items" ) );
 }

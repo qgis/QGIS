@@ -39,11 +39,12 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
     /**
-     * Returns true if the symbols of a maplayer can be rotated. This means the layer
-      is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer*/
+     * Returns TRUE if the symbols of a maplayer can be rotated. This means the layer
+     * is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer.
+     */
     static bool layerIsRotatable( QgsMapLayer *ml );
 
   protected:

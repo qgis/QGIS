@@ -22,6 +22,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgscolorramplegendnode.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -53,9 +54,9 @@ void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
 {
   mClassificationMin = min;
-  if ( shader() )
+  if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMinimumValue( min );
@@ -66,9 +67,9 @@ void QgsSingleBandPseudoColorRenderer::setClassificationMin( double min )
 void QgsSingleBandPseudoColorRenderer::setClassificationMax( double max )
 {
   mClassificationMax = max;
-  if ( shader() )
+  if ( auto *lShader = shader() )
   {
-    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( shader()->rasterShaderFunction() );
+    QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( lShader->rasterShaderFunction() );
     if ( colorRampShader )
     {
       colorRampShader->setMaximumValue( max );
@@ -313,8 +314,9 @@ void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument &doc, QDomElement 
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
+QList< QPair< QString, QColor > > QgsSingleBandPseudoColorRenderer::legendSymbologyItems() const
 {
+  QList< QPair< QString, QColor > > symbolItems;
   if ( mShader )
   {
     QgsRasterShaderFunction *shaderFunction = mShader->rasterShaderFunction();
@@ -323,6 +325,7 @@ void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QStri
       shaderFunction->legendSymbologyItems( symbolItems );
     }
   }
+  return symbolItems;
 }
 
 QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
@@ -419,4 +422,57 @@ bool QgsSingleBandPseudoColorRenderer::accept( QgsStyleEntityVisitorInterface *v
   }
 
   return true;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  if ( !mShader )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
+  if ( !rampShader )
+    return QList<QgsLayerTreeModelLegendNode *>();
+
+  QList<QgsLayerTreeModelLegendNode *> res;
+
+  const QString name = displayBandName( mBand );
+  if ( !name.isEmpty() )
+  {
+    res << new QgsSimpleLegendNode( nodeLayer, name );
+  }
+
+  if ( !rampShader->sourceColorRamp() )
+  {
+    const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+    res.reserve( items.size() );
+    for ( const QPair< QString, QColor > &item : items )
+    {
+      res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+    }
+    return res;
+  }
+
+  switch ( rampShader->colorRampType() )
+  {
+    case QgsColorRampShader::Interpolated:
+      // for interpolated shaders we use a ramp legend node
+      res << new QgsColorRampLegendNode( nodeLayer, rampShader->sourceColorRamp()->clone(),
+                                         rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(),
+                                         rampShader->minimumValue(), rampShader->maximumValue() );
+      break;
+
+    case QgsColorRampShader::Discrete:
+    case QgsColorRampShader::Exact:
+    {
+      // for all others we use itemised lists
+      const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+      res.reserve( items.size() );
+      for ( const QPair< QString, QColor > &item : items )
+      {
+        res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      }
+      break;
+    }
+  }
+  return res;
 }

@@ -242,6 +242,32 @@ class TestQgsServerPlugins(QgsServerTestBase):
         self.assertEqual(body, b'Internal Server Error')
         serverIface.setFilters({})
 
+    def test_get_path(self):
+        """Test get url and path from plugins"""
+
+        try:
+            from qgis.server import QgsServerFilter
+        except ImportError:
+            print("QGIS Server plugins are not compiled. Skipping test")
+            return
+
+        class Filter1(QgsServerFilter):
+
+            def responseComplete(self):
+                handler = self.serverInterface().requestHandler()
+                self.url = handler.url()
+                self.path = handler.path()
+
+        serverIface = self.server.serverInterface()
+        filter1 = Filter1(serverIface)
+        filters = {100: [filter1]}
+        serverIface.setFilters(filters)
+        header, body = self._execute_request('http://myserver/mypath/?myparam=1')
+        self.assertEqual(filter1.url, 'http://myserver/mypath/?myparam=1')
+        self.assertEqual(filter1.path, '/mypath/')
+
+        serverIface.setFilters({})
+
 
 if __name__ == '__main__':
     unittest.main()

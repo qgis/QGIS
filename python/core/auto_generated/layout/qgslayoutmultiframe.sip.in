@@ -120,7 +120,7 @@ Returns the item's icon.
     virtual QSizeF fixedFrameSize( int frameIndex = -1 ) const;
 %Docstring
 Returns the fixed size for a frame, if desired. If the fixed frame size changes,
-the sizes of all frames can be recalculated by calling recalculateFrameRects().
+the sizes of all frames can be recalculated by calling :py:func:`~QgsLayoutMultiFrame.recalculateFrameRects`.
 
 :param frameIndex: frame number
 
@@ -137,7 +137,7 @@ the sizes of all frames can be recalculated by calling recalculateFrameRects().
 %Docstring
 Returns the minimum size for a frames, if desired. If the minimum
 size changes, the sizes of all frames can be recalculated by calling
-recalculateFrameRects().
+:py:func:`~QgsLayoutMultiFrame.recalculateFrameRects`.
 
 :param frameIndex: frame number
 
@@ -321,7 +321,7 @@ Cancels the current item command and discards it.
 Called after all pending items have been restored from XML. Multiframes can use
 this method to run steps which must take place after all items have been restored to the layout,
 such as connecting to signals emitted by other items, which may not have existed in the layout
-at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
+at the time :py:func:`~QgsLayoutMultiFrame.readXml` was called. E.g. a scalebar can use this to connect to its linked
 map item after restoration from XML.
 
 .. seealso:: :py:func:`readXml`
@@ -353,8 +353,8 @@ the current size of the multiframe's content.
     void recalculateFrameRects();
 %Docstring
 Forces a recalculation of all the associated frame's scene rectangles. This
-method is useful for multiframes which implement a minFrameSize() or
-fixedFrameSize() method.
+method is useful for multiframes which implement a :py:func:`~QgsLayoutMultiFrame.minFrameSize` or
+:py:func:`~QgsLayoutMultiFrame.fixedFrameSize` method.
 
 .. seealso:: :py:func:`minFrameSize`
 
@@ -406,9 +406,9 @@ Sets multiframe state from a DOM element.
 
 Note that item subclasses should not rely on all other items being present in the
 layout at the time this method is called. Instead, any connections and links to
-other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+other items must be made in the :py:func:`~QgsLayoutMultiFrame.finalizeRestoreFromXml` method. E.g. when restoring
 a scalebar, the connection to the linked map's signals should be implemented
-in finalizeRestoreFromXml(), not readPropertiesFromElement().
+in :py:func:`~QgsLayoutMultiFrame.finalizeRestoreFromXml`, not :py:func:`~QgsLayoutMultiFrame.readPropertiesFromElement`.
 
 .. seealso:: :py:func:`readXml`
 %End

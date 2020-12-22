@@ -63,6 +63,8 @@ class QgsWelcomePage : public QWidget
     void showContextMenuForProjects( QPoint point );
     void showContextMenuForTemplates( QPoint point );
     void showContextMenuForNews( QPoint point );
+
+  public slots:
     void updateNewsFeedVisibility();
 
   private:

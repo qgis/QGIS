@@ -71,11 +71,11 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     QgsMesh3dMaterial( QgsMeshLayer *layer,
                        const QgsDateTimeRange &timeRange,
                        const QgsVector3D &origin,
-                       const QgsMesh3DSymbol &symbol,
+                       const QgsMesh3DSymbol *symbol,
                        MagnitudeType magnitudeType = ZValue );
 
   private:
-    QgsMesh3DSymbol mSymbol;
+    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
     Qt3DRender::QTechnique *mTechnique;
     MagnitudeType mMagnitudeType = ZValue;
     QgsVector3D mOrigin;

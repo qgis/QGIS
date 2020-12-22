@@ -52,11 +52,17 @@ void QgsMergeVectorAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Merged" ) ) );
 }
 
+QString QgsMergeVectorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Combines multiple vector layers of the same geometry type into a single one." );
+}
+
 QString QgsMergeVectorAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm combines multiple vector layers of the same geometry type into a single one.\n\n"
-                      "If attributes tables are different, the attribute table of the resulting layer will contain the attributes "
-                      "from all input layers. New attributes will be added for the original layer name and source.\n\n"
+                      "The attribute table of the resulting layer will contain the fields from all input layers. "
+                      "If fields with the same name but different types are found then the exported field will be automatically converted into a string type field. "
+                      "New fields storing the original layer name and source are also added.\n\n"
                       "If any input layers contain Z or M values, then the output layer will also contain these values. Similarly, "
                       "if any of the input layers are multi-part, the output layer will also be a multi-part layer.\n\n"
                       "Optionally, the destination coordinate reference system (CRS) for the merged layer can be set. If it is not set, the CRS will be "
@@ -145,15 +151,19 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     for ( const QgsField &sourceField : vl->fields() )
     {
       bool found = false;
-      for ( const QgsField &destField : outputFields )
+      for ( QgsField &destField : outputFields )
       {
         if ( destField.name().compare( sourceField.name(), Qt::CaseInsensitive ) == 0 )
         {
           found = true;
           if ( destField.type() != sourceField.type() )
           {
-            throw QgsProcessingException( QObject::tr( "%1 field in layer %2 has different data type than in other layers (%3 instead of %4)" )
-                                          .arg( sourceField.name(), vl->name(), sourceField.typeName(), destField.typeName() ) );
+            feedback->pushWarning( QObject::tr( "%1 field in layer %2 has different data type than the destination layer (%3 instead of %4). "
+                                                "%1 field will be converted to string type." )
+                                   .arg( sourceField.name(), vl->name(), sourceField.typeName(), destField.typeName() ) );
+            destField.setType( QVariant::String );
+            destField.setSubType( QVariant::Invalid );
+            destField.setLength( 0 );
           }
           break;
         }
@@ -167,13 +177,13 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   bool addLayerField = false;
   if ( outputFields.lookupField( QStringLiteral( "layer" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "layer" ), QVariant::String, QString(), 100 ) );
+    outputFields.append( QgsField( QStringLiteral( "layer" ), QVariant::String, QString() ) );
     addLayerField = true;
   }
   bool addPathField = false;
   if ( outputFields.lookupField( QStringLiteral( "path" ) ) < 0 )
   {
-    outputFields.append( QgsField( QStringLiteral( "path" ), QVariant::String, QString(), 200 ) );
+    outputFields.append( QgsField( QStringLiteral( "path" ), QVariant::String, QString() ) );
     addPathField = true;
   }
 

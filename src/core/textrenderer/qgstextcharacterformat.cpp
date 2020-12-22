@@ -72,8 +72,9 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
   mOverline = enabled;
 }
 
-void QgsTextCharacterFormat::updateFontForFormat( QFont &font ) const
+void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const double scaleFactor ) const
 {
+  Q_UNUSED( scaleFactor );
 #if 0 // settings which affect font metrics are disabled for now
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );

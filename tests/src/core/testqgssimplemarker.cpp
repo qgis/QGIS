@@ -81,6 +81,8 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void boundsWithRotation();
     void boundsWithRotationAndOffset();
     void colors();
+    void opacityWithDataDefinedColor();
+    void dataDefinedOpacity();
 
   private:
     bool mTestHasError =  false ;
@@ -331,6 +333,42 @@ void TestQgsSimpleMarkerSymbol::colors()
   QCOMPARE( marker.color(), QColor( 200, 200, 200 ) );
   marker.setColor( QColor( 250, 250, 250 ) );
   QCOMPARE( marker.strokeColor(), QColor( 250, 250, 250 ) );
+}
+
+void TestQgsSimpleMarkerSymbol::opacityWithDataDefinedColor()
+{
+  mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mSimpleMarkerLayer->setStrokeColor( QColor( 0, 0, 0 ) );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Square );
+  mSimpleMarkerLayer->setSize( 5 );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mSimpleMarkerLayer->setStrokeWidth( 0.5 );
+  mMarkerSymbol->setOpacity( 0.5 );
+
+  bool result = imageCheck( QStringLiteral( "simplemarker_opacityddcolor" ) );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
+  mMarkerSymbol->setOpacity( 1.0 );
+  QVERIFY( result );
+}
+
+void TestQgsSimpleMarkerSymbol::dataDefinedOpacity()
+{
+  mSimpleMarkerLayer->setColor( QColor( 200, 200, 200 ) );
+  mSimpleMarkerLayer->setStrokeColor( QColor( 0, 0, 0 ) );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Square );
+  mSimpleMarkerLayer->setSize( 5 );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mSimpleMarkerLayer->setStrokeWidth( 0.5 );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
+
+  bool result = imageCheck( QStringLiteral( "simplemarker_ddopacity" ) );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
+  mSimpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty() );
+  QVERIFY( result );
 }
 
 //

@@ -22,6 +22,7 @@
 //qgis includes...
 #include "qgis.h"
 #include "qgsmaplayermodel.h"
+#include "qgsattributeeditorelement.h"
 
 /**
  * \ingroup UnitTests
@@ -49,6 +50,8 @@ class TestQgis : public QObject
     void testQgsVariantEqual();
     void testQgsEnumValueToKey();
     void testQgsEnumKeyToValue();
+    void testQgsFlagValueToKeys();
+    void testQgsFlagKeysToValue();
     void testQMapQVariantList();
 
   private:
@@ -353,7 +356,7 @@ void TestQgis::testQgsRound()
   QGSCOMPARENEAR( qgsRound( 98765432198, 13 ), 98765432198, 1.0 );
   QGSCOMPARENEAR( qgsRound( 98765432198, 14 ), 98765432198, 1.0 );
   QGSCOMPARENEAR( qgsRound( 98765432198765, 14 ), 98765432198765, 1.0 );
-  QGSCOMPARENEAR( qgsRound( 98765432198765432, 20 ), 98765432198765432, 1.0 );
+  QGSCOMPARENEAR( qgsRound( 98765432198765432., 20 ), 98765432198765432., 1.0 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 2 ), 9.88, 0.001 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 3 ), 9.877, 0.0001 );
   QGSCOMPARENEAR( qgsRound( 9.8765432198765, 4 ), 9.8765, 0.00001 );
@@ -407,8 +410,27 @@ void TestQgis::testQgsEnumValueToKey()
 }
 void TestQgis::testQgsEnumKeyToValue()
 {
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "LayerRole" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "AdditionalRole" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::AdditionalRole );
   QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "UnknownKey" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+  // try with int values as string keys
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( QgsMapLayerModel::AdditionalRole ), QgsMapLayerModel::LayerIdRole, true ), QgsMapLayerModel::AdditionalRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( QgsMapLayerModel::AdditionalRole ), QgsMapLayerModel::LayerIdRole, false ), QgsMapLayerModel::LayerIdRole );
+  // also try with an invalid int value
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::ItemDataRole>();
+  int invalidValue = QgsMapLayerModel::LayerIdRole + 100;
+  QVERIFY( !metaEnum.valueToKey( invalidValue ) );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( invalidValue ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+}
+
+void TestQgis::testQgsFlagValueToKeys()
+{
+  QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::Link | QgsAttributeEditorRelation::Button::AddChildFeature;
+  QCOMPARE( qgsFlagValueToKeys( buttons ), QStringLiteral( "Link|AddChildFeature" ) );
+}
+void TestQgis::testQgsFlagKeysToValue()
+{
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "Link|AddChildFeature" ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) ), QgsAttributeEditorRelation::Button::Link | QgsAttributeEditorRelation::Button::AddChildFeature );
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) );
 }
 
 void TestQgis::testQMapQVariantList()

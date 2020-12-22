@@ -33,10 +33,13 @@ this style will be shown in the dialog, and changes made within the dialog will 
 The ``style`` object must last for the lifetime of the dialog.
 %End
 
+
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
-                                       QString RampType = QString() );
+                                       const QString &RampType = QString() );
 %Docstring
 Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
+
+The ``RampType`` argument should be set to a string representing a valid :py:func:`QgsColorRamp.type()` value.
 %End
 
     void setFavoritesGroupVisible( bool show );
@@ -226,7 +229,16 @@ Context menu for the listItems ( symbols list )
 %End
 
   protected slots:
-    bool addColorRamp( QAction *action );
+
+    bool addColorRamp( const QString &type = QString() );
+%Docstring
+Triggers adding a new color ramp.
+
+If ``type`` is set to a string representing a valid :py:func:`QgsColorRamp.type()` value then a new ramp
+of that type will be created. If ``type`` is empty, then the user will be prompted to select
+the color ramp type.
+%End
+
     void addFavoriteSelectedSymbols();
 %Docstring
 Add selected symbols to favorites
@@ -288,10 +300,6 @@ Populates the list view with color ramps of the current type with the given name
     bool addSymbol( int symbolType = -1 );
 %Docstring
 add a new symbol to style
-%End
-    bool addColorRamp();
-%Docstring
-add a new color ramp to style
 %End
 
     bool editSymbol();

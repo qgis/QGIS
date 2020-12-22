@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
+#include "qgscolorramplegendnodesettings.h"
+
 #include <memory>
 
 class QgsContrastEnhancement;
@@ -63,11 +65,30 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
+    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
     QList<int> usesBands() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+
+    /**
+     * Returns the color ramp shader legend settings.
+     *
+     * \see setLegendSettings()
+     * \since QGIS 3.18
+     */
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+
+    /**
+     * Sets the color ramp shader legend \a settings.
+     *
+     * Ownership of \a settings is transferred.
+     *
+     * \see legendSettings()
+     * \since QGIS 3.18
+     */
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
 
   private:
 #ifdef SIP_RUN
@@ -78,7 +99,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     int mGrayBand;
     Gradient mGradient;
     std::unique_ptr< QgsContrastEnhancement > mContrastEnhancement;
-
+    std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERER_H

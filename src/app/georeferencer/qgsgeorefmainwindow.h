@@ -28,6 +28,7 @@ class QPlainTextEdit;
 class QLabel;
 
 class QgisInterface;
+class QgsDoubleSpinBox;
 class QgsGeorefDataPoint;
 class QgsGCPListWidget;
 class QgsMapTool;
@@ -46,7 +47,7 @@ class QgsGeorefDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 };
 
 class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
@@ -54,16 +55,18 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     Q_OBJECT
 
   public:
-    QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
 
   protected:
     void closeEvent( QCloseEvent * ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
 
   private slots:
     // file
     void reset();
-    void openRaster();
+    void openRaster( const QString &fileName = QString() );
     void doGeoreference();
     void generateGDALScript();
     bool getTransformSettings();
@@ -85,7 +88,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
     // gcps
     void addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
-                   bool enable = true, bool finalize = true );
+                   const QgsCoordinateReferenceSystem &crs, bool enable = true, bool finalize = true );
     void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPointXY &pixelCoords );
@@ -101,13 +104,11 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void showRasterPropertiesDialog();
     void showGeorefConfigDialog();
 
-    // plugin info
-    void showHelp();
-
     // comfort
     void jumpToGCP( uint theGCPIndex );
     void extentsChangedGeorefCanvas();
     void extentsChangedQGisCanvas();
+    void updateCanvasRotation();
 
     // canvas info
     void showMouseCoords( const QgsPointXY &pt );
@@ -166,9 +167,12 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     // gdal script
     void showGDALScript( const QStringList &commands );
     QString generateGDALtranslateCommand( bool generateTFW = true );
-    /* Generate command-line for gdalwarp based on current GCPs and given parameters.
+
+    /**
+     * Generate command-line for gdalwarp based on current GCPs and given parameters.
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
-     * a value of -1 indicates that thin plate spline interpolation should be used for warping.*/
+     * a value of -1 indicates that thin plate spline interpolation should be used for warping.
+    */
     QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order,
                                      double targetResX, double targetResY );
 
@@ -192,7 +196,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
      * Note that the RMSE measure is adjusted for the degrees of freedom of the
      * used polynomial transform.
      * \param error out: the mean error
-     * \returns true in case of success
+     * \returns TRUE in case of success
      */
     bool calculateMeanError( double &error ) const;
 
@@ -205,14 +209,14 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QMenu *mPanelMenu = nullptr;
     QMenu *mToolbarMenu = nullptr;
 
-    QAction *mActionHelp = nullptr;
-
     QgsGCPListWidget *mGCPListWidget = nullptr;
     QLineEdit *mScaleEdit = nullptr;
     QLabel *mScaleLabel = nullptr;
     QLabel *mCoordsLabel = nullptr;
     QLabel *mTransformParamLabel = nullptr;
     QLabel *mEPSG = nullptr;
+    QLabel *mRotationLabel = nullptr;
+    QgsDoubleSpinBox *mRotationEdit = nullptr;
     unsigned int mMousePrecisionDecimalPlaces;
 
     QString mRasterFileName;
@@ -240,6 +244,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
     QgsMapTool *mToolPan = nullptr;
+    QgsMapTool *mPrevQgisMapTool = nullptr;
     QgsGeorefToolAddPoint *mToolAddPoint = nullptr;
     QgsGeorefToolDeletePoint *mToolDeletePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
@@ -256,7 +261,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
 
     QgsDockWidget *mDock = nullptr;
-    int messageTimeout();
 };
 
 #endif

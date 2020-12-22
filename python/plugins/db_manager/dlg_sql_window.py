@@ -28,7 +28,7 @@ from hashlib import md5
 
 import os
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
+from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir, QCoreApplication
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QWidget,
                                  QAction,
@@ -46,7 +46,7 @@ from qgis.PyQt.QtGui import (QKeySequence,
                              QStandardItemModel,
                              QStandardItem
                              )
-from qgis.PyQt.Qsci import QsciAPIs
+from qgis.PyQt.Qsci import QsciAPIs, QsciScintilla
 
 from qgis.core import (
     QgsProject,
@@ -381,6 +381,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def executeSqlCanceled(self):
         self.btnCancel.setEnabled(False)
+        self.btnCancel.setText(QCoreApplication.translate("DlgSqlWindow", "Canceling…"))
         self.modelAsync.cancel()
 
     def executeSqlCompleted(self):
@@ -391,6 +392,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 model = self.modelAsync.model
                 quotedCols = []
 
+                self.showError(None)
                 self.viewResult.setModel(model)
                 self.lblResult.setText(self.tr("{0} rows, {1:.3f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
@@ -402,9 +404,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 self.writeQueryHistory(self.modelAsync.task.sql, model.affectedRows(), model.secs())
                 self.update()
             elif not self.modelAsync.canceled:
-                DlgDbError.showError(self.modelAsync.error, self)
+                self.showError(self.modelAsync.error)
+
                 self.uniqueModel.clear()
                 self.geomCombo.clear()
+
+            self.btnCancel.setText(self.tr("Cancel"))
 
     def executeSql(self):
         sql = self._getExecutableSqlQuery()
@@ -423,10 +428,21 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.updateUiWhileSqlExecution(True)
             QgsApplication.taskManager().addTask(self.modelAsync.task)
         except Exception as e:
-            DlgDbError.showError(e, self)
+            self.showError(e)
             self.uniqueModel.clear()
             self.geomCombo.clear()
             return
+
+    def showError(self, error):
+        '''Shows the error or hides it if error is None'''
+        if error:
+            self.viewResult.setVisible(False)
+            self.errorText.setVisible(True)
+            self.errorText.setText(error.msg)
+            self.errorText.setWrapMode(QsciScintilla.WrapWord)
+        else:
+            self.viewResult.setVisible(True)
+            self.errorText.setVisible(False)
 
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked

@@ -1,0 +1,472 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspointcloud3dsymbol.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
+{
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+
+    enum RenderingStyle
+    {
+      // Do not render anything
+      NoRendering,
+      //! Render the point cloud with a single color
+      SingleColor,
+      //! Render the point cloud with a color ramp
+      ColorRamp,
+      //! Render the RGB colors of the point cloud
+      RgbRendering
+    };
+
+    QgsPointCloud3DSymbol();
+%Docstring
+Constructor for QgsPointCloud3DSymbol
+%End
+    ~QgsPointCloud3DSymbol();
+
+    virtual QString type() const;
+
+    virtual QString symbolType() const = 0;
+%Docstring
+Returns a unique string identifier of the symbol type.
+%End
+
+    float pointSize() const;
+%Docstring
+Returns the point size of the point cloud
+
+.. seealso:: :py:func:`setPointSize`
+%End
+
+    void setPointSize( float size );
+%Docstring
+Sets the point size
+
+.. seealso:: :py:func:`pointSize`
+%End
+
+    virtual unsigned int byteStride() = 0;
+%Docstring
+Returns the byte stride for the geometries used to for the vertex buffer
+%End
+
+  protected:
+};
+
+class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
+{
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects.using one color
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsSingleColorPointCloud3DSymbol();
+%Docstring
+Constructor for QgsSingleColorPointCloud3DSymbol
+%End
+
+    virtual QString symbolType() const;
+
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    QColor singleColor() const;
+%Docstring
+Returns the color used by the renderer when using SingleColor rendering mode
+
+.. seealso:: :py:func:`setSingleColor`
+%End
+
+    void setSingleColor( QColor color );
+%Docstring
+Sets the color used by the renderer when using SingleColor rendering mode
+
+.. seealso:: :py:func:`singleColor`
+%End
+
+    virtual unsigned int byteStride();
+
+
+};
+
+class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
+{
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects.using color ramp shader
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsColorRampPointCloud3DSymbol();
+%Docstring
+Constructor for QgsColorRampPointCloud3DSymbol
+%End
+
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+    virtual QString symbolType() const;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    QString attribute() const;
+%Docstring
+Returns the attribute used to select the color of the point cloud.
+
+.. seealso:: :py:func:`setAttribute`
+%End
+
+    void setAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` used to select the color of the point cloud.
+
+.. seealso:: :py:func:`attribute`
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns the color ramp shader used to render the color
+
+.. seealso:: :py:func:`setColorRampShader`
+%End
+
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+%Docstring
+Sets the color ramp shader used to render the point cloud
+
+.. seealso:: :py:func:`colorRampShader`
+%End
+
+    double colorRampShaderMin() const;
+%Docstring
+Returns the minimum value used when classifying colors in the color ramp shader
+
+.. seealso:: :py:func:`setColorRampShaderMinMax`
+%End
+
+    double colorRampShaderMax() const;
+%Docstring
+Returns the maximum value used when classifying colors in the color ramp shader
+
+.. seealso:: :py:func:`setColorRampShaderMinMax`
+%End
+
+    void setColorRampShaderMinMax( double min, double max );
+%Docstring
+Sets the minimum and maximum values used when classifying colors in the color ramp shader
+
+.. seealso:: :py:func:`colorRampShaderMin`
+%End
+
+    virtual unsigned int byteStride();
+
+};
+
+class QgsRgbPointCloud3DSymbol : QgsPointCloud3DSymbol
+{
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects using RGB colors in the dataset
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsRgbPointCloud3DSymbol();
+%Docstring
+Constructor for :py:class:`QgsRGBPointCloud3DSymbol`
+%End
+
+
+
+    virtual QString symbolType() const;
+
+%Docstring
+QgsRgbPointCloud3DSymbol cannot be copied - use :py:func:`~QgsRgbPointCloud3DSymbol.clone` instead
+%End
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    virtual unsigned int byteStride();
+
+    QString redAttribute() const;
+%Docstring
+Returns the attribute to use for the red channel.
+
+.. seealso:: :py:func:`greenAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+
+.. seealso:: :py:func:`setRedAttribute`
+%End
+
+    void setRedAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the red channel.
+
+.. seealso:: :py:func:`setGreenAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+
+.. seealso:: :py:func:`redAttribute`
+%End
+
+    QString greenAttribute() const;
+%Docstring
+Returns the attribute to use for the green channel.
+
+.. seealso:: :py:func:`redAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+
+.. seealso:: :py:func:`setGreenAttribute`
+%End
+
+    void setGreenAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the green channel.
+
+.. seealso:: :py:func:`setRedAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+
+.. seealso:: :py:func:`greenAttribute`
+%End
+
+    QString blueAttribute() const;
+%Docstring
+Returns the attribute to use for the blue channel.
+
+.. seealso:: :py:func:`greenAttribute`
+
+.. seealso:: :py:func:`redAttribute`
+
+.. seealso:: :py:func:`setBlueAttribute`
+%End
+
+    void setBlueAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` to use for the blue channel.
+
+.. seealso:: :py:func:`setRedAttribute`
+
+.. seealso:: :py:func:`setGreenAttribute`
+
+.. seealso:: :py:func:`blueAttribute`
+%End
+
+    QgsContrastEnhancement *redContrastEnhancement();
+%Docstring
+Returns the contrast enhancement to use for the red channel.
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setRedContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the red channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    QgsContrastEnhancement *greenContrastEnhancement();
+%Docstring
+Returns the contrast enhancement to use for the green channel.
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setGreenContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the green channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    QgsContrastEnhancement *blueContrastEnhancement();
+%Docstring
+Returns the contrast enhancement to use for the blue channel.
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+%End
+
+    void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement /Transfer/ );
+%Docstring
+Sets the contrast ``enhancement`` to use for the blue channel.
+
+Ownership of ``enhancement`` is transferred.
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+%End
+
+  private:
+    QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
+};
+
+class QgsClassificationPointCloud3DSymbol : QgsPointCloud3DSymbol
+{
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects using classification of the dataset
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsClassificationPointCloud3DSymbol();
+%Docstring
+Constructor for QgsClassificationPointCloud3DSymbol
+%End
+
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+    virtual QString symbolType() const;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    QString attribute() const;
+%Docstring
+Returns the attribute used to select the color of the point cloud.
+
+.. seealso:: :py:func:`setAttribute`
+%End
+
+    void setAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` used to select the color of the point cloud.
+
+.. seealso:: :py:func:`attribute`
+%End
+
+    QgsPointCloudCategoryList categoriesList() const;
+%Docstring
+Returns the list of categories of the classification
+
+.. seealso:: :py:func:`setCategoriesList`
+%End
+
+    void setCategoriesList( const QgsPointCloudCategoryList &categories );
+%Docstring
+Sets the list of categories of the classification
+
+.. seealso:: :py:func:`categoriesList`
+%End
+
+    QgsPointCloudCategoryList getFilteredOutCategories() const;
+%Docstring
+Gets the list of categories of the classification that should not be rendered
+
+.. seealso:: :py:func:`categoriesList`
+%End
+
+    virtual unsigned int byteStride();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspointcloud3dsymbol.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

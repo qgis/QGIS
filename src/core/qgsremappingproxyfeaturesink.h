@@ -216,9 +216,10 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
      */
     QgsFeatureList remapFeature( const QgsFeature &feature ) const;
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
-    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    QString lastError() const override;
 
     /**
      * Returns the destination QgsFeatureSink which the proxy will forward features to.

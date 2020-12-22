@@ -78,7 +78,7 @@ void rulesDialog::readTest( int index, QgsProject *project )
   QString testName;
   QString layer1Id;
   QString layer2Id;
-  QString postfix = QStringLiteral( "%1" ).arg( index );
+  QString postfix = QString::number( index );
 
   testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QString() );
   layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QString() );
@@ -244,7 +244,7 @@ void rulesDialog::addRule()
   mRulesTable->setItem( row, 4, newItem );
 
   // save state to the project file.....
-  QString postfix = QStringLiteral( "%1" ).arg( row );
+  QString postfix = QString::number( row );
   QgsProject *project = QgsProject::instance();
 
   project->writeEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ), row + 1 );

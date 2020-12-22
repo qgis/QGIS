@@ -341,7 +341,7 @@ QString QgsLayerTreeGroup::dump() const
     childrenDump << node->dump().split( '\n' );
   for ( int i = 0; i < childrenDump.count(); ++i )
     childrenDump[i].prepend( "  " );
-  return header + childrenDump.join( QStringLiteral( "\n" ) );
+  return header + childrenDump.join( QLatin1Char( '\n' ) );
 }
 
 QgsLayerTreeGroup *QgsLayerTreeGroup::clone() const
@@ -440,6 +440,13 @@ void QgsLayerTreeGroup::updateChildVisibilityMutuallyExclusive()
   }
 
   mChangingChildVisibility = false;
+}
+
+void QgsLayerTreeGroup::makeOrphan()
+{
+  QgsLayerTreeNode::makeOrphan();
+  // Reconnect internal signals
+  connect( this, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeGroup::nodeVisibilityChanged );
 }
 
 void QgsLayerTreeGroup::setItemVisibilityCheckedRecursive( bool checked )

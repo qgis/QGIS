@@ -33,10 +33,10 @@ class QgsRendererWidget SIP_EXTERNAL;
 
 /**
  * \ingroup core
- Stores metadata about one renderer class.
-
- \note It's necessary to implement createRenderer() function.
-   In C++ you can use QgsRendererMetadata convenience class.
+ * Stores metadata about one renderer class.
+ *
+ * \note It's necessary to implement createRenderer() function.
+ *   In C++ you can use QgsRendererMetadata convenience class.
  */
 class CORE_EXPORT QgsRendererAbstractMetadata
 {
@@ -101,7 +101,8 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 
     /**
      * Returns new instance of the renderer given the DOM element. Returns NULLPTR on error.
-     * Pure virtual function: must be implemented in derived classes.  */
+     * Pure virtual function: must be implemented in derived classes.
+    */
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
 
     /**

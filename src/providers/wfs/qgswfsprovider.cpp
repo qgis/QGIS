@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgsapplication.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -36,6 +35,7 @@
 #include "qgswfsutils.h"
 #include "qgssettings.h"
 
+#include <QApplication>
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDomNodeList>
@@ -121,11 +121,21 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
+    const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
     auto downloader = qgis::make_unique<QgsFeatureDownloader>();
-    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get() ) );
+    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
              qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
+    if ( requestMadeFromMainThread )
+    {
+      auto processEvents = []()
+      {
+        QApplication::instance()->processEvents();
+      };
+      connect( downloader.get(), &QgsFeatureDownloader::resumeMainThread,
+               this, processEvents );
+    }
     downloader->run( false, /* serialize features */
                      1 /* maxfeatures */ );
   }
@@ -175,7 +185,7 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
     for ( const QgsWfsCapabilities::Function &f : constMSpatialPredicatesList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 ||
-           ( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
+           QString( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
       {
         foundMatch = true;
       }
@@ -298,7 +308,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       else if ( part.startsWith( QLatin1String( " expecting " ) ) )
         newPart = tr( "%1 is expected instead." ).arg( part.mid( QStringLiteral( " expecting " ).size() ) );
       if ( !parserErrorString.isEmpty() )
-        parserErrorString += QLatin1String( " " );
+        parserErrorString += QLatin1Char( ' ' );
       parserErrorString += newPart;
     }
     parserErrorString.replace( QLatin1String( " or " ), tr( "%1 or %2" ).arg( QString(), QString() ) );
@@ -419,7 +429,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   for ( const QString &typeName : qgis::as_const( typenameList ) )
   {
     if ( !concatenatedTypenames.isEmpty() )
-      concatenatedTypenames += QLatin1String( "," );
+      concatenatedTypenames += QLatin1Char( ',' );
     concatenatedTypenames += typeName;
   }
 
@@ -777,6 +787,49 @@ void QgsWFSProvider::reloadProviderData()
   mShared->invalidateCache();
 }
 
+QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDocument &transactionDoc )
+{
+  QDomElement gmlElem;
+
+  // Determine axis orientation and gml version
+  bool applyAxisInversion;
+  QgsOgcUtils::GMLVersion gmlVersion;
+
+  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
+  {
+    // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
+    if ( ! mShared->mServerPrefersCoordinatesForTransactions_1_1 )
+    {
+      gmlVersion = QgsOgcUtils::GML_3_1_0;
+    }
+    else
+    {
+      gmlVersion = QgsOgcUtils::GML_2_1_2;
+    }
+    // For servers like Geomedia and QGIS Server that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
+    // cpabilities useEPSGColumnFormat is set.
+    // We follow GeoServer convention here which is to treat EPSG:4326 as lon/lat
+    applyAxisInversion = ( crs().hasAxisInverted() && ! mShared->mURI.ignoreAxisOrientation() && ! mShared->mCaps.useEPSGColumnFormat )
+                         || mShared->mURI.invertAxisOrientation();
+  }
+  else // 1.0
+  {
+    gmlVersion = QgsOgcUtils::GML_2_1_2;
+    applyAxisInversion = mShared->mURI.invertAxisOrientation();
+  }
+
+  gmlElem = QgsOgcUtils::geometryToGML(
+              geometry,
+              transactionDoc,
+              gmlVersion,
+              mShared->srsName(),
+              applyAxisInversion,
+              QString()
+            );
+
+  return gmlElem;
+}
+
 QgsWkbTypes::Type QgsWFSProvider::wkbType() const
 {
   return mShared->mWKBType;
@@ -867,10 +920,10 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         the_geom.convertToMultiType();
       }
-      QDomElement gmlElem = QgsOgcUtils::geometryToGML( the_geom, transactionDoc );
-      if ( !gmlElem.isNull() )
+
+      const QDomElement gmlElem { geometryElement( the_geom, transactionDoc ) };
+      if ( ! gmlElem.isNull() )
       {
-        gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
         geomElem.appendChild( gmlElem );
         featureElem.appendChild( geomElem );
       }
@@ -1035,9 +1088,9 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geomIt.value(), transactionDoc );
-    gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
-    valueElem.appendChild( gmlElem );
+
+    valueElem.appendChild( geometryElement( geomIt.value(), transactionDoc ) );
+
     propertyElem.appendChild( valueElem );
     updateElem.appendChild( propertyElem );
 
@@ -1078,9 +1131,7 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
     QDateTime dt = value.toDateTime().toUTC();
     if ( !dt.isNull() )
     {
-      valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-                        dt.date().year(), dt.date().month(), dt.date().day(),
-                        dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+      valueStr = dt.toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss.zzzZ" ) );
     }
     else
     {
@@ -1255,6 +1306,8 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
   }
 
   QByteArray response = describeFeatureType.response();
+
+  QgsDebugMsgLevel( response, 4 );
 
   QDomDocument describeFeatureDocument;
   QString errorMsg;
@@ -1503,7 +1556,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       foundGeometryAttribute = true;
       geometryAttribute = name;
       // We have a choice parent element we cannot assume any valid information over the geometry type
-      if ( attributeElement.parentNode().nodeName() == QStringLiteral( "choice" ) && ! attributeElement.nextSibling().isNull() )
+      if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
       else
         geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
@@ -1572,6 +1625,8 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument &doc, QDomDocum
     return false;
   }
 
+  QgsDebugMsgLevel( doc.toString(), 4 );
+
   QgsWFSTransactionRequest request( mShared->mURI );
   return request.send( doc, serverResponse );
 }
@@ -1579,10 +1634,16 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument &doc, QDomDocum
 QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
 {
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
-  // QString WfsVersion = mShared->mWFSVersion;
-  // For now: hardcoded to 1.0.0
-  QString WfsVersion = QStringLiteral( "1.0.0" );
-  transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
+  const QString WfsVersion = mShared->mWFSVersion;
+  // only 1.1.0 and 1.0.0 are supported
+  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
+  {
+    transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
+  }
+  else
+  {
+    transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+  }
   transactionElem.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WFS" ) );
   transactionElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
 
@@ -1626,19 +1687,70 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
     return false;
   }
 
-  QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionResult" ) );
-  if ( transactionResultList.size() < 1 )
+  const QString WfsVersion = mShared->mWFSVersion;
+
+  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
   {
+    const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionSummary" ) );
+    if ( transactionSummaryList.size() < 1 )
+    {
+      return false;
+    }
+
+    QDomElement transactionElement { transactionSummaryList.at( 0 ).toElement() };
+    QDomNodeList totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalInserted" ) );
+    QDomNodeList totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalUpdated" ) );
+    QDomNodeList totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalDeleted" ) );
+    if ( totalInserted.size() > 0 && totalInserted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalUpdated.size() > 0 && totalUpdated.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalDeleted.size() > 0 && totalDeleted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+
+    // Handle wrong QGIS server response (capital initial letter)
+    totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalInserted" ) );
+    totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalUpdated" ) );
+    totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalDeleted" ) );
+    if ( totalInserted.size() > 0 && totalInserted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalUpdated.size() > 0 && totalUpdated.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalDeleted.size() > 0 && totalDeleted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+
     return false;
+
+  }
+  else
+  {
+    const QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionResult" ) );
+    if ( transactionResultList.size() < 1 )
+    {
+      return false;
+    }
+
+    const QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Status" ) );
+    if ( statusList.size() < 1 )
+    {
+      return false;
+    }
+
+    return statusList.at( 0 ).firstChildElement().localName() == QLatin1String( "SUCCESS" );
   }
 
-  QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Status" ) );
-  if ( statusList.size() < 1 )
-  {
-    return false;
-  }
-
-  return statusList.at( 0 ).firstChildElement().localName() == QLatin1String( "SUCCESS" );
 }
 
 QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverResponse ) const
@@ -1655,7 +1767,17 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
     return ids;
   }
 
-  QDomNodeList insertResultList = rootElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "InsertResult" ) );
+  // Handles WFS 1.1.0
+  QString insertResultTagName;
+  if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) )
+  {
+    insertResultTagName = QStringLiteral( "InsertResults" );
+  }
+  else
+  {
+    insertResultTagName = QStringLiteral( "InsertResult" );
+  }
+  QDomNodeList insertResultList = rootElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, insertResultTagName );
   for ( int i = 0; i < insertResultList.size(); ++i )
   {
     QDomNodeList featureIdList = insertResultList.at( i ).toElement().elementsByTagNameNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
@@ -1673,7 +1795,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
 bool QgsWFSProvider::getCapabilities()
 {
-  mCapabilities = QgsVectorDataProvider::SelectAtId;
+  mCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::Capability::ReloadData;
 
   if ( mShared->mCaps.version.isEmpty() )
   {
@@ -1842,6 +1964,14 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
     return;
   }
 
+  // WFS 1.1.0
+  if ( exceptionElem.tagName() == QLatin1String( "TransactionResponse" ) )
+  {
+    pushError( tr( "Unsuccessful service response: no features were added, deleted or changed." ) );
+    return;
+  }
+
+
   if ( exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
   {
     QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
@@ -1855,8 +1985,9 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  Q_UNUSED( flags );
   return new QgsWFSProvider( uri, options );
 }
 

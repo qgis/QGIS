@@ -42,7 +42,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   connect( mCondensedLineEdit, &QgsFilterLineEdit::cleared, this, &QgsExtentWidget::clear );
   connect( mCondensedLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromCondensedLineEdit );
 
-  mLayerMenu = new QMenu( tr( "Calculate from Layer" ) );
+  mLayerMenu = new QMenu( tr( "Calculate from Layer" ), this );
   mButtonCalcFromLayer->setMenu( mLayerMenu );
   connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layerMenuAboutToShow );
   mMapLayerModel = new QgsMapLayerModel( this );
@@ -420,16 +420,17 @@ QgsRectangle QgsExtentWidget::outputExtent() const
                        mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
 }
 
-void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption )
 {
   if ( canvas )
   {
     mCanvas = canvas;
-    mButtonDrawOnCanvas->setVisible( true );
+    mButtonDrawOnCanvas->setVisible( drawOnCanvasOption );
     mCurrentExtentButton->setVisible( true );
 
     mMenu->addAction( mUseCanvasExtentAction );
-    mMenu->addAction( mDrawOnCanvasAction );
+    if ( drawOnCanvasOption )
+      mMenu->addAction( mDrawOnCanvasAction );
   }
   else
   {

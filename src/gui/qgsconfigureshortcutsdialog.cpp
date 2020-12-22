@@ -93,7 +93,7 @@ void QgsConfigureShortcutsDialog::populateActions()
     lst << actionText << sequence;
     QTreeWidgetItem *item = new QTreeWidgetItem( lst );
     item->setIcon( 0, icon );
-    item->setData( 0, Qt::UserRole, qVariantFromValue( obj ) );
+    item->setData( 0, Qt::UserRole, QVariant::fromValue( obj ) );
     items.append( item );
   }
 

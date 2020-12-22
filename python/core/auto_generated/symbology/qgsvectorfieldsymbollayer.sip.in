@@ -12,7 +12,7 @@
 class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayer
 {
 %Docstring
-A symbol layer class for displaying displacement arrows based on point layer attributes*
+A symbol layer class for displaying displacement arrows based on point layer attributes.
 %End
 
 %TypeHeaderCode
@@ -64,6 +64,8 @@ A symbol layer class for displaying displacement arrows based on point layer att
     virtual QgsVectorFieldSymbolLayer *clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
+
+    virtual bool usesMapUnits() const;
 
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;

@@ -185,6 +185,16 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
+    /**
+     * Source for exported field names.
+     *
+     * \since QGIS 3.18
+     */
+    enum FieldNameSource
+    {
+      Original = 0, //!< Use original field names
+      PreferAlias, //!< Use the field alias as the exported field name, wherever one is set. Otherwise use the original field names.
+    };
 
     /**
      * Options for sorting and filtering vector formats.
@@ -233,7 +243,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * Edition capability flags
-      * \since QGIS 3.0 */
+     * \since QGIS 3.0
+    */
     enum EditionCapability
     {
       //! Flag to indicate that a new layer can be added to the dataset
@@ -251,12 +262,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
-      * \since QGIS 3.0 */
+     * \since QGIS 3.0.
+    */
     Q_DECLARE_FLAGS( EditionCapabilities, EditionCapability )
 
     /**
      * Enumeration to describe how to handle existing files
-        \since QGIS 3.0
+     * \since QGIS 3.0
      */
     enum ActionOnExistingFile
     {
@@ -462,7 +474,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         /**
          * Transform to reproject exported geometries with, or invalid transform
-         * for no transformation */
+         * for no transformation
+        */
         QgsCoordinateTransform ct;
 
         //! Write only selected features of layer
@@ -491,7 +504,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         /**
          * Set to a valid geometry type to override the default geometry type for the layer. This parameter
-         * allows for conversion of geometryless tables to null geometries, etc */
+         * allows for conversion of geometryless tables to null geometries, etc.
+        */
         QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
         //! Sets to TRUE to force creation of multi* geometries
@@ -510,6 +524,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         //! Optional feedback object allowing cancellation of layer save
         QgsFeedback *feedback = nullptr;
+
+        /**
+         * Source for exported field names.
+         *
+         * \since QGIS 3.18
+         */
+        FieldNameSource fieldNameSource = Original;
     };
 
 #ifndef SIP_RUN
@@ -563,10 +584,11 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            const QStringList &layerOptions = QStringList(),
                                            QString *newFilename = nullptr,
                                            QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
-                                           QgsFeatureSink::SinkFlags sinkFlags = nullptr
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
 #ifndef SIP_RUN
                                                , QString *newLayer = nullptr,
-                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext()
+                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
+                                           FieldNameSource fieldNameSource = Original
 #endif
                                          ) SIP_DEPRECATED;
 
@@ -588,6 +610,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newLayer potentially modified layer name (output parameter) (added in QGIS 3.4)
      * \param transformContext transform context, needed if the output file srs is forced to specific crs (added in QGIS 3.10.3)
      * \param sinkFlags feature sink flags (added in QGIS 3.10.3)
+     * \param fieldNameSource source for field names (since QGIS 3.18)
      * \note not available in Python bindings
      * \deprecated Use create() instead.
      */
@@ -606,7 +629,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QgsVectorFileWriter::ActionOnExistingFile action,
                                            QString *newLayer = nullptr,
                                            QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
-                                           QgsFeatureSink::SinkFlags sinkFlags = nullptr
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
+                                           FieldNameSource fieldNameSource = Original
                                          ) SIP_SKIP;
 
     //! QgsVectorFileWriter cannot be copied.
@@ -633,9 +657,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                         const QgsCoordinateReferenceSystem &srs,
                                         const QgsCoordinateTransformContext &transformContext,
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
-                                        QgsFeatureSink::SinkFlags sinkFlags = nullptr,
+                                        QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = nullptr,
-                                        QString *newLayer = nullptr );
+                                        QString *newLayer = nullptr ) SIP_FACTORY;
 
     /**
      * Writes a layer out to a vector file.
@@ -760,8 +784,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Retrieves error message
     QString errorMessage();
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    QString lastError() const override;
 
     /**
      * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.
@@ -962,7 +987,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                QgsVectorFileWriter::FieldValueConverter *fieldValueConverter,
                const QString &layerName,
                QgsVectorFileWriter::ActionOnExistingFile action, QString *newLayer, QgsFeatureSink::SinkFlags sinkFlags,
-               const QgsCoordinateTransformContext &transformContext );
+               const QgsCoordinateTransformContext &transformContext,
+               FieldNameSource fieldNameSource );
     void resetMap( const QgsAttributeList &attributes );
 
     std::unique_ptr< QgsFeatureRenderer > mRenderer;

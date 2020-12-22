@@ -38,3 +38,6 @@ class PyProviderMetadata(QgsProviderMetadata):
         if callable(library_or_create_func):
             self.createProvider = library_or_create_func
             PyProviderMetadata._kept_refs.append(self)
+
+
+PyProviderMetadata.__doc__ = QgsProviderMetadata.__doc__

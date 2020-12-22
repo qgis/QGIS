@@ -103,7 +103,7 @@
      <item row="2" column="2">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QDoubleSpinBox" name="mSpinCellSizeX">
+        <widget class="QgsDoubleSpinBox" name="mSpinCellSizeX">
          <property name="decimals">
           <number>6</number>
          </property>
@@ -113,7 +113,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="mSpinCellSizeY">
+        <widget class="QgsDoubleSpinBox" name="mSpinCellSizeY">
          <property name="decimals">
           <number>6</number>
          </property>
@@ -127,7 +127,7 @@
      <item row="3" column="2">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QDoubleSpinBox" name="mSpinGridOffsetX">
+        <widget class="QgsDoubleSpinBox" name="mSpinGridOffsetX">
          <property name="decimals">
           <number>6</number>
          </property>
@@ -137,7 +137,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="mSpinGridOffsetY">
+        <widget class="QgsDoubleSpinBox" name="mSpinGridOffsetY">
          <property name="decimals">
           <number>6</number>
          </property>
@@ -217,6 +217,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>

@@ -131,17 +131,22 @@ void QgsOapifApiRequest::processReply()
           if ( name.is_string() )
           {
             QgsAbstractMetadataBase::Contact contact( QString::fromStdString( name.get<std::string>() ) );
-            const auto email = jContact["email"];
-            if ( email.is_string() )
+            if ( jContact.contains( "email" ) )
             {
-              contact.email = QString::fromStdString( email.get<std::string>() );
+              const auto email = jContact["email"];
+              if ( email.is_string() )
+              {
+                contact.email = QString::fromStdString( email.get<std::string>() );
+              }
             }
-
-            const auto url = jContact["url"];
-            if ( url.is_string() )
+            if ( jContact.contains( "url" ) )
             {
-              // A bit of abuse to fill organization with url
-              contact.organization = QString::fromStdString( url.get<std::string>() );
+              const auto url = jContact["url"];
+              if ( url.is_string() )
+              {
+                // A bit of abuse to fill organization with url
+                contact.organization = QString::fromStdString( url.get<std::string>() );
+              }
             }
             mMetadata.addContact( contact );
           }

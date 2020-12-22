@@ -16,16 +16,47 @@
 #include "qgsmesh3dsymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgs3dutils.h"
+#include "qgsphongmaterialsettings.h"
 
-QgsAbstract3DSymbol *QgsMesh3DSymbol::clone() const
+QgsMesh3DSymbol::QgsMesh3DSymbol()
+  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
 {
-  return new QgsMesh3DSymbol( *this );
+
+}
+
+QgsMesh3DSymbol::~QgsMesh3DSymbol() = default;
+
+QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
+{
+  std::unique_ptr< QgsMesh3DSymbol > result = qgis::make_unique< QgsMesh3DSymbol >();
+
+  result->mAltClamping = mAltClamping;
+  result->mHeight = mHeight;
+  result->mMaterial.reset( mMaterial->clone() );
+  result->mAddBackFaces = mAddBackFaces;
+  result->mEnabled = mEnabled;
+  result->mSmoothedTriangles = mSmoothedTriangles;
+  result->mWireframeEnabled = mWireframeEnabled;
+  result->mWireframeLineWidth = mWireframeLineWidth;
+  result->mWireframeLineColor = mWireframeLineColor;
+  result->mLevelOfDetailIndex = mLevelOfDetailIndex;
+  result->mVerticalScale = mVerticalScale;
+  result->mVerticalDatasetGroupIndex = mVerticalDatasetGroupIndex;
+  result->mIsVerticalMagnitudeRelative = mIsVerticalMagnitudeRelative;
+  result->mRenderingStyle = mRenderingStyle;
+  result->mColorRampShader = mColorRampShader;
+  result->mSingleColor = mSingleColor;
+  result->mArrowsEnabled = mArrowsEnabled;
+  result->mArrowsSpacing = mArrowsSpacing;
+  result->mArrowsFixedSize = mArrowsFixedSize;
+  result->mArrowsColor = mArrowsColor;
+  result->mMaximumTextureSize = mMaximumTextureSize;
+  copyBaseSettings( result.get() );
+  return result.release();
 }
 
 void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context )
-
   QDomDocument doc = elem.ownerDocument();
 
   //Simple symbol
@@ -36,7 +67,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial.writeXml( elemMaterial );
+  mMaterial->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
   //Advanced symbol
@@ -46,11 +77,12 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-enabled" ), mWireframeEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-width" ), mWireframeLineWidth );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-color" ), QgsSymbolLayerUtils::encodeColor( mWireframeLineColor ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "level-of-detail" ), mLevelOfDetailIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-scale" ), mVerticalScale );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-relative" ), mIsVerticalMagnitudeRelative ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), mRenderingStyle );
-  elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc ) );
+  elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc, context ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "max-color-ramp-shader" ), mColorRampShader.maximumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "texture-single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
@@ -66,8 +98,6 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
 
 void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context )
-
   //Simple symbol
   QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
@@ -75,7 +105,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
-  mMaterial.readXml( elemMaterial );
+  mMaterial->readXml( elemMaterial, context );
 
   //Advanced symbol
   QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
@@ -84,16 +114,18 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
   mWireframeLineWidth = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-width" ) ).toDouble();
   mWireframeLineColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-color" ) ) );
+  mLevelOfDetailIndex = elemAdvancedSettings.attribute( QStringLiteral( "level-of-detail" ) ).toInt();
   mVerticalScale = elemAdvancedSettings.attribute( "vertical-scale" ).toDouble();
   mVerticalDatasetGroupIndex = elemAdvancedSettings.attribute( "vertical-group-index" ).toInt();
   mIsVerticalMagnitudeRelative = elemAdvancedSettings.attribute( "vertical-relative" ).toInt();
   mRenderingStyle = static_cast<QgsMesh3DSymbol::RenderingStyle>( elemAdvancedSettings.attribute( QStringLiteral( "texture-type" ) ).toInt() );
-  mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ) );
+  mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ), context );
   mColorRampShader.setMinimumValue( elemAdvancedSettings.attribute( QStringLiteral( "min-color-ramp-shader" ) ).toDouble() );
   mColorRampShader.setMaximumValue( elemAdvancedSettings.attribute( QStringLiteral( "max-color-ramp-shader" ) ).toDouble() );
   mSingleColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "texture-single-color" ) ) );
   mArrowsEnabled = elemAdvancedSettings.attribute( QStringLiteral( "arrows-enabled" ) ).toInt();
-  mArrowsSpacing = elemAdvancedSettings.attribute( QStringLiteral( "arrows-spacing" ) ).toDouble();
+  if ( elemAdvancedSettings.hasAttribute( QStringLiteral( "arrows-spacing" ) ) )
+    mArrowsSpacing = elemAdvancedSettings.attribute( QStringLiteral( "arrows-spacing" ) ).toDouble();
   mArrowsFixedSize = elemAdvancedSettings.attribute( QStringLiteral( "arrows-fixed-size" ) ).toInt();
   QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDDP.isNull() )
@@ -240,6 +272,16 @@ void QgsMesh3DSymbol::setArrowsFixedSize( bool arrowsFixeSize )
   mArrowsFixedSize = arrowsFixeSize;
 }
 
+int QgsMesh3DSymbol::levelOfDetailIndex() const
+{
+  return mLevelOfDetailIndex;
+}
+
+void QgsMesh3DSymbol::setLevelOfDetailIndex( int lod )
+{
+  mLevelOfDetailIndex = lod;
+}
+
 bool QgsMesh3DSymbol::isEnabled() const
 {
   return mEnabled;
@@ -248,4 +290,18 @@ bool QgsMesh3DSymbol::isEnabled() const
 void QgsMesh3DSymbol::setEnabled( bool enabled )
 {
   mEnabled = enabled;
+}
+
+
+QgsAbstractMaterialSettings *QgsMesh3DSymbol::material() const
+{
+  return mMaterial.get();
+}
+
+void QgsMesh3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+{
+  if ( material == mMaterial.get() )
+    return;
+
+  mMaterial.reset( material );
 }

@@ -27,10 +27,13 @@ originally part of the larger QgsRasterLayer class
 #include <QVector>
 #include <memory>
 
-#include "qgscolorramp.h"
-#include "qgsrasterinterface.h"
 #include "qgsrastershaderfunction.h"
 #include "qgsrectangle.h"
+#include "qgsreadwritecontext.h"
+#include "qgscolorramplegendnodesettings.h"
+
+class QgsColorRamp;
+class QgsRasterInterface;
 
 /**
  * \ingroup core
@@ -68,6 +71,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 
+    ~QgsColorRampShader() override;
+
     /**
      * Copy constructor
      */
@@ -77,6 +82,21 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Assignment operator
      */
     QgsColorRampShader &operator=( const QgsColorRampShader &other );
+
+    bool operator==( const QgsColorRampShader &other ) const
+    {
+      if ( mColorRampItemList.count() != other.mColorRampItemList.count() ||
+           mClassificationMode != other.mClassificationMode ||
+           mColorRampType != other.mColorRampType )
+      {
+        return false;
+      }
+      for ( int i = 0; i < mColorRampItemList.count(); ++i )
+      {
+        if ( mColorRampItemList.at( i ) != other.mColorRampItemList.at( i ) ) return false;
+      }
+      return true;
+    }
 
     //An entry for classification based upon value.
     //Such a classification is typically used for
@@ -99,6 +119,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
       // compare operator for sorting
       bool operator<( const QgsColorRampShader::ColorRampItem &other ) const { return value < other.value; }
+
+      bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const
+      {
+        return ( color != other.color ) ||
+               ( !std::isnan( value ) && !std::isnan( other.value ) && value != other.value ) ||
+               ( std::isnan( value ) != std::isnan( other.value ) );
+      }
     };
 
     //! Returns the custom colormap.
@@ -172,13 +199,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Writes configuration to a new DOM element
      * \since QGIS 3.4
      */
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Reads configuration from the given DOM element
      * \since QGIS 3.4
      */
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode ) { mClassificationMode = classificationMode; }
@@ -199,6 +226,24 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     bool clip() const { return mClip; }
 
+    /**
+     * Returns the color ramp shader legend settings.
+     *
+     * \see setLegendSettings()
+     * \since QGIS 3.18
+     */
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+
+    /**
+     * Sets the color ramp shader legend \a settings.
+     *
+     * Ownership of \a settings is transferred.
+     *
+     * \see legendSettings()
+     * \since QGIS 3.18
+     */
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
+
   protected:
 
     //! Source color ramp
@@ -211,7 +256,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values
      * between two class breaks (TRUE) or if the item values are (linearly)
-     * interpolated for values between the item values (FALSE)*/
+     * interpolated for values between the item values (FALSE)
+    */
     QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     Type mColorRampType;
@@ -219,14 +265,18 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /**
      * Look up table to speed up finding the right color.
-      * It is initialized on the first call to shade(). */
-    mutable QVector<int> mLUT;
+     * It is initialized on the first call to shade().
+    */
+    mutable std::vector<int> mLUT;
     mutable double mLUTOffset = 0.0;
     mutable double mLUTFactor = 1.0;
     mutable bool mLUTInitialized = false;
 
     //! Do not render values out of range
     bool mClip = false;
+
+    std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
+
 };
 
 #endif

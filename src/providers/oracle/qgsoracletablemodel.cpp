@@ -69,7 +69,9 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     }
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
+    QStandardItem *typeItem = new QStandardItem(
+      QgsLayerItem::iconForWkbType( wkbType ),
+      wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsWkbTypes::translatedDisplayString( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
     if ( wkbType == QgsWkbTypes::Unknown )
@@ -218,29 +220,6 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
       }
     }
   }
-}
-
-QIcon QgsOracleTableModel::iconForWkbType( QgsWkbTypes::Type type )
-{
-  switch ( QgsWkbTypes::geometryType( type ) )
-  {
-    case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-
-    case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-
-    case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-
-    case QgsWkbTypes::UnknownGeometry:
-      return QgsApplication::getThemeIcon( "/mIconLayer.png" );
-
-    case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
-
-  }
-  return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
 }
 
 bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

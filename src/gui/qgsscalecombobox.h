@@ -60,7 +60,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     double scale() const;
 
     /**
-     * Returns true if the combo box is currently set to a "null" value.
+     * Returns TRUE if the combo box is currently set to a "null" value.
      *
      * \see setAllowNull()
      * \see setNull()
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     /**
      * Sets the combo box to the null value.
      *
-     * This only has an effect if allowNull() is true.
+     * This only has an effect if allowNull() is TRUE.
      *
      * \see allowNull()
      * \see isNull()

@@ -81,7 +81,7 @@ Default constructor
     virtual QString id() const = 0;
 %Docstring
 Returns a unique id for this field formatter.
-This id will later be used to identify this field formatter in the registry with :py:func:`QgsFieldFormatterRegistry.fieldFormatter()`
+This id will later be used to identify this field formatter in the registry with :py:func:`QgsFieldFormatterRegistry.fieldFormatter()`.
 
 This id matches the id of a :py:class:`QgsEditorWidgetFactory`.
 %End

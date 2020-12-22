@@ -1,6 +1,7 @@
 {
   "name": "make_point",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a point geometry from an x and y (and optional z and m) value.",
   "arguments": [
     {"arg":"x","description":"x coordinate of point"},

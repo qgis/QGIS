@@ -166,13 +166,15 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     // Get neighboring polygons
     QMap<QString, QgsFeatureIds> neighboringIds;
     const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds.keys(), gapAreaBBox, compatibleGeometryTypes(), mContext );
+    std::unique_ptr< QgsGeometryEngine > gapGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( gapGeom, mContext->tolerance );
+    gapGeomEngine->prepareGeometry();
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
       const QgsGeometry geom = layerFeature.geometry();
-      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, geom.constGet(), mContext->reducedTolerance ) > 0 )
+      if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance )
       {
         neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
-        gapAreaBBox.combineExtentWith( layerFeature.geometry().boundingBox() );
+        gapAreaBBox.combineExtentWith( geom.boundingBox() );
       }
     }
 
@@ -339,7 +341,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
       const QgsAbstractGeometry *testGeom = featureGeom.constGet();
       for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
       {
-        double val;
+        double val = 0;
         switch ( condition )
         {
           case LongestSharedEdge:
@@ -347,7 +349,9 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
             break;
 
           case LargestArea:
-            val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
+            // We might get a neighbour where we touch only a corner
+            if ( QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom.get(), QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance ) > 0 )
+              val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
             break;
         }
 
@@ -367,20 +371,33 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
-  QgsSpatialIndex neighbourIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
-  neighbourIndex.addFeatures( neighbours );
+  // Create an index of all neighbouring vertices
+  QgsSpatialIndex neighbourVerticesIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
+  int id = 0;
+  for ( const QgsFeature &neighbour : neighbours )
+  {
+    QgsVertexIterator vit = neighbour.geometry().vertices();
+    while ( vit.hasNext() )
+    {
+      QgsPoint pt = vit.next();
+      QgsFeature f;
+      f.setId( id ); // required for SpatialIndex to return the correct result
+      f.setGeometry( QgsGeometry( pt.clone() ) );
+      neighbourVerticesIndex.addFeature( f );
+      id++;
+    }
+  }
 
+  // Snap to the closest vertex
   QgsPolyline snappedRing;
   QgsVertexIterator iterator = errGeometry->vertices();
   while ( iterator.hasNext() )
   {
     QgsPoint pt = iterator.next();
-    QgsVertexId id;
-    QgsGeometry closestGeom = neighbourIndex.geometry( neighbourIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
+    QgsGeometry closestGeom = neighbourVerticesIndex.geometry( neighbourVerticesIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
     if ( !closestGeom.isEmpty() )
     {
-      QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *closestGeom.constGet(), pt, id );
-      snappedRing.append( closestPoint );
+      snappedRing.append( QgsPoint( closestGeom.vertexAt( 0 ) ) );
     }
   }
 
@@ -429,7 +446,7 @@ QList<QgsGeometryCheckResolutionMethod> QgsGeometryGapCheck::availableResolution
   };
 
   if ( mAllowedGapsSource )
-    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), false );
+    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add Gap to Allowed Exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), true );
 
   fixes << QgsGeometryCheckResolutionMethod( NoChange, tr( "No action" ), tr( "Do not perform any action and mark this error as fixed." ), false );
 

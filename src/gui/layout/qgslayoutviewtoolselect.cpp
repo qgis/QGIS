@@ -119,7 +119,7 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     //not clicking over an item, so start marquee selection
     mIsSelecting = true;
     mMousePressStartPos = event->pos();
-    mRubberBand->start( event->layoutPoint(), nullptr );
+    mRubberBand->start( event->layoutPoint(), Qt::KeyboardModifiers() );
     return;
   }
 
@@ -159,7 +159,7 @@ void QgsLayoutViewToolSelect::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( mIsSelecting )
   {
-    mRubberBand->update( event->layoutPoint(), nullptr );
+    mRubberBand->update( event->layoutPoint(), Qt::KeyboardModifiers() );
   }
   else
   {

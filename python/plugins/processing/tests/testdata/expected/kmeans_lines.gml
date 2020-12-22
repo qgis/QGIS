@@ -15,41 +15,48 @@
     <ogr:kmeans_lines fid="lines.0">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,2 9,2 9,3 11,5</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>3</ogr:CLUSTER_SIZE>
     </ogr:kmeans_lines>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:kmeans_lines fid="lines.1">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>-1,-1 1,-1</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:CLUSTER_ID>0</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>3</ogr:CLUSTER_SIZE>
     </ogr:kmeans_lines>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:kmeans_lines fid="lines.2">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>2,0 2,2 3,2 3,3</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:CLUSTER_ID>0</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>3</ogr:CLUSTER_SIZE>
     </ogr:kmeans_lines>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:kmeans_lines fid="lines.3">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>3,1 5,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:CLUSTER_ID>0</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>3</ogr:CLUSTER_SIZE>
     </ogr:kmeans_lines>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:kmeans_lines fid="lines.4">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>7,-3 10,-3</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>3</ogr:CLUSTER_SIZE>
     </ogr:kmeans_lines>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:kmeans_lines fid="lines.5">
       <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>6,-3 10,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>3</ogr:CLUSTER_SIZE>
     </ogr:kmeans_lines>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:kmeans_lines fid="lines.6">
       <ogr:CLUSTER_ID xsi:nil="true"/>
+      <ogr:CLUSTER_SIZE xsi:nil="true"/>
     </ogr:kmeans_lines>
   </gml:featureMember>
 </ogr:FeatureCollection>

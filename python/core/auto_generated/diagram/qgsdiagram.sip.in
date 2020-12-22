@@ -12,7 +12,7 @@
 class QgsDiagram /NoDefaultCtors/
 {
 %Docstring
-Base class for all diagram types*
+Base class for all diagram types.
 %End
 
 %TypeHeaderCode
@@ -21,13 +21,13 @@ Base class for all diagram types*
   public:
 
 %ConvertToSubClassCode
-    if ( sipCpp->diagramName() == QStringLiteral( "Pie" ) )
+    if ( sipCpp->diagramName() == QLatin1String( "Pie" ) )
       sipType = sipType_QgsPieDiagram;
-    else if ( sipCpp->diagramName() == QStringLiteral( "Histogram" ) )
+    else if ( sipCpp->diagramName() == QLatin1String( "Histogram" ) )
       sipType = sipType_QgsHistogramDiagram;
-    else if ( sipCpp->diagramName() == QStringLiteral( "Text" ) )
+    else if ( sipCpp->diagramName() == QLatin1String( "Text" ) )
       sipType = sipType_QgsTextDiagram;
-    else if ( sipCpp->diagramName() == QStringLiteral( "Stacked" ) )
+    else if ( sipCpp->diagramName() == QLatin1String( "Stacked" ) )
       sipType = sipType_QgsStackedBarDiagram;
     else
       sipType = NULL;

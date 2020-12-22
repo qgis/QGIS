@@ -49,16 +49,16 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool
     for ( const QgsLegendSymbolItem &item : constLegendSymbolItems )
     {
       if ( item.symbol() )
-        mList << item;
+        mLegendSymbols << item;
     }
   }
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
   int maxLayers = 0;
-  tableLevels->setRowCount( mList.count() );
-  for ( int i = 0; i < mList.count(); i++ )
+  tableLevels->setRowCount( mLegendSymbols.count() );
+  for ( int i = 0; i < mLegendSymbols.count(); i++ )
   {
-    QgsSymbol *sym = mList.at( i ).symbol();
+    QgsSymbol *sym = mLegendSymbols.at( i ).symbol();
 
     // set icons for the rows
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( sym, QSize( iconSize, iconSize ) );
@@ -93,10 +93,10 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool
 void QgsSymbolLevelsWidget::populateTable()
 {
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-  for ( int row = 0; row < mList.count(); row++ )
+  for ( int row = 0; row < mLegendSymbols.count(); row++ )
   {
-    QgsSymbol *sym = mList.at( row ).symbol();
-    QString label = mList.at( row ).label();
+    QgsSymbol *sym = mLegendSymbols.at( row ).symbol();
+    QString label = mLegendSymbols.at( row ).label();
     QTableWidgetItem *itemLabel = new QTableWidgetItem( label );
     itemLabel->setFlags( itemLabel->flags() ^ Qt::ItemIsEditable );
     tableLevels->setItem( row, 0, itemLabel );
@@ -129,12 +129,12 @@ void QgsSymbolLevelsWidget::updateUi()
 
 void QgsSymbolLevelsWidget::apply()
 {
-  for ( int i = 0; i < mList.count(); i++ )
+  for ( const QgsLegendSymbolItem &legendSymbol : qgis::as_const( mLegendSymbols ) )
   {
-    QgsSymbol *sym = mList.at( i ).symbol();
+    QgsSymbol *sym = legendSymbol.symbol();
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
     {
-      mRenderer->setLegendSymbolItem( mList.at( i ).ruleKey(), sym->clone() );
+      mRenderer->setLegendSymbolItem( legendSymbol.ruleKey(), sym->clone() );
     }
   }
 
@@ -143,9 +143,9 @@ void QgsSymbolLevelsWidget::apply()
 
 void QgsSymbolLevelsWidget::setDefaultLevels()
 {
-  for ( int i = 0; i < mList.count(); i++ )
+  for ( int i = 0; i < mLegendSymbols.count(); i++ )
   {
-    QgsSymbol *sym = mList.at( i ).symbol();
+    QgsSymbol *sym = mLegendSymbols.at( i ).symbol();
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
     {
       sym->symbolLayer( layer )->setRenderingPass( layer );
@@ -160,9 +160,9 @@ bool QgsSymbolLevelsWidget::usingLevels() const
 
 void QgsSymbolLevelsWidget::renderingPassChanged( int row, int column )
 {
-  if ( row < 0 || row >= mList.count() )
+  if ( row < 0 || row >= mLegendSymbols.count() )
     return;
-  QgsSymbol *sym = mList.at( row ).symbol();
+  QgsSymbol *sym = mLegendSymbols.at( row ).symbol();
   if ( column < 0 || column > sym->symbolLayerCount() )
     return;
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );

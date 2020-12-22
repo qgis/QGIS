@@ -186,7 +186,7 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
       if ( layerInfo->type() != QgsSymbol::Hybrid )
       {
         QString visibleName = layerInfo->visibleName();
-        QString name = QString( tr( "Outline: %1" ) ).arg( visibleName );
+        QString name = tr( "Outline: %1" ).arg( visibleName );
         cboLayerType->addItem( name, lineLayerId );
       }
     }
@@ -228,19 +228,19 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
 
 QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
 {
-  if ( mContext.expressionContext() )
-    return *mContext.expressionContext();
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
              << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mContext.mapCanvas() )
+  if ( auto *lMapCanvas = mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
-    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    expContext << QgsExpressionContextUtils::mapSettingsScope( lMapCanvas->mapSettings() )
+               << new QgsExpressionContextScope( lMapCanvas->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( lMapCanvas->temporalController() ) )
     {
       expContext << generator->createExpressionContextScope();
     }

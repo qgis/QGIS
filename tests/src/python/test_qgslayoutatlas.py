@@ -516,6 +516,62 @@ class TestQgsLayoutAtlas(unittest.TestCase):
             self.assertTrue(myTestResult, myMessage)
         self.atlas.endRender()
 
+    def test_clipping(self):
+        vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
+        vectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
+
+        p = QgsProject()
+        p.addMapLayers([vectorLayer])
+
+        # create layout with layout map
+
+        # select epsg:2154
+        crs = QgsCoordinateReferenceSystem('epsg:2154')
+        p.setCrs(crs)
+
+        layout = QgsPrintLayout(p)
+        layout.initializeDefaults()
+
+        # fix the renderer, fill with green
+        props = {"color": "0,127,0", 'outline_style': 'no'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vectorLayer.setRenderer(renderer)
+
+        # the atlas map
+        atlas_map = QgsLayoutItemMap(layout)
+        atlas_map.attemptSetSceneRect(QRectF(20, 20, 130, 130))
+        atlas_map.setFrameEnabled(False)
+        atlas_map.setLayers([vectorLayer])
+        layout.addLayoutItem(atlas_map)
+
+        # the atlas
+        atlas = layout.atlas()
+        atlas.setCoverageLayer(vectorLayer)
+        atlas.setEnabled(True)
+
+        atlas_map.setExtent(
+            QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
+
+        atlas_map.setAtlasDriven(True)
+        atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        atlas_map.setAtlasMargin(0.10)
+
+        atlas_map.atlasClippingSettings().setEnabled(True)
+
+        atlas.beginRender()
+
+        for i in range(0, 2):
+            atlas.seekTo(i)
+
+            checker = QgsLayoutChecker('atlas_clipping%d' % (i + 1), layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        atlas.endRender()
+
     def legend_test(self):
         self.atlas_map.setAtlasDriven(True)
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)

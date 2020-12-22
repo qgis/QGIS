@@ -15,6 +15,7 @@
 
 #include "qgsafsshareddata.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsarcgisrestquery.h"
 #include "qgslogger.h"
 
 void QgsAfsSharedData::clearCache()
@@ -64,7 +65,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   if ( !referer.isEmpty() )
     headers[ QStringLiteral( "Referer" )] = referer;
 
-  const QVariantMap queryData = QgsArcGisRestUtils::getObjects(
+  const QVariantMap queryData = QgsArcGisRestQueryUtils::getObjects(
                                   mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                                   QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
                                   filterRect, errorTitle, errorMessage, headers, feedback );
@@ -105,7 +106,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
       // date/datetime fields must be converted
       if ( mFields.at( idx ).type() == QVariant::DateTime || mFields.at( idx ).type() == QVariant::Date )
-        attribute = QgsArcGisRestUtils::parseDateTime( attribute );
+        attribute = QgsArcGisRestUtils::convertDateTime( attribute );
 
       if ( !mFields.at( idx ).convertCompatible( attribute ) )
       {
@@ -124,8 +125,8 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
     // Set geometry
     const QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
-    std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
-        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
+    std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
+        QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) ) );
     // Above might return 0, which is OK since in theory empty geometries are allowed
     if ( geometry )
       feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
@@ -154,7 +155,7 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   const QString referer = mDataSource.param( QStringLiteral( "referer" ) );
   if ( !referer.isEmpty() )
     headers[ QStringLiteral( "Referer" )] = referer;
-  const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
+  const QList<quint32> featuresInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
                                         extent, errorTitle, errorText, authcfg, headers, feedback );
 
   QgsFeatureIds ids;

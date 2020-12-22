@@ -162,6 +162,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       def.setLazy( true );
     }
+    else if ( key == QLatin1String( "subsetstring" ) )
+    {
+      def.setSubsetString( QUrl::fromPercentEncoding( value.toUtf8() ) );
+    }
   }
   def.setFields( fields );
 
@@ -182,7 +186,7 @@ static inline ushort encodeNibble( ushort c )
   return ushort( toHexUpper( c ) );
 }
 
-bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
+static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
 {
   while ( ptr + 4 <= end )
   {
@@ -302,6 +306,11 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
     urlQuery.addQueryItem( QStringLiteral( "lazy" ), QString() );
   }
 
+  if ( ! subsetString().isEmpty() )
+  {
+    urlQuery.addQueryItem( QStringLiteral( "subsetstring" ), QUrl::toPercentEncoding( subsetString() ) );
+  }
+
   url.setQuery( urlQuery );
 
   return url;
@@ -346,4 +355,14 @@ bool QgsVirtualLayerDefinition::hasReferencedLayers() const
     }
   }
   return false;
+}
+
+QString QgsVirtualLayerDefinition::subsetString() const
+{
+  return mSubsetString;
+}
+
+void QgsVirtualLayerDefinition::setSubsetString( const QString &subsetString )
+{
+  mSubsetString = subsetString;
 }

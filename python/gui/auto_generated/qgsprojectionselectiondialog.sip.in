@@ -19,6 +19,14 @@ Typically you will use this when you want to prompt the user for
 a coordinate system identifier e.g. from a plugin you might do this
 to get an epsg code:
 
+.. code-block:: python
+
+         crs = QgsCoordinateReferenceSystem()
+         mySelector = QgsProjectionSelectionDialog( iface.mainWindow() )
+         mySelector.setCrs( crs )
+         if mySelector.exec():
+           mCrs = mySelector.crs()
+
 If you wish to embed the projection selector into an existing dialog
 the you probably want to look at QgsProjectionSelectionWidget instead.
 
@@ -36,6 +44,8 @@ the you probably want to look at QgsProjectionSelectionWidget instead.
 Constructor for QgsProjectionSelectionDialog.
 %End
 
+    ~QgsProjectionSelectionDialog();
+
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the CRS currently selected in the widget.
@@ -47,15 +57,24 @@ Returns the CRS currently selected in the widget.
 
     void setMessage( const QString &message );
 %Docstring
-Sets a ``message`` to show in the dialog. If an empty string is
-passed, the message will be a generic
-'define the CRS for this layer'.
+Sets a ``message`` to show in the dialog.
+
+.. seealso:: :py:func:`showNoCrsForLayerMessage`
+%End
+
+    void showNoCrsForLayerMessage();
+%Docstring
+When called, the dialog will show a default "layer has no CRS set" message above the projection selector.
+
+.. seealso:: :py:func:`setMessage`
+
+.. versionadded:: 3.16
 %End
 
     void setShowNoProjection( bool show );
 %Docstring
 Sets whether a "no/invalid" projection option should be shown. If this
-option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`showNoProjection`
 
@@ -65,11 +84,19 @@ option is selected, calling crs() will return an invalid :py:class:`QgsCoordinat
     bool showNoProjection() const;
 %Docstring
 Returns whether the "no/invalid" projection option is shown. If this
-option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`setShowNoProjection`
 
 .. versionadded:: 3.0
+%End
+
+    void setNotSetText( const QString &text );
+%Docstring
+Sets the text to show for the not set option. Note that this option is not shown
+by default and must be set visible by calling :py:func:`~QgsProjectionSelectionDialog.setShowNoProjection`.
+
+.. versionadded:: 3.16
 %End
 
   public slots:
@@ -91,7 +118,7 @@ Sets this dialog to filter the available projections to those listed
 by the given Coordinate Reference Systems.
 
 :param crsFilter: a list of OGC Coordinate Reference Systems to filter the
-                  list of projections by.  This is useful in (e.g.) WMS situations
+                  list of projections by. This is useful in (e.g.) WMS situations
                   where you just want to offer what the WMS server can support.
 
 .. warning::

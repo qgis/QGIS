@@ -21,6 +21,7 @@
 
 class QgsGeorefDataPoint;
 class QgsPointXY;
+class QgsCoordinateReferenceSystem;
 
 // what is better use inherid or agrigate QList?
 class QgsGCPList : public QList<QgsGeorefDataPoint *>
@@ -29,7 +30,7 @@ class QgsGCPList : public QList<QgsGeorefDataPoint *>
     QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list );
 
-    void createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords );
+    void createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords, const QgsCoordinateReferenceSystem targetCrs );
     int size() const;
     int sizeAll() const;
 
