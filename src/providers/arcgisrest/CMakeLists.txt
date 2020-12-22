@@ -49,7 +49,7 @@ if (WITH_GUI)
     qgsafsprovidergui.cpp
     qgsafssourceselect.cpp
     qgsarcgisrestdataitemguiprovider.cpp
-    qgsarcgisservicesourceselect.cpp
+    qgsarcgisrestsourceselect.cpp
     qgsnewarcgisrestconnection.cpp
   )
 endif()
@@ -88,28 +88,12 @@ set (AMS_SRCS
   qgsamsprovider.cpp
 )
 
-if (WITH_GUI)
-  set(AMS_SRCS ${AMS_SRCS}
-    qgsamsprovidergui.cpp
-    qgsamssourceselect.cpp
-    qgsarcgisservicesourceselect.cpp
-    qgsnewarcgisrestconnection.cpp
-  )
-endif()
-
 add_library(arcgismapserverprovider MODULE ${AMS_SRCS})
 
 target_link_libraries(arcgismapserverprovider
   qgis_core
   ${QCA_LIBRARY}
 )
-
-if (WITH_GUI)
-  target_link_libraries(arcgismapserverprovider
-    qgis_gui
-  )
-  add_dependencies(arcgismapserverprovider ui)
-endif()
 
 install (TARGETS arcgismapserverprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

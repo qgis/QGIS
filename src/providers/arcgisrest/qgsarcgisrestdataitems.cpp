@@ -55,7 +55,7 @@ QVector<QgsDataItem *> QgsArcGisRestRootItem::createChildren()
 QWidget *QgsArcGisRestRootItem::paramWidget()
 {
   QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsArcGisRestRootItem::onConnectionsChanged );
+  connect( select, &QgsArcGisRestSourceSelect::connectionsChanged, this, &QgsArcGisRestRootItem::onConnectionsChanged );
   return select;
 }
 
