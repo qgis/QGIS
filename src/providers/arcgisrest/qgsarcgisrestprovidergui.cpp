@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsamsprovidergui.cpp
+  qgsafsprovidergui.cpp
   --------------------------------------
   Date                 : June 2019
   Copyright            : (C) 2019 by Martin Dobias
@@ -17,38 +17,46 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
-#include "qgsamsprovider.h"
-#include "qgsamssourceselect.h"
+#include "qgsarcgisrestdataitemguiprovider.h"
+#include "qgsafsprovider.h"
+#include "qgsarcgisrestsourceselect.h"
 
 
-//! Provider for AMS layers source select
-class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
+//! Provider for AFS layers source select
+class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
-    QString text() const override { return QObject::tr( "ArcGIS Map Service" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
+    QString providerKey() const override { return QgsAfsProvider::AFS_PROVIDER_KEY; }
+    QString text() const override { return QObject::tr( "ArcGIS REST Server" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
-      return new QgsAmsSourceSelect( parent, fl, widgetMode );
+      return new QgsArcGisRestSourceSelect( parent, fl, widgetMode );
     }
 };
 
 
-class QgsAmsProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsArcGisRestProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
-    QgsAmsProviderGuiMetadata()
-      : QgsProviderGuiMetadata( QgsAmsProvider::AMS_PROVIDER_KEY )
+    QgsArcGisRestProviderGuiMetadata()
+      : QgsProviderGuiMetadata( QgsAfsProvider::AFS_PROVIDER_KEY )
     {
+    }
+
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
+    {
+      QList<QgsDataItemGuiProvider *> providers;
+      providers << new QgsArcGisRestDataItemGuiProvider();
+      return providers;
     }
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {
       QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsAmsSourceSelectProvider;
+      providers << new QgsArcGisRestSourceSelectProvider;
       return providers;
     }
 };
@@ -56,5 +64,5 @@ class QgsAmsProviderGuiMetadata: public QgsProviderGuiMetadata
 
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
-  return new QgsAmsProviderGuiMetadata();
+  return new QgsArcGisRestProviderGuiMetadata();
 }

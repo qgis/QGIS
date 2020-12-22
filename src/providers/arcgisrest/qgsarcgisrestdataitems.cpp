@@ -20,7 +20,7 @@
 #include "qgsarcgisportalutils.h"
 
 #ifdef HAVE_GUI
-#include "qgsafssourceselect.h"
+#include "qgsarcgisrestsourceselect.h"
 #endif
 
 #include <QMessageBox>
@@ -54,7 +54,7 @@ QVector<QgsDataItem *> QgsArcGisRestRootItem::createChildren()
 #ifdef HAVE_GUI
 QWidget *QgsArcGisRestRootItem::paramWidget()
 {
-  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
+  QgsArcGisRestSourceSelect *select = new QgsArcGisRestSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsArcGisRestSourceSelect::connectionsChanged, this, &QgsArcGisRestRootItem::onConnectionsChanged );
   return select;
 }
