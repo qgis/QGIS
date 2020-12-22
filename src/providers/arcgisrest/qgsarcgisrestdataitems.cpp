@@ -611,10 +611,10 @@ QgsArcGisRestDataItemProvider::QgsArcGisRestDataItemProvider()
   // migrate legacy map services by moving them to feature server group
 
   QgsSettings settings;
-  settings.beginGroup( "qgis/connections-arcgismapserver" );
+  settings.beginGroup( QStringLiteral( "qgis/connections-arcgismapserver" ) );
   const QStringList legacyServices = settings.childGroups();
   settings.endGroup();
-  settings.beginGroup( "qgis/connections-arcgisfeatureserver" );
+  settings.beginGroup( QStringLiteral( "qgis/connections-arcgisfeatureserver" ) );
   QStringList existingServices = settings.childGroups();
   settings.endGroup();
   for ( const QString &legacyService : legacyServices )
