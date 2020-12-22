@@ -56,15 +56,15 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
   QColor color1 = DEFAULT_GRADIENT_COLOR1;
   QColor color2 = DEFAULT_GRADIENT_COLOR2;
   if ( props.contains( QStringLiteral( "color1" ) ) )
-    color1 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color1" )] );
+    color1 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color1" )].toString() );
   if ( props.contains( QStringLiteral( "color2" ) ) )
-    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color2" )] );
+    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color2" )].toString() );
 
   //stops
   QgsGradientStopsList stops;
   if ( props.contains( QStringLiteral( "stops" ) ) )
   {
-    const auto constSplit = props["stops"].split( ':' );
+    const auto constSplit = props["stops"].toString().split( ':' );
     for ( const QString &stop : constSplit )
     {
       int i = stop.indexOf( ';' );
@@ -86,11 +86,11 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
 
   // search for information keys starting with "info_"
   QgsStringMap info;
-  for ( QgsStringMap::const_iterator it = props.constBegin();
+  for ( QVariantMap::const_iterator it = props.constBegin();
         it != props.constEnd(); ++it )
   {
     if ( it.key().startsWith( QLatin1String( "info_" ) ) )
-      info[ it.key().mid( 5 )] = it.value();
+      info[ it.key().mid( 5 )] = it.value().toString();
   }
 
   QgsGradientColorRamp *r = new QgsGradientColorRamp( color1, color2, discrete, stops );
@@ -518,7 +518,7 @@ QgsColorRamp *QgsColorBrewerColorRamp::create( const QVariantMap &props )
   bool inverted = false;
 
   if ( props.contains( QStringLiteral( "schemeName" ) ) )
-    schemeName = props[QStringLiteral( "schemeName" )];
+    schemeName = props[QStringLiteral( "schemeName" )].toString();
   if ( props.contains( QStringLiteral( "colors" ) ) )
     colors = props[QStringLiteral( "colors" )].toInt();
   if ( props.contains( QStringLiteral( "inverted" ) ) )
@@ -632,9 +632,9 @@ QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props )
   bool inverted = false;
 
   if ( props.contains( QStringLiteral( "schemeName" ) ) )
-    schemeName = props[QStringLiteral( "schemeName" )];
+    schemeName = props[QStringLiteral( "schemeName" )].toString();
   if ( props.contains( QStringLiteral( "variantName" ) ) )
-    variantName = props[QStringLiteral( "variantName" )];
+    variantName = props[QStringLiteral( "variantName" )].toString();
   if ( props.contains( QStringLiteral( "inverted" ) ) )
     inverted = props[QStringLiteral( "inverted" )].toInt();
 
@@ -848,14 +848,14 @@ QgsColorRamp *QgsPresetSchemeColorRamp::create( const QVariantMap &properties )
   QgsNamedColorList colors;
 
   int i = 0;
-  QString colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() );
-  QString colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() );
+  QString colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() ).toString();
+  QString colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() ).toString();
   while ( !colorString.isEmpty() )
   {
     colors << qMakePair( QgsSymbolLayerUtils::decodeColor( colorString ), colorName );
     i++;
-    colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() );
-    colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() );
+    colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() ).toString();
+    colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() ).toString();
   }
 
   return new QgsPresetSchemeColorRamp( colors );

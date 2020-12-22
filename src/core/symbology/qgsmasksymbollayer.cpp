@@ -22,7 +22,7 @@
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
-  mSymbol.reset( static_cast<QgsMarkerSymbol *>( QgsMarkerSymbol::createSimple( QgsStringMap() ) ) );
+  mSymbol.reset( static_cast<QgsMarkerSymbol *>( QgsMarkerSymbol::createSimple( QVariantMap() ) ) );
 }
 
 bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
@@ -44,7 +44,7 @@ QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
 
   if ( props.contains( QStringLiteral( "mask_symbollayers" ) ) )
   {
-    l->setMasks( stringToSymbolLayerReferenceList( props[QStringLiteral( "mask_symbollayers" )] ) );
+    l->setMasks( stringToSymbolLayerReferenceList( props[QStringLiteral( "mask_symbollayers" )].toString() ) );
   }
   return l;
 }

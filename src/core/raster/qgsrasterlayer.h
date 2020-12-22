@@ -463,7 +463,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \returns TRUE in case of success
      * \since QGIS 3.6
      */
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 
     /**
      * If the ignoreExtent flag is set, the layer will also render outside the

@@ -451,8 +451,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QDomElement createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value );
     static QgsStringMap getVendorOptionList( QDomElement &element );
 
-    static QgsStringMap parseProperties( QDomElement &element );
-    static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
+    static QVariantMap parseProperties( const QDomElement &element );
+    static void saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element );
 
     //! Reads a collection of symbols from XML and returns them in a map. Caller is responsible for deleting returned symbols.
     static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -717,33 +717,33 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *  returns the value un-modified
      * \since QGIS 3.0
      */
-    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
+    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QVariantMap &props );
 
     /**
      * Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) SIP_PYNAME( rescalePointUom );
+    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescalePointUom );
 
     /**
      * Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) SIP_PYNAME( rescaleArrayUom );
+    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescaleArrayUom );
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
      * \since QGIS 3.0
      */
-    static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QgsStringMap &props );
+    static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QVariantMap &props );
 
     /**
       * Merges the local scale limits, if any, with the ones already in the map, if any
       * \since QGIS 3.0
       */
-    static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QgsStringMap &props );
+    static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QVariantMap &props );
 
     /**
      * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,

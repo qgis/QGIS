@@ -160,7 +160,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
      * \since QGIS 3.6
     */
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
     /**
      * Accepts the specified symbology \a visitor, causing it to visit all symbols associated

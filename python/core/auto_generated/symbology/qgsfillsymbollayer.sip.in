@@ -54,7 +54,7 @@ Caller takes ownership of the returned symbol layer.
     virtual QgsSimpleFillSymbolLayer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
@@ -888,7 +888,7 @@ Creates a new QgsRasterFillSymbolLayer from a ``properties`` map. The caller tak
 ownership of the returned object.
 %End
 
-    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -1172,7 +1172,7 @@ Creates a new QgsSVGFillSymbolLayer from a SLD ``element``. The caller takes
 ownership of the returned object.
 %End
 
-    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -1191,7 +1191,7 @@ Used internally when reading/writing symbols.
 
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
 
@@ -1456,7 +1456,7 @@ ownership of the returned object.
 
     virtual QgsLinePatternFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
@@ -1726,7 +1726,7 @@ Caller takes ownership of the returned symbol layer.
     virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
@@ -2253,7 +2253,7 @@ Caller takes ownership of the returned symbol layer.
     virtual QgsCentroidFillSymbolLayer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual void setColor( const QColor &color );

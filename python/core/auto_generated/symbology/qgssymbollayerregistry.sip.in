@@ -33,7 +33,7 @@ Stores metadata about one symbol layer class.
     QString visibleName() const;
     QgsSymbol::SymbolType type() const;
 
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0 /Factory/;
+    virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) = 0 /Factory/;
 %Docstring
 Create a symbol layer of this type given the map of properties.
 %End
@@ -74,10 +74,10 @@ Convenience metadata class that uses static functions to create symbol layer and
 
 
 
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) /Factory/;
+    virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) /Factory/;
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) /Factory/;
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) /Factory/;
-    virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
   protected:
 
@@ -114,7 +114,7 @@ Returns metadata for specified symbol layer. Returns ``None`` if not found
 register a new symbol layer type. Takes ownership of the metadata instance.
 %End
 
-    QgsSymbolLayer *createSymbolLayer( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const /Factory/;
+    QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const /Factory/;
 %Docstring
 create a new instance of symbol layer given symbol layer name and properties
 %End

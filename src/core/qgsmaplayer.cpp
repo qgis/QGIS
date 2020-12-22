@@ -1453,7 +1453,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
     root.appendChild( layerNode );
   }
 
-  QgsStringMap props;
+  QVariantMap props;
   if ( hasScaleBasedVisibility() )
   {
     props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );

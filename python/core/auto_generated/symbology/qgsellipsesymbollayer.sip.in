@@ -21,7 +21,7 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
   public:
     QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
@@ -37,9 +37,9 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
     virtual QVariantMap properties() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;

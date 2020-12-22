@@ -459,7 +459,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsMultiBandColorRenderer::createLegendNode
   return res;
 }
 
-void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );

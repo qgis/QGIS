@@ -423,7 +423,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Converts the symbol to a SLD representation.
      */
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 
     /**
      * Returns the units to use for sizes and widths within the symbol. Individual

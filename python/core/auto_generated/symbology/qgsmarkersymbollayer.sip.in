@@ -246,7 +246,7 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
     virtual QgsSimpleMarkerSymbolLayer *clone() const /Factory/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -544,7 +544,7 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
-    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -573,7 +573,7 @@ Used internally when reading/writing symbols.
     virtual QgsSvgMarkerSymbolLayer *clone() const /Factory/;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     QString path() const;
@@ -732,7 +732,7 @@ Constructs raster marker symbol layer with picture from given absolute path to a
 %Docstring
 Creates a raster marker symbol layer from a string map of properties.
 
-:param properties: QgsStringMap properties object
+:param properties: QVariantMap properties object
 %End
 
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
@@ -917,7 +917,7 @@ Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
     virtual QgsFontMarkerSymbolLayer *clone() const /Factory/;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
 

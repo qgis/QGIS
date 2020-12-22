@@ -323,9 +323,9 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
   return r;
 }
 
-void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QgsStringMap newProps = props;
+  QVariantMap newProps = props;
   newProps[ QStringLiteral( "attribute" )] = mAttrName;
   newProps[ QStringLiteral( "method" )] = graduatedMethodStr( mGraduatedMethod );
 
