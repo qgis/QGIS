@@ -11,6 +11,7 @@
  ****************************************************************************/
 
 #include <pdal/pdal_types.hpp>
+#include <pdal/util/FileUtils.hpp>
 #include <pdal/util/ProgramArgs.hpp>
 
 #include "Common.hpp"

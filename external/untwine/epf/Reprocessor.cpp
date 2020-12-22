@@ -15,6 +15,7 @@
 
 #include "Reprocessor.hpp"
 #include "../untwine/Common.hpp"
+#include "../untwine/MapFile.hpp"
 
 namespace untwine
 {
@@ -48,7 +49,7 @@ Reprocessor::Reprocessor(const VoxelKey& k, int numPoints, int pointSize,
 
 void Reprocessor::run()
 {
-    auto ctx = pdal::FileUtils::mapFile(m_filename, true, 0, m_fileSize);
+    auto ctx = mapFile(m_filename, true, 0, m_fileSize);
     if (ctx.addr() == nullptr)
     {
         std::cerr << "FATAL: " + m_filename + ": " + ctx.what();
@@ -66,7 +67,7 @@ void Reprocessor::run()
         cell->advance();
         pos += m_pointSize;
     }
-    pdal::FileUtils::unmapFile(ctx);
+    unmapFile(ctx);
     pdal::FileUtils::deleteFile(m_filename);
 }
 

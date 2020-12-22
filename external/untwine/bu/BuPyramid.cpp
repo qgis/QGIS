@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include <pdal/util/FileUtils.hpp>
 #include <pdal/util/ProgramArgs.hpp>
 
 #include "BuPyramid.hpp"

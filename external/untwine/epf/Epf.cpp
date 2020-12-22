@@ -88,8 +88,8 @@ void Epf::run(const Options& options, ProgressWriter& progress)
         m_grid.resetLevel(options.level);
 
     // This is just a debug thing that will allow the number of input files to be limited.
-    if (fileInfos.size() > m_fileLimit)
-        fileInfos.resize(m_fileLimit);
+    if (fileInfos.size() > options.fileLimit)
+        fileInfos.resize(options.fileLimit);
 
     // Stick all the dimension names from each input file in a set.
     std::unordered_set<std::string> allDimNames;
