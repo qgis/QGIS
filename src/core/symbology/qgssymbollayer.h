@@ -343,7 +343,7 @@ class CORE_EXPORT QgsSymbolLayer
      * contains the configuration information for the symbol layer. This
      * is used to serialize a symbol layer perstistently.
      */
-    virtual QgsStringMap properties() const = 0;
+    virtual QVariantMap properties() const = 0 SIP_SKIP;
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Restores older data defined properties from string map.
      * \since QGIS 3.0
      */
-    void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
+    void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 
     /**
      * Copies all data defined properties of this layer to another symbol layer.

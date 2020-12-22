@@ -36,7 +36,7 @@ bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   return false;
 }
 
-QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QgsStringMap &props )
+QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
 {
   QgsMaskMarkerSymbolLayer *l = new QgsMaskMarkerSymbolLayer();
 
@@ -64,9 +64,9 @@ QString QgsMaskMarkerSymbolLayer::layerType() const
   return QStringLiteral( "MaskMarker" );
 }
 
-QgsStringMap QgsMaskMarkerSymbolLayer::properties() const
+QVariantMap QgsMaskMarkerSymbolLayer::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   props[QStringLiteral( "mask_symbollayers" )] = symbolLayerReferenceListToString( masks() );
   return props;
 }

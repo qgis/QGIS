@@ -43,7 +43,7 @@ QgsLayoutItemMapOverview::~QgsLayoutItemMapOverview() = default;
 
 void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 {
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,75" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );

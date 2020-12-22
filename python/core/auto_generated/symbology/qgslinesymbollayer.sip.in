@@ -32,7 +32,7 @@ and ``penStyle``.
 %End
 
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsSimpleLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -54,7 +54,7 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsSimpleLineSymbolLayer *clone() const /Factory/;
 
@@ -658,7 +658,7 @@ calculating individual symbol angles.
 
     virtual QgsMapUnitScale mapUnitScale() const ${SIP_FINAL};
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
 
   protected:
@@ -701,7 +701,7 @@ style and colors instead of the symbol's normal style.
 Copies all common properties of this layer to another templated symbol layer.
 %End
 
-    static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QgsStringMap &properties );
+    static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 %Docstring
 Sets all common symbol properties in the ``destLayer``, using the settings
 serialized in the ``properties`` map.
@@ -731,7 +731,7 @@ should be rotated to match the line segment alignment.
 %End
 
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsMarkerLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -843,7 +843,7 @@ The ``rotateSymbol`` argument specifies whether individual hash symbols
 should be rotated to match the line segment alignment.
 %End
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsHashedLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -856,7 +856,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsHashedLineSymbolLayer *clone() const /Factory/;
 

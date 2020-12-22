@@ -55,24 +55,24 @@ QgsMapUnitScale QgsVectorFieldSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-QgsSymbolLayer *QgsVectorFieldSymbolLayer::create( const QgsStringMap &properties )
+QgsSymbolLayer *QgsVectorFieldSymbolLayer::create( const QVariantMap &properties )
 {
   QgsVectorFieldSymbolLayer *symbolLayer = new QgsVectorFieldSymbolLayer();
   if ( properties.contains( QStringLiteral( "x_attribute" ) ) )
   {
-    symbolLayer->setXAttribute( properties[QStringLiteral( "x_attribute" )] );
+    symbolLayer->setXAttribute( properties[QStringLiteral( "x_attribute" )].toString() );
   }
   if ( properties.contains( QStringLiteral( "y_attribute" ) ) )
   {
-    symbolLayer->setYAttribute( properties[QStringLiteral( "y_attribute" )] );
+    symbolLayer->setYAttribute( properties[QStringLiteral( "y_attribute" )].toString() );
   }
   if ( properties.contains( QStringLiteral( "distance_unit" ) ) )
   {
-    symbolLayer->setDistanceUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "distance_unit" )] ) );
+    symbolLayer->setDistanceUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "distance_unit" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "distance_map_unit_scale" ) ) )
   {
-    symbolLayer->setDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "distance_map_unit_scale" )] ) );
+    symbolLayer->setDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "distance_map_unit_scale" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "scale" ) ) )
   {
@@ -96,23 +96,23 @@ QgsSymbolLayer *QgsVectorFieldSymbolLayer::create( const QgsStringMap &propertie
   }
   if ( properties.contains( QStringLiteral( "size_unit" ) ) )
   {
-    symbolLayer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "size_unit" )] ) );
+    symbolLayer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "size_unit" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "size_map_unit_scale" ) ) )
   {
-    symbolLayer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "size_map_unit_scale" )] ) );
+    symbolLayer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "size_map_unit_scale" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "offset" ) ) )
   {
-    symbolLayer->setOffset( QgsSymbolLayerUtils::decodePoint( properties[QStringLiteral( "offset" )] ) );
+    symbolLayer->setOffset( QgsSymbolLayerUtils::decodePoint( properties[QStringLiteral( "offset" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "offset_unit" ) ) )
   {
-    symbolLayer->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )] ) );
+    symbolLayer->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
   {
-    symbolLayer->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )] ) );
+    symbolLayer->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
   }
   return symbolLayer;
 }
@@ -226,9 +226,9 @@ QgsVectorFieldSymbolLayer *QgsVectorFieldSymbolLayer::clone() const
   return static_cast< QgsVectorFieldSymbolLayer * >( clonedLayer );
 }
 
-QgsStringMap QgsVectorFieldSymbolLayer::properties() const
+QVariantMap QgsVectorFieldSymbolLayer::properties() const
 {
-  QgsStringMap properties;
+  QVariantMap properties;
   properties[QStringLiteral( "x_attribute" )] = mXAttribute;
   properties[QStringLiteral( "y_attribute" )] = mYAttribute;
   properties[QStringLiteral( "distance_unit" )] = QgsUnitTypes::encodeUnit( mDistanceUnit );

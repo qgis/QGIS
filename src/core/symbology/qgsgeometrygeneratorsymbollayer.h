@@ -56,7 +56,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 

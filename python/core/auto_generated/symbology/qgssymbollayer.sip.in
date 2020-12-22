@@ -309,12 +309,6 @@ Shall be reimplemented by subclasses to create a deep copy of the instance.
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
-    virtual QgsStringMap properties() const = 0;
-%Docstring
-Should be reimplemented by subclasses to return a string map that
-contains the configuration information for the symbol layer. This
-is used to serialize a symbol layer perstistently.
-%End
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
@@ -540,7 +534,7 @@ This is a list of symbol layers of other layers that should be occluded.
 
 
 
-    void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
+    void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
 

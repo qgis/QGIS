@@ -40,7 +40,7 @@ A symbol layer class for displaying displacement arrows based on point layer att
 
     QgsVectorFieldSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 
     virtual QString layerType() const;
@@ -63,7 +63,7 @@ A symbol layer class for displaying displacement arrows based on point layer att
 
     virtual QgsVectorFieldSymbolLayer *clone() const /Factory/;
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
     virtual bool usesMapUnits() const;
 

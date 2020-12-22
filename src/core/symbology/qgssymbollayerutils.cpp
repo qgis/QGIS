@@ -35,6 +35,7 @@
 #include "qgseffectstack.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsrenderer.h"
+#include "qgsxmlutils.h"
 
 #include <QColor>
 #include <QFont>
@@ -1233,12 +1234,13 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
     layerEl.setAttribute( QStringLiteral( "locked" ), layer->isLocked() );
     layerEl.setAttribute( QStringLiteral( "pass" ), layer->renderingPass() );
 
-    QgsStringMap props = layer->properties();
+    QVariantMap props = layer->properties();
 
     // if there are any paths in properties, convert them from absolute to relative
     QgsApplication::symbolLayerRegistry()->resolvePaths( layer->layerType(), props, context.pathResolver(), true );
 
-    saveProperties( props, doc, layerEl );
+    QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
+    propEl.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
     if ( layer->paintEffect() && !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
 

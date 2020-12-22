@@ -34,7 +34,7 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
 
     virtual QgsEllipseSymbolLayer *clone() const /Factory/;
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;

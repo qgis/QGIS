@@ -62,19 +62,19 @@ void QgsGeometryGeneratorSymbolLayer::setSymbolType( QgsSymbol::SymbolType symbo
   if ( symbolType == QgsSymbol::Fill )
   {
     if ( !mFillSymbol )
-      mFillSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
+      mFillSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
     mSymbol = mFillSymbol.get();
   }
   else if ( symbolType == QgsSymbol::Line )
   {
     if ( !mLineSymbol )
-      mLineSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+      mLineSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
     mSymbol = mLineSymbol.get();
   }
   else if ( symbolType == QgsSymbol::Marker )
   {
     if ( !mMarkerSymbol )
-      mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+      mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
     mSymbol = mMarkerSymbol.get();
   }
   else
@@ -137,9 +137,9 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
   return clone;
 }
 
-QgsStringMap QgsGeometryGeneratorSymbolLayer::properties() const
+QVariantMap QgsGeometryGeneratorSymbolLayer::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "geometryModifier" ), mExpression->expression() );
   switch ( mSymbolType )
   {

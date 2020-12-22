@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
      * instances the paths are always absolute
      * \since QGIS 3.0
      */
-    virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
     {
       Q_UNUSED( properties )
       Q_UNUSED( pathResolver )
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
      * and converting absolute paths to relative paths when saving.
      * \since QGIS 3.0
      */
-    void resolvePaths( const QString &name, QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
+    void resolvePaths( const QString &name, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
 
     //! Returns a list of available symbol layers for a specified symbol type
     QStringList symbolLayersForType( QgsSymbol::SymbolType type );

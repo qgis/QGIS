@@ -997,7 +997,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
      * This is a convenience method for easier creation of marker symbols.
      */
-    static QgsMarkerSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
+    static QgsMarkerSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
 
     /**
      * Constructor for QgsMarkerSymbol, with the specified list of initial symbol \a layers.
@@ -1197,7 +1197,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
+    static QgsLineSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
 
     /**
      * Constructor for QgsLineSymbol, with the specified list of initial symbol \a layers.
@@ -1300,7 +1300,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
-    static QgsFillSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
+    static QgsFillSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
 
     /**
      * Constructor for QgsFillSymbol, with the specified list of initial symbol \a layers.
