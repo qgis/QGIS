@@ -17,7 +17,6 @@
 
 #include "qgsarcgisrestsourceselect.h"
 #include "qgsowsconnection.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
@@ -32,6 +31,7 @@
 #include "qgsgui.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsarcgisrestdataitems.h"
+#include "qgsnewarcgisrestconnection.h"
 
 #include <QButtonGroup>
 #include <QListWidgetItem>
@@ -219,7 +219,7 @@ void QgsArcGisRestSourceSelect::refresh()
 
 void QgsArcGisRestSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString() );
   nc.setWindowTitle( tr( "Create a New ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
@@ -231,7 +231,7 @@ void QgsArcGisRestSourceSelect::addEntryToServerList()
 
 void QgsArcGisRestSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
