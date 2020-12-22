@@ -18,10 +18,9 @@
 #include <mutex>
 #include <string>
 
-#include <pdal/util/ThreadPool.hpp>
-
 #include "EpfTypes.hpp"
 #include "BufferCache.hpp"
+#include "../untwine/ThreadPool.hpp"
 #include "../untwine/VoxelKey.hpp"
 
 namespace untwine
@@ -54,7 +53,7 @@ private:
     void run();
 
     std::string m_directory;
-    pdal::ThreadPool m_pool;
+    ThreadPool m_pool;
     BufferCache m_bufferCache;
     bool m_stop;
     size_t m_pointSize;
