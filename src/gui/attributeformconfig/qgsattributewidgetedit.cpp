@@ -137,9 +137,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
     update();
   } );
 
-  mRelationCardinalityCombo->setToolTip( tr( "This is being changed" ) );
-  mRelationCardinalityCombo->addItem( "CHECKED" );
-
+  mRelationCardinalityCombo->setToolTip( tr( "For a many to many (N:M) relation, the direct link has to be selected. The in-between table will be hidden." ) );
   setNmRelationId( config.nmRelationId );
 
   mRelationLabelEdit->setText( config.label );
