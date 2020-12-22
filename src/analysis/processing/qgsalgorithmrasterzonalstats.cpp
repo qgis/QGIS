@@ -34,7 +34,7 @@ QString QgsRasterLayerZonalStatsAlgorithm::displayName() const
 
 QStringList QgsRasterLayerZonalStatsAlgorithm::tags() const
 {
-  return QObject::tr( "count,area,statistics,stats,zones,categories,minimum,maximum,mean,sum,total" ).split( ',' );
+  return QObject::tr( "count,area,statistics,stats,zones,categories,minimum,maximum,mean,sum,total,median,majority,stdev" ).split( ',' );
 }
 
 QString QgsRasterLayerZonalStatsAlgorithm::group() const
@@ -183,6 +183,12 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     outFields.append( QgsField( QStringLiteral( "min" ), QVariant::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "max" ), QVariant::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "mean" ), QVariant::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "median" ), QVariant::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "majority" ), QVariant::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( QStringLiteral( "stdev" ), QVariant::Double, QString(), 20, 8 ) );
+
+
+
 
     sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, QgsWkbTypes::NoGeometry, QgsCoordinateReferenceSystem() ) );
     if ( !sink )
@@ -193,7 +199,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   {
     // only calculate cheap stats-- we cannot calculate stats which require holding values in memory -- because otherwise we'll end
     // up trying to store EVERY pixel value from the input in memory
-    QgsStatisticalSummary s{ QgsStatisticalSummary::Count | QgsStatisticalSummary::Sum | QgsStatisticalSummary::Min | QgsStatisticalSummary::Max | QgsStatisticalSummary::Mean };
+    QgsStatisticalSummary s{ QgsStatisticalSummary::Count | QgsStatisticalSummary::Sum | QgsStatisticalSummary::Min | QgsStatisticalSummary::Max | QgsStatisticalSummary::Mean | QgsStatisticalSummary::Median | QgsStatisticalSummary::Majority | QgsStatisticalSummary::StDev};
   };
   QHash<double, StatCalculator > zoneStats;
   qgssize noDataCount = 0;
@@ -279,7 +285,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     QgsFeature f;
     it->s.finalize();
     f.setAttributes( QgsAttributes() << it.key() << it->s.count() * pixelArea << it->s.sum() << it->s.count() <<
-                     it->s.min() << it->s.max() << it->s.mean() );
+                     it->s.min() << it->s.max() << it->s.mean() << it->s.median()<< it->s.majority()<< it->s.stDev() );
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   }
   outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
@@ -289,6 +295,4 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
 
 
 ///@endcond
-
-
 
