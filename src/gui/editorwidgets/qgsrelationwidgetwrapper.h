@@ -111,27 +111,29 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     /**
      * Defines the buttons which are shown
      * \since QGIS 3.16
-     * \deprecated since QGIS 3.18
+     * \deprecated since QGIS 3.18 use setWidgetConfig() instead
      */
-    Q_DECL_DEPRECATED void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+    Q_DECL_DEPRECATED void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) SIP_DEPRECATED;
 
     /**
      * Returns the buttons which are shown
      * \since QGIS 3.16
-     * \deprecated since QGIS 3.18
+     * \deprecated since QGIS 3.18 use widgetConfig() instead
      */
-    Q_DECL_DEPRECATED QgsAttributeEditorRelation::Buttons visibleButtons() const;
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation::Buttons visibleButtons() const SIP_DEPRECATED;
 
 
     /**
      * Will set the config of this widget wrapper to the specified config.
      *
      * \param config The config for this wrapper
+     * \since QGIS 3.18
      */
     void setWidgetConfig( const QVariantMap &config );
 
     /**
      * Returns the whole widget config
+     * \since QGIS 3.18
      */
     QVariantMap widgetConfig() const;
 

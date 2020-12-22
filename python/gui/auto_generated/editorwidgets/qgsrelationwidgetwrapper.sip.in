@@ -115,22 +115,24 @@ Determines if the "Save child layer edits" button should be shown
    use visibleButtons() instead
 %End
 
- void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+ void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) /Deprecated/;
 %Docstring
 Defines the buttons which are shown
 
 .. versionadded:: 3.16
 
 .. deprecated:: QGIS 3.18
+   use setWidgetConfig() instead
 %End
 
- QgsAttributeEditorRelation::Buttons visibleButtons() const;
+ QgsAttributeEditorRelation::Buttons visibleButtons() const /Deprecated/;
 %Docstring
 Returns the buttons which are shown
 
 .. versionadded:: 3.16
 
 .. deprecated:: QGIS 3.18
+   use widgetConfig() instead
 %End
 
 
@@ -139,11 +141,15 @@ Returns the buttons which are shown
 Will set the config of this widget wrapper to the specified config.
 
 :param config: The config for this wrapper
+
+.. versionadded:: 3.18
 %End
 
     QVariantMap widgetConfig() const;
 %Docstring
 Returns the whole widget config
+
+.. versionadded:: 3.18
 %End
 
     bool forceSuppressFormPopup() const;

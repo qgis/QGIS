@@ -475,14 +475,14 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * \since QGIS 3.16
      * \deprecated since QGIS 3.18 use setConfig() instead
      */
-    Q_DECL_DEPRECATED void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+    Q_DECL_DEPRECATED void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) SIP_DEPRECATED;
 
     /**
      * Returns the buttons which are shown
      * \since QGIS 3.16
-     * \deprecated since QGIS 3.18 use setConfig() instead
+     * \deprecated since QGIS 3.18 use config() instead
      */
-    Q_DECL_DEPRECATED QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation::Buttons visibleButtons() const SIP_DEPRECATED {return mButtons;}
 
     /**
      * Determines the force suppress form popup status.
@@ -526,11 +526,13 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
     /**
      * Returns the current relation widget type id
+     * \since QGIS 3.18
      */
     QString relationWidgetTypeId() const;
 
     /**
      * Sets the relation widget type
+     * \since QGIS 3.18
      */
     void setRelationWidgetTypeId( const QString &relationWidgetTypeId );
 
