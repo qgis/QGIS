@@ -283,6 +283,13 @@ Returns the path to the icons image directory.
 Returns the path to the srs.db file.
 %End
 
+    static void setSvgPaths( const QStringList &svgPaths );
+%Docstring
+Sets the paths to svg directories and invalidates the svg path list cache.
+
+.. versionadded:: 3.18
+%End
+
     static QStringList svgPaths();
 %Docstring
 Returns the paths to svg directories.
