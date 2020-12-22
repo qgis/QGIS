@@ -779,7 +779,7 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
       }
     }
     return QString();
-  };
+  }
 
   QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() );
   bool discrete = interpolation == QgsColorRampShader::Discrete;
