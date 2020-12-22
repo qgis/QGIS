@@ -343,7 +343,7 @@ class CORE_EXPORT QgsSymbolLayer
      * contains the configuration information for the symbol layer. This
      * is used to serialize a symbol layer perstistently.
      */
-    virtual QVariantMap properties() const = 0 SIP_SKIP;
+    virtual QVariantMap properties() const = 0;
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
