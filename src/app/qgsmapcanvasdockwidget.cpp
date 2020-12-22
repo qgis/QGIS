@@ -95,6 +95,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
   connect( mActionZoomFullExtent, &QAction::triggered, mMapCanvas, &QgsMapCanvas::zoomToFullExtent );
+  connect( mActionZoomToLayer, &QAction::triggered, mMapCanvas, [ = ] { QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayer( mMapCanvas ); } );
   connect( mActionZoomToLayers, &QAction::triggered, mMapCanvas, [ = ] { QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayers( mMapCanvas ); } );
   connect( mActionZoomToSelected, &QAction::triggered, mMapCanvas, [ = ] { mMapCanvas->zoomToSelected(); } );
   mapCrsChanged();
