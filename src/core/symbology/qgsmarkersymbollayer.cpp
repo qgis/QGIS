@@ -2668,6 +2668,7 @@ void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const Qg
         QVariantMap map = value.toMap();
         resolvePaths( map, pathResolver, saving );
         value.setValue( map );
+        break;
       }
 
       case QVariant::String:
@@ -2676,6 +2677,7 @@ void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const Qg
           value.setValue( QgsSymbolLayerUtils::svgSymbolPathToName( value.toString(), pathResolver ) );
         else
           value.setValue( QgsSymbolLayerUtils::svgSymbolNameToPath( value.toString(), pathResolver ) );
+        break;
       }
 
       case QVariant::StringList:
@@ -2689,6 +2691,7 @@ void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const Qg
             list[i] = QgsSymbolLayerUtils::svgSymbolNameToPath( list[i], pathResolver );
         }
         value.setValue( list );
+        break;
       }
 
       case QVariant::List:
@@ -2705,6 +2708,7 @@ void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const Qg
           }
         }
         value.setValue( list );
+        break;
       }
 
       default:
