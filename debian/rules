@@ -101,7 +101,6 @@ CMAKE_OPTS := \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_3D=TRUE \
 	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
-	-DWITH_PDAL=TRUE \
 	-DWITH_EPT=TRUE
 
 ifneq ($(SHA),)
@@ -113,6 +112,10 @@ ifeq ($(GRASSVER),7)
 		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS7=TRUE \
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -DWITH_PDAL=TRUE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
