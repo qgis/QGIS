@@ -2316,8 +2316,10 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
 
   setupUi( this );
 
+  mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
   mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
+  mSvgSelectorWidget->initParametersModel( this, vl );
 
   connect( mSvgSelectorWidget->sourceLineEdit(), &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgMarkerSymbolLayerWidget::svgSourceChanged );
   connect( mChangeColorButton, &QgsColorButton::colorChanged, this, &QgsSvgMarkerSymbolLayerWidget::mChangeColorButton_colorChanged );
@@ -2357,7 +2359,7 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol );
 
   connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgSelected, this, &QgsSvgMarkerSymbolLayerWidget::setSvgPath );
-
+  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsSvgMarkerSymbolLayerWidget::setSvgParameters );
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
@@ -2472,6 +2474,7 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   // set values
   mSvgSelectorWidget->setSvgPath( mLayer->path() );
+  mSvgSelectorWidget->setSvgParameters( mLayer->parameters() );
 
   spinWidth->blockSignals( true );
   spinWidth->setValue( mLayer->size() );
@@ -2541,6 +2544,15 @@ void QgsSvgMarkerSymbolLayerWidget::setSvgPath( const QString &name )
 {
   mLayer->setPath( name );
   whileBlocking( mSvgSelectorWidget->sourceLineEdit() )->setSource( name );
+
+  setGuiForSvg( mLayer );
+  emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerWidget::setSvgParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  mLayer->setParameters( parameters );
+  whileBlocking( mSvgSelectorWidget )->setSvgParameters( parameters );
 
   setGuiForSvg( mLayer );
   emit changed();
@@ -2743,7 +2755,7 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
   mStrokeColorDDBtn->registerLinkedWidget( mChangeStrokeColorButton );
 
   connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgSelected, this, &QgsSVGFillSymbolLayerWidget::setFile );
-
+  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsSVGFillSymbolLayerWidget::setSvgParameters );
 }
 
 void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -2834,6 +2846,15 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QString &name )
 {
   mLayer->setSvgFilePath( name );
   whileBlocking( mSvgSelectorWidget->sourceLineEdit() )->setSource( name );
+
+  updateParamGui();
+  emit changed();
+}
+
+void QgsSVGFillSymbolLayerWidget::setSvgParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  // TODO mLayer->setParameters(parameters);
+  whileBlocking( mSvgSelectorWidget )->setSvgParameters( parameters );
 
   updateParamGui();
   emit changed();

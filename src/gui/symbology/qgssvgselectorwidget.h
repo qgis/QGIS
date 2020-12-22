@@ -19,8 +19,10 @@
 
 #include "ui_widget_svgselector.h"
 #include "qgis_sip.h"
-
+#include "qgis_gui.h"
 #include "qgsguiutils.h"
+#include "qgsproperty.h"
+
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -29,7 +31,8 @@
 #include <QWidget>
 #include <QThread>
 #include <QElapsedTimer>
-#include "qgis_gui.h"
+#include <QStyledItemDelegate>
+
 
 class QCheckBox;
 class QLayout;
@@ -38,9 +41,102 @@ class QListView;
 class QPushButton;
 class QTreeView;
 
+class QgsExpressionContextGenerator;
+
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
+
+
+/**
+ * \ingroup gui
+ * \class QgsSvgParametersModel
+ * A model to hold dynamic SVG parameters
+ * \since QGIS 3.18
+ */
+class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
+{
+    Q_OBJECT
+
+  public:
+    enum class Column : int
+    {
+      NameColumn = 0,
+      ExpressionColumn = 1,
+    };
+
+    QgsSvgParametersModel( QObject *parent = nullptr );
+
+    //! Sets the parameters
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
+    //! Returns the valid parameters of the model
+    QMap<QString, QgsProperty> parameters() const;
+
+    //! Remove the parameter at given index
+    void removeParameter( const QModelIndex &index );
+
+    //! Sets the vector layer
+    void setLayer( QgsVectorLayer *layer );
+    //! Returns the vector layer
+    QgsVectorLayer *layer() const {return mLayer;}
+
+    //! Sets the expression context generator
+    void setExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+    //! Returns the expression context generator
+    const QgsExpressionContextGenerator *expressionContextGenerator() const {return mExpressionContextGenerator;}
+
+    int rowCount( const QModelIndex &parent ) const override;
+    int columnCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+  public slots:
+    //! Adds a new parameter
+    void addParameter();
+
+  signals:
+    //! Emitted when the parameters have changed
+    void parametersChanged( const QMap<QString, QgsProperty> &parameters );
+
+  private:
+    struct Parameter
+    {
+      Parameter( const QString &name, const QgsProperty &property )
+        : name( name ), property( property ) {}
+
+      QString name;
+      QgsProperty property;
+    };
+
+    QList<Parameter> mParameters;
+    QgsVectorLayer *mLayer = nullptr;
+    const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
+};
+
+/**
+ * \ingroup gui
+ * \class QgsSvgParameterValueDelegate
+ * A delegate which will show a field expression widget to set the value of the SVG parameter
+ * \since QGIS 3.18
+ */
+class GUI_EXPORT QgsSvgParameterValueDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsSvgParameterValueDelegate( QObject *parent = nullptr )
+      : QStyledItemDelegate( parent )
+    {}
+
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+};
+
+
 
 /**
  * \ingroup gui
@@ -260,6 +356,12 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     //! Constructor for QgsSvgSelectorWidget
     QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Initialize the parameters model so the context and the layer are referenced.
+     * \since QGIS 3.18
+     */
+    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer );
+
     QString currentSvgPath() const;
 
     /**
@@ -268,12 +370,31 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      */
     QgsSvgSourceLineEdit *sourceLineEdit() const {return mSvgSourceLineEdit;}
 
+    /**
+     * Defines if the group box to fill parameters is visible
+     * \since QGIS 3.18
+     */
+    void setAllowParameters( bool allow );
+
+    /**
+     * Returns if the group box to fill parameters is visible
+     * \since QGIS 3.18
+     */
+    bool allowParamerters() const {return mAllowParameters;}
+
   public slots:
     //! Accepts absolute paths
     void setSvgPath( const QString &svgPath );
 
+    /**
+     * Sets the dynamic parameters
+     * \since QGIS 3.18
+     */
+    void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
+
   signals:
     void svgSelected( const QString &path );
+    void svgParametersChanged( const QMap<QString, QgsProperty> &parameters );
 
   protected:
     void populateList();
@@ -285,11 +406,10 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void svgSourceChanged( const QString &text );
 
   private:
-
     int mIconSize = 30;
-
     QString mCurrentSvgPath; //!< Always stored as absolute path
-
+    bool mAllowParameters = false;
+    QgsSvgParametersModel *mParametersModel = nullptr;
 };
 
 /**

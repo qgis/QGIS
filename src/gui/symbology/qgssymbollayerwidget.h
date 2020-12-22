@@ -601,6 +601,8 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   public slots:
     //! Sets the SVG path
     void setSvgPath( const QString &name );
+    //! Sets the dynamic SVG parameters
+    void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
 
 
   protected:
@@ -800,6 +802,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     void mTextureWidthSpinBox_valueChanged( double d );
     void svgSourceChanged( const QString &text );
     void setFile( const QString &name );
+    void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
     void mRotationSpinBox_valueChanged( double d );
     void mChangeColorButton_colorChanged( const QColor &color );
     void mChangeStrokeColorButton_colorChanged( const QColor &color );
