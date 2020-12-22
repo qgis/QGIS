@@ -1488,6 +1488,11 @@ Sets the coordinate transform context to ``transformContext``
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    QgsProject *project() const;
+%Docstring
+Returns the parent project if available.
+%End
+
   signals:
 
     void beforeResolveReferences( QgsProject *project );

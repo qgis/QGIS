@@ -1335,6 +1335,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     % End
 #endif
 
+    /**
+     * Returns the parent project if available.
+     */
+    QgsProject *project() const;
+
   signals:
 
     /**
