@@ -71,12 +71,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     QgsArcGisRestBrowserProxyModel *mProxyModel = nullptr;
 
-    QPushButton *mBuildQueryButton = nullptr;
     QButtonGroup *mImageEncodingGroup = nullptr;
-
-    //! May be implemented in child classes for services which support customized queries.
-    virtual void buildQuery( const QgsOwsConnection &, const QModelIndex & ) {}
-    //! To be implemented in the child class. Constructs an URI for the specified service layer.
 
     //! Updates the UI for the list of available image encodings from the specified list.
     void populateImageEncodings( const QString &supportedFormats );
@@ -97,7 +92,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     void deleteEntryOfServerList();
     void modifyEntryOfServerList();
     void addButtonClicked() override;
-    void buildQueryButtonClicked();
     void updateCrsLabel();
     void updateImageEncodings();
     void connectToServer();
@@ -105,7 +99,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     void filterChanged( const QString &text );
     void cmbConnections_activated( int index );
     void showHelp();
-    void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void btnSave_clicked();
     void btnLoad_clicked();
