@@ -91,24 +91,15 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     //! May be implemented in child classes for services which support customized queries.
     virtual void buildQuery( const QgsOwsConnection &, const QModelIndex & ) {}
     //! To be implemented in the child class. Constructs an URI for the specified service layer.
-    virtual QString getLayerURI( const QgsOwsConnection &connection,
-                                 const QString &layerTitle,
-                                 const QString &layerName,
-                                 const QString &crs = QString(),
-                                 const QString &filter = QString(),
-                                 const QgsRectangle &bBox = QgsRectangle(),
-                                 const QString &layerId = QString() ) const = 0;
+
     //! Updates the UI for the list of available image encodings from the specified list.
-    void populateImageEncodings( const QStringList &availableEncodings );
+    void populateImageEncodings( const QString &supportedFormats );
     //! Returns the selected image encoding.
     QString getSelectedImageEncoding() const;
     void showEvent( QShowEvent *event ) override;
 
   private:
     void populateConnectionList();
-
-    //! A layer is added from the dialog
-    virtual void addServiceLayer( QString uri, QString typeName ) = 0;
 
   public slots:
 
@@ -122,6 +113,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     void addButtonClicked() override;
     void buildQueryButtonClicked();
     void updateCrsLabel();
+    void updateImageEncodings();
     void connectToServer();
     void disconnectFromServer();
     void filterChanged( const QString &text );

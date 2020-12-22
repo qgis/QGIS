@@ -33,14 +33,7 @@ class QgsAfsSourceSelect: public QgsArcGisRestSourceSelect
   protected:
     bool connectToService( const QgsOwsConnection &connection ) override;
     void buildQuery( const QgsOwsConnection &connection, const QModelIndex & ) override;
-    QString getLayerURI( const QgsOwsConnection &connection,
-                         const QString &layerTitle, const QString &layerName,
-                         const QString &crs = QString(),
-                         const QString &filter = QString(),
-                         const QgsRectangle &bBox = QgsRectangle(), const QString &layerId = QString() ) const override;
-  private:
-    //! A layer is added from the dialog
-    void addServiceLayer( QString uri, QString typeName ) override;
+
 
 };
 

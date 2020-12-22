@@ -153,17 +153,3 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
   return true;
 }
-
-QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
-    const QString &layerTitle, const QString & /*layerName*/,
-    const QString &crs,
-    const QString & /*filter*/,
-    const QgsRectangle & /*bBox*/, const QString &layerId ) const
-{
-
-}
-
-void QgsAmsSourceSelect::addServiceLayer( QString uri, QString typeName )
-{
-
-}
