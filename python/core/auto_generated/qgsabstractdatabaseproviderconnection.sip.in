@@ -49,7 +49,7 @@ is not supported or cannot be performed without errors.
     {
         SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rows().size() );
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rowCount() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -63,15 +63,48 @@ Returns the column names
 Returns the results rows
 %End
 
-        void appendColumn( const QString &columnName );
+        qlonglong rowCount() const;
 %Docstring
-Appends ``columnName`` to the list of column names.
+Returns the row count
+
+.. note::
+
+   the value may not be exact or it may be -1 if not known
 %End
 
-        void appendRow( const QList<QVariant> &row );
+        QList<QVariant> nextRow();
 %Docstring
-Appends ``row`` to the results.
+Returns the next result row or an empty row if there are no rows left
 %End
+
+        QueryResult *__iter__();
+%MethodCode
+        sipRes = sipCpp;
+%End
+
+        SIP_PYOBJECT __next__();
+%MethodCode
+        QList<QVariant> result;
+        Py_BEGIN_ALLOW_THREADS
+        result = sipCpp->nextRow( );
+        Py_END_ALLOW_THREADS
+        if ( ! result.isEmpty() )
+        {
+          const sipTypeDef *qvariantlist_type = sipFindType( "QList<QVariant>" );
+          sipRes = sipConvertFromNewType( new QList<QVariant>( result ), qvariantlist_type, Py_None );
+        }
+        else
+        {
+          PyErr_SetString( PyExc_StopIteration, "" );
+        }
+%End
+
+
+
+
+
+
+
 
     };
 

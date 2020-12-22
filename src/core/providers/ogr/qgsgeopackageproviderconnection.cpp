@@ -70,7 +70,7 @@ QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const 
   const auto tableInfo { table( schema, name ) };
   if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
   {
-    return QStringLiteral( "GPKG:%1:%2" ).arg( uri() ).arg( name );
+    return QStringLiteral( "GPKG:%1:%2" ).arg( uri(), name );
   }
   else
   {
@@ -123,7 +123,7 @@ void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, co
   const QString layerUri { QStringLiteral( "%1|layername=%2" ).arg( uri(), name ) };
   if ( ! QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name, errCause ) );
   }
 }
 
@@ -306,7 +306,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 
   if ( ! errCause.isEmpty() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( uri() ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: %2" ).arg( uri(), errCause ) );
   }
   // Filters
   if ( flags )
@@ -356,11 +356,10 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
-  QgsAbstractDatabaseProviderConnection::QueryResult results;
 
   if ( feedback && feedback->isCanceled() )
   {
-    return results;
+    return QgsAbstractDatabaseProviderConnection::QueryResult();
   }
 
   QString errCause;
@@ -370,54 +369,46 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
     if ( feedback && feedback->isCanceled() )
     {
-      return results;
+      return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
     OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
+
+    // Read fields
     if ( ogrLayer )
     {
+
+      auto iterator = std::make_shared<QgssGeoPackageProviderResultIterator>( std::move( hDS ), ogrLayer );
+      QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+      // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
+      //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
+      //       be returned indicating that the count isn’t know.
+      results.setRowCount( OGR_L_GetFeatureCount( ogrLayer, 0 /* bForce=false: do not scan the whole layer */ ) );
+
       gdal::ogr_feature_unique_ptr fet;
-      QgsFields fields;
-      while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
+      if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
 
-        if ( feedback && feedback->isCanceled() )
-        {
-          break;
-        }
+        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
+        iterator->setFields( fields );
 
-        QVariantList row;
-
-        // Try to get the right type for the returned values
-        if ( fields.isEmpty() )
+        for ( const auto &f : qgis::as_const( fields ) )
         {
-          fields = QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) );
-          for ( const auto &f : qgis::as_const( fields ) )
-          {
-            results.appendColumn( f.name() );
-          }
+          results.appendColumn( f.name() );
         }
-
-        if ( ! fields.isEmpty() )
-        {
-          QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), fields, QTextCodec::codecForName( "UTF-8" ) ) };
-          const QgsAttributes &constAttrs { f.attributes() };
-          for ( int i = 0; i < constAttrs.length(); i++ )
-          {
-            row.push_back( constAttrs.at( i ) );
-          }
-        }
-        else // Fallback to strings
-        {
-          for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
-          {
-            row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
-          }
-        }
-
-        results.appendRow( row );
       }
-      GDALDatasetReleaseResultSet( hDS.get(), ogrLayer );
+
+      // Check for errors
+      errCause = CPLGetLastErrorMsg( );
+
+      if ( ! errCause.isEmpty() )
+      {
+        throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
+      }
+
+      OGR_L_ResetReading( ogrLayer );
+
+      return results;
     }
     errCause = CPLGetLastErrorMsg( );
   }
@@ -425,17 +416,51 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
   {
     errCause = QObject::tr( "There was an error opening GPKG %1!" ).arg( uri() );
   }
-  if ( ! errCause.isEmpty() )
+
+  if ( !errCause.isEmpty() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
   }
-  return results;
+
+  return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
+QVariantList QgssGeoPackageProviderResultIterator::nextRow()
+{
+  QVariantList row;
+  if ( mHDS && mOgrLayer )
+  {
+    gdal::ogr_feature_unique_ptr fet;
+    if ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
+    {
+      if ( ! mFields.isEmpty() )
+      {
+        QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
+        const QgsAttributes &constAttrs { f.attributes() };
+        for ( int i = 0; i < constAttrs.length(); i++ )
+        {
+          row.push_back( constAttrs.at( i ) );
+        }
+      }
+      else // Fallback to strings
+      {
+        for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
+        {
+          row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
+        }
+      }
+    }
+  }
+  return row;
+}
+
+void QgssGeoPackageProviderResultIterator::setFields( const QgsFields &fields )
+{
+  mFields = fields;
+}
 
 QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::nativeTypes() const
 {
-  QList<QgsVectorDataProvider::NativeType> types;
   QgsVectorLayer::LayerOptions options { false, true };
   options.skipCrsValidation = true;
   const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
@@ -444,7 +469,12 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
     const QString errorCause { vl.dataProvider() &&vl.dataProvider()->hasErrors() ?
                                vl.dataProvider()->errors().join( '\n' ) :
                                QObject::tr( "unknown error" ) };
-    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri() ).arg( errorCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
   }
   return vl.dataProvider()->nativeTypes();
+}
+
+QgssGeoPackageProviderResultIterator::~QgssGeoPackageProviderResultIterator()
+{
+  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
 }

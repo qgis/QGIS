@@ -13,13 +13,38 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSGEOPACKAGEPROVIDERCONNECTION_H
 #define QGSGEOPACKAGEPROVIDERCONNECTION_H
 
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsogrutils.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
+
+
+
+struct QgssGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+    QgssGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+      : mHDS( std::move( hDS ) )
+      , mOgrLayer( ogrLayer )
+    {}
+
+    ~QgssGeoPackageProviderResultIterator();
+
+    QVariantList nextRow() override;
+
+    void setFields( const QgsFields &fields );
+
+  private:
+
+    gdal::ogr_datasource_unique_ptr mHDS;
+    OGRLayerH mOgrLayer;
+    QgsFields mFields;
+
+};
 
 class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnection
 {

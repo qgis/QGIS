@@ -72,6 +72,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      *
      * It encapsulates the result rows and a list of the column names.
      * The query result may be empty in case the query returns nothing.
+     *
+     *
      * \since QGIS 3.18
      */
     struct CORE_EXPORT QueryResult
@@ -79,7 +81,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rows().size() );
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rowCount() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -90,24 +92,89 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QStringList columns() const;
 
         /**
-         *Returns the results rows
+         * Returns the results rows
          */
         QList<QList<QVariant> > rows() const;
 
         /**
-         * Appends \a columnName to the list of column names.
+          * Returns the row count
+          * \note the value may not be exact or it may be -1 if not known
          */
-        void appendColumn( const QString &columnName );
+        qlonglong rowCount() const;
 
         /**
-         * Appends \a row to the results.
+         * Returns the next result row or an empty row if there are no rows left
          */
-        void appendRow( const QList<QVariant> &row );
+        QList<QVariant> nextRow();
+
+#ifdef SIP_RUN
+        QueryResult *__iter__();
+        % MethodCode
+        sipRes = sipCpp;
+        % End
+
+        SIP_PYOBJECT __next__();
+        % MethodCode
+        QList<QVariant> result;
+        Py_BEGIN_ALLOW_THREADS
+        result = sipCpp->nextRow( );
+        Py_END_ALLOW_THREADS
+        if ( ! result.isEmpty() )
+        {
+          const sipTypeDef *qvariantlist_type = sipFindType( "QList<QVariant>" );
+          sipRes = sipConvertFromNewType( new QList<QVariant>( result ), qvariantlist_type, Py_None );
+        }
+        else
+        {
+          PyErr_SetString( PyExc_StopIteration, "" );
+        }
+        % End
+#endif
+
+///@cond private
+
+        /**
+         * The QueryResultIterator struct is an abstract interface for provider query results iterators.
+         * Providers must implement their own concrete iterator over query results.
+         */
+        struct QueryResultIterator SIP_SKIP
+        {
+          virtual QVariantList nextRow() = 0;
+          virtual ~QueryResultIterator() = default;
+        };
+
+        /**
+         * Sets \a rowCount
+         * \note Not available in Python bindings
+         */
+        void setRowCount( const qlonglong &rowCount ) SIP_SKIP;
+
+        /**
+         * Appends \a columnName to the list of column names.
+         * \note Not available in Python bindings
+         */
+        void appendColumn( const QString &columnName ) SIP_SKIP;
+
+        /**
+         * Constructs a QueryResult object from an \a iterator
+         * \note Not available in Python bindings
+         */
+        QueryResult( std::shared_ptr<QueryResultIterator> iterator ) SIP_SKIP;
+
+        /**
+         * Default constructor, used to return empty results
+         * \note Not available in Python bindings
+         */
+        QueryResult( ) = default SIP_SKIP;
+
+///@endcond private
 
       private:
 
+        std::shared_ptr<QueryResultIterator> mResultIterator;
         QStringList mColumns;
-        QList<QList<QVariant>> mRows;
+        mutable QList<QList<QVariant>> mRows;
+        qlonglong mRowCount = 0;
 
     };
 

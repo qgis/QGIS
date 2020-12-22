@@ -16,10 +16,29 @@
 #ifndef QGSPOSTGRESPROVIDERCONNECTION_H
 #define QGSPOSTGRESPROVIDERCONNECTION_H
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgspostgresconnpool.h"
 
+struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+    QgsPostgresProviderResultIterator( bool resolveTypes, std::shared_ptr<QgsPoolPostgresConn> pgConn )
+      : mResolveTypes( resolveTypes )
+      , mConn( pgConn )
+    {}
+
+    QVariantList nextRow() override;
+
+    QMap<int, QVariant::Type> typeMap;
+    std::unique_ptr<QgsPostgresResult> result;
+
+  private:
+
+    bool mResolveTypes = true;
+    std::shared_ptr<QgsPoolPostgresConn> mConn;
+    qlonglong mRowIndex = 0;
+
+};
 
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
-
 {
   public:
 

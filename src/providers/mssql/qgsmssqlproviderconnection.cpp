@@ -222,11 +222,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback ) const
 {
-  QgsAbstractDatabaseProviderConnection::QueryResult results;
 
   if ( feedback && feedback->isCanceled() )
   {
-    return results;
+    return QgsAbstractDatabaseProviderConnection::QueryResult();
   }
 
   const QgsDataSourceUri dsUri { uri() };
@@ -237,15 +236,14 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
   if ( !QgsMssqlConnection::openDatabase( db ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
-                                          .arg( uri() )
-                                          .arg( db.lastError().text() ) );
+                                          .arg( uri(), db.lastError().text() ) );
   }
   else
   {
 
     if ( feedback && feedback->isCanceled() )
     {
-      return results;
+      return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
     //qDebug() << "MSSQL QUERY:" << sql;
@@ -256,8 +254,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     {
       const QString errorMessage { q.lastError().text() };
       throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 \n %2" )
-                                            .arg( sql )
-                                            .arg( errorMessage ) );
+                                            .arg( sql, errorMessage ) );
 
     }
 
@@ -265,31 +262,41 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     {
       const QSqlRecord rec { q.record() };
       const int numCols { rec.count() };
+      auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
+      QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+      results.setRowCount( q.size() );
       for ( int idx = 0; idx < numCols; ++idx )
       {
         results.appendColumn( rec.field( idx ).name() );
       }
-      while ( q.next() && ( ! feedback || ! feedback->isCanceled() ) )
-      {
-        QVariantList row;
-        for ( int col = 0; col < numCols; ++col )
-        {
-          if ( resolveTypes )
-          {
-            row.push_back( q.value( col ) );
-          }
-          else
-          {
-            row.push_back( q.value( col ).toString() );
-          }
-        }
-        results.appendRow( row );
-      }
+      return results;
     }
 
   }
-  return results;
+  return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
+
+
+QVariantList QgssMssqlProviderResultIterator::nextRow()
+{
+  QVariantList row;
+  if ( mQuery.next() )
+  {
+    for ( int col = 0; col < mColumnCount; ++col )
+    {
+      if ( mResolveTypes )
+      {
+        row.push_back( mQuery.value( col ) );
+      }
+      else
+      {
+        row.push_back( mQuery.value( col ).toString() );
+      }
+    }
+  }
+  return row;
+}
+
 
 QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
