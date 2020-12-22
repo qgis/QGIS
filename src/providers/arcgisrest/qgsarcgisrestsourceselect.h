@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsarcgisservicesourceselect.h
+    qgsarcgisrestsourceselect.h
     ---------------------
     begin                : Nov 26, 2015
     copyright            : (C) 2015 by Sandro Mani
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSARCGISSERVICESOURCESELECT_H
-#define QGSARCGISSERVICESOURCESELECT_H
+#ifndef QGSARCGISRESTSOURCESELECT_H
+#define QGSARCGISRESTSOURCESELECT_H
 
 #define SIP_NO_FILE
 
@@ -22,8 +22,12 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsbrowserproxymodel.h"
 
 #include <QItemDelegate>
+
+class QgsBrowserModel;
+
 
 class QStandardItemModel;
 class QSortFilterProxyModel;
@@ -31,10 +35,26 @@ class QgsProjectionSelectionDialog;
 class QgsOwsConnection;
 class QgsMapCanvas;
 
+class QgsArcGisRestBrowserProxyModel : public QgsBrowserProxyModel
+{
+   Q_OBJECT
+
+public:
+
+    explicit QgsArcGisRestBrowserProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    void setConnectionName(const QString &name);
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+  private:
+
+    QString mConnectionName;
+};
+
 /**
- * Base class for listing ArcGis layers available from a remote service.
+ * Base class for listing ArcGis REST layers available from a remote service.
  */
-class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsArcGisServiceSourceSelectBase
+class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsArcGisServiceSourceSelectBase
 {
     Q_OBJECT
 
@@ -51,10 +71,10 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     enum ServiceType { MapService, FeatureService };
 
     //! Constructor
-    QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsArcGisRestSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     //! Destructor
-    ~QgsArcGisServiceSourceSelect() override;
+    ~QgsArcGisRestSourceSelect() override;
 
   protected:
     QString mServiceName;
@@ -62,12 +82,12 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
     //  Available CRS for a server connection, key=typename, value=list("EPSG:XXXX")
     QMap<QString, QStringList> mAvailableCRS;
-    QStandardItemModel *mModel = nullptr;
-    QSortFilterProxyModel *mModelProxy = nullptr;
+
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
+    QgsArcGisRestBrowserProxyModel *mProxyModel = nullptr;
+
     QPushButton *mBuildQueryButton = nullptr;
     QButtonGroup *mImageEncodingGroup = nullptr;
-    QgsRectangle mCanvasExtent;
-    QgsCoordinateReferenceSystem mCanvasCrs;
 
     //! To be implemented in the child class. Called when a new connection is initiated.
     virtual bool connectToService( const QgsOwsConnection &connection ) = 0;
@@ -85,6 +105,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void populateImageEncodings( const QStringList &availableEncodings );
     //! Returns the selected image encoding.
     QString getSelectedImageEncoding() const;
+    void showEvent( QShowEvent *event ) override;
 
   private:
     void populateConnectionList();
@@ -101,13 +122,6 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     */
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
-    /**
-     * Store a pointer to map canvas to retrieve extent and CRS
-     * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-     */
-    QgsMapCanvas *mMapCanvas = nullptr;
-
-
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
@@ -122,6 +136,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void changeCrs();
     void changeCrsFilter();
     void connectToServer();
+    void disconnectFromServer();
     void filterChanged( const QString &text );
     void cmbConnections_activated( int index );
     void showHelp();
@@ -129,19 +144,14 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void btnSave_clicked();
     void btnLoad_clicked();
+    void onRefresh();
+
+    void refreshModel( const QModelIndex &index );
+
+private:
+
+    QString mConnectedService;
 };
 
-/**
- * Item delegate with tweaked sizeHint.
- */
-class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
-{
-    Q_OBJECT
 
-  public:
-    //! Constructor
-    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-};
-
-#endif // QGSARCGISSERVICESOURCESELECT_H
+#endif // QGSARCGISRESTSOURCESELECT_H

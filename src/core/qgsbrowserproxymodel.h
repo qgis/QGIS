@@ -200,10 +200,14 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
+    /**
+     * Reference to associated browser model.
+     */
+    QgsBrowserModel *mModel = nullptr;
+
   private:
     QStringList mHiddenDataItemsKeys;
     QStringList mShownDataItemsKeys;
-    QgsBrowserModel *mModel = nullptr;
     QString mFilter; //filter string provided
     QVector<QRegExp> mREList; //list of filters, separated by "|"
     FilterSyntax mPatternSyntax = Normal;

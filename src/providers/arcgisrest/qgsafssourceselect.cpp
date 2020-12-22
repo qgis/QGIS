@@ -28,12 +28,13 @@
 
 
 QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISFEATURESERVER" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl, widgetMode )
+  : QgsArcGisRestSourceSelect( QStringLiteral( "ARCGISFEATURESERVER" ), QgsArcGisRestSourceSelect::FeatureService, parent, fl, widgetMode )
 {
 }
 
 bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 {
+#if 0
   QString errorTitle, errorMessage;
 
   const QString authcfg = connection.uri().authConfigId();
@@ -148,6 +149,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
   if ( !visitItemsRecursive( baseUrl, nullptr ) )
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
+#endif
 
   return true;
 }
@@ -182,7 +184,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   if ( d.exec() == QDialog::Accepted )
   {
     QgsDebugMsg( "Expression text = " + w->expressionText() );
-    mModelProxy->setData( filterIndex, QVariant( w->expressionText() ) );
+    //mModelProxy->setData( filterIndex, QVariant( w->expressionText() ) );
   }
 }
 

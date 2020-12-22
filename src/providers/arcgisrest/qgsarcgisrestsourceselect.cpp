@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsarcgisservicesourceselect.cpp
+    qgsarcgisrestsourceselect.cpp
     -------------------------
   begin                : Nov 26, 2015
   copyright            : (C) 2015 by Sandro Mani
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsarcgisservicesourceselect.h"
+#include "qgsarcgisrestsourceselect.h"
 #include "qgsowsconnection.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
@@ -30,6 +30,8 @@
 #include "qgsmapcanvas.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgsbrowserguimodel.h"
+#include "qgsarcgisrestdataitems.h"
 
 #include <QButtonGroup>
 #include <QListWidgetItem>
@@ -38,7 +40,42 @@
 #include <QRadioButton>
 #include <QImageReader>
 
-QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+//
+// QgsArcGisRestBrowserProxyModel
+//
+
+QgsArcGisRestBrowserProxyModel::QgsArcGisRestBrowserProxyModel( QObject *parent )
+  : QgsBrowserProxyModel( parent )
+{
+
+}
+
+void QgsArcGisRestBrowserProxyModel::setConnectionName( const QString &name )
+{
+  mConnectionName = name;
+  invalidateFilter();
+}
+
+bool QgsArcGisRestBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  if ( !QgsBrowserProxyModel::filterAcceptsRow( sourceRow, sourceParent ) )
+    return false;
+
+  QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+  if ( QgsArcGisRestConnectionItem *connectionItem = qobject_cast< QgsArcGisRestConnectionItem * >( mModel->dataItem( sourceIndex ) ) )
+  {
+    if ( connectionItem->name() != mConnectionName )
+      return false;
+  }
+
+  return true;
+}
+
+
+//
+// QgsArcGisRestSourceSelect
+//
+QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
   , mServiceName( serviceName )
   , mServiceType( serviceType )
@@ -46,73 +83,48 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisServiceSourceSelect::cmbConnections_activated );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisRestSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisRestSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
 
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton = buttonBox->addButton( tr( "&Build query" ), QDialogButtonBox::ActionRole );
     mBuildQueryButton->setDisabled( true );
-    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::buildQueryButtonClicked );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::buildQueryButtonClicked );
   }
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( btnNew, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::addEntryToServerList );
-  connect( btnEdit, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::modifyEntryOfServerList );
-  connect( btnDelete, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::deleteEntryOfServerList );
-  connect( btnConnect, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::connectToServer );
-  connect( btnSave, &QPushButton::clicked, this, &QgsArcGisServiceSourceSelect::btnSave_clicked );
-  connect( btnLoad, &QPushButton::clicked, this, &QgsArcGisServiceSourceSelect::btnLoad_clicked );
-  connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::changeCrs );
-  connect( lineFilter, &QLineEdit::textChanged, this, &QgsArcGisServiceSourceSelect::filterChanged );
+  connect( btnNew, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::addEntryToServerList );
+  connect( btnEdit, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::modifyEntryOfServerList );
+  connect( btnDelete, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::deleteEntryOfServerList );
+  connect( btnRefresh, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::onRefresh );
+  connect( btnConnect, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::connectToServer );
+  connect( btnSave, &QPushButton::clicked, this, &QgsArcGisRestSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsArcGisRestSourceSelect::btnLoad_clicked );
+  connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::changeCrs );
+  connect( lineFilter, &QLineEdit::textChanged, this, &QgsArcGisRestSourceSelect::filterChanged );
   populateConnectionList();
   mProjectionSelector = new QgsProjectionSelectionDialog( this );
   mProjectionSelector->setMessage( QString() );
 
-  treeView->setItemDelegate( new QgsAbstractDataSourceWidgetItemDelegate( treeView ) );
+  lineFilter->setShowClearButton( true );
+  lineFilter->setShowSearchIcon( true );
 
   QgsSettings settings;
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
-  mModel = new QStandardItemModel();
-  mModel->setHorizontalHeaderItem( 0, new QStandardItem( QStringLiteral( "Title" ) ) );
-  mModel->setHorizontalHeaderItem( 1, new QStandardItem( QStringLiteral( "Name" ) ) );
-  mModel->setHorizontalHeaderItem( 2, new QStandardItem( QStringLiteral( "Abstract" ) ) );
-  if ( serviceType == FeatureService )
-  {
-    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Filter" ) ) );
-    gbImageEncoding->hide();
-  }
-  else
-  {
-    cbxFeatureCurrentViewExtent->hide();
-    mImageEncodingGroup = new QButtonGroup( this );
-  }
-
-  mModelProxy = new QSortFilterProxyModel( this );
-  mModelProxy->setSourceModel( mModel );
-  mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
-  treeView->setModel( mModelProxy );
-  treeView->setSortingEnabled( true );
-
-  connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked );
-  connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged );
+  mImageEncodingGroup = new QButtonGroup( this );
 }
 
-QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
+QgsArcGisRestSourceSelect::~QgsArcGisRestSourceSelect()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
-
-  delete mProjectionSelector;
-  delete mModel;
-  delete mModelProxy;
 }
 
-
-void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
+void QgsArcGisRestSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
 {
   QLayoutItem *item = nullptr;
   while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) )
@@ -145,12 +157,51 @@ void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &av
   }
 }
 
-QString QgsArcGisServiceSourceSelect::getSelectedImageEncoding() const
+QString QgsArcGisRestSourceSelect::getSelectedImageEncoding() const
 {
   return mImageEncodingGroup && mImageEncodingGroup->checkedButton() ? mImageEncodingGroup->checkedButton()->text() : QString();
 }
 
-void QgsArcGisServiceSourceSelect::populateConnectionList()
+void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
+{
+  if ( QgsBrowserGuiModel *model = qobject_cast< QgsBrowserGuiModel * >( browserModel() ) )
+  {
+    mBrowserModel = model;
+  }
+  else
+  {
+    mBrowserModel = new QgsBrowserGuiModel( this );
+  }
+  mBrowserModel->initialize();
+
+  mProxyModel = new QgsArcGisRestBrowserProxyModel( this );
+  mProxyModel->setBrowserModel( mBrowserModel );
+
+  mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
+  mBrowserView->setBrowserModel( mBrowserModel );
+  mBrowserView->setModel( mProxyModel );
+  mBrowserView->setSortingEnabled( true );
+  mBrowserView->sortByColumn( 0, Qt::AscendingOrder );
+  // provide a horizontal scroll bar instead of using ellipse (...) for longer items
+  mBrowserView->setTextElideMode( Qt::ElideNone );
+
+  connect( mBrowserView, &QAbstractItemView::doubleClicked, this, &QgsArcGisRestSourceSelect::treeWidgetItemDoubleClicked );
+  connect( mBrowserView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged );
+
+  mBrowserView->expand( mProxyModel->index( 0, 0 ) );
+  mBrowserView->setHeaderHidden( true );
+
+  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << QStringLiteral( "AFS" ) << QStringLiteral( "arcgisfeatureserver" )
+      << QStringLiteral( "AMS" ) << QStringLiteral( "arcgismapserver" ) );
+
+  const QModelIndex afsSourceIndex = mBrowserModel->findPath( QStringLiteral( "arcgisfeatureserver:" ) );
+  mBrowserView->setRootIndex( mProxyModel->mapFromSource( afsSourceIndex ) );
+
+  // don't show anything till connect is clicked!
+  mProxyModel->setConnectionName( QString() );
+}
+
+void QgsArcGisRestSourceSelect::populateConnectionList()
 {
   const QStringList conns = QgsOwsConnection::connectionList( mServiceName );
   cmbConnections->clear();
@@ -159,7 +210,6 @@ void QgsArcGisServiceSourceSelect::populateConnectionList()
     cmbConnections->addItem( item );
   }
   bool connectionsAvailable = !conns.isEmpty();
-  btnConnect->setEnabled( connectionsAvailable );
   btnEdit->setEnabled( connectionsAvailable );
   btnDelete->setEnabled( connectionsAvailable );
   btnSave->setEnabled( connectionsAvailable );
@@ -173,7 +223,7 @@ void QgsArcGisServiceSourceSelect::populateConnectionList()
   }
 }
 
-QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
+QString QgsArcGisRestSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
 {
   if ( crsSet.size() < 1 )
   {
@@ -204,12 +254,12 @@ QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsS
   return *( crsSet.constBegin() );
 }
 
-void QgsArcGisServiceSourceSelect::refresh()
+void QgsArcGisRestSourceSelect::refresh()
 {
   populateConnectionList();
 }
 
-void QgsArcGisServiceSourceSelect::addEntryToServerList()
+void QgsArcGisRestSourceSelect::addEntryToServerList()
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
   nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
@@ -221,7 +271,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
   }
 }
 
-void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
+void QgsArcGisRestSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
   nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
@@ -233,65 +283,65 @@ void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
   }
 }
 
-void QgsArcGisServiceSourceSelect::deleteEntryOfServerList()
+void QgsArcGisRestSourceSelect::deleteEntryOfServerList()
 {
+  const QString selectedConnection = cmbConnections->currentText();
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+                .arg( selectedConnection );
   QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
-    QgsOwsConnection::deleteConnection( mServiceName, cmbConnections->currentText() );
+    QgsOwsConnection::deleteConnection( mServiceName, selectedConnection );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
     bool connectionsAvailable = cmbConnections->count() > 0;
-    btnConnect->setEnabled( connectionsAvailable );
     btnEdit->setEnabled( connectionsAvailable );
     btnDelete->setEnabled( connectionsAvailable );
     btnSave->setEnabled( connectionsAvailable );
+
+    if ( selectedConnection == mConnectedService )
+      disconnectFromServer();
   }
 }
 
-void QgsArcGisServiceSourceSelect::connectToServer()
+void QgsArcGisRestSourceSelect::connectToServer()
 {
   bool haveLayers = false;
   btnConnect->setEnabled( false );
-  mModel->setRowCount( 0 );
+
+  mConnectedService = cmbConnections->currentText();
+  QgsOwsConnection connection( mServiceName, mConnectedService );
+
+  // find index of corresponding node
+  if ( mBrowserModel && mProxyModel )
+  {
+    mProxyModel->setConnectionName( mConnectedService );
+
+    mBrowserView->expand( mProxyModel->index( 0, 0, mBrowserView->rootIndex() ) );
+    onRefresh();
+  }
+
   mAvailableCRS.clear();
 
-  QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
-
   setCursor( Qt::WaitCursor );
-  bool success = connectToService( connection );
+  connectToService( connection );
   unsetCursor();
-  if ( success )
-  {
-    haveLayers = mModel->rowCount() > 0;
-
-    if ( haveLayers )
-    {
-      treeView->selectionModel()->select( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
-      treeView->setFocus();
-
-      treeView->sortByColumn( 0, Qt::AscendingOrder );
-    }
-    else
-    {
-      QMessageBox::information( nullptr, tr( "No Layers" ), tr( "The query returned no layers." ) );
-    }
-  }
 
   btnConnect->setEnabled( true );
   emit enableButtons( haveLayers );
-  if ( mServiceType == FeatureService )
-  {
-    mBuildQueryButton->setEnabled( haveLayers );
-  }
+  mBuildQueryButton->setEnabled( haveLayers );
   btnChangeSpatialRefSys->setEnabled( haveLayers );
 }
 
-void QgsArcGisServiceSourceSelect::addButtonClicked()
+void QgsArcGisRestSourceSelect::disconnectFromServer()
 {
-  if ( treeView->selectionModel()->selectedRows().isEmpty() )
+  mProxyModel->setConnectionName( QString() );
+  emit enableButtons( false );
+}
+
+void QgsArcGisRestSourceSelect::addButtonClicked()
+{
+  if ( mBrowserView->selectionModel()->selectedRows().isEmpty() )
   {
     return;
   }
@@ -324,16 +374,17 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
   }
 
   //create layers that user selected from this feature source
-  QModelIndexList list = treeView->selectionModel()->selectedRows();
+  QModelIndexList list = mBrowserView->selectionModel()->selectedRows();
   for ( int i = 0; i < list.size(); i++ )
   {
     //add a wfs layer to the map
-    QModelIndex idx = mModelProxy->mapToSource( list[i] );
+    QModelIndex idx; // = mModelProxy->mapToSource( list[i] );
     if ( !idx.isValid() )
     {
       continue;
     }
 
+#if 0
     int row = idx.row();
     if ( !mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IsLayerRole ).toBool() )
       continue;
@@ -356,11 +407,12 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
     addServiceLayer( uri, layerName );
+#endif
   }
   accept();
 }
 
-void QgsArcGisServiceSourceSelect::changeCrs()
+void QgsArcGisRestSourceSelect::changeCrs()
 {
   if ( mProjectionSelector->exec() )
   {
@@ -369,11 +421,11 @@ void QgsArcGisServiceSourceSelect::changeCrs()
   }
 }
 
-void QgsArcGisServiceSourceSelect::changeCrsFilter()
+void QgsArcGisRestSourceSelect::changeCrsFilter()
 {
   QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
-  QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
+  QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
@@ -404,20 +456,20 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
   }
 }
 
-void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
+void QgsArcGisRestSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 
-void QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
+void QgsArcGisRestSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
   QgsDebugMsg( QStringLiteral( "double-click called" ) );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }
 
-void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
+void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
   QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
@@ -429,48 +481,31 @@ void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelInde
   emit enableButtons( current.isValid() );
 }
 
-void QgsArcGisServiceSourceSelect::buildQueryButtonClicked()
+void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
 {
   QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
-  buildQuery( connection, treeView->selectionModel()->currentIndex() );
+  buildQuery( connection, mBrowserView->selectionModel()->currentIndex() );
 }
 
-void QgsArcGisServiceSourceSelect::filterChanged( const QString &text )
+void QgsArcGisRestSourceSelect::filterChanged( const QString &text )
 {
-  QgsDebugMsg( "FeatureType filter changed to :" + text );
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
-  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
-  mModelProxy->setFilterRegExp( myRegExp );
-  mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
+  mProxyModel->setFilterString( text );
 }
 
-QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
-{
-  QVariant indexData = index.data( Qt::DisplayRole );
-  if ( indexData.isNull() )
-  {
-    return QSize();
-  }
-  QSize size = option.fontMetrics.boundingRect( indexData.toString() ).size();
-  size.setHeight( size.height() + 2 );
-  return size;
-}
-
-void QgsArcGisServiceSourceSelect::showHelp()
+void QgsArcGisRestSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/index.html" ) );
 }
 
-void QgsArcGisServiceSourceSelect::btnSave_clicked()
+void QgsArcGisRestSourceSelect::btnSave_clicked()
 {
   QgsManageConnectionsDialog::Type serverType = mServiceType == FeatureService ? QgsManageConnectionsDialog::ArcgisFeatureServer : QgsManageConnectionsDialog::ArcgisMapServer;
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, serverType );
   dlg.exec();
 }
 
-void QgsArcGisServiceSourceSelect::btnLoad_clicked()
+void QgsArcGisRestSourceSelect::btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
@@ -484,3 +519,43 @@ void QgsArcGisServiceSourceSelect::btnLoad_clicked()
   dlg.exec();
   populateConnectionList();
 }
+
+void QgsArcGisRestSourceSelect::onRefresh()
+{
+  if ( mBrowserModel )
+    refreshModel( mProxyModel->mapToSource( mBrowserView->rootIndex() ) );
+}
+
+void QgsArcGisRestSourceSelect::refreshModel( const QModelIndex &index )
+{
+  if ( mBrowserModel && mProxyModel )
+  {
+    QgsDataItem *item = mBrowserModel->dataItem( index );
+    if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+    {
+      mBrowserModel->refresh( index );
+    }
+
+    for ( int i = 0; i < mBrowserModel->rowCount( index ); i++ )
+    {
+      QModelIndex idx = mBrowserModel->index( i, 0, index );
+      QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+      QgsDataItem *child = mBrowserModel->dataItem( idx );
+
+      // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
+      // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
+      if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
+      {
+        refreshModel( idx );
+      }
+      else
+      {
+        if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+        {
+          child->depopulate();
+        }
+      }
+    }
+  }
+}
+

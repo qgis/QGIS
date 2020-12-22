@@ -27,14 +27,14 @@
 
 
 QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISMAPSERVER" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
+  : QgsArcGisRestSourceSelect( QStringLiteral( "ARCGISMAPSERVER" ), QgsArcGisRestSourceSelect::MapService, parent, fl, widgetMode )
 {
 }
 
 bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 {
   QString errorTitle, errorMessage;
-
+#if 0
   const QString authcfg = connection.uri().authConfigId();
   const QString baseUrl = connection.uri().param( QStringLiteral( "url" ) );
   const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
@@ -149,6 +149,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 
   if ( !visitItemsRecursive( baseUrl, nullptr ) )
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
+#endif
 
   return true;
 }

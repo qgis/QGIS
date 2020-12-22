@@ -20,11 +20,11 @@
 
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgsarcgisservicesourceselect.h"
+#include "qgsarcgisrestsourceselect.h"
 
 class QCheckBox;
 
-class QgsAfsSourceSelect: public QgsArcGisServiceSourceSelect
+class QgsAfsSourceSelect: public QgsArcGisRestSourceSelect
 {
     Q_OBJECT
 

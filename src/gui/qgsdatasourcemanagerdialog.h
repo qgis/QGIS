@@ -167,6 +167,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     // Map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
 
 };
 

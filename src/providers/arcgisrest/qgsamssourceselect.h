@@ -18,12 +18,12 @@
 #ifndef QGSAMSSOURCESELECT_H
 #define QGSAMSSOURCESELECT_H
 
-#include "qgsarcgisservicesourceselect.h"
+#include "qgsarcgisrestsourceselect.h"
 #include "qgsproviderregistry.h"
 
 class QCheckBox;
 
-class QgsAmsSourceSelect: public QgsArcGisServiceSourceSelect
+class QgsAmsSourceSelect: public QgsArcGisRestSourceSelect
 {
     Q_OBJECT
 
