@@ -48,6 +48,7 @@ class TestQgsProject : public QObject
     void testReadFlags();
     void testSetGetCrs();
     void testEmbeddedLayerGroupFromQgz();
+    void testCrsValidAfterReadingProjectFile();
 };
 
 void TestQgsProject::init()
@@ -568,9 +569,38 @@ void TestQgsProject::testSetGetCrs()
 #else
   QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
 #endif
+}
 
-  crsChangedSpy.clear();
-  ellipsoidChangedSpy.clear();
+void TestQgsProject::testCrsValidAfterReadingProjectFile()
+{
+  QgsProject p;
+  QSignalSpy crsChangedSpy( &p, &QgsProject::crsChanged );
+
+  //  - new project
+  //  - set CRS tp 4326, the crs changes
+  //  - save the project
+  //  - clear()
+  //  - load the project, the CRS should be 4326
+  QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  // on mac the returned path was not canonical and the resolver failed to convert paths properly
+  QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
+  QString projectFilename = dirPath + "/project.qgs";
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+  QCOMPARE( crsChangedSpy.count(), 1 );
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+  QVERIFY( p.write( projectFilename ) );
+  p.clear();
+
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem() );
+  QCOMPARE( crsChangedSpy.count(), 1 );
+
+  QVERIFY( p.read( projectFilename ) );
+  QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  QCOMPARE( crsChangedSpy.count(), 2 );
 }
 
 
