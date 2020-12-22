@@ -25,6 +25,7 @@
 #include "qgsprocessingparametertype.h"
 #include "qgsmodelundocommand.h"
 #include "qgsmodelviewtoolselect.h"
+#include "qgsmodelviewtoolpan.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
@@ -75,6 +76,7 @@ Qt::DropActions QgsModelerToolboxModel::supportedDragActions() const
 
 QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
+  , mToolsActionGroup( new QActionGroup( this ) )
 {
   setupUi( this );
 
@@ -296,10 +298,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mActionShowComments->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowComments" ), true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
 
+  mPanTool = new QgsModelViewToolPan( mView );
+  mPanTool->setAction( mActionPan );
+
+  mToolsActionGroup->addAction( mActionPan );
+  connect( mActionPan, &QAction::triggered, mPanTool, [ = ] { mView->setTool( mPanTool ); } );
+
   mSelectTool = new QgsModelViewToolSelect( mView );
-#if 0
   mSelectTool->setAction( mActionSelectMoveItem );
-#endif
+
+  mToolsActionGroup->addAction( mActionSelectMoveItem );
+  connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [ = ] { mView->setTool( mSelectTool ); } );
+
   mView->setTool( mSelectTool );
   mView->setFocus();
 

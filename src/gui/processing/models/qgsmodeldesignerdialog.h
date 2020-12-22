@@ -27,6 +27,7 @@ class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
 class QgsModelUndoCommand;
 class QUndoView;
+class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 
 ///@cond NOT_STABLE
@@ -163,6 +164,10 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
+
+    QActionGroup *mToolsActionGroup = nullptr;
+
+    QgsModelViewToolPan *mPanTool = nullptr;
     QgsModelViewToolSelect *mSelectTool = nullptr;
     QgsModelGraphicsScene *mScene = nullptr;
 
