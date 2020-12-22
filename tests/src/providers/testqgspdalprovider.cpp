@@ -206,7 +206,7 @@ void TestQgsPdalProvider::testEptGenerationNonASCII()
 {
   QTemporaryDir dir;
   QVERIFY( dir.isValid() );
-  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud_copy.las" ), dir.path() );
+  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud%! _čopy.las" ), dir.path() );
   QVERIFY( task.run() );
   QFileInfo fi( dir.path() + "/ept.json" );
   QVERIFY( fi.exists() );
