@@ -48,12 +48,7 @@ class TestQgsProject : public QObject
     void testReadFlags();
     void testSetGetCrs();
     void testEmbeddedLayerGroupFromQgz();
-<<<<<<< HEAD
-=======
-    void projectSaveUser();
-    void testCrsExpressions();
     void testCrsValidAfterReadingProjectFile();
->>>>>>> 7f2b71c097 (Fix #38473, forgetting CRS in a new project (#40648))
 };
 
 void TestQgsProject::init()
