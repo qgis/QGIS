@@ -188,27 +188,4 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   }
 }
 
-QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
-    const QString &layerTitle, const QString & /*layerName*/,
-    const QString &crs,
-    const QString &filter,
-    const QgsRectangle &bBox, const QString & ) const
-{
-  QgsDataSourceUri ds = connection.uri();
-  QString url = layerTitle;
-  ds.removeParam( QStringLiteral( "url" ) );
-  ds.setParam( QStringLiteral( "url" ), url );
-  ds.setParam( QStringLiteral( "filter" ), filter );
-  ds.setParam( QStringLiteral( "crs" ), crs );
-  if ( !bBox.isEmpty() )
-  {
-    ds.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
-  }
-  return ds.uri( false );
-}
 
-
-void QgsAfsSourceSelect::addServiceLayer( QString uri, QString typeName )
-{
-  emit addVectorLayer( uri, typeName );
-}

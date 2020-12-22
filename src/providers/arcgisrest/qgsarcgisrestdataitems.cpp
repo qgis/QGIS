@@ -67,19 +67,22 @@ void QgsArcGisRestRootItem::onConnectionsChanged()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void addFolderItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent )
+void addFolderItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent,
+                     const QString &supportedFormats )
 {
-  QgsArcGisRestQueryUtils::visitFolderItems( [parent, &baseUrl, &items, headers, authcfg]( const QString & name, const QString & url )
+  QgsArcGisRestQueryUtils::visitFolderItems( [parent, &baseUrl, &items, headers, authcfg, supportedFormats]( const QString & name, const QString & url )
   {
     std::unique_ptr< QgsArcGisRestFolderItem > folderItem = qgis::make_unique< QgsArcGisRestFolderItem >( parent, name, url, baseUrl, authcfg, headers );
+    folderItem->setSupportedFormats( supportedFormats );
     items.append( folderItem.release() );
   }, serviceData, baseUrl );
 }
 
-void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent )
+void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent,
+                      const QString &supportedFormats )
 {
   QgsArcGisRestQueryUtils::visitServiceItems(
-    [&items, parent, authcfg, headers]( const QString & name, const QString & url, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType )
+    [&items, parent, authcfg, headers, supportedFormats]( const QString & name, const QString & url, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType )
   {
     switch ( serviceType )
     {
@@ -93,6 +96,7 @@ void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &servic
       case QgsArcGisRestQueryUtils::Vector:
       {
         std::unique_ptr< QgsArcGisFeatureServiceItem > serviceItem = qgis::make_unique< QgsArcGisFeatureServiceItem >( parent, name, url, url, authcfg, headers );
+        serviceItem->setSupportedFormats( supportedFormats );
         items.append( serviceItem.release() );
         break;
       }
@@ -103,12 +107,13 @@ void addServiceItems( QVector< QgsDataItem * > &items, const QVariantMap &servic
   }, serviceData, baseUrl, QgsArcGisRestQueryUtils::AllTypes );
 }
 
-void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &parentUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceTypeFilter )
+void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceData, const QString &parentUrl, const QString &authcfg, const QgsStringMap &headers, QgsDataItem *parent, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceTypeFilter,
+                    const QString &supportedFormats )
 {
   QMultiMap< QString, QgsDataItem * > layerItems;
   QMap< QString, QString > parents;
 
-  QgsArcGisRestQueryUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers, serviceTypeFilter]( const QString & parentLayerId, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & format )
+  QgsArcGisRestQueryUtils::addLayerItems( [parent, &layerItems, &parents, authcfg, headers, serviceTypeFilter, supportedFormats]( const QString & parentLayerId, QgsArcGisRestQueryUtils::ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString & id, const QString & name, const QString & description, const QString & url, bool isParent, const QString & authid, const QString & format )
   {
     Q_UNUSED( description )
 
@@ -136,6 +141,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
 
         case QgsArcGisRestQueryUtils::Raster:
           layerItem = qgis::make_unique< QgsArcGisMapServiceLayerItem >( parent, name, url, id, name, authid, format, authcfg, headers );
+          static_cast< QgsArcGisMapServiceLayerItem * >( layerItem.get() )->setSupportedFormats( supportedFormats );
           break;
 
         case QgsArcGisRestQueryUtils::AllTypes:
@@ -206,9 +212,9 @@ QVector<QgsDataItem *> QgsArcGisRestConnectionItem::createChildren()
       return items;
     }
 
-    addFolderItems( items, serviceData, url, authcfg, headers, this );
-    addServiceItems( items, serviceData, url, authcfg, headers, this );
-    addLayerItems( items, serviceData, url, authcfg, headers, this, QgsArcGisRestQueryUtils::AllTypes );
+    addFolderItems( items, serviceData, url, authcfg, headers, this, QString() );
+    addServiceItems( items, serviceData, url, authcfg, headers, this, QString() );
+    addLayerItems( items, serviceData, url, authcfg, headers, this, QgsArcGisRestQueryUtils::AllTypes, QString() );
   }
 
   return items;
@@ -379,9 +385,9 @@ QVector<QgsDataItem *> QgsArcGisRestServicesItem::createChildren()
     return items;
   }
 
-  addFolderItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this );
-  addServiceItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this );
-  addLayerItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::AllTypes );
+  addFolderItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this, QString() );
+  addServiceItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this, QString() );
+  addLayerItems( items, serviceData, mUrl, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::AllTypes, QString() );
   return items;
 }
 
@@ -407,6 +413,11 @@ QgsArcGisRestFolderItem::QgsArcGisRestFolderItem( QgsDataItem *parent, const QSt
   setToolTip( path );
 }
 
+void QgsArcGisRestFolderItem::setSupportedFormats( const QString &formats )
+{
+  mSupportedFormats = formats;
+}
+
 
 QVector<QgsDataItem *> QgsArcGisRestFolderItem::createChildren()
 {
@@ -427,9 +438,9 @@ QVector<QgsDataItem *> QgsArcGisRestFolderItem::createChildren()
     return items;
   }
 
-  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this );
-  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this );
-  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::Vector );
+  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, mSupportedFormats );
+  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, mSupportedFormats );
+  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::Vector, mSupportedFormats );
   return items;
 }
 
@@ -448,6 +459,11 @@ QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem( QgsDataItem *parent, c
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   mCapabilities |= Collapse;
   setToolTip( path );
+}
+
+void QgsArcGisFeatureServiceItem::setSupportedFormats( const QString &formats )
+{
+  mSupportedFormats = formats;
 }
 
 QVector<QgsDataItem *> QgsArcGisFeatureServiceItem::createChildren()
@@ -469,9 +485,9 @@ QVector<QgsDataItem *> QgsArcGisFeatureServiceItem::createChildren()
     return items;
   }
 
-  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this );
-  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this );
-  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::Vector );
+  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, mSupportedFormats );
+  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, mSupportedFormats );
+  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::Vector, mSupportedFormats );
   return items;
 }
 
@@ -516,9 +532,11 @@ QVector<QgsDataItem *> QgsArcGisMapServiceItem::createChildren()
     return items;
   }
 
-  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this );
-  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this );
-  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::AllTypes );
+  const QString supportedFormats = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString();
+
+  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, supportedFormats );
+  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, this, supportedFormats );
+  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, this, QgsArcGisRestQueryUtils::AllTypes, supportedFormats );
   return items;
 }
 

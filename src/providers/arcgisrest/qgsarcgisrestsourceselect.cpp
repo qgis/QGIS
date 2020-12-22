@@ -118,15 +118,18 @@ QgsArcGisRestSourceSelect::~QgsArcGisRestSourceSelect()
 {
 }
 
-void QgsArcGisRestSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
+void QgsArcGisRestSourceSelect::populateImageEncodings( const QString &formats )
 {
+  const QStringList availableEncodings = formats.split( ',' );
+
+  const QString prevFormat = getSelectedImageEncoding();
+
   QLayoutItem *item = nullptr;
   while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) )
   {
     delete item->widget();
     delete item;
   }
-  bool first = true;
   const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
   for ( const QString &encoding : availableEncodings )
   {
@@ -144,11 +147,13 @@ void QgsArcGisRestSourceSelect::populateImageEncodings( const QStringList &avail
     }
 
     QRadioButton *button = new QRadioButton( encoding, this );
-    button->setChecked( first );
+    if ( encoding == prevFormat )
+      button->setChecked( true );
     gbImageEncoding->layout()->addWidget( button );
     mImageEncodingGroup->addButton( button );
-    first = false;
   }
+  if ( !mImageEncodingGroup->checkedButton() && !mImageEncodingGroup->buttons().empty() )
+    mImageEncodingGroup->buttons().value( 0 )->setChecked( true );
 }
 
 QString QgsArcGisRestSourceSelect::getSelectedImageEncoding() const
@@ -372,6 +377,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
       }
       else if ( qobject_cast< QgsArcGisMapServiceLayerItem *>( layerItem ) )
       {
+        uri.removeParam( QStringLiteral( "format" ) );
         uri.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
         emit addRasterLayer( uri.uri( false ), layerName, QStringLiteral( "arcgismapserver" ) );
       }
@@ -382,7 +388,6 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
 
 void QgsArcGisRestSourceSelect::updateCrsLabel()
 {
-  QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
@@ -406,6 +411,25 @@ void QgsArcGisRestSourceSelect::updateCrsLabel()
   }
 }
 
+void QgsArcGisRestSourceSelect::updateImageEncodings()
+{
+  //evaluate currently selected typename and set the CRS filter in mProjectionSelector
+  QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
+  if ( currentIndex.isValid() )
+  {
+    const QModelIndex sourceIndex = mProxyModel->mapToSource( currentIndex );
+    if ( !sourceIndex.isValid() )
+    {
+      return;
+    }
+
+    if ( QgsArcGisMapServiceLayerItem *layerItem = qobject_cast< QgsArcGisMapServiceLayerItem * >( mBrowserModel->dataItem( sourceIndex ) ) )
+    {
+      populateImageEncodings( layerItem->supportedFormats() );
+    }
+  }
+}
+
 void QgsArcGisRestSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index )
@@ -424,6 +448,8 @@ void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &
   Q_UNUSED( previous )
   QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
   updateCrsLabel();
+  updateImageEncodings();
+
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton->setEnabled( current.isValid() );

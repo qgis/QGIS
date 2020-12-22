@@ -143,6 +143,8 @@ class QgsArcGisRestFolderItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsArcGisRestFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    void setSupportedFormats( const QString &formats );
+
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -151,6 +153,7 @@ class QgsArcGisRestFolderItem : public QgsDataCollectionItem
     QString mBaseUrl;
     QString mAuthCfg;
     QgsStringMap mHeaders;
+    QString mSupportedFormats;
 };
 
 
@@ -165,6 +168,7 @@ class QgsArcGisFeatureServiceItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsArcGisFeatureServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    void setSupportedFormats( const QString &formats );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -173,6 +177,7 @@ class QgsArcGisFeatureServiceItem : public QgsDataCollectionItem
     QString mBaseUrl;
     QString mAuthCfg;
     QgsStringMap mHeaders;
+    QString mSupportedFormats;
 };
 
 /**
@@ -238,6 +243,12 @@ class QgsArcGisMapServiceLayerItem : public QgsLayerItem
 
   public:
     QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsStringMap &headers );
+    void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
+    QString supportedFormats() const { return mSupportedFormats; }
+
+  private:
+
+    QString mSupportedFormats;
 };
 
 
