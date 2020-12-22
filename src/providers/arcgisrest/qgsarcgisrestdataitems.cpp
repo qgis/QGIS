@@ -48,6 +48,7 @@ QVector<QgsDataItem *> QgsArcGisRestRootItem::createChildren()
     const QString path = QStringLiteral( "afs:/" ) + connName;
     connections.append( new QgsArcGisRestConnectionItem( this, connName, path, connName ) );
   }
+
   return connections;
 }
 
@@ -604,6 +605,42 @@ bool QgsArcGisRestParentLayerItem::equal( const QgsDataItem *other )
 //
 // QgsAfsDataItemProvider
 //
+
+QgsArcGisRestDataItemProvider::QgsArcGisRestDataItemProvider()
+{
+  // migrate legacy map services by moving them to feature server group
+
+  QgsSettings settings;
+  settings.beginGroup( "qgis/connections-arcgismapserver" );
+  const QStringList legacyServices = settings.childGroups();
+  settings.endGroup();
+  settings.beginGroup( "qgis/connections-arcgisfeatureserver" );
+  QStringList existingServices = settings.childGroups();
+  settings.endGroup();
+  for ( const QString &legacyService : legacyServices )
+  {
+    QString newName = legacyService;
+    int i = 1;
+    while ( existingServices.contains( newName ) )
+    {
+      i ++;
+      newName = QStringLiteral( "%1 (%2)" ).arg( legacyService ).arg( i );
+    }
+
+    settings.beginGroup( QStringLiteral( "qgis/connections-arcgismapserver/%1" ).arg( legacyService ) );
+    const QStringList keys = settings.childKeys();
+    settings.endGroup();
+    for ( const QString &key : keys )
+    {
+      QString oldKey = QStringLiteral( "qgis/connections-arcgismapserver/%1/%2" ).arg( legacyService, key );
+      QString newKey = QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/%2" ).arg( newName, key );
+      settings.setValue( newKey, settings.value( oldKey ) );
+    }
+
+    settings.remove( QStringLiteral( "qgis/connections-arcgismapserver/%1" ).arg( legacyService ) );
+    existingServices.append( newName );
+  }
+}
 
 QString QgsArcGisRestDataItemProvider::name()
 {
