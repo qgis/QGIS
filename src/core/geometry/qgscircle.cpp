@@ -241,7 +241,7 @@ static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const Qg
   }
 
   QgsGeometryUtils::segmentIntersection( ptInter_par1line1, ptInter_par1line1.project( 1.0, angle1 + 90.0 ), ptInter_par2line1, ptInter_par2line1.project( 1.0, angle2 ), center, isInter, epsilon, true );
-  if ( isInter and not circles.contains( QgsCircle( center, radius ) ) )
+  if ( isInter && !circles.contains( QgsCircle( center, radius ) ) )
   {
     if ( !pos.isEmpty() )
     {
@@ -256,7 +256,7 @@ static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const Qg
     }
   }
   QgsGeometryUtils::segmentIntersection( ptInter_par1line1, ptInter_par1line1.project( 1.0, angle1 + 90.0 ), ptInter_par2line1, ptInter_par2line1.project( 1.0, angle2 + 90.0 ), center, isInter, epsilon, true );
-  if ( isInter and not circles.contains( QgsCircle( center, radius ) ) )
+  if ( isInter && !circles.contains( QgsCircle( center, radius ) ) )
   {
     if ( !pos.isEmpty() )
     {
