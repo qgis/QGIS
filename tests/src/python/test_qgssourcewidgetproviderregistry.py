@@ -60,8 +60,8 @@ class TestQgsProviderSourceWidgetProviderRegistry(unittest.TestCase):
     def testRegistry(self):
         registry = QgsGui.sourceWidgetProviderRegistry()
         initial_providers = registry.providers()
-        #self.assertTrue(initial_providers)  # we expect a bunch of default providers
-        #self.assertTrue([p.name() for p in initial_providers if p.name() == 'WFS'])
+        self.assertTrue(initial_providers)  # we expect a bunch of default providers
+        self.assertTrue([p.name() for p in initial_providers if p.name() == 'xyz'])
 
         # add a new provider
         p1 = TestProvider('p1')
@@ -89,31 +89,10 @@ class TestQgsProviderSourceWidgetProviderRegistry(unittest.TestCase):
     def testProviderKey(self):
         """Tests finding provider by name and return providerKey"""
 
-        registry = QgsGui.subsetStringEditorProviderRegistry()
-        #self.assertIsNotNone(registry.providerByName('WFS'))
+        registry = QgsGui.sourceWidgetProviderRegistry()
+        # self.assertIsNotNone(registry.providerByName('WFS'))
         self.assertIsNone(registry.providerByName('i_do_not_exist'))
-        #self.assertEqual(registry.providerByName('WFS').providerKey(), 'WFS')
-
-    # Test disabled since there's a memory corruption issue with QgsQueryBuilder()
-    # creation in non-GUI mode.
-    def testCreateDialogWithDefaultImplementation(self):
-        """ Tests that createDialog() returns the default implementation when no provider kicks in """
-        return
-
-        registry = QgsGui.subsetStringEditorProviderRegistry()
-        p1 = TestProvider('p1')
-        try:
-            registry.addProvider(p1)
-
-            vl = QgsVectorLayer(
-                'Polygon?crs=epsg:4326&field=id:int',
-                'test',
-                'memory')
-            self.assertIsNotNone(registry.createDialog(vl))
-            self.assertEqual(registry.createDialog(vl).objectName(),
-                             QgsQueryBuilder(vl).objectName())
-        finally:
-            registry.removeProvider(p1)
+        self.assertEqual(registry.providerByName('gdal').providerKey(), 'gdal')
 
     def testCreateDialogWithCustomImplementation(self):
         """ Tests that createWidget() returns a custom implementation """
