@@ -178,7 +178,7 @@ void QgsXyzSourceWidget::setTilePixelRatio( int ratio )
     index = 2;  // high-res
   else if ( ratio == 1. )
     index = 1;  // normal-res
-  mComboTileResolution->setCurrentIndex( ratio );
+  mComboTileResolution->setCurrentIndex( index );
 }
 
 int QgsXyzSourceWidget::tilePixelRatio() const
