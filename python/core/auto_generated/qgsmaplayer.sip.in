@@ -1490,7 +1490,10 @@ Sets the coordinate transform context to ``transformContext``
 
     QgsProject *project() const;
 %Docstring
-Returns the parent project if available.
+Returns the parent project if this map layer is added to a project.
+Otherwise returns ``None``
+
+.. versionadded:: 3.18
 %End
 
   signals:
