@@ -731,6 +731,12 @@ void QgsRasterLayerProperties::sync()
       layout->addWidget( mSourceWidget );
       mSourceGroupBox->setLayout( layout );
       mSourceGroupBox->show();
+
+      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [ = ]( bool isValid )
+      {
+        buttonBox->button( QDialogButtonBox::Apply )->setEnabled( isValid );
+        buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
+      } );
     }
   }
 

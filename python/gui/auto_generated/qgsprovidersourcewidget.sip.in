@@ -40,6 +40,16 @@ Returns the source URI as currently defined by the widget.
 .. seealso:: :py:func:`setSourceUri`
 %End
 
+  signals:
+
+    void validChanged( bool isValid );
+%Docstring
+Emitted whenever the validation status of the widget changes.
+
+If ``isValid`` is ``False`` then the widget is not valid, and any dialog using the widget should be prevented from
+being accepted.
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

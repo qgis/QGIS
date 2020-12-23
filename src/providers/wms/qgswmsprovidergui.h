@@ -28,6 +28,7 @@ class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
 
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
 
     void registerGui( QMainWindow *widget ) override;
 };

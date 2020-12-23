@@ -52,5 +52,15 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
      */
     virtual QString sourceUri() const = 0;
 
+  signals:
+
+    /**
+     * Emitted whenever the validation status of the widget changes.
+     *
+     * If \a isValid is FALSE then the widget is not valid, and any dialog using the widget should be prevented from
+     * being accepted.
+     */
+    void validChanged( bool isValid );
+
 };
 #endif //QGSPROVIDERSOURCEWIDGET_H
