@@ -552,6 +552,9 @@ set(QGIS_GUI_SRCS
   qgspropertyoverridebutton.cpp
   qgsproviderguiregistry.cpp
   qgsproviderguimetadata.cpp
+  qgsprovidersourcewidget.cpp
+  qgsprovidersourcewidgetprovider.cpp
+  qgsprovidersourcewidgetproviderregistry.cpp
   qgsprojectstorageguiregistry.cpp
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
@@ -796,6 +799,9 @@ set(QGIS_GUI_HDRS
   qgsproviderconnectioncombobox.h
   qgsproviderguimetadata.h
   qgsproviderguiregistry.h
+  qgsprovidersourcewidget.h
+  qgsprovidersourcewidgetprovider.h
+  qgsprovidersourcewidgetproviderregistry.h
   qgsproxystyle.h
   qgsquerybuilder.h
   qgsrangeslider.h

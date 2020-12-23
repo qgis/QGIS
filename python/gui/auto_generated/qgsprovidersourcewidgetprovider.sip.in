@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprovidersourcewidgetprovider.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProviderSourceWidgetProvider
+{
+%Docstring
+
+An interface for providers of widgets designed to configure a data provider's source.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersourcewidgetprovider.h"
+%End
+  public:
+
+    virtual ~QgsProviderSourceWidgetProvider();
+
+    virtual QString providerKey() const = 0;
+%Docstring
+Provider key
+%End
+
+    virtual QString name() const;
+%Docstring
+Source widget provider name, this is useful to retrieve
+a particular source widget provider in case the provider has more
+than one, it should be unique among all providers.
+
+The default implementation returns the :py:func:`~QgsProviderSourceWidgetProvider.providerKey`
+%End
+
+    virtual bool canHandleLayer( QgsMapLayer *layer ) const = 0;
+%Docstring
+Returns ``True`` if the provider can handle the specified ``layer``.
+%End
+
+    virtual QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent /TransferThis/ = 0 ) = 0 /Factory/;
+%Docstring
+Creates a new widget to configure the source of the specified ``layer``.
+It may return ``None`` if it cannot handle the layer.
+The returned object must be destroyed by the caller.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprovidersourcewidgetprovider.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
