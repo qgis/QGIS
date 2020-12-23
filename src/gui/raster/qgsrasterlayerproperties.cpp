@@ -34,6 +34,8 @@
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgsnative.h"
 #include "qgspalettedrendererwidget.h"
+#include "qgsprovidersourcewidgetproviderregistry.h"
+#include "qgsprovidersourcewidget.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrastercontourrendererwidget.h"
@@ -128,6 +130,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   if ( mRasterLayer && mRasterLayer->temporalProperties() )
     connect( mRasterLayer->temporalProperties(), &QgsRasterLayerTemporalProperties::changed, this, &QgsRasterLayerProperties::temporalPropertiesChange );
+
+  mSourceGroupBox->hide();
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
@@ -714,18 +718,24 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
   }
 }
 
-/**
-  \note moved from ctor
-
-  Previously this dialog was created anew with each right-click pop-up menu
-  invocation.  Changed so that the dialog always exists after first
-  invocation, and is just re-synchronized with its layer's state when
-  re-shown.
-
-*/
 void QgsRasterLayerProperties::sync()
 {
   QgsSettings myQSettings;
+
+  if ( !mSourceWidget )
+  {
+    mSourceWidget = QgsGui::sourceWidgetProviderRegistry()->createWidget( mRasterLayer );
+    if ( mSourceWidget )
+    {
+      QHBoxLayout *layout = new QHBoxLayout();
+      layout->addWidget( mSourceWidget );
+      mSourceGroupBox->setLayout( layout );
+      mSourceGroupBox->show();
+    }
+  }
+
+  if ( mSourceWidget )
+    mSourceWidget->setSourceUri( mRasterLayer->source() );
 
   const QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider )
@@ -918,6 +928,14 @@ void QgsRasterLayerProperties::sync()
 
 void QgsRasterLayerProperties::apply()
 {
+  if ( mSourceWidget )
+  {
+    const QString newSource = mSourceWidget->sourceUri();
+    if ( newSource != mRasterLayer->source() )
+    {
+      mRasterLayer->setDataSource( newSource, mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
+    }
+  }
 
   // Do nothing on "bad" layers
   if ( !mRasterLayer->isValid() )

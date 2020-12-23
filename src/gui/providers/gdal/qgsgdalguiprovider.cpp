@@ -33,6 +33,8 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsgdaldataitems.h"
+#include "qgsmaplayer.h"
+#include "qgsgdalfilesourcewidget.h"
 
 static QString PROVIDER_KEY = QStringLiteral( "gdal" );
 
@@ -194,7 +196,48 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
+//
+// QgsGdalSourceWidgetProvider
+//
 
+QgsGdalSourceWidgetProvider::QgsGdalSourceWidgetProvider()
+{
+
+}
+
+QString QgsGdalSourceWidgetProvider::providerKey() const
+{
+  return QStringLiteral( "gdal" );
+}
+
+bool QgsGdalSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
+{
+  if ( layer->providerType() != QLatin1String( "gdal" ) )
+    return false;
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), layer->source() );
+  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+    return false;
+
+  return true;
+}
+
+QgsProviderSourceWidget *QgsGdalSourceWidgetProvider::createWidget( QgsMapLayer *layer, QWidget *parent )
+{
+  if ( layer->providerType() != QLatin1String( "gdal" ) )
+    return nullptr;
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), layer->source() );
+  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+    return nullptr;
+
+  return new QgsGdalFileSourceWidget( parent );
+}
+
+
+//
+// QgsGdalGuiProviderMetadata
+//
 QgsGdalGuiProviderMetadata::QgsGdalGuiProviderMetadata():
   QgsProviderGuiMetadata( PROVIDER_KEY )
 {
@@ -211,6 +254,13 @@ QList<QgsDataItemGuiProvider *> QgsGdalGuiProviderMetadata::dataItemGuiProviders
 {
   QList<QgsDataItemGuiProvider *> providers;
   providers << new QgsGdalItemGuiProvider();
+  return providers;
+}
+
+QList<QgsProviderSourceWidgetProvider *> QgsGdalGuiProviderMetadata::sourceWidgetProviders()
+{
+  QList<QgsProviderSourceWidgetProvider *> providers;
+  providers << new QgsGdalSourceWidgetProvider();
   return providers;
 }
 
