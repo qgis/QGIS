@@ -257,9 +257,10 @@ bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
 QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &proj )
 {
   static QRegularExpression sRegex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
+  QRegularExpression regex( sRegex );
 
   QList< QgsDatumTransform::GridDetails > grids;
-  QRegularExpressionMatchIterator matches = sRegex.globalMatch( proj );
+  QRegularExpressionMatchIterator matches = regex.globalMatch( proj );
   while ( matches.hasNext() )
   {
     const QRegularExpressionMatch match = matches.next();
