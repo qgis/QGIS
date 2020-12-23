@@ -15,6 +15,7 @@ if (WITH_GUI)
     qgswmtsdimensions.cpp
     qgsxyzconnectiondialog.cpp
     qgsxyzsourceselect.cpp
+    qgsxyzsourcewidget.cpp
   )
 endif()
 

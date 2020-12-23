@@ -22,6 +22,8 @@
 #include "qgsproviderguimetadata.h"
 #include "qgswmsdataitemguiproviders.h"
 #include "qgswmsdataitems.h"
+#include "qgsprovidersourcewidgetprovider.h"
+#include "qgsxyzsourcewidget.h"
 
 //! Provider for WMS layers source select
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
@@ -52,6 +54,39 @@ class QgsXyzSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
+class QgsXyzSourceWidgetProvider : public QgsProviderSourceWidgetProvider
+{
+  public:
+    QgsXyzSourceWidgetProvider() : QgsProviderSourceWidgetProvider() {}
+    QString providerKey() const override
+    {
+      return QStringLiteral( "xyz" );
+    }
+    bool canHandleLayer( QgsMapLayer *layer ) const override
+    {
+      if ( layer->providerType() != QLatin1String( "wms" ) )
+        return false;
+
+      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), layer->source() );
+      if ( parts.value( QStringLiteral( "type" ) ).toString() != QLatin1String( "xyz" ) )
+        return false;
+
+      return true;
+    }
+    QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override
+    {
+      if ( layer->providerType() != QLatin1String( "wms" ) )
+        return nullptr;
+
+      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), layer->source() );
+      if ( parts.value( QStringLiteral( "type" ) ).toString() != QLatin1String( "xyz" ) )
+        return nullptr;
+
+      return new QgsXyzSourceWidget( parent );
+    }
+};
+
+
 QgsWmsProviderGuiMetadata::QgsWmsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsWmsProvider::WMS_KEY )
 {
@@ -69,6 +104,13 @@ QList<QgsDataItemGuiProvider *> QgsWmsProviderGuiMetadata::dataItemGuiProviders(
   return QList<QgsDataItemGuiProvider *>()
          << new QgsWmsDataItemGuiProvider
          << new QgsXyzDataItemGuiProvider;
+}
+
+QList<QgsProviderSourceWidgetProvider *> QgsWmsProviderGuiMetadata::sourceWidgetProviders()
+{
+  QList<QgsProviderSourceWidgetProvider *> providers;
+  providers << new QgsXyzSourceWidgetProvider();
+  return providers;
 }
 
 void QgsWmsProviderGuiMetadata::registerGui( QMainWindow *widget )

@@ -37,6 +37,8 @@ QgsGdalFileSourceWidget::QgsGdalFileSourceWidget( QWidget *parent )
   layout->addWidget( mFileWidget );
 
   setLayout( layout );
+
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsGdalFileSourceWidget::validate );
 }
 
 void QgsGdalFileSourceWidget::setSourceUri( const QString &uri )
@@ -44,6 +46,7 @@ void QgsGdalFileSourceWidget::setSourceUri( const QString &uri )
   mSourceParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
 
   mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
+  mIsValid = true;
 }
 
 QString QgsGdalFileSourceWidget::sourceUri() const
@@ -51,6 +54,14 @@ QString QgsGdalFileSourceWidget::sourceUri() const
   QVariantMap parts = mSourceParts;
   parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
   return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
+}
+
+void QgsGdalFileSourceWidget::validate()
+{
+  const bool valid = !mFileWidget->filePath().isEmpty();
+  if ( valid != mIsValid )
+    emit validChanged( valid );
+  mIsValid = valid;
 }
 
 

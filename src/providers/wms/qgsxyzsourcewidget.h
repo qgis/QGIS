@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgdalfilesourcewidget.h
+    qgsxyzsourcewidget.h
      --------------------------------------
     Date                 : December 2020
     Copyright            : (C) 2020 by Nyall Dawson
@@ -14,23 +14,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGGDALFILESOURCEWIDGET_H
-#define QGGDALFILESOURCEWIDGET_H
+#ifndef QGGXYZSOURCEWIDGET_H
+#define QGGXYZSOURCEWIDGET_H
 
-#include "ui_qgsgdalsourceselectbase.h"
 #include "qgsprovidersourcewidget.h"
-#include "qgis_gui.h"
-#include "qgis_sip.h"
+#include "ui_qgsxyzsourcewidgetbase.h"
+#include <QVariantMap>
 
-///@cond PRIVATE
-#define SIP_NO_FILE
-
-class QgsGdalFileSourceWidget : public QgsProviderSourceWidget
+class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSourceWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsGdalFileSourceWidget( QWidget *parent = nullptr );
+    QgsXyzSourceWidget( QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri ) override;
     QString sourceUri() const override;
@@ -40,11 +36,9 @@ class QgsGdalFileSourceWidget : public QgsProviderSourceWidget
     void validate();
 
   private:
-    QgsFileWidget *mFileWidget = nullptr;
 
     QVariantMap mSourceParts;
     bool mIsValid = false;
 };
 
-///@endcond
-#endif // QGGDALFILESOURCEWIDGET_H
+#endif // QGGXYZSOURCEWIDGET_H
