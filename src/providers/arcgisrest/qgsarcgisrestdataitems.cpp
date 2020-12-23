@@ -30,6 +30,10 @@
 #include "qgssettings.h"
 
 
+//
+// QgsArcGisRestRootItem
+//
+
 QgsArcGisRestRootItem::QgsArcGisRestRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "AFS" ) )
 {
@@ -168,6 +172,10 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
   }
 }
 
+//
+// QgsArcGisRestConnectionItem
+//
+
 QgsArcGisRestConnectionItem::QgsArcGisRestConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
   , mConnName( connectionName )
@@ -235,7 +243,7 @@ QString QgsArcGisRestConnectionItem::url() const
 
 
 //
-// QgsAfsGroupsItem
+// QgsArcGisPortalGroupsItem
 //
 
 QgsArcGisPortalGroupsItem::QgsArcGisPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsStringMap &headers, const QString &communityEndpoint, const QString &contentEndpoint )
@@ -290,7 +298,7 @@ bool QgsArcGisPortalGroupsItem::equal( const QgsDataItem *other )
 
 
 //
-// QgsAfsGroupItem
+// QgsArcGisPortalGroupItem
 //
 QgsArcGisPortalGroupItem::QgsArcGisPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsStringMap &headers, const QString &communityEndpoint, const QString &contentEndpoint )
   : QgsDataCollectionItem( parent, name, groupId, QStringLiteral( "AFS" ) )
@@ -356,7 +364,7 @@ bool QgsArcGisPortalGroupItem::equal( const QgsDataItem *other )
 
 
 //
-// QgsAfsServicesItem
+// QgsArcGisRestServicesItem
 //
 
 QgsArcGisRestServicesItem::QgsArcGisRestServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsStringMap &headers )
@@ -401,7 +409,7 @@ bool QgsArcGisRestServicesItem::equal( const QgsDataItem *other )
 
 
 //
-// QgsAfsFolderItem
+// QgsArcGisRestFolderItem
 //
 QgsArcGisRestFolderItem::QgsArcGisRestFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
@@ -451,6 +459,9 @@ bool QgsArcGisRestFolderItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
+//
+// QgsArcGisFeatureServiceItem
+//
 QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
   , mBaseUrl( baseUrl )
@@ -500,7 +511,7 @@ bool QgsArcGisFeatureServiceItem::equal( const QgsDataItem *other )
 
 
 //
-// QgsAmsServiceItem
+// QgsArcGisMapServiceItem
 //
 
 QgsArcGisMapServiceItem::QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers )
@@ -549,7 +560,7 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
 
 
 //
-// QgsAfsLayerItem
+// QgsArcGisFeatureServiceLayerItem
 //
 
 QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsStringMap &headers, LayerType geometryType )
@@ -603,7 +614,7 @@ bool QgsArcGisRestParentLayerItem::equal( const QgsDataItem *other )
 
 
 //
-// QgsAfsDataItemProvider
+// QgsArcGisRestDataItemProvider
 //
 
 QgsArcGisRestDataItemProvider::QgsArcGisRestDataItemProvider()
