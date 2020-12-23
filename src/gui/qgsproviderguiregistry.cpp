@@ -221,6 +221,14 @@ QList<QgsSubsetStringEditorProvider *> QgsProviderGuiRegistry::subsetStringEdito
   return QList<QgsSubsetStringEditorProvider *>();
 }
 
+QList<QgsProviderSourceWidgetProvider *> QgsProviderGuiRegistry::sourceWidgetProviders( const QString &providerKey )
+{
+  QgsProviderGuiMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->sourceWidgetProviders();
+  return QList<QgsProviderSourceWidgetProvider *>();
+}
+
 QStringList QgsProviderGuiRegistry::providerList() const
 {
   QStringList lst;

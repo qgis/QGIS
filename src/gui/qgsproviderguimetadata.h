@@ -28,6 +28,7 @@ class QgsDataItemGuiProvider;
 class QgsSourceSelectProvider;
 class QgsProjectStorageGuiProvider;
 class QgsSubsetStringEditorProvider;
+class QgsProviderSourceWidgetProvider;
 
 /**
  * \ingroup gui
@@ -72,10 +73,17 @@ class GUI_EXPORT QgsProviderGuiMetadata
 
     /**
      * Returns subset string editor providers
-     * \note Ownership of created  providers is passed to the caller.
+     * \note Ownership of created providers is passed to the caller.
      * \since QGIS 3.18
      */
     virtual QList<QgsSubsetStringEditorProvider *> subsetStringEditorProviders() SIP_FACTORY;
+
+    /**
+     * Returns source widget providers
+     * \note Ownership of created providers is passed to the caller.
+     * \since QGIS 3.18
+     */
+    virtual QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() SIP_FACTORY;
 
     //! Returns unique provider key
     QString key() const;
