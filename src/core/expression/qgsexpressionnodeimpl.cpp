@@ -558,9 +558,11 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             esc_regexp.replace( pos + 1, 1, '.' );
             pos += 1;
           }
-          const thread_local QRegularExpression rx4( QStringLiteral( "\\\\_" ) );
-          esc_regexp.replace( rx4, QStringLiteral( "_" ) );
-          matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
+          esc_regexp.replace( QStringLiteral( "\\\\_" ), QStringLiteral( "_" ) );
+          QRegularExpression::PatternOption option;
+          if ( mOp == boILike || mOp == boNotILike )
+            option = QRegularExpression::CaseInsensitiveOption;
+          matches = QRegularExpression( esc_regexp, option ).match( str ).hasMatch();
         }
         else
         {

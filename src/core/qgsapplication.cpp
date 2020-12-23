@@ -874,7 +874,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     // apply OS-specific UI scale factor to stylesheet's em values
     int index = 0;
-    const thread_local QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
+    const static QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
     QRegularExpressionMatch match = regex.match( styledata, index );
     while ( match.hasMatch() )
     {
