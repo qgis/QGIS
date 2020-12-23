@@ -17,9 +17,36 @@
 #define QGSSPATIALITEPROVIDERCONNECTION_H
 
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsogrutils.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
+
+
+struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+    QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+      : mHDS( std::move( hDS ) )
+      , mOgrLayer( ogrLayer )
+    {}
+
+    ~QgsSpatialiteProviderResultIterator();
+
+    QVariantList nextRow() override;
+    bool hasNextRow() const override;
+
+    void setFields( const QgsFields &fields );
+
+  private:
+
+    gdal::ogr_datasource_unique_ptr mHDS;
+    OGRLayerH mOgrLayer;
+    QgsFields mFields;
+    QVariantList mNextRow;
+
+    QVariantList nextRowPrivate();
+};
+
 
 class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnection
 {

@@ -442,15 +442,65 @@ QStringList QgsAbstractDatabaseProviderConnection::QueryResult::columns() const
 
 QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows() const
 {
+  // mRowCount might be -1 (unknown)
+  while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) )
+  {
+    const QVariantList row { mResultIterator->nextRow() };
+    if ( row.isEmpty() )
+    {
+      break;
+    }
+    mRows.push_back( row );
+  }
   return mRows;
 }
+
+QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
+{
+  if ( ! mResultIterator && ! mResultIterator->hasNextRow() )
+  {
+    return QList<QVariant>();
+  }
+
+  const QList<QVariant> row { mResultIterator->nextRow() };
+
+  if ( ! row.isEmpty() )
+  {
+    mRows.push_back( row );
+  }
+
+  return row;
+}
+
+
+qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
+{
+  return mRowCount;
+}
+
+bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
+{
+  if ( ! mResultIterator )
+  {
+    return false;
+  }
+  return mResultIterator->hasNextRow();
+}
+
+///@cond PRIVATE
 
 void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QString &columnName )
 {
   mColumns.push_back( columnName );
 }
 
-void QgsAbstractDatabaseProviderConnection::QueryResult::appendRow( const QList<QVariant> &row )
+void QgsAbstractDatabaseProviderConnection::QueryResult::setRowCount( const qlonglong &rowCount )
 {
-  mRows.push_back( row );
+  mRowCount = rowCount;
 }
+
+QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
+  : mResultIterator( iterator )
+{}
+
+///@endcond private

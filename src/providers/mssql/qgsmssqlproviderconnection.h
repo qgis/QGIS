@@ -13,10 +13,37 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMSSQLPROVIDERCONNECTION_H
 #define QGSMSSQLPROVIDERCONNECTION_H
+
 #include "qgsabstractdatabaseproviderconnection.h"
 
+#include <QSqlQuery>
+
+
+struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+{
+
+    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query )
+      : mResolveTypes( resolveTypes )
+      , mColumnCount( columnCount )
+      , mQuery( query )
+    {}
+
+    QVariantList nextRow() override;
+    bool hasNextRow() const override;
+
+  private:
+
+    bool mResolveTypes = true;
+    int mColumnCount = 0;
+    QSqlQuery mQuery;
+    QVariantList mNextRow;
+
+    QVariantList nextRowPrivate();
+
+};
 
 class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
 

@@ -397,79 +397,125 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
-  QgsAbstractDatabaseProviderConnection::QueryResult results;
 
   if ( feedback && feedback->isCanceled() )
   {
-    return results;
+    return QgsAbstractDatabaseProviderConnection::QueryResult();
   }
 
   QString errCause;
-
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( pathFromUri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
 
     if ( feedback && feedback->isCanceled() )
     {
-      return results;
+      return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
     OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
+
+    // Read fields
     if ( ogrLayer )
     {
+
+      auto iterator = std::make_shared<QgsSpatialiteProviderResultIterator>( std::move( hDS ), ogrLayer );
+      QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+      // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
+      //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
+      //       be returned indicating that the count isn’t know.
+      results.setRowCount( OGR_L_GetFeatureCount( ogrLayer, 0 /* force=false: do not scan the whole layer */ ) );
+
       gdal::ogr_feature_unique_ptr fet;
-      QgsFields fields;
-      while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
+      if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
 
-        if ( feedback && feedback->isCanceled() )
-        {
-          break;
-        }
+        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
+        iterator->setFields( fields );
 
-        QVariantList row;
-        // Try to get the right type for the returned values
-        if ( fields.isEmpty() )
+        for ( const auto &f : qgis::as_const( fields ) )
         {
-          fields = QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) );
-          for ( const auto &f : qgis::as_const( fields ) )
-          {
-            results.appendColumn( f.name() );
-          }
+          results.appendColumn( f.name() );
         }
-        if ( ! fields.isEmpty() )
-        {
-          QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), fields, QTextCodec::codecForName( "UTF-8" ) ) };
-          const QgsAttributes &constAttrs { f.attributes() };
-          for ( int i = 0; i < constAttrs.length(); i++ )
-          {
-            row.push_back( constAttrs.at( i ) );
-          }
-        }
-        else // Fallback to strings
-        {
-          for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
-          {
-            row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
-          }
-        }
-
-        results.appendRow( row );
       }
-      GDALDatasetReleaseResultSet( hDS.get(), ogrLayer );
+
+      // Check for errors
+      errCause = CPLGetLastErrorMsg( );
+
+      if ( ! errCause.isEmpty() )
+      {
+        throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
+      }
+
+      OGR_L_ResetReading( ogrLayer );
+      iterator->nextRow();
+      return results;
     }
     errCause = CPLGetLastErrorMsg( );
   }
   else
   {
-    errCause = QObject::tr( "There was an error opening Spatialite %1!" ).arg( pathFromUri() );
+    errCause = QObject::tr( "There was an error opening GPKG %1!" ).arg( uri() );
   }
-  if ( ! errCause.isEmpty() )
+
+  if ( !errCause.isEmpty() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
   }
-  return results;
+
+  return QgsAbstractDatabaseProviderConnection::QueryResult();
+}
+
+
+void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
+{
+  mFields = fields;
+}
+
+QgsSpatialiteProviderResultIterator::~QgsSpatialiteProviderResultIterator()
+{
+  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+}
+
+QVariantList QgsSpatialiteProviderResultIterator::nextRow()
+{
+  const QVariantList currentRow { mNextRow };
+  mNextRow = nextRowPrivate();
+  return currentRow;
+}
+
+QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
+{
+  QVariantList row;
+  if ( mHDS && mOgrLayer )
+  {
+    gdal::ogr_feature_unique_ptr fet;
+    if ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
+    {
+      if ( ! mFields.isEmpty() )
+      {
+        QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
+        const QgsAttributes &constAttrs { f.attributes() };
+        for ( int i = 0; i < constAttrs.length(); i++ )
+        {
+          row.push_back( constAttrs.at( i ) );
+        }
+      }
+      else // Fallback to strings
+      {
+        for ( int i = 0; i < OGR_F_GetFieldCount( fet.get() ); i++ )
+        {
+          row.push_back( QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( fet.get(), i ) ) ) );
+        }
+      }
+    }
+  }
+  return row;
+}
+
+bool QgsSpatialiteProviderResultIterator::hasNextRow() const
+{
+  return ! mNextRow.isEmpty();
 }
 
 bool QgsSpatiaLiteProviderConnection::executeSqlDirect( const QString &sql ) const
