@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QRegularExpression>
 #include <nlohmann/json.hpp>
 
 QgsMultiPoint::QgsMultiPoint()
@@ -64,9 +65,10 @@ bool QgsMultiPoint::fromWkt( const QString &wkt )
 {
   QString collectionWkt( wkt );
   //test for non-standard MultiPoint(x1 y1, x2 y2) format
-  QRegExp regex( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" );
-  regex.setCaseSensitivity( Qt::CaseInsensitive );
-  if ( regex.indexIn( collectionWkt ) >= 0 )
+  static const QRegularExpression sRegex( QStringLiteral( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" ), QRegularExpression::CaseInsensitiveOption );
+  QRegularExpression regex( sRegex );
+  const QRegularExpressionMatch match = regex.match( collectionWkt );
+  if ( match.hasMatch() )
   {
     //alternate style without extra brackets, upgrade to standard
     collectionWkt.replace( '(', QLatin1String( "((" ) ).replace( ')', QLatin1String( "))" ) ).replace( ',', QLatin1String( "),(" ) );

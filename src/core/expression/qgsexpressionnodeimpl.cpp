@@ -532,39 +532,40 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         bool matches;
         if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
-          QString esc_regexp = QRegExp::escape( regexp );
+          QString esc_regexp = QRegularExpression::escape( regexp );
           // manage escape % and _
           if ( esc_regexp.startsWith( '%' ) )
           {
             esc_regexp.replace( 0, 1, QStringLiteral( ".*" ) );
           }
-          QRegExp rx( "[^\\\\](%)" );
+          QRegExp rx1( QStringLiteral( "[^\\\\](%)" ) );
           int pos = 0;
-          while ( ( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
+          while ( ( pos = rx1.indexIn( esc_regexp, pos ) ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, QStringLiteral( ".*" ) );
             pos += 1;
           }
-          rx.setPattern( QStringLiteral( "\\\\%" ) );
-          esc_regexp.replace( rx, QStringLiteral( "%" ) );
+          QRegExp rx2( QStringLiteral( "\\\\%" ) );
+          esc_regexp.replace( rx2, QStringLiteral( "%" ) );
           if ( esc_regexp.startsWith( '_' ) )
           {
             esc_regexp.replace( 0, 1, QStringLiteral( "." ) );
           }
-          rx.setPattern( QStringLiteral( "[^\\\\](_)" ) );
+          QRegExp rx3( QStringLiteral( "[^\\\\](_)" ) );
           pos = 0;
-          while ( ( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
+          while ( ( pos = rx3.indexIn( esc_regexp, pos ) ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, '.' );
             pos += 1;
           }
-          rx.setPattern( QStringLiteral( "\\\\_" ) );
-          esc_regexp.replace( rx, QStringLiteral( "_" ) );
+          const static QRegularExpression sRx4( QStringLiteral( "\\\\_" ) );
+          QRegularExpression rx4( sRx4 );
+          esc_regexp.replace( rx4, QStringLiteral( "_" ) );
           matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
         else
         {
-          matches = QRegExp( regexp ).indexIn( str ) != -1;
+          matches = QRegularExpression( regexp ).match( str ).hasMatch();
         }
 
         if ( mOp == boNotLike || mOp == boNotILike )
@@ -1363,7 +1364,9 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
 
 QString QgsExpressionNodeColumnRef::dump() const
 {
-  return QRegExp( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ).exactMatch( mName ) ? mName : QgsExpression::quotedColumnRef( mName );
+  const static QRegularExpression sRe( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
+  QRegularExpression re( sRe );
+  return re.match( mName ).hasMatch() ? mName : QgsExpression::quotedColumnRef( mName );
 }
 
 QSet<QString> QgsExpressionNodeColumnRef::referencedColumns() const
