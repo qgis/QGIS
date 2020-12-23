@@ -1095,7 +1095,8 @@ QString QgsApplication::userStylePath()
 
 QRegExp QgsApplication::shortNameRegExp()
 {
-  return QRegExp( "^[A-Za-z][A-Za-z0-9\\._-]*" );
+  static const QRegExp regexp( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
+  return regexp;
 }
 
 QString QgsApplication::userLoginName()
