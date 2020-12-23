@@ -241,12 +241,23 @@ class TestPyQgsProviderConnectionBase():
                 res = conn.execSql(sql)
                 rows = []
                 self.assertTrue(res.hasNextRow())
+
                 for row in res:
                     rows.append(row)
 
+                self.assertEqual(rows, old_rows)
+                self.assertEqual(rows, res.rows())
+
+                # Java style
+                res = conn.execSql(sql)
+                rows = []
+                self.assertTrue(res.hasNextRow())
+                while res.hasNextRow():
+                    rows.append(res.nextRow())
+
                 self.assertFalse(res.hasNextRow())
 
-                self.assertEqual(rows, old_rows)
+                # But we still have access to rows:
                 self.assertEqual(rows, res.rows())
 
                 sql = "SELECT time_t FROM %s" % table
