@@ -552,7 +552,7 @@ void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
 {
   layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
   layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
-  layerProperty.pkCols = getLayerPrimaryeKeys( layerProperty );
+  layerProperty.pkCols = getPrimaryeKeys( layerProperty );
 }
 
 QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &ownerName )
@@ -584,60 +584,75 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
   return list;
 }
 
-QStringList QgsHanaConnection::getLayerPrimaryeKeys( const QgsHanaLayerProperty &layerProperty )
+QPair<QString, QMap<QString, short>> QgsHanaConnection::getLayerPrimaryeKey( const QString &schemaName, const QString &tableName )
 {
-  QStringList ret;
-
   try
   {
     DatabaseMetaDataUnicodeRef dbmd = mConnection->getDatabaseMetaDataUnicode();
     ResultSetRef rsPrimaryKeys = dbmd->getPrimaryKeys( nullptr,
-                                 QgsHanaUtils::toUtf16( layerProperty.schemaName ),
-                                 QgsHanaUtils::toUtf16( layerProperty.tableName ) );
-    size_t numColumns = 0;
-    QStringList intColumns;
+                                 QgsHanaUtils::toUtf16( schemaName ),
+                                 QgsHanaUtils::toUtf16( tableName ) );
     QString keyName;
+    QMap<QString, short> keyColumns;
     while ( rsPrimaryKeys->next() )
     {
       QString clmName = QgsHanaUtils::toQString( rsPrimaryKeys->getNString( 4 /*COLUMN_NAME*/ ) );
       if ( keyName.isEmpty() )
         keyName = QgsHanaUtils::toQString( rsPrimaryKeys->getNString( 6 /*PK_NAME*/ ) );
       ResultSetRef rsColumns = dbmd->getColumns( nullptr,
-                               QgsHanaUtils::toUtf16( layerProperty.schemaName ),
-                               QgsHanaUtils::toUtf16( layerProperty.tableName ),
+                               QgsHanaUtils::toUtf16( schemaName ),
+                               QgsHanaUtils::toUtf16( tableName ),
                                QgsHanaUtils::toUtf16( clmName ) );
       while ( rsColumns->next() )
       {
-        Short dataType = rsColumns->getShort( 5 );
-        short dt = *dataType;
-        if ( dt == SQLDataTypes::TinyInt || dt == SQLDataTypes::SmallInt ||
-             dt == SQLDataTypes::Integer || dt == SQLDataTypes::BigInt )
-          intColumns << clmName;
-        ++numColumns;
+        Short dataType = rsColumns->getShort( 5 /*DATA_TYPE*/ );
+        keyColumns.insert( clmName, *dataType );
       }
       rsColumns->close();
     }
     rsPrimaryKeys->close();
 
-    if ( numColumns == 1 )
-    {
-      if ( !intColumns.empty() )
-        ret << intColumns[0];
-    }
-    else if ( numColumns > 0 )
-    {
-      QgsDebugMsg( QStringLiteral( "Table %1.%2 has %3 columns in its primary key %4" ).arg(
-                     layerProperty.schemaName,
-                     layerProperty.tableName,
-                     QString::number( numColumns ),
-                     keyName ) );
-    }
+    return qMakePair( keyName, keyColumns );
   }
   catch ( const Exception &ex )
   {
     throw QgsHanaException( ex.what() );
   }
+}
 
+// The current implementation allows to return only primary keys that contain
+// only one column of integer type.
+QStringList QgsHanaConnection::getPrimaryeKeys( const QgsHanaLayerProperty &layerProperty )
+{
+  QStringList ret;
+  size_t numColumns = 0;
+  QStringList intColumns;
+  const QPair<QString, QMap<QString, short>> primaryKeys = getLayerPrimaryeKey( layerProperty.schemaName, layerProperty.tableName );
+  const QMap<QString, short> &columns = primaryKeys.second;
+  for ( auto it = columns.constBegin(); it != columns.constEnd(); ++it )
+  {
+    const QString &clmName = it.key();
+    short clmType = it.value();
+
+    if ( clmType == SQLDataTypes::TinyInt || clmType == SQLDataTypes::SmallInt ||
+         clmType == SQLDataTypes::Integer || clmType == SQLDataTypes::BigInt )
+      intColumns << clmName;
+    ++numColumns;
+  }
+
+  if ( numColumns == 1 )
+  {
+    if ( !intColumns.empty() )
+      ret << intColumns[0];
+  }
+  else if ( numColumns > 0 )
+  {
+    QgsDebugMsg( QStringLiteral( "Table %1.%2 has %3 columns in its primary key %4" ).arg(
+                   layerProperty.schemaName,
+                   layerProperty.tableName,
+                   QString::number( numColumns ),
+                   primaryKeys.first ) );
+  }
   return ret;
 }
 

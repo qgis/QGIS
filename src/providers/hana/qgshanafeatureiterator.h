@@ -19,6 +19,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgshanaconnectionpool.h"
+#include "qgshanaprimarykeys.h"
 #include "qgshanaprovider.h"
 #include "qgshanaresultset.h"
 
@@ -40,7 +41,9 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
     QgsDataSourceUri mUri;
     QString mSchemaName;
     QString mTableName;
-    QString mFidColumn;
+    QgsHanaPrimaryKeyType mPrimaryKeyType = QgsHanaPrimaryKeyType::PktUnknown;
+    QList<int> mPrimaryKeyAttrs;
+    std::shared_ptr<QgsHanaPrimaryKeyContext> mPrimaryKeyCntx;
     QgsFields mFields;
     QVector<FieldInfo> mFieldInfos;
     QString mGeometryColumn;
@@ -86,9 +89,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     QString mSqlQuery;
     QVariantList mSqlQueryParams;
     QgsRectangle mFilterRect;
-    const QgsRectangle mSrsExtent;
     QgsAttributeList mAttributesToFetch;
-    const QString mFidColumn;
     QgsCoordinateTransform mTransform;
     bool mHasAttributes = false;
     bool mHasGeometryColumn = false;

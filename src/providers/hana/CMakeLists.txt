@@ -11,6 +11,7 @@ SET (HANA_SRCS
   qgshanadriver.cpp
   qgshanaexpressioncompiler.cpp
   qgshanafeatureiterator.cpp
+  qgshanaprimarykeys.cpp
   qgshanaprovider.cpp
   qgshanaproviderconnection.cpp
   qgshanaresultset.cpp

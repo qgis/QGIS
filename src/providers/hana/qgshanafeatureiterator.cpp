@@ -21,6 +21,7 @@
 #include "qgshanaexception.h"
 #include "qgshanaexpressioncompiler.h"
 #include "qgshanafeatureiterator.h"
+#include "qgshanaprimarykeys.h"
 #include "qgshanaprovider.h"
 #include "qgshanacrsutils.h"
 #include "qgshanautils.h"
@@ -65,8 +66,6 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   : QgsAbstractFeatureIteratorFromSource<QgsHanaFeatureSource>( source, ownSource, request )
   , mDatabaseVersion( source->mDatabaseVersion )
   , mConnection( source->mUri )
-  , mSrsExtent( source->mSrsExtent )
-  , mFidColumn( source->mFidColumn )
 {
   if ( mConnection.isNull() )
   {
@@ -149,7 +148,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   unsigned short paramIndex = 1;
 
   // Read feature id
-  if ( !mFidColumn.isEmpty() )
+  if ( !mSource->mPrimaryKeyAttrs.isEmpty() )
   {
     QVariant id = mResultSet->getValue( paramIndex );
     feature.setId( id.toLongLong() );
@@ -238,8 +237,8 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   bool limitAtProvider = ( request.limit() >= 0 );
 
   QgsRectangle filterRect = mFilterRect;
-  if ( !mSrsExtent.isEmpty() )
-    filterRect = mSrsExtent.intersect( filterRect );
+  if ( !mSource->mSrsExtent.isEmpty() )
+    filterRect = mSource->mSrsExtent.intersect( filterRect );
 
   if ( !filterRect.isFinite() )
     QgsMessageLog::logMessage( QObject::tr( "Infinite filter rectangle specified" ), QObject::tr( "HANA" ) );
@@ -307,17 +306,20 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
 
   QStringList sqlFields;
   // Add feature id column
-  if ( !mFidColumn.isEmpty() )
-    sqlFields.push_back( QgsHanaUtils::quotedIdentifier( mFidColumn ) );
-
-  for ( int i : attrIds )
+  for ( const int &idx : mSource->mPrimaryKeyAttrs )
   {
-    QString fieldName = mSource->mFields.at( i ).name();
-    if ( mFidColumn != fieldName )
-    {
-      mAttributesToFetch.append( i );
-      sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
-    }
+    QString fieldName = mSource->mFields.at( idx ).name();
+    sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
+  }
+
+  for ( int idx : attrIds )
+  {
+    if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
+      continue;
+
+    QString fieldName = mSource->mFields.at( idx ).name();
+    mAttributesToFetch.append( idx );
+    sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
   }
 
   mHasAttributes = !mAttributesToFetch.isEmpty();
@@ -340,22 +342,19 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     sqlFilter.push_back( mSource->mQueryWhereClause );
 
   // Set fid filter
-  if ( !mFidColumn.isEmpty() )
+  if ( !mSource->mPrimaryKeyAttrs.isEmpty() )
   {
     if ( request.filterType() == QgsFeatureRequest::FilterFid )
     {
-      QString inClause = QStringLiteral( " %1 = %2" ).arg(
-                           QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( request.filterFid() ) );
-      sqlFilter.push_back( inClause );
+      QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( request.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, *mSource->mPrimaryKeyCntx );
+      if ( !fidWhereClause.isEmpty() )
+        sqlFilter.push_back( fidWhereClause );
     }
     else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mRequest.filterFids().isEmpty() )
     {
-      QStringList fids;
-      for ( QgsFeatureId featureId : mRequest.filterFids() )
-        fids.push_back( FID_TO_STRING( featureId ) );
-
-      QString inClause = QStringLiteral( "%1 IN (%2)" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ), fids.join( ',' ) );
-      sqlFilter.push_back( inClause );
+      QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( request.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, *mSource->mPrimaryKeyCntx );
+      if ( !fidWhereClause.isEmpty() )
+        sqlFilter.push_back( fidWhereClause );
     }
   }
 
@@ -439,7 +438,9 @@ QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
   , mUri( p->mUri )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
-  , mFidColumn( p->mFidColumn )
+  , mPrimaryKeyType( p->mPrimaryKeyType )
+  , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
+  , mPrimaryKeyCntx( p->mPrimaryKeyCntx )
   , mFields( p->mAttributeFields )
   , mFieldInfos( p->mFieldInfos )
   , mGeometryColumn( p->mGeometryColumn )

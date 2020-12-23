@@ -19,6 +19,7 @@
 
 #include "qgsfields.h"
 #include "qgsprovidermetadata.h"
+#include "qgshanaprimarykeys.h"
 #ifdef HAVE_GUI
 #include "qgsproviderguimetadata.h"
 #endif
@@ -67,7 +68,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsLayerMetadata layerMetadata() const override;
     QString dataComment() const override;
     long featureCount() const override;
-    QgsAttributeList pkAttributeIndexes() const override;
+    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
@@ -123,7 +124,9 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     void readGeometryType();
     void readMetadata();
     void readSrsInformation();
+    void determinePrimaryKey();
     long getFeatureCount( const QString &whereClause ) const;
+    void updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMap &attributes );
 
   private:
     // Flag indicating whether the layer is a valid or not
@@ -142,8 +145,10 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QString mTableName;
     // Name of the schema
     QString mSchemaName;
-    // Name of the feature id column
-    QString mFidColumn;
+    // Data type for the primary key
+    QgsHanaPrimaryKeyType mPrimaryKeyType = QgsHanaPrimaryKeyType::PktUnknown;
+    // List of primary key attributes for fetching features
+    QList<int> mPrimaryKeyAttrs;
     // Name of the geometry column
     QString mGeometryColumn;
     // Spatial type
@@ -170,6 +175,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     // Number of features in the layer
     mutable long mFeaturesCount = 0;
     QgsLayerMetadata mLayerMetadata;
+    std::shared_ptr<QgsHanaPrimaryKeyContext> mPrimaryKeyCntx;
 
     friend class QgsHanaFeatureSource;
 };
