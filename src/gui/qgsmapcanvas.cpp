@@ -1349,8 +1349,8 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   zoomToFeatureExtent( rect );
 }
 
-void QgsMapCanvas::zoomToAllSelected(const QList<QgsMapLayer *> *layers) {
-
+void QgsMapCanvas::zoomToAllSelected( const QList<QgsMapLayer *> *layers )
+{
   QgsVectorLayer *layer;
 
   QgsRectangle rect;
@@ -1358,23 +1358,23 @@ void QgsMapCanvas::zoomToAllSelected(const QList<QgsMapLayer *> *layers) {
   QgsRectangle selectionExtent;
   selectionExtent.setMinimal();
 
-  for (int i = 0; i < layers->size(); ++i) {
-    if ( layers->at(i)->type() == QgsMapLayerType(0) )
-      layer = qobject_cast<QgsVectorLayer *>(layers->at(i));
+  for ( int i = 0; i < layers->size(); ++i )
+  {
+    if ( layers->at( i )->type() == QgsMapLayerType( 0 ) )
+      layer = qobject_cast<QgsVectorLayer *>( layers->at( i ) );
 
-    if (!layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0)
+    if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
       continue;
 
     rect = layer->boundingBoxOfSelected();
 
-    if (rect.isNull())
+    if ( rect.isNull() )
       continue;
 
-    rect = mapSettings().layerExtentToOutputExtent(layer, rect);
+    rect = mapSettings().layerExtentToOutputExtent( layer, rect );
 
-    if (layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty()) {
-      rect = optimalExtentForPointLayer(layer, rect.center());
-    }
+    if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+      rect = optimalExtentForPointLayer( layer, rect.center() );
 
     selectionExtent.combineExtentWith( rect );
   }
@@ -1548,23 +1548,23 @@ void QgsMapCanvas::panToAllSelected( const QList<QgsMapLayer *> *layers )
   QgsRectangle selectionExtent;
   selectionExtent.setMinimal();
 
-  for (int i = 0; i < layers->size(); ++i) {
-    if ( layers->at(i)->type() == QgsMapLayerType(0) )
-      layer = qobject_cast<QgsVectorLayer *>(layers->at(i));
+  for ( int i = 0; i < layers->size(); ++i )
+  {
+    if ( layers->at( i )->type() == QgsMapLayerType( 0 ) )
+      layer = qobject_cast<QgsVectorLayer *>( layers->at( i ) );
 
-    if (!layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0)
+    if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
       continue;
 
     rect = layer->boundingBoxOfSelected();
 
-    if (rect.isNull())
+    if ( rect.isNull() )
       continue;
 
-    rect = mapSettings().layerExtentToOutputExtent(layer, rect);
+    rect = mapSettings().layerExtentToOutputExtent( layer, rect );
 
-    if (layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty()) {
-      rect = optimalExtentForPointLayer(layer, rect.center());
-    }
+    if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+      rect = optimalExtentForPointLayer( layer, rect.center() );
 
     selectionExtent.combineExtentWith( rect );
   }
