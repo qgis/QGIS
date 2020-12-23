@@ -1039,8 +1039,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
 #else
   Q_UNUSED( identify )
 
-  static const QRegularExpression sProjRegExp( QStringLiteral( "\\+proj=(\\S+)" ) );
-  QRegularExpression myProjRegExp( sProjRegExp );
+  QRegExp projRegExp( QStringLiteral( "\\+proj=(\\S+)" ) );
   int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
@@ -1053,8 +1052,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
 
   d->mProjectionAcronym = myProjRegExp.cap( 1 );
 
-  static const QRegularExpression sEllipseRegExp( QStringLiteral( "\\+ellps=(\\S+)" ) );
-  QRegularExpression myEllipseRegExp( sEllipseRegExp );
+  QRegExp myEllipseRegExp( QStringLiteral( "\\+ellps=(\\S+)" ) );
   myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
@@ -1065,8 +1063,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     d->mEllipsoidAcronym = myEllipseRegExp.cap( 1 );
   }
 
-  static const QRegularExpression sAxisRegExp( QStringLiteral( "\\+a=(\\S+)" ) );
-  QRegularExpression myAxisRegExp( sAxisRegExp );
+  QRegExp myAxisRegExp( QStringLiteral( "\\+a=(\\S+)" ) );
   myStart = myAxisRegExp.indexIn( myProj4String );
 
   long mySrsId = 0;
@@ -1082,10 +1079,8 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     // Ticket #722 - aaronr
     // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
     // First we check for lat_1 and lat_2
-    static const QRegularExpression sLat1RegExp( QStringLiteral( "\\+lat_1=\\S+" ) );
-    static const QRegularExpression sLat2RegExp( QStringLiteral( "\\+lat_2=\\S+" ) );
-    QRegularExpression myLat1RegExp( sLat1RegExp );
-    QRegularExpression myLat2RegExp( sLat2RegExp );
+    QRegExp myLat1RegExp( QStringLiteral( "\\+lat_1=\\S+" ) );
+    QRegExp myLat2RegExp( QStringLiteral( "\\+lat_2=\\S+" ) );
     int myStart1 = 0;
     int myLength1 = 0;
     int myStart2 = 0;
@@ -3144,7 +3139,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         continue;
       }
 
-      QReExp ellipseRegExp( "\\+ellps=(\\S+)" );
+      QRegExp ellipseRegExp( "\\+ellps=(\\S+)" );
       QString ellps;
       if ( ellipseRegExp.indexIn( proj4 ) >= 0 )
       {
