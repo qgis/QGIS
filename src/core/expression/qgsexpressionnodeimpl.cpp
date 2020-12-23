@@ -558,8 +558,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             esc_regexp.replace( pos + 1, 1, '.' );
             pos += 1;
           }
-          const static QRegularExpression sRx4( QStringLiteral( "\\\\_" ) );
-          QRegularExpression rx4( sRx4 );
+          const thread_local QRegularExpression rx4( QStringLiteral( "\\\\_" ) );
           esc_regexp.replace( rx4, QStringLiteral( "_" ) );
           matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
@@ -1364,8 +1363,7 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
 
 QString QgsExpressionNodeColumnRef::dump() const
 {
-  const static QRegularExpression sRe( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
-  QRegularExpression re( sRe );
+  const thread_local QRegularExpression re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
   return re.match( mName ).hasMatch() ? mName : QgsExpression::quotedColumnRef( mName );
 }
 
