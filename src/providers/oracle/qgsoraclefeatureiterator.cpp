@@ -199,25 +199,18 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   bool useFallback = false;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+    QgsOracleExpressionCompiler compiler( mSource );
+    QgsSqlExpressionCompiler::Result result = compiler.compile( mRequest.filterExpression() );
+    if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
-      QgsOracleExpressionCompiler compiler( mSource );
-      QgsSqlExpressionCompiler::Result result = compiler.compile( mRequest.filterExpression() );
-      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
-      {
-        fallbackStatement = whereClause;
-        useFallback = true;
-        whereClause = QgsOracleUtils::andWhereClauses( whereClause, compiler.result() );
+      fallbackStatement = whereClause;
+      useFallback = true;
+      whereClause = QgsOracleUtils::andWhereClauses( whereClause, compiler.result() );
 
-        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
-        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
-        limitAtProvider = mExpressionCompiled;
-      }
-      else
-      {
-        limitAtProvider = false;
-      }
+      //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+      mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+      mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+      limitAtProvider = mExpressionCompiled;
     }
     else
     {
