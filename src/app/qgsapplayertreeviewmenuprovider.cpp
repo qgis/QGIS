@@ -160,18 +160,18 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           for ( int i = 0; i < selectedLayers.size(); ++i )
           {
             QgsMapLayer *layer = selectedLayers.at( i );
-            QgsVectorLayer *vLayer;
-            if (layer->type() == QgsMapLayerType(0) )
+
+            if ( layer->type() == QgsMapLayerType( 0 ) )
             {
               QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
 
               if ( !vLayer->selectedFeatureIds().isEmpty() )
               {
-                hasSelectedFeature = TRUE;
+                hasSelectedFeature = true;
                 break;
               }
               else
-                hasSelectedFeature = FALSE;
+                hasSelectedFeature = false;
             }
 
           }
