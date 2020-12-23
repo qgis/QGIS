@@ -314,16 +314,16 @@ void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
 {
   QgsVectorLayer *layer;
 
-  if ( mView->currentLayer()->type() == QgsMapLayerType(0) )
+  if ( mView->currentLayer()->type() == QgsMapLayerType( 0 ) )
     layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
 
   QList<QgsMapLayer *> layers = mView->selectedLayers();
 
   if ( layers.size() > 1 && !layers.isEmpty() )
-    canvas->zoomToAllSelected(&layers);
+    canvas->zoomToAllSelected( &layers );
 
-  else if ( layers.size() <= 1 && layer)
-    canvas->zoomToSelected(layer);
+  else if ( layers.size() <= 1 && layer )
+    canvas->zoomToSelected( layer );
 
 }
 
