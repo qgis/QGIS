@@ -65,8 +65,7 @@ bool QgsMultiPoint::fromWkt( const QString &wkt )
 {
   QString collectionWkt( wkt );
   //test for non-standard MultiPoint(x1 y1, x2 y2) format
-  static const QRegularExpression sRegex( QStringLiteral( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" ), QRegularExpression::CaseInsensitiveOption );
-  QRegularExpression regex( sRegex );
+  const thread_local QRegularExpression regex( QStringLiteral( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" ), QRegularExpression::CaseInsensitiveOption );
   const QRegularExpressionMatch match = regex.match( collectionWkt );
   if ( match.hasMatch() )
   {
