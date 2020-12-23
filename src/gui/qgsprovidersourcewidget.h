@@ -22,7 +22,7 @@
 #include "qgis_sip.h"
 
 /**
- * Base class for widgets which allow customisation of a provider's source URI.
+ * Base class for widgets which allow customization of a provider's source URI.
  *
  * \ingroup gui
  * \since QGIS 3.18
