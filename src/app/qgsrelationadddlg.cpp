@@ -44,13 +44,13 @@ QgsFieldPairWidget::QgsFieldPairWidget( int index, QWidget *parent )
   mAddButton = new QToolButton( this );
   mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   mAddButton->setMinimumWidth( 30 );
-  mAddButton->setToolTip( "Add new field pair as part of a composite foreign key" );
+  mAddButton->setToolTip( tr( "Add new field pair as part of a composite foreign key" ) );
   mLayout->addWidget( mAddButton, 0, Qt::AlignLeft );
 
   mRemoveButton = new QToolButton( this );
   mRemoveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
   mRemoveButton->setMinimumWidth( 30 );
-  mRemoveButton->setToolTip( "Remove the last pair of fields" );
+  mRemoveButton->setToolTip( tr( "Remove the last pair of fields" ) );
   mLayout->addWidget( mRemoveButton, 0, Qt::AlignLeft );
 
   mSpacerItem = new QSpacerItem( 30, 30, QSizePolicy::Minimum, QSizePolicy::Maximum );
@@ -123,7 +123,7 @@ void QgsFieldPairWidget::changeEnable()
 QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   : QDialog( parent )
 {
-  setWindowTitle( "Add New Relation" );
+  setWindowTitle( tr( "Add New Relation" ) );
   QGridLayout *layout = new QGridLayout(); // column 0 is kept free for alignment purpose
 
   // row 0: name
@@ -170,11 +170,11 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   layout->addWidget( strengthLabel, 5, 1 );
   // col 2
   mStrengthCombobox = new QComboBox( this );
-  mStrengthCombobox->addItem( "Association", QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
-  mStrengthCombobox->addItem( "Composition", QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
-  mStrengthCombobox->setToolTip( QStringLiteral( "On composition, the child features will be duplicated too.\n"
-                                 "Duplications are made by the feature duplication action.\n"
-                                 "The default actions are activated in the Action section of the layer properties." ) );
+  mStrengthCombobox->addItem( tr( "Association" ), QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
+  mStrengthCombobox->addItem( tr( "Composition" ), QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
+  mStrengthCombobox->setToolTip( tr( "When composition is selected the child features will be duplicated too.\n"
+                                     "Duplications are made by the feature duplication action.\n"
+                                     "The default actions are activated in the Action section of the layer properties." ) );
   layout->addWidget( mStrengthCombobox, 5, 2 );
 
   // row 6: button box
