@@ -22,6 +22,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
+#include "qgsapplication.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QPushButton>
 
@@ -409,6 +410,20 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
           LinkSource l;
           l.item = mChildAlgorithmItems.value( source.outputChildId() );
           l.edge = Qt::BottomEdge;
+
+          // do sanity check of linked index
+          if ( i >= model->childAlgorithm( source.outputChildId() ).algorithm()->outputDefinitions().length() )
+          {
+            QString short_message = tr( "Check output links for alg: %1" ).arg( model->childAlgorithm( source.outputChildId() ).algorithm()->name() );
+            QString long_message = tr( "Cannot link output for alg: %1" ).arg( model->childAlgorithm( source.outputChildId() ).algorithm()->name() );
+            QString title( tr( "Algorithm link error" ) );
+            if ( messageBar() )
+              showWarning( const_cast<QString &>( short_message ), const_cast<QString &>( title ), const_cast<QString &>( long_message ) );
+            else
+              QgsMessageLog::logMessage( long_message, "QgsModelGraphicsScene", Qgis::Warning, true );
+            break;
+          }
+
           l.linkIndex = i;
           res.append( l );
         }
@@ -467,7 +482,7 @@ void QgsModelGraphicsScene::setMessageBar( QgsMessageBar *messageBar )
   mMessageBar = messageBar;
 }
 
-void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level )
+void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level ) const
 {
   QgsMessageBarItem *messageWidget = mMessageBar->createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
@@ -484,4 +499,3 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
 }
 
 ///@endcond
-

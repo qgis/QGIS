@@ -221,8 +221,9 @@ class ModelerDialog(QgsModelDesignerDialog):
             scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
-        scene.createItems(self.model(), context)
         self.setModelScene(scene)
+        # create items later that setModelScene to setup link to messageBar to the scene
+        scene.createItems(self.model(), context)
 
     def create_widget_context(self):
         """
