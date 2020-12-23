@@ -1,8 +1,8 @@
 /***************************************************************************
                              qgsprovidersourcewidget.cpp
                              -----------------
-    begin                : August 2018
-    copyright            : (C) 2018 by Nyall Dawson
+    begin                : December 2020
+    copyright            : (C) 2020 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
