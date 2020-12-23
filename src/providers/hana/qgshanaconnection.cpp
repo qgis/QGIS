@@ -620,7 +620,7 @@ QPair<QString, QMap<QString, short>> QgsHanaConnection::getLayerPrimaryeKey( con
   }
 }
 
-// The current implementation allows to return only primary keys that contain
+// The current implementation allows returning only primary keys that contain
 // only one column of integer type.
 QStringList QgsHanaConnection::getPrimaryeKeys( const QgsHanaLayerProperty &layerProperty )
 {

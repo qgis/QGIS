@@ -116,31 +116,7 @@ namespace
       throw QgsHanaException( errorMessage.toStdString().c_str() );
   }
 
-  void SetStatementFidValue(
-    PreparedStatementRef &stmt,
-    unsigned short paramIndex,
-    QgsHanaPrimaryKeyType keyType,
-    QgsFeatureId fid )
-  {
-    switch ( keyType )
-    {
-      case QgsHanaPrimaryKeyType::PktInt:
-        stmt->setInt( paramIndex, QgsHanaPrimaryKeyUtils::fidToInt( fid ) );
-        break;
-      case QgsHanaPrimaryKeyType::PktInt64:
-        stmt->setLong( paramIndex, fid );
-        break;
-      case QgsHanaPrimaryKeyType::PktFidMap:
-        // TODO
-        //stmtUpdate->setLong( 2, fid );
-        break;
-      case QgsHanaPrimaryKeyType::PktUnknown:
-        Q_ASSERT( false );
-        break;
-    }
-  }
-
-  void setStatementValue(
+  void SetStatementValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
     const FieldInfo &fieldInfo,
@@ -252,6 +228,49 @@ namespace
       default:
         QgsDebugMsg( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
                      .arg( QString::number( fieldInfo.type ), QString::number( paramIndex ) ) );
+    }
+  }
+
+  void SetStatementFidValue(
+    PreparedStatementRef &stmt,
+    unsigned short paramIndex,
+    const QVector<FieldInfo> &fieldsInfo,
+    QgsHanaPrimaryKeyType pkType,
+    const QList<int> &pkAttrs,
+    QgsHanaPrimaryKeyContext &pkContext,
+    QgsFeatureId featureId )
+  {
+    switch ( pkType )
+    {
+      case QgsHanaPrimaryKeyType::PktInt:
+        stmt->setInt( paramIndex, QgsHanaPrimaryKeyUtils::fidToInt( featureId ) );
+        break;
+      case QgsHanaPrimaryKeyType::PktInt64:
+      {
+        QVariantList pkValues = pkContext.lookupKey( featureId );
+        if ( pkValues.empty() )
+          throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( featureId ) );
+        SetStatementValue( stmt, paramIndex, fieldsInfo.at( pkAttrs[0] ), pkValues[0] );
+      }
+      break;
+      case QgsHanaPrimaryKeyType::PktFidMap:
+      {
+        QVariantList pkValues = pkContext.lookupKey( featureId );
+        Q_ASSERT( pkValues.size() == pkAttrs.size() );
+        if ( pkValues.empty() )
+          throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( featureId ) );
+
+        for ( int i = 0; i < pkAttrs.size(); i++ )
+        {
+          const QVariant &value = pkValues[i];
+          Q_ASSERT( !value.isNull() );
+          SetStatementValue( stmt, static_cast<unsigned short>( paramIndex + i ), fieldsInfo.at( pkAttrs[i] ), value );
+        }
+      }
+      break;
+      case QgsHanaPrimaryKeyType::PktUnknown:
+        // Q_ASSERT( false );
+        break;
     }
   }
 }
@@ -540,11 +559,14 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         continue;
       pkFields << true;
     }
+    else
+    {
+      pkFields << false;
+    }
 
     columnNames << QgsHanaUtils::quotedIdentifier( field.name() );
     values << QStringLiteral( "?" );
     fieldIds << idx;
-    pkFields << false;
   }
 
   const bool allowBatchInserts = ( flags & QgsFeatureSink::FastInsert );
@@ -608,7 +630,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             attrValue = mDefaultValues[fieldIndex];
         }
 
-        setStatementValue( stmtInsert, paramIndex, fieldInfo, attrValue );
+        SetStatementValue( stmtInsert, paramIndex, fieldInfo, attrValue );
         ++paramIndex;
       }
 
@@ -628,7 +650,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           if ( mPrimaryKeyType == PktInt )
           {
-            feature.setId( QgsHanaPrimaryKeyUtils::intToFid( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs[ 0 ] ) ) ) );
+            feature.setId( QgsHanaPrimaryKeyUtils::intToFid( attrs.at( mPrimaryKeyAttrs[ 0 ] ).toInt() ) );
           }
           else
           {
@@ -688,10 +710,16 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &ids )
   if ( conn.isNull() )
     return false;
 
-  QString featureIdsWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( ids, mAttributeFields,  mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx );
-  QString sql = QStringLiteral( "DELETE FROM %1.%2 WHERE %3" ).arg(
-                  QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
-                  featureIdsWhereClause );
+  const QString featureIdsWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( ids, mAttributeFields,  mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx );
+  if ( featureIdsWhereClause.isEmpty() )
+  {
+    pushError( tr( "HANA failed to delete features: Unable to find feature ids" ) );
+    return false;
+  }
+
+  const QString sql = QStringLiteral( "DELETE FROM %1.%2 WHERE %3" ).arg(
+                        QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
+                        featureIdsWhereClause );
 
   try
   {
@@ -940,7 +968,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
 
       QByteArray wkb = it->asWkb();
       stmtUpdate->setBinary( 1, makeNullable<vector<char>>( wkb.begin(), wkb.end() ) );
-      SetStatementFidValue( stmtUpdate, 2, mPrimaryKeyType, fid );
+      SetStatementFidValue( stmtUpdate, 2, mFieldInfos, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
       stmtUpdate->addBatch();
 
       if ( stmtUpdate->getBatchDataSize() >= MAXIMUM_BATCH_DATA_SIZE )
@@ -954,7 +982,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
   }
   catch ( const exception &ex )
   {
-    pushError( tr( "HANA error while changing feature geometry: %1" )
+    pushError( tr( "HANA failed to change feature geometry: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;
@@ -1035,11 +1063,11 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         if ( field.name().isEmpty() || fieldInfo.isAutoIncrement )
           continue;
 
-        setStatementValue( stmtUpdate, paramIndex, fieldInfo, *attrIt );
+        SetStatementValue( stmtUpdate, paramIndex, fieldInfo, *attrIt );
         ++paramIndex;
       }
 
-      SetStatementFidValue( stmtUpdate, paramIndex, mPrimaryKeyType, fid );
+      SetStatementFidValue( stmtUpdate, paramIndex, mFieldInfos, mPrimaryKeyType, mPrimaryKeyAttrs, *mPrimaryKeyCntx, fid );
 
       stmtUpdate->executeUpdate();
 
@@ -1051,7 +1079,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
   }
   catch ( const exception &ex )
   {
-    pushError( tr( "HANA error while changing feature attributes: %1" )
+    pushError( tr( "HANA failed to change feature attributes: %1" )
                .arg( QgsHanaUtils::formatErrorMessage( ex.what(), false ) ) );
     conn->rollback();
     return false;

@@ -148,17 +148,53 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   unsigned short paramIndex = 1;
 
   // Read feature id
+  QgsFeatureId fid = 0;
+  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
+
   if ( !mSource->mPrimaryKeyAttrs.isEmpty() )
   {
-    QVariant id = mResultSet->getValue( paramIndex );
-    feature.setId( id.toLongLong() );
-    feature.setAttribute( 0, id );
-    ++paramIndex;
+    switch ( mSource->mPrimaryKeyType )
+    {
+      case QgsHanaPrimaryKeyType::PktInt:
+      {
+        QVariant v = mResultSet->getValue( paramIndex );
+        if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs[ 0 ] ) )
+          feature.setAttribute( 0, v );
+        fid = QgsHanaPrimaryKeyUtils::intToFid( v.toInt() );
+        ++paramIndex;
+      }
+      break;
+      case QgsHanaPrimaryKeyType::PktInt64:
+      {
+        int idx = mSource->mPrimaryKeyAttrs.at( 0 );
+        QVariant v = mResultSet->getValue( paramIndex );
+        if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+          feature.setAttribute( idx, v );
+        fid = mSource->mPrimaryKeyCntx->lookupFid( QVariantList( { v} ) );
+        ++paramIndex;
+      }
+      break;
+      case QgsHanaPrimaryKeyType::PktFidMap:
+      {
+        QVariantList pkValues;
+        for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
+        {
+          QVariant v = mResultSet->getValue( paramIndex );
+          pkValues << v;
+          if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+            feature.setAttribute( idx, v );
+          paramIndex++;
+        }
+        fid = mSource->mPrimaryKeyCntx->lookupFid( pkValues );
+      }
+      break;
+      case QgsHanaPrimaryKeyType::PktUnknown:
+        break;
+    }
   }
-  else
-  {
-    feature.setId( 0u );
-  }
+
+  feature.setId( fid );
 
   // Read attributes
   if ( mHasAttributes )
@@ -306,7 +342,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
 
   QStringList sqlFields;
   // Add feature id column
-  for ( const int &idx : mSource->mPrimaryKeyAttrs )
+  for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
   {
     QString fieldName = mSource->mFields.at( idx ).name();
     sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
@@ -347,14 +383,16 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     if ( request.filterType() == QgsFeatureRequest::FilterFid )
     {
       QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( request.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, *mSource->mPrimaryKeyCntx );
-      if ( !fidWhereClause.isEmpty() )
-        sqlFilter.push_back( fidWhereClause );
+      if ( fidWhereClause.isEmpty() )
+        throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( request.filterFid() ) );
+      sqlFilter.push_back( fidWhereClause );
     }
     else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mRequest.filterFids().isEmpty() )
     {
-      QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( request.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, *mSource->mPrimaryKeyCntx );
-      if ( !fidWhereClause.isEmpty() )
-        sqlFilter.push_back( fidWhereClause );
+      QString fidsWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( request.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, *mSource->mPrimaryKeyCntx );
+      if ( fidsWhereClause.isEmpty() )
+        throw QgsHanaException( QStringLiteral( "Key values for features not found." ) );
+      sqlFilter.push_back( fidsWhereClause );
     }
   }
 

@@ -24,6 +24,12 @@
 class QgsHanaException final : public QException
 {
   public:
+    explicit QgsHanaException( const QString &what ) noexcept
+      : mMessage( QgsHanaUtils::formatErrorMessage( what.toStdString().c_str() ).toStdString() )
+    {
+      QgsDebugMsg( what );
+    }
+
     explicit QgsHanaException( const char *what ) noexcept
       : mMessage( QgsHanaUtils::formatErrorMessage( what ).toStdString() )
     {
