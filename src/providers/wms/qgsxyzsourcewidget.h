@@ -31,6 +31,29 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
     void setSourceUri( const QString &uri ) override;
     QString sourceUri() const override;
 
+    void setUrl( const QString &url );
+    QString url() const;
+
+    void setZMin( int zMin );
+    int zMin() const;
+
+    void setZMax( int zMax );
+    int zMax() const;
+
+    void setUsername( const QString &username );
+    void setPassword( const QString &password );
+    void setAuthCfg( const QString &id );
+
+    QString username() const;
+    QString password() const;
+    QString authcfg() const;
+
+    void setReferer( const QString &referer );
+    QString referer() const;
+
+    void setTilePixelRatio( int ratio );
+    int tilePixelRatio() const;
+
   private slots:
 
     void validate();

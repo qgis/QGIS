@@ -99,6 +99,98 @@ QString QgsXyzSourceWidget::sourceUri() const
   return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
 }
 
+void QgsXyzSourceWidget::setUrl( const QString &url )
+{
+  mEditUrl->setText( url );
+}
+
+QString QgsXyzSourceWidget::url() const
+{
+  return mEditUrl->text();
+}
+
+void QgsXyzSourceWidget::setZMin( int zMin )
+{
+  mCheckBoxZMin->setChecked( zMin != -1 );
+  mSpinZMin->setValue( zMin != -1 ? zMin : 0 );
+}
+
+int QgsXyzSourceWidget::zMin() const
+{
+  return mCheckBoxZMin->isChecked() ? mSpinZMin->value() : -1;
+}
+
+void QgsXyzSourceWidget::setZMax( int zMax )
+{
+  mCheckBoxZMax->setChecked( zMax != -1 );
+  mSpinZMax->setValue( zMax != -1 ? zMax : 0 );
+}
+
+int QgsXyzSourceWidget::zMax() const
+{
+  return mCheckBoxZMax->isChecked() ? mSpinZMax->value() : -1;
+}
+
+void QgsXyzSourceWidget::setUsername( const QString &username )
+{
+  mAuthSettings->setUsername( username );
+}
+
+void QgsXyzSourceWidget::setPassword( const QString &password )
+{
+  mAuthSettings->setPassword( password );
+}
+
+void QgsXyzSourceWidget::setAuthCfg( const QString &id )
+{
+  mAuthSettings->setConfigId( id );
+}
+
+QString QgsXyzSourceWidget::username() const
+{
+  return mAuthSettings->username();
+}
+
+QString QgsXyzSourceWidget::password() const
+{
+  return mAuthSettings->password();
+}
+
+QString QgsXyzSourceWidget::authcfg() const
+{
+  return mAuthSettings->configId();
+}
+
+void QgsXyzSourceWidget::setReferer( const QString &referer )
+{
+  mEditReferer->setText( referer );
+}
+
+QString QgsXyzSourceWidget::referer() const
+{
+  return mEditReferer->text();
+}
+
+void QgsXyzSourceWidget::setTilePixelRatio( int ratio )
+{
+  int index = 0;  // default is "unknown"
+  if ( ratio == 2. )
+    index = 2;  // high-res
+  else if ( ratio == 1. )
+    index = 1;  // normal-res
+  mComboTileResolution->setCurrentIndex( ratio );
+}
+
+int QgsXyzSourceWidget::tilePixelRatio() const
+{
+  if ( mComboTileResolution->currentIndex() == 1 )
+    return 1.;  // normal-res
+  else if ( mComboTileResolution->currentIndex() == 2 )
+    return 2.;  // high-res
+  else
+    return 0;  // unknown
+}
+
 void QgsXyzSourceWidget::validate()
 {
   const bool valid = !mEditUrl->text().isEmpty();
