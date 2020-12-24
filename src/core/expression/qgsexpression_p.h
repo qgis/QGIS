@@ -80,6 +80,8 @@ class QgsExpressionPrivate
 
     //! Whether prepare() has been called before evaluate()
     bool mIsPrepared = false;
+    //! Stored prepare() return value
+    bool mPreparedReturnValue = false;
 
     QgsExpressionPrivate &operator= ( const QgsExpressionPrivate & ) = delete;
 };

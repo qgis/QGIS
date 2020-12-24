@@ -322,6 +322,9 @@ void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 
 bool QgsExpression::prepare( const QgsExpressionContext *context )
 {
+  if ( d->mIsPrepared )
+    return d-> mPreparedReturnValue;
+
   detach();
   d->mEvalErrorString = QString();
   if ( !d->mRootNode )
@@ -340,7 +343,8 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
 
   initGeomCalculator( context );
   d->mIsPrepared = true;
-  return d->mRootNode->prepare( this, context );
+  d->mPreparedReturnValue = d->mRootNode->prepare( this, context );
+  return d->mPreparedReturnValue;
 }
 
 QVariant QgsExpression::evaluate()
