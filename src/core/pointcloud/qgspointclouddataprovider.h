@@ -79,10 +79,16 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
 
     /**
      * Returns the list of points of the point cloud layer \a layer according to a zoom level
-     * defined by \a maximumError and \a rootErrorPixels, and an extent defined by a geometry
+     * defined by \a maxErrorPixels and \a rootErrorPixels, and an extent defined by a geometry
      * in the 2D plane \a geometry and a range for z values \a extentZRange
+     *
+     * \a maxErrorPixels : maximum accepted error factor in pixels
+     * \a rootErrorPixels : the root node error factor in pixels
+     *
+     * \note this function does not handle elevation properties and you need to change it yourself
+     * after returning from the function
      */
-    QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, float maximumError, float rootErrorPixels, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange ) SIP_SKIP;
+    QVector<QMap<QString, QVariant>> identify( float maxErrorPixels, float rootErrorPixels, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange ) SIP_SKIP;
 
     /**
      * Returns flags containing the supported capabilities for the data provider.

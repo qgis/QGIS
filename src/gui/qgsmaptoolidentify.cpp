@@ -53,6 +53,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudlayerrenderer.h"
+#include "qgspointcloudlayerelevationproperties.h"
 
 #include <QMouseEvent>
 #include <QCursor>
@@ -519,8 +520,11 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   QVector<QMap<QString, QVariant>> points = renderer->identify( layer, context, transformedGeometry );
   int id = 0;
+  QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
   for ( QMap<QString, QVariant> pt : points )
   {
+    // Apply elevation properties
+    pt["Z"] = pt["Z"].toReal() * elevationProps->zScale() + elevationProps->zOffset();
     // TODO: replace this conversion with something better
     QMap<QString, QString> ptStr;
     for ( QString key : pt.keys() )

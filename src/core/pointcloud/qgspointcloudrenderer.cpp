@@ -201,27 +201,24 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
 
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   const IndexedPointCloudNode root = index->root();
-  QgsPointCloudLayerElevationProperties *properties = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
-  QgsPointCloudRenderContext context( renderContext, index->scale(), index->offset(), properties->zScale(), properties->zOffset() );
 
-  const float maximumError = context.renderContext().convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
+  const float maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
 
-  const QgsRectangle rootNodeExtentLayerCoords = index->nodeMapExtent( root );
-  QgsRectangle rootNodeExtentMapCoords;
+  QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
   try
   {
-    rootNodeExtentMapCoords = context.renderContext().coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
+    rootNodeExtentMapCoords = renderContext.coordinateTransform().transformBoundingBox( index->nodeMapExtent( root ) );
   }
   catch ( QgsCsException & )
   {
     QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
-    rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
   }
+  //
 
   const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span(); // in map coords
 
-  double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
-  if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
+  double mapUnitsPerPixel = renderContext.mapToPixel().mapUnitsPerPixel();
+  if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maxErrorPixels < 0.0 ) )
   {
     QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
     return selectedPoints;
@@ -236,22 +233,22 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
     double y = geometry.asPoint().y();
     if ( pointSymbol() == QgsPointCloudRenderer::PointSymbol::Square )
     {
-      QgsPointXY deviceCoords = context.renderContext().mapToPixel().transform( QgsPointXY( x, y ) );
+      QgsPointXY deviceCoords = renderContext.mapToPixel().transform( QgsPointXY( x, y ) );
       QgsPointXY point1( deviceCoords.x() - 2 * pointSize(), deviceCoords.y() - 2 * pointSize() );
       QgsPointXY point2( deviceCoords.x() + 2 * pointSize(), deviceCoords.y() + 2 * pointSize() );
-      QgsPointXY point1MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point1.x(), point1.y() );
-      QgsPointXY point2MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point2.x(), point2.y() );
+      QgsPointXY point1MapCoords = renderContext.mapToPixel().toMapCoordinates( point1.x(), point1.y() );
+      QgsPointXY point2MapCoords = renderContext.mapToPixel().toMapCoordinates( point2.x(), point2.y() );
       QgsRectangle pointRect( point1MapCoords, point2MapCoords );
       selectionGeometry = QgsGeometry::fromRect( pointRect );
     }
     else if ( pointSymbol() == QgsPointCloudRenderer::PointSymbol::Circle )
     {
       QgsPoint centerMapCoords( x, y );
-      QgsPointXY deviceCoords = context.renderContext().mapToPixel().transform( centerMapCoords );
+      QgsPointXY deviceCoords = renderContext.mapToPixel().transform( centerMapCoords );
       QgsPoint point1( deviceCoords.x(), deviceCoords.y() - 2 * pointSize() );
       QgsPoint point2( deviceCoords.x(), deviceCoords.y() + 2 * pointSize() );
-      QgsPointXY point1MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point1.x(), point1.y() );
-      QgsPointXY point2MapCoords = context.renderContext().mapToPixel().toMapCoordinates( point2.x(), point2.y() );
+      QgsPointXY point1MapCoords = renderContext.mapToPixel().toMapCoordinates( point1.x(), point1.y() );
+      QgsPointXY point2MapCoords = renderContext.mapToPixel().toMapCoordinates( point2.x(), point2.y() );
       QgsCircle circle = QgsCircle::from2Points( QgsPoint( point1MapCoords ), QgsPoint( point2MapCoords ) );
       // TODO: make this faster?
       QgsPolygon *polygon = circle.toPolygon( 5 );
@@ -260,15 +257,9 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
     }
   }
 
-  QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( layer, maximumError, rootErrorPixels, selectionGeometry, QgsDoubleRange() );
-
-  for ( QMap<QString, QVariant> point : points )
-  {
-    if ( this->willRenderPoint( point ) )
-      selectedPoints.push_back( point );
-  }
-
-  return selectedPoints;
+  QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorPixels, rootErrorPixels, selectionGeometry, QgsDoubleRange() );
+  points.erase( std::remove_if( points.begin(), points.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), points.end() );
+  return points;
 }
 
 
