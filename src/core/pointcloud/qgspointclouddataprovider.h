@@ -82,7 +82,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * defined by \a maximumError and \a rootErrorPixels, and an extent defined by a geometry
      * in the 2D plane \a geometry and a range for z values \a extentZRange
      */
-    QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, float maximumError, float rootErrorPixels, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange );
+    QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, float maximumError, float rootErrorPixels, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange ) SIP_SKIP;
 
     /**
      * Returns flags containing the supported capabilities for the data provider.
