@@ -183,8 +183,7 @@ QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, con
 }
 
 QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
-                                QgsPointCloudLayer *layer,
-                                float maximumError,
+                                float maxErrorPixels,
                                 float rootErrorPixels,
                                 QgsGeometry extentGeometry,
                                 const QgsDoubleRange extentZRange )
@@ -194,17 +193,15 @@ QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
   QgsPointCloudIndex *index = this->index();
   const IndexedPointCloudNode root = index->root();
 
-
-  QgsPointCloudLayerElevationProperties *properties = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
   QgsRenderContext renderContext;
 
-  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maximumError, rootErrorPixels, extentGeometry, extentZRange );
+  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxErrorPixels, rootErrorPixels, extentGeometry, extentZRange );
 
   QgsPointCloudAttributeCollection attributeCollection = index->attributes();
   QgsPointCloudRequest request;
   request.setAttributes( attributeCollection );
 
-  QgsPointCloudRenderContext context( renderContext, index->scale(), index->offset(), properties->zScale(), properties->zOffset() );
+  QgsPointCloudRenderContext context( renderContext, index->scale(), index->offset(), 1.0, 0.0 );
   int pointCount = 0;
 
   for ( const IndexedPointCloudNode &n : nodes )
