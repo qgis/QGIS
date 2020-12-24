@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSingleBandGrayRenderer: QgsRasterRenderer
 {
 %Docstring
@@ -64,6 +65,26 @@ Takes ownership
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 
+
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+%Docstring
+Returns the color ramp shader legend settings.
+
+.. seealso:: :py:func:`setLegendSettings`
+
+.. versionadded:: 3.18
+%End
+
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings /Transfer/ );
+%Docstring
+Sets the color ramp shader legend ``settings``.
+
+Ownership of ``settings`` is transferred.
+
+.. seealso:: :py:func:`legendSettings`
+
+.. versionadded:: 3.18
+%End
 
   private:
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );

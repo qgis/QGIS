@@ -364,6 +364,7 @@
 %Include auto_generated/labeling/qgsrulebasedlabeling.sip
 %Include auto_generated/labeling/qgsvectorlayerlabeling.sip
 %Include auto_generated/layertree/qgscolorramplegendnode.sip
+%Include auto_generated/layertree/qgscolorramplegendnodesettings.sip
 %Include auto_generated/layertree/qgslayertree.sip
 %Include auto_generated/layertree/qgslayertreegroup.sip
 %Include auto_generated/layertree/qgslayertreelayer.sip
@@ -499,6 +500,8 @@
 %Include auto_generated/processing/qgsprocessingprovider.sip
 %Include auto_generated/processing/qgsprocessingregistry.sip
 %Include auto_generated/processing/qgsprocessingutils.sip
+%Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
+%Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
 %Include auto_generated/raster/qgsbilinearrasterresampler.sip
 %Include auto_generated/raster/qgsbrightnesscontrastfilter.sip

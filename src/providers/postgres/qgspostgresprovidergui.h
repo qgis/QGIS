@@ -29,7 +29,6 @@ class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
     QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override;
-    void registerGui( QMainWindow *mainWindow ) override;
 };
 
 #endif // QGSPOSTGRESPROVIDERGUI_H

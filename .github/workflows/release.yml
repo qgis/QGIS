@@ -1,0 +1,31 @@
+name: Release 🚀
+
+on:
+  push:
+    tags:
+      - 'final-*_*_*'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Prepare release names
+        run: |
+          VERSION_CHANGELOG=$(echo ${{ github.ref }} | cut -d '-' -f 2 | cut -d '_' -f1,2 | sed 's/_/\./g')
+          echo "version_url=https://changelog.qgis.org/en/qgis/version/${VERSION_CHANGELOG}" >> $GITHUB_ENV
+          VERSION_NAME=$(echo ${{ github.ref }} | cut -d '-' -f 2 | sed 's/_/\./g')
+          echo "version_name=${VERSION_NAME}" >> $GITHUB_ENV
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ env.version_name }}
+          body: ${{ env.version_url }}
+          draft: false
+          prerelease: false

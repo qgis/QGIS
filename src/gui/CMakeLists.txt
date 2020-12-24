@@ -336,6 +336,7 @@ set(QGIS_GUI_SRCS
   processing/models/qgsmodelviewmousehandles.cpp
   processing/models/qgsmodelviewrubberband.cpp
   processing/models/qgsmodelviewtool.cpp
+  processing/models/qgsmodelviewtoolpan.cpp
   processing/models/qgsmodelviewtoolselect.cpp
   processing/models/qgsmodelviewtooltemporarykeypan.cpp
   processing/models/qgsmodelviewtooltemporarykeyzoom.cpp
@@ -402,6 +403,7 @@ set(QGIS_GUI_SRCS
   qgscolorbutton.cpp
   qgscolorrampbutton.cpp
   qgscolordialog.cpp
+  qgscolorramplegendnodewidget.cpp
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
   qgscolorwidgets.cpp
@@ -639,6 +641,7 @@ set(QGIS_GUI_HDRS
   qgscolorbutton.h
   qgscolordialog.h
   qgscolorrampbutton.h
+  qgscolorramplegendnodewidget.h
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
@@ -1115,6 +1118,7 @@ set(QGIS_GUI_HDRS
   processing/models/qgsmodelviewmousehandles.h
   processing/models/qgsmodelviewrubberband.h
   processing/models/qgsmodelviewtool.h
+  processing/models/qgsmodelviewtoolpan.h
   processing/models/qgsmodelviewtoolselect.h
   processing/models/qgsmodelviewtooltemporarykeypan.h
   processing/models/qgsmodelviewtooltemporarykeyzoom.h

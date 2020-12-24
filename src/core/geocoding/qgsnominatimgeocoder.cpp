@@ -217,10 +217,10 @@ QgsGeocoderResult QgsNominatimGeocoder::jsonToResult( const QVariantMap &json ) 
   {
     QVariantList boundingBox = json.value( QStringLiteral( "boundingbox" ) ).toList();
     if ( boundingBox.size() == 4 )
-      res.setViewport( QgsRectangle( boundingBox.at( 0 ).toDouble(),
-                                     boundingBox.at( 2 ).toDouble(),
-                                     boundingBox.at( 1 ).toDouble(),
-                                     boundingBox.at( 3 ).toDouble() ) );
+      res.setViewport( QgsRectangle( boundingBox.at( 2 ).toDouble(),
+                                     boundingBox.at( 0 ).toDouble(),
+                                     boundingBox.at( 3 ).toDouble(),
+                                     boundingBox.at( 1 ).toDouble() ) );
   }
 
   res.setAdditionalAttributes( attributes );

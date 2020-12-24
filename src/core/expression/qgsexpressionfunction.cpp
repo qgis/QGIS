@@ -6530,7 +6530,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnRotate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 ),
                                             fcnBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "force_rhr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnForceRHR, QStringLiteral( "GeometryGroup" ) )
@@ -7133,7 +7133,8 @@ bool QgsArrayForeachExpressionFunction::prepare( const QgsExpressionNodeFunction
 QgsArrayFilterExpressionFunction::QgsArrayFilterExpressionFunction()
   : QgsExpressionFunction( QStringLiteral( "array_filter" ), QgsExpressionFunction::ParameterList()
                            << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) )
-                           << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) )
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, 0 ),
                            QStringLiteral( "Arrays" ) )
 {
 
@@ -7177,11 +7178,31 @@ QVariant QgsArrayFilterExpressionFunction::run( QgsExpressionNode::NodeList *arg
   QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
   subContext->appendScope( subScope );
 
+  int limit = 0;
+  if ( args->count() >= 3 )
+  {
+    const QVariant limitVar = args->at( 2 )->eval( parent, context );
+
+    if ( QgsExpressionUtils::isIntSafe( limitVar ) )
+    {
+      limit = limitVar.toInt();
+    }
+    else
+    {
+      return result;
+    }
+  }
+
   for ( const QVariant &value : array )
   {
     subScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "element" ), value, true ) );
     if ( args->at( 1 )->eval( parent, subContext ).toBool() )
+    {
       result << value;
+
+      if ( limit > 0 && limit == result.size() )
+        break;
+    }
   }
 
   if ( context )

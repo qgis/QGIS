@@ -31,13 +31,17 @@
 QgsInterval::QgsInterval( double seconds )
   : mSeconds( seconds )
   , mValid( true )
-{ }
+  , mOriginalDuration( seconds )
+  , mOriginalUnit( QgsUnitTypes::TemporalSeconds )
+{
+}
 
 QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
   : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsUnitTypes::TemporalSeconds ) )
   , mValid( true )
+  , mOriginalDuration( duration )
+  , mOriginalUnit( unit )
 {
-
 }
 
 QgsInterval::QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds )
@@ -50,13 +54,165 @@ QgsInterval::QgsInterval( double years, double months, double weeks, double days
               + seconds )
   , mValid( true )
 {
+  if ( years && !months && !weeks && !days && !hours && !minutes && !seconds )
+  {
+    mOriginalDuration = years;
+    mOriginalUnit = QgsUnitTypes::TemporalYears;
+  }
+  else if ( !years && months && !weeks && !days && !hours && !minutes && !seconds )
+  {
+    mOriginalDuration = months;
+    mOriginalUnit = QgsUnitTypes::TemporalMonths;
+  }
+  else if ( !years && !months && weeks && !days && !hours && !minutes && !seconds )
+  {
+    mOriginalDuration = weeks;
+    mOriginalUnit = QgsUnitTypes::TemporalWeeks;
+  }
+  else if ( !years && !months && !weeks && days && !hours && !minutes && !seconds )
+  {
+    mOriginalDuration = days;
+    mOriginalUnit = QgsUnitTypes::TemporalDays;
+  }
+  else if ( !years && !months && !weeks && !days && hours && !minutes && !seconds )
+  {
+    mOriginalDuration = hours;
+    mOriginalUnit = QgsUnitTypes::TemporalHours;
+  }
+  else if ( !years && !months && !weeks && !days && !hours && minutes && !seconds )
+  {
+    mOriginalDuration = minutes;
+    mOriginalUnit = QgsUnitTypes::TemporalMinutes;
+  }
+  else if ( !years && !months && !weeks && !days && !hours && !minutes && seconds )
+  {
+    mOriginalDuration = seconds;
+    mOriginalUnit = QgsUnitTypes::TemporalSeconds;
+  }
+  else if ( !years && !months && !weeks && !days && !hours && !minutes && !seconds )
+  {
+    mOriginalDuration = 0;
+    mOriginalUnit = QgsUnitTypes::TemporalSeconds;
+  }
+  else
+  {
+    mOriginalUnit = QgsUnitTypes::TemporalUnknownUnit;
+  }
+}
 
+double QgsInterval::years() const
+{
+  if ( mOriginalUnit == QgsUnitTypes::TemporalYears )
+    return mOriginalDuration;
+
+  return mSeconds / YEARS;
+}
+
+void QgsInterval::setYears( double years )
+{
+  mSeconds = years * YEARS;
+  mValid = true;
+  mOriginalDuration = years;
+  mOriginalUnit = QgsUnitTypes::TemporalYears;
+}
+
+double QgsInterval::months() const
+{
+  if ( mOriginalUnit == QgsUnitTypes::TemporalMonths )
+    return mOriginalDuration;
+
+  return mSeconds / MONTHS;
+}
+
+void QgsInterval::setMonths( double months )
+{
+  mSeconds = months * MONTHS;
+  mValid = true;
+  mOriginalDuration = months;
+  mOriginalUnit = QgsUnitTypes::TemporalMonths;
+}
+
+double QgsInterval::weeks() const
+{
+  if ( mOriginalUnit == QgsUnitTypes::TemporalWeeks )
+    return mOriginalDuration;
+
+  return mSeconds / WEEKS;
+}
+
+
+void QgsInterval::setWeeks( double weeks )
+{
+  mSeconds = weeks * WEEKS;
+  mValid = true;
+  mOriginalDuration = weeks;
+  mOriginalUnit = QgsUnitTypes::TemporalWeeks;
+}
+
+double QgsInterval::days() const
+{
+  if ( mOriginalUnit == QgsUnitTypes::TemporalDays )
+    return mOriginalDuration;
+
+  return mSeconds / DAY;
+}
+
+
+void QgsInterval::setDays( double days )
+{
+  mSeconds = days * DAY;
+  mValid = true;
+  mOriginalDuration = days;
+  mOriginalUnit = QgsUnitTypes::TemporalDays;
+}
+
+double QgsInterval::hours() const
+{
+  if ( mOriginalUnit == QgsUnitTypes::TemporalHours )
+    return mOriginalDuration;
+
+  return mSeconds / HOUR;
+}
+
+
+void QgsInterval::setHours( double hours )
+{
+  mSeconds = hours * HOUR;
+  mValid = true;
+  mOriginalDuration = hours;
+  mOriginalUnit = QgsUnitTypes::TemporalHours;
+}
+
+double QgsInterval::minutes() const
+{
+  if ( mOriginalUnit == QgsUnitTypes::TemporalMinutes )
+    return mOriginalDuration;
+
+  return mSeconds / MINUTE;
+}
+
+void QgsInterval::setMinutes( double minutes )
+{
+  mSeconds = minutes * MINUTE;
+  mValid = true;
+  mOriginalDuration = minutes;
+  mOriginalUnit = QgsUnitTypes::TemporalMinutes;
+}
+
+void QgsInterval::setSeconds( double seconds )
+{
+  mSeconds = seconds;
+  mValid = true;
+  mOriginalDuration = seconds;
+  mOriginalUnit = QgsUnitTypes::TemporalSeconds;
 }
 
 bool QgsInterval::operator==( QgsInterval other ) const
 {
   if ( !mValid && !other.mValid )
     return true;
+  else if ( mValid && other.mValid && ( mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit || other.mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit ) )
+    return mOriginalUnit == other.mOriginalUnit && mOriginalDuration == other.mOriginalDuration;
   else if ( mValid && other.mValid )
     return qgsDoubleNear( mSeconds, other.mSeconds );
   else

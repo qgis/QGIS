@@ -33,9 +33,26 @@ Constructor for QgsColorRampLegendNode.
 :param parent: attach a parent QObject to the legend node.
 %End
 
+    QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/,
+                            const QgsColorRampLegendNodeSettings &settings, double minimumValue,
+                            double maximumValue, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsColorRampLegendNode.
+
+:param nodeLayer: layer node
+:param ramp: color ramp to render in node. Ownership is transferred to the node.
+:param settings: node settings
+:param minimumValue: value associated with minimum of ramp
+:param maximumValue: value associated with maximum of ramp
+:param parent: attach a parent QObject to the legend node.
+%End
+
+
     virtual QVariant data( int role ) const;
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+    virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
 
     void setIconSize( QSize size );
@@ -57,7 +74,23 @@ Returns the icon size, which is how large the ramp will render in a layer tree w
 Returns the color ramp used by the node.
 %End
 
+    QgsColorRampLegendNodeSettings settings() const;
+%Docstring
+Returns the node's settings.
+
+.. seealso:: :py:func:`setSettings`
+%End
+
+    void setSettings( const QgsColorRampLegendNodeSettings &settings );
+%Docstring
+Sets the node's ``settings``.
+
+.. seealso:: :py:func:`settings`
+%End
+
 };
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

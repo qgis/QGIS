@@ -44,7 +44,9 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Reprocessor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.cpp
 
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/MapFile.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.cpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ThreadPool.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Untwine.cpp
 )
 
@@ -70,8 +72,10 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Common.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FileDimInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/GridKey.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/MapFile.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Point.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ThreadPool.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/VoxelKey.hpp
 )
 

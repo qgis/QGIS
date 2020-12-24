@@ -29,17 +29,22 @@ originally part of the larger QgsRasterLayer class
 #include "qgsrasterinterface.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgssymbollayerutils.h"
+#include "qgsreadwritecontext.h"
+#include "qgscolorramplegendnodesettings.h"
 
 #include <cmath>
 QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue, QgsColorRamp *colorRamp, Type type, ClassificationMode classificationMode )
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
+  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
 {
   QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 
   setSourceColorRamp( colorRamp );
 }
+
+QgsColorRampShader::~QgsColorRampShader() = default;
 
 QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
   : QgsRasterShaderFunction( other )
@@ -50,6 +55,7 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
   , mLUTFactor( other.mLUTFactor )
   , mLUTInitialized( other.mLUTInitialized )
   , mClip( other.mClip )
+  , mLegendSettings( other.legendSettings() ? new QgsColorRampLegendNodeSettings( *other.legendSettings() ) : new QgsColorRampLegendNodeSettings() )
 {
   if ( auto *lSourceColorRamp = other.sourceColorRamp() )
     mSourceColorRamp.reset( lSourceColorRamp->clone() );
@@ -72,6 +78,7 @@ QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &oth
   mLUTInitialized = other.mLUTInitialized;
   mClip = other.mClip;
   mColorRampItemList = other.mColorRampItemList;
+  mLegendSettings.reset( other.legendSettings() ? new QgsColorRampLegendNodeSettings( *other.legendSettings() ) : new QgsColorRampLegendNodeSettings() );
   return *this;
 }
 
@@ -500,7 +507,7 @@ void QgsColorRampShader::legendSymbologyItems( QList< QPair< QString, QColor > >
   }
 }
 
-QDomElement QgsColorRampShader::writeXml( QDomDocument &doc ) const
+QDomElement QgsColorRampShader::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
   colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampTypeAsQString() );
@@ -529,10 +536,14 @@ QDomElement QgsColorRampShader::writeXml( QDomDocument &doc ) const
     itemElem.setAttribute( QStringLiteral( "alpha" ), itemIt->color.alpha() );
     colorRampShaderElem.appendChild( itemElem );
   }
+
+  if ( mLegendSettings )
+    mLegendSettings->writeXml( doc, colorRampShaderElem, context );
+
   return colorRampShaderElem;
 }
 
-void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem )
+void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const QgsReadWriteContext &context )
 {
   // try to load color ramp (optional)
   QDomElement sourceColorRampElem = colorRampShaderElem.firstChildElement( QStringLiteral( "colorramp" ) );
@@ -567,4 +578,21 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem )
     itemList.push_back( QgsColorRampShader::ColorRampItem( itemValue, itemColor, itemLabel ) );
   }
   setColorRampItemList( itemList );
+
+  if ( !mLegendSettings )
+    mLegendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+
+  mLegendSettings->readXml( colorRampShaderElem, context );
+}
+
+const QgsColorRampLegendNodeSettings *QgsColorRampShader::legendSettings() const
+{
+  return mLegendSettings.get();
+}
+
+void QgsColorRampShader::setLegendSettings( QgsColorRampLegendNodeSettings *settings )
+{
+  if ( settings == mLegendSettings.get() )
+    return;
+  mLegendSettings.reset( settings );
 }

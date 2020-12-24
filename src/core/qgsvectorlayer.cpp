@@ -201,6 +201,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   connect( this, &QgsVectorLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
+  connect( this, &QgsVectorLayer::dataSourceChanged, this, &QgsVectorLayer::supportsEditingChanged );
+  connect( this, &QgsVectorLayer::readOnlyChanged, this, &QgsVectorLayer::supportsEditingChanged );
 
   // Default simplify drawing settings
   QgsSettings settings;
@@ -1432,12 +1434,7 @@ bool QgsVectorLayer::startEditing()
   }
 
   // allow editing if provider supports any of the capabilities
-  if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
-  {
-    return false;
-  }
-
-  if ( mReadOnly )
+  if ( !supportsEditing() )
   {
     return false;
   }
@@ -3665,6 +3662,14 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
   mReadOnly = readonly;
   emit readOnlyChanged();
   return true;
+}
+
+bool QgsVectorLayer::supportsEditing()
+{
+  if ( ! mDataProvider )
+    return false;
+
+  return mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities && ! mReadOnly;
 }
 
 bool QgsVectorLayer::isModified() const

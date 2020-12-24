@@ -17,11 +17,11 @@
 #include <vector>
 
 #include <pdal/SpatialReference.hpp>
-#include <pdal/util/ThreadPool.hpp>
 
 #include "EpfTypes.hpp"
 #include "Grid.hpp"
 #include "../untwine/ProgressWriter.hpp"
+#include "../untwine/ThreadPool.hpp"
 
 namespace untwine
 {
@@ -49,8 +49,7 @@ private:
 
     Grid m_grid;
     std::unique_ptr<Writer> m_writer;
-    pdal::ThreadPool m_pool;
-    size_t m_fileLimit;
+    ThreadPool m_pool;
     FileInfo m_srsFileInfo;
 };
 

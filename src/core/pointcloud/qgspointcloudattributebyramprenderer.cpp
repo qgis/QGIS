@@ -136,7 +136,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Intensity" ) ) );
 
   QDomElement elemShader = element.firstChildElement( QStringLiteral( "colorrampshader" ) );
-  r->mColorRampShader.readXml( elemShader );
+  r->mColorRampShader.readXml( elemShader, context );
 
   r->setMinimum( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
   r->setMaximum( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
@@ -156,7 +156,7 @@ QDomElement QgsPointCloudAttributeByRampRenderer::save( QDomDocument &doc, const
 
   rendererElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
 
-  QDomElement elemShader = mColorRampShader.writeXml( doc );
+  QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   rendererElem.appendChild( elemShader );
 
   saveCommonProperties( rendererElem, context );
@@ -181,8 +181,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
     case QgsColorRampShader::Interpolated:
       // for interpolated shaders we use a ramp legend node
       res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
-                                         QString::number( mColorRampShader.minimumValue() ),
-                                         QString::number( mColorRampShader.maximumValue() ) );
+                                         mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                                         mColorRampShader.minimumValue(),
+                                         mColorRampShader.maximumValue() );
       break;
 
     case QgsColorRampShader::Discrete:

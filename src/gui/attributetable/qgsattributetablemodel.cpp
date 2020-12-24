@@ -766,10 +766,10 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !index.isValid() || index.column() >= mFieldCount || role != Qt::EditRole || !layer()->isEditable() )
     return false;
 
+  mRowStylesMap.remove( mFeat.id() );
+
   if ( !layer()->isModified() )
     return false;
-
-  mRowStylesMap.remove( mFeat.id() );
 
   return true;
 }

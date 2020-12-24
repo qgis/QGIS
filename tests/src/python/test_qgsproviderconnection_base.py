@@ -227,8 +227,39 @@ class TestPyQgsProviderConnectionBase():
                 self.assertEqual(res, [])
                 sql = "SELECT string_t, long_t, double_t, integer_t, date_t, datetime_t FROM %s" % table
                 res = conn.executeSql(sql)
+
                 # GPKG and spatialite have no type for time
                 self.assertEqual(res, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+
+                # Test column names
+                res = conn.execSql(sql)
+                self.assertEqual(res.rows(), [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, QtCore.QDate(2019, 7, 8) if not self.treat_date_as_string() else '2019-07-08', QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
+                self.assertEqual(res.columns(), ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t'])
+
+                # Test iterator
+                old_rows = res.rows()
+                res = conn.execSql(sql)
+                rows = []
+                self.assertTrue(res.hasNextRow())
+
+                for row in res:
+                    rows.append(row)
+
+                self.assertEqual(rows, old_rows)
+                self.assertEqual(rows, res.rows())
+
+                # Java style
+                res = conn.execSql(sql)
+                rows = []
+                self.assertTrue(res.hasNextRow())
+                while res.hasNextRow():
+                    rows.append(res.nextRow())
+
+                self.assertFalse(res.hasNextRow())
+
+                # But we still have access to rows:
+                self.assertEqual(rows, res.rows())
+
                 sql = "SELECT time_t FROM %s" % table
                 res = conn.executeSql(sql)
 
@@ -287,13 +318,13 @@ class TestPyQgsProviderConnectionBase():
                 if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
                     self.assertFalse(conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom'))
 
-            if capabilities & QgsAbstractDatabaseProviderConnection.CreateSpatialIndex:
+            if capabilities & (QgsAbstractDatabaseProviderConnection.CreateSpatialIndex | QgsAbstractDatabaseProviderConnection.SpatialIndexExists):
                 options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
                 options.geometryColumnName = 'geom'
-                conn.createSpatialIndex('myNewSchema', 'myNewTable', options)
+                if not conn.spatialIndexExists('myNewSchema', 'myNewTable', options.geometryColumnName):
+                    conn.createSpatialIndex('myNewSchema', 'myNewTable', options)
 
-                if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
-                    self.assertTrue(conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom'))
+                self.assertTrue(conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom'))
 
                 # now we know for certain a spatial index exists, let's retry dropping it
                 if capabilities & QgsAbstractDatabaseProviderConnection.DeleteSpatialIndex:

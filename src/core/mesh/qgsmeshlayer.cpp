@@ -1047,7 +1047,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
 
   QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
   if ( !elemRendererSettings.isNull() )
-    mRendererSettings.readXml( elemRendererSettings );
+    mRendererSettings.readXml( elemRendererSettings, context );
 
   QDomElement elemSimplifySettings = elem.firstChildElement( "mesh-simplify-settings" );
   if ( !elemSimplifySettings.isNull() )
@@ -1085,7 +1085,7 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   writeCommonStyle( elem, doc, context, categories );
 
-  QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
+  QDomElement elemRendererSettings = mRendererSettings.writeXml( doc, context );
   elem.appendChild( elemRendererSettings );
 
   QDomElement elemSimplifySettings = mSimplificationSettings.writeXml( doc, context );

@@ -23,13 +23,17 @@ namespace MDAL
 
   /**
    * The XmdfDataset reads the data directly from HDF5 file
-   * by usage of hyperslabs retrieval
-   *
+   * by usage of hyperslabs retrieval. This format is used by TUFLOW and HYDRO_AS-2D
    * basically all (timesteps) data for one particular dataset groups
    * are stored in single
    *   3D arrays (time, x, y) for vector datasets
    *   2D arrays (time, x) for scalar datasets
-   *   2D arrays (time, active) for active flags
+   *   2D arrays (time, active) for active flags (optional, supported by default)
+   *
+   * For TUFLOW, the dataset groups are structured with a tree starting from a unique group and datasets support active flag value.
+   *
+   * For HYDRO_AS-2D, all the groups are on the root of the file and the datasets don't support active flag value.
+   *
    */
   class XmdfDataset: public Dataset2D
   {
@@ -92,14 +96,21 @@ namespace MDAL
         const HdfGroup &rootGroup,
         const std::string &groupName,
         size_t vertexCount,
-        size_t faceCount );
+        size_t faceCount ) const;
 
       void addDatasetGroupsFromXmdfGroup(
         DatasetGroups &groups,
         const HdfGroup &rootGroup,
         const std::string &nameSuffix,
         size_t vertexCount,
-        size_t faceCount );
+        size_t faceCount ) const;
+
+      void readGroupsTree( HdfFile &file,
+                           const std::string &name,
+                           MDAL::DatasetGroups &groups,
+                           size_t vertexCount,
+                           size_t faceCount ) const;
+
   };
 
 } // namespace MDAL

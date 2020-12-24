@@ -26,6 +26,7 @@
 #include "ui_qgscolorrampshaderwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgsrasterrendererwidget.h"
+#include "qgscolorramplegendnodesettings.h"
 
 class QgsRasterDataProvider;
 class QgsLocaleAwareNumericLineEditDelegate;
@@ -145,6 +146,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void mClassificationModeComboBox_currentIndexChanged( int index );
     void changeColor();
     void changeOpacity();
+    void showLegendSettings();
 
   private:
     void setLineEditValue( QLineEdit *lineEdit, double value );
@@ -166,6 +168,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     int mBand = -1;
     QgsRectangle mExtent;
     QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
+    QgsColorRampLegendNodeSettings mLegendSettings;
 
 
 };

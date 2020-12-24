@@ -68,6 +68,124 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_FLAG( TableFlags )
 
     /**
+     * The QueryResult class represents the result of a query executed by execSql()
+     *
+     * It encapsulates the result rows and a list of the column names.
+     * The query result may be empty in case the query returns nothing.
+     *
+     *
+     * \since QGIS 3.18
+     */
+    struct CORE_EXPORT QueryResult
+    {
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rowCount() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+        /**
+         * Returns the column names
+         */
+        QStringList columns() const;
+
+        /**
+         * Returns the results rows
+         */
+        QList<QList<QVariant> > rows() const;
+
+        /**
+          * Returns the row count
+          * \note the value may not be exact or it may be -1 if not known
+         */
+        qlonglong rowCount() const;
+
+        /**
+         * Returns TRUE if there are more rows to fetch
+         */
+        bool hasNextRow() const;
+
+        /**
+         * Returns the next result row or an empty row if there are no rows left
+         */
+        QList<QVariant> nextRow();
+
+#ifdef SIP_RUN
+        QueryResult *__iter__();
+        % MethodCode
+        sipRes = sipCpp;
+        % End
+
+        SIP_PYOBJECT __next__();
+        % MethodCode
+        QList<QVariant> result;
+        Py_BEGIN_ALLOW_THREADS
+        result = sipCpp->nextRow( );
+        Py_END_ALLOW_THREADS
+        if ( ! result.isEmpty() )
+        {
+          const sipTypeDef *qvariantlist_type = sipFindType( "QList<QVariant>" );
+          sipRes = sipConvertFromNewType( new QList<QVariant>( result ), qvariantlist_type, Py_None );
+        }
+        else
+        {
+          PyErr_SetString( PyExc_StopIteration, "" );
+        }
+        % End
+#endif
+
+///@cond private
+
+        /**
+         * The QueryResultIterator struct is an abstract interface for provider query results iterators.
+         * Providers must implement their own concrete iterator over query results.
+         */
+        struct QueryResultIterator SIP_SKIP
+        {
+          virtual QVariantList nextRow() = 0;
+          virtual bool hasNextRow() const = 0;
+          virtual ~QueryResultIterator() = default;
+        };
+
+        /**
+          * Sets \a rowCount
+          * \note Not available in Python bindings
+          */
+        void setRowCount( const qlonglong &rowCount ) SIP_SKIP;
+
+        /**
+         * Appends \a columnName to the list of column names.
+         * \note Not available in Python bindings
+         */
+        void appendColumn( const QString &columnName ) SIP_SKIP;
+
+        /**
+         * Constructs a QueryResult object from an \a iterator
+         * \note Not available in Python bindings
+         */
+        QueryResult( std::shared_ptr<QueryResultIterator> iterator ) SIP_SKIP;
+
+        /**
+         * Default constructor, used to return empty results
+         * \note Not available in Python bindings
+         */
+        QueryResult( ) = default SIP_SKIP;
+
+///@endcond private
+
+      private:
+
+        std::shared_ptr<QueryResultIterator> mResultIterator;
+        QStringList mColumns;
+        mutable QList<QList<QVariant>> mRows;
+        qlonglong mRowCount = 0;
+
+    };
+
+
+    /**
      * The TableProperty class represents a database table or view.
      *
      * In case the table is a vector spatial table and it has multiple
@@ -456,9 +574,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array, optionally \a feedback can be provided.
      * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \see execSql()
      * \throws QgsProviderConnectionException
      */
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Executes raw \a sql and returns the (possibly empty) query results, optionally \a feedback can be provided.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \see executeSql()
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.18
+     */
+    virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Vacuum the database table with given \a schema and \a name (schema is ignored if not supported by the backend).

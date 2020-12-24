@@ -56,7 +56,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
 
   if ( !layer->isEditable() && !layer->readOnly() )
   {
-    if ( !( layer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
+    if ( !layer->supportsEditing() )
     {
       QgisApp::instance()->messageBar()->pushMessage( tr( "Start editing failed" ),
           tr( "Provider cannot be opened for editing" ),

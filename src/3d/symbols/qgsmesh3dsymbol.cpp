@@ -57,8 +57,6 @@ QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
 
 void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context )
-
   QDomDocument doc = elem.ownerDocument();
 
   //Simple symbol
@@ -84,7 +82,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-relative" ), mIsVerticalMagnitudeRelative ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), mRenderingStyle );
-  elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc ) );
+  elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc, context ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "max-color-ramp-shader" ), mColorRampShader.maximumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "texture-single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
@@ -100,8 +98,6 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
 
 void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context )
-
   //Simple symbol
   QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
@@ -123,7 +119,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mVerticalDatasetGroupIndex = elemAdvancedSettings.attribute( "vertical-group-index" ).toInt();
   mIsVerticalMagnitudeRelative = elemAdvancedSettings.attribute( "vertical-relative" ).toInt();
   mRenderingStyle = static_cast<QgsMesh3DSymbol::RenderingStyle>( elemAdvancedSettings.attribute( QStringLiteral( "texture-type" ) ).toInt() );
-  mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ) );
+  mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ), context );
   mColorRampShader.setMinimumValue( elemAdvancedSettings.attribute( QStringLiteral( "min-color-ramp-shader" ) ).toDouble() );
   mColorRampShader.setMaximumValue( elemAdvancedSettings.attribute( QStringLiteral( "max-color-ramp-shader" ) ).toDouble() );
   mSingleColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "texture-single-color" ) ) );

@@ -180,11 +180,11 @@ Sets the stroke width unit used to render edges scalar dataset
 .. versionadded:: 3.14
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes configuration to a new DOM element
 %End
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads configuration from the given DOM element
 %End
@@ -613,11 +613,11 @@ Sets settings for vector rendered with traces
 .. versionadded:: 3.12
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes configuration to a new DOM element
 %End
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads configuration from the given DOM element
 %End
@@ -712,11 +712,11 @@ Sets averaging method for conversion of 3d stacked mesh data to 2d data
 Ownership of the method is not transferred.
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes configuration to a new DOM element
 %End
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads configuration from the given DOM element
 %End

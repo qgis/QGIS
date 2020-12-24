@@ -14,7 +14,7 @@
 
 #include <list>
 
-#include <pdal/util/FileUtils.hpp>
+#include "../untwine/MapFile.hpp"
 
 namespace untwine
 {
@@ -44,16 +44,16 @@ public:
     char *address() const
         { return reinterpret_cast<char *>(m_ctx.addr()); }
 
-    pdal::FileUtils::MapContext context() const
+    MapContext context() const
         { return m_ctx; }
-    void setContext(const pdal::FileUtils::MapContext& ctx)
+    void setContext(const MapContext& ctx)
         { m_ctx = ctx; }
 
 private:
     std::string m_filename;
     int m_numPoints;
     int m_start;
-    pdal::FileUtils::MapContext m_ctx;
+    MapContext m_ctx;
 };
 using FileInfoList = std::list<FileInfo>;
 

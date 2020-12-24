@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
 #include "qgis_gui.h"
+#include "qgscolorramplegendnodesettings.h"
 
 class QgsRasterMinMaxWidget;
 
@@ -58,10 +59,12 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     void bandChanged();
     void mMinLineEdit_textChanged( const QString & );
     void mMaxLineEdit_textChanged( const QString & );
+    void showLegendSettings();
 
   private:
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
     bool mDisableMinMaxWidgetRefresh;
+    QgsColorRampLegendNodeSettings mLegendSettings;
 
     void minMaxModified();
 };

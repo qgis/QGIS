@@ -71,6 +71,14 @@ class APP_EXPORT QgsHandleBadLayers
     void autoFind();
 
   private:
+
+    enum class CustomRoles : int
+    {
+      Index = Qt::UserRole,
+      ProviderIsFileBased,
+      DataSourceIsChanged,
+    };
+
     QPushButton *mBrowseButton = nullptr;
     QPushButton *mApplyButton = nullptr;
     QPushButton *mAutoFindButton = nullptr;

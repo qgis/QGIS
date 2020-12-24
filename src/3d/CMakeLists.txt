@@ -206,6 +206,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 

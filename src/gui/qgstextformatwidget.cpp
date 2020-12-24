@@ -1039,7 +1039,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   buffer.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
   buffer.setFillBufferInterior( mBufferTranspFillChbx->isChecked() );
   buffer.setBlendMode( comboBufferBlendMode->blendMode() );
-  if ( mBufferEffect && !QgsPaintEffectRegistry::isDefaultStack( mBufferEffect.get() ) )
+  if ( mBufferEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mBufferEffect.get() ) || mBufferEffect->enabled() ) )
     buffer.setPaintEffect( mBufferEffect->clone() );
   else
     buffer.setPaintEffect( nullptr );
@@ -1053,7 +1053,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   mask.setSizeUnit( mMaskBufferUnitWidget->unit() );
   mask.setSizeMapUnitScale( mMaskBufferUnitWidget->getMapUnitScale() );
   mask.setJoinStyle( mMaskJoinStyleComboBox->penJoinStyle() );
-  if ( mMaskEffect && !QgsPaintEffectRegistry::isDefaultStack( mMaskEffect.get() ) )
+  if ( mMaskEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mMaskEffect.get() ) || mMaskEffect->enabled() ) )
     mask.setPaintEffect( mMaskEffect->clone() );
   else
     mask.setPaintEffect( nullptr );
@@ -1086,7 +1086,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   background.setJoinStyle( mShapePenStyleCmbBx->penJoinStyle() );
   background.setOpacity( mBackgroundOpacityWidget->opacity() );
   background.setBlendMode( mShapeBlendCmbBx->blendMode() );
-  if ( mBackgroundEffect && !QgsPaintEffectRegistry::isDefaultStack( mBackgroundEffect.get() ) )
+  if ( mBackgroundEffect && ( !QgsPaintEffectRegistry::isDefaultStack( mBackgroundEffect.get() ) || mBackgroundEffect->enabled() ) )
     background.setPaintEffect( mBackgroundEffect->clone() );
   else
     background.setPaintEffect( nullptr );

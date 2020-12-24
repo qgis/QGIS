@@ -140,7 +140,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   if ( results.isEmpty() )
   {
     resultsDialog()->clear();
-    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features found at this position." ), 2000 );
   }
   else
   {

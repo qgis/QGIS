@@ -93,6 +93,7 @@ set(QGIS_CORE_SRCS
   effects/qgstransformeffect.cpp
 
   layertree/qgscolorramplegendnode.cpp
+  layertree/qgscolorramplegendnodesettings.cpp
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
@@ -177,6 +178,10 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelgroupbox.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
+
+  providers/arcgis/qgsarcgisportalutils.cpp
+  providers/arcgis/qgsarcgisrestquery.cpp
+  providers/arcgis/qgsarcgisrestutils.cpp
 
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
@@ -1237,6 +1242,7 @@ set(QGIS_CORE_HDRS
   labeling/qgsvectorlayerlabelprovider.h
 
   layertree/qgscolorramplegendnode.h
+  layertree/qgscolorramplegendnodesettings.h
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
@@ -1398,12 +1404,19 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
 
+  providers/arcgis/qgsarcgisportalutils.h
+  providers/arcgis/qgsarcgisrestquery.h
+  providers/arcgis/qgsarcgisrestutils.h
+
   providers/gdal/qgsgdaldataitems.h
   providers/gdal/qgsgdalprovider.h
+
   providers/memory/qgsmemoryfeatureiterator.h
   providers/memory/qgsmemoryprovider.h
   providers/memory/qgsmemoryproviderutils.h
+
   providers/meshmemory/qgsmeshmemorydataprovider.h
+
   providers/ogr/qgsgeopackagedataitems.h
   providers/ogr/qgsgeopackageprojectstorage.h
   providers/ogr/qgsgeopackageproviderconnection.h
