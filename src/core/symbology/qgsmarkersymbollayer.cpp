@@ -2658,67 +2658,12 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
 void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
 {
   QVariantMap::iterator it = properties.find( QStringLiteral( "name" ) );
-  if ( it != properties.end() )
+  if ( it != properties.end() && it.value().type() == QVariant::String )
   {
-    QVariant &value = it.value();
-    switch ( value.type() )
-    {
-      case QVariant::Map:
-      {
-        QVariantMap map = value.toMap();
-        resolvePaths( map, pathResolver, saving );
-        value.setValue( map );
-        break;
-      }
-
-      case QVariant::String:
-      {
-        if ( saving )
-          value.setValue( QgsSymbolLayerUtils::svgSymbolPathToName( value.toString(), pathResolver ) );
-        else
-          value.setValue( QgsSymbolLayerUtils::svgSymbolNameToPath( value.toString(), pathResolver ) );
-        break;
-      }
-
-      case QVariant::StringList:
-      {
-        QStringList list = value.toStringList();
-        for ( int i = 0; i < list.count(); i++ )
-        {
-          if ( saving )
-            list[i] =  QgsSymbolLayerUtils::svgSymbolPathToName( list[i], pathResolver );
-          else
-            list[i] = QgsSymbolLayerUtils::svgSymbolNameToPath( list[i], pathResolver );
-        }
-        value.setValue( list );
-        break;
-      }
-
-      case QVariant::List:
-      {
-        QVariantList list = value.toList();
-        for ( int i = 0; i < list.count(); i++ )
-        {
-          if ( list.at( i ).type() == QVariant::String )
-          {
-            if ( saving )
-              list[i] =  QgsSymbolLayerUtils::svgSymbolPathToName( list[i].toString(), pathResolver );
-            else
-              list[i] = QgsSymbolLayerUtils::svgSymbolNameToPath( list[i].toString(), pathResolver );
-          }
-        }
-        value.setValue( list );
-        break;
-      }
-
-      default:
-        break;
-    }
-
-
-
-
-
+    if ( saving )
+      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
+    else
+      it.value() =  QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
   }
 }
 
