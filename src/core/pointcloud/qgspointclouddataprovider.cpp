@@ -206,8 +206,8 @@ struct MapIndexedPointCloudNode
   typedef QVector<QMap<QString, QVariant>> result_type;
 
   MapIndexedPointCloudNode( QgsPointCloudRequest &request, QgsPointCloudRenderContext &context,
-                            QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index )
-    : mRequest( request ), mContext( context ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index )
+                            QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index, int pointsLimit )
+    : mRequest( request ), mContext( context ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index ), mPointsLimit( pointsLimit )
   {
 
   }
@@ -217,7 +217,7 @@ struct MapIndexedPointCloudNode
     QVector<QMap<QString, QVariant>> acceptedPoints;
     std::unique_ptr<QgsPointCloudBlock> block( mIndex->nodeData( n, mRequest ) );
 
-    if ( !block )
+    if ( !block || pointsCount == mPointsLimit )
       return acceptedPoints;
 
     const char *ptr = block->data();
@@ -231,12 +231,13 @@ struct MapIndexedPointCloudNode
       z = _pointZ( mContext, ptr, i );
       QgsPointXY pointXY( x, y );
 
-      if ( mExtentGeometry.contains( &pointXY ) && mZRange.contains( z ) )
+      if ( pointsCount < mPointsLimit && mExtentGeometry.contains( &pointXY ) && mZRange.contains( z ) )
       {
         QMap<QString, QVariant> pointAttr = mContext.attributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
         pointAttr[ QStringLiteral( "Y" ) ] = y;
         pointAttr[ QStringLiteral( "Z" ) ] = z;
+        pointsCount++;
         acceptedPoints.push_back( pointAttr );
       }
     }
@@ -248,12 +249,14 @@ struct MapIndexedPointCloudNode
   QgsGeometry &mExtentGeometry;
   const QgsDoubleRange &mZRange;
   QgsPointCloudIndex *mIndex = nullptr;
+  int mPointsLimit;
+  int pointsCount = 0;
 };
 
 QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
                                 float maxErrorInMapCoords,
                                 QgsGeometry extentGeometry,
-                                const QgsDoubleRange extentZRange )
+                                const QgsDoubleRange extentZRange, int pointsLimit )
 {
   QVector<QMap<QString, QVariant>> acceptedPoints;
 
@@ -283,7 +286,7 @@ QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
   QgsPointCloudRenderContext context( renderContext, index->scale(), index->offset(), 1.0, 0.0 );
 
   acceptedPoints = QtConcurrent::blockingMappedReduced( nodes,
-                   MapIndexedPointCloudNode( request, context, extentGeometry, extentZRange, index ),
+                   MapIndexedPointCloudNode( request, context, extentGeometry, extentZRange, index, pointsLimit ),
                    qgis::overload<const QVector<QMap<QString, QVariant>>&>::of( &QVector<QMap<QString, QVariant>>::append ),
                    QtConcurrent::UnorderedReduce );
 
