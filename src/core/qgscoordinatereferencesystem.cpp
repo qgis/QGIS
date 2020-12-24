@@ -407,29 +407,25 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   QString wmsCrs = crs;
 
-  thread_local const QRegularExpression reUri( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), QRegularExpression::CaseInsensitiveOption );
-  QRegularExpressionMatch re_uri_match = reUri.match( wmsCrs );
-  if ( re_uri_match.hasMatch() )
+  thread_local const QRegExp re_uri( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), Qt::CaseInsensitive );
+  thread_local const QRegExp re_urn( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
+  if ( re_uri.exactMatch( wmsCrs ) )
   {
-    wmsCrs = re_uri_match.captured( 1 ) + ':' + re_uri_match.captured( 2 );
+    wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
+  }
+  else if ( re_urn.exactMatch( wmsCrs ) )
+  {
+    wmsCrs = re_urn.cap( 1 ) + ':' + re_urn.cap( 2 );
   }
   else
   {
-    thread_local const QRegularExpression reUrn( QStringLiteral( "urn:ogc:def:crs:([^:]+).+([^:]+)" ), QRegularExpression::CaseInsensitiveOption );
-    QRegularExpressionMatch re_urn_match = reUrn.match( wmsCrs );
-    if ( re_urn_match.hasMatch() )
-      wmsCrs = re_urn_match.captured( 1 ) + ':' + re_urn_match.captured( 2 );
-    else
+    thread_local const QRegExp re_urn_custom( QStringLiteral( "(user|custom|qgis):(\\d+)" ), Qt::CaseInsensitive );
+    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn.cap( 2 ).toInt() ) )
     {
-      thread_local const QRegularExpression reUrnCustom( QStringLiteral( "(user|custom|qgis):(\\d+)" ), QRegularExpression::CaseInsensitiveOption );
-      QRegularExpressionMatch re_urn_custom_match = reUrnCustom.match( wmsCrs );
-      if ( re_urn_custom_match.hasMatch() && createFromSrsId( re_urn_custom_match.captured( 2 ).toInt() ) )
-      {
-        locker.changeMode( QgsReadWriteLocker::Write );
-        if ( !sDisableOgcCache )
-          sOgcCache()->insert( crs, *this );
-        return d->mIsValid;
-      }
+      locker.changeMode( QgsReadWriteLocker::Write );
+      if ( !sDisableOgcCache )
+        sOgcCache()->insert( crs, *this );
+      return d->mIsValid;
     }
   }
 
