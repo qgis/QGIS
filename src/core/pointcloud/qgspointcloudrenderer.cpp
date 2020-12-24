@@ -256,11 +256,11 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
     }
   }
 
-  QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorInMapCoordinates, selectionGeometry, QgsDoubleRange() );
+  selectedPoints = layer->dataProvider()->identify( maxErrorInMapCoordinates, selectionGeometry, QgsDoubleRange() );
 
-  points.erase( std::remove_if( points.begin(), points.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), points.end() );
+  selectedPoints.erase( std::remove_if( selectedPoints.begin(), selectedPoints.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), selectedPoints.end() );
 
-  return points;
+  return selectedPoints;
 }
 
 
