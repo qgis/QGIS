@@ -5359,7 +5359,7 @@ static QVariant fcnArrayMean( const QVariantList &values, const QgsExpressionCon
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   int i = 0;
   double total = 0.0;
-  for ( const auto &item : list )
+  for ( const QVariant &item : list )
   {
     switch ( item.userType() )
     {
@@ -5429,7 +5429,7 @@ static QVariant fcnArraySum( const QVariantList &values, const QgsExpressionCont
   const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
   int i = 0;
   double total = 0.0;
-  for ( const auto &item : list )
+  for ( const QVariant &item : list )
   {
     switch ( item.userType() )
     {
