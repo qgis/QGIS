@@ -509,13 +509,14 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
 {
   Q_UNUSED( identifyContext );
   QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+  QgsPointCloudRenderer *renderer = layer->renderer();
 
   QgsGeometry transformedGeometry = geometry;
+
   if ( ct.isValid() )
     transformedGeometry.transform( ct );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
-  QgsPointCloudRenderer *renderer = layer->renderer();
   QVector<QMap<QString, QVariant>> points = renderer->identify( layer, context, transformedGeometry );
   int id = 0;
   for ( QMap<QString, QVariant> pt : points )
