@@ -532,7 +532,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         bool matches;
         if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
-          QString esc_regexp = QRegularExpression::escape( regexp );
+          QString esc_regexp = QRegExp::escape( regexp );
           // manage escape % and _
           if ( esc_regexp.startsWith( '%' ) )
           {
@@ -559,10 +559,8 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             pos += 1;
           }
           esc_regexp.replace( QStringLiteral( "\\\\_" ), QStringLiteral( "_" ) );
-          QRegularExpression::PatternOption option;
-          if ( mOp == boILike || mOp == boNotILike )
-            option = QRegularExpression::CaseInsensitiveOption;
-          matches = QRegularExpression( esc_regexp, option ).match( str ).hasMatch();
+
+          matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
         else
         {
@@ -1365,8 +1363,8 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
 
 QString QgsExpressionNodeColumnRef::dump() const
 {
-  const thread_local QRegularExpression re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
-  return re.match( mName ).hasMatch() ? mName : QgsExpression::quotedColumnRef( mName );
+  const thread_local QRegExp re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
+  return re.exactMatch( mName ) ? mName : QgsExpression::quotedColumnRef( mName );
 }
 
 QSet<QString> QgsExpressionNodeColumnRef::referencedColumns() const
