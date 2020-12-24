@@ -78,17 +78,16 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     ~QgsPointCloudDataProvider() override;
 
     /**
-     * Returns the list of points of the point cloud layer \a layer according to a zoom level
-     * defined by \a maxErrorPixels and \a rootErrorPixels, and an extent defined by a geometry
-     * in the 2D plane \a geometry and a range for z values \a extentZRange
+     * Returns the list of points of the point cloud according to a  zoom level
+     * defined by \a maxErrorInMapCoords, an extent \a geometry in the 2D plane
+     * and a range \a extentZRange for z values
      *
      * \a maxErrorPixels : maximum accepted error factor in pixels
-     * \a rootErrorPixels : the root node error factor in pixels
      *
-     * \note this function does not handle elevation properties and you need to change it yourself
-     * after returning from the function
+     * \note this function does not handle elevation properties and you need to
+     * change elevation coordinates yourself after returning from the function
      */
-    QVector<QMap<QString, QVariant>> identify( float maxErrorPixels, float rootErrorPixels, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange ) SIP_SKIP;
+    QVector<QMap<QString, QVariant>> identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange ) SIP_SKIP;
 
     /**
      * Returns flags containing the supported capabilities for the data provider.
@@ -333,7 +332,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       return context.offset().z() + context.scale().z() * iz;
     }
 
-    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels, const QgsGeometry &extentGeometry, const QgsDoubleRange extentZRange );
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, float maxError, float nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange extentZRange );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

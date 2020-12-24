@@ -183,8 +183,7 @@ QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, con
 }
 
 QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
-                                float maxErrorPixels,
-                                float rootErrorPixels,
+                                float maxErrorInMapCoords,
                                 QgsGeometry extentGeometry,
                                 const QgsDoubleRange extentZRange )
 {
@@ -195,7 +194,19 @@ QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
 
   QgsRenderContext renderContext;
 
-  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxErrorPixels, rootErrorPixels, extentGeometry, extentZRange );
+  QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
+// TODO? reproject the root node extent
+//  try
+//  {
+//    rootNodeExtentMapCoords = renderContext.coordinateTransform().transformBoundingBox( index->nodeMapExtent( root ) );
+//  }
+//  catch ( QgsCsException & )
+//  {
+//    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+//  }
+  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
+
+  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxErrorInMapCoords, rootErrorInMapCoordinates, extentGeometry, extentZRange );
 
   QgsPointCloudAttributeCollection attributeCollection = index->attributes();
   QgsPointCloudRequest request;
@@ -240,8 +251,8 @@ QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
 QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
   const QgsPointCloudIndex *pc,
   IndexedPointCloudNode n,
-  float maxErrorPixels,
-  float nodeErrorPixels,
+  float maxError,
+  float nodeError,
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange extentZRange )
 {
@@ -256,15 +267,15 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
   nodes.append( n );
 
-  float childrenErrorPixels = nodeErrorPixels / 2.0f;
-  if ( childrenErrorPixels < maxErrorPixels )
+  float childrenError = nodeError / 2.0f;
+  if ( childrenError < maxError )
     return nodes;
 
   const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
   for ( const IndexedPointCloudNode &nn : children )
   {
     if ( extentGeometry.intersects( pc->nodeMapExtent( nn ) ) )
-      nodes += traverseTree( pc, nn, maxErrorPixels, childrenErrorPixels, extentGeometry, extentZRange );
+      nodes += traverseTree( pc, nn, maxError, childrenError, extentGeometry, extentZRange );
   }
 
   return nodes;
