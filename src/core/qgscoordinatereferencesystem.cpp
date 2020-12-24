@@ -318,7 +318,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   }
   else
   {
-    const thread_local QRegularExpression reCrsStr( "^(?:(wkt|proj4|proj)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression reCrsStr( QStringLiteral( "^(?:(wkt|proj4|proj)\\:)?(.+)$" ), QRegularExpression::CaseInsensitiveOption );
     match = reCrsStr.match( definition );
     if ( match.capturedStart() == 0 )
     {
@@ -408,7 +408,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   QString wmsCrs = crs;
 
   thread_local const QRegExp re_uri( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), Qt::CaseInsensitive );
-  thread_local const QRegExp re_urn( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
+  thread_local const QRegExp re_urn( QStringLiteral( "urn:ogc:def:crs:([^:]+).+([^:]+)" ), Qt::CaseInsensitive );
   if ( re_uri.exactMatch( wmsCrs ) )
   {
     wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
