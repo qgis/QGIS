@@ -311,27 +311,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     void indexGenerationStateChanged( PointCloudIndexGenerationState state );
 
   private:
-
-    /**
-     * Retrieves the x and y coordinate for the point at index \a i.
-     */
-    static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y )
-    {
-      const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.xOffset() );
-      const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.yOffset() );
-      x = context.offset().x() + context.scale().x() * ix;
-      y = context.offset().y() + context.scale().y() * iy;
-    }
-
-    /**
-     * Retrieves the z value for the point at index \a i.
-     */
-    static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i )
-    {
-      const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
-      return context.offset().z() + context.scale().z() * iz;
-    }
-
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, float maxError, float nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange extentZRange );
 };
 
