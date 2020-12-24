@@ -213,7 +213,6 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
   {
     QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
   }
-  //
 
   const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span(); // in map coords
 
@@ -224,7 +223,7 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
     return selectedPoints;
   }
 
-  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+  float maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
 
   QgsGeometry selectionGeometry = geometry;
   if ( geometry.type() == QgsWkbTypes::PointGeometry )
@@ -257,8 +256,10 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
     }
   }
 
-  QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorPixels, rootErrorPixels, selectionGeometry, QgsDoubleRange() );
+  QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorInMapCoordinates, selectionGeometry, QgsDoubleRange() );
+
   points.erase( std::remove_if( points.begin(), points.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), points.end() );
+
   return points;
 }
 
