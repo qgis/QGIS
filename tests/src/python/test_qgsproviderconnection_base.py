@@ -260,6 +260,16 @@ class TestPyQgsProviderConnectionBase():
                 # But we still have access to rows:
                 self.assertEqual(rows, res.rows())
 
+                # Test iterator at
+                self.assertEqual(res.at(0), rows[0])
+
+                res = conn.execSql(sql)
+                self.assertEqual(res.at(0), rows[0])
+
+                self.assertEqual(res.at(-1), [])
+                self.assertEqual(res.at(10000), [])
+
+                # Test time_t
                 sql = "SELECT \"time_t\" FROM %s" % table
                 res = conn.executeSql(sql)
 

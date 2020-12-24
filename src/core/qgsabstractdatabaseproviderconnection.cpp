@@ -477,9 +477,9 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::at( qlonglon
   if ( index < 0 )
     return QList<QVariant>();
   // Fetch rows until the index
-  if ( index > mRows.count( ) )
+  if ( index >= mRows.count( ) )
   {
-    while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) && index < mRows.count() )
+    while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) && index >= mRows.count() )
     {
       const QVariantList row { mResultIterator->nextRow() };
       if ( row.isEmpty() )
