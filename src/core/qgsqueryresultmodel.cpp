@@ -39,17 +39,19 @@ int QgsQueryResultModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() )
+  if ( !index.isValid() || index.row() < 0 || index.column() > mQueryResult.columns().count() - 1 )
     return QVariant();
-
-  Q_ASSERT( mQueryResult.rows().count( ) == mRowCount );
 
   if ( index.row() >= mRowCount || index.row() < 0 )
     return QVariant();
 
   if ( role == Qt::DisplayRole )
   {
-    return mQueryResult.rows().at( index.row() );
+    const QList<QVariant> result { mQueryResult.at( index.row() ) };
+    if ( index.column() < result.count( ) )
+    {
+      return result.at( index.column() );
+    }
   }
   return QVariant();
 }

@@ -60,7 +60,12 @@ Returns the column names
 
         QList<QList<QVariant> > rows() const;
 %Docstring
-Returns the results rows
+Returns the results rows by calling the iterator internally.
+
+.. note::
+
+   results are cached internally and subsequent calls to this method
+   will return the cached results.
 %End
 
         qlonglong rowCount() const;
@@ -80,6 +85,15 @@ Returns ``True`` if there are more rows to fetch
         QList<QVariant> nextRow();
 %Docstring
 Returns the next result row or an empty row if there are no rows left
+%End
+
+        QList<QVariant> at( qlonglong index ) const;
+%Docstring
+Returns the row data at 0-based index ``index``, if index is not valid, an empty list is returned.
+
+.. note::
+
+   this method calls the iterator internally until ``index`` row is retrieved
 %End
 
         QueryResult *__iter__();

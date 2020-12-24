@@ -472,6 +472,32 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
   return row;
 }
 
+QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::at( qlonglong index ) const
+{
+  if ( index < 0 )
+    return QList<QVariant>();
+  // Fetch rows until the index
+  if ( index > mRows.count( ) )
+  {
+    while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) && index < mRows.count() )
+    {
+      const QVariantList row { mResultIterator->nextRow() };
+      if ( row.isEmpty() )
+      {
+        break;
+      }
+      mRows.push_back( row );
+    }
+  }
+
+  if ( index >= mRows.count( ) )
+  {
+    return QList<QVariant>();
+  }
+
+  return mRows.at( index );
+}
+
 
 qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
 {

@@ -73,6 +73,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * It encapsulates the result rows and a list of the column names.
      * The query result may be empty in case the query returns nothing.
      *
+     * Rows can be retrieved by iterating over the result with hasNextRow() and nextRow()
+     * or by calling rows() that will internally iterate over the results and return
+     * the result list.
+     *
+     * The list of results is cached internally and subsequent calls to rows() or at() return the
+     * cached results.
      *
      * \since QGIS 3.18
      */
@@ -92,7 +98,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QStringList columns() const;
 
         /**
-         * Returns the results rows
+         * Returns the results rows by calling the iterator internally.
+         * \note results are cached internally and subsequent calls to this method
+         * will return the cached results.
          */
         QList<QList<QVariant> > rows() const;
 
@@ -111,6 +119,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Returns the next result row or an empty row if there are no rows left
          */
         QList<QVariant> nextRow();
+
+        /**
+         * Returns the row data at 0-based index \a index, if index is not valid, an empty list is returned.
+         * \note this method calls the iterator internally until \a index row is retrieved
+         */
+        QList<QVariant> at( qlonglong index ) const;
 
 #ifdef SIP_RUN
         QueryResult *__iter__();

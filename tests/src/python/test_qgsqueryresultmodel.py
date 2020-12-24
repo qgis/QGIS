@@ -20,7 +20,7 @@ from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
 )
 from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt
 
 
 class TestPyQgsQgsQueryResultModel(unittest.TestCase):
@@ -49,9 +49,14 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         self.assertEqual(model.rowCount(model.index(-1)), 0)
         self.assertTrue(model.canFetchMore(model.index(-1)))
 
+        self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(999, 0), Qt.DisplayRole), QVariant())
+
         model.fetchMore(model.index(-1))
         self.assertEqual(model.rowCount(model.index(-1)), 200)
         self.assertTrue(res.hasNextRow())
+
+        self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), 1)
 
         # Fetch the rest
         for batch in range(2, 6):
@@ -61,6 +66,13 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         self.assertEqual(model.rowCount(model.index(-1)), 1000)
         self.assertFalse(res.hasNextRow())
         self.assertFalse(model.canFetchMore(model.index(-1)))
+
+        # Test data
+        for i in range(1000):
+            self.assertEqual(model.data(model.index(i, 0), Qt.DisplayRole), i + 1)
+
+        self.assertEqual(model.data(model.index(1000, 0), Qt.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), QVariant())
 
 
 if __name__ == '__main__':

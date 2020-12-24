@@ -34,6 +34,9 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
     Q_OBJECT
   public:
 
+    /**
+     * Constructs a QgsQueryResultModel from a \a queryResult with optional \a parent
+     */
     QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = nullptr );
 
     // QAbstractItemModel interface

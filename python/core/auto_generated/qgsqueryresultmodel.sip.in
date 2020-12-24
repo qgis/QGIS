@@ -23,6 +23,9 @@ The QgsQueryResultModel class is a model for QgsAbstractDatabaseProviderConnecti
   public:
 
     QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = 0 );
+%Docstring
+Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
+%End
 
   public:
 
