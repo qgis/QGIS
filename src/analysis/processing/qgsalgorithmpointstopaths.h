@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmpointstolines.h
+                         qgsalgorithmpointstopaths.h
                          ---------------------
     begin                : November 2020
     copyright            : (C) 2020 by Stefanos Natsis
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMPOINTSTOLINES_H
-#define QGSALGORITHMPOINTSTOLINES_H
+#ifndef QGSALGORITHMPOINTSTOPATHTS_H
+#define QGSALGORITHMPOINTSTOPATHS_H
 
 #define SIP_NO_FILE
 
@@ -28,12 +28,12 @@
 /**
  * Native points to lines algorithm.
  */
-class QgsPointsToLinesAlgorithm : public QgsProcessingAlgorithm
+class QgsPointsToPathsAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
 
-    QgsPointsToLinesAlgorithm() = default;
+    QgsPointsToPathsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -41,7 +41,7 @@ class QgsPointsToLinesAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsPointsToLinesAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsPointsToPathsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
@@ -51,4 +51,4 @@ class QgsPointsToLinesAlgorithm : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMPOINTSTOLINES_H
+#endif // QGSALGORITHMPOINTSTOPATHS_H

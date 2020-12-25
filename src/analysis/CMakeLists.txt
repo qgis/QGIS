@@ -123,7 +123,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpointtolayer.cpp
   processing/qgsalgorithmpointsalonggeometry.cpp
   processing/qgsalgorithmpointslayerfromtable.cpp
-  processing/qgsalgorithmpointstolines.cpp
+  processing/qgsalgorithmpointstopaths.cpp
   processing/qgsalgorithmpoleofinaccessibility.cpp
   processing/qgsalgorithmpolygonize.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
