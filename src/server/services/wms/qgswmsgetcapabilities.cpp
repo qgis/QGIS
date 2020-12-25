@@ -846,17 +846,34 @@ namespace QgsWms
       layerParentElem.appendChild( layerParentNameElem );
     }
 
-    if ( !project->title().isEmpty() )
+    // Root Layer title
+    QDomText layerParentTitleText;
+    QString rootLayerTitle = QgsServerProjectUtils::owsServiceTitle( *project );
+    QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
+    if ( !rootLayerTitle.isEmpty() )
     {
-      // Root Layer title
-      QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-      QDomText layerParentTitleText = doc.createTextNode( project->title() );
-      layerParentTitleElem.appendChild( layerParentTitleText );
-      layerParentElem.appendChild( layerParentTitleElem );
+      layerParentTitleText = doc.createTextNode( rootLayerTitle );
+    }
+    else
+    {
+      if ( !project->title().isEmpty() )
+      {
+        layerParentTitleText = doc.createTextNode( project->title() );
+      }
+      else
+      {
+        layerParentTitleText = doc.createTextNode( QStringLiteral( "untitled" ) );
+      }
+    }
+    layerParentTitleElem.appendChild( layerParentTitleText );
+    layerParentElem.appendChild( layerParentTitleElem );
 
-      // Root Layer abstract
+    // Root Layer abstract
+    QString rootLayerAbstract = QgsServerProjectUtils::owsServiceAbstract( *project );
+    if ( !rootLayerAbstract.isEmpty() )
+    {
       QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
-      QDomText layerParentAbstText = doc.createTextNode( project->title() );
+      QDomText layerParentAbstText = doc.createTextNode( rootLayerAbstract );
       layerParentAbstElem.appendChild( layerParentAbstText );
       layerParentElem.appendChild( layerParentAbstElem );
     }
