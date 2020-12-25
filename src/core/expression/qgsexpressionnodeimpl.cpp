@@ -538,20 +538,20 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
           {
             esc_regexp.replace( 0, 1, QStringLiteral( ".*" ) );
           }
-          QRegExp rx1( QStringLiteral( "[^\\\\](%)" ) );
+          const thread_local QRegExp rx1( QStringLiteral( "[^\\\\](%)" ) );
           int pos = 0;
           while ( ( pos = rx1.indexIn( esc_regexp, pos ) ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, QStringLiteral( ".*" ) );
             pos += 1;
           }
-          QRegExp rx2( QStringLiteral( "\\\\%" ) );
+          const thread_local QRegExp rx2( QStringLiteral( "\\\\%" ) );
           esc_regexp.replace( rx2, QStringLiteral( "%" ) );
           if ( esc_regexp.startsWith( '_' ) )
           {
             esc_regexp.replace( 0, 1, QStringLiteral( "." ) );
           }
-          QRegExp rx3( QStringLiteral( "[^\\\\](_)" ) );
+          const thread_local QRegExp rx3( QStringLiteral( "[^\\\\](_)" ) );
           pos = 0;
           while ( ( pos = rx3.indexIn( esc_regexp, pos ) ) != -1 )
           {
