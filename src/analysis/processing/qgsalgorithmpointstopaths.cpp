@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmdpointstolines.cpp
+                         qgsalgorithmdpointstopaths.cpp
                          ---------------------
     begin                : November 2020
     copyright            : (C) 2020 by Stefanos Natsis
@@ -15,22 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmpointstolines.h"
+#include "qgsalgorithmpointstopaths.h"
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
-QString QgsPointsToLinesAlgorithm::name() const
+QString QgsPointsToPathsAlgorithm::name() const
 {
-  return QStringLiteral( "pointstolines" );
+  return QStringLiteral( "pointstopaths" );
 }
 
-QString QgsPointsToLinesAlgorithm::displayName() const
+QString QgsPointsToPathsAlgorithm::displayName() const
 {
-  return QObject::tr( "Points to lines" );
+  return QObject::tr( "Points to paths" );
 }
 
-QString QgsPointsToLinesAlgorithm::shortHelpString() const
+QString QgsPointsToPathsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a point layer and connects its features creating a new line layer.\n\n"
                       "An attribute or expression may be specified to define the order the points should be connected. "
@@ -40,50 +40,50 @@ QString QgsPointsToLinesAlgorithm::shortHelpString() const
                       "An attribute or expression can be selected to group points having the same value into the same resulting line." );
 }
 
-QStringList QgsPointsToLinesAlgorithm::tags() const
+QStringList QgsPointsToPathsAlgorithm::tags() const
 {
   return QObject::tr( "create,lines,points,connect,convert,join" ).split( ',' );
 }
 
-QString QgsPointsToLinesAlgorithm::group() const
+QString QgsPointsToPathsAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsPointsToLinesAlgorithm::groupId() const
+QString QgsPointsToPathsAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorgeometry" );
 }
 
-void QgsPointsToLinesAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLOSE_LINES" ),
-                QObject::tr( "Create closed lines" ), false, true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLOSE_PATHS" ),
+                QObject::tr( "Create closed paths" ), false, true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "ORDER_EXPRESSION" ),
                 QObject::tr( "Order expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NATURAL_SORT" ),
                 QObject::tr( "Sort text containing numbers naturally" ), false, true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "GROUP_EXPRESSION" ),
-                QObject::tr( "Line group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
+                QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
-                QObject::tr( "Lines" ), QgsProcessing::TypeVectorLine ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_LINES" ), QObject::tr( "Number of lines" ) ) );
+                QObject::tr( "Paths" ), QgsProcessing::TypeVectorLine ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_PATHS" ), QObject::tr( "Number of paths" ) ) );
 }
 
-QgsPointsToLinesAlgorithm *QgsPointsToLinesAlgorithm::createInstance() const
+QgsPointsToPathsAlgorithm *QgsPointsToPathsAlgorithm::createInstance() const
 {
-  return new QgsPointsToLinesAlgorithm();
+  return new QgsPointsToPathsAlgorithm();
 }
 
-QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  const bool closeLines = parameterAsBool( parameters, QStringLiteral( "CLOSE_LINES" ), context );
+  const bool closePaths = parameterAsBool( parameters, QStringLiteral( "CLOSE_PATHS" ), context );
 
   QString orderExpressionString = parameterAsString( parameters, QStringLiteral( "ORDER_EXPRESSION" ), context );
   // If no order expression is given, default to the fid
@@ -155,10 +155,10 @@ QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &para
     ++currentPoint;
   }
 
-  int lineCount = 0;
+  int pathCount = 0;
   currentPoint = 0;
   QHashIterator< QVariant, QVector< QPair< QVariant, const QgsPoint * > > > hit( allPoints );
-  feedback->setProgressText( QObject::tr( "Creating lines…" ) );
+  feedback->setProgressText( QObject::tr( "Creating paths…" ) );
   while ( hit.hasNext() )
   {
     hit.next();
@@ -190,7 +190,7 @@ QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &para
     }
 
 
-    QVector<QgsPoint> linePoints;
+    QVector<QgsPoint> pathPoints;
     for ( QVector< QPair< QVariant, const QgsPoint * > >::ConstIterator pit = pairs.constBegin(); pit != pairs.constEnd(); ++pit )
     {
       if ( feedback->isCanceled() )
@@ -198,30 +198,30 @@ QVariantMap QgsPointsToLinesAlgorithm::processAlgorithm( const QVariantMap &para
         break;
       }
       feedback->setProgress( currentPoint * totalPoints );
-      linePoints.append( *pit->second );
+      pathPoints.append( *pit->second );
       ++currentPoint;
     }
-    if ( linePoints.size() < 2 )
+    if ( pathPoints.size() < 2 )
     {
-      feedback->pushInfo( QObject::tr( "Skipping line with group %1 : insufficient vertices" ).arg( hit.key().toString() ) );
+      feedback->pushInfo( QObject::tr( "Skipping path with group %1 : insufficient vertices" ).arg( hit.key().toString() ) );
       continue;
     }
-    if ( closeLines && linePoints.size() > 2 && linePoints.first() != linePoints.last() )
-      linePoints.append( linePoints.first() );
+    if ( closePaths && pathPoints.size() > 2 && pathPoints.first() != pathPoints.last() )
+      pathPoints.append( pathPoints.first() );
 
     QgsFeature outputFeature;
     QgsAttributes attrs;
     attrs.append( hit.key() );
-    outputFeature.setGeometry( QgsGeometry::fromPolyline( linePoints ) );
+    outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
     sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
-    ++lineCount;
+    ++pathCount;
   }
 
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  outputs.insert( QStringLiteral( "NUM_LINESS" ), lineCount );
+  outputs.insert( QStringLiteral( "NUM_PATHS" ), pathCount );
   return outputs;
 }
 
