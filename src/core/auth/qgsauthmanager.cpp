@@ -1518,6 +1518,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
     if ( !( authmethod->supportedExpansions() & QgsAuthMethod::DataSourceUri ) )
     {
       QgsDebugMsg( QStringLiteral( "Data source URI updating not supported by authcfg: %1" ).arg( authcfg ) );
+      connectionItems << "authcfg=" + authcfg;
       return true;
     }
 
