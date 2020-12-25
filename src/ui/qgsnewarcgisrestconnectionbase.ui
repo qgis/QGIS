@@ -153,7 +153,7 @@
      <property name="title">
       <string>ArcGIS Portal Details</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout1">
       <item row="0" column="1">
        <widget class="QLineEdit" name="mCommunityEndPointLineEdit">
         <property name="toolTip">
