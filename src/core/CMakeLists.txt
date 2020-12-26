@@ -45,6 +45,7 @@ set(QGIS_CORE_SRCS
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscptcityarchive.cpp
   symbology/qgsellipsesymbollayer.cpp
+  symbology/qgsfeaturerenderergenerator.cpp
   symbology/qgsfillsymbollayer.cpp
   symbology/qgsgeometrygeneratorsymbollayer.cpp
   symbology/qgsgraduatedsymbolrenderer.cpp
@@ -1492,6 +1493,7 @@ set(QGIS_CORE_HDRS
   symbology/qgscolorbrewerpalette.h
   symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
+  symbology/qgsfeaturerenderergenerator.h
   symbology/qgsfillsymbollayer.h
   symbology/qgsgeometrygeneratorsymbollayer.h
   symbology/qgsgraduatedsymbolrenderer.h
