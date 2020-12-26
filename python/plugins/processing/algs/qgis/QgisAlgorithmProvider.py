@@ -58,7 +58,6 @@ from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
-from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
@@ -127,7 +126,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointDistance(),
                 PointsDisplacement(),
                 PointsFromLines(),
-                PointsToPaths(),
                 PolarPlot(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtractWithinSubsets(),

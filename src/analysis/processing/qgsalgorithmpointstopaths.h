@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMPOINTSTOPATHTS_H
+#ifndef QGSALGORITHMPOINTSTOPATHS_H
 #define QGSALGORITHMPOINTSTOPATHS_H
 
 #define SIP_NO_FILE
@@ -26,7 +26,7 @@
 ///@cond PRIVATE
 
 /**
- * Native points to lines algorithm.
+ * Native points to path algorithm.
  */
 class QgsPointsToPathsAlgorithm : public QgsProcessingAlgorithm
 {
