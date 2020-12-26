@@ -100,19 +100,20 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     void prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames );
 
     /**
-     * Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
+     * Draw layer with \a renderer. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRenderer( QgsFeatureIterator &fit );
+    void drawRenderer( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit );
 
     /**
-     * Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
+     * Draw layer with \a renderer using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRendererLevels( QgsFeatureIterator &fit );
+    void drawRendererLevels( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit );
 
     //! Stop version 2 renderer and selected renderer (if required)
-    void stopRenderer( QgsSingleSymbolRenderer *selRenderer );
+    void stopRenderer( QgsFeatureRenderer *renderer, QgsSingleSymbolRenderer *selRenderer );
 
 
+    bool renderInternal( QgsFeatureRenderer *renderer );
   protected:
 
     std::unique_ptr< QgsVectorLayerRendererInterruptionChecker > mInterruptionChecker;
@@ -126,9 +127,10 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QString mTemporalFilter;
 
-    QgsVectorLayerFeatureSource *mSource = nullptr;
+    std::unique_ptr< QgsVectorLayerFeatureSource > mSource;
 
     QgsFeatureRenderer *mRenderer = nullptr;
+    std::vector< std::unique_ptr< QgsFeatureRenderer> > mRenderers;
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;

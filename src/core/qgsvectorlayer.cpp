@@ -100,6 +100,7 @@
 #include "qgsgeometryoptions.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsfeaturerenderergenerator.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -236,6 +237,8 @@ QgsVectorLayer::~QgsVectorLayer()
 
   if ( mFeatureCounter )
     mFeatureCounter->cancel();
+
+  qDeleteAll( mRendererGenerators );
 }
 
 QgsVectorLayer *QgsVectorLayer::clone() const
@@ -3716,6 +3719,31 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     emit rendererChanged();
     emit styleChanged();
   }
+}
+
+void QgsVectorLayer::addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator )
+{
+  mRendererGenerators << generator;
+}
+
+void QgsVectorLayer::removeFeatureRendererGenerator( const QString &id )
+{
+  for ( int i = mRendererGenerators.count() - 1; i >= 0; --i )
+  {
+    if ( mRendererGenerators.at( i )->id() == id )
+    {
+      delete mRendererGenerators.at( i );
+      mRendererGenerators.removeAt( i );
+    }
+  }
+}
+
+QList<const QgsFeatureRendererGenerator *> QgsVectorLayer::featureRendererGenerators() const
+{
+  QList< const QgsFeatureRendererGenerator * > res;
+  for ( const QgsFeatureRendererGenerator *generator : mRendererGenerators )
+    res << generator;
+  return res;
 }
 
 void QgsVectorLayer::beginEditCommand( const QString &text )
