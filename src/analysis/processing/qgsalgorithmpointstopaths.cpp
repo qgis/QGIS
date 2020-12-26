@@ -22,12 +22,12 @@
 
 QString QgsPointsToPathsAlgorithm::name() const
 {
-  return QStringLiteral( "pointstopaths" );
+  return QStringLiteral( "pointstopath" );
 }
 
 QString QgsPointsToPathsAlgorithm::displayName() const
 {
-  return QObject::tr( "Points to paths" );
+  return QObject::tr( "Points to path" );
 }
 
 QString QgsPointsToPathsAlgorithm::shortHelpString() const
@@ -69,7 +69,21 @@ void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Paths" ), QgsProcessing::TypeVectorLine ) );
+  // TODO QGIS 4: remove parameter. move logic to separate algorithm if needed.
+  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_TEXT_DIR" ),
+                QObject::tr( "Directory for text output" ), QVariant(), true, false ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_PATHS" ), QObject::tr( "Number of paths" ) ) );
+
+  // backwards compatibility parameters
+  // TODO QGIS 4: remove compatibility parameters and their logic
+  QgsProcessingParameterField *orderField = new QgsProcessingParameterField( QStringLiteral( "ORDER_FIELD" ),
+      QObject::tr( "Order field" ), QVariant(), QString(), QgsProcessingParameterField::Any, false, true );
+  orderField->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  addParameter( orderField );
+  QgsProcessingParameterString *dateFormat = new QgsProcessingParameterString( QStringLiteral( "DATE_FORMAT" ),
+      QObject::tr( "Date format (if order field is DateTime)" ), QVariant(), false, true );
+  dateFormat->setFlags( orderField->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  addParameter( dateFormat );
 }
 
 QgsPointsToPathsAlgorithm *QgsPointsToPathsAlgorithm::createInstance() const
@@ -86,9 +100,55 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   const bool closePaths = parameterAsBool( parameters, QStringLiteral( "CLOSE_PATHS" ), context );
 
   QString orderExpressionString = parameterAsString( parameters, QStringLiteral( "ORDER_EXPRESSION" ), context );
-  // If no order expression is given, default to the fid
-  if ( orderExpressionString.isEmpty() )
+  QString orderFieldString = parameterAsString( parameters, QStringLiteral( "ORDER_FIELD" ), context );
+  if ( ! orderFieldString.isEmpty() )
+  {
+    // this is a backwards compatibility parameter
+    orderExpressionString = QgsExpression::quotedColumnRef( orderFieldString );
+
+    QString dateFormat = parameterAsString( parameters, QStringLiteral( "DATE_FORMAT" ), context );
+    if ( ! dateFormat.isEmpty() )
+    {
+      QVector< QPair< QString, QString > > codeMap;
+      codeMap << QPair< QString, QString >( "%%", "%" )
+              << QPair< QString, QString >( "%a", "ddd" )
+              << QPair< QString, QString >( "%A", "dddd" )
+              << QPair< QString, QString >( "%w", "" ) //day of the week 0-6
+              << QPair< QString, QString >( "%d", "dd" )
+              << QPair< QString, QString >( "%b", "MMM" )
+              << QPair< QString, QString >( "%B", "MMMM" )
+              << QPair< QString, QString >( "%m", "MM" )
+              << QPair< QString, QString >( "%y", "yy" )
+              << QPair< QString, QString >( "%Y", "yyyy" )
+              << QPair< QString, QString >( "%H", "hh" )
+              << QPair< QString, QString >( "%I", "hh" ) // 12 hour
+              << QPair< QString, QString >( "%p", "AP" )
+              << QPair< QString, QString >( "%M", "mm" )
+              << QPair< QString, QString >( "%S", "ss" )
+              << QPair< QString, QString >( "%f", "zzz" ) // milliseconds instead of microseconds
+              << QPair< QString, QString >( "%z", "" ) // utc offset
+              << QPair< QString, QString >( "%Z", "" ) // timezone name
+              << QPair< QString, QString >( "%j", "" ) // day of the year
+              << QPair< QString, QString >( "%U", "" ) // week number of the year sunday based
+              << QPair< QString, QString >( "%W", "" ) // week number of the year monday based
+              << QPair< QString, QString >( "%c", "" ) // full datetime
+              << QPair< QString, QString >( "%x", "" ) // full date
+              << QPair< QString, QString >( "%X", "" ) // full time
+              << QPair< QString, QString >( "%G", "yyyy" )
+              << QPair< QString, QString >( "%u", "" ) // day of the week 1-7
+              << QPair< QString, QString >( "%V", "" ); // week number
+      for ( const auto &pair : codeMap )
+      {
+        dateFormat.replace( pair.first, pair.second );
+      }
+      orderExpressionString = QString( "to_datetime(%1, '%2')" ).arg( orderExpressionString ).arg( dateFormat );
+    }
+  }
+  else if ( orderExpressionString.isEmpty() )
+  {
+    // If no order expression is given, default to the fid
     orderExpressionString = QString( "$id" );
+  }
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   QgsExpression orderExpression = QgsExpression( orderExpressionString );
   if ( orderExpression.hasParserError() )
@@ -123,6 +183,11 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, wkbType, source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+
+  const QString textDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_TEXT_DIR" ), context );
+  if ( ! textDir.isEmpty() &&
+       ! QDir( textDir ).exists() )
+    throw QgsProcessingException( QObject::tr( "The text output directory does not exist" ) );
 
   // Store the points in a hash with the group identifier as the key
   QHash< QVariant, QVector< QPair< QVariant, const QgsPoint * > > > allPoints;
@@ -185,7 +250,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
                  []( const QPair< const QVariant, const QgsPoint * > &pair1,
                      const QPair< const QVariant, const QgsPoint * > &pair2 )
       {
-        return pair1.first < pair2.first;
+        return qgsVariantLessThan( pair1.first, pair2.first );
       } );
     }
 
@@ -215,6 +280,30 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
     sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+
+    if ( ! textDir.isEmpty() )
+    {
+      const QString filename = QDir( textDir ).filePath( hit.key().toString() + QString( ".txt" ) );
+      QFile textFile( filename );
+      if ( !textFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+        throw QgsProcessingException( QObject::tr( "Cannot open file for writing " ) + filename );
+
+      QTextStream out( &textFile );
+      out << QString( "angle=Azimuth\n"
+                      "heading=Coordinate_System\n"
+                      "dist_units=Default\n"
+                      "startAt=%1;%2;90\n"
+                      "survey=Polygonal\n"
+                      "[data]\n" ).arg( pathPoints.at( 0 ).x() ).arg( pathPoints.at( 0 ).y() );
+
+      for ( int i = 1; i < pathPoints.size(); ++i )
+      {
+        const double angle = pathPoints.at( i - 1 ).azimuth( pathPoints.at( i ) );
+        const double distance = pathPoints.at( i - 1 ).distance( pathPoints.at( i ) );
+        out << QString( "%1;%2;90\n" ).arg( angle ).arg( distance );
+      }
+    }
+
     ++pathCount;
   }
 
