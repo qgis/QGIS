@@ -442,7 +442,7 @@ QgsVectorLayer cannot be copied.
 Returns a new instance equivalent to this one. A new provider is
 created for the same data source and renderers for features and diagrams
 are cloned too. Moreover, each attributes (transparency, extent, selected
-features and so on) are identicals.
+features and so on) are identical.
 
 :return: a new layer instance
 
@@ -821,14 +821,56 @@ Sets diagram rendering object (takes ownership)
 
     QgsFeatureRenderer *renderer();
 %Docstring
-Returns renderer.
+Returns the feature renderer used for rendering the features in the layer in 2D
+map views.
+
+.. seealso:: :py:func:`setRenderer`
 %End
 
 
     void setRenderer( QgsFeatureRenderer *r /Transfer/ );
 %Docstring
-Sets renderer which will be invoked to represent this layer.
+Sets the feature renderer which will be invoked to represent this layer in 2D map views.
 Ownership is transferred.
+
+.. seealso:: :py:func:`renderer`
+%End
+
+    void addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator /Transfer/ );
+%Docstring
+Adds a new feature renderer ``generator`` to the layer.
+
+Ownership of ``generator`` is transferred to the layer.
+
+.. seealso:: :py:func:`removeFeatureRendererGenerator`
+
+.. seealso:: :py:func:`featureRendererGenerators`
+
+.. versionadded:: 3.18
+%End
+
+    void removeFeatureRendererGenerator( const QString &id );
+%Docstring
+Removes the feature renderer with matching ``id`` from the layer.
+
+The corresponding generator will be deleted.
+
+.. seealso:: :py:func:`addFeatureRendererGenerator`
+
+.. seealso:: :py:func:`featureRendererGenerators`
+
+.. versionadded:: 3.18
+%End
+
+    QList< const QgsFeatureRendererGenerator * > featureRendererGenerators() const;
+%Docstring
+Returns a list of the feature renderer generators owned by the layer.
+
+.. seealso:: :py:func:`addFeatureRendererGenerator`
+
+.. seealso:: :py:func:`removeFeatureRendererGenerator`
+
+.. versionadded:: 3.18
 %End
 
     QgsWkbTypes::GeometryType geometryType() const;
