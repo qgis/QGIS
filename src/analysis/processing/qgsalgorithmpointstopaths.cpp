@@ -157,7 +157,17 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   QStringList requiredFields = QStringList( orderExpression.referencedColumns().values() );
   orderExpression.prepare( &expressionContext );
 
+  QVariant::Type orderFieldType = QVariant::String;
   QgsFields outputFields = QgsFields();
+  if ( orderExpression.isField() )
+  {
+    const int orderFieldIndex = source->fields().indexFromName( orderExpression.referencedColumns().values().first() );
+    orderFieldType = source->fields().field( orderFieldIndex ).type();
+  }
+
+  outputFields.append( QgsField( "begin", orderFieldType ) );
+  outputFields.append( QgsField( "end", orderFieldType ) );
+
   const QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
   QgsExpression groupExpression = groupExpressionString.isEmpty() ? QgsExpression( QString( "true" ) ) : QgsExpression( groupExpressionString );
   if ( groupExpression.hasParserError() )
@@ -276,6 +286,8 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
 
     QgsFeature outputFeature;
     QgsAttributes attrs;
+    attrs.append( hit.value().first().first );
+    attrs.append( hit.value().last().first );
     attrs.append( hit.key() );
     outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
@@ -288,6 +300,9 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       if ( !textFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
         throw QgsProcessingException( QObject::tr( "Cannot open file for writing " ) + filename );
 
+      QgsDistanceArea da = QgsDistanceArea();
+      da.setSourceCrs( source->sourceCrs(), context.transformContext() );
+      da.setEllipsoid( context.ellipsoid() );
       QTextStream out( &textFile );
       out << QString( "angle=Azimuth\n"
                       "heading=Coordinate_System\n"
@@ -299,7 +314,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       for ( int i = 1; i < pathPoints.size(); ++i )
       {
         const double angle = pathPoints.at( i - 1 ).azimuth( pathPoints.at( i ) );
-        const double distance = pathPoints.at( i - 1 ).distance( pathPoints.at( i ) );
+        const double distance = da.measureLine( pathPoints.at( i - 1 ), pathPoints.at( i ) );
         out << QString( "%1;%2;90\n" ).arg( angle ).arg( distance );
       }
     }
