@@ -79,8 +79,12 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mRenderers.emplace_back( generator->createRenderer() );
     prevLevel = generator->level();
   }
-  if ( mainRenderer ) // cppcheck-suppress accessMoved
-    mRenderers.emplace_back( std::move( mainRenderer ) ); // cppcheck-suppress accessMoved
+  // cppcheck-suppress accessMoved
+  if ( mainRenderer )
+  {
+    // cppcheck-suppress accessMoved
+    mRenderers.emplace_back( std::move( mainRenderer ) );
+  }
 
   mSelectedFeatureIds = layer->selectedFeatureIds();
 
