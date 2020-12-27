@@ -427,7 +427,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
 
       context.expressionContext().setFeature( fet );
 
-      bool sel = context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
+      bool sel = isMainRenderer && context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
       // render feature
@@ -627,7 +627,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
           return;
         }
 
-        bool sel = context.showSelection() && mSelectedFeatureIds.contains( fit->id() );
+        bool sel = isMainRenderer && context.showSelection() && mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
