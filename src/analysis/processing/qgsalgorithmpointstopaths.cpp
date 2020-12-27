@@ -59,7 +59,7 @@ void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLOSE_PATHS" ),
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLOSE_PATH" ),
                 QObject::tr( "Create closed paths" ), false, true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "ORDER_EXPRESSION" ),
                 QObject::tr( "Order expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
@@ -97,7 +97,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  const bool closePaths = parameterAsBool( parameters, QStringLiteral( "CLOSE_PATHS" ), context );
+  const bool closePaths = parameterAsBool( parameters, QStringLiteral( "CLOSE_PATH" ), context );
 
   QString orderExpressionString = parameterAsString( parameters, QStringLiteral( "ORDER_EXPRESSION" ), context );
   QString orderFieldString = parameterAsString( parameters, QStringLiteral( "ORDER_FIELD" ), context );
