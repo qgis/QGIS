@@ -158,26 +158,27 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   orderExpression.prepare( &expressionContext );
 
   QVariant::Type orderFieldType = QVariant::String;
-  QgsFields outputFields = QgsFields();
   if ( orderExpression.isField() )
   {
     const int orderFieldIndex = source->fields().indexFromName( orderExpression.referencedColumns().values().first() );
     orderFieldType = source->fields().field( orderFieldIndex ).type();
   }
 
-  outputFields.append( QgsField( "begin", orderFieldType ) );
-  outputFields.append( QgsField( "end", orderFieldType ) );
 
   const QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
   QgsExpression groupExpression = groupExpressionString.isEmpty() ? QgsExpression( QString( "true" ) ) : QgsExpression( groupExpressionString );
   if ( groupExpression.hasParserError() )
     throw QgsProcessingException( groupExpression.parserErrorString() );
+
+  QgsFields outputFields = QgsFields();
   if ( ! groupExpressionString.isEmpty() )
   {
     requiredFields.append( groupExpression.referencedColumns().values() );
     const QgsField field = groupExpression.isField() ? source->fields().field( requiredFields.last() ) : QString( "group" );
     outputFields.append( field );
   }
+  outputFields.append( QgsField( "begin", orderFieldType ) );
+  outputFields.append( QgsField( "end", orderFieldType ) );
 
   const bool naturalSort = parameterAsBool( parameters, QStringLiteral( "NATURAL_SORT" ), context );
   QCollator collator;
@@ -286,9 +287,10 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
 
     QgsFeature outputFeature;
     QgsAttributes attrs;
+    if ( ! groupExpressionString.isEmpty() )
+      attrs.append( hit.key() );
     attrs.append( hit.value().first().first );
     attrs.append( hit.value().last().first );
-    attrs.append( hit.key() );
     outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
     sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
