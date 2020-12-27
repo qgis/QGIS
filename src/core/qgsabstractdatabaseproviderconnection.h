@@ -123,6 +123,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QList<QVariant> nextRow() const;
 
         /**
+         * Resets the iterator counter used by hasNextRow() and nextRow()
+         */
+        void rewind();
+
+        /**
          * Returns the number of fetched rows
          * \see rowCount()
          */
@@ -162,14 +167,26 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 ///@cond private
 
         /**
-         * The QueryResultIterator struct is an abstract interface for provider query results iterators.
+         * The QueryResultIterator struct is an abstract interface for provider query result iterators.
          * Providers must implement their own concrete iterator over query results.
+         *
+         * \note This struct is thread safe.
          */
         struct QueryResultIterator SIP_SKIP
         {
-          virtual QVariantList nextRow() = 0;
-          virtual bool hasNextRow() const = 0;
+          QVariantList nextRow();
+          bool hasNextRow() const;
+          qlonglong fetchedRowCount();
           virtual ~QueryResultIterator() = default;
+          QList<QList<QVariant> > rows() const;
+
+      private:
+
+          virtual QVariantList nextRowPrivate() = 0;
+          virtual bool hasNextRowPrivate() const = 0;
+          mutable QList<QList<QVariant>> mRows;
+          mutable QMutex mMutex;
+
         };
 
         /**
@@ -202,8 +219,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
         mutable std::shared_ptr<QueryResultIterator> mResultIterator;
         QStringList mColumns;
-        mutable QList<QList<QVariant>> mRows;
         qlonglong mRowCount = 0;
+        mutable qlonglong mIteratorCounter = 0;
 
     };
 

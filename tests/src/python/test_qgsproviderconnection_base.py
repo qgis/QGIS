@@ -257,6 +257,17 @@ class TestPyQgsProviderConnectionBase():
 
                 self.assertFalse(res.hasNextRow())
 
+                # Test iterator rewind
+                res.rewind()
+                self.assertTrue(res.hasNextRow())
+                rows = []
+
+                while res.hasNextRow():
+                    rows.append(res.nextRow())
+
+                self.assertEqual(len(rows), 1)
+                self.assertFalse(res.hasNextRow())
+
                 # But we still have access to rows:
                 self.assertEqual(rows, res.rows())
 

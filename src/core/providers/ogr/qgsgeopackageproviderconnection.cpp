@@ -425,14 +425,14 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRow()
+QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
 {
   const QVariantList currentRow { mNextRow };
-  mNextRow = nextRowPrivate();
+  mNextRow = nextRowInternal();
   return currentRow;
 }
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
+QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -457,11 +457,17 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
         }
       }
     }
+    else
+    {
+      // Release the resources
+      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+      mHDS.release();
+    }
   }
   return row;
 }
 
-bool QgsGeoPackageProviderResultIterator::hasNextRow() const
+bool QgsGeoPackageProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
@@ -488,5 +494,8 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
 
 QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()
 {
-  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  if ( mHDS )
+  {
+    GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  }
 }

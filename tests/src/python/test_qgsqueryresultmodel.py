@@ -26,6 +26,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer
 
 class TestPyQgsQgsQueryResultModel(unittest.TestCase):
 
+    NUM_RECORDS = 100050
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -38,15 +40,21 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.postgres_conn = os.environ['QGIS_PGTEST_DB']
         cls.uri = cls.postgres_conn + ' sslmode=disable'
-        cls._deleteBigDataClass()
+
+        # Prepare data for threaded test
+        cls._deleteBigData()
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(cls.uri, {})
+        conn.executeSql('SELECT * INTO qgis_test.random_big_data FROM generate_series(1,%s) AS id, md5(random()::text) AS descr' % cls.NUM_RECORDS)
+
 
     @classmethod
     def tearDownClass(cls):
 
-        cls._deleteBigDataClass()
+        cls._deleteBigData()
 
     @classmethod
-    def _deleteBigDataClass(cls):
+    def _deleteBigData(cls):
 
         try:
             md = QgsProviderRegistry.instance().providerMetadata('postgres')
@@ -63,16 +71,13 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         res = conn.execSql('SELECT generate_series(1, 1000)')
         model = QgsQueryResultModel(res)
         self.assertEqual(model.rowCount(model.index(-1)), 0)
-        self.assertTrue(res.hasNextRow())
 
         while model.rowCount(model.index(-1)) < 1000:
-            sleep(1)
             QCoreApplication.processEvents()
 
         self.assertEqual(model.columnCount(model.index(-1)), 1)
         self.assertEqual(model.rowCount(model.index(-1)), 1000)
         self.assertEqual(model.data(model.index(999, 0), Qt.DisplayRole), 1000)
-        self.assertFalse(res.hasNextRow())
 
         # Test data
         for i in range(1000):
@@ -86,7 +91,6 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(self.uri, {})
-        conn.executeSql('SELECT * INTO qgis_test.random_big_data FROM generate_series(1,1000000) AS id, md5(random()::text) AS descr')
         res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
 
         self.model = QgsQueryResultModel(res)
@@ -99,21 +103,42 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         def loop_exiter():
             self.running = False
 
-
         QTimer.singleShot(0, model_deleter)
         QTimer.singleShot(1, loop_exiter)
 
         while self.running:
             QCoreApplication.processEvents()
-            sleep(1)
 
-        # Test concurrency: model is feching data from a separate thread
-        # while we internally loop through features with rows()
+        self.assertTrue(res.fetchedRowCount() > 0 and res.fetchedRowCount() < self.NUM_RECORDS)
+
+    def test_model_concurrency(self):
+        """Test concurrency: model is feching data from a separate thread"""
+
+        # while we internally loop through features with nextRow()
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
         res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
         model = QgsQueryResultModel(res)
-        rows = res.rows()
 
-        from IPython import embed; embed(using=False)
+        rowCount = 0
+        while res.hasNextRow():
+            rowCount += 1
+            res.nextRow()
+            QCoreApplication.processEvents()
+
+        QCoreApplication.processEvents()
+
+        self.assertEqual(rowCount, self.NUM_RECORDS)
+        self.assertEqual(res.fetchedRowCount(), self.NUM_RECORDS)
+        self.assertEqual(res.fetchedRowCount(), model.rowCount(model.index(-1)))
+        self.assertEqual(res.fetchedRowCount(), len(res.rows()))
+
+        rows = res.rows()
+        for i in range(self.NUM_RECORDS):
+            self.assertEqual(rows[i][0], i + 1)
+            self.assertEqual(model.data(model.index(i, 0), Qt.DisplayRole), i + 1)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -9,6 +9,12 @@
 
 
 
+
+
+
+
+
+
 class QgsQueryResultModel : QAbstractListModel
 {
 %Docstring
@@ -22,10 +28,12 @@ The QgsQueryResultModel class is a model for QgsAbstractDatabaseProviderConnecti
 %End
   public:
 
-    QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = 0 );
+    QgsQueryResultModel(const QgsAbstractDatabaseProviderConnection::QueryResult& queryResult, QObject *parent = 0 );
 %Docstring
 Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
 %End
+
+    ~QgsQueryResultModel();
 
   public:
 
@@ -35,10 +43,10 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
-    virtual void fetchMore( const QModelIndex &parent );
 
-    virtual bool canFetchMore( const QModelIndex &parent ) const;
+  public slots:
 
+    void newRowsReady(int newRowsCount );
 
 };
 

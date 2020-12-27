@@ -32,9 +32,6 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
 
     ~QgsSpatialiteProviderResultIterator();
 
-    QVariantList nextRow() override;
-    bool hasNextRow() const override;
-
     void setFields( const QgsFields &fields );
 
   private:
@@ -44,7 +41,9 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
     QgsFields mFields;
     QVariantList mNextRow;
 
-    QVariantList nextRowPrivate();
+    QVariantList nextRowPrivate() override;
+    bool hasNextRowPrivate() const override;
+    QVariantList nextRowInternal();
 };
 
 

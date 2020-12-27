@@ -24,16 +24,16 @@
 
 #include "qgsabstractdatabaseproviderconnection.h"
 
-
-
 ///@cond private
 
 #ifndef SIP_RUN
 
+/**
+ * The ResultWorker class fetches query results from a separate thread
+ */
 class ResultWorker: public QObject
 {
     Q_OBJECT
-
 
   public:
 
@@ -90,6 +90,9 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
 
   public slots:
 
+    /**
+     * Triggered when \a newRowsCount have been fetched and can be added to the model
+     */
     void newRowsReady(int newRowsCount );
 
   private:
@@ -98,6 +101,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
     QStringList mColumns;
     qlonglong mRowCount = 0;
     QThread mWorkerThread;
+    ResultWorker* mWorker = nullptr;
 
 };
 

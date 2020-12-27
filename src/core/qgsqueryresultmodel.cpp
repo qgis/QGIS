@@ -25,12 +25,12 @@ QgsQueryResultModel::QgsQueryResultModel(const QgsAbstractDatabaseProviderConnec
 {
   if ( mQueryResult.hasNextRow() )
   {
-    ResultWorker *worker = new ResultWorker( &mQueryResult );
-    worker->moveToThread(&mWorkerThread);
-    //connect(&mWorkerThread, &QThread::finished, worker, &ResultWorker::stopFetching );
-    connect(&mWorkerThread, &QThread::finished, worker, &QObject::deleteLater);
-    connect(&mWorkerThread, &QThread::started, worker, &ResultWorker::fetchRows);
-    connect(worker, &ResultWorker::rowsReady, this, &QgsQueryResultModel::newRowsReady );
+    mWorker = new ResultWorker( &mQueryResult );
+    mWorker->moveToThread(&mWorkerThread);
+    connect(&mWorkerThread, &QThread::finished, mWorker, &ResultWorker::stopFetching );
+    connect(&mWorkerThread, &QThread::finished, mWorker, &QObject::deleteLater);
+    connect(&mWorkerThread, &QThread::started, mWorker, &ResultWorker::fetchRows);
+    connect(mWorker, &ResultWorker::rowsReady, this, &QgsQueryResultModel::newRowsReady );
     mWorkerThread.start();
   }
 }
@@ -44,8 +44,12 @@ void QgsQueryResultModel::newRowsReady( int newRowCount )
 
 QgsQueryResultModel::~QgsQueryResultModel()
 {
-  mWorkerThread.quit();
-  mWorkerThread.wait();
+  if ( mWorker )
+  {
+    mWorker->stopFetching();
+    mWorkerThread.quit();
+    mWorkerThread.wait();
+  }
 }
 
 int QgsQueryResultModel::rowCount( const QModelIndex &parent ) const
@@ -81,26 +85,27 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
 
 void ResultWorker::fetchRows()
 {
-  int rowCount = 0;
-  while ( mQueryResult->hasNextRow() && mStopFetching == 0 )
+  qlonglong rowCount { 0 };
+  while ( mStopFetching == 0 )
   {
-     mQueryResult->nextRow();
-     ++rowCount;
-     if ( rowCount == ROWS_TO_FETCH && mStopFetching == 0 )
-     {
-       emit rowsReady( rowCount );
-       rowCount = 0;
-     }
+    if ( mQueryResult->at( rowCount ).isEmpty() )
+    {
+      break;
+    }
+    ++rowCount;
+    if ( rowCount % ROWS_TO_FETCH == 0 && mStopFetching == 0 )
+    {
+       emit rowsReady( ROWS_TO_FETCH );
+    }
   }
 
-  if ( rowCount  > 0 && mStopFetching == 0 )
+  if ( rowCount % ROWS_TO_FETCH && mStopFetching == 0 )
   {
-    emit rowsReady( rowCount );
+    emit rowsReady( rowCount % ROWS_TO_FETCH );
   }
 }
 
 void ResultWorker::stopFetching()
 {
-  qDebug() << "Stop fetching" << mQueryResult->fetchedRowCount();
   mStopFetching = 1;
 }

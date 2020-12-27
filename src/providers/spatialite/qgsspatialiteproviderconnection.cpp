@@ -474,17 +474,20 @@ void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
 
 QgsSpatialiteProviderResultIterator::~QgsSpatialiteProviderResultIterator()
 {
-  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
-}
-
-QVariantList QgsSpatialiteProviderResultIterator::nextRow()
-{
-  const QVariantList currentRow { mNextRow };
-  mNextRow = nextRowPrivate();
-  return currentRow;
+  if ( mHDS )
+  {
+    GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  }
 }
 
 QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
+{
+  const QVariantList currentRow { mNextRow };
+  mNextRow = nextRowInternal();
+  return currentRow;
+}
+
+QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -509,11 +512,17 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
         }
       }
     }
+    else
+    {
+      // Release the resources
+      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+      mHDS.release();
+    }
   }
   return row;
 }
 
-bool QgsSpatialiteProviderResultIterator::hasNextRow() const
+bool QgsSpatialiteProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
@@ -524,14 +533,14 @@ bool QgsSpatiaLiteProviderConnection::executeSqlDirect( const QString &sql ) con
   int result = database.open( pathFromUri() );
   if ( result != SQLITE_OK )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( database.errorMessage() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, database.errorMessage() ) );
   }
 
   QString errorMessage;
   result = database.exec( sql, errorMessage );
   if ( result != SQLITE_OK )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errorMessage ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errorMessage ) );
   }
   return true;
 }

@@ -31,9 +31,6 @@ struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnec
       , mQuery( query )
     {}
 
-    QVariantList nextRow() override;
-    bool hasNextRow() const override;
-
   private:
 
     bool mResolveTypes = true;
@@ -41,7 +38,10 @@ struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnec
     QSqlQuery mQuery;
     QVariantList mNextRow;
 
-    QVariantList nextRowPrivate();
+    QVariantList nextRowPrivate() override;
+    bool hasNextRowPrivate() const override;
+
+    QVariantList nextRowInternal();
 
 };
 

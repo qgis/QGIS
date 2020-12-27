@@ -86,6 +86,11 @@ Returns ``True`` if there are more rows to fetch
 Returns the next result row or an empty row if there are no rows left
 %End
 
+        void rewind();
+%Docstring
+Resets the iterator counter used by :py:func:`~QgsAbstractDatabaseProviderConnection.hasNextRow` and :py:func:`~QgsAbstractDatabaseProviderConnection.nextRow`
+%End
+
         qlonglong fetchedRowCount( ) const;
 %Docstring
 Returns the number of fetched rows
