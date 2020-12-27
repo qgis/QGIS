@@ -246,7 +246,7 @@ class CORE_EXPORT QgsProperty
      */
     QgsProperty();
 
-    virtual ~QgsProperty();
+    ~QgsProperty();
 
     /**
      * Returns a new ExpressionBasedProperty created from the specified expression.
