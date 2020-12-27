@@ -49,7 +49,8 @@ is not supported or cannot be performed without errors.
     {
         SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rowCount() );
+        const qlonglong rowCount = sipCpp->rowCount();
+        const QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( rowCount > -1 ? QString::number( rowCount ) : QStringLiteral( "unknown" ) );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -58,10 +59,10 @@ is not supported or cannot be performed without errors.
 Returns the column names
 %End
 
-        QList<QList<QVariant> > rows(QgsFeedback* feedback = 0) const;
+        QList<QList<QVariant> > rows( QgsFeedback *feedback = 0 ) const;
 %Docstring
-Returns the results rows by calling the iterator internally,
-an optional ``feedback`` can be used to interrupt the fetching loop.
+Returns the result rows by calling the iterator internally and fetching
+all the rows, an optional ``feedback`` can be used to interrupt the fetching loop.
 
 .. note::
 
@@ -71,7 +72,12 @@ an optional ``feedback`` can be used to interrupt the fetching loop.
 
         qlonglong rowCount() const;
 %Docstring
-Returns the estimated row count, the value may not be exact or it may be -1 if not known.
+Returns the maximum value between the estimated row count (this value may not be exact or
+it may be -1 if not known) and the actual number of fetched rows
+
+.. note::
+
+   When all the results have been retrieved returns the actual number of rows
 
 .. seealso:: :py:func:`fetchedRowCount`
 %End
@@ -79,16 +85,29 @@ Returns the estimated row count, the value may not be exact or it may be -1 if n
         bool hasNextRow() const;
 %Docstring
 Returns ``True`` if there are more rows to fetch
+
+.. seealso:: :py:func:`nextRow`
+
+.. seealso:: :py:func:`rewind`
 %End
 
         QList<QVariant> nextRow() const;
 %Docstring
 Returns the next result row or an empty row if there are no rows left
+
+.. seealso:: :py:func:`hasNextRow`
+
+.. seealso:: :py:func:`rewind`
 %End
 
         void rewind();
 %Docstring
-Resets the iterator counter used by :py:func:`~QgsAbstractDatabaseProviderConnection.hasNextRow` and :py:func:`~QgsAbstractDatabaseProviderConnection.nextRow`
+Resets the internal iterator counter, the next call to :py:func:`~QgsAbstractDatabaseProviderConnection.nextRow`
+will return the first row (if any)
+
+.. seealso:: :py:func:`hasNextRow`
+
+.. seealso:: :py:func:`nextRow`
 %End
 
         qlonglong fetchedRowCount( ) const;
@@ -100,7 +119,7 @@ Returns the number of fetched rows
 
         QList<QVariant> at( qlonglong index ) const;
 %Docstring
-Returns the row data at 0-based index ``index``, if index is not valid, an empty list is returned.
+Returns the row at 0-based index ``index``, if index is not valid, an empty row is returned
 
 .. note::
 

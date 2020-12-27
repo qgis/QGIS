@@ -444,14 +444,13 @@ QStringList QgsAbstractDatabaseProviderConnection::QueryResult::columns() const
   return mColumns;
 }
 
-QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows( QgsFeedback* feedback) const
+QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows( QgsFeedback *feedback ) const
 {
   if ( ! mResultIterator )
   {
     return QList<QList<QVariant> >();
   }
 
-  // mRowCount might be -1 (unknown)
   while ( mResultIterator &&
           mResultIterator->hasNextRow() &&
           ( ! feedback || ! feedback->isCanceled() ) )
@@ -496,11 +495,12 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::at( qlonglon
   }
 
   // Fetch rows until the index
-  while ( index >= mResultIterator->fetchedRowCount() &&
-          ( mRowCount < 0 || mResultIterator->fetchedRowCount() < mRowCount ) &&
-          mResultIterator->hasNextRow() )
+  while ( index >= mResultIterator->fetchedRowCount() )
   {
-    mResultIterator->nextRow();
+    if ( mResultIterator->nextRow().isEmpty() )
+    {
+      break;
+    }
   }
 
   if ( index >= mResultIterator->fetchedRowCount() )
@@ -514,6 +514,10 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::at( qlonglon
 
 qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
 {
+  if ( mResultIterator )
+  {
+    return std::max( mResultIterator->fetchedRowCount(), mRowCount );
+  }
   return mRowCount;
 }
 
@@ -543,7 +547,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr
 
 QVariantList QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::nextRow()
 {
-  QMutexLocker lock(&mMutex);
+  QMutexLocker lock( &mMutex );
   const QVariantList row { nextRowPrivate() };
   if ( ! row.isEmpty() )
   {
@@ -554,19 +558,19 @@ QVariantList QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIter
 
 bool QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::hasNextRow() const
 {
-  QMutexLocker lock(&mMutex);
+  QMutexLocker lock( &mMutex );
   return hasNextRowPrivate();
 }
 
 qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::fetchedRowCount()
 {
-  QMutexLocker lock(&mMutex);
+  QMutexLocker lock( &mMutex );
   return mRows.count();
 }
 
 QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::rows() const
 {
-  QMutexLocker lock(&mMutex);
+  QMutexLocker lock( &mMutex );
   return mRows;
 }
 

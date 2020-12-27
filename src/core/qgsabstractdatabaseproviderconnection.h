@@ -87,7 +87,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rowCount() );
+        const qlonglong rowCount = sipCpp->rowCount();
+        const QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( rowCount > -1 ? QString::number( rowCount ) : QStringLiteral( "unknown" ) );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -98,43 +99,58 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QStringList columns() const;
 
         /**
-         * Returns the results rows by calling the iterator internally,
-         * an optional \a feedback can be used to interrupt the fetching loop.
+         * Returns the result rows by calling the iterator internally and fetching
+         * all the rows, an optional \a feedback can be used to interrupt the fetching loop.
          *
          * \note results are cached internally and subsequent calls to this method
          * will return the cached results.
          */
-        QList<QList<QVariant> > rows(QgsFeedback* feedback = nullptr) const;
+        QList<QList<QVariant> > rows( QgsFeedback *feedback = nullptr ) const;
 
         /**
-          * Returns the estimated row count, the value may not be exact or it may be -1 if not known.
+          * Returns the maximum value between the estimated row count (this value may not be exact or
+          * it may be -1 if not known) and the actual number of fetched rows
+          *
+          * \note When all the results have been retrieved returns the actual number of rows
           * \see fetchedRowCount()
          */
         qlonglong rowCount() const;
 
         /**
          * Returns TRUE if there are more rows to fetch
+         *
+         * \see nextRow()
+         * \see rewind()
          */
         bool hasNextRow() const;
 
         /**
          * Returns the next result row or an empty row if there are no rows left
+         *
+         * \see hasNextRow()
+         * \see rewind()
          */
         QList<QVariant> nextRow() const;
 
         /**
-         * Resets the iterator counter used by hasNextRow() and nextRow()
+         * Resets the internal iterator counter, the next call to nextRow()
+         * will return the first row (if any)
+         *
+         * \see hasNextRow()
+         * \see nextRow()
          */
         void rewind();
 
         /**
          * Returns the number of fetched rows
+         *
          * \see rowCount()
          */
         qlonglong fetchedRowCount( ) const;
 
         /**
-         * Returns the row data at 0-based index \a index, if index is not valid, an empty list is returned.
+         * Returns the row at 0-based index \a index, if index is not valid, an empty row is returned
+         *
          * \note this method calls the iterator internally until \a index row is retrieved
          */
         QList<QVariant> at( qlonglong index ) const;
@@ -174,18 +190,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         struct QueryResultIterator SIP_SKIP
         {
-          QVariantList nextRow();
-          bool hasNextRow() const;
-          qlonglong fetchedRowCount();
-          virtual ~QueryResultIterator() = default;
-          QList<QList<QVariant> > rows() const;
+            QVariantList nextRow();
+            bool hasNextRow() const;
+            qlonglong fetchedRowCount();
+            virtual ~QueryResultIterator() = default;
+            QList<QList<QVariant> > rows() const;
 
-      private:
+          private:
 
-          virtual QVariantList nextRowPrivate() = 0;
-          virtual bool hasNextRowPrivate() const = 0;
-          mutable QList<QList<QVariant>> mRows;
-          mutable QMutex mMutex;
+            virtual QVariantList nextRowPrivate() = 0;
+            virtual bool hasNextRowPrivate() const = 0;
+            mutable QList<QList<QVariant>> mRows;
+            mutable QMutex mMutex;
 
         };
 
@@ -215,7 +231,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
 ///@endcond private
 
-  private:
+      private:
 
         mutable std::shared_ptr<QueryResultIterator> mResultIterator;
         QStringList mColumns;

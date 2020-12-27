@@ -37,7 +37,7 @@ class ResultWorker: public QObject
 
   public:
 
-    ResultWorker( const QgsAbstractDatabaseProviderConnection::QueryResult* queryResult )
+    ResultWorker( const QgsAbstractDatabaseProviderConnection::QueryResult *queryResult )
       : mQueryResult( queryResult )
     {}
 
@@ -47,20 +47,20 @@ class ResultWorker: public QObject
 
   signals:
 
-    void rowsReady(int newRowsCount);
+    void rowsReady( int newRowsCount );
 
   private:
 
-      const QgsAbstractDatabaseProviderConnection::QueryResult* mQueryResult = nullptr;
-      QAtomicInt mStopFetching = 0;
-      // Batch of rows to fetch before emitting rowsReady
-      static const int ROWS_TO_FETCH;
+    const QgsAbstractDatabaseProviderConnection::QueryResult *mQueryResult = nullptr;
+    QAtomicInt mStopFetching = 0;
+    // Batch of rows to fetch before emitting rowsReady
+    static const int ROWS_TO_FETCH;
 
 };
 
 #endif
 
-///@encond private
+///@endcond private
 
 
 /**
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
     /**
      * Constructs a QgsQueryResultModel from a \a queryResult with optional \a parent
      */
-    QgsQueryResultModel(const QgsAbstractDatabaseProviderConnection::QueryResult& queryResult, QObject *parent = nullptr );
+    QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = nullptr );
 
     ~QgsQueryResultModel();
 
@@ -93,15 +93,15 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
     /**
      * Triggered when \a newRowsCount have been fetched and can be added to the model
      */
-    void newRowsReady(int newRowsCount );
+    void newRowsReady( int newRowsCount );
 
   private:
 
-    const QgsAbstractDatabaseProviderConnection::QueryResult& mQueryResult;
+    const QgsAbstractDatabaseProviderConnection::QueryResult &mQueryResult;
     QStringList mColumns;
     qlonglong mRowCount = 0;
     QThread mWorkerThread;
-    ResultWorker* mWorker = nullptr;
+    ResultWorker *mWorker = nullptr;
 
 };
 

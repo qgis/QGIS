@@ -15,9 +15,7 @@
  ***************************************************************************/
 #include "qgsqueryresultmodel.h"
 
-const int ResultWorker::ROWS_TO_FETCH = 200;
-
-QgsQueryResultModel::QgsQueryResultModel(const QgsAbstractDatabaseProviderConnection::QueryResult& queryResult, QObject *parent )
+QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent )
   : QAbstractListModel( parent )
   , mQueryResult( queryResult )
   , mColumns( queryResult.columns() )
@@ -26,11 +24,11 @@ QgsQueryResultModel::QgsQueryResultModel(const QgsAbstractDatabaseProviderConnec
   if ( mQueryResult.hasNextRow() )
   {
     mWorker = new ResultWorker( &mQueryResult );
-    mWorker->moveToThread(&mWorkerThread);
-    connect(&mWorkerThread, &QThread::finished, mWorker, &ResultWorker::stopFetching );
-    connect(&mWorkerThread, &QThread::finished, mWorker, &QObject::deleteLater);
-    connect(&mWorkerThread, &QThread::started, mWorker, &ResultWorker::fetchRows);
-    connect(mWorker, &ResultWorker::rowsReady, this, &QgsQueryResultModel::newRowsReady );
+    mWorker->moveToThread( &mWorkerThread );
+    connect( &mWorkerThread, &QThread::finished, mWorker, &ResultWorker::stopFetching );
+    connect( &mWorkerThread, &QThread::finished, mWorker, &QObject::deleteLater );
+    connect( &mWorkerThread, &QThread::started, mWorker, &ResultWorker::fetchRows );
+    connect( mWorker, &ResultWorker::rowsReady, this, &QgsQueryResultModel::newRowsReady );
     mWorkerThread.start();
   }
 }
@@ -83,6 +81,10 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
   return QVariant();
 }
 
+///@cond private
+
+const int ResultWorker::ROWS_TO_FETCH = 200;
+
 void ResultWorker::fetchRows()
 {
   qlonglong rowCount { 0 };
@@ -95,7 +97,7 @@ void ResultWorker::fetchRows()
     ++rowCount;
     if ( rowCount % ROWS_TO_FETCH == 0 && mStopFetching == 0 )
     {
-       emit rowsReady( ROWS_TO_FETCH );
+      emit rowsReady( ROWS_TO_FETCH );
     }
   }
 
@@ -109,3 +111,6 @@ void ResultWorker::stopFetching()
 {
   mStopFetching = 1;
 }
+
+
+///@endcond private
