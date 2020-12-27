@@ -33,8 +33,8 @@ close I;
 
 die "no dists" unless @dists;
 
-open I, "doc/INSTALL.md";
-open O, ">doc/INSTALL.md.new";
+open I, "INSTALL.md";
+open O, ">INSTALL.md.new";
 while(<I>) {
 	last if /^\|Distribution\|Install command for packages\|\n$/;
 	print O;
@@ -128,5 +128,5 @@ while(<I>) {
 close O;
 close I;
 
-rename "doc/INSTALL.md", "doc/INSTALL.md.orig";
-rename "doc/INSTALL.md.new", "doc/INSTALL.md";
+rename "INSTALL.md", "INSTALL.md.orig";
+rename "INSTALL.md.new", "INSTALL.md";
