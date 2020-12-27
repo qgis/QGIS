@@ -17,6 +17,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
+#include "qgsfeedback.h"
+
 #include <QVariant>
 #include <QObject>
 
@@ -435,15 +437,19 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setSchema( const QStr
 }
 
 
+///@cond PRIVATE
+
 QStringList QgsAbstractDatabaseProviderConnection::QueryResult::columns() const
 {
   return mColumns;
 }
 
-QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows() const
+QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows( QgsFeedback* feedback) const
 {
   // mRowCount might be -1 (unknown)
-  while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) )
+  while ( mResultIterator &&
+          ( mRowCount < 0 || mRows.count() < mRowCount ) &&
+          hasNextRow() && ( ! feedback || ! feedback->isCanceled() ) )
   {
     const QVariantList row( mResultIterator->nextRow() );
     if ( row.isEmpty() )
@@ -455,9 +461,9 @@ QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows
   return mRows;
 }
 
-QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
+QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow() const
 {
-  if ( ! mResultIterator && ! mResultIterator->hasNextRow() )
+  if ( ! mResultIterator || ! hasNextRow() )
   {
     return QList<QVariant>();
   }
@@ -472,14 +478,22 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
   return row;
 }
 
+qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() const
+{
+  return mRows.count();
+}
+
 QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::at( qlonglong index ) const
 {
   if ( index < 0 )
+  {
     return QList<QVariant>();
+  }
+
   // Fetch rows until the index
   if ( index >= mRows.count( ) )
   {
-    while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) && index >= mRows.count() )
+    while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) && index >= mRows.count() && hasNextRow() )
     {
       const QVariantList row { mResultIterator->nextRow() };
       if ( row.isEmpty() )
@@ -510,10 +524,14 @@ bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
   {
     return false;
   }
-  return mResultIterator->hasNextRow();
+  const bool results { mResultIterator->hasNextRow() };
+  if ( ! results )
+  {
+    mResultIterator.reset();
+  }
+  return results;
 }
 
-///@cond PRIVATE
 
 void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QString &columnName )
 {
@@ -528,5 +546,6 @@ void QgsAbstractDatabaseProviderConnection::QueryResult::setRowCount( const qlon
 QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
   : mResultIterator( iterator )
 {}
+
 
 ///@endcond private

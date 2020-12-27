@@ -98,15 +98,17 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QStringList columns() const;
 
         /**
-         * Returns the results rows by calling the iterator internally.
+         * Returns the results rows by calling the iterator internally,
+         * an optional \a feedback can be used to interrupt the fetching loop.
+         *
          * \note results are cached internally and subsequent calls to this method
          * will return the cached results.
          */
-        QList<QList<QVariant> > rows() const;
+        QList<QList<QVariant> > rows(QgsFeedback* feedback = nullptr) const;
 
         /**
-          * Returns the row count
-          * \note the value may not be exact or it may be -1 if not known
+          * Returns the estimated row count, the value may not be exact or it may be -1 if not known.
+          * \see fetchedRowCount()
          */
         qlonglong rowCount() const;
 
@@ -118,7 +120,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         /**
          * Returns the next result row or an empty row if there are no rows left
          */
-        QList<QVariant> nextRow();
+        QList<QVariant> nextRow() const;
+
+        /**
+         * Returns the number of fetched rows
+         * \see rowCount()
+         */
+        qlonglong fetchedRowCount( ) const;
 
         /**
          * Returns the row data at 0-based index \a index, if index is not valid, an empty list is returned.
@@ -127,6 +135,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         QList<QVariant> at( qlonglong index ) const;
 
 #ifdef SIP_RUN
+        // Python iterator
         QueryResult *__iter__();
         % MethodCode
         sipRes = sipCpp;
@@ -189,9 +198,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
 ///@endcond private
 
-      private:
+  private:
 
-        std::shared_ptr<QueryResultIterator> mResultIterator;
+        mutable std::shared_ptr<QueryResultIterator> mResultIterator;
         QStringList mColumns;
         mutable QList<QList<QVariant>> mRows;
         qlonglong mRowCount = 0;

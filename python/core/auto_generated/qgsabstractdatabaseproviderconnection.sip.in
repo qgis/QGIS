@@ -58,9 +58,10 @@ is not supported or cannot be performed without errors.
 Returns the column names
 %End
 
-        QList<QList<QVariant> > rows() const;
+        QList<QList<QVariant> > rows(QgsFeedback* feedback = 0) const;
 %Docstring
-Returns the results rows by calling the iterator internally.
+Returns the results rows by calling the iterator internally,
+an optional ``feedback`` can be used to interrupt the fetching loop.
 
 .. note::
 
@@ -70,11 +71,9 @@ Returns the results rows by calling the iterator internally.
 
         qlonglong rowCount() const;
 %Docstring
-Returns the row count
+Returns the estimated row count, the value may not be exact or it may be -1 if not known.
 
-.. note::
-
-   the value may not be exact or it may be -1 if not known
+.. seealso:: :py:func:`fetchedRowCount`
 %End
 
         bool hasNextRow() const;
@@ -82,9 +81,16 @@ Returns the row count
 Returns ``True`` if there are more rows to fetch
 %End
 
-        QList<QVariant> nextRow();
+        QList<QVariant> nextRow() const;
 %Docstring
 Returns the next result row or an empty row if there are no rows left
+%End
+
+        qlonglong fetchedRowCount( ) const;
+%Docstring
+Returns the number of fetched rows
+
+.. seealso:: :py:func:`rowCount`
 %End
 
         QList<QVariant> at( qlonglong index ) const;
@@ -96,6 +102,7 @@ Returns the row data at 0-based index ``index``, if index is not valid, an empty
    this method calls the iterator internally until ``index`` row is retrieved
 %End
 
+        // Python iterator
         QueryResult *__iter__();
 %MethodCode
         sipRes = sipCpp;
