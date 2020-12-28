@@ -12,13 +12,16 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/network
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/core/project
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
+  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/providers/wms
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/mdal

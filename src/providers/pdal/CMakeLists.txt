@@ -101,7 +101,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/core/project
   ${CMAKE_SOURCE_DIR}/src/core/providers/ept
+  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors

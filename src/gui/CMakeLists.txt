@@ -1369,7 +1369,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
+  ${CMAKE_SOURCE_DIR}/src/core/project
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/network
   ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
@@ -1384,6 +1386,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external
