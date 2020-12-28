@@ -104,7 +104,7 @@ Content-Type: text/xml; charset=utf-8
   <sld:UserDefinedSymbolization UserStyle="1" RemoteWFS="0" RemoteWCS="0" InlineFeature="0" UserLayer="0" SupportSLD="1"/>
   <Layer queryable="1">
    <Name>QGIS Server WMS Dimensions</Name>
-   <Title>QGIS Server WMS Dimensions</Title>
+   <Title>QGIS Server WMS Dimension test</Title>
    <Abstract>QGIS Server WMS Dimensions</Abstract>
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
