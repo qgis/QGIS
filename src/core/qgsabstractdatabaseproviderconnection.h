@@ -229,6 +229,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         QueryResult( ) = default SIP_SKIP;
 
+///@endcond private
+
       private:
 
         mutable std::shared_ptr<QueryResultIterator> mResultIterator;
@@ -238,7 +240,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     };
 
-///@endcond private
 
     /**
      * The TableProperty class represents a database table or view.
