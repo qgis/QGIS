@@ -135,6 +135,50 @@ QgsColorRamp *QgsColorRampShader::sourceColorRamp() const
   return mSourceColorRamp.get();
 }
 
+QgsColorRamp *QgsColorRampShader::createColorRamp() const
+{
+  std::unique_ptr<QgsGradientColorRamp> ramp = qgis::make_unique< QgsGradientColorRamp >();
+  int count = mColorRampItemList.size();
+  if ( count == 0 )
+  {
+    const QColor none( 0, 0, 0, 0 );
+    ramp->setColor1( none );
+    ramp->setColor2( none );
+  }
+  else if ( count == 1 )
+  {
+    ramp->setColor1( mColorRampItemList[0].color );
+    ramp->setColor2( mColorRampItemList[0].color );
+  }
+  else
+  {
+    QgsGradientStopsList stops;
+    // minimum and maximum values can fall outside the range of the item list
+    const double min = minimumValue();
+    const double max = maximumValue();
+    for ( int i = 0; i < count; i++ )
+    {
+      double offset = ( mColorRampItemList[i].value - min ) / ( max - min );
+      if ( i == 0 )
+      {
+        ramp->setColor1( mColorRampItemList[i].color );
+        if ( offset <= 0.0 )
+          continue;
+      }
+      else if ( i == count - 1 )
+      {
+        ramp->setColor2( mColorRampItemList[i].color );
+        if ( offset >= 1.0 )
+          continue;
+      }
+      stops << QgsGradientStop( offset, mColorRampItemList[i].color );
+    }
+    ramp->setStops( stops );
+  }
+
+  return ramp.release();
+}
+
 void QgsColorRampShader::setSourceColorRamp( QgsColorRamp *colorramp )
 {
   mSourceColorRamp.reset( colorramp );
