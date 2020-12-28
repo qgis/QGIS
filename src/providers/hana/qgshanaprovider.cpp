@@ -1447,20 +1447,17 @@ void QgsHanaProvider::updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMa
   if ( !( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt64 ) )
     return;
 
-  QVariantList k = mPrimaryKeyCntx->removeFid( fid );
-
-  int keyCount = std::min( mPrimaryKeyAttrs.size(), k.size() );
-
+  QVariantList values = mPrimaryKeyCntx->removeFid( fid );
+  int keyCount = std::min( mPrimaryKeyAttrs.size(), values.size() );
   for ( int i = 0; i < keyCount; i++ )
   {
     int idx = mPrimaryKeyAttrs.at( i );
     if ( !attributes.contains( idx ) )
       continue;
-
-    k[i] = attributes[ idx ];
+    values[i] = attributes[ idx ];
   }
 
-  mPrimaryKeyCntx->insertFid( fid, k );
+  mPrimaryKeyCntx->insertFid( fid, values );
 }
 
 QgsCoordinateReferenceSystem QgsHanaProvider::crs() const

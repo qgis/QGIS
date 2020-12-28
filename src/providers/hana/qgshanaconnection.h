@@ -81,7 +81,7 @@ class QgsHanaConnection : public QObject
   private:
     QgsHanaConnection( odbc::ConnectionRef connection, const QgsDataSourceUri &uri );
 
-    QStringList getPrimaryeKeys( const QgsHanaLayerProperty &layerProperty );
+    QStringList getPrimaryeKeyCandidates( const QgsHanaLayerProperty &layerProperty );
 
     odbc::PreparedStatementRef createPreparedStatement( const QString &sql, const QVariantList &args );
 

@@ -210,7 +210,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFields &fields, QgsHa
       QList<QString> conditions;
       for ( int idx : pkAttrs )
         conditions << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( fields[idx].name() ) );
-      return conditions.join( QStringLiteral( ") AND (" ) );
+      return conditions.join( QStringLiteral( " AND " ) );
     }
     case PktUnknown:
       return QString();
@@ -253,7 +253,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
         const QgsField &fld  = fields.at( pkAttrs[i] );
         conditions << QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( fld.name() ), pkValues[i].toString() );
       }
-      return conditions.join( QStringLiteral( ") AND (" ) );
+      return conditions.join( QStringLiteral( " AND " ) );
     }
     case PktUnknown:
       return QString();

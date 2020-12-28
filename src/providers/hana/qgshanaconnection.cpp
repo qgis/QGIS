@@ -552,7 +552,7 @@ void QgsHanaConnection::readLayerInfo( QgsHanaLayerProperty &layerProperty )
 {
   layerProperty.srid = getColumnSrid( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
   layerProperty.type = getColumnGeometryType( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
-  layerProperty.pkCols = getPrimaryeKeys( layerProperty );
+  layerProperty.pkCols = getPrimaryeKeyCandidates( layerProperty );
 }
 
 QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &ownerName )
@@ -620,39 +620,18 @@ QPair<QString, QMap<QString, short>> QgsHanaConnection::getLayerPrimaryeKey( con
   }
 }
 
-// The current implementation allows returning only primary keys that contain
-// only one column of integer type.
-QStringList QgsHanaConnection::getPrimaryeKeys( const QgsHanaLayerProperty &layerProperty )
+QStringList QgsHanaConnection::getPrimaryeKeyCandidates( const QgsHanaLayerProperty &layerProperty )
 {
+  if ( !layerProperty.isView )
+    return QStringList();
+
   QStringList ret;
-  size_t numColumns = 0;
-  QStringList intColumns;
-  const QPair<QString, QMap<QString, short>> primaryKeys = getLayerPrimaryeKey( layerProperty.schemaName, layerProperty.tableName );
-  const QMap<QString, short> &columns = primaryKeys.second;
-  for ( auto it = columns.constBegin(); it != columns.constEnd(); ++it )
+  QgsHanaResultSetRef rsColumns = getColumns( layerProperty.schemaName, layerProperty.tableName, QStringLiteral( "%" ) );
+  while ( rsColumns->next() )
   {
-    const QString &clmName = it.key();
-    short clmType = it.value();
-
-    if ( clmType == SQLDataTypes::TinyInt || clmType == SQLDataTypes::SmallInt ||
-         clmType == SQLDataTypes::Integer || clmType == SQLDataTypes::BigInt )
-      intColumns << clmName;
-    ++numColumns;
+    ret << rsColumns->getValue( 4/*COLUMN_NAME */ ).toString();
   }
-
-  if ( numColumns == 1 )
-  {
-    if ( !intColumns.empty() )
-      ret << intColumns[0];
-  }
-  else if ( numColumns > 0 )
-  {
-    QgsDebugMsg( QStringLiteral( "Table %1.%2 has %3 columns in its primary key %4" ).arg(
-                   layerProperty.schemaName,
-                   layerProperty.tableName,
-                   QString::number( numColumns ),
-                   primaryKeys.first ) );
-  }
+  rsColumns->close();
   return ret;
 }
 
