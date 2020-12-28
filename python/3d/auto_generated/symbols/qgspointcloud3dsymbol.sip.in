@@ -158,18 +158,18 @@ Constructor for QgsColorRampPointCloud3DSymbol
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
-    QString renderingParameter() const;
+    QString attribute() const;
 %Docstring
-Returns the parameter used to select the color of the point cloud
+Returns the attribute used to select the color of the point cloud.
 
-.. seealso:: :py:func:`setRenderingParameter`
+.. seealso:: :py:func:`setAttribute`
 %End
 
-    void setRenderingParameter( const QString &parameter );
+    void setAttribute( const QString &attribute );
 %Docstring
-Sets the parameter used to select the color of the point cloud
+Sets the ``attribute`` used to select the color of the point cloud.
 
-.. seealso:: :py:func:`renderingParameter`
+.. seealso:: :py:func:`attribute`
 %End
 
     QgsColorRampShader colorRampShader() const;
@@ -390,6 +390,77 @@ Ownership of ``enhancement`` is transferred.
 
   private:
     QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
+};
+
+class QgsClassificationPointCloud3DSymbol : QgsPointCloud3DSymbol
+{
+%Docstring
+3D symbol that draws point cloud geometries as 3D objects using classification of the dataset
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloud3dsymbol.h"
+%End
+  public:
+    QgsClassificationPointCloud3DSymbol();
+%Docstring
+Constructor for QgsClassificationPointCloud3DSymbol
+%End
+
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+    virtual QString symbolType() const;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    QString attribute() const;
+%Docstring
+Returns the attribute used to select the color of the point cloud.
+
+.. seealso:: :py:func:`setAttribute`
+%End
+
+    void setAttribute( const QString &attribute );
+%Docstring
+Sets the ``attribute`` used to select the color of the point cloud.
+
+.. seealso:: :py:func:`attribute`
+%End
+
+    QgsPointCloudCategoryList categoriesList() const;
+%Docstring
+Returns the list of categories of the classification
+
+.. seealso:: :py:func:`setCategoriesList`
+%End
+
+    void setCategoriesList( const QgsPointCloudCategoryList &categories );
+%Docstring
+Sets the list of categories of the classification
+
+.. seealso:: :py:func:`categoriesList`
+%End
+
+    QgsPointCloudCategoryList getFilteredOutCategories() const;
+%Docstring
+Gets the list of categories of the classification that should not be rendered
+
+.. seealso:: :py:func:`categoriesList`
+%End
+
+    virtual unsigned int byteStride();
+
 };
 
 /************************************************************************

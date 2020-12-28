@@ -77,7 +77,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   if ( !doAction( vlayer, e->x(), e->y() ) )
-    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features found at this position." ), 2000 );
 }
 
 void QgsMapToolFeatureAction::activate()

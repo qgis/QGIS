@@ -30,6 +30,7 @@ set(QGIS_CORE_SRCS
   geocoding/qgsgeocoder.cpp
   geocoding/qgsgeocodercontext.cpp
   geocoding/qgsgeocoderresult.cpp
+  geocoding/qgsnominatimgeocoder.cpp
   geocoding/qgsgooglemapsgeocoder.cpp
 
   gps/qgsgpsconnection.cpp
@@ -44,6 +45,7 @@ set(QGIS_CORE_SRCS
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscptcityarchive.cpp
   symbology/qgsellipsesymbollayer.cpp
+  symbology/qgsfeaturerenderergenerator.cpp
   symbology/qgsfillsymbollayer.cpp
   symbology/qgsgeometrygeneratorsymbollayer.cpp
   symbology/qgsgraduatedsymbolrenderer.cpp
@@ -91,6 +93,8 @@ set(QGIS_CORE_SRCS
   effects/qgsshadoweffect.cpp
   effects/qgstransformeffect.cpp
 
+  layertree/qgscolorramplegendnode.cpp
+  layertree/qgscolorramplegendnodesettings.cpp
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
@@ -175,6 +179,10 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelgroupbox.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
+
+  providers/arcgis/qgsarcgisportalutils.cpp
+  providers/arcgis/qgsarcgisrestquery.cpp
+  providers/arcgis/qgsarcgisrestutils.cpp
 
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
@@ -1178,6 +1186,7 @@ set(QGIS_CORE_HDRS
   geocoding/qgsgeocoder.h
   geocoding/qgsgeocodercontext.h
   geocoding/qgsgeocoderresult.h
+  geocoding/qgsnominatimgeocoder.h
   geocoding/qgsgooglemapsgeocoder.h
 
   geometry/qgsabstractgeometry.h
@@ -1233,6 +1242,8 @@ set(QGIS_CORE_HDRS
   labeling/qgsvectorlayerlabeling.h
   labeling/qgsvectorlayerlabelprovider.h
 
+  layertree/qgscolorramplegendnode.h
+  layertree/qgscolorramplegendnodesettings.h
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
@@ -1394,12 +1405,19 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
 
+  providers/arcgis/qgsarcgisportalutils.h
+  providers/arcgis/qgsarcgisrestquery.h
+  providers/arcgis/qgsarcgisrestutils.h
+
   providers/gdal/qgsgdaldataitems.h
   providers/gdal/qgsgdalprovider.h
+
   providers/memory/qgsmemoryfeatureiterator.h
   providers/memory/qgsmemoryprovider.h
   providers/memory/qgsmemoryproviderutils.h
+
   providers/meshmemory/qgsmeshmemorydataprovider.h
+
   providers/ogr/qgsgeopackagedataitems.h
   providers/ogr/qgsgeopackageprojectstorage.h
   providers/ogr/qgsgeopackageproviderconnection.h
@@ -1475,6 +1493,7 @@ set(QGIS_CORE_HDRS
   symbology/qgscolorbrewerpalette.h
   symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
+  symbology/qgsfeaturerenderergenerator.h
   symbology/qgsfillsymbollayer.h
   symbology/qgsgeometrygeneratorsymbollayer.h
   symbology/qgsgraduatedsymbolrenderer.h
@@ -1702,14 +1721,14 @@ if (WITH_EPT)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptdataitems.cpp
       providers/ept/qgseptprovider.cpp
-      providers/ept/qgseptdecoder.cpp
-      providers/ept/qgseptpointcloudindex.cpp
+      pointcloud/qgseptdecoder.cpp
+      pointcloud/qgseptpointcloudindex.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
-      providers/ept/qgseptdecoder.h
-      providers/ept/qgseptpointcloudindex.h
+      pointcloud/qgseptdecoder.h
+      pointcloud/qgseptpointcloudindex.h
   )
 endif()
 

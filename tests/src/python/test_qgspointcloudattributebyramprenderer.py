@@ -29,7 +29,9 @@ from qgis.core import (
     QgsDoubleRange,
     QgsColorRampShader,
     QgsStyle,
-    QgsLayerTreeLayer
+    QgsLayerTreeLayer,
+    QgsColorRampLegendNode,
+    QgsSimpleLegendNode
 )
 
 from qgis.PyQt.QtCore import QDir, QSize, Qt
@@ -99,10 +101,10 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         self.assertEqual(rr.maximum(), 15)
         self.assertEqual(rr.colorRampShader().minimumValue(), 20)
         self.assertEqual(rr.colorRampShader().maximumValue(), 30)
-        self.assertEqual(rr.colorRampShader().sourceColorRamp().color1(),
-                         renderer.colorRampShader().sourceColorRamp().color1())
-        self.assertEqual(rr.colorRampShader().sourceColorRamp().color2(),
-                         renderer.colorRampShader().sourceColorRamp().color2())
+        self.assertEqual(rr.colorRampShader().sourceColorRamp().color1().name(),
+                         renderer.colorRampShader().sourceColorRamp().color1().name())
+        self.assertEqual(rr.colorRampShader().sourceColorRamp().color2().name(),
+                         renderer.colorRampShader().sourceColorRamp().color2().name())
 
         doc = QDomDocument("testdoc")
         elem = renderer.save(doc, QgsReadWriteContext())
@@ -119,17 +121,17 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         self.assertEqual(r2.maximum(), 15)
         self.assertEqual(r2.colorRampShader().minimumValue(), 20)
         self.assertEqual(r2.colorRampShader().maximumValue(), 30)
-        self.assertEqual(r2.colorRampShader().sourceColorRamp().color1(),
-                         renderer.colorRampShader().sourceColorRamp().color1())
-        self.assertEqual(r2.colorRampShader().sourceColorRamp().color2(),
-                         renderer.colorRampShader().sourceColorRamp().color2())
+        self.assertEqual(r2.colorRampShader().sourceColorRamp().color1().name(),
+                         renderer.colorRampShader().sourceColorRamp().color1().name())
+        self.assertEqual(r2.colorRampShader().sourceColorRamp().color2().name(),
+                         renderer.colorRampShader().sourceColorRamp().color2().name())
 
     def testUsedAttributes(self):
         renderer = QgsPointCloudAttributeByRampRenderer()
         renderer.setAttribute('attr')
 
         rc = QgsRenderContext()
-        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
+        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D(), 1, 0)
 
         self.assertEqual(renderer.usedAttributes(prc), {'attr'})
 
@@ -147,20 +149,23 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
         layer_tree_layer = QgsLayerTreeLayer(layer)
         nodes = renderer.createLegendNodes(layer_tree_layer)
-        self.assertEqual(len(nodes), 4)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), '200')
-        self.assertEqual(nodes[1].data(Qt.DisplayRole), '400')
-        self.assertEqual(nodes[2].data(Qt.DisplayRole), '600')
-        self.assertEqual(nodes[3].data(Qt.DisplayRole), '800')
+        self.assertEqual(len(nodes), 2)
+        self.assertIsInstance(nodes[0], QgsSimpleLegendNode)
+        self.assertEqual(nodes[0].data(Qt.DisplayRole), 'Intensity')
+        self.assertIsInstance(nodes[1], QgsColorRampLegendNode)
+        self.assertEqual(nodes[1].ramp().color1().name(), '#440154')
+        self.assertEqual(nodes[1].ramp().color2().name(), '#fde725')
 
         shader = QgsColorRampShader(200, 600, ramp.clone())
         shader.setClassificationMode(QgsColorRampShader.EqualInterval)
+        shader.setColorRampType(QgsColorRampShader.Exact)
         shader.classifyColorRamp(classes=2)
         renderer.setColorRampShader(shader)
         nodes = renderer.createLegendNodes(layer_tree_layer)
-        self.assertEqual(len(nodes), 2)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), '200')
-        self.assertEqual(nodes[1].data(Qt.DisplayRole), '600')
+        self.assertEqual(len(nodes), 3)
+        self.assertEqual(nodes[0].data(Qt.DisplayRole), 'Intensity')
+        self.assertEqual(nodes[1].data(Qt.DisplayRole), '200')
+        self.assertEqual(nodes[2].data(Qt.DisplayRole), '600')
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRender(self):

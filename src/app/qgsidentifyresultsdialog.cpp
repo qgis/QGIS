@@ -419,7 +419,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionPrint, &QAction::triggered, this, &QgsIdentifyResultsDialog::printCurrentItem );
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
-  connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
+  connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp );
 
   initSelectionModes();
 
@@ -431,6 +431,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   settingsButton->setPopupMode( QToolButton::InstantPopup );
   settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
   mIdentifyToolbar->addWidget( settingsButton );
+  mIdentifyToolbar->addSeparator();
+  mIdentifyToolbar->addAction( mHelpToolAction );
 
   settingsMenu->addAction( mActionAutoFeatureForm );
   mActionAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );

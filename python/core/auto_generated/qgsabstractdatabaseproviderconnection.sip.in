@@ -45,6 +45,75 @@ is not supported or cannot be performed without errors.
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
 
 
+    struct QueryResult
+    {
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.QueryResult: %1 rows>" ).arg( sipCpp->rowCount() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+        QStringList columns() const;
+%Docstring
+Returns the column names
+%End
+
+        QList<QList<QVariant> > rows() const;
+%Docstring
+Returns the results rows
+%End
+
+        qlonglong rowCount() const;
+%Docstring
+Returns the row count
+
+.. note::
+
+   the value may not be exact or it may be -1 if not known
+%End
+
+        bool hasNextRow() const;
+%Docstring
+Returns ``True`` if there are more rows to fetch
+%End
+
+        QList<QVariant> nextRow();
+%Docstring
+Returns the next result row or an empty row if there are no rows left
+%End
+
+        QueryResult *__iter__();
+%MethodCode
+        sipRes = sipCpp;
+%End
+
+        SIP_PYOBJECT __next__();
+%MethodCode
+        QList<QVariant> result;
+        Py_BEGIN_ALLOW_THREADS
+        result = sipCpp->nextRow( );
+        Py_END_ALLOW_THREADS
+        if ( ! result.isEmpty() )
+        {
+          const sipTypeDef *qvariantlist_type = sipFindType( "QList<QVariant>" );
+          sipRes = sipConvertFromNewType( new QList<QVariant>( result ), qvariantlist_type, Py_None );
+        }
+        else
+        {
+          PyErr_SetString( PyExc_StopIteration, "" );
+        }
+%End
+
+
+
+
+
+
+
+
+    };
+
+
     struct TableProperty
     {
 
@@ -433,7 +502,21 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array, optionally ``feedback`` can be provided.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
+.. seealso:: :py:func:`execSql`
+
 :raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
+%Docstring
+Executes raw ``sql`` and returns the (possibly empty) query results, optionally ``feedback`` can be provided.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+.. seealso:: :py:func:`executeSql`
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.18
 %End
 
     virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );

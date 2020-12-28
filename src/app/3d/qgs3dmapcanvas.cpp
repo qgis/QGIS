@@ -94,8 +94,14 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   mEngine->setRootEntity( newScene );
 
   if ( mScene )
+  {
+    disconnect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
+    disconnect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
     mScene->deleteLater();
+  }
   mScene = newScene;
+  connect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
+  connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
 
   delete mMap;
   mMap = map;

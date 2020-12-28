@@ -540,11 +540,10 @@ void QgsGeoreferencerMainWindow::linkGeorefToQgis( bool link )
 }
 
 // GCPs slots
-void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
+void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords, const QgsCoordinateReferenceSystem &crs,
     bool enable, bool finalize )
 {
-  QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(),
-      pixelCoords, mapCoords, enable );
+  QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), pixelCoords, mapCoords, crs, enable );
   mPoints.append( pnt );
   mGCPsDirty = true;
   if ( finalize )
@@ -612,7 +611,6 @@ void QgsGeoreferencerMainWindow::movePoint( QPoint p )
   if ( mvPoint )
   {
     mvPoint->moveTo( p, isMapPlugin );
-    mGCPListWidget->updateGCPList();
   }
 
 }
@@ -620,6 +618,7 @@ void QgsGeoreferencerMainWindow::movePoint( QPoint p )
 void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
 {
   Q_UNUSED( p )
+  mGCPListWidget->updateGCPList();
   // Get Map Sender
   if ( sender() == mToolMovePoint )
   {
@@ -635,10 +634,11 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords 
 {
   if ( mLayer && !mMapCoordsDialog )
   {
-    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, this );
-    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this,
-    [this]( const QgsPointXY & a, const QgsPointXY & b ) { this->addPoint( a, b ); }
-           );
+    mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), pixelCoords, mProjection, this );
+    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs )
+    {
+      addPoint( a, b, crs );
+    } );
     mMapCoordsDialog->show();
   }
 }
@@ -1291,13 +1291,14 @@ bool QgsGeoreferencerMainWindow::loadGCPs( /*bool verbose*/ )
 
     QgsPointXY mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
     QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-    if ( ls.count() == 5 || ls.count() == 8 )
+    QgsCoordinateReferenceSystem proj( ls.at( 8 ) );
+    if ( ls.count() == 5 || ls.count() == 9 )
     {
       bool enable = ls.at( 4 ).toInt();
-      addPoint( pixelCoords, mapCoords, enable, false );
+      addPoint( pixelCoords, mapCoords, proj, enable, false );
     }
     else
-      addPoint( pixelCoords, mapCoords, true, false );
+      addPoint( pixelCoords, mapCoords, proj, true, false );
 
     ++i;
   }
@@ -1324,7 +1325,7 @@ void QgsGeoreferencerMainWindow::saveGCPs()
     points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
     for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
     {
-      points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
+      points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8,%9" )
              .arg( qgsDoubleToString( pt->mapCoords().x() ),
                    qgsDoubleToString( pt->mapCoords().y() ),
                    qgsDoubleToString( pt->pixelCoords().x() ),
@@ -1332,7 +1333,8 @@ void QgsGeoreferencerMainWindow::saveGCPs()
              .arg( pt->isEnabled() )
              .arg( qgsDoubleToString( pt->residual().x() ),
                    qgsDoubleToString( pt->residual().y() ),
-                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) )
+                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ),
+                   pt->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) )
              << endl;
     }
 
@@ -1803,8 +1805,8 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
     {
       currentGCPStrings << tr( "no" );
     }
-    currentGCPStrings << QString::number( ( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number( ( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number( ( *gcpIt )->mapCoords().x(), 'f', 3 )
-                      <<  QString::number( ( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
+    currentGCPStrings << QString::number( ( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number( ( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number( ( *gcpIt )->transCoords().x(), 'f', 3 )
+                      <<  QString::number( ( *gcpIt )->transCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTableContents << currentGCPStrings;
   }
 
@@ -1910,7 +1912,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
   for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
   {
     gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
-                .arg( pt->mapCoords().x() ).arg( pt->mapCoords().y() );
+                .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );
   }
 
   QFileInfo rasterFileInfo( mRasterFileName );
@@ -2017,7 +2019,7 @@ bool QgsGeoreferencerMainWindow::updateGeorefTransform()
 {
   QVector<QgsPointXY> mapCoords, pixelCoords;
   if ( mGCPListWidget->gcpList() )
-    mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords );
+    mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords, mProjection );
   else
     return false;
 

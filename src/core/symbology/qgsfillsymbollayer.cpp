@@ -73,6 +73,12 @@ QgsUnitTypes::RenderUnit QgsSimpleFillSymbolLayer::outputUnit() const
   return unit;
 }
 
+bool QgsSimpleFillSymbolLayer::usesMapUnits() const
+{
+  return mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsSimpleFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   mStrokeWidthMapUnitScale = scale;
@@ -992,6 +998,11 @@ QgsUnitTypes::RenderUnit QgsGradientFillSymbolLayer::outputUnit() const
   return mOffsetUnit;
 }
 
+bool QgsGradientFillSymbolLayer::usesMapUnits() const
+{
+  return mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsGradientFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   mOffsetMapUnitScale = scale;
@@ -1622,6 +1633,12 @@ QgsUnitTypes::RenderUnit QgsShapeburstFillSymbolLayer::outputUnit() const
   return QgsUnitTypes::RenderUnknownUnit;
 }
 
+bool QgsShapeburstFillSymbolLayer::usesMapUnits() const
+{
+  return mDistanceUnit == QgsUnitTypes::RenderMapUnits || mDistanceUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsShapeburstFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   mDistanceMapUnitScale = scale;
@@ -2198,6 +2215,12 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
   }
 }
 
+bool QgsSVGFillSymbolLayer::usesMapUnits() const
+{
+  return mPatternWidthUnit == QgsUnitTypes::RenderMapUnits || mPatternWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mSvgStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mSvgStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 {
   QString path, mimeType;
@@ -2466,6 +2489,13 @@ QgsUnitTypes::RenderUnit QgsLinePatternFillSymbolLayer::outputUnit() const
     return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
+}
+
+bool QgsLinePatternFillSymbolLayer::usesMapUnits() const
+{
+  return mDistanceUnit == QgsUnitTypes::RenderMapUnits || mDistanceUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mLineWidthUnit == QgsUnitTypes::RenderMapUnits || mLineWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
 void QgsLinePatternFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -3133,6 +3163,16 @@ QgsUnitTypes::RenderUnit QgsPointPatternFillSymbolLayer::outputUnit() const
     return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
+}
+
+bool QgsPointPatternFillSymbolLayer::usesMapUnits() const
+{
+  return mDistanceXUnit == QgsUnitTypes::RenderMapUnits || mDistanceXUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mDistanceYUnit == QgsUnitTypes::RenderMapUnits || mDistanceYUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mDisplacementXUnit == QgsUnitTypes::RenderMapUnits || mDisplacementXUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mDisplacementYUnit == QgsUnitTypes::RenderMapUnits || mDisplacementYUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetXUnit == QgsUnitTypes::RenderMapUnits || mOffsetXUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetYUnit == QgsUnitTypes::RenderMapUnits || mOffsetYUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
 void QgsPointPatternFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -3994,6 +4034,15 @@ QgsUnitTypes::RenderUnit QgsCentroidFillSymbolLayer::outputUnit() const
   return QgsUnitTypes::RenderUnknownUnit; //mOutputUnit;
 }
 
+bool QgsCentroidFillSymbolLayer::usesMapUnits() const
+{
+  if ( mMarker )
+  {
+    return mMarker->usesMapUnits();
+  }
+  return false;
+}
+
 void QgsCentroidFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   if ( mMarker )
@@ -4189,6 +4238,12 @@ QgsRasterFillSymbolLayer *QgsRasterFillSymbolLayer::clone() const
 double QgsRasterFillSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
   return context.convertToPainterUnits( std::max( std::fabs( mOffset.x() ), std::fabs( mOffset.y() ) ), mOffsetUnit, mOffsetMapUnitScale );
+}
+
+bool QgsRasterFillSymbolLayer::usesMapUnits() const
+{
+  return mWidthUnit == QgsUnitTypes::RenderMapUnits || mWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )
@@ -4651,6 +4706,15 @@ QgsUnitTypes::RenderUnit QgsRandomMarkerFillSymbolLayer::outputUnit() const
     return mMarker->outputUnit();
   }
   return QgsUnitTypes::RenderUnknownUnit; //mOutputUnit;
+}
+
+bool QgsRandomMarkerFillSymbolLayer::usesMapUnits() const
+{
+  if ( mMarker )
+  {
+    return mMarker->usesMapUnits();
+  }
+  return false;
 }
 
 void QgsRandomMarkerFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )

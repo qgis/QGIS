@@ -32,6 +32,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmaspect.cpp
   processing/qgsalgorithmassignprojection.cpp
   processing/qgsalgorithmattributeindex.cpp
+  processing/qgsalgorithmbatchgeocode.cpp
   processing/qgsalgorithmboundary.cpp
   processing/qgsalgorithmboundingbox.cpp
   processing/qgsalgorithmbuffer.cpp
@@ -64,6 +65,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmexportlayersinformation.cpp
   processing/qgsalgorithmexportmesh.cpp
+  processing/qgsalgorithmexporttospreadsheet.cpp
   processing/qgsalgorithmextendlines.cpp
   processing/qgsalgorithmextentfromlayer.cpp
   processing/qgsalgorithmextenttolayer.cpp
@@ -310,6 +312,7 @@ set(QGIS_ANALYSIS_HDRS
   network/qgsnetworkstrategy.h
   network/qgsvectorlayerdirector.h
 
+  processing/qgsalgorithmbatchgeocode.h
   processing/qgsalgorithmfiledownloader.h
   processing/qgsalgorithmimportphotos.h
   processing/qgsnativealgorithms.h
@@ -438,6 +441,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann

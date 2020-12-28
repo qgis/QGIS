@@ -20,10 +20,12 @@
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
-QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset )
+QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset )
   : mRenderContext( context )
   , mScale( scale )
   , mOffset( offset )
+  , mZValueScale( zValueScale )
+  , mZValueFixedOffset( zValueFixedOffset )
 {
 
 }
@@ -162,7 +164,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mPointSizeUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "pointSizeUnit" ), QStringLiteral( "MM" ) ) );
   mPointSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "pointSizeMapUnitScale" ), QString() ) );
 
-  mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "1" ) ).toDouble();
+  mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "0.3" ) ).toDouble();
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
   mPointSymbol = static_cast< PointSymbol >( element.attribute( QStringLiteral( "pointSymbol" ), QStringLiteral( "0" ) ).toInt() );
 }

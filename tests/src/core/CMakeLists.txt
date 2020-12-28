@@ -25,6 +25,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
+  ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
   ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
@@ -90,6 +91,7 @@ set(TESTS
  testqgs25drenderer.cpp
  testqgsannotationitemregistry.cpp
  testqgsapplication.cpp
+ testqgsarcgisrestutils.cpp
  testqgsauthcrypto.cpp
  testqgsauthcertutils.cpp
  testqgsauthconfig.cpp

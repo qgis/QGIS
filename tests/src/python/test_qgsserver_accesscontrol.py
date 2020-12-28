@@ -54,7 +54,12 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         if not self._active:
             return super(RestrictedAccessControl, self).layerFilterExpression(layer)
 
-        return "$id = 1" if layer.name() == "Hello" else None
+        if layer.name() == "Hello":
+            return "$id = 1"
+        elif layer.name() == "Hello_Filter":
+            return "pkuid = 6 or pkuid = 7"
+        else:
+            return None
 
     def layerFilterSubsetString(self, layer):
         """ Return an additional subset string (typically SQL) filter """

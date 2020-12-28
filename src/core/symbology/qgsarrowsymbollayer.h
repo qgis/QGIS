@@ -48,6 +48,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
+    bool usesMapUnits() const override;
 
     //! Gets current arrow width
     double arrowWidth() const { return mArrowWidth; }

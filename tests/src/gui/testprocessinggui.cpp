@@ -3015,6 +3015,28 @@ void TestProcessingGui::testFieldWrapper()
         break;
     }
     delete w;
+
+    // MultipleLayers as parent layer
+    QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "LineString?field=bbb:string" ), QStringLiteral( "y" ), QStringLiteral( "memory" ) );
+    p.addMapLayer( vl2 );
+
+    QgsProcessingFieldWidgetWrapper wrapper8( &param, type );
+    wrapper8.registerProcessingContextGenerator( &generator );
+    w = wrapper8.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariantList() << vl->id() << vl2->id(), context );
+    wrapper8.setParentLayerWrapperValue( &layerWrapper );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper8.widgetValue().toList(), QVariantList() << QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    delete w;
   };
 
   // standard wrapper

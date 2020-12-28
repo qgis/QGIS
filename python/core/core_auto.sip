@@ -319,6 +319,7 @@
 %Include auto_generated/geocoding/qgsgeocoder.sip
 %Include auto_generated/geocoding/qgsgeocodercontext.sip
 %Include auto_generated/geocoding/qgsgeocoderresult.sip
+%Include auto_generated/geocoding/qgsnominatimgeocoder.sip
 %Include auto_generated/geocoding/qgsgooglemapsgeocoder.sip
 %Include auto_generated/geometry/qgsabstractgeometry.sip
 %Include auto_generated/geometry/qgsbox3d.sip
@@ -362,6 +363,8 @@
 %Include auto_generated/labeling/qgspallabeling.sip
 %Include auto_generated/labeling/qgsrulebasedlabeling.sip
 %Include auto_generated/labeling/qgsvectorlayerlabeling.sip
+%Include auto_generated/layertree/qgscolorramplegendnode.sip
+%Include auto_generated/layertree/qgscolorramplegendnodesettings.sip
 %Include auto_generated/layertree/qgslayertree.sip
 %Include auto_generated/layertree/qgslayertreegroup.sip
 %Include auto_generated/layertree/qgslayertreelayer.sip
@@ -497,6 +500,8 @@
 %Include auto_generated/processing/qgsprocessingprovider.sip
 %Include auto_generated/processing/qgsprocessingregistry.sip
 %Include auto_generated/processing/qgsprocessingutils.sip
+%Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
+%Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
 %Include auto_generated/raster/qgsbilinearrasterresampler.sip
 %Include auto_generated/raster/qgsbrightnesscontrastfilter.sip
@@ -559,6 +564,7 @@
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
+%Include auto_generated/symbology/qgsfeaturerenderergenerator.sip
 %Include auto_generated/symbology/qgsfillsymbollayer.sip
 %Include auto_generated/symbology/qgsgeometrygeneratorsymbollayer.sip
 %Include auto_generated/symbology/qgsgraduatedsymbolrenderer.sip

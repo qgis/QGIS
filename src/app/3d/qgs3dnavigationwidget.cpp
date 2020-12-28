@@ -202,5 +202,5 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
 void Qgs3DNavigationWidget::updateFromCamera()
 {
   // Make sure the angle is between 0 - 359
-  mCompas->setValue( ( int( mParent3DMapCanvas->cameraController()->yaw() ) % 360 + 360 ) % 360 );
+  whileBlocking( mCompas )->setValue( fmod( mParent3DMapCanvas->cameraController()->yaw() + 360, 360 ) );
 }

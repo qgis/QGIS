@@ -121,6 +121,8 @@ Ownership of the enhancement is transferred.
 
     virtual QList<int> usesBands() const;
 
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 

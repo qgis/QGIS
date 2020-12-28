@@ -137,6 +137,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -498,6 +499,27 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   }
 
   updateSceneState();
+
+  // lock changing the FPS counter to 5 fps
+  static int frameCount = 0;
+  static float accumulatedTime = 0.0f;
+
+  if ( !mMap.isFpsCounterEnabled() )
+  {
+    frameCount = 0;
+    accumulatedTime = 0;
+    return;
+  }
+
+  frameCount++;
+  accumulatedTime += dt;
+  if ( accumulatedTime >= 0.2f )
+  {
+    float fps = ( float )frameCount / accumulatedTime;
+    frameCount = 0;
+    accumulatedTime = 0.0f;
+    emit fpsCountChanged( fps );
+  }
 }
 
 void Qgs3DMapScene::createTerrain()
@@ -808,7 +830,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
   if ( needsSceneUpdate )
     onCameraChanged();   // needed for chunked entities
 
-  connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  connect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
   if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
@@ -836,7 +858,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   if ( entity )
     entity->deleteLater();
 
-  disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  disconnect( layer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
   if ( layer->type() == QgsMapLayerType::VectorLayer )
   {

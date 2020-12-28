@@ -80,6 +80,7 @@ class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
 class QgsStyleEntityVisitorInterface;
 class QgsVectorLayerTemporalProperties;
+class QgsFeatureRendererGenerator;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -392,6 +393,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
+    Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
 
   public:
 
@@ -568,7 +570,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderers for features and diagrams
      *  are cloned too. Moreover, each attributes (transparency, extent, selected
-     *  features and so on) are identicals.
+     *  features and so on) are identical.
      * \returns a new layer instance
      * \since QGIS 3.0
      */
@@ -895,20 +897,61 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setDiagramLayerSettings( const QgsDiagramLayerSettings &s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
-    //! Returns renderer.
+    /**
+     * Returns the feature renderer used for rendering the features in the layer in 2D
+     * map views.
+     *
+     * \see setRenderer()
+     */
     QgsFeatureRenderer *renderer() { return mRenderer; }
 
     /**
-     * Returns const renderer.
+     * Returns the feature renderer used for rendering the features in the layer in 2D
+     * map views.
+     *
+     * \see setRenderer()
      * \note not available in Python bindings
      */
     const QgsFeatureRenderer *renderer() const SIP_SKIP { return mRenderer; }
 
     /**
-     * Sets renderer which will be invoked to represent this layer.
+     * Sets the feature renderer which will be invoked to represent this layer in 2D map views.
      * Ownership is transferred.
+     *
+     * \see renderer()
      */
     void setRenderer( QgsFeatureRenderer *r SIP_TRANSFER );
+
+    /**
+     * Adds a new feature renderer \a generator to the layer.
+     *
+     * Ownership of \a generator is transferred to the layer.
+     *
+     * \see removeFeatureRendererGenerator()
+     * \see featureRendererGenerators()
+     * \since QGIS 3.18
+     */
+    void addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator SIP_TRANSFER );
+
+    /**
+     * Removes the feature renderer with matching \a id from the layer.
+     *
+     * The corresponding generator will be deleted.
+     *
+     * \see addFeatureRendererGenerator()
+     * \see featureRendererGenerators()
+     * \since QGIS 3.18
+     */
+    void removeFeatureRendererGenerator( const QString &id );
+
+    /**
+     * Returns a list of the feature renderer generators owned by the layer.
+     *
+     * \see addFeatureRendererGenerator()
+     * \see removeFeatureRendererGenerator()
+     * \since QGIS 3.18
+     */
+    QList< const QgsFeatureRendererGenerator * > featureRendererGenerators() const;
 
     //! Returns point, line or polygon
     Q_INVOKABLE QgsWkbTypes::GeometryType geometryType() const;
@@ -1692,6 +1735,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool setReadOnly( bool readonly = true );
 
     /**
+     * Returns whether the layer supports editing or not
+     * \return FALSE if the layer is read only or the data provider has no editing capabilities
+     * \since QGIS 3.18
+     */
+    bool supportsEditing();
+
+    /**
      * Changes a feature's \a geometry within the layer's edit buffer
      * (but does not immediately commit the changes). The \a fid argument
      * specifies the ID of the feature to be changed.
@@ -1837,25 +1887,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      * \deprecated since QGIS 3.16, use fields().configurationFlags() instead
      */
-    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWms() const SIP_DEPRECATED { return mExcludeAttributesWMS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWms() const SIP_DEPRECATED;
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      * \deprecated since QGIS 3.16, use setFieldConfigurationFlag instead
      */
-    Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWMS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED;
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      * \deprecated since QGIS 3.16, use fields().configurationFlags() instead
      */
-    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWfs() const SIP_DEPRECATED { return mExcludeAttributesWFS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWfs() const SIP_DEPRECATED;
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      * \deprecated since QGIS 3.16, use setFieldConfigurationFlag instead
      */
-    Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWFS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED;
 
     /**
      * Deletes an attribute field (but does not commit it).
@@ -2719,6 +2769,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void readOnlyChanged();
 
     /**
+     * Emitted when the read only state or the data provider of this layer is changed.
+     *
+     * \since QGIS 3.18
+     */
+    void supportsEditingChanged();
+
+    /**
      * Emitted when the feature count for symbols on this layer has been recalculated.
      *
      * \since QGIS 3.0
@@ -2833,12 +2890,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Holds the configuration for the edit form
     QgsEditFormConfig mEditFormConfig;
 
-    //! Attributes which are not published in WMS
-    QSet<QString> mExcludeAttributesWMS;
-
-    //! Attributes which are not published in WFS
-    QSet<QString> mExcludeAttributesWFS;
-
     //! Geometry type as defined in enum WkbType (qgis.h)
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
@@ -2930,6 +2981,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QList<QgsWeakRelation> mWeakRelations;
 
     bool mSetLegendFromStyle = false;
+
+    QList< QgsFeatureRendererGenerator * > mRendererGenerators;
 };
 
 

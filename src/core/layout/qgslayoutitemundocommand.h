@@ -70,7 +70,7 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
     void saveState( QDomDocument &stateDoc ) const override;
     void restoreState( QDomDocument &stateDoc ) override;
 
-    virtual QgsLayoutItem *recreateItem( int itemType, QgsLayout *layout ) SIP_FACTORY;
+    virtual QgsLayoutItem *recreateItem( int itemType, QgsLayout *layout );
 
   private:
 

@@ -457,7 +457,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer *sourceLayer = match.layer();
-  if ( match.isValid() && ( match.hasVertex() || ( QgsProject::instance()->topologicalEditing() && match.hasEdge() ) ) && sourceLayer &&
+  if ( match.isValid() && ( match.hasVertex() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer &&
        ( sourceLayer->crs() == vlayer->crs() ) )
   {
     QgsFeature f;
@@ -471,7 +471,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         return 2;
 
       const QgsGeometry geom( f.geometry() );
-      if ( QgsProject::instance()->topologicalEditing() && match.hasEdge() )
+      if ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) )
       {
         QgsVertexId vId2;
         if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )

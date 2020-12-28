@@ -76,6 +76,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/processing
       ${CMAKE_SOURCE_DIR}/src/core/pointcloud
       ${CMAKE_SOURCE_DIR}/src/core/providers
+      ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
       ${CMAKE_SOURCE_DIR}/src/core/providers/memory
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar

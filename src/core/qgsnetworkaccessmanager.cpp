@@ -276,15 +276,18 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   // The timer will call abortRequest slot to abort the connection if needed.
   // The timer is stopped by the finished signal and is restarted on downloadProgress and
   // uploadProgress.
-  QTimer *timer = new QTimer( reply );
-  timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
-  connect( timer, &QTimer::timeout, this, &QgsNetworkAccessManager::abortRequest );
-  timer->setSingleShot( true );
-  timer->start( timeout() );
+  if ( timeout() )
+  {
+    QTimer *timer = new QTimer( reply );
+    timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
+    connect( timer, &QTimer::timeout, this, &QgsNetworkAccessManager::abortRequest );
+    timer->setSingleShot( true );
+    timer->start( timeout() );
 
-  connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
-  connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
-  connect( reply, &QNetworkReply::finished, timer, &QTimer::stop );
+    connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
+    connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
+    connect( reply, &QNetworkReply::finished, timer, &QTimer::stop );
+  }
   QgsDebugMsgLevel( QStringLiteral( "Created [reply:%1]" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ), 3 );
 
   return reply;

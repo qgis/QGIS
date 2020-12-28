@@ -84,6 +84,8 @@
     <addaction name="mActionShowComments"/>
     <addaction name="separator"/>
     <addaction name="mActionSnappingEnabled"/>
+    <addaction name="separator"/>
+    <addaction name="mActionHidePanels"/>
    </widget>
    <widget class="QMenu" name="mMenuEdit">
     <property name="title">
@@ -114,6 +116,9 @@
    <addaction name="mActionSave"/>
    <addaction name="mActionSaveAs"/>
    <addaction name="mActionSaveInProject"/>
+   <addaction name="separator"/>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionSelectMoveItem"/>
    <addaction name="separator"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
@@ -696,6 +701,50 @@
     <string>Reorder Model Inputs…</string>
    </property>
   </action>
+  <action name="mActionHidePanels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Panel &amp;Visibility</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="mActionPan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pan Layout</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
+   </property>
+  </action>
+  <action name="mActionSelectMoveItem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select/Move Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Select/Move item</string>
+   </property>
+   <property name="shortcut">
+    <string>V</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -738,8 +787,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

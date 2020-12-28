@@ -1973,7 +1973,7 @@
                   <item row="0" column="0" colspan="2">
                    <widget class="QCheckBox" name="cbxAttributeTableDocked">
                     <property name="text">
-                     <string>Open new attribute tables as docked windows</string>
+                     <string>Open attribute table as docked window</string>
                     </property>
                    </widget>
                   </item>
@@ -2087,7 +2087,7 @@
                   <item row="0" column="2">
                    <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
                   </item>
-                  <item row="6" column="0" colspan="4">
+                  <item row="5" column="0" colspan="4">
                    <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2139,13 +2139,6 @@
                    <widget class="QLabel" name="label_30">
                     <property name="text">
                      <string>Scan for valid items in the browser dock</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxCompileExpressions">
-                    <property name="text">
-                     <string>Execute expressions on server-side if possible</string>
                     </property>
                    </widget>
                   </item>
@@ -6274,7 +6267,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptSublayers</tabstop>
-  <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mLocalizedDataPathAddButton</tabstop>
   <tabstop>mLocalizedDataPathRemoveButton</tabstop>

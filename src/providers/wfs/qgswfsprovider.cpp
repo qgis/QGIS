@@ -1795,7 +1795,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
 bool QgsWFSProvider::getCapabilities()
 {
-  mCapabilities = QgsVectorDataProvider::SelectAtId;
+  mCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::Capability::ReloadData;
 
   if ( mShared->mCaps.version.isEmpty() )
   {

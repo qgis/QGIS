@@ -28,14 +28,20 @@ bool QgsPointCloudLayerElevationProperties::hasElevation() const
   return true;
 }
 
-QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &, QDomDocument &document, const QgsReadWriteContext & )
+QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
+  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
+  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  parentElement.appendChild( element );
   return element;
 }
 
-bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &, const QgsReadWriteContext & )
+bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
+  QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
+  mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
+  mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
   return true;
 }
 
@@ -56,7 +62,7 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
       const QVariant zMax = pcLayer->dataProvider()->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
       if ( zMin.isValid() && zMax.isValid() )
       {
-        return QgsDoubleRange( zMin.toDouble(), zMax.toDouble() );
+        return QgsDoubleRange( zMin.toDouble() * mZScale + mZOffset, zMax.toDouble() * mZScale + mZOffset );
       }
     }
   }

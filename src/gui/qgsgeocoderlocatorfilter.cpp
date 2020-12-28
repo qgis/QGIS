@@ -27,7 +27,9 @@ QgsGeocoderLocatorFilter::QgsGeocoderLocatorFilter( const QString &name, const Q
 
 QgsLocatorFilter *QgsGeocoderLocatorFilter::clone() const
 {
-  return new QgsGeocoderLocatorFilter( name(), displayName(), prefix(), geocoder(), mCanvas );
+  QgsLocatorFilter *filter = new QgsGeocoderLocatorFilter( name(), displayName(), prefix(), geocoder(), mCanvas );
+  filter->setFetchResultsDelay( fetchResultsDelay() );
+  return filter;
 }
 
 void QgsGeocoderLocatorFilter::handleGeocodeResult( const QgsGeocoderResult &result )

@@ -36,6 +36,11 @@ QgsPointCloudDataProvider::Capabilities QgsPointCloudDataProvider::capabilities(
   return QgsPointCloudDataProvider::NoCapabilities;
 }
 
+bool QgsPointCloudDataProvider::hasValidIndex() const
+{
+  return index() && index()->isValid();
+}
+
 QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
 {
   return QgsGeometry::fromRect( extent() );

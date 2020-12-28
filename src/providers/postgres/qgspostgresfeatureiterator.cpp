@@ -113,23 +113,16 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
     mFilterRequiresGeometry = request.filterExpression()->needsGeometry();
 
-    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
-    {
-      //IMPORTANT - this MUST be the last clause added!
-      QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
+    //IMPORTANT - this MUST be the last clause added!
+    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
 
-      if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
-      {
-        useFallbackWhereClause = true;
-        fallbackWhereClause = whereClause;
-        whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
-        mExpressionCompiled = true;
-        mCompileStatus = Compiled;
-      }
-      else
-      {
-        limitAtProvider = false;
-      }
+    if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
+    {
+      useFallbackWhereClause = true;
+      fallbackWhereClause = whereClause;
+      whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
+      mExpressionCompiled = true;
+      mCompileStatus = Compiled;
     }
     else
     {

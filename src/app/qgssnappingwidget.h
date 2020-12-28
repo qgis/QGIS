@@ -87,6 +87,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     //! Returns spin box used to set offset for tracing
     QgsDoubleSpinBox *tracingOffsetSpinBox() { return mTracingOffsetSpinBox; }
 
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
   signals:
     void snappingConfigChanged();
 
@@ -178,6 +180,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QTreeView *mLayerTreeView = nullptr;
     QWidget *mAdvancedConfigWidget = nullptr;
     QgsFloatingWidget *mAdvancedConfigContainer = nullptr;
+
+    bool mRequireLayerTreeViewUpdate = false;
 
     void cleanGroup( QgsLayerTreeNode *node );
 };

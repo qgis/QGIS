@@ -22,7 +22,10 @@
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudrgbrenderer.h"
+#include "qgspointcloudclassifiedrenderer.h"
 #include "qgsdoublevalidator.h"
+#include "qgspointcloudclassifiedrendererwidget.h"
+#include "qgspointcloudlayerelevationproperties.h"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -31,6 +34,10 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   setupUi( this );
 
   mPointSizeSpinBox->setClearValue( 2.0 );
+  mMaxScreenErrorSpinBox->setClearValue( 1.0 );
+
+  mColorRampShaderMinEdit->setShowClearButton( false );
+  mColorRampShaderMaxEdit->setShowClearButton( false );
 
   mRenderingParameterComboBox->setLayer( layer );
   mRenderingParameterComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
@@ -44,6 +51,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mRenderingStyleComboBox->addItem( tr( "Single Color" ), QStringLiteral( "single-color" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QStringLiteral( "color-ramp" ) );
   mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QStringLiteral( "rgb" ) );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/paletted.svg" ) ), tr( "Classification" ), QStringLiteral( "classification" ) );
 
   connect( mRedMinLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mRedMinLineEdit_textChanged );
   connect( mRedMaxLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mRedMaxLineEdit_textChanged );
@@ -86,6 +94,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   if ( symbol )
     setSymbol( symbol );
 
+
   connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mRenderingStyleComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::setMinMaxFromLayer );
@@ -96,7 +105,16 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mColorRampShaderMinEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
   connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
+  connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, [&]() { emitChangedSignal(); } );
+
   rampAttributeChanged();
+
+  mClassifiedRendererWidget = new QgsPointCloudClassifiedRendererWidget( layer, nullptr );
+  mClassifiedRendererWidget->setParent( this );
+  mClassifiedRenderingLayout->addWidget( mClassifiedRendererWidget );
+
+  connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -124,7 +142,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     mStackedWidget->setCurrentIndex( 2 );
     QgsColorRampPointCloud3DSymbol *symb = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
 
-    mRenderingParameterComboBox->setAttribute( symb->renderingParameter() );
+    mRenderingParameterComboBox->setAttribute( symb->attribute() );
 
     mColorRampShaderMinEdit->setValue( symb->colorRampShaderMin() );
     mColorRampShaderMaxEdit->setValue( symb->colorRampShaderMax() );
@@ -147,12 +165,24 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     setMinMaxValue( symb->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
     mDisableMinMaxWidgetRefresh--;
   }
+  else if ( symbol->symbolType() == QLatin1String( "classification" ) )
+  {
+    mStackedWidget->setCurrentIndex( 4 );
+    QgsClassificationPointCloud3DSymbol *symb = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( symbol );
+    mClassifiedRendererWidget->setFromCategories( symb->categoriesList(), symb->attribute() );
+  }
   else
   {
     mStackedWidget->setCurrentIndex( 0 );
   }
 
   mBlockChangedSignals--;
+}
+
+void QgsPointCloud3DSymbolWidget::setDockMode( bool dockMode )
+{
+  if ( mClassifiedRendererWidget )
+    mClassifiedRendererWidget->setDockMode( dockMode );
 }
 
 QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
@@ -170,7 +200,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   else if ( symbolType == QLatin1String( "color-ramp" ) )
   {
     QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
-    symb->setRenderingParameter( mRenderingParameterComboBox->currentText() );
+    symb->setAttribute( mRenderingParameterComboBox->currentText() );
     symb->setPointSize( mPointSizeSpinBox->value() );
     symb->setColorRampShader( mColorRampShaderWidget->shader() );
     symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
@@ -186,6 +216,15 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     symb->setBlueAttribute( mBlueAttributeComboBox->currentAttribute() );
 
     setCustomMinMaxValues( symb );
+    retSymb = symb;
+  }
+  else if ( symbolType == QLatin1String( "classification" ) )
+  {
+    QgsClassificationPointCloud3DSymbol *symb = new QgsClassificationPointCloud3DSymbol;
+    symb->setPointSize( mPointSizeSpinBox->value() );
+
+    symb->setAttribute( mClassifiedRendererWidget->attribute() );
+    symb->setCategoriesList( mClassifiedRendererWidget->categoriesList() );
     retSymb = symb;
   }
 
@@ -383,6 +422,22 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       ( void )( renderer2d );
       mBlockChangedSignals--;
     }
+    else if ( newSymbolType == QLatin1String( "classification" ) )
+    {
+      const QgsPointCloudClassifiedRenderer *renderer2d = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( mLayer->renderer() );
+      mBlockChangedSignals++;
+      if ( renderer2d )
+      {
+        mClassifiedRendererWidget->setFromCategories( renderer2d->categories(), renderer2d->attribute() );
+      }
+      else
+      {
+        mClassifiedRendererWidget->setFromCategories( QgsPointCloudClassifiedRenderer::defaultCategories(), QString() );
+      }
+
+      ( void )( renderer2d );
+      mBlockChangedSignals--;
+    }
   }
 
   emitChangedSignal();
@@ -412,6 +467,11 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
       mProviderMin = std::numeric_limits< double >::quiet_NaN();
       mProviderMax = std::numeric_limits< double >::quiet_NaN();
     }
+
+    const double zScale = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale();
+    const double zOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();
+    mProviderMin = mProviderMin * zScale + zOffset;
+    mProviderMax = mProviderMax * zScale + zOffset;
   }
   mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
   emitChangedSignal();
@@ -526,4 +586,29 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
       emitChangedSignal();
     }
   }
+}
+
+void QgsPointCloud3DSymbolWidget::setMaximumScreenError( double maxScreenError )
+{
+  whileBlocking( mMaxScreenErrorSpinBox )->setValue( maxScreenError );
+}
+
+double QgsPointCloud3DSymbolWidget::maximumScreenError() const
+{
+  return mMaxScreenErrorSpinBox->value();
+}
+
+void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
+{
+  whileBlocking( mShowBoundingBoxesCheckBox )->setChecked( showBoundingBoxes );
+}
+
+double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
+{
+  return mShowBoundingBoxesCheckBox->isChecked();
+}
+
+void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
+{
+  parent->connectChildPanel( mClassifiedRendererWidget );
 }

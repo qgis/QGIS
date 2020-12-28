@@ -147,7 +147,7 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 
     static void setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol );
 %Docstring
-Sets a custom legend ``symbol`` size for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+Sets a custom legend ``symbol`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
 
 If ``symbol`` is non-``None``, it will be used in place of the default symbol when rendering
 the legend node.
@@ -170,6 +170,37 @@ Caller takes ownership of the returned symbol.
 
 .. versionadded:: 3.14
 %End
+
+    static void setLegendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsColorRampLegendNodeSettings *settings );
+%Docstring
+Sets a custom legend color ramp ``settings`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If the corresponding legend node is not a QgsColorRampLegendNode then calling this method will have no effect.
+
+If ``settings`` is non-``None``, they will be used in place of the default settigns when rendering
+the legend node.
+
+.. seealso:: :py:func:`legendNodeColorRampSettings`
+
+.. versionadded:: 3.18
+%End
+
+    static QgsColorRampLegendNodeSettings *legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
+%Docstring
+Returns the custom legend color ramp settings for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If the corresponding legend node is not a QgsColorRampLegendNode then calling this method will return ``None``.
+
+If the returned value is non-``None``, they will be used in place of the default settings when rendering
+the legend node.
+
+Caller takes ownership of the returned settings.
+
+.. seealso:: :py:func:`setLegendNodeColorRampSettings`
+
+.. versionadded:: 3.18
+%End
+
 
     static void setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode );
 %Docstring

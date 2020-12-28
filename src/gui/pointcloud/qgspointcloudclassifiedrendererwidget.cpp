@@ -427,6 +427,16 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRendererWidget::renderer()
   return renderer.release();
 }
 
+QgsPointCloudCategoryList QgsPointCloudClassifiedRendererWidget::categoriesList()
+{
+  return mModel->categories();
+}
+
+QString QgsPointCloudClassifiedRendererWidget::attribute()
+{
+  return mAttributeComboBox->currentAttribute();
+}
+
 void QgsPointCloudClassifiedRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
@@ -498,6 +508,28 @@ void QgsPointCloudClassifiedRendererWidget::setFromRenderer( const QgsPointCloud
   {
     mModel->setRendererCategories( classifiedRenderer->categories() );
     mAttributeComboBox->setAttribute( classifiedRenderer->attribute() );
+  }
+  else
+  {
+    if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
+    {
+      mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
+    }
+    else
+    {
+      mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
+    }
+  }
+  mBlockChangedSignal = false;
+}
+
+void QgsPointCloudClassifiedRendererWidget::setFromCategories( QgsPointCloudCategoryList categories, const QString &attribute )
+{
+  mBlockChangedSignal = false;
+  mModel->setRendererCategories( categories );
+  if ( !attribute.isEmpty() )
+  {
+    mAttributeComboBox->setAttribute( attribute );
   }
   else
   {

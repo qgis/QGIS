@@ -51,8 +51,13 @@ class CORE_EXPORT QgsVectorTileUtils
     //! Orders tile requests according to the distance from view center (given in tile matrix coords)
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, const QPointF &center );
 
-    //! Returns polygon (made by four corners of the tile) in screen coordinates
+    /**
+     * Returns polygon (made by four corners of the tile) in screen coordinates
+     *
+     * \throws QgsCsException
+     */
     static QPolygon tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp );
+
     //! Returns QgsFields instance based on the set of field names
     static QgsFields makeQgisFields( QSet<QString> flds );
 

@@ -96,11 +96,6 @@ QList<QgsProjectStorageGuiProvider *> QgsPostgresProviderGuiMetadata::projectSto
   return providers;
 }
 
-void QgsPostgresProviderGuiMetadata::registerGui( QMainWindow *mainWindow )
-{
-  QgsPGRootItem::sMainWindow = mainWindow;
-}
-
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {

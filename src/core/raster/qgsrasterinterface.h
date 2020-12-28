@@ -183,16 +183,16 @@ class CORE_EXPORT QgsRasterInterface
     enum Capability
     {
       NoCapabilities   = 0,
-      Size             = 1 << 1, // original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create           = 1 << 2, // create new datasets
-      Remove           = 1 << 3, // delete datasets
-      BuildPyramids    = 1 << 4, // supports building of pyramids (overviews)
-      Identify         = 1 << 5, // at least one identify format supported
-      IdentifyValue    = 1 << 6, // numerical values
-      IdentifyText     = 1 << 7, // WMS text
-      IdentifyHtml     = 1 << 8, // WMS HTML
-      IdentifyFeature  = 1 << 9, // WMS GML -> feature
-      Prefetch         = 1 << 10, // allow prefetching of out-of-view images
+      Size             = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
+      Create           = 1 << 2, //!< Create new datasets
+      Remove           = 1 << 3, //!< Delete datasets
+      BuildPyramids    = 1 << 4, //!< Supports building of pyramids (overviews)
+      Identify         = 1 << 5, //!< At least one identify format supported
+      IdentifyValue    = 1 << 6, //!< Numerical values
+      IdentifyText     = 1 << 7, //!< WMS text
+      IdentifyHtml     = 1 << 8, //!< WMS HTML
+      IdentifyFeature  = 1 << 9, //!< WMS GML -> feature
+      Prefetch         = 1 << 10, //!< Allow prefetching of out-of-view images
     };
 
     QgsRasterInterface( QgsRasterInterface *input = nullptr );
@@ -242,10 +242,21 @@ class CORE_EXPORT QgsRasterInterface
     virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
     //! \brief helper function to create zero padded band names
-    virtual QString generateBandName( int bandNumber ) const
-    {
-      return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( std::log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
-    }
+    virtual QString generateBandName( int bandNumber ) const;
+
+    /**
+     * Returns the name of the color interpretation for the specified \a bandNumber.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QString colorInterpretationName( int bandNumber ) const;
+
+    /**
+     * Generates a friendly, descriptive name for the specified \a bandNumber.
+     *
+     * \since QGIS 3.18
+     */
+    QString displayBandName( int bandNumber ) const;
 
     /**
      * Read block of data using given extent and size.

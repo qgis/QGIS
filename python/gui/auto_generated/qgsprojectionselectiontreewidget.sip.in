@@ -60,7 +60,7 @@ option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` wil
 
     void setShowBoundsMap( bool show );
 %Docstring
-Sets whether to show the bounnds preview map.
+Sets whether to show the bounds preview map.
 
 .. seealso:: :py:func:`showBoundsMap`
 

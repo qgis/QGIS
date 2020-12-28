@@ -45,7 +45,6 @@
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
-#include "qgssettings.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
@@ -85,6 +84,39 @@
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
 
+///@cond PRIVATE
+class ScopedIntIncrementor
+{
+  public:
+
+    ScopedIntIncrementor( int *variable )
+      : mVariable( variable )
+    {
+      ( *mVariable )++;
+    }
+
+    ScopedIntIncrementor( const ScopedIntIncrementor &other ) = delete;
+    ScopedIntIncrementor &operator=( const ScopedIntIncrementor &other ) = delete;
+
+    void release()
+    {
+      if ( mVariable )
+        ( *mVariable )--;
+
+      mVariable = nullptr;
+    }
+
+    ~ScopedIntIncrementor()
+    {
+      release();
+    }
+
+  private:
+    int *mVariable = nullptr;
+};
+///@endcond
+
+
 /**
     Take the given scope and key and convert them to a string list of key
     tokens that will be used to navigate through a Property hierarchy
@@ -112,17 +144,12 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
 
     //invalid chars in XML are found at http://www.w3.org/TR/REC-xml/#NT-NameChar
     //note : it seems \x10000-\xEFFFF is valid, but it when added to the regexp, a lot of unwanted characters remain
-    QString nameCharRegexp = QStringLiteral( "[^:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x2FF\\x370-\\x37D\\x37F-\\x1FFF\\x200C-\\x200D\\x2070-\\x218F\\x2C00-\\x2FEF\\x3001-\\xD7FF\\xF900-\\xFDCF\\xFDF0-\\xFFFD\\-\\.0-9\\xB7\\x0300-\\x036F\\x203F-\\x2040]" );
-    QString nameStartCharRegexp = QStringLiteral( "^[^:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x2FF\\x370-\\x37D\\x37F-\\x1FFF\\x200C-\\x200D\\x2070-\\x218F\\x2C00-\\x2FEF\\x3001-\\xD7FF\\xF900-\\xFDCF\\xFDF0-\\xFFFD]" );
-
-    if ( keyToken.contains( QRegExp( nameCharRegexp ) ) || keyToken.contains( QRegExp( nameStartCharRegexp ) ) )
+    const thread_local QRegularExpression sInvalidRegexp = QRegularExpression( "([^:A-Z_a-z\\x{C0}-\\x{D6}\\x{D8}-\\x{F6}\\x{F8}-\\x{2FF}\\x{370}-\\x{37D}\\x{37F}-\\x{1FFF}\\x{200C}-\\x{200D}\\x{2070}-\\x{218F}\\x{2C00}-\\x{2FEF}\\x{3001}-\\x{D7FF}\\x{F900}-\\x{FDCF}\\x{FDF0}-\\x{FFFD}\\-\\.0-9\\x{B7}\\x{0300}-\\x{036F}\\x{203F}-\\x{2040}]|^[^:A-Z_a-z\\x{C0}-\\x{D6}\\x{D8}-\\x{F6}\\x{F8}-\\x{2FF}\\x{370}-\\x{37D}\\x{37F}-\\x{1FFF}\\x{200C}-\\x{200D}\\x{2070}-\\x{218F}\\x{2C00}-\\x{2FEF}\\x{3001}-\\x{D7FF}\\x{F900}-\\x{FDCF}\\x{FDF0}-\\x{FFFD}])" );
+    if ( keyToken.contains( sInvalidRegexp ) )
     {
-
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
       QgsMessageLog::logMessage( errorString, QString(), Qgis::Critical );
-
     }
-
   }
 
   return keyTokens;
@@ -780,7 +807,7 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
-  QgsSettings settings;
+  ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
 
   mProjectScope.reset();
   mFile.setFileName( QString() );
@@ -796,8 +823,9 @@ void QgsProject::clear()
   mDirty = false;
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
+  mCrs = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
-  if ( !settings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
+  if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
     mMetadata.setAuthor( QgsApplication::userFullName() );
@@ -817,7 +845,6 @@ void QgsProject::clear()
   mTimeSettings->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
-  emit snappingConfigChanged( mSnappingConfig );
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
@@ -844,24 +871,31 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), settings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), settings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
-  int red = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
-  int green = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
-  int blue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  int red = mSettings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  int green = mSettings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  int blue = mSettings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   setBackgroundColor( QColor( red, green, blue ) );
 
-  red = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
-  green = settings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
-  blue = settings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
-  int alpha = settings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
+  red = mSettings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
+  green = mSettings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
+  blue = mSettings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
+  int alpha = mSettings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
   setSelectionColor( QColor( red, green, blue, alpha ) );
+
+  mSnappingConfig.clearIndividualLayerSettings();
 
   removeAllMapLayers();
   mRootGroup->clear();
   if ( mMainAnnotationLayer )
     mMainAnnotationLayer->reset();
+
+  snapSingleBlocker.release();
+
+  if ( !mBlockSnappingUpdates )
+    emit snappingConfigChanged( mSnappingConfig );
 
   setDirty( false );
   emit homePathChanged();
@@ -874,7 +908,6 @@ void dump_( const QgsProjectPropertyKey &topQgsPropertyKey )
   QgsDebugMsgLevel( QStringLiteral( "current properties:" ), 3 );
   topQgsPropertyKey.dump();
 }
-
 
 /**
 
@@ -917,7 +950,7 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 
   QDomNodeList scopes = propertiesElem.childNodes();
 
-  if ( scopes.count() < 1 )
+  if ( propertiesElem.firstChild().isNull() )
   {
     QgsDebugMsg( QStringLiteral( "empty ``properties'' XML tag ... bailing" ) );
     return;
@@ -956,17 +989,15 @@ QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, c
 */
 static void _getTitle( const QDomDocument &doc, QString &title )
 {
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "title" ) );
+  QDomElement titleNode = doc.documentElement().firstChildElement( QStringLiteral( "title" ) );
 
   title.clear();               // by default the title will be empty
 
-  if ( !nl.count() )
+  if ( titleNode.isNull() )
   {
     QgsDebugMsgLevel( QStringLiteral( "unable to find title element" ), 2 );
     return;
   }
-
-  QDomNode titleNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   if ( !titleNode.hasChildNodes() ) // if not, then there's no actual text
   {
@@ -1054,11 +1085,11 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   // Layer order is set by the restoring the legend settings from project file.
   // This is done on the 'readProject( ... )' signal
 
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "maplayer" ) );
+  QDomElement layerElement = doc.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
 
   // process the map layer nodes
 
-  if ( 0 == nl.count() )      // if we have no layers to process, bail
+  if ( layerElement.isNull() )      // if we have no layers to process, bail
   {
     return true; // Decided to return "true" since it's
     // possible for there to be a project with no
@@ -1069,6 +1100,13 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   }
 
   bool returnStatus = true;
+  int numLayers = 0;
+
+  while ( ! layerElement.isNull() )
+  {
+    numLayers++;
+    layerElement = layerElement.nextSiblingElement( QStringLiteral( "maplayer" ) );
+  }
 
   // order layers based on their dependencies
   QgsScopedRuntimeProfile profile( tr( "Sorting layers" ), QStringLiteral( "projectload" ) );
@@ -1080,7 +1118,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   if ( depSorter.hasMissingDependency() )
     returnStatus = false;
 
-  emit layerLoaded( 0, nl.count() );
+  emit layerLoaded( 0, numLayers );
 
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
   const int totalLayerCount = sortedLayerNodes.count();
@@ -1285,15 +1323,16 @@ bool QgsProject::read( QgsProject::ReadFlags flags )
 
 bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags flags )
 {
+  // avoid multiple emission of snapping updated signals
+  ScopedIntIncrementor snapSignalBlock( &mBlockSnappingUpdates );
+
   QFile projectFile( filename );
   clearError();
 
   QgsApplication::profiler()->clear( QStringLiteral( "projectload" ) );
   QgsScopedRuntimeProfile profile( tr( "Setting up translations" ), QStringLiteral( "projectload" ) );
 
-  QgsSettings settings;
-
-  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() );
+  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), mSettings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() );
 
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
@@ -1486,11 +1525,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
   }
 
-  QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "projectMetadata" ) );
-  if ( !nl.isEmpty() )
+  QDomElement element = doc->documentElement().firstChildElement( QStringLiteral( "projectMetadata" ) );
+
+  if ( !element.isNull() )
   {
-    QDomElement metadataElement = nl.at( 0 ).toElement();
-    mMetadata.readMetadataXml( metadataElement );
+    mMetadata.readMetadataXml( element );
   }
   else
   {
@@ -1504,28 +1543,25 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
   emit metadataChanged();
 
-  nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
-  if ( nl.count() )
+  element = doc->documentElement().firstChildElement( QStringLiteral( "autotransaction" ) );
+  if ( ! element.isNull() )
   {
-    QDomElement transactionElement = nl.at( 0 ).toElement();
-    if ( transactionElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mAutoTransaction = true;
   }
 
-  nl = doc->elementsByTagName( QStringLiteral( "evaluateDefaultValues" ) );
-  if ( nl.count() )
+  element = doc->documentElement().firstChildElement( QStringLiteral( "evaluateDefaultValues" ) );
+  if ( !element.isNull() )
   {
-    QDomElement evaluateDefaultValuesElement = nl.at( 0 ).toElement();
-    if ( evaluateDefaultValuesElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mEvaluateDefaultValues = true;
   }
 
   // Read trust layer metadata config in the project
-  nl = doc->elementsByTagName( QStringLiteral( "trust" ) );
-  if ( nl.count() )
+  element = doc->documentElement().firstChildElement( QStringLiteral( "trust" ) );
+  if ( !element.isNull() )
   {
-    QDomElement trustElement = nl.at( 0 ).toElement();
-    if ( trustElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+    if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mTrustLayerMetadata = true;
   }
 
@@ -1629,6 +1665,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // or wanted to pass them through when saving
   if ( !( flags & QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
   {
+    profile.switchTask( tr( "Storing original layer properties" ) );
     QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
   }
 
@@ -1710,7 +1747,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit readProjectWithContext( *doc, context );
 
   profile.switchTask( tr( "Updating interface" ) );
-  emit snappingConfigChanged( mSnappingConfig );
+
+  snapSignalBlock.release();
+  if ( !mBlockSnappingUpdates )
+    emit snappingConfigChanged( mSnappingConfig );
+
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
   emit projectColorsChanged();
@@ -2016,13 +2057,13 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
     }
   }
 
-  if ( mSnappingConfig.addLayers( layers ) )
+  if ( !mBlockSnappingUpdates && mSnappingConfig.addLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 {
-  if ( mSnappingConfig.removeLayers( layers ) )
+  if ( !mBlockSnappingUpdates && mSnappingConfig.removeLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
 }
 
@@ -2176,8 +2217,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
   qgisNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
 
-  QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core ).toBool() )
+  if ( !mSettings.value( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core ).toBool() )
   {
     QString newSaveUser = QgsApplication::userLoginName();
     QString newSaveUserFull = QgsApplication::userFullName();
@@ -2807,11 +2847,10 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     return false;
   }
 
-  QDomNodeList mapLayerNodes = projectLayersElem.elementsByTagName( QStringLiteral( "maplayer" ) );
-  for ( int i = 0; i < mapLayerNodes.size(); ++i )
+  QDomElement mapLayerElem = projectLayersElem.firstChildElement( QStringLiteral( "maplayer" ) );
+  while ( ! mapLayerElem.isNull() )
   {
     // get layer id
-    QDomElement mapLayerElem = mapLayerNodes.at( i ).toElement();
     QString id = mapLayerElem.firstChildElement( QStringLiteral( "id" ) ).text();
     if ( id == layerId )
     {
@@ -2833,6 +2872,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         return false;
       }
     }
+    mapLayerElem = mapLayerElem.nextSiblingElement( QStringLiteral( "maplayer" ) );
   }
 
   return false;
@@ -2978,9 +3018,8 @@ QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
     return QgsUnitTypes::decodeDistanceUnit( distanceUnitString );
 
   //fallback to QGIS default measurement unit
-  QgsSettings s;
   bool ok = false;
-  QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+  QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::DistanceMeters;
 }
 
@@ -2996,9 +3035,8 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
     return QgsUnitTypes::decodeAreaUnit( areaUnitString );
 
   //fallback to QGIS default area unit
-  QgsSettings s;
   bool ok = false;
-  QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
+  QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::AreaSquareMeters;
 }
 
@@ -3430,8 +3468,17 @@ QgsAnnotationLayer *QgsProject::mainAnnotationLayer()
 
 void QgsProject::removeAllMapLayers()
 {
+  if ( mLayerStore->count() == 0 )
+    return;
+
+  ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
   mProjectScope.reset();
   mLayerStore->removeAllMapLayers();
+
+  snapSingleBlocker.release();
+  mSnappingConfig.clearIndividualLayerSettings();
+  if ( !mBlockSnappingUpdates )
+    emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::reloadAllLayers()
@@ -3456,13 +3503,12 @@ QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, c
 
 QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
 {
-  QgsSettings settings;
   QgsCoordinateReferenceSystem defaultCrs;
 
   // TODO QGIS 4.0 -- remove this method, and place it somewhere in app (where it belongs)
   // in the meantime, we have a slightly hacky way to read the settings key using an enum which isn't available (since it lives in app)
-  if ( settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
-       || settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == 2 )
+  if ( mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
+       || mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == 2 )
   {
     // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
     defaultCrs = crs();
@@ -3470,7 +3516,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   else
   {
     // global crs
-    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
+    QString layerDefaultCrs = mSettings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 

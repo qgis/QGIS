@@ -100,6 +100,7 @@
 #include "qgsgeometryoptions.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsfeaturerenderergenerator.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -201,6 +202,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   connect( this, &QgsVectorLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
+  connect( this, &QgsVectorLayer::dataSourceChanged, this, &QgsVectorLayer::supportsEditingChanged );
+  connect( this, &QgsVectorLayer::readOnlyChanged, this, &QgsVectorLayer::supportsEditingChanged );
 
   // Default simplify drawing settings
   QgsSettings settings;
@@ -234,6 +237,8 @@ QgsVectorLayer::~QgsVectorLayer()
 
   if ( mFeatureCounter )
     mFeatureCounter->cancel();
+
+  qDeleteAll( mRendererGenerators );
 }
 
 QgsVectorLayer *QgsVectorLayer::clone() const
@@ -1432,12 +1437,7 @@ bool QgsVectorLayer::startEditing()
   }
 
   // allow editing if provider supports any of the capabilities
-  if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
-  {
-    return false;
-  }
-
-  if ( mReadOnly )
+  if ( !supportsEditing() )
   {
     return false;
   }
@@ -3150,6 +3150,54 @@ QgsStringMap QgsVectorLayer::attributeAliases() const
   return mAttributeAliasMap;
 }
 
+QSet<QString> QgsVectorLayer::excludeAttributesWms() const
+{
+  QSet<QString> excludeList;
+  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
+  {
+    if ( flagsIt->testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+    {
+      excludeList << flagsIt.key();
+    }
+  }
+  return excludeList;
+}
+
+void QgsVectorLayer::setExcludeAttributesWms( const QSet<QString> &att )
+{
+  QMap< QString, QgsField::ConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
+  for ( ; flagsIt != mFieldConfigurationFlags.end(); ++flagsIt )
+  {
+    flagsIt->setFlag( QgsField::ConfigurationFlag::HideFromWms, att.contains( flagsIt.key() ) );
+  }
+  updateFields();
+}
+
+QSet<QString> QgsVectorLayer::excludeAttributesWfs() const
+{
+  QSet<QString> excludeList;
+  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
+  {
+    if ( flagsIt->testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
+    {
+      excludeList << flagsIt.key();
+    }
+  }
+  return excludeList;
+}
+
+void QgsVectorLayer::setExcludeAttributesWfs( const QSet<QString> &att )
+{
+  QMap< QString, QgsField::ConfigurationFlags >::iterator flagsIt = mFieldConfigurationFlags.begin();
+  for ( ; flagsIt != mFieldConfigurationFlags.end(); ++flagsIt )
+  {
+    flagsIt->setFlag( QgsField::ConfigurationFlag::HideFromWfs, att.contains( flagsIt.key() ) );
+  }
+  updateFields();
+}
+
 bool QgsVectorLayer::deleteAttribute( int index )
 {
   if ( index < 0 || index >= fields().count() )
@@ -3619,6 +3667,14 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
   return true;
 }
 
+bool QgsVectorLayer::supportsEditing()
+{
+  if ( ! mDataProvider )
+    return false;
+
+  return mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities && ! mReadOnly;
+}
+
 bool QgsVectorLayer::isModified() const
 {
   emit beforeModifiedCheck();
@@ -3663,6 +3719,31 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     emit rendererChanged();
     emit styleChanged();
   }
+}
+
+void QgsVectorLayer::addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator )
+{
+  mRendererGenerators << generator;
+}
+
+void QgsVectorLayer::removeFeatureRendererGenerator( const QString &id )
+{
+  for ( int i = mRendererGenerators.count() - 1; i >= 0; --i )
+  {
+    if ( mRendererGenerators.at( i )->id() == id )
+    {
+      delete mRendererGenerators.at( i );
+      mRendererGenerators.removeAt( i );
+    }
+  }
+}
+
+QList<const QgsFeatureRendererGenerator *> QgsVectorLayer::featureRendererGenerators() const
+{
+  QList< const QgsFeatureRendererGenerator * > res;
+  for ( const QgsFeatureRendererGenerator *generator : mRendererGenerators )
+    res << generator;
+  return res;
 }
 
 void QgsVectorLayer::beginEditCommand( const QString &text )

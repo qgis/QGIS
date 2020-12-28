@@ -107,7 +107,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   SymbologyExport symbologyExport,
   QgsFeatureSink::SinkFlags sinkFlags,
   QString *newLayer,
-  QgsCoordinateTransformContext transformContext
+  QgsCoordinateTransformContext transformContext,
+  FieldNameSource fieldNameSource
 )
   : mError( NoError )
   , mWkbType( geometryType )
@@ -116,7 +117,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 {
   init( vectorFileName, fileEncoding, fields,  geometryType,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
-        QString(), CreateOrOverwriteFile, newLayer, sinkFlags, transformContext );
+        QString(), CreateOrOverwriteFile, newLayer, sinkFlags, transformContext, fieldNameSource );
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter(
@@ -135,7 +136,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   ActionOnExistingFile action,
   QString *newLayer,
   QgsCoordinateTransformContext transformContext,
-  QgsFeatureSink::SinkFlags sinkFlags
+  QgsFeatureSink::SinkFlags sinkFlags,
+  FieldNameSource fieldNameSource
 )
   : mError( NoError )
   , mWkbType( geometryType )
@@ -144,7 +146,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
         datasourceOptions, layerOptions, newFilename, fieldValueConverter,
-        layerName, action, newLayer, sinkFlags, transformContext );
+        layerName, action, newLayer, sinkFlags, transformContext, fieldNameSource );
 }
 
 QgsVectorFileWriter *QgsVectorFileWriter::create(
@@ -163,7 +165,7 @@ QgsVectorFileWriter *QgsVectorFileWriter::create(
   return new QgsVectorFileWriter( fileName, options.fileEncoding, fields, geometryType, srs,
                                   options.driverName, options.datasourceOptions, options.layerOptions,
                                   newFilename, options.symbologyExport, options.fieldValueConverter, options.layerName,
-                                  options.actionOnExistingFile, newLayer, transformContext, sinkFlags );
+                                  options.actionOnExistingFile, newLayer, transformContext, sinkFlags, options.fieldNameSource );
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -201,7 +203,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                 const QString &layerNameIn,
                                 ActionOnExistingFile action,
                                 QString *newLayer, SinkFlags sinkFlags,
-                                const QgsCoordinateTransformContext &transformContext )
+                                const QgsCoordinateTransformContext &transformContext, FieldNameSource fieldNameSource )
 {
   mRenderContext.setRendererScale( mSymbologyScale );
 
@@ -604,15 +606,26 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           attrField = fieldValueConverter->fieldDefinition( fields.at( fldIdx ) );
         }
 
-        QString name( attrField.name() );
         if ( action == AppendToLayerAddFields )
         {
-          int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
+          int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
           if ( ogrIdx >= 0 )
           {
             mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
             continue;
           }
+        }
+
+        QString name;
+        switch ( fieldNameSource )
+        {
+          case Original:
+            name = attrField.name();
+            break;
+
+          case PreferAlias:
+            name = !attrField.alias().isEmpty() ? attrField.alias() : attrField.name();
+            break;
         }
 
         OGRFieldType ogrType = OFTString; //default to string

@@ -51,6 +51,8 @@ Qt3DRender::QTextureImageDataPtr QgsColorRampTextureGenerator::operator()()
     float mag = float( colorItemList.at( i ).value * mVerticalScale );
 
     QColor color = colorItemList.at( i ).color;
+    if ( color.alphaF() == 0.0f )
+      continue;
     float rf = float( color.redF() );
     float gf = float( color.greenF() );
     float bf = float( color.blueF() );
@@ -59,7 +61,6 @@ Qt3DRender::QTextureImageDataPtr QgsColorRampTextureGenerator::operator()()
     data.append( reinterpret_cast<const char *>( &rf ), sizeof( float ) );
     data.append( reinterpret_cast<const char *>( &gf ), sizeof( float ) );
     data.append( reinterpret_cast<const char *>( &bf ), sizeof( float ) );
-
   }
 
   dataPtr->setData( data, sizeof( float ) ); //size is the size of the type, here float

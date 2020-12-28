@@ -863,7 +863,7 @@ size_t MDAL::MeshSelafinFaceIterator::next( size_t faceOffsetsBufferLen, int *fa
         throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem while reading faces" );
       vertexIndicesBuffer[vertexLocalIndex + j] = indexes[j + i * verticesPerFace] - 1;
     }
-    vertexLocalIndex += verticesPerFace;
+    vertexLocalIndex += MDAL::toInt( verticesPerFace );
     faceOffsetsBuffer[i] = vertexLocalIndex;
   }
 
@@ -936,9 +936,9 @@ static void writeInt( std::ofstream &file, int i )
 
 static void writeStringRecord( std::ofstream &file, const std::string &str )
 {
-  writeInt( file, str.size() );
+  writeInt( file, MDAL::toInt( str.size() ) );
   file.write( str.data(), str.size() );
-  writeInt( file, str.size() );
+  writeInt( file, MDAL::toInt( str.size() ) );
 }
 
 template<typename T>
@@ -1011,9 +1011,9 @@ void MDAL::DriverSelafin::save( const std::string &uri, MDAL::Mesh *mesh )
   size_t verticesCount = mesh->verticesCount();
   size_t facesCount = mesh->facesCount();
   std::vector<int> elem( 4 );
-  elem[0] = facesCount;
-  elem[1] = verticesCount;
-  elem[2] = verticesPerFace;
+  elem[0] = MDAL::toInt( facesCount );
+  elem[1] = MDAL::toInt( verticesCount );
+  elem[2] = MDAL::toInt( verticesPerFace );
   elem[3] = 1;
   writeValueArrayRecord( file, elem );
 
@@ -1022,7 +1022,7 @@ void MDAL::DriverSelafin::save( const std::string &uri, MDAL::Mesh *mesh )
   std::vector<int> faceOffsetBuffer( bufferSize );
   std::unique_ptr<MeshFaceIterator> faceIter = mesh->readFaces();
   size_t count = 0;
-  writeInt( file, facesCount * verticesPerFace * 4 );
+  writeInt( file, MDAL::toInt( facesCount * verticesPerFace * 4 ) );
   do
   {
     std::vector<int> inkle( bufferSize * verticesPerFace );
@@ -1034,7 +1034,7 @@ void MDAL::DriverSelafin::save( const std::string &uri, MDAL::Mesh *mesh )
     writeValueArray( file, inkle );
   }
   while ( count != 0 );
-  writeInt( file, facesCount * verticesPerFace * 4 );
+  writeInt( file, MDAL::toInt( facesCount * verticesPerFace * 4 ) );
 
   // IPOBO filled with 0
   writeValueArrayRecord( file, std::vector<int>( verticesCount, 0 ) );
@@ -1077,9 +1077,9 @@ static void writeScalarDataset( std::ofstream &file, MDAL::Dataset *dataset, boo
 {
   size_t valuesCount = dataset->valuesCount();
   size_t bufferSize = BUFFER_SIZE;
-  int count = 0;
-  int indexStart = 0;
-  writeInt( file, valuesCount * ( isFloat ? 4 : 8 ) );
+  size_t count = 0;
+  size_t indexStart = 0;
+  writeInt( file, MDAL::toInt( valuesCount * ( isFloat ? 4 : 8 ) ) );
   do
   {
     std::vector<double> values( bufferSize );
@@ -1088,8 +1088,8 @@ static void writeScalarDataset( std::ofstream &file, MDAL::Dataset *dataset, boo
     if ( isFloat )
     {
       std::vector<float> floatValues( count );
-      for ( int i = 0; i < count; ++i )
-        floatValues[i] = values[i];
+      for ( int i = 0; i < MDAL::toInt( count ); ++i )
+        floatValues[i] = static_cast<float>( values[i] );
       writeValueArray( file, floatValues );
     }
     else
@@ -1098,7 +1098,7 @@ static void writeScalarDataset( std::ofstream &file, MDAL::Dataset *dataset, boo
     indexStart += count;
   }
   while ( count != 0 );
-  writeInt( file, valuesCount * ( isFloat ? 4 : 8 ) );
+  writeInt( file, MDAL::toInt( valuesCount * ( isFloat ? 4 : 8 ) ) );
 }
 
 template<typename T>
@@ -1109,17 +1109,17 @@ static void writeVectorDataset( std::ofstream &file, MDAL::Dataset *dataset )
   std::vector<T> valuesX( valuesCount );
   std::vector<T> valuesY( valuesCount );
   size_t bufferSize = BUFFER_SIZE;
-  int count = 0;
-  int indexStart = 0;
+  size_t count = 0;
+  size_t indexStart = 0;
   do
   {
     std::vector<double> values( bufferSize * 2 );
     count = dataset->vectorData( indexStart, bufferSize, values.data() );
     values.resize( count * 2 );
-    for ( int i = 0; i < count; ++i )
+    for ( int i = 0; i < MDAL::toInt( count ); ++i )
     {
-      valuesX[indexStart + i] = values[i * 2];
-      valuesY[indexStart + i] = values[i * 2 + 1];
+      valuesX[indexStart + i] = static_cast< T >( values[i * 2] );
+      valuesY[indexStart + i] = static_cast< T >( values[i * 2 + 1] );
     }
     indexStart += count;
   }
@@ -1208,7 +1208,7 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
   else
   {
     if ( datasetGroup->datasets.size() != mTimeSteps.size() )
-      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Incomaptible dataset group : time steps count are not the same" );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Incompatible dataset group : time steps count are not the same" );
   }
 
   //parameters table
@@ -1224,24 +1224,24 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
   writeValueArrayRecord( out, std::vector<int> {int( mFacesCount ), int( mVerticesCount ), int( mVerticesPerFace ), 1} );
 
   //IKLE
-  writeInt( out, mFacesCount * mVerticesPerFace * 4 );
+  writeInt( out, MDAL::toInt( mFacesCount * mVerticesPerFace * 4 ) );
   streamToStream( out, mIn, mConnectivityStreamPosition, mFacesCount * mVerticesPerFace * 4, BUFFER_SIZE );
-  writeInt( out, mFacesCount * mVerticesPerFace * 4 );
+  writeInt( out, MDAL::toInt( mFacesCount * mVerticesPerFace * 4 ) );
   //vertices
 
   //IPOBO
-  writeInt( out, mVerticesCount * 4 );
+  writeInt( out, MDAL::toInt( mVerticesCount * 4 ) );
   streamToStream( out, mIn, mIPOBOStreamPosition, mVerticesCount * 4, BUFFER_SIZE );
-  writeInt( out, mVerticesCount * 4 );
+  writeInt( out, MDAL::toInt( mVerticesCount * 4 ) );
 
   //X Vertices
-  writeInt( out, mVerticesCount * realSize );
+  writeInt( out, MDAL::toInt( mVerticesCount * realSize ) );
   streamToStream( out, mIn, mXStreamPosition, mVerticesCount * realSize, BUFFER_SIZE );
-  writeInt( out, mVerticesCount * realSize );
+  writeInt( out, MDAL::toInt( mVerticesCount * realSize ) );
   //Y Vertices
-  writeInt( out, mVerticesCount * realSize );
+  writeInt( out, MDAL::toInt( mVerticesCount * realSize ) );
   streamToStream( out, mIn, mYStreamPosition, mVerticesCount * realSize, BUFFER_SIZE );
-  writeInt( out, mVerticesCount * realSize );
+  writeInt( out, MDAL::toInt( mVerticesCount * realSize ) );
 
   // Write datasets
   for ( size_t nT = 0; nT < mTimeSteps.size(); nT++ )
@@ -1249,7 +1249,7 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
     // Time step
     if ( mStreamInFloatPrecision )
     {
-      std::vector<float> time( 1, mTimeSteps.at( nT ).value( RelativeTimestamp::seconds ) );
+      std::vector<float> time( 1, static_cast<float>( mTimeSteps.at( nT ).value( RelativeTimestamp::seconds ) ) );
       writeValueArrayRecord( out, time );
     }
     else
@@ -1261,9 +1261,9 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
     // First, prexisting datasets from the original file
     for ( int i = 0; i < nbv[0] - addedVariable; ++i )
     {
-      writeInt( out, mVerticesCount * realSize );
+      writeInt( out, MDAL::toInt( mVerticesCount * realSize ) );
       streamToStream( out, mIn, mVariableStreamPosition[i][nT], realSize * mVerticesCount, BUFFER_SIZE );
-      writeInt( out, mVerticesCount * realSize );
+      writeInt( out, MDAL::toInt( mVerticesCount * realSize ) );
     }
 
     // Then, new datasets from the new dataset group

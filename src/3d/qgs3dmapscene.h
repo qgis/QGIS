@@ -126,6 +126,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Emitted when the scene's state has changed
     void sceneStateChanged();
 
+    //! Emitted when the FPS count changes
+    void fpsCountChanged( float fpsCount );
+    //! Emitted when the FPS counter is activated or deactivated
+    void fpsCounterEnabledChanged( bool fpsCounterEnabled );
+
   public slots:
     //! Updates the temporale entities
     void updateTemporal();

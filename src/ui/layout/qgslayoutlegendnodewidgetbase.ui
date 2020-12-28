@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>351</width>
-    <height>587</height>
+    <height>635</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,34 +26,26 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="mCustomSymbolCheckBox">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="mLabelGroup">
      <property name="title">
-      <string>Custom Symbol</string>
+      <string>Label</string>
      </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QgsSymbolButton" name="mCustomSymbolButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QPlainTextEdit" name="mLabelEdit">
         <property name="minimumSize">
          <size>
-          <width>100</width>
-          <height>0</height>
+          <width>0</width>
+          <height>150</height>
          </size>
         </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="mInsertExpressionButton">
         <property name="text">
-         <string/>
+         <string>Insert or Edit an Expression…</string>
         </property>
        </widget>
       </item>
@@ -94,7 +86,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QgsDoubleSpinBox" name="mWidthSpinBox"/>
+       <widget class="QgsDoubleSpinBox" name="mWidthSpinBox">
+        <property name="maximum">
+         <double>9999.989999999999782</double>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="mPatchHeightLabel">
@@ -104,51 +100,16 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsDoubleSpinBox" name="mHeightSpinBox"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Label</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QPlainTextEdit" name="mLabelEdit">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>150</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="mInsertExpressionButton">
-        <property name="text">
-         <string>Insert or Edit an Expression…</string>
+       <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
+        <property name="maximum">
+         <double>9999.989999999999782</double>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Columns</string>
@@ -174,6 +135,56 @@
      </layout>
     </widget>
    </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QGroupBox" name="mCustomSymbolCheckBox">
+     <property name="title">
+      <string>Custom Symbol</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QgsSymbolButton" name="mCustomSymbolButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QgsColorRampLegendNodeWidget" name="mColorRampLegendWidget" native="true"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -183,20 +194,26 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsLegendPatchShapeButton</class>
    <extends>QToolButton</extends>
    <header>qgslegendpatchshapebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorRampLegendNodeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgscolorramplegendnodewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

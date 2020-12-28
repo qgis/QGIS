@@ -399,6 +399,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
+#include "pointcloud/qgspointcloudelevationpropertieswidget.h"
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
 
 #ifdef ENABLE_MODELTEST
@@ -1342,6 +1343,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
+  registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -5833,6 +5835,16 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
   layer->loadDefaultStyle( ok );
   layer->loadDefaultMetadata( ok );
 
+#ifdef HAVE_3D
+  if ( !layer->renderer3D() )
+  {
+    // for point clouds we default to a 3d renderer. it just makes sense :)
+    std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layer->renderer() );
+    if ( renderer3D )
+      layer->setRenderer3D( renderer3D.release() );
+  }
+#endif
+
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -8315,7 +8327,7 @@ void QgisApp::refreshFeatureActions()
   }
 
   //add actions registered in QgsMapLayerActionRegistry
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::SingleFeature );
   if ( !actions.isEmpty() && !registeredActions.empty() )
   {
     //add a separator between user defined and standard actions
@@ -11084,7 +11096,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   if ( !vlayer->isEditable() && !vlayer->readOnly() )
   {
-    if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
+    if ( !vlayer->supportsEditing() )
     {
       mActionToggleEditing->setChecked( false );
       mActionToggleEditing->setEnabled( false );
@@ -14743,12 +14755,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
         bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
         bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
-        bool canSupportEditing = dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities;
         bool canChangeGeometry = isSpatial && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
+        bool canSupportEditing = vlayer->supportsEditing();
 
         mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
 
-        mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->readOnly() );
+        mActionToggleEditing->setEnabled( canSupportEditing );
         mActionToggleEditing->setChecked( canSupportEditing && isEditable );
         mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && vlayer->isModified() );
         mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );

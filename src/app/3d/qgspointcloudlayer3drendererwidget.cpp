@@ -35,13 +35,19 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   mWidgetPointCloudSymbol = new QgsPointCloud3DSymbolWidget( layer, nullptr, this );
   layout->addWidget( mWidgetPointCloudSymbol );
 
+  mWidgetPointCloudSymbol->connectChildPanels( this );
+
   connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::widgetChanged );
 }
 
 void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3DRenderer *renderer )
 {
   if ( renderer != nullptr )
+  {
     mWidgetPointCloudSymbol->setSymbol( const_cast<QgsPointCloud3DSymbol *>( renderer->symbol() ) );
+    mWidgetPointCloudSymbol->setMaximumScreenError( renderer->maximumScreenError() );
+    mWidgetPointCloudSymbol->setShowBoundingBoxes( renderer->showBoundingBoxes() );
+  }
 }
 
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
@@ -50,6 +56,8 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
   QgsPointCloud3DSymbol *sym = mWidgetPointCloudSymbol->symbol();
   renderer->setSymbol( sym );
   renderer->setLayer( qobject_cast<QgsPointCloudLayer *>( mLayer ) );
+  renderer->setMaximumScreenError( mWidgetPointCloudSymbol->maximumScreenError() );
+  renderer->setShowBoundingBoxes( mWidgetPointCloudSymbol->showBoundingBoxes() );
   return renderer;
 }
 
@@ -77,6 +85,14 @@ void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
     setRenderer( nullptr );
     mWidgetPointCloudSymbol->setEnabled( false );
   }
+}
+
+void QgsPointCloudLayer3DRendererWidget::setDockMode( bool dockMode )
+{
+  QgsMapLayerConfigWidget::setDockMode( dockMode );
+
+  if ( mWidgetPointCloudSymbol )
+    mWidgetPointCloudSymbol->setDockMode( dockMode );
 }
 
 QgsPointCloudLayer3DRendererWidgetFactory::QgsPointCloudLayer3DRendererWidgetFactory( QObject *parent ):

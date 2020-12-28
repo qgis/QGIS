@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsproject.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -328,6 +329,24 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
 
 void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *project )
 {
+  connect( project, &QgsProject::layerRemoved, this, [&]( const QString & layerId )
+  {
+    for ( int i = 0; i < mModel->rowCount(); ++i )
+    {
+      const QStandardItem *item = mModel->item( i );
+      if ( item->data( Qt::UserRole ) == layerId )
+      {
+        bool isChecked = ( item->checkState() == Qt::Checked );
+        mModel->removeRow( i );
+
+        if ( isChecked )
+          emit selectionChanged();
+
+        break;
+      }
+    }
+  } );
+
   QgsSettings settings;
   auto addLayer = [&]( const QgsMapLayer * layer )
   {

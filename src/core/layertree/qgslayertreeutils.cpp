@@ -314,9 +314,8 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
 
 void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,  const QDomDocument *doc )
 {
-  const QDomNodeList mlNodeList( doc->documentElement()
-                                 .firstChildElement( QStringLiteral( "projectlayers" ) )
-                                 .elementsByTagName( QStringLiteral( "maplayer" ) ) );
+
+  const QDomElement projectLayersElement { doc->documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ) };
 
   std::function<void ( QgsLayerTreeNode * )> _store = [ & ]( QgsLayerTreeNode * node )
   {
@@ -325,22 +324,19 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
       QgsMapLayer *l( QgsLayerTree::toLayer( node )->layer() );
       if ( l )
       {
-        for ( int i = 0; i < mlNodeList.count(); i++ )
+        QDomElement layerElement { projectLayersElement.firstChildElement( QStringLiteral( "maplayer" ) ) };
+        while ( ! layerElement.isNull() )
         {
-          QDomNode mlNode( mlNodeList.at( i ) );
-          QString id( mlNode.firstChildElement( QStringLiteral( "id" ) ).firstChild().nodeValue() );
+          const QString id( layerElement.firstChildElement( QStringLiteral( "id" ) ).firstChild().nodeValue() );
           if ( id == l->id() )
           {
-            QDomImplementation DomImplementation;
-            QDomDocumentType documentType = DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-            QDomDocument document( documentType );
-            QDomElement element = mlNode.toElement();
-            document.appendChild( element );
             QString str;
             QTextStream stream( &str );
-            document.save( stream, 4 /*indent*/ );
-            l->setOriginalXmlProperties( str );
+            layerElement.save( stream, 4 /*indent*/ );
+            l->setOriginalXmlProperties( QStringLiteral( "<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>\n%1" ).arg( str ) );
+            break;
           }
+          layerElement = layerElement.nextSiblingElement( );
         }
       }
     }

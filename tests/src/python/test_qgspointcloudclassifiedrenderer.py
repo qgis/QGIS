@@ -107,7 +107,7 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         renderer.setAttribute('attr')
 
         rc = QgsRenderContext()
-        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D())
+        prc = QgsPointCloudRenderContext(rc, QgsVector3D(), QgsVector3D(), 1, 0)
 
         self.assertEqual(renderer.usedAttributes(prc), {'attr'})
 

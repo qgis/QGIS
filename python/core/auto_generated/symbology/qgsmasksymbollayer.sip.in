@@ -59,6 +59,8 @@ Create a new QgsMaskMarkerSymbolLayer
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
+    virtual bool usesMapUnits() const;
+
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 

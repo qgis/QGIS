@@ -39,6 +39,8 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
     //! Calls prepareGeometryChange()
     void checkBoundingRectChange();
 
+    QgsMapCanvas *canvas() const { return mMapCanvas; }
+
   private:
 
     const QgsGeorefDataPoint *mDataPoint = nullptr;

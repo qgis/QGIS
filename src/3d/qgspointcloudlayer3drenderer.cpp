@@ -25,14 +25,21 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudlayerelevationproperties.h"
 
 #include "qgis.h"
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol )
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( map )
-  , mSymbol( symbol )
+  , mSymbol( std::move( symbol ) )
+  , mZValueScale( zValueScale )
+  , mZValueFixedOffset( zValueFixedOffset )
 {
-
+  auto callback = []()->bool
+  {
+    return false;
+  };
+  mIsCanceledCallback = callback;
 }
 
 void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
@@ -43,6 +50,19 @@ void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCo
 void QgsPointCloud3DRenderContext::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
   mSymbol.reset( symbol );
+}
+
+void QgsPointCloud3DRenderContext::setFilteredOutCategories( const QgsPointCloudCategoryList &categories )
+{
+  mFilteredOutCategories = categories;
+}
+
+QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
+{
+  QSet<int> filteredOut;
+  for ( QgsPointCloudCategory category : mFilteredOutCategories )
+    filteredOut.insert( category.value() );
+  return filteredOut;
 }
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
@@ -99,7 +119,9 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ) );
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
+         static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
+         static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset() );
 }
 
 void QgsPointCloudLayer3DRenderer::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -114,6 +136,8 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   QDomDocument doc = elem.ownerDocument();
 
   elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  elem.setAttribute( QStringLiteral( "max-screen-error" ), maximumScreenError() );
+  elem.setAttribute( QStringLiteral( "show-bounding-boxes" ), showBoundingBoxes() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
   if ( mSymbol )
@@ -131,12 +155,17 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
   const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
+  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "1.0" ) ).toDouble();
+  mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
+
   if ( symbolType == QLatin1String( "single-color" ) )
     mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
   else if ( symbolType == QLatin1String( "color-ramp" ) )
     mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
   else if ( symbolType == QLatin1String( "rgb" ) )
     mSymbol.reset( new QgsRgbPointCloud3DSymbol );
+  else if ( symbolType == QLatin1String( "classification" ) )
+    mSymbol.reset( new QgsClassificationPointCloud3DSymbol );
   else
     mSymbol.reset();
 
@@ -148,3 +177,24 @@ void QgsPointCloudLayer3DRenderer::resolveReferences( const QgsProject &project 
 {
   mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
 }
+
+double QgsPointCloudLayer3DRenderer::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
+
+void QgsPointCloudLayer3DRenderer::setMaximumScreenError( double error )
+{
+  mMaximumScreenError = error;
+}
+
+bool QgsPointCloudLayer3DRenderer::showBoundingBoxes() const
+{
+  return mShowBoundingBoxes;
+}
+
+void QgsPointCloudLayer3DRenderer::setShowBoundingBoxes( bool showBoundingBoxes )
+{
+  mShowBoundingBoxes = showBoundingBoxes;
+}
+

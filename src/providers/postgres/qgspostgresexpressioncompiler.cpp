@@ -36,6 +36,18 @@ QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString &identifi
 QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
+
+  // don't use the default QgsPostgresConn::quotedValue handling for double values -- for
+  // various reasons it returns them as string values!
+  switch ( value.type() )
+  {
+    case QVariant::Double:
+      return value.toString();
+
+    default:
+      break;
+  }
+
   return QgsPostgresConn::quotedValue( value );
 }
 

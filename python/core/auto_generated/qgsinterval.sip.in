@@ -69,12 +69,21 @@ Constructor for QgsInterval, using the specified ``years``, ``months``,
 %Docstring
 Returns the interval duration in years (based on an average year length)
 
+If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalYears then this value
+will match the exact number of months as returned by :py:func:`~QgsInterval.originalDuration`,
+otherwise it will be calculated using the average year length (31557600 seconds).
+
 .. seealso:: :py:func:`setYears`
 %End
 
     void setYears( double years );
 %Docstring
 Sets the interval duration in years.
+
+Replaces the interval size and changes the original interval unit
+and duration, :py:func:`originalDuration` and \see originalUnit().
+
+Changes the original unit to QgsUnitTypes.TemporalYears
 
 :param years: duration in years (based on average year length)
 
@@ -85,12 +94,22 @@ Sets the interval duration in years.
 %Docstring
 Returns the interval duration in months (based on a 30 day month).
 
+If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalMonths then this value
+will match the exact number of months as returned by :py:func:`~QgsInterval.originalDuration`,
+otherwise it will be calculated using the assumption that
+a month consists of exactly 30 days.
+
 .. seealso:: :py:func:`setMonths`
 %End
 
     void setMonths( double months );
 %Docstring
 Sets the interval duration in months.
+
+Replaces the interval size and changes the original interval unit
+and duration, :py:func:`originalDuration` and \see originalUnit().
+
+Changes the original unit to QgsUnitTypes.TemporalMonths
 
 :param months: duration in months (based on a 30 day month)
 
@@ -101,12 +120,21 @@ Sets the interval duration in months.
 %Docstring
 Returns the interval duration in weeks.
 
+If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalWeeks then this value
+will match the exact number of weeks as returned by :py:func:`~QgsInterval.originalDuration`,
+otherwise it will be calculated using the QgsInterval.WEEKS constant.
+
 .. seealso:: :py:func:`setWeeks`
 %End
 
     void setWeeks( double weeks );
 %Docstring
 Sets the interval duration in weeks.
+
+Replaces the interval size and changes the original interval unit
+and duration, :py:func:`originalDuration` and \see originalUnit().
+
+Changes the original unit to QgsUnitTypes.TemporalWeeks
 
 :param weeks: duration in weeks
 
@@ -117,12 +145,21 @@ Sets the interval duration in weeks.
 %Docstring
 Returns the interval duration in days.
 
+If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalDays then this value
+will match the exact number of days as returned by :py:func:`~QgsInterval.originalDuration`,
+otherwise it will be calculated using the QgsInterval.DAY constant.
+
 .. seealso:: :py:func:`setDays`
 %End
 
     void setDays( double days );
 %Docstring
 Sets the interval duration in days.
+
+Replaces the interval size and changes the original interval unit
+and duration, :py:func:`originalDuration` and \see originalUnit().
+
+Changes the original unit to QgsUnitTypes.TemporalDays
 
 :param days: duration in days
 
@@ -133,12 +170,21 @@ Sets the interval duration in days.
 %Docstring
 Returns the interval duration in hours.
 
+If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalHours then this value
+will match the exact number of hours as returned by :py:func:`~QgsInterval.originalDuration`,
+otherwise it will be calculated using the QgsInterval.HOUR constant.
+
 .. seealso:: :py:func:`setHours`
 %End
 
     void setHours( double hours );
 %Docstring
 Sets the interval duration in hours.
+
+Replaces the interval size and changes the original interval unit
+and duration, :py:func:`originalDuration` and \see originalUnit().
+
+The original unit to QgsUnitTypes.TemporalHours
 
 :param hours: duration in hours
 
@@ -149,12 +195,21 @@ Sets the interval duration in hours.
 %Docstring
 Returns the interval duration in minutes.
 
+If the :py:func:`~QgsInterval.originalUnit` is QgsUnitTypes.TemporalMinutes then this value
+will match the exact number of minutes as returned by :py:func:`~QgsInterval.originalDuration`,
+otherwise it will be calculated using the QgsInterval.MINUTE constant.
+
 .. seealso:: :py:func:`setMinutes`
 %End
 
     void setMinutes( double minutes );
 %Docstring
 Sets the interval duration in minutes.
+
+Replaces the interval size and changes the original interval unit
+and duration, :py:func:`originalDuration` and \see originalUnit().
+
+Changes the original unit to QgsUnitTypes.TemporalMinutes
 
 :param minutes: duration in minutes
 
@@ -171,6 +226,11 @@ Returns the interval duration in seconds.
     void setSeconds( double seconds );
 %Docstring
 Sets the interval duration in seconds.
+
+Replaces the interval size and changes the original interval unit
+and duration, :py:func:`originalDuration` and \see originalUnit().
+
+Changes the original unit to QgsUnitTypes.TemporalSeconds
 
 :param seconds: duration in seconds
 
@@ -191,6 +251,39 @@ Sets whether the interval is valid.
 :param valid: set to ``True`` to set the interval as valid.
 
 .. seealso:: :py:func:`isValid`
+%End
+
+    double originalDuration() const;
+%Docstring
+Returns the original interval duration.
+
+This original interval duration can be updated through calling
+QgsInterval setter methods.
+
+.. seealso:: :py:func:`originalUnit`
+
+If the original interval duration is not available or
+interval was set with a mix of units, calling :py:func:`~QgsInterval.originalUnit`
+will return QgsUnitTypes.TemporalUnknownUnit
+
+Returns 0.0 if the original duration was not set.
+
+.. versionadded:: 3.18
+%End
+
+    QgsUnitTypes::TemporalUnit originalUnit() const;
+%Docstring
+Returns the original interval temporal unit.
+
+The interval temporal unit can be set through the
+QgsInterval constructors or through the available setter methods.
+
+Returns QgsUnitTypes.TemporalUnknownUnit if unit was not set when creating the
+QgsInterval instance or interval was set with a mix of units.
+
+.. seealso:: :py:func:`originalDuration`
+
+.. versionadded:: 3.18
 %End
 
     bool operator==( QgsInterval other ) const;

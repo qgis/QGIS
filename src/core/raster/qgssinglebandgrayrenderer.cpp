@@ -18,6 +18,9 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
+#include "qgscolorramplegendnode.h"
+#include "qgscolorramplegendnodesettings.h"
+#include "qgsreadwritecontext.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -29,6 +32,7 @@ QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input,
   , mGrayBand( grayBand )
   , mGradient( BlackToWhite )
   , mContrastEnhancement( nullptr )
+  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
 {
 }
 
@@ -42,6 +46,7 @@ QgsSingleBandGrayRenderer *QgsSingleBandGrayRenderer::clone() const
   {
     renderer->setContrastEnhancement( new QgsContrastEnhancement( *mContrastEnhancement ) );
   }
+  renderer->setLegendSettings( mLegendSettings ? new QgsColorRampLegendNodeSettings( *mLegendSettings.get() ) : new QgsColorRampLegendNodeSettings() );
   return renderer;
 }
 
@@ -69,6 +74,11 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
     ce->readXml( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }
+
+  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+  legendSettings->readXml( elem, QgsReadWriteContext() );
+  r->setLegendSettings( legendSettings.release() );
+
   return r;
 }
 
@@ -195,6 +205,10 @@ void QgsSingleBandGrayRenderer::writeXml( QDomDocument &doc, QDomElement &parent
     mContrastEnhancement->writeXml( doc, contrastElem );
     rasterRendererElem.appendChild( contrastElem );
   }
+
+  if ( mLegendSettings )
+    mLegendSettings->writeXml( doc, rasterRendererElem, QgsReadWriteContext() );
+
   parentElem.appendChild( rasterRendererElem );
 }
 
@@ -209,6 +223,27 @@ QList<QPair<QString, QColor> > QgsSingleBandGrayRenderer::legendSymbologyItems()
     symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), maxColor ) );
   }
   return symbolItems;
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsSingleBandGrayRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> res;
+  if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+  {
+    const QString name = displayBandName( mGrayBand );
+    if ( !name.isEmpty() )
+    {
+      res << new QgsSimpleLegendNode( nodeLayer, name );
+    }
+
+    const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
+    const QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
+    res << new QgsColorRampLegendNode( nodeLayer, new QgsGradientColorRamp( minColor, maxColor ),
+                                       mLegendSettings ? *mLegendSettings : QgsColorRampLegendNodeSettings(),
+                                       mContrastEnhancement->minimumValue(),
+                                       mContrastEnhancement->maximumValue() );
+  }
+  return res;
 }
 
 QList<int> QgsSingleBandGrayRenderer::usesBands() const
@@ -369,4 +404,16 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       lowColorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( it->second.alpha() ) );
     }
   }
+}
+
+const QgsColorRampLegendNodeSettings *QgsSingleBandGrayRenderer::legendSettings() const
+{
+  return mLegendSettings.get();
+}
+
+void QgsSingleBandGrayRenderer::setLegendSettings( QgsColorRampLegendNodeSettings *settings )
+{
+  if ( settings == mLegendSettings.get() )
+    return;
+  mLegendSettings.reset( settings );
 }

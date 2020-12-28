@@ -234,6 +234,11 @@ bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
   return symbol->type() == mType;
 }
 
+bool QgsSymbolLayer::usesMapUnits() const
+{
+  return false;
+}
+
 void QgsSymbolLayer::setRenderingPass( int renderingPass )
 {
   mRenderingPass = renderingPass;
@@ -359,7 +364,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
   QgsStringMap::const_iterator propIt = stringMap.constBegin();
   for ( ; propIt != stringMap.constEnd(); ++propIt )
   {
-    QgsProperty prop;
+    std::unique_ptr<QgsProperty> prop;
     QString propertyName;
 
     if ( propIt.key().endsWith( QLatin1String( "_dd_expression" ) ) )
@@ -369,7 +374,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
       //get data defined property name by stripping "_dd_expression" from property key
       propertyName = propIt.key().left( propIt.key().length() - 14 );
 
-      prop = propertyFromMap( stringMap, propertyName );
+      prop = qgis::make_unique<QgsProperty>( propertyFromMap( stringMap, propertyName ) );
     }
     else if ( propIt.key().endsWith( QLatin1String( "_expression" ) ) )
     {
@@ -378,7 +383,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
       //get data defined property name by stripping "_expression" from property key
       propertyName = propIt.key().left( propIt.key().length() - 11 );
 
-      prop = QgsProperty::fromExpression( propIt.value() );
+      prop = qgis::make_unique<QgsProperty>( QgsProperty::fromExpression( propIt.value() ) );
     }
 
     if ( !prop || !OLD_PROPS.contains( propertyName ) )
@@ -395,7 +400,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
         key = QgsSymbolLayer::PropertyStrokeColor;
     }
 
-    setDataDefinedProperty( key, prop );
+    setDataDefinedProperty( key, QgsProperty( *prop.get() ) );
   }
 }
 

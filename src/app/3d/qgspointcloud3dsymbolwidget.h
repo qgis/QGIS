@@ -21,6 +21,7 @@
 
 class QgsPointCloudLayer;
 class QgsPointCloud3DSymbol;
+class QgsPointCloudClassifiedRendererWidget;
 
 class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DSymbolWidget
 {
@@ -31,7 +32,16 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
     void setSymbol( QgsPointCloud3DSymbol *symbol );
 
+    void setDockMode( bool dockMode );
+
     QgsPointCloud3DSymbol *symbol() const;
+
+    void setMaximumScreenError( double maxScreenError );
+    double maximumScreenError() const;
+    void setShowBoundingBoxes( bool showBoundingBoxes );
+    double showBoundingBoxes() const;
+
+    void connectChildPanels( QgsPanelWidget *parent );
 
   private slots:
     void reloadColorRampShaderMinMax();
@@ -60,6 +70,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
   private:
     int mBlockChangedSignals = 0;
     int mDisableMinMaxWidgetRefresh = 0;
+    QgsPointCloudClassifiedRendererWidget *mClassifiedRendererWidget = nullptr;
     QgsPointCloudLayer *mLayer = nullptr;
 
     bool mBlockMinMaxChanged = false;

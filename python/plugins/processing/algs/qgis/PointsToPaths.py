@@ -154,6 +154,9 @@ class PointsToPaths(QgisAlgorithm):
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
+        if text_dir and not(os.path.exists(text_dir)):
+            raise QgsProcessingException(self.tr("The text output directory does not exist"))
+
         points = dict()
         required_fields = expression.referencedColumns()
         required_fields.add(group_field_name)

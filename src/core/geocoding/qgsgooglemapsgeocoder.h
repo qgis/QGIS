@@ -19,6 +19,8 @@
 #include "qgis_core.h"
 #include "qgsgeocoder.h"
 
+#include <QMutex>
+
 /**
  * \ingroup core
  * A geocoder which uses the Google Map geocoding API to retrieve results.
@@ -110,6 +112,9 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
     QString mApiKey;
     QString mRegion;
     QString mEndpoint;
+
+    static QReadWriteLock sMutex;
+    static QMap< QUrl, QList< QgsGeocoderResult > > sCachedResults;
 
 };
 

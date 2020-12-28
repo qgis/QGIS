@@ -21,6 +21,7 @@
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgscolorramplegendnode.h"
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
@@ -80,6 +81,11 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   int alpha = 0;
   for ( int i = 0; i < count; ++i )
   {
+    if ( context.renderContext().renderingStopped() )
+    {
+      break;
+    }
+
     if ( considerZ )
     {
       // z value filtering is cheapest, if we're doing it...
@@ -111,7 +117,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
       if ( applyYOffset )
         attributeValue = context.offset().y() + context.scale().y() * attributeValue;
       if ( applyZOffset )
-        attributeValue = context.offset().z() + context.scale().z() * attributeValue;
+        attributeValue = ( context.offset().z() + context.scale().z() * attributeValue ) * context.zValueScale() + context.zValueFixedOffset();
 
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
       drawPoint( x, y, QColor( red, green, blue, alpha ), context );
@@ -130,7 +136,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Intensity" ) ) );
 
   QDomElement elemShader = element.firstChildElement( QStringLiteral( "colorrampshader" ) );
-  r->mColorRampShader.readXml( elemShader );
+  r->mColorRampShader.readXml( elemShader, context );
 
   r->setMinimum( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
   r->setMaximum( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
@@ -150,7 +156,7 @@ QDomElement QgsPointCloudAttributeByRampRenderer::save( QDomDocument &doc, const
 
   rendererElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
 
-  QDomElement elemShader = mColorRampShader.writeXml( doc );
+  QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   rendererElem.appendChild( elemShader );
 
   saveCommonProperties( rendererElem, context );
@@ -167,16 +173,34 @@ QSet<QString> QgsPointCloudAttributeByRampRenderer::usedAttributes( const QgsPoi
 
 QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
-  QList<QgsLayerTreeModelLegendNode *> nodes;
+  QList<QgsLayerTreeModelLegendNode *> res;
+  res << new QgsSimpleLegendNode( nodeLayer, mAttribute );
 
-  QList< QPair< QString, QColor > > items;
-  mColorRampShader.legendSymbologyItems( items );
-  for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+  switch ( mColorRampShader.colorRampType() )
   {
-    nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
-  }
+    case QgsColorRampShader::Interpolated:
+      // for interpolated shaders we use a ramp legend node
+      res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
+                                         mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                                         mColorRampShader.minimumValue(),
+                                         mColorRampShader.maximumValue() );
+      break;
 
-  return nodes;
+    case QgsColorRampShader::Discrete:
+    case QgsColorRampShader::Exact:
+    {
+      // for all others we use itemised lists
+      QList< QPair< QString, QColor > > items;
+      mColorRampShader.legendSymbologyItems( items );
+      res.reserve( items.size() );
+      for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+      {
+        res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
+      }
+      break;
+    }
+  }
+  return res;
 }
 
 QString QgsPointCloudAttributeByRampRenderer::attribute() const

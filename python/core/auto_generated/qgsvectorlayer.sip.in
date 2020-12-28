@@ -442,7 +442,7 @@ QgsVectorLayer cannot be copied.
 Returns a new instance equivalent to this one. A new provider is
 created for the same data source and renderers for features and diagrams
 are cloned too. Moreover, each attributes (transparency, extent, selected
-features and so on) are identicals.
+features and so on) are identical.
 
 :return: a new layer instance
 
@@ -821,14 +821,56 @@ Sets diagram rendering object (takes ownership)
 
     QgsFeatureRenderer *renderer();
 %Docstring
-Returns renderer.
+Returns the feature renderer used for rendering the features in the layer in 2D
+map views.
+
+.. seealso:: :py:func:`setRenderer`
 %End
 
 
     void setRenderer( QgsFeatureRenderer *r /Transfer/ );
 %Docstring
-Sets renderer which will be invoked to represent this layer.
+Sets the feature renderer which will be invoked to represent this layer in 2D map views.
 Ownership is transferred.
+
+.. seealso:: :py:func:`renderer`
+%End
+
+    void addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator /Transfer/ );
+%Docstring
+Adds a new feature renderer ``generator`` to the layer.
+
+Ownership of ``generator`` is transferred to the layer.
+
+.. seealso:: :py:func:`removeFeatureRendererGenerator`
+
+.. seealso:: :py:func:`featureRendererGenerators`
+
+.. versionadded:: 3.18
+%End
+
+    void removeFeatureRendererGenerator( const QString &id );
+%Docstring
+Removes the feature renderer with matching ``id`` from the layer.
+
+The corresponding generator will be deleted.
+
+.. seealso:: :py:func:`addFeatureRendererGenerator`
+
+.. seealso:: :py:func:`featureRendererGenerators`
+
+.. versionadded:: 3.18
+%End
+
+    QList< const QgsFeatureRendererGenerator * > featureRendererGenerators() const;
+%Docstring
+Returns a list of the feature renderer generators owned by the layer.
+
+.. seealso:: :py:func:`addFeatureRendererGenerator`
+
+.. seealso:: :py:func:`removeFeatureRendererGenerator`
+
+.. versionadded:: 3.18
 %End
 
     QgsWkbTypes::GeometryType geometryType() const;
@@ -1789,6 +1831,15 @@ If you need only the count of committed features call this method on this layer'
 Makes layer read-only (editing disabled) or not
 
 :return: ``False`` if the layer is in editing yet
+%End
+
+    bool supportsEditing();
+%Docstring
+Returns whether the layer supports editing or not
+
+:return: ``False`` if the layer is read only or the data provider has no editing capabilities
+
+.. versionadded:: 3.18
 %End
 
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
@@ -2921,6 +2972,13 @@ Emitted when the read only state of this layer is changed.
 Only applies to manually set readonly state, not to the edit mode.
 
 .. versionadded:: 3.0
+%End
+
+    void supportsEditingChanged();
+%Docstring
+Emitted when the read only state or the data provider of this layer is changed.
+
+.. versionadded:: 3.18
 %End
 
     void symbolFeatureCountMapChanged();

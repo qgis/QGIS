@@ -642,7 +642,38 @@ void TestQgsMapToolAddFeatureLine::testZMSnapping()
 
   mLayerLine->undoStack()->undo();
 
-  cfg.setEnabled( false );
+
+  // Snap on middle Segment
+  mCanvas->setCurrentLayer( mLayerLineZ );
+  cfg.setTypeFlag( QgsSnappingConfig::MiddleOfSegmentFlag );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // create geometry will be snapped
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 123 );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 20, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 30, 20, Qt::LeftButton );
+  utils.mouseClick( 30, 20, Qt::RightButton );
+  newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
+  wkt = "LineStringZ (20 20 123, 30 20 123)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 321 );
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 25, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 25, 25, Qt::LeftButton );
+  utils.mouseClick( 25, 25, Qt::RightButton );
+  newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
+  wkt = "LineStringZ (25 20 123, 25 25 321)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
 
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );

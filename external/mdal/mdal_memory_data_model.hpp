@@ -19,7 +19,7 @@ namespace MDAL
 {
   class MemoryMesh;
 
-  typedef struct
+  typedef struct VertexType
   {
     double x = std::numeric_limits<double>::quiet_NaN();
     double y = std::numeric_limits<double>::quiet_NaN();

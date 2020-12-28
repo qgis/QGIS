@@ -34,6 +34,7 @@
 #include "qgsguiutils.h"
 #include "qgsdoublevalidator.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
+#include "qgscolorramplegendnodewidget.h"
 
 #include <QCursor>
 #include <QPushButton>
@@ -62,6 +63,8 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mColormapTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsColorRampShaderWidget::mColormapTreeWidget_itemDoubleClicked );
   connect( mColorInterpolationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorRampShaderWidget::mColorInterpolationComboBox_currentIndexChanged );
   connect( mClassificationModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorRampShaderWidget::mClassificationModeComboBox_currentIndexChanged );
+
+  connect( mLegendSettingsButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::showLegendSettings );
 
   contextMenu = new QMenu( tr( "Options" ), this );
   contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
@@ -174,6 +177,8 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
   {
     colorRampShader.setSourceColorRamp( btnColorRamp->colorRamp() );
   }
+
+  colorRampShader.setLegendSettings( new QgsColorRampLegendNodeSettings( mLegendSettings ) );
   return colorRampShader;
 }
 
@@ -279,6 +284,7 @@ void QgsColorRampShaderWidget::mAddEntryButton_clicked()
   autoLabel();
 
   loadMinimumMaximumFromTree();
+  updateColorRamp();
   emit widgetChanged();
 }
 
@@ -298,6 +304,7 @@ void QgsColorRampShaderWidget::mDeleteEntryButton_clicked()
   }
 
   loadMinimumMaximumFromTree();
+  updateColorRamp();
   emit widgetChanged();
 }
 
@@ -349,6 +356,12 @@ void QgsColorRampShaderWidget::mClassificationModeComboBox_currentIndexChanged( 
   QgsColorRampShader::ClassificationMode mode = static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->itemData( index ).toInt() );
   mNumberOfEntriesSpinBox->setEnabled( mode != QgsColorRampShader::Continuous );
   emit classificationModeChanged( mode );
+}
+
+void QgsColorRampShaderWidget::updateColorRamp()
+{
+  std::unique_ptr< QgsColorRamp > ramp( shader().createColorRamp() );
+  whileBlocking( btnColorRamp )->setColorRamp( ramp.get() );
 }
 
 void QgsColorRampShaderWidget::applyColorRamp()
@@ -566,6 +579,7 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
     {
       autoLabel();
       loadMinimumMaximumFromTree();
+      updateColorRamp();
       emit widgetChanged();
       break;
     }
@@ -581,6 +595,7 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
     case ColorColumn:
     {
       loadMinimumMaximumFromTree();
+      updateColorRamp();
       emit widgetChanged();
       break;
     }
@@ -613,6 +628,9 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
 
   populateColormapTreeWidget( colorRampShader.colorRampItemList() );
 
+  if ( colorRampShader.legendSettings() )
+    mLegendSettings = *colorRampShader.legendSettings();
+
   emit widgetChanged();
 }
 
@@ -629,14 +647,17 @@ void QgsColorRampShaderWidget::mColorInterpolationComboBox_currentIndexChanged( 
     case QgsColorRampShader::Interpolated:
       valueLabel = tr( "Value" );
       valueToolTip = tr( "Value for color stop" );
+      mLegendSettingsButton->setEnabled( true );
       break;
     case QgsColorRampShader::Discrete:
       valueLabel = tr( "Value <=" );
       valueToolTip = tr( "Maximum value for class" );
+      mLegendSettingsButton->setEnabled( false );
       break;
     case QgsColorRampShader::Exact:
       valueLabel = tr( "Value =" );
       valueToolTip = tr( "Value for color" );
+      mLegendSettingsButton->setEnabled( false );
       break;
   }
 
@@ -727,6 +748,7 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
 {
   auto applyPrecision = [ = ]( const QString & value )
   {
+    double val { value.toDouble( ) };
     Qgis::DataType dataType { mRasterDataProvider ? mRasterDataProvider->dataType( mBand ) : Qgis::DataType::Float64 };
     switch ( dataType )
     {
@@ -740,12 +762,11 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
       case Qgis::DataType::ARGB32:
       case Qgis::DataType::ARGB32_Premultiplied:
       {
-        return QLocale().toString( QLocale().toLongLong( value ) );
+        return QLocale().toString( std::round( val ), 'f', 0 );
       }
       case Qgis::DataType::Float32:
       case Qgis::DataType::CFloat32:
       {
-        double val { value.toFloat( ) };
         if ( mLabelPrecisionSpinBox->value() <  0 )
         {
           const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
@@ -758,7 +779,6 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
       case Qgis::DataType::CFloat64:
       case Qgis::DataType::UnknownDataType:
       {
-        double val { value.toDouble( ) };
         if ( mLabelPrecisionSpinBox->value() <  0 )
         {
           const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
@@ -871,5 +891,32 @@ void QgsColorRampShaderWidget::changeOpacity()
 
     loadMinimumMaximumFromTree();
     emit widgetChanged();
+  }
+}
+
+void QgsColorRampShaderWidget::showLegendSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  if ( panel && panel->dockMode() )
+  {
+    QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
+    legendPanel->setPanelTitle( tr( "Legend Settings" ) );
+    legendPanel->setSettings( mLegendSettings );
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [ = ]
+    {
+      mLegendSettings = legendPanel->settings();
+      emit widgetChanged();
+    } );
+    panel->openPanel( legendPanel );
+  }
+  else
+  {
+    QgsColorRampLegendNodeDialog dialog( mLegendSettings, this );
+    dialog.setWindowTitle( tr( "Legend Settings" ) );
+    if ( dialog.exec() )
+    {
+      mLegendSettings = dialog.settings();
+      emit widgetChanged();
+    }
   }
 }

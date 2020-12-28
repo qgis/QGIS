@@ -614,7 +614,7 @@ bool QgsVirtualLayerProvider::isValid() const
 
 QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() const
 {
-  QgsVectorDataProvider::Capabilities capabilities = CancelSupport;
+  QgsVectorDataProvider::Capabilities capabilities = CancelSupport | QgsVectorDataProvider::Capability::ReloadData;
 
   if ( !mDefinition.uid().isNull() )
   {

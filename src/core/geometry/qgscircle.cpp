@@ -188,19 +188,112 @@ QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt
   return QgsCircle( centerPt, centerPt.distance( pt1 ), azimuth );
 }
 
-QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon )
+static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const QgsPoint &pt2_par1, const QgsPoint &pt1_par2, const QgsPoint &pt2_par2, const QgsPoint &pt1_line1, const QgsPoint &pt2_line1, QgsPoint pos, double epsilon )
+{
+  const double radius = QgsGeometryUtils::perpendicularSegment( pt1_par2, pt1_par1, pt2_par1 ).length() / 2.0;
+
+  bool isInter;
+  QgsPoint ptInter;
+  QVector<QgsCircle> circles;
+
+  QgsPoint ptInter_par1line1, ptInter_par2line1;
+  double angle1, angle2;
+  double x, y;
+  QgsGeometryUtils::angleBisector( pt1_par1.x(), pt1_par1.y(), pt2_par1.x(), pt2_par1.y(), pt1_line1.x(), pt1_line1.y(), pt2_line1.x(), pt2_line1.y(), x, y, angle1 );
+  ptInter_par1line1.setX( x );
+  ptInter_par1line1.setY( y );
+
+  QgsGeometryUtils::angleBisector( pt1_par2.x(), pt1_par2.y(), pt2_par2.x(), pt2_par2.y(), pt1_line1.x(), pt1_line1.y(), pt2_line1.x(), pt2_line1.y(), x, y, angle2 );
+  ptInter_par2line1.setX( x );
+  ptInter_par2line1.setY( y );
+
+  QgsPoint center;
+  QgsGeometryUtils::segmentIntersection( ptInter_par1line1, ptInter_par1line1.project( 1.0, angle1 ), ptInter_par2line1, ptInter_par2line1.project( 1.0, angle2 ), center, isInter, epsilon, true );
+  if ( isInter )
+  {
+    if ( !pos.isEmpty() )
+    {
+      if ( QgsGeometryUtils::leftOfLine( center, pt1_line1, pt2_line1 ) == QgsGeometryUtils::leftOfLine( pos, pt1_line1, pt2_line1 ) )
+      {
+        circles.append( QgsCircle( center, radius ) );
+      }
+    }
+    else
+    {
+      circles.append( QgsCircle( center, radius ) );
+    }
+  }
+
+  QgsGeometryUtils::segmentIntersection( ptInter_par1line1, ptInter_par1line1.project( 1.0, angle1 ), ptInter_par2line1, ptInter_par2line1.project( 1.0, angle2 + 90.0 ), center, isInter, epsilon, true );
+  if ( isInter )
+  {
+    if ( !pos.isEmpty() )
+    {
+      if ( QgsGeometryUtils::leftOfLine( center, pt1_line1, pt2_line1 ) == QgsGeometryUtils::leftOfLine( pos, pt1_line1, pt2_line1 ) )
+      {
+        circles.append( QgsCircle( center, radius ) );
+      }
+    }
+    else
+    {
+      circles.append( QgsCircle( center, radius ) );
+    }
+  }
+
+  QgsGeometryUtils::segmentIntersection( ptInter_par1line1, ptInter_par1line1.project( 1.0, angle1 + 90.0 ), ptInter_par2line1, ptInter_par2line1.project( 1.0, angle2 ), center, isInter, epsilon, true );
+  if ( isInter && !circles.contains( QgsCircle( center, radius ) ) )
+  {
+    if ( !pos.isEmpty() )
+    {
+      if ( QgsGeometryUtils::leftOfLine( center, pt1_line1, pt2_line1 ) == QgsGeometryUtils::leftOfLine( pos, pt1_line1, pt2_line1 ) )
+      {
+        circles.append( QgsCircle( center, radius ) );
+      }
+    }
+    else
+    {
+      circles.append( QgsCircle( center, radius ) );
+    }
+  }
+  QgsGeometryUtils::segmentIntersection( ptInter_par1line1, ptInter_par1line1.project( 1.0, angle1 + 90.0 ), ptInter_par2line1, ptInter_par2line1.project( 1.0, angle2 + 90.0 ), center, isInter, epsilon, true );
+  if ( isInter && !circles.contains( QgsCircle( center, radius ) ) )
+  {
+    if ( !pos.isEmpty() )
+    {
+      if ( QgsGeometryUtils::leftOfLine( center, pt1_line1, pt2_line1 ) == QgsGeometryUtils::leftOfLine( pos, pt1_line1, pt2_line1 ) )
+      {
+        circles.append( QgsCircle( center, radius ) );
+      }
+    }
+    else
+    {
+      circles.append( QgsCircle( center, radius ) );
+    }
+  }
+
+  return circles;
+}
+
+QVector<QgsCircle> QgsCircle::from3TangentsMulti( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, QgsPoint pos )
 {
   QgsPoint p1, p2, p3;
-  bool isIntersect = false;
-  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, p1, isIntersect, epsilon );
-  if ( !isIntersect )
-    return QgsCircle();
-  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg3, pt2_tg3, p2, isIntersect, epsilon );
-  if ( !isIntersect )
-    return QgsCircle();
-  QgsGeometryUtils::segmentIntersection( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, p3, isIntersect, epsilon );
-  if ( !isIntersect )
-    return QgsCircle();
+  bool isIntersect_tg1tg2 = false;
+  bool isIntersect_tg1tg3 = false;
+  bool isIntersect_tg2tg3 = false;
+  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, p1, isIntersect_tg1tg2, epsilon );
+  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg3, pt2_tg3, p2, isIntersect_tg1tg3, epsilon );
+  QgsGeometryUtils::segmentIntersection( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, p3, isIntersect_tg2tg3, epsilon );
+
+  QVector<QgsCircle> circles;
+  if ( !isIntersect_tg1tg2 && !isIntersect_tg2tg3 ) // three lines are parallels
+    return circles;
+
+  if ( !isIntersect_tg1tg2 )
+    return from2ParallelsLine( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, pos, epsilon );
+  else if ( !isIntersect_tg1tg3 )
+    return from2ParallelsLine( pt1_tg1, pt2_tg1, pt1_tg3, pt2_tg3, pt1_tg2, pt2_tg2, pos, epsilon );
+  else if ( !isIntersect_tg2tg3 )
+    return from2ParallelsLine( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, pt1_tg1, pt1_tg1, pos, epsilon );
 
   if ( p1.is3D() )
   {
@@ -217,7 +310,16 @@ QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2
     p3.convertTo( QgsWkbTypes::dropZ( p3.wkbType() ) );
   }
 
-  return QgsTriangle( p1, p2, p3 ).inscribedCircle();
+  circles.append( QgsTriangle( p1, p2, p3 ).inscribedCircle() );
+  return circles;
+}
+
+QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon, QgsPoint pos )
+{
+  const QVector<QgsCircle> circles = from3TangentsMulti( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, epsilon, pos );
+  if ( circles.length() != 1 )
+    return QgsCircle();
+  return circles.at( 0 );
 }
 
 QgsCircle QgsCircle::minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon )

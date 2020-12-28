@@ -101,10 +101,17 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
       // layer. The extent must be projected to the canvas CS
       QgsCoordinateTransform ct( it.value()->crs(), mProject->crs(), mProject->transformContext() );
       ct.setBallparkTransformsAreAppropriate( true );
-      const QgsRectangle extent = ct.transformBoundingBox( it.value()->extent() );
+      try
+      {
+        const QgsRectangle extent = ct.transformBoundingBox( it.value()->extent() );
 
-      QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
-      fullExtent.combineExtentWith( extent );
+        QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
+        fullExtent.combineExtentWith( extent );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not reproject layer extent" ) );
+      }
     }
 
     if ( fullExtent.width() == 0.0 || fullExtent.height() == 0.0 )

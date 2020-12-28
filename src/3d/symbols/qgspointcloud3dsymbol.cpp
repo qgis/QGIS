@@ -139,12 +139,12 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
   mColorRampShader.readXml( elem );
 }
 
-QString QgsColorRampPointCloud3DSymbol::renderingParameter() const
+QString QgsColorRampPointCloud3DSymbol::attribute() const
 {
   return mRenderingParameter;
 }
 
-void QgsColorRampPointCloud3DSymbol::setRenderingParameter( const QString &parameter )
+void QgsColorRampPointCloud3DSymbol::setAttribute( const QString &parameter )
 {
   mRenderingParameter = parameter;
 }
@@ -365,5 +365,148 @@ QgsContrastEnhancement *QgsRgbPointCloud3DSymbol::blueContrastEnhancement()
 void QgsRgbPointCloud3DSymbol::setBlueContrastEnhancement( QgsContrastEnhancement *enhancement )
 {
   mBlueContrastEnhancement.reset( enhancement );
+}
+
+// QgsClassificationPointCloud3DSymbol
+
+
+QgsClassificationPointCloud3DSymbol::QgsClassificationPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol()
+{
+
+}
+
+QgsAbstract3DSymbol *QgsClassificationPointCloud3DSymbol::clone() const
+{
+  QgsClassificationPointCloud3DSymbol *result = new QgsClassificationPointCloud3DSymbol;
+  result->mPointSize = mPointSize;
+  result->mRenderingParameter = mRenderingParameter;
+  result->mCategoriesList = mCategoriesList;
+  copyBaseSettings( result );
+  return result;
+}
+
+QString QgsClassificationPointCloud3DSymbol::symbolType() const
+{
+  return QStringLiteral( "classification" );
+}
+
+void QgsClassificationPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( context )
+  QDomDocument doc = elem.ownerDocument();
+
+  elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
+  elem.setAttribute( QStringLiteral( "rendering-parameter" ), mRenderingParameter );
+
+  // categories
+  QDomElement catsElem = doc.createElement( QStringLiteral( "categories" ) );
+  for ( const QgsPointCloudCategory &category : mCategoriesList )
+  {
+    QDomElement catElem = doc.createElement( QStringLiteral( "category" ) );
+    catElem.setAttribute( QStringLiteral( "value" ), QString::number( category.value() ) );
+    catElem.setAttribute( QStringLiteral( "label" ), category.label() );
+    catElem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( category.color() ) );
+    catElem.setAttribute( QStringLiteral( "render" ), category.renderState() ? "true" : "false" );
+    catsElem.appendChild( catElem );
+  }
+  elem.appendChild( catsElem );
+}
+
+void QgsClassificationPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( context )
+
+  mPointSize = elem.attribute( "point-size", QStringLiteral( "2.0" ) ).toFloat();
+  mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
+
+  const QDomElement catsElem = elem.firstChildElement( QStringLiteral( "categories" ) );
+  if ( !catsElem.isNull() )
+  {
+    mCategoriesList.clear();
+    QDomElement catElem = catsElem.firstChildElement();
+    while ( !catElem.isNull() )
+    {
+      if ( catElem.tagName() == QLatin1String( "category" ) )
+      {
+        const int value = catElem.attribute( QStringLiteral( "value" ) ).toInt();
+        const QString label = catElem.attribute( QStringLiteral( "label" ) );
+        const bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
+        const QColor color = QgsSymbolLayerUtils::decodeColor( catElem.attribute( QStringLiteral( "color" ) ) );
+        mCategoriesList.append( QgsPointCloudCategory( value, color, label, render ) );
+      }
+      catElem = catElem.nextSiblingElement();
+    }
+  }
+}
+
+QString QgsClassificationPointCloud3DSymbol::attribute() const
+{
+  return mRenderingParameter;
+}
+
+void QgsClassificationPointCloud3DSymbol::setAttribute( const QString &attribute )
+{
+  mRenderingParameter = attribute;
+}
+
+void QgsClassificationPointCloud3DSymbol::setCategoriesList( const QgsPointCloudCategoryList &categories )
+{
+  mCategoriesList = categories;
+}
+
+QgsPointCloudCategoryList QgsClassificationPointCloud3DSymbol::getFilteredOutCategories() const
+{
+  QgsPointCloudCategoryList filteredOut;
+  for ( QgsPointCloudCategory category : mCategoriesList )
+  {
+    if ( !category.renderState() )
+      filteredOut.push_back( category );
+  }
+  return filteredOut;
+}
+
+QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
+{
+  QgsColorRampShader colorRampShader;
+  colorRampShader.setColorRampType( QgsColorRampShader::Type::Exact );
+  colorRampShader.setClassificationMode( QgsColorRampShader::ClassificationMode::Continuous );
+  QList<QgsColorRampShader::ColorRampItem> colorRampItemList;
+  for ( const QgsPointCloudCategory &category : mCategoriesList )
+  {
+    QColor color = category.color();
+    QgsColorRampShader::ColorRampItem item( category.value(), color, category.label() );
+    colorRampItemList.push_back( item );
+  }
+  colorRampShader.setColorRampItemList( colorRampItemList );
+  return colorRampShader;
+}
+
+
+void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
+{
+  QgsColorRampShader mColorRampShader = colorRampShader();
+  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
+  mat->addParameter( renderingStyle );
+  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
+  mat->addParameter( pointSizeParameter );
+  // Create the texture to pass the color ramp
+  Qt3DRender::QTexture1D *colorRampTexture = nullptr;
+  if ( mColorRampShader.colorRampItemList().count() > 0 )
+  {
+    colorRampTexture = new Qt3DRender::QTexture1D( mat );
+    colorRampTexture->addTextureImage( new QgsColorRampTexture( mColorRampShader, 1 ) );
+    colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
+    colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
+  }
+
+  // Parameters
+  Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( "u_colorRampTexture", colorRampTexture );
+  mat->addParameter( colorRampTextureParameter );
+  Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
+  mat->addParameter( colorRampCountParameter );
+  int colorRampType = mColorRampShader.colorRampType();
+  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
+  mat->addParameter( colorRampTypeParameter );
 }
 

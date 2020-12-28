@@ -185,6 +185,16 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
+    /**
+     * Source for exported field names.
+     *
+     * \since QGIS 3.18
+     */
+    enum FieldNameSource
+    {
+      Original = 0, //!< Use original field names
+      PreferAlias, //!< Use the field alias as the exported field name, wherever one is set. Otherwise use the original field names.
+    };
 
     /**
      * Options for sorting and filtering vector formats.
@@ -514,6 +524,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         //! Optional feedback object allowing cancellation of layer save
         QgsFeedback *feedback = nullptr;
+
+        /**
+         * Source for exported field names.
+         *
+         * \since QGIS 3.18
+         */
+        FieldNameSource fieldNameSource = Original;
     };
 
 #ifndef SIP_RUN
@@ -570,7 +587,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
 #ifndef SIP_RUN
                                                , QString *newLayer = nullptr,
-                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext()
+                                           QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
+                                           FieldNameSource fieldNameSource = Original
 #endif
                                          ) SIP_DEPRECATED;
 
@@ -592,6 +610,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newLayer potentially modified layer name (output parameter) (added in QGIS 3.4)
      * \param transformContext transform context, needed if the output file srs is forced to specific crs (added in QGIS 3.10.3)
      * \param sinkFlags feature sink flags (added in QGIS 3.10.3)
+     * \param fieldNameSource source for field names (since QGIS 3.18)
      * \note not available in Python bindings
      * \deprecated Use create() instead.
      */
@@ -610,7 +629,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                            QgsVectorFileWriter::ActionOnExistingFile action,
                                            QString *newLayer = nullptr,
                                            QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext(),
-                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
+                                           QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
+                                           FieldNameSource fieldNameSource = Original
                                          ) SIP_SKIP;
 
     //! QgsVectorFileWriter cannot be copied.
@@ -967,7 +987,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                QgsVectorFileWriter::FieldValueConverter *fieldValueConverter,
                const QString &layerName,
                QgsVectorFileWriter::ActionOnExistingFile action, QString *newLayer, QgsFeatureSink::SinkFlags sinkFlags,
-               const QgsCoordinateTransformContext &transformContext );
+               const QgsCoordinateTransformContext &transformContext,
+               FieldNameSource fieldNameSource );
     void resetMap( const QgsAttributeList &attributes );
 
     std::unique_ptr< QgsFeatureRenderer > mRenderer;

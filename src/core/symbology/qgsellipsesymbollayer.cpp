@@ -665,6 +665,14 @@ QgsUnitTypes::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
   return unit;
 }
 
+bool QgsEllipseSymbolLayer::usesMapUnits() const
+{
+  return mSymbolWidthUnit == QgsUnitTypes::RenderMapUnits || mSymbolWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mSymbolHeightUnit == QgsUnitTypes::RenderMapUnits || mSymbolHeightUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
+         || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
 void QgsEllipseSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   QgsMarkerSymbolLayer::setMapUnitScale( scale );

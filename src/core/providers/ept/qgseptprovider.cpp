@@ -38,7 +38,7 @@ QgsEptProvider::QgsEptProvider(
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
-  mIsValid = mIndex->load( uri );
+  loadIndex( );
 }
 
 QgsEptProvider::~QgsEptProvider() = default;
@@ -60,7 +60,7 @@ QgsPointCloudAttributeCollection QgsEptProvider::attributes() const
 
 bool QgsEptProvider::isValid() const
 {
-  return mIsValid;
+  return mIndex->isValid();
 }
 
 QString QgsEptProvider::name() const
@@ -93,9 +93,22 @@ QVariant QgsEptProvider::metadataClassStatistic( const QString &attribute, const
   return mIndex->metadataClassStatistic( attribute, value, statistic );
 }
 
+void QgsEptProvider::loadIndex( )
+{
+  if ( mIndex->isValid() )
+    return;
+
+  mIndex->load( dataSourceUri() );
+}
+
 QVariantMap QgsEptProvider::originalMetadata() const
 {
   return mIndex->originalMetadata();
+}
+
+void QgsEptProvider::generateIndex()
+{
+  //no-op, index is always generated
 }
 
 QVariant QgsEptProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const

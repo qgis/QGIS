@@ -99,6 +99,56 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         writeShape(self.mMemoryLayer, 'writetest.shp')
 
+    def testWritePreferAlias(self):
+        """Test preferring field alias."""
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double&index=yes'),
+            'test',
+            'memory')
+
+        self.assertTrue(layer.isValid())
+        myProvider = layer.dataProvider()
+
+        layer.setFieldAlias(0, 'My Name')
+        layer.setFieldAlias(2, 'My Size')
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        ft.setAttributes(['Johny', 20, 0.3])
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.fieldNameSource = QgsVectorFileWriter.Original
+
+        dest = os.path.join(str(QDir.tempPath()), 'alias.shp')
+        result, err = QgsVectorFileWriter.writeAsVectorFormatV2(
+            layer,
+            dest,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(result, QgsVectorFileWriter.NoError)
+
+        res = QgsVectorLayer(dest, 'result')
+        self.assertTrue(res.isValid())
+        self.assertEqual([f.name() for f in res.fields()], ['name', 'age', 'size'])
+
+        options.fieldNameSource = QgsVectorFileWriter.PreferAlias
+        dest = os.path.join(str(QDir.tempPath()), 'alias2.shp')
+        result, err = QgsVectorFileWriter.writeAsVectorFormatV2(
+            layer,
+            dest,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(result, QgsVectorFileWriter.NoError)
+
+        res = QgsVectorLayer(dest, 'result')
+        self.assertTrue(res.isValid())
+        self.assertEqual([f.name() for f in res.fields()], ['My Name', 'age', 'My Size'])
+
     def testWriteWithLongLongField(self):
         ml = QgsVectorLayer('NoGeometry?crs=epsg:4326&field=fldlonglong:long',
                             'test2', 'memory')

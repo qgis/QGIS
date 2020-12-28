@@ -266,8 +266,13 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
   }
 
   //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
-
-  if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
+  if ( node->childCount() == 0 )
+  {
+    // there's no children available for this node, so regardless of whether it has an acceptable error
+    // or not, it's the best we'll ever get...
+    mActiveNodes << node;
+  }
+  else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
   {
     // acceptable error for the current chunk - let's render it
 

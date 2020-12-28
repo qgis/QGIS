@@ -52,6 +52,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     void stopRender( QgsSymbolRenderContext &context ) override;
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    bool usesMapUnits() const override;
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 

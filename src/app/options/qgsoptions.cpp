@@ -38,6 +38,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgsnumericformatwidget.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgslocalizeddatapathregistry.h"
@@ -703,7 +704,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool() );
-  cbxCompileExpressions->setChecked( mSettings->value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() );
 
   mComboCopyFeatureFormat->addItem( tr( "Plain Text, No Geometry" ), QgsClipboard::AttributesOnly );
   mComboCopyFeatureFormat->addItem( tr( "Plain Text, WKT Geometry" ), QgsClipboard::AttributesWithWKT );
@@ -1464,7 +1464,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListSVGPaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "svg/searchPathsForSVG" ), pathsList );
+  QgsApplication::setSvgPaths( pathsList );
 
   pathsList.clear();
   for ( int i = 0; i < mListComposerTemplatePaths->count(); ++i )
@@ -1566,10 +1566,10 @@ void QgsOptions::saveOptions()
                        cmbScanZipInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
 
-  mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
-
   mSettings->setValue( QStringLiteral( "/qgis/legendsymbolMinimumSize" ), mLegendSymbolMinimumSizeSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/legendsymbolMaximumSize" ), mLegendSymbolMaximumSizeSpinBox->value() );
+  QgsSymbolLegendNode::MINIMUM_SIZE = mLegendSymbolMinimumSizeSpinBox->value();
+  QgsSymbolLegendNode::MAXIMUM_SIZE = mLegendSymbolMaximumSizeSpinBox->value();
 
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
