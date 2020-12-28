@@ -30,6 +30,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvectordataprovider.h"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -183,6 +184,12 @@ class QgsOracleConn : public QObject
      * \returns Oracle database major version, -1 if an error occurred
      */
     int version();
+
+    /**
+     * Returns a list of supported native types for this connection.
+     * \since QGIS 3.18
+     */
+    QList<QgsVectorDataProvider::NativeType> nativeTypes();
 
     static const int sGeomTypeSelectLimit;
 
