@@ -133,13 +133,13 @@ QVariant QgsGraduatedSymbolRenderer::valueForFeature( const QgsFeature &feature,
 {
   QgsAttributes attrs = feature.attributes();
   QVariant value;
-  if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
+  if ( mExpression )
   {
     value = mExpression->evaluate( &context.expressionContext() );
   }
   else
   {
-    value = attrs.at( mAttrNum );
+    value = attrs.value( mAttrNum );
   }
 
   return value;
