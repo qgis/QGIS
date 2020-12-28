@@ -111,7 +111,9 @@ QString getFullProjString( PJ *obj )
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
 {
-  d = new QgsCoordinateReferenceSystemPrivate();
+  static QgsCoordinateReferenceSystem nullCrs = QgsCoordinateReferenceSystem( QString() );
+
+  d = nullCrs.d;
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QString &definition )
