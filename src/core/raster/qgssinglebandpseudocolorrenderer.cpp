@@ -429,7 +429,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
   if ( !mShader )
     return QList<QgsLayerTreeModelLegendNode *>();
 
-  QgsColorRampShader *rampShader = dynamic_cast<QgsColorRampShader *>( mShader->rasterShaderFunction() );
+  const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
   if ( !rampShader )
     return QList<QgsLayerTreeModelLegendNode *>();
 

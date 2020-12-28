@@ -117,11 +117,11 @@ Returns the source color ramp.
 .. versionadded:: 3.0
 %End
 
-    QgsColorRamp *createColorRamp();
+    QgsColorRamp *createColorRamp() const /Factory/;
 %Docstring
 Creates a gradient color ramp from shader settings.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
     void setSourceColorRamp( QgsColorRamp *colorramp /Transfer/ );

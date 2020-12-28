@@ -135,7 +135,7 @@ QgsColorRamp *QgsColorRampShader::sourceColorRamp() const
   return mSourceColorRamp.get();
 }
 
-QgsColorRamp *QgsColorRampShader::createColorRamp()
+QgsColorRamp *QgsColorRampShader::createColorRamp() const
 {
   std::unique_ptr<QgsGradientColorRamp> ramp = qgis::make_unique< QgsGradientColorRamp >();
   int count = mColorRampItemList.size();
