@@ -266,24 +266,9 @@ namespace QgsWms
     nameElem.appendChild( nameText );
     serviceElem.appendChild( nameElem );
 
-    QDomText titleText;
-    QString title = QgsServerProjectUtils::owsServiceTitle( *project );
+    // Service title
     QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
-    if ( !title.isEmpty() )
-    {
-      titleText = doc.createTextNode( title );
-    }
-    else
-    {
-      if ( !project->title().isEmpty() )
-      {
-        titleText = doc.createTextNode( project->title() );
-      }
-      else
-      {
-        titleText = doc.createTextNode( QStringLiteral( "untitled" ) );
-      }
-    }
+    QDomText titleText = doc.createTextNode( QgsServerProjectUtils::owsServiceTitle( *project ) );
     titleElem.appendChild( titleText );
     serviceElem.appendChild( titleElem );
 
@@ -847,24 +832,8 @@ namespace QgsWms
     }
 
     // Root Layer title
-    QDomText layerParentTitleText;
-    QString rootLayerTitle = QgsServerProjectUtils::owsServiceTitle( *project );
     QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-    if ( !rootLayerTitle.isEmpty() )
-    {
-      layerParentTitleText = doc.createTextNode( rootLayerTitle );
-    }
-    else
-    {
-      if ( !project->title().isEmpty() )
-      {
-        layerParentTitleText = doc.createTextNode( project->title() );
-      }
-      else
-      {
-        layerParentTitleText = doc.createTextNode( QStringLiteral( "untitled" ) );
-      }
-    }
+    QDomText layerParentTitleText = doc.createTextNode( QgsServerProjectUtils::owsServiceTitle( *project ) );
     layerParentTitleElem.appendChild( layerParentTitleText );
     layerParentElem.appendChild( layerParentTitleElem );
 
@@ -2066,6 +2035,3 @@ namespace QgsWms
 
 
 } // namespace QgsWms
-
-
-
