@@ -65,7 +65,7 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
 
   // For all vertices except last
   int i = 0;
-  for ( ; i < pX.size() - 1; ++i )
+  for ( ; i < localPolygon.size() - 1; ++i )
   {
     ENP_centroid_step( localPolygon, cx, cy, signedArea, i, i + 1 );
   }
