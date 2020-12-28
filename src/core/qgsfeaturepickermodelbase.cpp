@@ -50,11 +50,14 @@ void QgsFeaturePickerModelBase::setSourceLayer( QgsVectorLayer *sourceLayer )
     return;
 
   mSourceLayer = sourceLayer;
-  mExpressionContext = sourceLayer->createExpressionContext();
+  if ( mSourceLayer )
+    mExpressionContext = mSourceLayer->createExpressionContext();
+
   reload();
   emit sourceLayerChanged();
 
-  setDisplayExpression( sourceLayer->displayExpression() );
+  if ( mSourceLayer )
+    setDisplayExpression( mSourceLayer->displayExpression() );
 }
 
 
@@ -279,7 +282,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
     // We got strings for a filter selection
     std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
-    if ( mAllowNull )
+    if ( mAllowNull && mSourceLayer )
     {
       entries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry( mSourceLayer ) );
     }
