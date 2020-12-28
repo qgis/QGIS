@@ -29,24 +29,28 @@
 #ifndef SIP_RUN
 
 /**
- * The ResultWorker class fetches query results from a separate thread
+ * The QgsQueryResultFetcher class fetches query results from a separate thread
  */
-class ResultWorker: public QObject
+class QgsQueryResultFetcher: public QObject
 {
     Q_OBJECT
 
   public:
 
-    ResultWorker( const QgsAbstractDatabaseProviderConnection::QueryResult *queryResult )
+    //! Constructs a result fetcher from \a queryResult
+    QgsQueryResultFetcher( const QgsAbstractDatabaseProviderConnection::QueryResult *queryResult )
       : mQueryResult( queryResult )
     {}
 
+    //! Start fetching
     void fetchRows();
 
+    //! Stop fetching
     void stopFetching();
 
   signals:
 
+    //! Emitted when \a newRowsCount has been fetched
     void rowsReady( int newRowsCount );
 
   private:
@@ -101,7 +105,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractListModel
     QStringList mColumns;
     qlonglong mRowCount = 0;
     QThread mWorkerThread;
-    ResultWorker *mWorker = nullptr;
+    QgsQueryResultFetcher *mWorker = nullptr;
 
 };
 

@@ -23,12 +23,11 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
 {
   if ( mQueryResult.hasNextRow() )
   {
-    mWorker = new ResultWorker( &mQueryResult );
+    mWorker = new QgsQueryResultFetcher( &mQueryResult );
     mWorker->moveToThread( &mWorkerThread );
-    connect( &mWorkerThread, &QThread::finished, mWorker, &ResultWorker::stopFetching );
     connect( &mWorkerThread, &QThread::finished, mWorker, &QObject::deleteLater );
-    connect( &mWorkerThread, &QThread::started, mWorker, &ResultWorker::fetchRows );
-    connect( mWorker, &ResultWorker::rowsReady, this, &QgsQueryResultModel::newRowsReady );
+    connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
+    connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::newRowsReady );
     mWorkerThread.start();
   }
 }
@@ -83,9 +82,9 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
 
 ///@cond private
 
-const int ResultWorker::ROWS_TO_FETCH = 200;
+const int QgsQueryResultFetcher::ROWS_TO_FETCH = 200;
 
-void ResultWorker::fetchRows()
+void QgsQueryResultFetcher::fetchRows()
 {
   qlonglong rowCount { 0 };
   while ( mStopFetching == 0 )
@@ -107,7 +106,7 @@ void ResultWorker::fetchRows()
   }
 }
 
-void ResultWorker::stopFetching()
+void QgsQueryResultFetcher::stopFetching()
 {
   mStopFetching = 1;
 }

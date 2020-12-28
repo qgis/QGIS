@@ -22,6 +22,7 @@ from qgis.core import (
 )
 from qgis.testing import unittest, start_app
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer
+from qgis.PyQt.QtWidgets import QListView, QDialog, QVBoxLayout, QLabel
 
 
 class TestPyQgsQgsQueryResultModel(unittest.TestCase):
@@ -137,6 +138,31 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         for i in range(self.NUM_RECORDS):
             self.assertEqual(rows[i][0], i + 1)
             self.assertEqual(model.data(model.index(i, 0), Qt.DisplayRole), i + 1)
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Local manual test: not for CI')
+    def test_widget(self):
+        """Manual local GUI test for the model"""
+
+        d = QDialog()
+        l = QVBoxLayout(d)
+        d.setLayout(l)
+        lbl = QLabel('fetching...', d)
+        l.addWidget(lbl)
+        v = QListView()
+        l.addWidget(v)
+        d.show()
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
+        model = QgsQueryResultModel(res)
+        v.setModel(model)
+
+        def _set_row_count(idx, first, last):
+            lbl.setText('Rows %s fetched' % model.rowCount(model.index(-1)))
+
+        model.rowsInserted.connect(_set_row_count)
+
+        d.exec_()
 
 
 if __name__ == '__main__':
