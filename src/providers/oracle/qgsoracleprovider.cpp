@@ -36,6 +36,7 @@
 #include "qgsoraclefeatureiterator.h"
 #include "qgsoracleconnpool.h"
 #include "qgsoracletransaction.h"
+#include "qgsoracleproviderconnection.h"
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
@@ -167,26 +168,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   }
 
   //fill type names into sets
-  setNativeTypes( QList<NativeType>()
-                  // integer types
-                  << QgsVectorDataProvider::NativeType( tr( "Whole number" ), "number(10,0)", QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole big number" ), "number(20,0)", QVariant::LongLong )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "number", QVariant::Double, 1, 38, 0, 38 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "double precision", QVariant::Double )
-
-                  // floating point
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "binary_float", QVariant::Double )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "binary_double", QVariant::Double )
-
-                  // string types
-                  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "CHAR", QVariant::String, 1, 255 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar2)" ), "VARCHAR2", QVariant::String, 1, 255 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (long)" ), "LONG", QVariant::String )
-
-                  // date type
-                  << QgsVectorDataProvider::NativeType( tr( "Date" ), "DATE", QVariant::Date, 38, 38, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "TIMESTAMP(6)", QVariant::DateTime, 38, 38, 6, 6 )
-                );
+  setNativeTypes( connectionRO()->nativeTypes() );
 
   QString key;
   switch ( mPrimaryKeyType )
@@ -3884,6 +3866,9 @@ QVariantMap QgsOracleProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[ QStringLiteral( "checkPrimaryKeyUnicity" ) ] = dsUri.param( "checkPrimaryKeyUnicity" );
   if ( ! dsUri.geometryColumn().isEmpty() )
     uriParts[ QStringLiteral( "geometrycolumn" ) ] = dsUri.geometryColumn();
+  if ( ! dsUri.param( "dboptions" ).isEmpty() )
+    uriParts[ QStringLiteral( "dboptions" ) ] = dsUri.param( "dboptions" );
+
   return uriParts;
 }
 
@@ -3927,6 +3912,31 @@ QString QgsOracleProviderMetadata::encodeUri( const QVariantMap &parts ) const
   if ( parts.contains( QStringLiteral( "geometrycolumn" ) ) )
     dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
   return dsUri.uri( false );
+}
+
+QMap<QString, QgsAbstractProviderConnection *> QgsOracleProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected<QgsOracleProviderConnection, QgsOracleConn>( cached );
+}
+
+QgsAbstractProviderConnection *QgsOracleProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
+{
+  return new QgsOracleProviderConnection( uri, configuration );
+}
+
+QgsAbstractProviderConnection *QgsOracleProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsOracleProviderConnection( name );
+}
+
+void QgsOracleProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsOracleProviderConnection>( name );
+}
+
+void QgsOracleProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn,  const QString &name )
+{
+  saveConnectionProtected( conn, name );
 }
 
 // vim: set sw=2
