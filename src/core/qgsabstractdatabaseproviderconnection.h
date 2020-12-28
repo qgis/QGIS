@@ -188,7 +188,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          *
          * \note This struct is thread safe.
          */
-        struct QueryResultIterator SIP_SKIP
+        struct CORE_EXPORT QueryResultIterator SIP_SKIP
         {
             QVariantList nextRow();
             bool hasNextRow() const;
@@ -229,8 +229,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         QueryResult( ) = default SIP_SKIP;
 
-///@endcond private
-
       private:
 
         mutable std::shared_ptr<QueryResultIterator> mResultIterator;
@@ -240,6 +238,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     };
 
+///@endcond private
 
     /**
      * The TableProperty class represents a database table or view.
