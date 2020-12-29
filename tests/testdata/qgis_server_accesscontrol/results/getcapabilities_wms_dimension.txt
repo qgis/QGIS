@@ -105,7 +105,7 @@ Content-Type: text/xml; charset=utf-8
   <Layer queryable="1">
    <Name>QGIS Server WMS Dimensions</Name>
    <Title>QGIS Server WMS Dimension test</Title>
-   <Abstract>QGIS Server WMS Dimensions</Abstract>
+   <Abstract><![CDATA[Simple test app for WMS dimension]]></Abstract>
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
