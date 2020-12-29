@@ -25,7 +25,6 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   {
     mWorker = new QgsQueryResultFetcher( &mQueryResult );
     mWorker->moveToThread( &mWorkerThread );
-    connect( &mWorkerThread, &QThread::finished, mWorker, &QObject::deleteLater );
     connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
     connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::newRowsReady );
     mWorkerThread.start();
@@ -46,6 +45,7 @@ QgsQueryResultModel::~QgsQueryResultModel()
     mWorker->stopFetching();
     mWorkerThread.quit();
     mWorkerThread.wait();
+    mWorker->deleteLater();
   }
 }
 
