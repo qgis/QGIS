@@ -461,17 +461,21 @@ void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 
 void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
+  QString timeFrameFormat = "yyyy-MM-dd HH:mm:ss";
+  // but if timesteps are < 1 second (as: in milliseconds), add milliseconds to the format
+  if ( mTimeStepsComboBox->currentIndex() == mTimeStepsComboBox->findData( QgsUnitTypes::TemporalMilliseconds ) )
+    timeFrameFormat = "yyyy-MM-dd HH:mm:ss.zzz";
   switch ( mNavigationObject->navigationMode() )
   {
     case QgsTemporalNavigationObject::Animated:
       mCurrentRangeLabel->setText( tr( "Frame: %1 to %2" ).arg(
-                                     range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
-                                     range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
+                                     range.begin().toString( timeFrameFormat ),
+                                     range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::FixedRange:
       mCurrentRangeLabel->setText( tr( "Range: %1 to %2" ).arg(
-                                     range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
-                                     range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
+                                     range.begin().toString( timeFrameFormat ),
+                                     range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::NavigationOff:
       mCurrentRangeLabel->setText( tr( "Temporal navigation disabled" ) );
