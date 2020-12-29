@@ -21,6 +21,8 @@
 #include "qgsexception.h"
 #include "qgsapplication.h"
 
+#include <QSqlRecord>
+
 QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -47,7 +49,7 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     Capability::DropVectorTable,
     Capability::DropRasterTable,
     Capability::CreateVectorTable,
-    Capability::RenameSchema,
+    //Capability::RenameSchema,
     Capability::DropSchema,
     Capability::CreateSchema,
     Capability::RenameVectorTable,
@@ -129,15 +131,88 @@ void QgsOracleProviderConnection::remove( const QString &name ) const
 QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
-  if ( conn )
+  QgsPoolOracleConn conn( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
+  if ( conn.get() )
   {
-    types = conn->nativeTypes();
-    QgsOracleConnPool::instance()->releaseConnection( conn );
+    types = conn.get()->nativeTypes();
   }
   if ( types.isEmpty() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
   }
   return types;
+}
+
+void QgsOracleProviderConnection::createSchema( const QString &name ) const
+{
+  checkCapability( Capability::CreateSchema );
+  executeSqlPrivate( QStringLiteral( "CREATE USER %1" )
+                     .arg( QgsOracleConn::quotedIdentifier( name ) ) );
+}
+
+void QgsOracleProviderConnection::dropSchema( const QString &name,  bool force ) const
+{
+  checkCapability( Capability::DropSchema );
+  executeSqlPrivate( QStringLiteral( "DROP USER %1 %2" )
+                     .arg( QgsOracleConn::quotedIdentifier( name ) )
+                     .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
+}
+
+QStringList QgsOracleProviderConnection::schemas( ) const
+{
+  checkCapability( Capability::Schemas );
+  QStringList schemas;
+
+  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS" ) );
+  for ( QVariantList userInfos : users )
+    schemas << userInfos.at( 0 ).toString();
+
+  return schemas;
+}
+
+QList<QVariantList> QgsOracleProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
+{
+  QList<QVariantList> results;
+
+  // Check feedback first!
+  if ( feedback && feedback->isCanceled() )
+  {
+    return results;
+  }
+
+  QgsPoolOracleConn pconn( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
+  if ( !pconn.get() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  }
+
+  if ( feedback && feedback->isCanceled() )
+  {
+    return results;
+  }
+
+  QSqlQuery qry( *pconn.get() );
+  if ( !qry.exec( sql ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" )
+                                          .arg( qry.lastQuery(),
+                                              qry.lastError().text() ) );
+  }
+
+  const int nbFields = qry.record().count();
+  while ( qry.next() )
+  {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return results;
+    }
+
+    QVariantList cols;
+    for ( int i = 0; i < nbFields; i++ )
+      cols << qry.value( i );
+
+    results << cols;
+  }
+
+  return results;
 }

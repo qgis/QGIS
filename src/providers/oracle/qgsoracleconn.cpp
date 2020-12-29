@@ -23,6 +23,7 @@
 #include "qgsfields.h"
 #include "qgsoracletablemodel.h"
 #include "qgssettings.h"
+#include "qgsoracleconnpool.h"
 
 #include <QSqlError>
 
@@ -984,6 +985,17 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleConn::nativeTypes()
          // date type
          << QgsVectorDataProvider::NativeType( tr( "Date" ), "DATE", QVariant::Date, 38, 38, 0, 0 )
          << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "TIMESTAMP(6)", QVariant::DateTime, 38, 38, 6, 6 );
+}
+
+QgsPoolOracleConn::QgsPoolOracleConn( const QString &connInfo )
+  : mConn( QgsOracleConnPool::instance()->acquireConnection( connInfo ) )
+{
+}
+
+QgsPoolOracleConn::~QgsPoolOracleConn()
+{
+  if ( mConn )
+    QgsOracleConnPool::instance()->releaseConnection( mConn );
 }
 
 // vim: sw=2 :

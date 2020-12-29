@@ -28,12 +28,17 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 
     // QgsAbstractProviderConnection interface
 
+    void createSchema( const QString &name ) const override;
+    void dropSchema( const QString &name, bool force = false ) const override;
+
+    QStringList schemas( ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
 
+    QList<QVariantList> executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
     void setDefaultCapabilities();
 };
 

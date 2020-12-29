@@ -47,6 +47,8 @@ class TestPyQgsProviderConnectionBase():
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = ''
 
+    configuration = {}
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -63,10 +65,10 @@ class TestPyQgsProviderConnectionBase():
     def setUp(self):
         QgsSettings().clear()
 
-    def _test_save_load(self, md, uri):
+    def _test_save_load(self, md, uri, configuration):
         """Common tests on connection save and load"""
 
-        conn = md.createConnection(uri, {})
+        conn = md.createConnection(uri, configuration)
 
         md.saveConnection(conn, 'qgis_test1')
         # Check that we retrieve the new connection
@@ -399,7 +401,7 @@ class TestPyQgsProviderConnectionBase():
         """Test SQL errors"""
 
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
-        conn = self._test_save_load(md, self.uri)
+        conn = self._test_save_load(md, self.uri, self.configuration)
 
         if conn.capabilities() & QgsAbstractDatabaseProviderConnection.Schemas:
             with self.assertRaises(QgsProviderConnectionException) as ex:
@@ -423,7 +425,7 @@ class TestPyQgsProviderConnectionBase():
         created_spy = QSignalSpy(md.connectionCreated)
         changed_spy = QSignalSpy(md.connectionChanged)
 
-        conn = self._test_save_load(md, self.uri)
+        conn = self._test_save_load(md, self.uri, self.configuration)
 
         self.assertEqual(len(created_spy), 1)
         self.assertEqual(len(changed_spy), 0)
