@@ -115,6 +115,37 @@ QString QgsHanaUtils::quotedValue( const QVariant &value )
   }
 }
 
+QString QgsHanaUtils::toConstant( const QVariant &value, QVariant::Type type )
+{
+  if ( value.isNull() )
+    return QStringLiteral( "NULL" );
+
+  switch ( type )
+  {
+    case QVariant::Bool:
+      return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+      return value.toString();
+    case QVariant::Char:
+    case QVariant::String:
+      return QgsHanaUtils::quotedString( value.toString() );
+    case QVariant::Date:
+      return QStringLiteral( "date'%1'" ).arg( value.toDate().toString( "yyyy-MM-dd" ) );
+    case QVariant::DateTime:
+      return QStringLiteral( "timestamp'%1'" ).arg( value.toDateTime().toString( "yyyy-MM-dd hh:mm:ss.zzz" ) );
+    case QVariant::Time:
+      return QStringLiteral( "time'%1'" ).arg( value.toTime().toString( "hh:mm:ss.zzz" ) );
+    case QVariant::ByteArray:
+      return QStringLiteral( "x'%1'" ).arg( QString( value.toByteArray().toHex() ) );
+    default:
+      return value.toString();
+  }
+}
+
 QString QgsHanaUtils::toString( QgsUnitTypes::DistanceUnit unit )
 {
   switch ( unit )

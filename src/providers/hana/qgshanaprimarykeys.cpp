@@ -237,8 +237,8 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
       if ( pkValues.isEmpty() )
         return QString();
 
-      const QgsField &fld = fields.at( pkAttrs[0] );
-      return QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( fld.name() ), pkValues[0].toString() );
+      const QgsField &field = fields.at( pkAttrs[0] );
+      return QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ), QgsHanaUtils::toConstant( pkValues[0], field.type() ) );
     }
     case PktFidMap:
     {
@@ -250,8 +250,8 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
       QStringList conditions;
       for ( int i = 0; i < pkAttrs.size(); i++ )
       {
-        const QgsField &fld  = fields.at( pkAttrs[i] );
-        conditions << QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( fld.name() ), pkValues[i].toString() );
+        const QgsField &field  = fields.at( pkAttrs[i] );
+        conditions << QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ), QgsHanaUtils::toConstant( pkValues[i], field.type() ) );
       }
       return conditions.join( QStringLiteral( " AND " ) );
     }
@@ -283,13 +283,12 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureId
           QVariantList pkValues = primaryKeyCntx.lookupKey( featureId );
           if ( pkValues.isEmpty() )
             return QString();
-
           fids << pkValues[0].toString();
         }
       }
 
-      const QgsField &fld  = fields.at( pkAttrs[0] );
-      return QStringLiteral( "%1 IN (%2)" ).arg( QgsHanaUtils::quotedIdentifier( fld.name() ), fids.join( ',' ) );
+      const QgsField &field  = fields.at( pkAttrs[0] );
+      return QStringLiteral( "%1 IN (%2)" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ), fids.join( ',' ) );
     }
     case PktFidMap:
     {

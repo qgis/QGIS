@@ -41,6 +41,8 @@ class QgsHanaUtils
     static QString quotedString( const QString &str );
     static QString quotedValue( const QVariant &value );
 
+    static QString toConstant( const QVariant &value, QVariant::Type type );
+
     static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     static QString toQString( const odbc::NString &str );

@@ -148,7 +148,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   unsigned short paramIndex = 1;
 
   // Read feature id
-  QgsFeatureId fid = 0;
+  QgsFeatureId fid = FID_NULL;
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
   QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
 
@@ -158,9 +158,10 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
     {
       case QgsHanaPrimaryKeyType::PktInt:
       {
+        int idx = mSource->mPrimaryKeyAttrs.at( 0 );
         QVariant v = mResultSet->getValue( paramIndex );
-        if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs[ 0 ] ) )
-          feature.setAttribute( 0, v );
+        if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+          feature.setAttribute( idx, v );
         fid = QgsHanaPrimaryKeyUtils::intToFid( v.toInt() );
         ++paramIndex;
       }
@@ -324,20 +325,13 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
 
   if ( subsetOfAttributes )
   {
-    auto addAttributeIds = [&attrIds]( const QSet<int> &ids )
-    {
-      for ( int id : ids )
-        if ( !attrIds.contains( id ) )
-          attrIds << id;
-    };
-
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
       // Ensure that all attributes required for expression filter are fetched
-      addAttributeIds( request.filterExpression()->referencedAttributeIndexes( mSource->mFields ) );
+      attrIds.unite( request.filterExpression()->referencedAttributeIndexes( mSource->mFields ) );
 
     if ( !mRequest.orderBy().isEmpty() )
       // Ensure that all attributes required for order by are fetched
-      addAttributeIds( mRequest.orderBy().usedAttributeIndices( mSource->mFields ) );
+      attrIds.unite( mRequest.orderBy().usedAttributeIndices( mSource->mFields ) );
   }
 
   QStringList sqlFields;
