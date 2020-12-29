@@ -367,6 +367,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
+  lstResults->setIndentation( 10 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
