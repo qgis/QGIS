@@ -154,7 +154,10 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   // TODO: might want to choose an appropriate default unit based on the range
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
 
-  mStepSpinBox->setMinimum( 0.0000001 );
+  // NOTE 'minimum' should be in sync with the 'decimals', let's set BOTH here
+  // If not in sync, timesteps of size 0 are possible raising all kind of other issues
+  mStepSpinBox->setDecimals( 3 );
+  mStepSpinBox->setMinimum( 0.001 );
   mStepSpinBox->setMaximum( std::numeric_limits<int>::max() );
   mStepSpinBox->setSingleStep( 1 );
   mStepSpinBox->setValue( 1 );
