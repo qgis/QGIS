@@ -30,6 +30,10 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = 'oracle'
 
+    # there is no service for oracle provider test so we need to save user and password
+    # to keep them when storing/loading connections in parent class _test_save_load method
+    configuration = {"saveUsername": True, "savePassword": True}
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

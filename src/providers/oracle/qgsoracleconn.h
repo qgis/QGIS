@@ -112,6 +112,21 @@ struct QgsOracleLayerProperty
 #endif
 };
 
+/**
+ * Wraps acquireConnection() and releaseConnection() from a QgsOracleConnPool.
+ * This can be used to ensure a connection is correctly released when scope ends
+ */
+class QgsPoolOracleConn
+{
+    class QgsOracleConn *mConn;
+  public:
+    QgsPoolOracleConn( const QString &connInfo );
+    ~QgsPoolOracleConn();
+
+    class QgsOracleConn *get() const { return mConn; }
+};
+
+
 class QgsOracleConn : public QObject
 {
     Q_OBJECT
