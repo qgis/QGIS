@@ -63,9 +63,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     bool forceRasterRender() const override;
 
   private:
-
-    //! Traverses tree and returns all nodes that intersects with a \a geometry in specified depth (if the geometry is null all nodes are considered)
-    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels, const QgsGeometry &geometry = QgsGeometry() );
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels );
 
     QgsPointCloudLayer *mLayer = nullptr;
 

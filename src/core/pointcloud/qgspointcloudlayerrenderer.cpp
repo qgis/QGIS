@@ -187,8 +187,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
     const QgsRenderContext &context,
     IndexedPointCloudNode n,
     float maxErrorPixels,
-    float nodeErrorPixels,
-    const QgsGeometry &geometry )
+    float nodeErrorPixels )
 {
   QVector<IndexedPointCloudNode> nodes;
 
@@ -206,9 +205,6 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
   if ( !context.zRange().isInfinite() && !context.zRange().overlaps( adjustedNodeZRange ) )
     return nodes;
 
-  if ( !geometry.isNull() && !geometry.intersects( pc->nodeMapExtent( n ) ) )
-    return nodes;
-
   nodes.append( n );
 
   float childrenErrorPixels = nodeErrorPixels / 2.0f;
@@ -218,8 +214,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
   const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
   for ( const IndexedPointCloudNode &nn : children )
   {
-    if ( geometry.isNull() || geometry.intersects( pc->nodeMapExtent( nn ) ) )
-      nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels );
+    nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels );
   }
 
   return nodes;
