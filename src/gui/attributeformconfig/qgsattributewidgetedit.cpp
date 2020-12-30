@@ -116,7 +116,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
       setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
   }
 
-  int widgetTypeIdx = mWidgetTypeComboBox->findText( config.mRelationWidgetType );
+  int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );
   mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0 ? widgetTypeIdx : 0 );
 
   const QString widgetType = mWidgetTypeComboBox->currentData().toString();
