@@ -22,11 +22,8 @@
 #include "qgsdataprovider.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
-#include "qgspointcloudrenderer.h"
-#include "qgsidentifycontext.h"
 #include <memory>
 
-class QgsPointCloudLayer;
 class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
