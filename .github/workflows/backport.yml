@@ -21,7 +21,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Backported Label
-        if: steps.backport.conclution == 'success'
+        if: steps.backport.conclusion == 'success'
         uses: actions/labeler@main
         with:
           configuration-path: .github/label-backported.yml
