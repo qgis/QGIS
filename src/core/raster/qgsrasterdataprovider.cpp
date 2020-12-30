@@ -251,13 +251,6 @@ QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapab
 //Random Static convenience function
 //
 /////////////////////////////////////////////////////////
-// convenience function for building metadata() HTML table cells
-
-QString QgsRasterDataProvider::htmlMetadata()
-{
-  QString s;
-  return s;
-}
 
 // TODO
 // (WMS) IdentifyFormatFeature is not consistent with QgsRaster::IdentifyFormatValue.
