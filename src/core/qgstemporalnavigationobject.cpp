@@ -91,7 +91,15 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   const long long nextFrame = frame + 1;
 
   const QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
-  const QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
+  QDateTime end;
+  if ( mFrameDuration.seconds() < 1.0 )
+  {
+    end = start.addMSecs( nextFrame * mFrameDuration.seconds() * 1000 );
+  }
+  else
+  {
+    end = start.addSecs( nextFrame * mFrameDuration.seconds() );
+  }
 
   QDateTime frameStart = begin;
 
@@ -99,9 +107,23 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
     frameStart = start;
 
   if ( end <= mTemporalExtents.end() )
+  {
+    // that is we are BEFORE the last frame
     return QgsDateTimeRange( frameStart, end, true, false );
-
-  return QgsDateTimeRange( frameStart, mTemporalExtents.end(), true, false );
+  }
+  else
+  {
+    // we are on the LAST frame (being the frame that begins with 'begin' but is actually outside the mTemporalExtents)
+    if ( mFrameDuration.seconds() < 1.0 )
+    {
+      end = mTemporalExtents.end().addMSecs( mFrameDuration.seconds() * 1000 );
+    }
+    else
+    {
+      end = mTemporalExtents.end().addSecs( mFrameDuration.seconds() );
+    }
+    return QgsDateTimeRange( frameStart, end, true, false );
+  }
 }
 
 void QgsTemporalNavigationObject::setNavigationMode( const NavigationMode mode )

@@ -154,7 +154,10 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   // TODO: might want to choose an appropriate default unit based on the range
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
 
-  mStepSpinBox->setMinimum( 0.0000001 );
+  // NOTE 'minimum' should be in sync with the 'decimals', let's set BOTH here
+  // If not in sync, timesteps of size 0 are possible raising all kind of other issues
+  mStepSpinBox->setDecimals( 3 );
+  mStepSpinBox->setMinimum( 0.001 );
   mStepSpinBox->setMaximum( std::numeric_limits<int>::max() );
   mStepSpinBox->setSingleStep( 1 );
   mStepSpinBox->setValue( 1 );
@@ -458,17 +461,21 @@ void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 
 void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
+  QString timeFrameFormat = "yyyy-MM-dd HH:mm:ss";
+  // but if timesteps are < 1 second (as: in milliseconds), add milliseconds to the format
+  if ( mTimeStepsComboBox->currentIndex() == mTimeStepsComboBox->findData( QgsUnitTypes::TemporalMilliseconds ) )
+    timeFrameFormat = "yyyy-MM-dd HH:mm:ss.zzz";
   switch ( mNavigationObject->navigationMode() )
   {
     case QgsTemporalNavigationObject::Animated:
       mCurrentRangeLabel->setText( tr( "Frame: %1 to %2" ).arg(
-                                     range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
-                                     range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
+                                     range.begin().toString( timeFrameFormat ),
+                                     range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::FixedRange:
       mCurrentRangeLabel->setText( tr( "Range: %1 to %2" ).arg(
-                                     range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
-                                     range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
+                                     range.begin().toString( timeFrameFormat ),
+                                     range.end().toString( timeFrameFormat ) ) );
       break;
     case QgsTemporalNavigationObject::NavigationOff:
       mCurrentRangeLabel->setText( tr( "Temporal navigation disabled" ) );
