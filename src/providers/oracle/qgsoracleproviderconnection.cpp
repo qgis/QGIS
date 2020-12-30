@@ -23,6 +23,15 @@
 
 #include <QSqlRecord>
 
+const QStringList CONFIGURATION_PARAMETERS
+{
+  QStringLiteral( "geometryColumnsOnly" ),
+  QStringLiteral( "allowGeometrylessTables" ),
+  QStringLiteral( "disableInvalidGeometryHandling" ),
+  QStringLiteral( "saveUsername" ),
+  QStringLiteral( "savePassword" ),
+};
+
 QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -31,6 +40,19 @@ QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
   const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
   setUri( QgsOracleConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
   setDefaultCapabilities();
+
+  // load existing configuration
+  QgsSettings settings;
+  QVariantMap configuration;
+  for ( const auto &p : CONFIGURATION_PARAMETERS )
+  {
+    const QVariant v = settings.value( QStringLiteral( "/Oracle/connections/%1/%2" ).arg( name, p ) );
+    if ( v.isValid() )
+    {
+      configuration.insert( p, v );
+    }
+  }
+  setConfiguration( configuration );
 }
 
 QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &uri, const QVariantMap &configuration ):
@@ -103,16 +125,7 @@ void QgsOracleProviderConnection::store( const QString &name ) const
   settings.setValue( "dboptions", dsUri.param( "dboptions" ) );
 
   // From configuration
-  static const QStringList configurationParameters
-  {
-    QStringLiteral( "allowGeometrylessTables" ),
-    QStringLiteral( "geometryColumnsOnly" ),
-    QStringLiteral( "onlyExistingTypes" ),
-    QStringLiteral( "savePassword" ),
-    QStringLiteral( "saveUsername" ),
-    QStringLiteral( "userTablesOnly" ),
-  };
-  for ( const auto &p : configurationParameters )
+  for ( const auto &p : CONFIGURATION_PARAMETERS )
   {
     if ( configuration().contains( p ) )
     {
@@ -264,6 +277,7 @@ QString QgsOracleProviderConnection::tableUri( const QString &schema, const QStr
   QgsDataSourceUri dsUri( uri() );
   dsUri.setTable( name );
   dsUri.setSchema( schema );
+  dsUri.setGeometryColumn( tableInfo.geometryColumn() );
   return dsUri.uri( false );
 }
 

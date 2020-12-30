@@ -32,7 +32,7 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
 
     # there is no service for oracle provider test so we need to save user and password
     # to keep them when storing/loading connections in parent class _test_save_load method
-    configuration = {"saveUsername": True, "savePassword": True}
+    configuration = {"saveUsername": True, "savePassword": True, "geometryColumnsOnly": True}
 
     @classmethod
     def setUpClass(cls):
