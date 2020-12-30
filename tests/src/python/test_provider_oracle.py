@@ -908,6 +908,49 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.NoGeometry, crs=QgsCoordinateReferenceSystem(), overwrite=True)
         self.assertEqual(exporter.errorCode(), QgsVectorLayerExporter.ErrCreateDataSource)
 
+    def testAddEmptyFeature(self):
+        """
+        Test inserting a feature with only null attributes
+        """
+
+        def countFeature(table_name):
+            self.assertTrue(self.conn)
+            query = QSqlQuery(self.conn)
+            res = query.exec_('SELECT count(*) FROM "QGIS"."{}"'.format(table_name))
+            self.assertTrue(query.next())
+            count = query.value(0)
+            query.finish()
+            return count
+
+        self.execSQLCommand('DROP TABLE "QGIS"."EMPTYFEATURE_LAYER"', ignore_errors=True)
+        self.execSQLCommand('CREATE TABLE "QGIS"."EMPTYFEATURE_LAYER" ( "num" INTEGER, GEOM SDO_GEOMETRY)')
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable type=Point table="QGIS"."EMPTYFEATURE_LAYER" (GEOM) sql=', 'test', 'oracle')
+        self.assertTrue(vl.isValid())
+
+        # add feature with no attributes, no geometry
+        feature = QgsFeature(vl.fields())
+        self.assertTrue(vl.dataProvider().addFeatures([feature])[0])
+        self.assertEqual(countFeature('EMPTYFEATURE_LAYER'), 1)
+
+        # add feature with no attribute and one geometry
+        feature = QgsFeature(vl.fields())
+        feature.setGeometry(QgsGeometry.fromWkt('Point (43.5 1.42)'))
+        self.assertTrue(vl.dataProvider().addFeatures([feature])[0])
+        self.assertEqual(countFeature('EMPTYFEATURE_LAYER'), 2)
+
+        self.execSQLCommand('DROP TABLE "QGIS"."EMPTYFEATURE_NOGEOM_LAYER"', ignore_errors=True)
+        self.execSQLCommand('CREATE TABLE "QGIS"."EMPTYFEATURE_NOGEOM_LAYER" ( "num" INTEGER)')
+
+        # same tests but with no geometry in table definition
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."EMPTYFEATURE_NOGEOM_LAYER" sql=', 'test', 'oracle')
+        self.assertTrue(vl.isValid())
+
+        # add feature with no attributes
+        feature = QgsFeature(vl.fields())
+        self.assertTrue(vl.dataProvider().addFeatures([feature])[0])
+        self.assertEqual(countFeature('EMPTYFEATURE_NOGEOM_LAYER'), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
