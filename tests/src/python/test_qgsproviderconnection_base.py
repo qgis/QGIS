@@ -177,8 +177,8 @@ class TestPyQgsProviderConnectionBase():
             self.assertFalse('myUtf8\U0001f604Table' in table_names)
             self.assertTrue('myNewTable' in table_names)
 
-            # insert something, because otherwise MSSQL cannot guess
-            if self.providerKey in ['hana', 'mssql']:
+            # insert something, because otherwise some databases cannot guess
+            if self.providerKey in ['hana', 'mssql', 'oracle']:
                 f = QgsFeature(fields)
                 f.setGeometry(QgsGeometry.fromWkt('LineString (-72.345 71.987, -80 80)'))
                 vl = QgsVectorLayer(conn.tableUri('myNewSchema', 'myNewTable'), 'vl', self.providerKey)

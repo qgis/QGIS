@@ -28,9 +28,20 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 
     // QgsAbstractProviderConnection interface
 
+    void createVectorTable( const QString &schema,
+                            const QString &name,
+                            const QgsFields &fields,
+                            QgsWkbTypes::Type wkbType,
+                            const QgsCoordinateReferenceSystem &srs, bool overwrite,
+                            const QMap<QString, QVariant> *options ) const override;
+
+    QString tableUri( const QString &schema, const QString &name ) const override;
+    void dropVectorTable( const QString &schema, const QString &name ) const override;
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
 
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
+        const TableFlags &flags = TableFlags() ) const override;
     QStringList schemas( ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
