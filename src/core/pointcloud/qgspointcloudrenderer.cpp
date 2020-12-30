@@ -249,8 +249,7 @@ QVector<QMap<QString, QVariant>> QgsPointCloudRenderer::identify( QgsPointCloudL
       QgsPointXY point1MapCoords = renderContext.mapToPixel().toMapCoordinates( point1.x(), point1.y() );
       QgsPointXY point2MapCoords = renderContext.mapToPixel().toMapCoordinates( point2.x(), point2.y() );
       QgsCircle circle = QgsCircle::from2Points( QgsPoint( point1MapCoords ), QgsPoint( point2MapCoords ) );
-      // TODO: make this faster?
-      QgsPolygon *polygon = circle.toPolygon( 5 );
+      QgsPolygon *polygon = circle.toPolygon( 6 );
       QgsGeometry circleGeometry( polygon );
       selectionGeometry = circleGeometry;
     }
