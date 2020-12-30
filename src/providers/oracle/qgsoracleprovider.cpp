@@ -1342,10 +1342,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     // e.g. for defaults
     for ( int idx = 0; idx < std::min( attributevec.size(), mAttributeFields.size() ); ++idx )
     {
-      QVariant v = attributevec[idx];
       if ( mAlwaysGenerated.at( idx ) )
-        continue;
-      if ( !v.isValid() )
         continue;
 
       if ( fieldId.contains( idx ) )
