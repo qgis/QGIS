@@ -188,7 +188,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
                            );
   QgsDateTimeRange lastRange = QgsDateTimeRange(
                                  QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
-                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 13, 0, 0 ) ),
                                  true,
                                  false
                                );
@@ -228,8 +228,16 @@ void TestQgsTemporalNavigationObject::frameSettings()
   QCOMPARE( navigationObject->currentFrameNumber(), 2 ); // going from 1 hour to 2 hour frames, but stay on 12:00-...
   QCOMPARE( temporalRangeSignal.count(), 7 );
 
-  // Test if, when changing to Cumulative mode, the dateTimeRange for frame 4 (with 2 hours frames) is indeed the full range
+  // Test if, when changing to Cumulative mode, the dateTimeRange for frame 4 (with 2 hours frames)
+  // is indeed the full range (PLUS the time to make the last frame a proper (normal frame length) frame)
   navigationObject->setTemporalRangeCumulative( true );
+  QgsDateTimeRange last2HourRange = QgsDateTimeRange(
+                                      QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                                      QDateTime( QDate( 2020, 1, 1 ), QTime( 14, 0, 0 ) ),
+                                      true,
+                                      false
+                                    );
+  range.extend( last2HourRange );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), range );
   QCOMPARE( temporalRangeSignal.count(), 7 );
 }
