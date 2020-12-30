@@ -148,6 +148,8 @@ void QgsOracleProviderConnection::createSchema( const QString &name ) const
   checkCapability( Capability::CreateSchema );
   executeSqlPrivate( QStringLiteral( "CREATE USER %1" )
                      .arg( QgsOracleConn::quotedIdentifier( name ) ) );
+  executeSqlPrivate( QStringLiteral( "GRANT ALL PRIVILEGES TO %1" )
+                     .arg( QgsOracleConn::quotedIdentifier( name ) ) );
 }
 
 void QgsOracleProviderConnection::dropSchema( const QString &name,  bool force ) const
@@ -215,4 +217,131 @@ QList<QVariantList> QgsOracleProviderConnection::executeSqlPrivate( const QStrin
   }
 
   return results;
+}
+
+void QgsOracleProviderConnection::createVectorTable( const QString &schema,
+    const QString &name,
+    const QgsFields &fields,
+    QgsWkbTypes::Type wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    const QMap<QString,
+    QVariant> *options ) const
+{
+  checkCapability( Capability::CreateVectorTable );
+
+  QgsDataSourceUri newUri { uri() };
+  newUri.setSchema( schema );
+  newUri.setTable( name );
+  // Set geometry column and if it's not aspatial
+  if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
+  {
+    newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
+    // set wkbType (There is no way to guess geometry type from database is there is no data)
+    newUri.setWkbType( wkbType );
+  }
+  QMap<int, int> map;
+  QString errCause;
+  QgsVectorLayerExporter::ExportError errCode = QgsOracleProvider::createEmptyLayer(
+        newUri.uri(),
+        fields,
+        wkbType,
+        srs,
+        overwrite,
+        map,
+        errCause,
+        options
+      );
+  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
+  }
+}
+
+QString QgsOracleProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  const auto tableInfo { table( schema, name ) };
+  QgsDataSourceUri dsUri( uri() );
+  dsUri.setTable( name );
+  dsUri.setSchema( schema );
+  return dsUri.uri( false );
+}
+
+
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+{
+  checkCapability( Capability::Tables );
+  QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables;
+
+  QgsDataSourceUri dsUri( uri() );
+  QgsPoolOracleConn pconn( dsUri.connectionInfo( false ) );
+  QgsOracleConn *conn = pconn.get();
+  if ( !conn )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  }
+
+  const bool geometryColumnsOnly { configuration().value( "geometryColumnsOnly", false ).toBool() };
+  const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() };
+  const bool onlyExistingTypes { configuration().value( "onlyExistingTypes", false ).toBool() };
+  const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
+
+  QVector<QgsOracleLayerProperty> properties;
+  bool ok = conn->supportedLayers( properties, schema, geometryColumnsOnly, userTablesOnly, aspatial );
+  if ( ! ok )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1" ).arg( uri() ) );
+  }
+
+  for ( auto &pr : properties )
+  {
+    // Classify
+    TableFlags prFlags;
+    if ( pr.isView )
+    {
+      prFlags.setFlag( QgsAbstractDatabaseProviderConnection::TableFlag::View );
+    }
+    if ( !pr.geometryColName.isEmpty() )
+    {
+      prFlags.setFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Vector );
+    }
+    else
+    {
+      prFlags.setFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Aspatial );
+    }
+
+    // Filter
+    if ( flags && !( prFlags & flags ) )
+      continue;
+
+    // retrieve layer types if needed
+    conn->retrieveLayerTypes( pr, dsUri.useEstimatedMetadata(), onlyExistingTypes );
+
+    QgsAbstractDatabaseProviderConnection::TableProperty property;
+    property.setFlags( prFlags );
+    for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ) ; i++ )
+    {
+      property.addGeometryColumnType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
+    }
+    property.setTableName( pr.tableName );
+    property.setSchema( pr.ownerName );
+    property.setGeometryColumn( pr.geometryColName );
+    property.setGeometryColumnCount( prFlags & QgsAbstractDatabaseProviderConnection::TableFlag::Aspatial ? 0 : 1 );
+
+    // TODO These are candidates, not actual PKs
+    property.setPrimaryKeyColumns( pr.pkCols );
+
+    tables.push_back( property );
+
+  }
+
+  return tables;
+}
+
+void QgsOracleProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::DropVectorTable );
+  executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
+                     .arg( QgsOracleConn::quotedIdentifier( schema ) )
+                     .arg( QgsOracleConn::quotedIdentifier( name ) ) );
 }
