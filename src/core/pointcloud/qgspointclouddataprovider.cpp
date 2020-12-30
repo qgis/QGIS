@@ -22,8 +22,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudrequest.h"
-#include "qgslogger.h"
-#include "qgscircle.h"
+#include "qgsgeometryengine.h"
 #include <mutex>
 
 #include <QtConcurrent/QtConcurrentMap>
@@ -224,14 +223,16 @@ struct MapIndexedPointCloudNode
     QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
     mContext.setAttributes( block->attributes() );
+    std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( mExtentGeometry.constGet() ) );
+    extentEngine->prepareGeometry();
     for ( int i = 0; i < block->pointCount(); ++i )
     {
       double x, y, z;
       _pointXY( mContext, ptr, i, x, y );
       z = _pointZ( mContext, ptr, i );
-      QgsPointXY pointXY( x, y );
+      QgsPoint pointXY( x, y );
 
-      if ( pointsCount < mPointsLimit && mExtentGeometry.contains( &pointXY ) && mZRange.contains( z ) )
+      if ( pointsCount < mPointsLimit && extentEngine->contains( &pointXY ) && mZRange.contains( z ) )
       {
         QMap<QString, QVariant> pointAttr = mContext.attributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
