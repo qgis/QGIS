@@ -107,6 +107,7 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
 
     /**
      * Constructor for QgsMergedFeatureRenderer.
+     * \param type renderer ID string
      * \param embeddedRenderer optional embeddedRenderer. Ownership will be transferred.
      */
     QgsMergedFeatureRenderer( const QString &type, QgsFeatureRenderer *embeddedRenderer SIP_TRANSFER );

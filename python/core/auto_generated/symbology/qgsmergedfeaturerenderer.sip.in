@@ -123,6 +123,7 @@ Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
 %Docstring
 Constructor for QgsMergedFeatureRenderer.
 
+:param type: renderer ID string
 :param embeddedRenderer: optional embeddedRenderer. Ownership will be transferred.
 %End
 
