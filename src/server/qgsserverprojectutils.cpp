@@ -37,22 +37,14 @@ bool QgsServerProjectUtils::owsServiceCapabilities( const QgsProject &project )
 
 QString QgsServerProjectUtils::owsServiceTitle( const QgsProject &project )
 {
-  QString title;
-  QString serviceTitle = project.readEntry( QStringLiteral( "WMSServiceTitle" ), QStringLiteral( "/" ) );
-  if ( !serviceTitle.isEmpty() )
+  QString title = project.readEntry( QStringLiteral( "WMSServiceTitle" ), QStringLiteral( "/" ) );
+  if ( title.isEmpty() )
   {
-    title = serviceTitle;
+    title = project.title();
   }
-  else
+  if ( title.isEmpty() )
   {
-    if ( !project.title().isEmpty() )
-    {
-      title = project.title();
-    }
-    else
-    {
-      title = QStringLiteral( "untitled" );
-    }
+    title = QObject::tr( "Untitled" );
   }
   return title;
 }

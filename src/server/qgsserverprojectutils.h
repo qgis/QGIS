@@ -68,7 +68,7 @@ namespace QgsServerProjectUtils
   /**
    * Returns the owsService title defined in project.
    * \param project the QGIS project
-   * \returns the owsService title if defined in project with project title as fallback, "untitled" otherwise.
+   * \returns the owsService title if defined in project with project title as fallback, "Untitled" otherwise.
    */
   SERVER_EXPORT QString owsServiceTitle( const QgsProject &project );
 
