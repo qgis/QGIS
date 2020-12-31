@@ -18,3 +18,13 @@ jobs:
           bot_token: ddbdec32940df79f1adf2369b4b10f10b5a66f65
           bot_token_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
           github_token: ${{ secrets.GITHUB_TOKEN }}
+<<<<<<< HEAD
+=======
+
+      - name: Backported Label
+        if: steps.backport.conclusion == 'success'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          labels: backported
+>>>>>>> 583a52ba6a (Merge pull request #40804 from m-kuhn/backported-label)
