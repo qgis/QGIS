@@ -838,7 +838,7 @@ namespace QgsWms
     layerParentElem.appendChild( layerParentTitleElem );
 
     // Root Layer abstract
-    QString rootLayerAbstract = QgsServerProjectUtils::owsServiceAbstract( *project );
+    const QString rootLayerAbstract = QgsServerProjectUtils::owsServiceAbstract( *project );
     if ( !rootLayerAbstract.isEmpty() )
     {
       QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
