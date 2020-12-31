@@ -14564,7 +14564,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   if ( !layer )
   {
-    menuSelect->setEnabled( false );
+    mMenuSelect->setEnabled( false );
     mActionSelectFeatures->setEnabled( false );
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
@@ -14672,7 +14672,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     return;
   }
 
-  menuSelect->setEnabled( true );
+  mMenuSelect->setEnabled( true );
 
   mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
