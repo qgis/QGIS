@@ -121,7 +121,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ExpressionWidget(BASE, WIDGET):
-    _expressions = {"NDVI": "([NIR] - [Red]) / ([NIR] + [Red])"}
+    _expressions = {"NDVI": "(\"[NIR]\" - \"[Red]\") / (\"[NIR]\" + \"[Red]\")"}
 
     def __init__(self, options):
         super(ExpressionWidget, self).__init__(None)
