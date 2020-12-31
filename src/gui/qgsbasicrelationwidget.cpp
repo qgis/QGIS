@@ -162,7 +162,7 @@ QgsBasicRelationWidget::QgsBasicRelationWidget( const QVariantMap &config, QWidg
            this, static_cast<void ( QgsBasicRelationWidget::* )( int )>( &QgsBasicRelationWidget::setViewMode ) );
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsBasicRelationWidget::toggleEditing );
   connect( mSaveEditsButton, &QAbstractButton::clicked, this, &QgsBasicRelationWidget::saveEdits );
-  connect( mAddFeatureButton, &QAbstractButton::clicked, this, [this]() { addFeature(); } );
+  connect( mAddFeatureButton, &QAbstractButton::clicked, this, &QgsBasicRelationWidget::addFeature );
   connect( mAddFeatureGeometryButton, &QAbstractButton::clicked, this, &QgsBasicRelationWidget::addFeatureGeometry );
   connect( mDuplicateFeatureButton, &QAbstractButton::clicked, this, &QgsBasicRelationWidget::duplicateFeature );
   connect( mDeleteFeatureButton, &QAbstractButton::clicked, this, &QgsBasicRelationWidget::deleteSelectedFeatures );
