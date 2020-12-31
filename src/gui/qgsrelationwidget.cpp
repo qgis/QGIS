@@ -267,9 +267,7 @@ void QgsRelationWidget::addFeature( const QgsGeometry &geometry )
     for ( const QgsRelation::FieldPair &fieldPair : constFieldPairs )
     {
       keyAttrs.insert( fields.indexFromName( fieldPair.referencingField() ), mFeature.attribute( fieldPair.referencedField() ) );
-
-      // TODO FINISH!!!!
-//      vlTools->addFeature( mDualView->masterModel()->layer(), keyAttrs, geometry );
+      vlTools->addFeature( mRelation.referencingLayer(), keyAttrs, geometry );
     }
   }
 }
