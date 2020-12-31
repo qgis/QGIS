@@ -842,7 +842,7 @@ namespace QgsWms
     if ( !rootLayerAbstract.isEmpty() )
     {
       QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
-      QDomText layerParentAbstText = doc.createTextNode( rootLayerAbstract );
+      QDomText layerParentAbstText = doc.createCDATASection( rootLayerAbstract );
       layerParentAbstElem.appendChild( layerParentAbstText );
       layerParentElem.appendChild( layerParentAbstElem );
     }
