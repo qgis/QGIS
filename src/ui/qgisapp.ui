@@ -214,6 +214,8 @@
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
+    <addaction name="mActionOpenTableSelected"/>
+    <addaction name="mActionOpenTableVisible"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
@@ -581,7 +583,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
    <addaction name="mActionMapTips"/>
@@ -1677,6 +1678,30 @@
    </property>
    <property name="shortcut">
     <string>F6</string>
+   </property>
+ </action>
+  <action name="mActionOpenTableSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table Selected</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableVisible">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table Visible</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F6</string>
    </property>
   </action>
   <action name="mActionToggleEditing">

@@ -1582,24 +1582,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   zoomInToolShortCut->setWhatsThis( tr( "Zoom in (secondary)" ) );
   zoomInToolShortCut->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
-  QShortcut *attributeTableSelected = new QShortcut( QKeySequence( tr( "Shift+F6" ) ), this );
-  attributeTableSelected->setObjectName( QStringLiteral( "attributeTableSelectedFeatures" ) );
-  attributeTableSelected->setWhatsThis( tr( "Open Attribute Table (Selected Features)" ) );
-  attributeTableSelected->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
-  connect( attributeTableSelected, &QShortcut::activated, this, [ = ]
-  {
-    attributeTable( QgsAttributeTableFilterModel::ShowSelected );
-  } );
-
-  QShortcut *attributeTableVisible = new QShortcut( QKeySequence( tr( "Ctrl+F6" ) ), this );
-  attributeTableVisible->setObjectName( QStringLiteral( "attributeTableVisibleFeatures" ) );
-  attributeTableVisible->setWhatsThis( tr( "Open Attribute Table (Visible Features)" ) );
-  attributeTableVisible->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
-  connect( attributeTableVisible, &QShortcut::activated, this, [ = ]
-  {
-    attributeTable( QgsAttributeTableFilterModel::ShowVisible );
-  } );
-
   QShortcut *shortcutTracing = new QShortcut( QKeySequence( tr( "Ctrl+Shift+." ) ), this );
   connect( shortcutTracing, &QShortcut::activated, this, &QgisApp::toggleEventTracing );
 
@@ -2792,6 +2774,14 @@ void QgisApp::createActions()
     QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
     attributeTable( initialMode );
   } );
+  connect( mActionOpenTableSelected, &QAction::triggered, this, [ = ]
+  {
+    attributeTable( QgsAttributeTableFilterModel::ShowSelected );
+  } );
+  connect( mActionOpenTableVisible, &QAction::triggered, this, [ = ]
+  {
+    attributeTable( QgsAttributeTableFilterModel::ShowVisible );
+  } );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [ = ] { toggleEditing(); } );
   connect( mActionSaveLayerEdits, &QAction::triggered, this, &QgisApp::saveActiveLayerEdits );
@@ -3414,6 +3404,36 @@ void QgisApp::createToolBars()
   bt->setMenu( mFeatureActionMenu );
   QAction *featureActionAction = mAttributesToolBar->insertWidget( mouseSelectionAction, bt );
   featureActionAction->setObjectName( QStringLiteral( "ActionFeatureAction" ) );
+
+
+
+  // open table tool button
+
+  bt = new QToolButton( mAttributesToolBar );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionOpenTable );
+  bt->addAction( mActionOpenTableSelected );
+  bt->addAction( mActionOpenTableVisible );
+
+  QAction *defOpenTableAction = mActionOpenTable;
+  switch ( settings.value( QStringLiteral( "UI/openTableTool" ), 0 ).toInt() )
+  {
+    case 0:
+      defOpenTableAction = mActionOpenTable;
+      break;
+    case 1:
+      defOpenTableAction = mActionOpenTableSelected;
+      break;
+    case 2:
+      defOpenTableAction = mActionOpenTableVisible;
+      break;
+  }
+  bt->setDefaultAction( defOpenTableAction );
+  QAction *openTableAction = mAttributesToolBar->insertWidget( mActionMapTips, bt );
+  openTableAction->setObjectName( QStringLiteral( "ActionOpenTable" ) );
+  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
+
+
 
   // measure tool button
 
@@ -4090,6 +4110,8 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
   mActionSelectByForm->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
+  mActionOpenTableSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableSelected.svg" ) ) );
+  mActionOpenTableVisible->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableVisible.svg" ) ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
   mActionMeasure->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureArea.svg" ) ) );
@@ -14677,6 +14699,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionSelectByForm->setEnabled( false );
     mActionLabeling->setEnabled( false );
     mActionOpenTable->setEnabled( false );
+    mActionOpenTableSelected->setEnabled( false );
+    mActionOpenTableVisible->setEnabled( false );
     mActionSelectAll->setEnabled( false );
     mActionReselect->setEnabled( false );
     mActionInvertSelection->setEnabled( false );
@@ -14827,6 +14851,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectByExpression->setEnabled( true );
       mActionSelectByForm->setEnabled( true );
       mActionOpenTable->setEnabled( true );
+      mActionOpenTableSelected->setEnabled( true );
+      mActionOpenTableVisible->setEnabled( true );
       mActionSelectAll->setEnabled( true );
       mActionReselect->setEnabled( true );
       mActionInvertSelection->setEnabled( true );
@@ -15069,6 +15095,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( true );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mActionOpenTableSelected->setEnabled( false );
+      mActionOpenTableVisible->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -15180,6 +15208,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mActionOpenTableSelected->setEnabled( false );
+      mActionOpenTableVisible->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -15245,6 +15275,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mActionOpenTableSelected->setEnabled( false );
+      mActionOpenTableVisible->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -15310,6 +15342,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mActionOpenTableSelected->setEnabled( false );
+      mActionOpenTableVisible->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -16561,6 +16595,12 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/deselectionTool" ), 0 );
   else if ( action == mActionDeselectActiveLayer )
     settings.setValue( QStringLiteral( "UI/deselectionTool" ), 1 );
+  else if ( action == mActionOpenTable )
+    settings.setValue( QStringLiteral( "UI/openTableTool" ), 0 );
+  else if ( action == mActionOpenTableSelected )
+    settings.setValue( QStringLiteral( "UI/openTableTool" ), 1 );
+  else if ( action == mActionOpenTableVisible )
+    settings.setValue( QStringLiteral( "UI/openTableTool" ), 2 );
   else if ( action == mActionMeasure )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 0 );
   else if ( action == mActionMeasureArea )
