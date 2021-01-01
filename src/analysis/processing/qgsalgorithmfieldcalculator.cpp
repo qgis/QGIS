@@ -139,7 +139,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   }
   else
   {
-   feedback->pushWarning( QObject::tr( "Field name %1 already exists and will be replaced" ).arg( field.name() ) );
+    feedback->pushWarning( QObject::tr( "Field name %1 already exists and will be replaced" ).arg( field.name() ) );
   }
 
   QString dest;
@@ -211,4 +211,3 @@ bool QgsFieldCalculatorAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer )
 }
 
 ///@endcond
-
