@@ -49,8 +49,9 @@ Action to uncheck a group and all its children
 Action to check a group and all its parents
 %End
 
- QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
+ QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory,Deprecated/;
 %Docstring
+Action to zoom to the active layer from the layer tree.
 
 .. deprecated:: QGIS 3.18
   use actionZoomToLayers()
@@ -110,8 +111,9 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
 .. versionadded:: 2.12
 %End
 
- void zoomToLayer( QgsMapCanvas *canvas );
+ void zoomToLayer( QgsMapCanvas *canvas ) /Deprecated/;
 %Docstring
+Zooms a map ``canvas`` to the extent of the active layer in the layer tree.
 
 .. deprecated:: QGIS 3.18
   use zoomToLayers()
@@ -119,7 +121,7 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
 
     void zoomToLayers( QgsMapCanvas *canvas );
 %Docstring
-Zooms to all the selected layer(s) in the layer tree
+Zooms a map ``canvas`` to all the selected layer(s) in the layer tree
 
 .. seealso:: :py:func:`zoomToLayers`
 
@@ -144,8 +146,9 @@ Zooms to all the selected layer(s) in the layer tree
     void renameGroupOrLayer();
     void showFeatureCount();
 
- void zoomToLayer();
+ void zoomToLayer() /Deprecated/;
 %Docstring
+Zooms to the extent of the active layer in the layer tree.
 
 .. deprecated:: QGIS 3.18
   use zoomToLayers()
@@ -153,20 +156,20 @@ Zooms to all the selected layer(s) in the layer tree
 
     void zoomToLayers();
 %Docstring
-Slot to zoom to all the selected layer(s) in the layer tree
+Zooms to the combined extent of all the selected layer(s) in the layer tree.
 
 .. versionadded:: 3.18
 %End
 
     void zoomToSelection();
 %Docstring
-Slot to zoom to selected features of a vector layer
+Zooms to the bounding box of all selected features of a vector layer.
 
 .. versionadded:: 3.2
 %End
     void zoomToGroup();
 
- void makeTopLevel();
+ void makeTopLevel() /Deprecated/;
 %Docstring
 
 .. deprecated:: QGIS 3.2

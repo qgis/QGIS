@@ -297,14 +297,13 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
   if ( !layer )
     return;
 
-  QList<QgsMapLayer *> layers;
-  layers << layer;
+  const QList<QgsMapLayer *> layers { layer };
   zoomToLayers( canvas, layers );
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas )
 {
-  QList<QgsMapLayer *> layers = mView->selectedLayers();
+  const QList<QgsMapLayer *> layers = mView->selectedLayers();
   if ( layers.isEmpty() )
     return;
 
@@ -336,11 +335,13 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
 
 void QgsLayerTreeViewDefaultActions::zoomToLayer()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
   QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayer( canvas );
   QApplication::restoreOverrideCursor();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToLayers()
