@@ -326,8 +326,8 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
     return;
 
   QList<QgsMapLayer *> layers;
-  const auto constFindLayerIds = groupNode->findLayerIds();
-  for ( const QString &layerId : constFindLayerIds )
+  const QStringList findLayerIds = groupNode->findLayerIds();
+  for ( const QString &layerId : findLayerIds )
     layers << QgsProject::instance()->mapLayer( layerId );
 
   zoomToLayers( canvas, layers );
@@ -338,9 +338,8 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer()
   Q_NOWARN_DEPRECATED_PUSH
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   zoomToLayer( canvas );
-  QApplication::restoreOverrideCursor();
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -348,16 +347,13 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = s->data().value<QgsMapCanvas *>();
-  QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToLayers( canvas );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
-  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
   zoomToSelection( canvas );
 }
 
@@ -365,14 +361,13 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup()
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QgsMapCanvas *canvas = reinterpret_cast<QgsMapCanvas *>( s->data().value<void *>() );
-  QApplication::setOverrideCursor( Qt::WaitCursor );
   zoomToGroup( canvas );
-  QApplication::restoreOverrideCursor();
 }
-
 
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const QList<QgsMapLayer *> &layers )
 {
+  QgsTemporaryCursorOverride cursorOveride( Qt::WaitCursor );
+
   QgsRectangle extent;
   extent.setMinimal();
 
