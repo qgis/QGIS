@@ -366,7 +366,7 @@ void QgsLayerTreeViewDefaultActions::zoomToGroup()
 
 void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const QList<QgsMapLayer *> &layers )
 {
-  QgsTemporaryCursorOverride cursorOveride( Qt::WaitCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
 
   QgsRectangle extent;
   extent.setMinimal();
