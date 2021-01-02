@@ -265,6 +265,9 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCalculateVectorOverlapsAlgorithm() );
   addAlgorithm( new QgsCategorizeUsingStyleAlgorithm() );
   addAlgorithm( new QgsCellStatisticsAlgorithm() );
+  addAlgorithm( new QgsCellStatisticsPercentileAlgorithm() );
+  addAlgorithm( new QgsCellStatisticsPercentRankFromRasterAlgorithm() );
+  addAlgorithm( new QgsCellStatisticsPercentRankFromValueAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
