@@ -165,6 +165,53 @@ namespace QgsRasterAnalysisUtils
    */
   double varietyFromCellValues( std::vector<double> cellValues );
 
+  enum CellValuePercentileMethods
+  {
+    NearestRankPercentile,
+    InterpolatedPercentileInc,
+    InterpolatedPercentileExc
+  };
+
+  /**
+   * Returns the nearest rank percentile from a vector of cellValues,
+   * percentile parameter ranges between 0 and 1
+   */
+  double nearestRankPercentile( std::vector<double> cellValues, int stackSize, double percentile );
+
+  /**
+   * Returns the linearly interpolated percentile inclusive from a vector of cellValues,
+   * percentile parameter ranges between 0 and 1 inclusive
+   * see LibreOffice Calc's or Microsoft Excel's PERCENTILE.INC() function
+   */
+  double interpolatedPercentileInc( std::vector<double> cellValues, int stackSize, double percentile );
+
+  /**
+   * Returns the linearly interpolated percentile inclusive from a vector of cellValues,
+   * percentile parameter ranges between 0 and 1 exclusive
+   * see LibreOffice Calc's or Microsoft Excel's PERCENTILE.EXC() function
+   */
+  double interpolatedPercentileExc( std::vector<double> cellValues, int stackSize, double percentile, double noDataValue );
+
+  enum CellValuePercentRankMethods
+  {
+    InterpolatedPercentRankInc,
+    InterpolatedPercentRankExc
+  };
+
+  /**
+   * Returns the linearly interpolated percentrank inclusive of a value from a vector of cellValues,
+   * values outside the cellValue distribution (greater or smaller) will return noData
+   * see LibreOffice Calc's or Microsoft Excel's PERCENTRANK.INC() function
+   */
+  double interpolatedPercentRankInc( std::vector<double> cellValues, int stackSize, double value, double noDataValue );
+
+  /**
+   * Returns the linearly interpolated percentrank exclusive of a value from a vector of cellValues,
+   * values outside the cellValue distribution (greater or smaller) will return noData
+   * see LibreOffice Calc's or Microsoft Excel's PERCENTRANK.EXC() function
+   */
+  double interpolatedPercentRankExc( std::vector<double> cellValues, int stackSize, double value, double noDataValue );
+
 }
 
 
