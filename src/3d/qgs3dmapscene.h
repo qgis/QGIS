@@ -134,6 +134,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
   public slots:
     //! Updates the temporale entities
     void updateTemporal();
+    void onRayCasted( const QVector3D &rayOrigin, QVector3D &rayDirection );
 
   private slots:
     void onCameraChanged();

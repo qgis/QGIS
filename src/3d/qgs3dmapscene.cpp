@@ -1098,3 +1098,16 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
   }
 }
+
+void Qgs3DMapScene::onRayCasted( const QVector3D &rayOrigin, QVector3D &rayDirection )
+{
+  qDebug() << __PRETTY_FUNCTION__;
+  for ( QgsMapLayer *layer : mMap.layers() )
+  {
+    if ( layer->type() != QgsMapLayerType::PointCloudLayer ) continue;
+    if ( QgsPointCloudLayer *pc = dynamic_cast<QgsPointCloudLayer *>( layer ) )
+    {
+      pc->getPointsOnRay( rayOrigin, rayDirection );
+    }
+  }
+}

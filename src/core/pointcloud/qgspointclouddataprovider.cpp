@@ -406,3 +406,27 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
   return nodes;
 }
+QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection )
+{
+  QVector<QMap<QString, QVariant>> points;
+  return points;
+}
+
+QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::getNodesIntersectingWithRay(
+  const QgsPointCloudIndex *pc, IndexedPointCloudNode n,
+  const QVector3D &rayOrigin, const QVector3D &rayDirectione )
+{
+  QVector<IndexedPointCloudNode> nodes;
+
+  // TODO: check if the node actually intersects with the ray
+
+  nodes.append( n );
+
+  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
+  for ( const IndexedPointCloudNode &nn : children )
+  {
+    nodes += getNodesIntersectingWithRay( pc, nn, rayOrigin, rayDirectione );
+  }
+
+  return nodes;
+}
