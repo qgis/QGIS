@@ -265,7 +265,7 @@ struct MapIndexedPointCloudNode
   typedef QVector<QMap<QString, QVariant>> result_type;
 
   MapIndexedPointCloudNode( QgsPointCloudRequest &request, const QgsVector3D &indexScale, const QgsVector3D &indexOffset,
-                            QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index, int pointsLimit )
+                            const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index, int pointsLimit )
     : mRequest( request ), mIndexScale( indexScale ), mIndexOffset( indexOffset ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index ), mPointsLimit( pointsLimit )
   { }
 
@@ -309,7 +309,7 @@ struct MapIndexedPointCloudNode
   QgsPointCloudRequest &mRequest;
   QgsVector3D mIndexScale;
   QgsVector3D mIndexOffset;
-  QgsGeometry &mExtentGeometry;
+  const QgsGeometry &mExtentGeometry;
   const QgsDoubleRange &mZRange;
   QgsPointCloudIndex *mIndex = nullptr;
   int mPointsLimit;
@@ -318,7 +318,7 @@ struct MapIndexedPointCloudNode
 
 QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
                                 float maxErrorInMapCoords,
-                                QgsGeometry extentGeometry,
+                                const QgsGeometry &extentGeometry,
                                 const QgsDoubleRange extentZRange, int pointsLimit )
 {
   QVector<QMap<QString, QVariant>> acceptedPoints;
