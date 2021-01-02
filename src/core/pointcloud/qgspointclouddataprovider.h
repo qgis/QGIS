@@ -85,7 +85,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \note this function does not handle elevation properties and you need to
      * change elevation coordinates yourself after returning from the function
      */
-    QVector<QMap<QString, QVariant>> identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange = QgsDoubleRange(), int pointsLimit = 1000 ) SIP_SKIP;
+    QVector<QMap<QString, QVariant>> identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
 
     /**
      * Returns flags containing the supported capabilities for the data provider.

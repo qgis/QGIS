@@ -272,17 +272,6 @@ void TestQgsEptProvider::testIdentify()
     polygon.push_back( ring );
     float maxErrorInMapCoords = 0.0022857920266687870026;
     QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromPolygonXY( polygon ) );
-    qDebug() << "Points count : " << points.size();
-    int i = 1;
-    for ( QMap<QString, QVariant> pt : points )
-    {
-      qDebug() << "Point " << i; ++i;
-      for ( QString attr : pt.keys() )
-      {
-        qDebug() << qSetRealNumberPrecision( 20 ) << attr << " -> " << pt[attr];
-      }
-      qDebug() << "--------------------------------";
-    }
     QCOMPARE( points.size(), 1 );
     QMap<QString, QVariant> identifiedPoint = points[0];
     QMap<QString, QVariant> expected;
