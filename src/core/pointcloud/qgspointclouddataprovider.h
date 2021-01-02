@@ -22,6 +22,7 @@
 #include "qgsdataprovider.h"
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
+#include "qgspointcloudindex.h"
 #include <memory>
 
 class IndexedPointCloudNode;
@@ -120,6 +121,8 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     }
     % End
 #endif
+    QVector<QMap<QString, QVariant>> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection ) SIP_SKIP;
+    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, const QVector3D &rayOrigin, const QVector3D &rayDirection );
 
     /**
      * Returns flags containing the supported capabilities for the data provider.
@@ -208,7 +211,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * providers will return NULLPTR.
      */
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
-
 #ifndef SIP_RUN
 
     /**

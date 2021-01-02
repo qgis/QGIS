@@ -621,3 +621,10 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
   emit rendererChanged();
   emit styleChanged();
 }
+
+QVector<QMap<QString, QVariant>> QgsPointCloudLayer::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection )
+{
+  QVector<QMap<QString, QVariant>> points = mDataProvider->getPointsOnRay( rayOrigin, rayDirection );
+  qDebug() << __PRETTY_FUNCTION__;
+  return points;
+}

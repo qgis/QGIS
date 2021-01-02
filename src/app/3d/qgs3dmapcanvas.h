@@ -97,7 +97,8 @@ class Qgs3DMapCanvas : public QWidget
     void fpsCountChanged( float fpsCount );
     //! Emitted when the FPS counter is enabled or disabeld
     void fpsCounterEnabledChanged( bool enabled );
-
+  public slots:
+    void mouseReleased( QMouseEvent *event );
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
 

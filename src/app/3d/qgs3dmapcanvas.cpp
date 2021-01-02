@@ -253,3 +253,26 @@ void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange 
   mMap->setTemporalRange( temporalrange );
   mScene->updateTemporal();
 }
+
+
+void Qgs3DMapCanvas::mouseReleased( QMouseEvent *event )
+{
+//  qDebug() << __PRETTY_FUNCTION__ << " " << event->x() << " " << event->y();
+  QVector3D deviceCoords( event->x(), event->y(), 0.0 );
+  QSize windowSize = mEngine->size();
+  QVector3D normDeviceCoords( 2.0 * deviceCoords.x() / windowSize.width() - 1.0f, 1.0f - 2.0 * deviceCoords.y() / windowSize.height(), mEngine->camera()->nearPlane() );
+//  qDebug() << "NDC " << normDeviceCoords.x() << " " << normDeviceCoords.y() << " " << normDeviceCoords.z();
+  QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0f, 0.0f );
+  QMatrix4x4 projMatrix = mEngine->camera()->projectionMatrix();
+  QMatrix4x4 viewMatrix = mEngine->camera()->viewMatrix();
+
+  QVector4D rayEye = projMatrix.inverted() * rayClip;
+  rayEye.setZ( -1.0f );
+  rayEye.setW( 0.0f );
+  QVector4D rayWorld4D = viewMatrix.inverted() * rayEye;
+  QVector3D rayWorld( rayWorld4D.x(), rayWorld4D.y(), rayWorld4D.z() );
+  rayWorld = rayWorld.normalized();
+//  qDebug() << "rayEye: " << rayEye;
+//  qDebug() << "rayWorld: " << rayWorld;
+  mScene->onRayCasted( QVector3D( rayEye ), rayWorld );
+}
