@@ -34,6 +34,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmultipolygon.h"
 #include "qgsrasteranalysisutils.h"
+#include "qgsrasteranalysisutils.cpp"
 #include "qgsrasterfilewriter.h"
 #include "qgsreclassifyutils.h"
 #include "qgsalgorithmrasterlogicalop.h"
@@ -110,6 +111,16 @@ class TestQgsProcessingAlgs: public QObject
     void rasterLogicOp();
     void cellStatistics_data();
     void cellStatistics();
+    void percentileFunctions_data();
+    void percentileFunctions();
+    void percentileRaster_data();
+    void percentileRaster();
+    void percentrankFunctions_data();
+    void percentrankFunctions();
+    void percentrankByRaster_data();
+    void percentrankByRaster();
+    void percentrankByValue_data();
+    void percentrankByValue();
     void rasterFrequencyByComparisonOperator_data();
     void rasterFrequencyByComparisonOperator();
     void rasterLocalPosition_data();
@@ -2678,6 +2689,772 @@ void TestQgsProcessingAlgs::cellStatistics()
         double expectedValue = expectedRasterBlock->value( row, column );
         double outputValue = outputRasterBlock->value( row, column );
         QCOMPARE( outputValue, expectedValue );
+      }
+    }
+  }
+}
+
+Q_DECLARE_METATYPE( QgsRasterAnalysisUtils::CellValuePercentileMethods )
+void TestQgsProcessingAlgs::percentileFunctions_data()
+{
+  QTest::addColumn<QgsRasterAnalysisUtils::CellValuePercentileMethods>( "function" );
+  QTest::addColumn<std::vector<double>>( "inputValues" );
+  QTest::addColumn<std::vector<double>>( "inputPercentiles" );
+  QTest::addColumn<std::vector<double>>( "expectedValues" );
+
+  QTest::newRow( "testcase_1" )
+      << QgsRasterAnalysisUtils::NearestRankPercentile
+      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
+      << std::vector<double>({0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1})
+      << std::vector<double>({2, 2, 18, 20, 20, 24, 36, 49, 64, 98, 100});
+
+  QTest::newRow( "testcase_2" )
+      << QgsRasterAnalysisUtils::InterpolatedPercentileInc
+      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
+      << std::vector<double>({0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1})
+      << std::vector<double>({2.0,16.4,19.6,20.0,22.4,30.0, 41.2,53.5,70.8,98.2,100});
+
+  QTest::newRow( "testcase_3" )
+      << QgsRasterAnalysisUtils::InterpolatedPercentileExc
+      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
+      << std::vector<double>({0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1})
+      << std::vector<double>({-9999,3.6,18.4,20,21.6,30, 43.8,59.5,91.2,99.8,-9999});
+}
+
+void TestQgsProcessingAlgs::percentileFunctions()
+{
+  QFETCH( QgsRasterAnalysisUtils::CellValuePercentileMethods, function );
+  QFETCH( std::vector<double>, inputValues );
+  QFETCH( std::vector<double>, inputPercentiles );
+  QFETCH( std::vector<double>, expectedValues );
+
+  int inputValuesSize = static_cast<int>(inputValues.size());
+  int percentileSize = static_cast<int>(inputPercentiles.size());
+  double result;
+
+  for(int i = 0; i < percentileSize; i++)
+  {
+    double percentile = inputPercentiles[i];
+    double expectedValue = expectedValues[i];
+
+    switch ( function )
+    {
+      case( QgsRasterAnalysisUtils::NearestRankPercentile ):
+      {
+        result = QgsRasterAnalysisUtils::nearestRankPercentile(inputValues, inputValuesSize, percentile);
+        QCOMPARE( result , expectedValue );
+        break;
+      }
+      case( QgsRasterAnalysisUtils::InterpolatedPercentileInc ):
+      {
+        result = QgsRasterAnalysisUtils::interpolatedPercentileInc(inputValues, inputValuesSize, percentile);
+        QCOMPARE( result, expectedValue);
+        break;
+      }
+      case( QgsRasterAnalysisUtils::InterpolatedPercentileExc ):
+      {
+        result = QgsRasterAnalysisUtils::interpolatedPercentileExc(inputValues, inputValuesSize, percentile, -9999);
+        QCOMPARE( result, expectedValue);
+        break;
+      }
+    }
+  }
+}
+
+void TestQgsProcessingAlgs::percentileRaster_data()
+{
+  QTest::addColumn<QStringList>( "inputRasters" );
+  QTest::addColumn<QString>( "referenceLayer" );
+  QTest::addColumn<int>( "method" );
+  QTest::addColumn<double>( "percentile" );
+  QTest::addColumn<bool>( "ignoreNoData" );
+  QTest::addColumn<QString>( "expectedRaster" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+
+  /*
+   * Testcase 1: nearest, ignoreNoData = true, dataType = Float64
+   */
+  QTest::newRow( "testcase_1" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 0
+      << 0.789
+      << true
+      << QStringLiteral( "/percentile_nearest_ignoreTrue_float64.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 2: inc, ignoreNoData = true, dataType = Float64
+   */
+  QTest::newRow( "testcase_2" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 1
+      << 0.789
+      << true
+      << QStringLiteral( "/percentile_inc_ignoreTrue_float64.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 3: exc, ignoreNoData = true, dataType = Float64
+   */
+  QTest::newRow( "testcase_3" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 2
+      << 0.789
+      << true
+      << QStringLiteral( "/percentile_exc_ignoreTrue_float64.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 4: nearest, ignoreNoData = false, dataType = Float64
+   */
+  QTest::newRow( "testcase_4" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 0
+      << 0.789
+      << false
+      << QStringLiteral( "/percentile_nearest_ignoreFalse_float64.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 5: inc, ignoreNoData = false, dataType = Float64
+   */
+  QTest::newRow( "testcase_5" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 1
+      << 0.789
+      << false
+      << QStringLiteral( "/percentile_inc_ignoreFalse_float64.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 6: exc, ignoreNoData = false, dataType = Float64
+   */
+  QTest::newRow( "testcase_6" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 2
+      << 0.789
+      << false
+      << QStringLiteral( "/percentile_exc_ignoreFalse_float64.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 7: exc, ignoreNoData = false, dataType = Byte
+   */
+  QTest::newRow( "testcase_7" )
+      << QStringList( {"/raster/rnd_percentile_raster1_byte.tif",
+                       "/raster/rnd_percentile_raster2_byte.tif",
+                       "/raster/rnd_percentile_raster3_byte.tif",
+                       "/raster/rnd_percentile_raster4_byte.tif",
+                       "/raster/rnd_percentile_raster5_byte.tif"} )
+      << QStringLiteral( "/raster/rnd_percentile_raster1_byte.tif" )
+      << 0
+      << 0.789
+      << false
+      << QStringLiteral( "/percentile_nearest_ignoreFalse_byte.tif" )
+      << Qgis::Byte;
+}
+
+
+void TestQgsProcessingAlgs::percentileRaster()
+{
+  QFETCH( QStringList, inputRasters );
+  QFETCH( QString, referenceLayer );
+  QFETCH( int, method );
+  QFETCH( double, percentile );
+  QFETCH( bool, ignoreNoData );
+  QFETCH( QString, expectedRaster );
+  QFETCH( Qgis::DataType, expectedDataType );
+
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:cellstackpercentile" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
+
+  QStringList inputDatasetPaths;
+
+  for ( const auto &raster : inputRasters )
+  {
+    inputDatasetPaths << myDataPath + raster;
+  }
+
+  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = qgis::make_unique< QgsRasterLayer >( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( inputRasterLayer1->crs(), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), inputDatasetPaths );
+  parameters.insert( QStringLiteral( "METHOD" ), method );
+  parameters.insert( QStringLiteral( "PERCENTILE" ), percentile );
+  parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
+  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), QString( myDataPath + referenceLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  //prepare expectedRaster
+  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_cellStackPercentile/" + expectedRaster, "expectedDataset", "gdal" );
+  std::unique_ptr< QgsRasterInterface > expectedInterface( expectedRasterLayer->dataProvider()->clone() );
+  QgsRasterIterator expectedIter( expectedInterface.get() );
+  expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
+
+  //run alg...
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  //...and check results with expected datasets
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+  QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+  QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
+  QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
+
+  QgsRasterIterator outputIter( outputInterface.get() );
+  outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+  int outputIterLeft = 0;
+  int outputIterTop = 0;
+  int outputIterCols = 0;
+  int outputIterRows = 0;
+  int expectedIterLeft = 0;
+  int expectedIterTop = 0;
+  int expectedIterCols = 0;
+  int expectedIterRows = 0;
+
+  std::unique_ptr< QgsRasterBlock > outputRasterBlock;
+  std::unique_ptr< QgsRasterBlock > expectedRasterBlock;
+
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) &&
+          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  {
+    for ( int row = 0; row < expectedIterRows; row++ )
+    {
+      for ( int column = 0; column < expectedIterCols; column++ )
+      {
+        double roundedExpectedValue = std::round( expectedRasterBlock->value( row, column ) * 4 ) * 4;
+        double roundedOutputValue = std::round( outputRasterBlock->value( row, column ) * 4 ) * 4;
+        QCOMPARE( roundedOutputValue, roundedExpectedValue );
+      }
+    }
+  }
+}
+
+Q_DECLARE_METATYPE( QgsRasterAnalysisUtils::CellValuePercentRankMethods )
+void TestQgsProcessingAlgs::percentrankFunctions_data()
+{
+  QTest::addColumn<QgsRasterAnalysisUtils::CellValuePercentRankMethods>( "function" );
+  QTest::addColumn<std::vector<double>>( "inputValues" );
+  QTest::addColumn<std::vector<double>>( "inputPercentrank" );
+  QTest::addColumn<std::vector<double>>( "expectedValues" );
+
+  QTest::newRow( "testcase_1" )
+      << QgsRasterAnalysisUtils::InterpolatedPercentRankInc
+      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
+      << std::vector<double>({-8,2,18,20,33,47,29,39.5,57,39,12,100,150})
+      << std::vector<double>({-9999,0,0.111111111111,0.222222222222,0.527777777778,0.649572649573,0.490740740741,0.58547008547,0.725925925926,0.581196581197,0.0694444444444,1,-9999});
+
+  QTest::newRow( "testcase_2" )
+      << QgsRasterAnalysisUtils::InterpolatedPercentRankExc
+      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
+      << std::vector<double>({-8,2,18,20,33,47,29,39.5,57,39,12,100,150})
+      << std::vector<double>({-9999,0.0909090909091,0.1818181818181,0.272727272727,0.522727272727,0.622377622378,0.492424242424,0.56993006993,0.684848484848,0.566433566434,0.1477272727272,0.909090909091,-9999});
+}
+
+void TestQgsProcessingAlgs::percentrankFunctions()
+{
+  QFETCH( QgsRasterAnalysisUtils::CellValuePercentRankMethods, function );
+  QFETCH( std::vector<double>, inputValues );
+  QFETCH( std::vector<double>, inputPercentrank );
+  QFETCH( std::vector<double>, expectedValues );
+
+  int inputValuesSize = static_cast<int>(inputValues.size());
+  int percentrankSize = static_cast<int>(inputPercentrank.size());
+  double result;
+
+  for(int i = 0; i < percentrankSize; i++)
+  {
+    double percentrank = inputPercentrank[i];
+    double expectedValue = expectedValues[i];
+
+    switch ( function )
+    {
+      case( QgsRasterAnalysisUtils::InterpolatedPercentRankInc ):
+      {
+        result = QgsRasterAnalysisUtils::interpolatedPercentRankInc(inputValues, inputValuesSize, percentrank, -9999);
+        QCOMPARE( result, expectedValue);
+        break;
+      }
+      case( QgsRasterAnalysisUtils::InterpolatedPercentRankExc ):
+      {
+        result = QgsRasterAnalysisUtils::interpolatedPercentRankExc(inputValues, inputValuesSize, percentrank, -9999);
+        QCOMPARE( result, expectedValue);
+        break;
+      }
+    }
+  }
+
+  std::vector<double> cellVal = std::vector<double>( {13,36,13,44,60} );
+
+  qDebug() << QgsRasterAnalysisUtils::interpolatedPercentRankInc( cellVal, 5, 13, 200 );
+
+  QVERIFY(true);
+}
+
+void TestQgsProcessingAlgs::percentrankByRaster_data()
+{
+  QTest::addColumn<QString>( "valueLayer" );
+  QTest::addColumn<int>( "valueLayerBand" );
+  QTest::addColumn<QStringList>( "inputRasters" );
+  QTest::addColumn<QString>( "referenceLayer" );
+  QTest::addColumn<int>( "method" );
+  QTest::addColumn<bool>( "ignoreNoData" );
+  QTest::addColumn<double>( "noDataValue" );
+  QTest::addColumn<QString>( "expectedRaster" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+
+  /*
+   * Testcase 1: nearest, ignoreNoData = true, dataType = Float64
+   */
+  QTest::newRow( "testcase_1" )
+      << QStringLiteral( "/raster/rnd_percentrank_valueraster_float64.tif" )
+      << 1
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 0
+      << true
+      << -9999.0
+      << QStringLiteral( "/percentRankByRaster_inc_ignoreTrue_float64.tif" )
+      << Qgis::Float32;
+
+  /*
+   * Testcase 2: inc, ignoreNoData = true, dataType = Float64
+   */
+  QTest::newRow( "testcase_2" )
+      << QStringLiteral( "/raster/rnd_percentrank_valueraster_float64.tif" )
+      << 1
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 1
+      << true
+      << -9999.0
+      << QStringLiteral( "/percentRankByRaster_exc_ignoreTrue_float64.tif" )
+      << Qgis::Float32;
+
+  /*
+   * Testcase 3: nearest, ignoreNoData = false, dataType = Float64
+   */
+  QTest::newRow( "testcase_3" )
+      << QStringLiteral( "/raster/rnd_percentrank_valueraster_float64.tif" )
+      << 1
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 0
+      << false
+      << -9999.0
+      << QStringLiteral( "/percentRankByRaster_inc_ignoreFalse_float64.tif" )
+      << Qgis::Float32;
+
+  /*
+   * Testcase 4: inc, ignoreNoData = false, dataType = Float64
+   */
+  QTest::newRow( "testcase_4" )
+      << QStringLiteral( "/raster/rnd_percentrank_valueraster_float64.tif" )
+      << 1
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 1
+      << false
+      << -9999.0
+      << QStringLiteral( "/percentRankByRaster_exc_ignoreFalse_float64.tif" )
+      << Qgis::Float32;
+
+
+  /*
+   * Testcase 5: inc, ignoreNoData = false, dataType = Byte
+   */
+  QTest::newRow( "testcase_5" )
+      << QStringLiteral( "/raster/rnd_percentile_raster1_byte.tif" )
+      << 1
+      << QStringList( {"/raster/rnd_percentile_raster1_byte.tif",
+                       "/raster/rnd_percentile_raster2_byte.tif",
+                       "/raster/rnd_percentile_raster3_byte.tif",
+                       "/raster/rnd_percentile_raster4_byte.tif",
+                       "/raster/rnd_percentile_raster5_byte.tif"} )
+      << QStringLiteral( "/raster/rnd_percentile_raster1_byte.tif" )
+      << 0
+      << false
+      << 200.0
+      << QStringLiteral( "/percentRankByRaster_inc_ignoreFalse_byte.tif" )
+      << Qgis::Float32;
+}
+
+
+void TestQgsProcessingAlgs::percentrankByRaster()
+{
+  QFETCH( QString, valueLayer );
+  QFETCH( int, valueLayerBand );
+  QFETCH( QStringList, inputRasters );
+  QFETCH( QString, referenceLayer );
+  QFETCH( int, method );
+  QFETCH( bool, ignoreNoData );
+  QFETCH( double, noDataValue );
+  QFETCH( QString, expectedRaster );
+  QFETCH( Qgis::DataType, expectedDataType );
+
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:cellstackpercentrankfromrasterlayer" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
+
+  QStringList inputDatasetPaths;
+
+  for ( const auto &raster : inputRasters )
+  {
+    inputDatasetPaths << myDataPath + raster;
+  }
+
+  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = qgis::make_unique< QgsRasterLayer >( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( inputRasterLayer1->crs(), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), inputDatasetPaths );
+  parameters.insert( QStringLiteral( "INPUT_VALUE_RASTER" ), QString( myDataPath + valueLayer ) );
+  parameters.insert( QStringLiteral( "VALUE_RASTER_BAND" ), valueLayerBand );
+  parameters.insert( QStringLiteral( "METHOD" ), method );
+  parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
+  parameters.insert( QStringLiteral( "OUTPUT_NODATA_VALUE"), noDataValue);
+  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), QString( myDataPath + referenceLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  //prepare expectedRaster
+  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_cellStackPercentrankFromRaster/" + expectedRaster, "expectedDataset", "gdal" );
+  std::unique_ptr< QgsRasterInterface > expectedInterface( expectedRasterLayer->dataProvider()->clone() );
+  QgsRasterIterator expectedIter( expectedInterface.get() );
+  expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
+
+  //run alg...
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  //...and check results with expected datasets
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+  QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+  QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
+  QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
+
+  QgsRasterIterator outputIter( outputInterface.get() );
+  outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+  int outputIterLeft = 0;
+  int outputIterTop = 0;
+  int outputIterCols = 0;
+  int outputIterRows = 0;
+  int expectedIterLeft = 0;
+  int expectedIterTop = 0;
+  int expectedIterCols = 0;
+  int expectedIterRows = 0;
+
+  std::unique_ptr< QgsRasterBlock > outputRasterBlock;
+  std::unique_ptr< QgsRasterBlock > expectedRasterBlock;
+
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) &&
+          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  {
+    for ( int row = 0; row < expectedIterRows; row++ )
+    {
+      for ( int column = 0; column < expectedIterCols; column++ )
+      {
+        double roundedExpectedValue = std::round( expectedRasterBlock->value( row, column ) * 4 ) * 4;
+        double roundedOutputValue = std::round( outputRasterBlock->value( row, column ) * 4 ) * 4;
+        QCOMPARE( roundedOutputValue, roundedExpectedValue );
+      }
+    }
+  }
+}
+
+void TestQgsProcessingAlgs::percentrankByValue_data()
+{
+  QTest::addColumn<QStringList>( "inputRasters" );
+  QTest::addColumn<QString>( "referenceLayer" );
+  QTest::addColumn<double>( "value" );
+  QTest::addColumn<int>( "method" );
+  QTest::addColumn<bool>( "ignoreNoData" );
+  QTest::addColumn<double>( "noDataValue" );
+  QTest::addColumn<QString>( "expectedRaster" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+
+  /*
+   * Testcase 1: nearest, ignoreNoData = true, dataType = Float64
+   */
+  QTest::newRow( "testcase_1" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 83.327
+      << 0
+      << true
+      << -9999.0
+      << QStringLiteral( "/percentRankByValue_inc_ignoreTrue_float64.tif" )
+      << Qgis::Float32;
+
+  /*
+   * Testcase 2: inc, ignoreNoData = true, dataType = Float64
+   */
+  QTest::newRow( "testcase_2" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 7.99
+      << 1
+      << true
+      << -9999.0
+      << QStringLiteral( "/percentRankByValue_exc_ignoreTrue_float64.tif" )
+      << Qgis::Float32;
+
+  /*
+   * Testcase 3: nearest, ignoreNoData = false, dataType = Float64
+   */
+  QTest::newRow( "testcase_3" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 200.78
+      << 0
+      << false
+      << -9999.0
+      << QStringLiteral( "/percentRankByValue_inc_ignoreFalse_float64.tif" )
+      << Qgis::Float32;
+
+  /*
+   * Testcase 4: inc, ignoreNoData = false, dataType = Float64
+   */
+  QTest::newRow( "testcase_4" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc",
+                       "/raster/statisticsRas4_float64.asc",
+                       "/raster/rnd_percentile_raster1_float64.tif",
+                       "/raster/rnd_percentile_raster2_float64.tif",
+                       "/raster/rnd_percentile_raster3_float64.tif",
+                       "/raster/rnd_percentile_raster4_float64.tif",
+                       "/raster/rnd_percentile_raster5_float64.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 56.78
+      << 1
+      << false
+      << -9999.0
+      << QStringLiteral( "/percentRankByValue_exc_ignoreFalse_float64.tif" )
+      << Qgis::Float32;
+
+
+  /*
+   * Testcase 5: inc, ignoreNoData = false, dataType = Byte
+   */
+  QTest::newRow( "testcase_5" )
+      << QStringList( {"/raster/rnd_percentile_raster1_byte.tif",
+                       "/raster/rnd_percentile_raster2_byte.tif",
+                       "/raster/rnd_percentile_raster3_byte.tif",
+                       "/raster/rnd_percentile_raster4_byte.tif",
+                       "/raster/rnd_percentile_raster5_byte.tif"} )
+      << QStringLiteral( "/raster/rnd_percentile_raster1_byte.tif" )
+      << 19.0
+      << 0
+      << false
+      << 200.0
+      << QStringLiteral( "/percentRankByValue_inc_ignoreFalse_byte.tif" )
+      << Qgis::Float32;
+}
+
+
+void TestQgsProcessingAlgs::percentrankByValue()
+{
+  QFETCH( QStringList, inputRasters );
+  QFETCH( QString, referenceLayer );
+  QFETCH( double, value );
+  QFETCH( int, method );
+  QFETCH( bool, ignoreNoData );
+  QFETCH( double, noDataValue );
+  QFETCH( QString, expectedRaster );
+  QFETCH( Qgis::DataType, expectedDataType );
+
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:cellstackpercentrankfromvalue" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
+
+  QStringList inputDatasetPaths;
+
+  for ( const auto &raster : inputRasters )
+  {
+    inputDatasetPaths << myDataPath + raster;
+  }
+
+  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = qgis::make_unique< QgsRasterLayer >( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( inputRasterLayer1->crs(), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), inputDatasetPaths );
+  parameters.insert( QStringLiteral( "VALUE" ), value );
+  parameters.insert( QStringLiteral( "METHOD" ), method );
+  parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
+  parameters.insert( QStringLiteral( "OUTPUT_NODATA_VALUE"), noDataValue);
+  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), QString( myDataPath + referenceLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  //prepare expectedRaster
+  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_cellStackPercentrankFromValue/" + expectedRaster, "expectedDataset", "gdal" );
+  std::unique_ptr< QgsRasterInterface > expectedInterface( expectedRasterLayer->dataProvider()->clone() );
+  QgsRasterIterator expectedIter( expectedInterface.get() );
+  expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
+
+  //run alg...
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  //...and check results with expected datasets
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+  QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+  QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
+  QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
+
+  QgsRasterIterator outputIter( outputInterface.get() );
+  outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+  int outputIterLeft = 0;
+  int outputIterTop = 0;
+  int outputIterCols = 0;
+  int outputIterRows = 0;
+  int expectedIterLeft = 0;
+  int expectedIterTop = 0;
+  int expectedIterCols = 0;
+  int expectedIterRows = 0;
+
+  std::unique_ptr< QgsRasterBlock > outputRasterBlock;
+  std::unique_ptr< QgsRasterBlock > expectedRasterBlock;
+
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) &&
+          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  {
+    for ( int row = 0; row < expectedIterRows; row++ )
+    {
+      for ( int column = 0; column < expectedIterCols; column++ )
+      {
+        double roundedExpectedValue = std::round( expectedRasterBlock->value( row, column ) * 4 ) * 4;
+        double roundedOutputValue = std::round( outputRasterBlock->value( row, column ) * 4 ) * 4;
+        QCOMPARE( roundedOutputValue, roundedExpectedValue );
       }
     }
   }
