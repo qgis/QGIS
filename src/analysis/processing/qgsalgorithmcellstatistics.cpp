@@ -22,96 +22,29 @@
 
 ///@cond PRIVATE
 
-QString QgsCellStatisticsAlgorithm::displayName() const
-{
-  return QObject::tr( "Cell statistics" );
-}
 
-QString QgsCellStatisticsAlgorithm::name() const
-{
-  return QObject::tr( "cellstatistics" );
-}
-
-QStringList QgsCellStatisticsAlgorithm::tags() const
-{
-  return QObject::tr( "cell,pixel,statistic,count,mean,sum,majority,minority,variance,variety,range,median,minimum,maximum" ).split( ',' );
-}
-
-QString QgsCellStatisticsAlgorithm::group() const
+QString QgsCellStatisticsAlgorithmBase::group() const
 {
   return QObject::tr( "Raster analysis" );
 }
 
-QString QgsCellStatisticsAlgorithm::groupId() const
+QString QgsCellStatisticsAlgorithmBase::groupId() const
 {
   return QStringLiteral( "rasteranalysis" );
 }
 
-QString QgsCellStatisticsAlgorithm::shortHelpString() const
-{
-  return QObject::tr( "The Cell statistics algorithm computes a value for each cell of the "
-                      "output raster. At each cell location, "
-                      "the output value is defined as a function of all overlaid cell values of the "
-                      "input rasters.\n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. The following functions can be applied on the input "
-                      "raster cells per output raster cell location:\n"
-                      "<ul> "
-                      "   <li>Sum</li>"
-                      "   <li>Count</li>"
-                      "   <li>Mean</li>"
-                      "   <li>Median</li>"
-                      "   <li>Standard deviation</li>"
-                      "   <li>Variance</li>"
-                      "   <li>Minimum</li>"
-                      "   <li>Maximum</li>"
-                      "   <li>Minority (least frequent value)</li>"
-                      "   <li>Majority (most frequent value)</li>"
-                      "   <li>Range (max-min)</li>"
-                      "   <li>Variety (count of unique values)</li>"
-                      "</ul> "
-                      "Input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling. The output raster data type will be set to "
-                      "the most complex data type present in the input datasets except when using the functions "
-                      "Mean, Standard deviation and Variance (data type is always Float32/Float64 depending on input float type) or Count and Variety (data type is always Int32).\n"
-                      "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
-                      "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location.\n"
-                      "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
-                      "arithmetic mean of the two middle values of the ordered cell input values. In this case the output data type is Float32.\n"
-                      "<i>Calculation details - Minority/Majority:</i> If no unique minority or majority could be found, the result is NoData, except all "
-                      "input cell values are equal." );
-}
-
-QgsCellStatisticsAlgorithm *QgsCellStatisticsAlgorithm::createInstance() const
-{
-  return new QgsCellStatisticsAlgorithm();
-}
-
-void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsCellStatisticsAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layers" ), QgsProcessing::TypeRaster ) );
 
-  QStringList statistics = QStringList();
-  statistics << QObject::tr( "Sum" )
-             << QObject::tr( "Count" )
-             << QObject::tr( "Mean" )
-             << QObject::tr( "Median" )
-             << QObject::tr( "Standard deviation" )
-             << QObject::tr( "Variance" )
-             << QObject::tr( "Minimum" )
-             << QObject::tr( "Maximum" )
-             << QObject::tr( "Minority" )
-             << QObject::tr( "Majority" )
-             << QObject::tr( "Range" )
-             << QObject::tr( "Variety" );
+  addSpecificAlgorithmParams();
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTIC" ), QObject::tr( "Statistic" ),  statistics, false, 0, false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), true ) );
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true );
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, false );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( output_nodata_parameter.release() );
 
@@ -125,7 +58,7 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
 }
 
-bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REFERENCE_LAYER" ), context );
   if ( !referenceLayer )
@@ -168,14 +101,6 @@ bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
     }
   }
 
-  return true;
-}
-
-QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-{
-  //obtain statistic method
-  QgsRasterAnalysisUtils::CellValueStatisticMethods method = static_cast<QgsRasterAnalysisUtils::CellValueStatisticMethods>( parameterAsEnum( parameters, QStringLiteral( "STATISTIC" ), context ) );
-
   //determine output raster data type
   //initially raster data type to most primitive data type that is possible
   mDataType = Qgis::Byte;
@@ -189,23 +114,14 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
     }
   }
 
-  //force data types on specific functions if input data types don't match
-  if (
-    method == QgsRasterAnalysisUtils::Mean ||
-    method == QgsRasterAnalysisUtils::StandardDeviation ||
-    method == QgsRasterAnalysisUtils::Variance ||
-    ( method == QgsRasterAnalysisUtils::Median && ( mInputs.size() % 2 == 0 ) )
-  )
-  {
-    if ( static_cast<int>( mDataType ) < 6 )
-      mDataType = Qgis::Float32; //force float on mean, stddev and median with equal number of input layers if all inputs are integer
-  }
-  else if ( method == QgsRasterAnalysisUtils::Count || method == QgsRasterAnalysisUtils::Variety ) //count, variety
-  {
-    if ( static_cast<int>( mDataType ) > 5 ) //if is floating point type
-      mDataType = Qgis::Int32; //force integer on variety if all inputs are float or complex
-  }
+  prepareSpecificAlgorithmParameters( parameters, context, feedback );
 
+  return true;
+}
+
+
+QVariantMap QgsCellStatisticsAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
@@ -213,22 +129,141 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
   std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
-  if ( !provider )
+  mOutputRasterDataProvider = writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs );
+  if ( !mOutputRasterDataProvider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
-  if ( !provider->isValid() )
-    throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
+  if ( !mOutputRasterDataProvider->isValid() )
+    throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, mOutputRasterDataProvider->error().message( QgsErrorMessage::Text ) ) );
 
-  provider->setNoDataValue( 1, mNoDataValue );
+  mOutputRasterDataProvider->setNoDataValue( 1, mNoDataValue );
   qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
 
+  //call child statistics method
+  processRasterStack( feedback );
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
+  outputs.insert( QStringLiteral( "CRS_AUTHID" ), mCrs.authid() );
+  outputs.insert( QStringLiteral( "WIDTH_IN_PIXELS" ), mLayerWidth );
+  outputs.insert( QStringLiteral( "HEIGHT_IN_PIXELS" ), mLayerHeight );
+  outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
+  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+
+  return outputs;
+}
+
+
+//
+//QgsCellStatisticsAlgorithm
+//
+QString QgsCellStatisticsAlgorithm::displayName() const
+{
+  return QObject::tr( "Cell statistics" );
+}
+
+QString QgsCellStatisticsAlgorithm::name() const
+{
+  return QObject::tr( "cellstatistics" );
+}
+
+QStringList QgsCellStatisticsAlgorithm::tags() const
+{
+  return QObject::tr( "cell,pixel,statistic,count,mean,sum,majority,minority,variance,variety,range,median,minimum,maximum" ).split( ',' );
+}
+
+QString QgsCellStatisticsAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "The Cell statistics algorithm computes a value for each cell of the "
+                      "output raster. At each cell location, "
+                      "the output value is defined as a function of all overlaid cell values of the "
+                      "input rasters.\n\n"
+                      "The output raster's extent and resolution is defined by a reference "
+                      "raster. The following functions can be applied on the input "
+                      "raster cells per output raster cell location:\n"
+                      "<ul> "
+                      "   <li>Sum</li>"
+                      "   <li>Count</li>"
+                      "   <li>Mean</li>"
+                      "   <li>Median</li>"
+                      "   <li>Standard deviation</li>"
+                      "   <li>Variance</li>"
+                      "   <li>Minimum</li>"
+                      "   <li>Maximum</li>"
+                      "   <li>Minority (least frequent value)</li>"
+                      "   <li>Majority (most frequent value)</li>"
+                      "   <li>Range (max-min)</li>"
+                      "   <li>Variety (count of unique values)</li>"
+                      "</ul> "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be "
+                      "resampled using nearest neighbor resampling. The output raster data type will be set to "
+                      "the most complex data type present in the input datasets except when using the functions "
+                      "Mean, Standard deviation and Variance (data type is always Float32/Float64 depending on input float type) or Count and Variety (data type is always Int32).\n"
+                      "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
+                      "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location.\n"
+                      "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
+                      "arithmetic mean of the two middle values of the ordered cell input values. In this case the output data type is Float32.\n"
+                      "<i>Calculation details - Minority/Majority:</i> If no unique minority or majority could be found, the result is NoData, except all "
+                      "input cell values are equal." );
+}
+
+QgsCellStatisticsAlgorithm *QgsCellStatisticsAlgorithm::createInstance() const
+{
+  return new QgsCellStatisticsAlgorithm();
+}
+
+void QgsCellStatisticsAlgorithm::addSpecificAlgorithmParams()
+{
+  QStringList statistics = QStringList();
+  statistics << QObject::tr( "Sum" )
+             << QObject::tr( "Count" )
+             << QObject::tr( "Mean" )
+             << QObject::tr( "Median" )
+             << QObject::tr( "Standard deviation" )
+             << QObject::tr( "Variance" )
+             << QObject::tr( "Minimum" )
+             << QObject::tr( "Maximum" )
+             << QObject::tr( "Minority" )
+             << QObject::tr( "Majority" )
+             << QObject::tr( "Range" )
+             << QObject::tr( "Variety" );
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTIC" ), QObject::tr( "Statistic" ),  statistics, false, 0, false ) );
+}
+
+bool QgsCellStatisticsAlgorithm::prepareSpecificAlgorithmParameters(const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback)
+{
+  Q_UNUSED(feedback)
+  //obtain statistic method
+  mMethod = static_cast<QgsRasterAnalysisUtils::CellValueStatisticMethods>( parameterAsEnum( parameters, QStringLiteral( "STATISTIC" ), context ) );
+
+  //force data types on specific functions in the cellstatistics alg if input data types don't match
+  if (
+      mMethod == QgsRasterAnalysisUtils::Mean ||
+      mMethod == QgsRasterAnalysisUtils::StandardDeviation ||
+      mMethod == QgsRasterAnalysisUtils::Variance ||
+      (mMethod == QgsRasterAnalysisUtils::Median && (mInputs.size() % 2 == 0) )
+     )
+  {
+    if ( static_cast<int>( mDataType ) < 6 )
+      mDataType = Qgis::Float32; //force float on mean, stddev and median with equal number of input layers if all inputs are integer
+  }
+  else if ( mMethod == QgsRasterAnalysisUtils::Count || mMethod == QgsRasterAnalysisUtils::Variety ) //count, variety
+  {
+    if ( static_cast<int>( mDataType ) > 5 ) //if is floating point type
+      mDataType = Qgis::Int32; //force integer on variety if all inputs are float or complex
+  }
+  return true;
+}
+
+void QgsCellStatisticsAlgorithm::processRasterStack(QgsProcessingFeedback *feedback)
+{
   int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
   int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
   int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
   int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-  provider->setEditable( true );
-  QgsRasterIterator outputIter( provider.get() );
+  mOutputRasterDataProvider->setEditable( true );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider );
   outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
 
   int iterLeft = 0;
@@ -270,7 +305,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
         {
           //output cell will always be NoData if NoData occurs in cellValueStack and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
-          if ( method == QgsRasterAnalysisUtils::Count )
+          if ( mMethod == QgsRasterAnalysisUtils::Count )
             outputBlock->setValue( row, col,  cellValueStackSize );
           else
           {
@@ -279,7 +314,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
         }
         else if ( !noDataInStack || ( mIgnoreNoData && cellValueStackSize > 0 ) )
         {
-          switch ( method )
+          switch ( mMethod )
           {
             case QgsRasterAnalysisUtils::Sum:
               result = std::accumulate( cellValues.begin(), cellValues.end(), 0.0 );
@@ -327,22 +362,436 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
         }
       }
     }
-    provider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
   }
-  provider->setEditable( false );
+  mOutputRasterDataProvider->setEditable( false );
+}
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
-  outputs.insert( QStringLiteral( "CRS_AUTHID" ), mCrs.authid() );
-  outputs.insert( QStringLiteral( "WIDTH_IN_PIXELS" ), mLayerWidth );
-  outputs.insert( QStringLiteral( "HEIGHT_IN_PIXELS" ), mLayerHeight );
-  outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+//
+//QgsCellStatisticsPercentileAlgorithm
+//
+QString QgsCellStatisticsPercentileAlgorithm::displayName() const
+{
+  return QObject::tr( "Cell stack percentile" );
+}
 
-  return outputs;
+QString QgsCellStatisticsPercentileAlgorithm::name() const
+{
+  return QObject::tr( "cellstackpercentile" );
+}
+
+QStringList QgsCellStatisticsPercentileAlgorithm::tags() const
+{
+  return QObject::tr( "cell,pixel,statistic,percentile,quantile,quratile" ).split( ',' );
+}
+
+QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "The Cell stack percentile algorithm returns the cell-wise percentile value of a stack of rasters."
+                      "and writes the results to an output raster. The percentile to return is determined by a percentile input value (ranges between 0 and 1)."
+                      "At each cell location, the specified percentile is used obtained the respective value from "
+                      "the stack of all overlaid and sorted cell values of the input rasters.\n\n"
+                      "There are three methods for percentile calculation:"
+                      "<ul> "
+                      "   <li>Nearest Rank</li>"
+                      "   <li>Inclusive linear interpolation (PERCENTILE.INC)</li>"
+                      "   <li>Exclusive linear interpolation (PERCENTILE.EXC)</li>"
+                      "</ul> "
+                      "While the output value can stay the same for the nearest rank method (obtains the value that is nearest to the "
+                      "specified percentile), the linear interpolation method return unique values for different percentiles. Both interpolation "
+                      "methods are following the methods implemented by LibreOffice or Excel. \n\n"
+                      "The output raster's extent and resolution is defined by a reference "
+                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
+                      "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "The output raster data type will be set to the most complex data type present in the input datasets. " );
+}
+
+QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::createInstance() const
+{
+  return new QgsCellStatisticsPercentileAlgorithm();
+}
+
+void QgsCellStatisticsPercentileAlgorithm::addSpecificAlgorithmParams()
+{
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method"), QStringList() << "Nearest rank" << "Inclusive linear interpolation (PERCENTILE.INC)" << "Exclusive linear interpolation (PERCENTILE.EXC)", false, 0, false) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PERCENTILE" ), QObject::tr( "Percentile" ), QgsProcessingParameterNumber::Double, 10, false, 0.0, 1.0) );
+}
+
+bool QgsCellStatisticsPercentileAlgorithm::prepareSpecificAlgorithmParameters(const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback)
+{
+  Q_UNUSED(feedback)
+  mMethod = static_cast< QgsRasterAnalysisUtils::CellValuePercentileMethods >( parameterAsEnum( parameters, QStringLiteral("METHOD"), context) );
+  mPercentile = parameterAsDouble( parameters, QStringLiteral( "PERCENTILE" ), context );
+
+  //default percentile output data type to float32 raster if interpolation method is chosen
+  //otherwise use the most potent data type in the intput raster stack (see prepareAlgorithm() in base class)
+  if( mMethod != QgsRasterAnalysisUtils::CellValuePercentileMethods::NearestRankPercentile && mDataType < 6)
+    mDataType = Qgis::DataType::Float32;
+
+  return true;
+}
+
+void QgsCellStatisticsPercentileAlgorithm::processRasterStack(QgsProcessingFeedback *feedback)
+{
+
+  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  mOutputRasterDataProvider->setEditable( true );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider );
+  outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
+
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+  QgsRectangle blockExtent;
+  std::unique_ptr< QgsRasterBlock > outputBlock;
+  while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
+  {
+    std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+    {
+      if ( feedback->isCanceled() )
+        break; //in case some slow data sources are loaded
+      for ( int band : i.bands )
+      {
+        if ( feedback->isCanceled() )
+          break; //in case some slow data sources are loaded
+        std::unique_ptr< QgsRasterBlock > b( i.interface->block( band, blockExtent, iterCols, iterRows ) );
+        inputBlocks.emplace_back( std::move( b ) );
+      }
+    }
+
+    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    for ( int row = 0; row < iterRows; row++ )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      for ( int col = 0; col < iterCols; col++ )
+      {
+        double result = 0;
+        bool noDataInStack = false;
+        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
+        int cellValueStackSize = cellValues.size();
+
+        if ( noDataInStack && !mIgnoreNoData )
+        {
+          outputBlock->setValue( row, col, mNoDataValue );
+        }
+        else if ( !noDataInStack || ( mIgnoreNoData && cellValueStackSize > 0 ) )
+        {
+          switch ( mMethod )
+          {
+            case QgsRasterAnalysisUtils::NearestRankPercentile:
+              result = QgsRasterAnalysisUtils::nearestRankPercentile( cellValues, cellValueStackSize, mPercentile );
+              break;
+            case QgsRasterAnalysisUtils::InterpolatedPercentileInc:
+              result = QgsRasterAnalysisUtils::interpolatedPercentileInc( cellValues, cellValueStackSize, mPercentile );
+              break;
+            case QgsRasterAnalysisUtils::InterpolatedPercentileExc:
+              result = QgsRasterAnalysisUtils::interpolatedPercentileExc( cellValues, cellValueStackSize, mPercentile, mNoDataValue );
+              break;
+          }
+          outputBlock->setValue( row, col, result );
+        }
+        else
+        {
+          //result is NoData if cellValueStack contains no valid values, eg. all cellValues are NoData
+          outputBlock->setValue( row, col, mNoDataValue );
+        }
+      }
+    }
+    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+  }
+  mOutputRasterDataProvider->setEditable( false );
+}
+
+//
+//QgsCellStatisticsPercentRankFromValueAlgorithm
+//
+QString QgsCellStatisticsPercentRankFromValueAlgorithm::displayName() const
+{
+  return QObject::tr( "Cell stack percentrank from value" );
+}
+
+QString QgsCellStatisticsPercentRankFromValueAlgorithm::name() const
+{
+  return QObject::tr( "cellstackpercentrankfromvalue" );
+}
+
+QStringList QgsCellStatisticsPercentRankFromValueAlgorithm::tags() const
+{
+  return QObject::tr( "cell,pixel,statistic,percentrank,rank,percent,value" ).split( ',' );
+}
+
+QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "The Cell stack percentrank from value algorithm returns the cell-wise percentrank value of a stack of rasters based on a single input value."
+                      "and writes them to an output raster. "
+                      "At each cell location, the specified value is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
+                      "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
+                      "There are two methods for percentile calculation:"
+                      "<ul> "
+                      "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
+                      "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
+                      "</ul> "
+                      "The linear interpolation method return the unique percent rank for different values. Both interpolation "
+                      "methods are following the methods implemented by LibreOffice or Excel. \n\n"
+                      "The output raster's extent and resolution is defined by a reference "
+                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
+                      "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "The output raster data type will always be Float32." );
+}
+
+QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFromValueAlgorithm::createInstance() const
+{
+  return new QgsCellStatisticsPercentRankFromValueAlgorithm();
+}
+
+void QgsCellStatisticsPercentRankFromValueAlgorithm::addSpecificAlgorithmParams()
+{
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method"), QStringList() << "Inclusive linear interpolation (PERCENTRANK.INC)" << "Exclusive linear interpolation (PERCENTRANK.EXC)", false, 0, false) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QgsProcessingParameterNumber::Double, 10, false ) );
+}
+
+bool QgsCellStatisticsPercentRankFromValueAlgorithm::prepareSpecificAlgorithmParameters(const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback)
+{
+  Q_UNUSED(feedback)
+  mMethod = static_cast< QgsRasterAnalysisUtils::CellValuePercentRankMethods >( parameterAsEnum( parameters, QStringLiteral("METHOD"), context) );
+  mValue = parameterAsDouble( parameters, QStringLiteral( "VALUE" ), context );
+
+  //output data type always defaults to Float32 because result only ranges between 0 and 1
+  mDataType = Qgis::DataType::Float32;
+  return true;
+}
+
+void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack(QgsProcessingFeedback *feedback)
+{
+
+  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  mOutputRasterDataProvider->setEditable( true );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider );
+  outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
+
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+  QgsRectangle blockExtent;
+  std::unique_ptr< QgsRasterBlock > outputBlock;
+  while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
+  {
+    std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+    {
+      if ( feedback->isCanceled() )
+        break; //in case some slow data sources are loaded
+      for ( int band : i.bands )
+      {
+        if ( feedback->isCanceled() )
+          break; //in case some slow data sources are loaded
+        std::unique_ptr< QgsRasterBlock > b( i.interface->block( band, blockExtent, iterCols, iterRows ) );
+        inputBlocks.emplace_back( std::move( b ) );
+      }
+    }
+
+    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    for ( int row = 0; row < iterRows; row++ )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      for ( int col = 0; col < iterCols; col++ )
+      {
+        double result = 0;
+        bool noDataInStack = false;
+        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
+        int cellValueStackSize = cellValues.size();
+
+        if ( noDataInStack && !mIgnoreNoData )
+        {
+          outputBlock->setValue( row, col, mNoDataValue );
+        }
+        else if ( !noDataInStack || ( mIgnoreNoData && cellValueStackSize > 0 ) )
+        {
+          switch ( mMethod )
+          {
+            case QgsRasterAnalysisUtils::InterpolatedPercentRankInc:
+              result = QgsRasterAnalysisUtils::interpolatedPercentRankInc( cellValues, cellValueStackSize, mValue, mNoDataValue );
+              break;
+            case QgsRasterAnalysisUtils::InterpolatedPercentRankExc:
+              result = QgsRasterAnalysisUtils::interpolatedPercentRankExc( cellValues, cellValueStackSize, mValue, mNoDataValue );
+              break;
+          }
+          outputBlock->setValue( row, col, result );
+        }
+        else
+        {
+          //result is NoData if cellValueStack contains no valid values, eg. all cellValues are NoData
+          outputBlock->setValue( row, col, mNoDataValue );
+        }
+      }
+    }
+    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+  }
+  mOutputRasterDataProvider->setEditable( false );
 }
 
 
+//
+//QgsCellStatisticsPercentRankFromRasterAlgorithm
+//
+QString QgsCellStatisticsPercentRankFromRasterAlgorithm::displayName() const
+{
+  return QObject::tr( "Cell stack percentrank from raster layer" );
+}
+
+QString QgsCellStatisticsPercentRankFromRasterAlgorithm::name() const
+{
+  return QObject::tr( "cellstackpercentrankfromrasterlayer" );
+}
+
+QStringList QgsCellStatisticsPercentRankFromRasterAlgorithm::tags() const
+{
+  return QObject::tr( "cell,pixel,statistic,percentrank,rank,percent,value,raster" ).split( ',' );
+}
+
+QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "The Cell stack percentrank from raster layer algorithm returns the cell-wise percentrank value of a stack of rasters based on an input value raster."
+                      "and writes them to an output raster. "
+                      "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
+                      "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
+                      "There are two methods for percentile calculation:"
+                      "<ul> "
+                      "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
+                      "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
+                      "</ul> "
+                      "The linear interpolation method return the unique percent rank for different values. Both interpolation "
+                      "methods are following the methods implemented by LibreOffice or Excel. \n\n"
+                      "The output raster's extent and resolution is defined by a reference "
+                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
+                      "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "The output raster data type will always be Float32."  );
+}
+
+QgsCellStatisticsPercentRankFromRasterAlgorithm *QgsCellStatisticsPercentRankFromRasterAlgorithm::createInstance() const
+{
+  return new QgsCellStatisticsPercentRankFromRasterAlgorithm();
+}
+
+void QgsCellStatisticsPercentRankFromRasterAlgorithm::addSpecificAlgorithmParams()
+{
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER"), QObject::tr( "Value raster layer") ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "VALUE_RASTER_BAND"), QObject::tr( "Value raster band"), 1, QStringLiteral( "VALUE_LAYER" ) ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method"), QStringList() << "Inclusive linear interpolation (PERCENTRANK.INC)" << "Exclusive linear interpolation (PERCENTRANK.EXC)", false, 0, false) );
+}
+
+bool QgsCellStatisticsPercentRankFromRasterAlgorithm::prepareSpecificAlgorithmParameters(const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback)
+{
+  Q_UNUSED(feedback)
+  mMethod = static_cast< QgsRasterAnalysisUtils::CellValuePercentRankMethods >( parameterAsEnum( parameters, QStringLiteral("METHOD"), context) );
+
+  QgsRasterLayer *inputValueRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_VALUE_RASTER" ), context );
+  if ( !inputValueRaster )
+    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_VALUE_RASTER" ) ) );
+
+  mValueRasterInterface.reset( inputValueRaster->dataProvider()->clone() );
+
+  mValueRasterBand = parameterAsInt( parameters, QStringLiteral( "VALUE_RASTER_BAND" ), context );
+
+  //output data type always defaults to Float32 because result only ranges between 0 and 1
+  mDataType = Qgis::DataType::Float32;
+  return true;
+}
+
+void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack(QgsProcessingFeedback *feedback)
+{
+  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  mOutputRasterDataProvider->setEditable( true );
+  QgsRasterIterator outputIter( mOutputRasterDataProvider );
+  outputIter.startRasterRead( 1, mLayerWidth, mLayerHeight, mExtent );
+
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+  QgsRectangle blockExtent;
+  std::unique_ptr< QgsRasterBlock > outputBlock;
+  while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
+  {
+    std::unique_ptr< QgsRasterBlock > valueBlock ( mValueRasterInterface->block( mValueRasterBand, blockExtent, iterCols, iterRows ) );
+
+    std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+    {
+      if ( feedback->isCanceled() )
+        break; //in case some slow data sources are loaded
+      for ( int band : i.bands )
+      {
+        if ( feedback->isCanceled() )
+          break; //in case some slow data sources are loaded
+        std::unique_ptr< QgsRasterBlock > b( i.interface->block( band, blockExtent, iterCols, iterRows ) );
+        inputBlocks.emplace_back( std::move( b ) );
+      }
+    }
+
+    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    for ( int row = 0; row < iterRows; row++ )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      for ( int col = 0; col < iterCols; col++ )
+      {
+        bool percentRankValueIsNoData = false;
+        double percentRankValue = valueBlock->valueAndNoData( row, col, percentRankValueIsNoData );
+
+        double result = 0;
+        bool noDataInStack = false;
+        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
+        int cellValueStackSize = cellValues.size();
+
+        if ( noDataInStack && !mIgnoreNoData && !percentRankValueIsNoData)
+        {
+          outputBlock->setValue( row, col, mNoDataValue );
+        }
+        else if ( !noDataInStack || ( !percentRankValueIsNoData && mIgnoreNoData && cellValueStackSize > 0 ) )
+        {
+          switch ( mMethod )
+          {
+            case QgsRasterAnalysisUtils::InterpolatedPercentRankInc:
+              result = QgsRasterAnalysisUtils::interpolatedPercentRankInc( cellValues, cellValueStackSize, percentRankValue, mNoDataValue );
+              break;
+            case QgsRasterAnalysisUtils::InterpolatedPercentRankExc:
+              result = QgsRasterAnalysisUtils::interpolatedPercentRankExc( cellValues, cellValueStackSize, percentRankValue, mNoDataValue );
+              break;
+          }
+          outputBlock->setValue( row, col, result );
+        }
+        else
+        {
+          //result is NoData if cellValueStack contains no valid values, eg. all cellValues are NoData or percentRankValue is NoData
+          outputBlock->setValue( row, col, mNoDataValue );
+        }
+      }
+    }
+    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+  }
+  mOutputRasterDataProvider->setEditable( false );
+}
 
 ///@endcond
 
