@@ -283,7 +283,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     /**
      * Returns the list of visible points of the point cloud layer \a layer and an extent defined by
-     * a geometry in the 2D plane \a geometry and a range for z values \a extentZRange
+     * a geometry in the 2D plane \a geometry.
      */
     QVector<QMap<QString, QVariant>> identify( QgsPointCloudLayer *layer, QgsRenderContext context,  const QgsGeometry &geometry ) SIP_SKIP;
 
