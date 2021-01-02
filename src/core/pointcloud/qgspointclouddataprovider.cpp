@@ -286,14 +286,14 @@ struct MapIndexedPointCloudNode
     blockAttributes.find( QStringLiteral( "Z" ), zOffset );
     std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( mExtentGeometry.constGet() ) );
     extentEngine->prepareGeometry();
-    for ( int i = 0; i < block->pointCount(); ++i )
+    for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
     {
       double x, y, z;
       _pointXY( ptr, i, recordSize, xOffset, yOffset, mIndexScale, mIndexOffset, x, y );
       z = _pointZ( ptr, i, recordSize, zOffset, mIndexScale, mIndexOffset );
       QgsPoint pointXY( x, y );
 
-      if ( pointsCount < mPointsLimit && extentEngine->contains( &pointXY ) && mZRange.contains( z ) )
+      if ( mZRange.contains( z ) && extentEngine->contains( &pointXY ) )
       {
         QMap<QString, QVariant> pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
@@ -327,15 +327,6 @@ QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
   const IndexedPointCloudNode root = index->root();
 
   QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
-// TODO? reproject the root node extent
-//  try
-//  {
-//    rootNodeExtentMapCoords = renderContext.coordinateTransform().transformBoundingBox( index->nodeMapExtent( root ) );
-//  }
-//  catch ( QgsCsException & )
-//  {
-//    QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
-//  }
   const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
 
   QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxErrorInMapCoords, rootErrorInMapCoordinates, extentGeometry, extentZRange );

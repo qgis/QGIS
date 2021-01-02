@@ -520,7 +520,7 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
     {
       transformedGeometry.transform( ct );
     }
-    catch ( QgsCsException& )
+    catch ( QgsCsException & )
     {
       return false;
     }
