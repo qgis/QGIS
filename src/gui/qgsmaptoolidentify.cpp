@@ -515,7 +515,16 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
   QgsGeometry transformedGeometry = geometry;
 
   if ( ct.isValid() )
-    transformedGeometry.transform( ct );
+  {
+    try
+    {
+      transformedGeometry.transform( ct );
+    }
+    catch ( QgsCsException& )
+    {
+      return false;
+    }
+  }
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   QVector<QMap<QString, QVariant>> points = renderer->identify( layer, context, transformedGeometry );
@@ -1185,4 +1194,3 @@ void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
     emit changedRasterResults( results );
   }
 }
-
