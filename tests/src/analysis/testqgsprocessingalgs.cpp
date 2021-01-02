@@ -2704,21 +2704,21 @@ void TestQgsProcessingAlgs::percentileFunctions_data()
 
   QTest::newRow( "testcase_1" )
       << QgsRasterAnalysisUtils::NearestRankPercentile
-      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
-      << std::vector<double>({0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1})
-      << std::vector<double>({2, 2, 18, 20, 20, 24, 36, 49, 64, 98, 100});
+      << std::vector<double>( {100, 24, 49, 36, 2, 18, 98, 64, 20, 20} )
+      << std::vector<double>( {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1} )
+      << std::vector<double>( {2, 2, 18, 20, 20, 24, 36, 49, 64, 98, 100} );
 
   QTest::newRow( "testcase_2" )
       << QgsRasterAnalysisUtils::InterpolatedPercentileInc
-      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
-      << std::vector<double>({0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1})
-      << std::vector<double>({2.0,16.4,19.6,20.0,22.4,30.0, 41.2,53.5,70.8,98.2,100});
+      << std::vector<double>( {100, 24, 49, 36, 2, 18, 98, 64, 20, 20} )
+      << std::vector<double>( {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1} )
+      << std::vector<double>( {2.0, 16.4, 19.6, 20.0, 22.4, 30.0, 41.2, 53.5, 70.8, 98.2, 100} );
 
   QTest::newRow( "testcase_3" )
       << QgsRasterAnalysisUtils::InterpolatedPercentileExc
-      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
-      << std::vector<double>({0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1})
-      << std::vector<double>({-9999,3.6,18.4,20,21.6,30, 43.8,59.5,91.2,99.8,-9999});
+      << std::vector<double>( {100, 24, 49, 36, 2, 18, 98, 64, 20, 20} )
+      << std::vector<double>( {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1} )
+      << std::vector<double>( {-9999, 3.6, 18.4, 20, 21.6, 30, 43.8, 59.5, 91.2, 99.8, -9999} );
 }
 
 void TestQgsProcessingAlgs::percentileFunctions()
@@ -2728,33 +2728,33 @@ void TestQgsProcessingAlgs::percentileFunctions()
   QFETCH( std::vector<double>, inputPercentiles );
   QFETCH( std::vector<double>, expectedValues );
 
-  int inputValuesSize = static_cast<int>(inputValues.size());
-  int percentileSize = static_cast<int>(inputPercentiles.size());
+  int inputValuesSize = static_cast<int>( inputValues.size() );
+  int percentileSize = static_cast<int>( inputPercentiles.size() );
   double result;
 
-  for(int i = 0; i < percentileSize; i++)
+  for ( int i = 0; i < percentileSize; i++ )
   {
     double percentile = inputPercentiles[i];
     double expectedValue = expectedValues[i];
 
     switch ( function )
     {
-      case( QgsRasterAnalysisUtils::NearestRankPercentile ):
+      case ( QgsRasterAnalysisUtils::NearestRankPercentile ):
       {
-        result = QgsRasterAnalysisUtils::nearestRankPercentile(inputValues, inputValuesSize, percentile);
-        QCOMPARE( result , expectedValue );
+        result = QgsRasterAnalysisUtils::nearestRankPercentile( inputValues, inputValuesSize, percentile );
+        QCOMPARE( result, expectedValue );
         break;
       }
-      case( QgsRasterAnalysisUtils::InterpolatedPercentileInc ):
+      case ( QgsRasterAnalysisUtils::InterpolatedPercentileInc ):
       {
-        result = QgsRasterAnalysisUtils::interpolatedPercentileInc(inputValues, inputValuesSize, percentile);
-        QCOMPARE( result, expectedValue);
+        result = QgsRasterAnalysisUtils::interpolatedPercentileInc( inputValues, inputValuesSize, percentile );
+        QCOMPARE( result, expectedValue );
         break;
       }
-      case( QgsRasterAnalysisUtils::InterpolatedPercentileExc ):
+      case ( QgsRasterAnalysisUtils::InterpolatedPercentileExc ):
       {
-        result = QgsRasterAnalysisUtils::interpolatedPercentileExc(inputValues, inputValuesSize, percentile, -9999);
-        QCOMPARE( result, expectedValue);
+        result = QgsRasterAnalysisUtils::interpolatedPercentileExc( inputValues, inputValuesSize, percentile, -9999 );
+        QCOMPARE( result, expectedValue );
         break;
       }
     }
@@ -2999,15 +2999,15 @@ void TestQgsProcessingAlgs::percentrankFunctions_data()
 
   QTest::newRow( "testcase_1" )
       << QgsRasterAnalysisUtils::InterpolatedPercentRankInc
-      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
-      << std::vector<double>({-8,2,18,20,33,47,29,39.5,57,39,12,100,150})
-      << std::vector<double>({-9999,0,0.111111111111,0.222222222222,0.527777777778,0.649572649573,0.490740740741,0.58547008547,0.725925925926,0.581196581197,0.0694444444444,1,-9999});
+      << std::vector<double>( {100, 24, 49, 36, 2, 18, 98, 64, 20, 20} )
+      << std::vector<double>( {-8, 2, 18, 20, 33, 47, 29, 39.5, 57, 39, 12, 100, 150} )
+      << std::vector<double>( {-9999, 0, 0.111111111111, 0.222222222222, 0.527777777778, 0.649572649573, 0.490740740741, 0.58547008547, 0.725925925926, 0.581196581197, 0.0694444444444, 1, -9999} );
 
   QTest::newRow( "testcase_2" )
       << QgsRasterAnalysisUtils::InterpolatedPercentRankExc
-      << std::vector<double>({100, 24, 49, 36, 2, 18, 98, 64, 20, 20})
-      << std::vector<double>({-8,2,18,20,33,47,29,39.5,57,39,12,100,150})
-      << std::vector<double>({-9999,0.0909090909091,0.1818181818181,0.272727272727,0.522727272727,0.622377622378,0.492424242424,0.56993006993,0.684848484848,0.566433566434,0.1477272727272,0.909090909091,-9999});
+      << std::vector<double>( {100, 24, 49, 36, 2, 18, 98, 64, 20, 20} )
+      << std::vector<double>( {-8, 2, 18, 20, 33, 47, 29, 39.5, 57, 39, 12, 100, 150} )
+      << std::vector<double>( {-9999, 0.0909090909091, 0.1818181818181, 0.272727272727, 0.522727272727, 0.622377622378, 0.492424242424, 0.56993006993, 0.684848484848, 0.566433566434, 0.1477272727272, 0.909090909091, -9999} );
 }
 
 void TestQgsProcessingAlgs::percentrankFunctions()
@@ -3017,37 +3017,37 @@ void TestQgsProcessingAlgs::percentrankFunctions()
   QFETCH( std::vector<double>, inputPercentrank );
   QFETCH( std::vector<double>, expectedValues );
 
-  int inputValuesSize = static_cast<int>(inputValues.size());
-  int percentrankSize = static_cast<int>(inputPercentrank.size());
+  int inputValuesSize = static_cast<int>( inputValues.size() );
+  int percentrankSize = static_cast<int>( inputPercentrank.size() );
   double result;
 
-  for(int i = 0; i < percentrankSize; i++)
+  for ( int i = 0; i < percentrankSize; i++ )
   {
     double percentrank = inputPercentrank[i];
     double expectedValue = expectedValues[i];
 
     switch ( function )
     {
-      case( QgsRasterAnalysisUtils::InterpolatedPercentRankInc ):
+      case ( QgsRasterAnalysisUtils::InterpolatedPercentRankInc ):
       {
-        result = QgsRasterAnalysisUtils::interpolatedPercentRankInc(inputValues, inputValuesSize, percentrank, -9999);
-        QCOMPARE( result, expectedValue);
+        result = QgsRasterAnalysisUtils::interpolatedPercentRankInc( inputValues, inputValuesSize, percentrank, -9999 );
+        QCOMPARE( result, expectedValue );
         break;
       }
-      case( QgsRasterAnalysisUtils::InterpolatedPercentRankExc ):
+      case ( QgsRasterAnalysisUtils::InterpolatedPercentRankExc ):
       {
-        result = QgsRasterAnalysisUtils::interpolatedPercentRankExc(inputValues, inputValuesSize, percentrank, -9999);
-        QCOMPARE( result, expectedValue);
+        result = QgsRasterAnalysisUtils::interpolatedPercentRankExc( inputValues, inputValuesSize, percentrank, -9999 );
+        QCOMPARE( result, expectedValue );
         break;
       }
     }
   }
 
-  std::vector<double> cellVal = std::vector<double>( {13,36,13,44,60} );
+  std::vector<double> cellVal = std::vector<double>( {13, 36, 13, 44, 60} );
 
   qDebug() << QgsRasterAnalysisUtils::interpolatedPercentRankInc( cellVal, 5, 13, 200 );
 
-  QVERIFY(true);
+  QVERIFY( true );
 }
 
 void TestQgsProcessingAlgs::percentrankByRaster_data()
@@ -3204,7 +3204,7 @@ void TestQgsProcessingAlgs::percentrankByRaster()
   parameters.insert( QStringLiteral( "VALUE_RASTER_BAND" ), valueLayerBand );
   parameters.insert( QStringLiteral( "METHOD" ), method );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
-  parameters.insert( QStringLiteral( "OUTPUT_NODATA_VALUE"), noDataValue);
+  parameters.insert( QStringLiteral( "OUTPUT_NODATA_VALUE" ), noDataValue );
   parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), QString( myDataPath + referenceLayer ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
@@ -3405,7 +3405,7 @@ void TestQgsProcessingAlgs::percentrankByValue()
   parameters.insert( QStringLiteral( "VALUE" ), value );
   parameters.insert( QStringLiteral( "METHOD" ), method );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
-  parameters.insert( QStringLiteral( "OUTPUT_NODATA_VALUE"), noDataValue);
+  parameters.insert( QStringLiteral( "OUTPUT_NODATA_VALUE" ), noDataValue );
   parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), QString( myDataPath + referenceLayer ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
