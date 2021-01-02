@@ -285,7 +285,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.textMetadata.document().setDefaultStyleSheet(style)
             self.textMetadata.setHtml(metadata)
 
-            # clear results in Search tab
+            # clear results and disable buttons in Search tab
             self.clear_results()
 
     def add_connection(self):
@@ -433,10 +433,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.constraints = []
 
         # clear all fields and disable buttons
-        self.lblResults.clear()
-        self.treeRecords.clear()
-
-        self.reset_buttons()
+        self.clear_results()
 
         # save some settings
         self.settings.setValue('/MetaSearch/returnRecords',
@@ -547,7 +544,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def clear_results(self):
         """clear search results"""
 
+        self.lblResults.clear()
         self.treeRecords.clear()
+        self.reset_buttons()
 
     def record_clicked(self):
         """record clicked signal"""
