@@ -321,29 +321,6 @@ QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
                                 QgsGeometry extentGeometry,
                                 const QgsDoubleRange extentZRange, int pointsLimit )
 {
-  if ( extentGeometry.type() == QgsWkbTypes::GeometryType::PointGeometry )
-  {
-    QgsPointXY pt = extentGeometry.asPoint();
-    qDebug() << qSetRealNumberPrecision( 20 ) << __PRETTY_FUNCTION__ << " " << maxErrorInMapCoords << " " << pt.x() << " " << pt.y();
-  }
-  else if ( extentGeometry.type() == QgsWkbTypes::GeometryType::PolygonGeometry )
-  {
-    QPolygonF polygon = extentGeometry.asQPolygonF();
-    qDebug() << qSetRealNumberPrecision( 20 ) << __PRETTY_FUNCTION__ << " " << maxErrorInMapCoords;
-    qDebug() << "Polygon size: " << polygon.size();
-    qDebug() << "============================================";
-    qDebug() << "  QPolygonF polygon;";
-    for ( QPointF p : polygon )
-    {
-      qDebug() << "  polygon.push_back( QgsPointF( " << qSetRealNumberPrecision( 20 ) << p.x() << ", " << p.y() << " ) );";
-    }
-    qDebug() << "float maxErrorInMapCoords = " << qSetRealNumberPrecision( 20 ) << maxErrorInMapCoords;
-    qDebug() << "============================================";
-  }
-  else
-  {
-    qDebug() << __PRETTY_FUNCTION__ << "Unknown geometry";
-  }
   QVector<QMap<QString, QVariant>> acceptedPoints;
 
   QgsPointCloudIndex *index = this->index();
@@ -362,21 +339,6 @@ QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
                    MapIndexedPointCloudNode( request, index->scale(), index->offset(), extentGeometry, extentZRange, index, pointsLimit ),
                    qgis::overload<const QVector<QMap<QString, QVariant>>&>::of( &QVector<QMap<QString, QVariant>>::append ),
                    QtConcurrent::UnorderedReduce );
-
-  qDebug() << "------------------------------------------------------------------";
-  qDebug() << "QVector<QMap<QString, QVariant>> expected;";
-  for ( QMap<QString, QVariant> pt : acceptedPoints )
-  {
-    qDebug() << "{";
-    qDebug() << "  " << "QMap<QString, QVariant> point;";
-    for ( QString key : pt.keys() )
-    {
-      qDebug() << qSetRealNumberPrecision( 20 ) << " point[ QStringLiteral(" << key << ") ] = " << pt[key].toString() << ";";
-    }
-    qDebug() << "  expected.push_back(point);";
-    qDebug() << "}";
-  }
-  qDebug() << "------------------------------------------------------------------";
 
   return acceptedPoints;
 }
