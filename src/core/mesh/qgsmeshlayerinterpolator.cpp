@@ -131,7 +131,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     int topLim, bottomLim, leftLim, rightLim;
     QgsMeshLayerUtils::boundingBoxToScreenRectangle( mContext.mapToPixel(), mOutputSize, bbox, leftLim, rightLim, topLim, bottomLim );
 
-    double value, value1, value2, value3;
+    double value( 0 ), value1( 0 ), value2( 0 ), value3( 0 );
     const int faceIdx = mTriangularMesh.trianglesToNativeFaces()[triangleIndex];
 
     if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
