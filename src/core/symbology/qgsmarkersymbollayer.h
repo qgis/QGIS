@@ -414,7 +414,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     static const int MAXIMUM_CACHE_WIDTH = 3000;
 
   private:
-
+    // cppcheck-suppress unusedPrivateFunction
     void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     double mCachedOpacity = 1.0;
@@ -470,6 +470,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
 #endif
 
+    // cppcheck-suppress unusedPrivateFunction
     void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     //! Fill subsymbol
