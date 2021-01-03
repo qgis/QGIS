@@ -27,10 +27,13 @@ originally part of the larger QgsRasterLayer class
 #include <QVector>
 #include <memory>
 
-#include "qgscolorramp.h"
-#include "qgsrasterinterface.h"
 #include "qgsrastershaderfunction.h"
 #include "qgsrectangle.h"
+#include "qgsreadwritecontext.h"
+#include "qgscolorramplegendnodesettings.h"
+
+class QgsColorRamp;
+class QgsRasterInterface;
 
 /**
  * \ingroup core
@@ -67,6 +70,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \returns new QgsColorRampShader
      */
     QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+
+    ~QgsColorRampShader() override;
 
     /**
      * Copy constructor
@@ -146,11 +151,16 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /**
      * Returns the source color ramp.
-     *
      * \see setSourceColorRamp()
      * \since QGIS 3.0
      */
     QgsColorRamp *sourceColorRamp() const;
+
+    /**
+     * Creates a gradient color ramp from shader settings.
+     * \since QGIS 3.18
+     */
+    QgsColorRamp *createColorRamp() const SIP_FACTORY;
 
     /**
      * Set the source color ramp. Ownership is transferred to the shader.
@@ -194,13 +204,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * Writes configuration to a new DOM element
      * \since QGIS 3.4
      */
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Reads configuration from the given DOM element
      * \since QGIS 3.4
      */
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode ) { mClassificationMode = classificationMode; }
@@ -220,6 +230,24 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \see setClip()
      */
     bool clip() const { return mClip; }
+
+    /**
+     * Returns the color ramp shader legend settings.
+     *
+     * \see setLegendSettings()
+     * \since QGIS 3.18
+     */
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+
+    /**
+     * Sets the color ramp shader legend \a settings.
+     *
+     * Ownership of \a settings is transferred.
+     *
+     * \see legendSettings()
+     * \since QGIS 3.18
+     */
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
 
   protected:
 
@@ -251,6 +279,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     //! Do not render values out of range
     bool mClip = false;
+
+    std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
 
 };
 

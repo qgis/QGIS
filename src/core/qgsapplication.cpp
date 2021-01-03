@@ -70,6 +70,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsfeaturestore.h"
 #include "qgslocator.h"
+#include "qgsreadwritelocker.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -878,7 +879,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     // apply OS-specific UI scale factor to stylesheet's em values
     int index = 0;
-    QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
+    const static QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
     QRegularExpressionMatch match = regex.match( styledata, index );
     while ( match.hasMatch() )
     {
@@ -1050,27 +1051,46 @@ QString QgsApplication::srsDatabaseFilePath()
   }
 }
 
+void QgsApplication::setSvgPaths( const QStringList &svgPaths )
+{
+  QgsSettings().setValue( QStringLiteral( "svg/searchPathsForSVG" ), svgPaths );
+  members()->mSvgPathCacheValid = false;
+}
+
 QStringList QgsApplication::svgPaths()
 {
-  //local directories to search when looking for an SVG with a given basename
-  //defined by user in options dialog
-  QgsSettings settings;
-  const QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
+  static QReadWriteLock lock;
 
-  // maintain user set order while stripping duplicates
-  QStringList paths;
-  for ( const QString &path : pathList )
-  {
-    if ( !paths.contains( path ) )
-      paths.append( path );
-  }
-  for ( const QString &path : qgis::as_const( *sDefaultSvgPaths() ) )
-  {
-    if ( !paths.contains( path ) )
-      paths.append( path );
-  }
+  QgsReadWriteLocker locker( lock, QgsReadWriteLocker::Read );
 
-  return paths;
+  if ( members()->mSvgPathCacheValid )
+  {
+    return members()->mSvgPathCache;
+  }
+  else
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    //local directories to search when looking for an SVG with a given basename
+    //defined by user in options dialog
+    QgsSettings settings;
+    const QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
+
+    // maintain user set order while stripping duplicates
+    QStringList paths;
+    for ( const QString &path : pathList )
+    {
+      if ( !paths.contains( path ) )
+        paths.append( path );
+    }
+    for ( const QString &path : qgis::as_const( *sDefaultSvgPaths() ) )
+    {
+      if ( !paths.contains( path ) )
+        paths.append( path );
+    }
+    members()->mSvgPathCache = paths;
+
+    return paths;
+  }
 }
 
 QStringList QgsApplication::layoutTemplatePaths()
@@ -1095,7 +1115,8 @@ QString QgsApplication::userStylePath()
 
 QRegExp QgsApplication::shortNameRegExp()
 {
-  return QRegExp( "^[A-Za-z][A-Za-z0-9\\._-]*" );
+  const thread_local QRegExp regexp( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
+  return regexp;
 }
 
 QString QgsApplication::userLoginName()

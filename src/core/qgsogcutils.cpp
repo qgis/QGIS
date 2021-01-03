@@ -1281,7 +1281,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
           wkbPtr.readHeader();
 
-          double x, y;
+          double x = 0;
+          double y = 0;
           if ( invertAxisOrientation )
             wkbPtr >> y >> x;
           else
@@ -1325,7 +1326,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
             coordString += ts;
           }
 
-          double x, y;
+          double x = 0;
+          double y = 0;
           if ( invertAxisOrientation )
             wkbPtr >> y >> x;
           else
@@ -1378,7 +1380,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
               coordString += ts;
             }
 
-            double x, y;
+            double x = 0;
+            double y = 0;
             if ( invertAxisOrientation )
               wkbPtr >> y >> x;
             else
@@ -1418,8 +1421,6 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         if ( numRings == 0 ) // sanity check for zero rings in polygon
           return QDomElement();
 
-        int *ringNumPoints = new int[numRings]; // number of points in each ring
-
         for ( int idx = 0; idx < numRings; idx++ )
         {
           QString boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:outerBoundaryIs" : "gml:exterior";
@@ -1430,9 +1431,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
           QDomElement boundaryElem = doc.createElement( boundaryName );
           QDomElement ringElem = doc.createElement( QStringLiteral( "gml:LinearRing" ) );
           // get number of points in the ring
-          int nPoints;
+          int nPoints = 0;
           wkbPtr >> nPoints;
-          ringNumPoints[idx] = nPoints;
 
           QDomElement coordElem = baseCoordElem.cloneNode().toElement();
           QString coordString;
@@ -1443,7 +1443,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
               coordString += ts;
             }
 
-            double x, y;
+            double x = 0;
+            double y = 0;
             if ( invertAxisOrientation )
               wkbPtr >> y >> x;
             else
@@ -1461,7 +1462,6 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
           boundaryElem.appendChild( ringElem );
           polygonElem.appendChild( boundaryElem );
         }
-        delete [] ringNumPoints;
         return polygonElem;
       }
       case QgsWkbTypes::MultiPolygon25D:
@@ -1513,7 +1513,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
                 coordString += ts;
               }
 
-              double x, y;
+              double x = 0;
+              double y = 0;
               if ( invertAxisOrientation )
                 wkbPtr >> y >> x;
               else

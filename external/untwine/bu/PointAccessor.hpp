@@ -13,6 +13,7 @@
 #pragma once
 
 #include "../untwine/Common.hpp"
+#include "../untwine/MapFile.hpp"
 #include "../untwine/Point.hpp"
 
 #include "BuTypes.hpp"
@@ -32,13 +33,11 @@ public:
     ~PointAccessor()
     {
         for (FileInfo *fi : m_fileInfos)
-            pdal::FileUtils::unmapFile(fi->context());
+            unmapFile(fi->context());
     }
 
     void read(FileInfo& fi)
     {
-        using namespace pdal::FileUtils;
-
         std::string filename = m_b.inputDir + "/" + fi.filename();
         auto ctx = mapFile(filename, true, 0, fi.numPoints() * m_b.pointSize);
         if (ctx.m_addr == nullptr)

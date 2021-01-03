@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprovidersourcewidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProviderSourceWidget : QWidget
+{
+%Docstring
+Base class for widgets which allow customization of a provider's source URI.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersourcewidget.h"
+%End
+  public:
+
+    QgsProviderSourceWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProviderSourceWidget with the specified ``parent`` widget.
+%End
+
+    virtual void setSourceUri( const QString &uri ) = 0;
+%Docstring
+Sets the source ``uri`` to show in the widget.
+
+.. seealso:: :py:func:`sourceUri`
+%End
+
+    virtual QString sourceUri() const = 0;
+%Docstring
+Returns the source URI as currently defined by the widget.
+
+.. seealso:: :py:func:`setSourceUri`
+%End
+
+  signals:
+
+    void validChanged( bool isValid );
+%Docstring
+Emitted whenever the validation status of the widget changes.
+
+If ``isValid`` is ``False`` then the widget is not valid, and any dialog using the widget should be prevented from
+being accepted.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprovidersourcewidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

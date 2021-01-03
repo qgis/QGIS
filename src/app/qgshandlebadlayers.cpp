@@ -129,7 +129,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) );
     const QString basepath = QFileInfo( datasource ).absolutePath();
-    mOriginalFileBase[name].append( basepath );
+    mOriginalFileBase[ node.namedItem( QStringLiteral( "id" ) ).toElement().text() ].append( basepath );
 
     QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name,
@@ -142,12 +142,12 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QTableWidgetItem *item = nullptr;
 
     item = new QTableWidgetItem( name );
-    item->setData( Qt::UserRole + 0, i );
+    item->setData( static_cast< int >( CustomRoles::Index ), i );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 0, item );
 
     item = new QTableWidgetItem( type );
-    item->setData( Qt::UserRole + 0, providerFileBased );
+    item->setData( static_cast< int >( CustomRoles::ProviderIsFileBased ), providerFileBased );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 1, item );
 
@@ -191,7 +191,7 @@ void QgsHandleBadLayers::selectionChanged()
     if ( item->column() != 0 )
       continue;
 
-    bool providerFileBased = mLayerList->item( item->row(), 1 )->data( Qt::UserRole + 0 ).toBool();
+    const bool providerFileBased = mLayerList->item( item->row(), 1 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
     if ( !providerFileBased )
       continue;
 
@@ -315,10 +315,9 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    const auto constMRows = mRows;
-    for ( int row : constMRows )
+    for ( int row : qgis::as_const( mRows ) )
     {
-      bool providerFileBased = mLayerList->item( row, 1 )->data( Qt::UserRole + 0 ).toBool();
+      const bool providerFileBased = mLayerList->item( row, 1 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
       if ( !providerFileBased )
         continue;
 
@@ -378,7 +377,7 @@ void QgsHandleBadLayers::apply()
   QDir::setCurrent( QgsProject::instance()->absolutePath() );
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
-    int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
+    const int idx = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Index ) ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
     QTableWidgetItem *item = mLayerList->item( i, 4 );
@@ -408,10 +407,11 @@ void QgsHandleBadLayers::apply()
     {
       fileName = longName;
     }
-    if ( item->data( Qt::UserRole + 2 ).isValid() )
+
+    const QVariant dataSourceIsChanged = item->data( static_cast< int >( CustomRoles::DataSourceIsChanged ) );
+    if ( !( dataSourceIsChanged.isValid() && dataSourceIsChanged.toBool() ) )
     {
-      if ( item->data( Qt::UserRole + 2 ).toBool() )
-        datasource = QDir::toNativeSeparators( checkBasepath( layerId, datasource, fileName ).replace( fileName, longName ) );
+      datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ).replace( fileName, longName ) );
     }
 
     bool dataSourceChanged { false };
@@ -518,10 +518,11 @@ int QgsHandleBadLayers::layerCount()
 QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName )
 {
   const QString originalBase = mOriginalFileBase.value( layerId );
-  const QFileInfo newpathInfo = QFileInfo( newPath );
-  if ( newpathInfo.exists() && newpathInfo.isFile() )
+  const QDir newpathDir = QDir( newPath );
+  bool exists = newpathDir.exists( fileName );
+  if ( exists )
   {
-    const QString newBasepath = newpathInfo.absoluteDir().path();
+    const QString newBasepath = newpathDir.absolutePath();
     if ( !mAlternativeBasepaths.value( originalBase ).contains( newBasepath ) )
       mAlternativeBasepaths[ originalBase ].append( newBasepath );
     return ( newPath );
@@ -552,13 +553,11 @@ void QgsHandleBadLayers::autoFind()
       layersToFind.append( i );
   }
 
-  const QList<int> constLayersToFind = layersToFind;
-
   QProgressDialog progressDialog( QObject::tr( "Searching files" ), 0, 1, layersToFind.size(), this, Qt::Dialog );
 
-  for ( int i : constLayersToFind )
+  for ( int i : qgis::as_const( layersToFind ) )
   {
-    int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
+    const int idx = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Index ) ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
 
     QTableWidgetItem *item = mLayerList->item( i, 4 );
@@ -643,8 +642,8 @@ void QgsHandleBadLayers::autoFind()
       }
       if ( dataSourceChanged )
       {
-        const QString altBasepath = QFileInfo( datasource ).absoluteDir().path();
-        checkBasepath( layerId, altBasepath, fileName );
+        QString cleanSrc = QFileInfo( datasource ).absoluteDir().absolutePath();
+        checkBasepath( layerId, cleanSrc, fileName );
       }
     }
 
@@ -654,8 +653,9 @@ void QgsHandleBadLayers::autoFind()
     if ( dataSourceChanged )
     {
       setFilename( i, datasource );
+      item->setText( datasource );
       item->setForeground( QBrush( Qt::green ) );
-      item->setData( Qt::UserRole + 2, QVariant( true ) );
+      item->setData( static_cast< int >( CustomRoles::DataSourceIsChanged ), QVariant( true ) );
     }
     else
     {

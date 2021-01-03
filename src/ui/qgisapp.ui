@@ -539,7 +539,7 @@
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomFullExtent"/>
    <addaction name="mActionZoomToSelected"/>
-   <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomToLayers"/>
    <addaction name="mActionZoomActualSize"/>
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
@@ -1354,6 +1354,15 @@
    </property>
    <property name="text">
     <string>Zoom to &amp;Layer</string>
+   </property>
+  </action>
+  <action name="mActionZoomToLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;Layer(s)</string>
    </property>
   </action>
   <action name="mActionZoomToSelected">

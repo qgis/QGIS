@@ -85,81 +85,148 @@ class CORE_EXPORT QgsInterval
 
     /**
      * Returns the interval duration in years (based on an average year length)
+     *
+     * If the originalUnit() is QgsUnitTypes::TemporalYears then this value
+     * will match the exact number of months as returned by originalDuration(),
+     * otherwise it will be calculated using the average year length (31557600 seconds).
+     *
      * \see setYears()
      */
-    double years() const { return mSeconds / YEARS; }
+    double years() const;
 
     /**
      * Sets the interval duration in years.
+     *
+     * Replaces the interval size and changes the original interval unit
+     * and duration, \see originalDuration() and \see originalUnit().
+     *
+     * Changes the original unit to QgsUnitTypes::TemporalYears
+     *
      * \param years duration in years (based on average year length)
      * \see years()
      */
-    void setYears( double years ) { mSeconds = years * YEARS; mValid = true; }
+    void setYears( double years );
 
     /**
      * Returns the interval duration in months (based on a 30 day month).
+     *
+     * If the originalUnit() is QgsUnitTypes::TemporalMonths then this value
+     * will match the exact number of months as returned by originalDuration(),
+     * otherwise it will be calculated using the assumption that
+     * a month consists of exactly 30 days.
+     *
      * \see setMonths()
      */
-    double months() const { return mSeconds / MONTHS; }
+    double months() const;
 
     /**
      * Sets the interval duration in months.
+     *
+     * Replaces the interval size and changes the original interval unit
+     * and duration, \see originalDuration() and \see originalUnit().
+     *
+     * Changes the original unit to QgsUnitTypes::TemporalMonths
+     *
      * \param months duration in months (based on a 30 day month)
      * \see months()
      */
-    void setMonths( double months ) { mSeconds = months * MONTHS; mValid = true; }
+    void setMonths( double months );
 
     /**
      * Returns the interval duration in weeks.
+     *
+     * If the originalUnit() is QgsUnitTypes::TemporalWeeks then this value
+     * will match the exact number of weeks as returned by originalDuration(),
+     * otherwise it will be calculated using the QgsInterval::WEEKS constant.
+     *
      * \see setWeeks()
      */
-    double weeks() const { return mSeconds / WEEKS; }
+    double weeks() const;
 
     /**
      * Sets the interval duration in weeks.
+     *
+     * Replaces the interval size and changes the original interval unit
+     * and duration, \see originalDuration() and \see originalUnit().
+     *
+     * Changes the original unit to QgsUnitTypes::TemporalWeeks
+     *
      * \param weeks duration in weeks
      * \see weeks()
      */
-    void setWeeks( double weeks ) { mSeconds = weeks * WEEKS; mValid = true; }
+    void setWeeks( double weeks );
 
     /**
      * Returns the interval duration in days.
+     *
+     * If the originalUnit() is QgsUnitTypes::TemporalDays then this value
+     * will match the exact number of days as returned by originalDuration(),
+     * otherwise it will be calculated using the QgsInterval::DAY constant.
+     *
      * \see setDays()
      */
-    double days() const { return mSeconds / DAY; }
+    double days() const;
 
     /**
      * Sets the interval duration in days.
+     *
+     * Replaces the interval size and changes the original interval unit
+     * and duration, \see originalDuration() and \see originalUnit().
+     *
+     * Changes the original unit to QgsUnitTypes::TemporalDays
+     *
      * \param days duration in days
      * \see days()
      */
-    void setDays( double days ) { mSeconds = days * DAY; mValid = true; }
+    void setDays( double days );
 
     /**
      * Returns the interval duration in hours.
+     *
+     * If the originalUnit() is QgsUnitTypes::TemporalHours then this value
+     * will match the exact number of hours as returned by originalDuration(),
+     * otherwise it will be calculated using the QgsInterval::HOUR constant.
+     *
      * \see setHours()
      */
-    double hours() const { return mSeconds / HOUR; }
+    double hours() const;
 
     /**
      * Sets the interval duration in hours.
+     *
+     * Replaces the interval size and changes the original interval unit
+     * and duration, \see originalDuration() and \see originalUnit().
+     *
+     * The original unit to QgsUnitTypes::TemporalHours
+     *
      * \param hours duration in hours
      * \see hours()
      */
-    void setHours( double hours ) { mSeconds = hours * HOUR; mValid = true; }
+    void setHours( double hours );
 
     /**
      * Returns the interval duration in minutes.
+     *
+     * If the originalUnit() is QgsUnitTypes::TemporalMinutes then this value
+     * will match the exact number of minutes as returned by originalDuration(),
+     * otherwise it will be calculated using the QgsInterval::MINUTE constant.
+     *
      * \see setMinutes()
      */
-    double minutes() const { return mSeconds / MINUTE; }
+    double minutes() const;
 
     /**
      * Sets the interval duration in minutes.
+     *
+     * Replaces the interval size and changes the original interval unit
+     * and duration, \see originalDuration() and \see originalUnit().
+     *
+     * Changes the original unit to QgsUnitTypes::TemporalMinutes
+     *
      * \param minutes duration in minutes
      * \see minutes()
      */
-    void setMinutes( double minutes ) { mSeconds = minutes * MINUTE; mValid = true; }
+    void setMinutes( double minutes );
 
     /**
      * Returns the interval duration in seconds.
@@ -169,10 +236,16 @@ class CORE_EXPORT QgsInterval
 
     /**
      * Sets the interval duration in seconds.
+     *
+     * Replaces the interval size and changes the original interval unit
+     * and duration, \see originalDuration() and \see originalUnit().
+     *
+     * Changes the original unit to QgsUnitTypes::TemporalSeconds
+     *
      * \param seconds duration in seconds
      * \see seconds()
      */
-    void setSeconds( double seconds ) { mSeconds = seconds; mValid = true; }
+    void setSeconds( double seconds );
 
     /**
      * Returns TRUE if the interval is valid.
@@ -186,6 +259,39 @@ class CORE_EXPORT QgsInterval
      * \see isValid()
      */
     void setValid( bool valid ) { mValid = valid; }
+
+    /**
+     * Returns the original interval duration.
+     *
+     * This original interval duration can be updated through calling
+     * QgsInterval setter methods.
+     *
+     * \see originalUnit() for the corresponding unit.
+     *
+     * If the original interval duration is not available or
+     * interval was set with a mix of units, calling originalUnit()
+     * will return QgsUnitTypes::TemporalUnknownUnit
+     *
+     * Returns 0.0 if the original duration was not set.
+     *
+     * \since 3.18
+     */
+    double originalDuration() const { return mOriginalDuration; }
+
+    /**
+     * Returns the original interval temporal unit.
+     *
+     * The interval temporal unit can be set through the
+     * QgsInterval constructors or through the available setter methods.
+     *
+     * Returns QgsUnitTypes::TemporalUnknownUnit if unit was not set when creating the
+     * QgsInterval instance or interval was set with a mix of units.
+     *
+     * \see originalDuration()
+     *
+     * \since 3.18
+     */
+    QgsUnitTypes::TemporalUnit originalUnit() const { return mOriginalUnit; }
 
     bool operator==( QgsInterval other ) const;
 
@@ -209,6 +315,12 @@ class CORE_EXPORT QgsInterval
 
     //! True if interval is valid
     bool mValid = false;
+
+    //! Interval duration
+    double mOriginalDuration = 0.0;
+
+    //! Interval unit
+    QgsUnitTypes::TemporalUnit mOriginalUnit = QgsUnitTypes::TemporalUnknownUnit;
 };
 
 Q_DECLARE_METATYPE( QgsInterval )

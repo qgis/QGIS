@@ -26,7 +26,11 @@
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMaterial>
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
 #include <Qt3DExtras/QDiffuseMapMaterial>
+#else
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
+#endif
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DRender/QTexture>
@@ -227,10 +231,19 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
     QgsPhongMaterialSettings material = Qgs3DUtils::phongMaterialFromQt3DComponent( phongMaterial );
     object->setupMaterial( &material );
   }
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseMapMaterial>( entity );
+#else
+  Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseSpecularMaterial>( entity );
+#endif
+
   if ( diffuseMapMaterial != nullptr )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseMapMaterial->diffuse()->textureImages();
+#else
+    QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseMapMaterial->diffuse().value< Qt3DRender::QTexture2D * >()->textureImages();
+#endif
     QgsImageTexture *imageTexture = nullptr;
     for ( Qt3DRender::QAbstractTextureImage *tex : textureImages )
     {

@@ -42,6 +42,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgslegendpatchshapewidget.h"
 #include "qgslayertreefilterproxymodel.h"
+#include "qgscolorramplegendnodewidget.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -1586,6 +1587,16 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     mPatchShapeButton->hide();
   }
 
+  if ( QgsColorRampLegendNode *colorRampNode = dynamic_cast< QgsColorRampLegendNode * >( mLegendNode ) )
+  {
+    mLabelGroup->hide();
+    mColorRampLegendWidget->setSettings( colorRampNode->settings() );
+  }
+  else
+  {
+    mColorRampLegendWidget->hide();
+  }
+
   if ( mLegendNode )
   {
     switch ( static_cast< QgsLayerTreeModelLegendNode::NodeTypes >( mLegendNode->data( QgsLayerTreeModelLegendNode::NodeTypeRole ).toInt() ) )
@@ -1619,6 +1630,16 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   connect( mColumnBreakBeforeCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendNodeWidget::columnBreakToggled );
 
   connect( mColumnSplitBehaviorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
+
+  connect( mColorRampLegendWidget, &QgsColorRampLegendNodeWidget::widgetChanged, this, &QgsLayoutLegendNodeWidget::colorRampLegendChanged );
+
+  connectChildPanel( mColorRampLegendWidget );
+}
+
+void QgsLayoutLegendNodeWidget::setDockMode( bool dockMode )
+{
+  mColorRampLegendWidget->setDockMode( dockMode );
+  QgsPanelWidget::setDockMode( dockMode );
 }
 
 void QgsLayoutLegendNodeWidget::labelChanged()
@@ -1785,6 +1806,19 @@ void QgsLayoutLegendNodeWidget::customSymbolChanged()
       mLegend->model()->refreshLayerLegend( mLayer );
     }
   }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendNodeWidget::colorRampLegendChanged()
+{
+  mLegend->beginCommand( tr( "Edit Legend Item" ) );
+
+  QgsColorRampLegendNodeSettings settings = mColorRampLegendWidget->settings();
+  QgsMapLayerLegendUtils::setLegendNodeColorRampSettings( mLayer, mOriginalLegendNodeIndex, &settings );
+  mLegend->model()->refreshLayerLegend( mLayer );
 
   mLegend->adjustBoxSize();
   mLegend->updateFilterByMap();

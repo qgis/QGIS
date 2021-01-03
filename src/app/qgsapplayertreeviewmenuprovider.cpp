@@ -150,9 +150,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( layer && layer->isSpatial() )
       {
-        QAction *zoomToLayer = actions->actionZoomToLayer( mCanvas, menu );
-        zoomToLayer->setEnabled( layer->isValid() );
-        menu->addAction( zoomToLayer );
+
+        QAction *zoomToLayers = actions->actionZoomToLayers( mCanvas, menu );
+        zoomToLayers->setEnabled( layer->isValid() );
+        menu->addAction( zoomToLayers );
         if ( vlayer )
         {
           QList<QgsMapLayer *> selectedLayers = mView->selectedLayers();
@@ -260,8 +261,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         // allow editing
         const QgsVectorDataProvider *provider = vlayer->dataProvider();
-        if ( provider &&
-             ( provider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
+        if ( vlayer->supportsEditing() )
         {
           if ( toggleEditingAction )
           {

@@ -131,13 +131,7 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
                 map.value( QStringLiteral( "length" ), 0 ).toInt(),
                 map.value( QStringLiteral( "precision" ), 0 ).toInt() );
 
-    int layerFieldIdx = layerFields.indexFromName( f.name() );
-
-    if ( mLayer && layerFieldIdx >= 0 && ! map.contains( QStringLiteral( "constraints" ) ) )
-    {
-      f.setConstraints( layerFields.at( layerFieldIdx ).constraints() );
-    }
-    else
+    if ( map.contains( QStringLiteral( "constraints" ) ) )
     {
       const QgsFieldConstraints::Constraints constraints = static_cast<QgsFieldConstraints::Constraints>( map.value( QStringLiteral( "constraints" ), 0 ).toInt() );
       QgsFieldConstraints fieldConstraints;

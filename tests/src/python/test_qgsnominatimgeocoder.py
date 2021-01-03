@@ -130,7 +130,7 @@ class TestQgsNominatimGeocoder(unittest.TestCase):
                                                       'place_id': '157298780', 'postcode': 'G1C 4X5',
                                                       'road': 'Rue Anick', 'osm_type': 'way',
                                                       'type': 'school', 'class': 'amenity'})
-        self.assertEqual(res.viewport(), QgsRectangle(46.887, -71.199, 46.889, -71.201))
+        self.assertEqual(res.viewport(), QgsRectangle(-71.201, 46.887, -71.199, 46.889))
         self.assertEqual(res.group(), 'Quebec')
 
 

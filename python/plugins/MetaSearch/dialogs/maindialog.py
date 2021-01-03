@@ -469,8 +469,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # even for a global bbox, if a spatial filter is applied, then
         # the CSW server will skip records without a bbox
         if bbox != ['-180', '-90', '180', '90']:
-            self.constraints.append(BBox(bbox,
-                                         crs='urn:ogc:def:crs:OGC:1.3:CRS84'))
+            self.constraints.append(BBox([miny, minx, maxy, maxx],
+                                         crs='urn:ogc:def:crs:EPSG::4326'))
 
         # keywords
         if self.leKeywords.text():

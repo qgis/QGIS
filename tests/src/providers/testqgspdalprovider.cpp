@@ -55,7 +55,6 @@ class TestQgsPdalProvider : public QObject
     void brokenPath();
     void validLayer();
     void testEptGeneration();
-    void testEptGenerationNonASCII();
 
   private:
     QString mTestDataDir;
@@ -197,16 +196,6 @@ void TestQgsPdalProvider::testEptGeneration()
   QTemporaryDir dir;
   QVERIFY( dir.isValid() );
   QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path() );
-  QVERIFY( task.run() );
-  QFileInfo fi( dir.path() + "/ept.json" );
-  QVERIFY( fi.exists() );
-}
-
-void TestQgsPdalProvider::testEptGenerationNonASCII()
-{
-  QTemporaryDir dir;
-  QVERIFY( dir.isValid() );
-  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud%!* _*čopy.las" ), dir.path() );
   QVERIFY( task.run() );
   QFileInfo fi( dir.path() + "/ept.json" );
   QVERIFY( fi.exists() );

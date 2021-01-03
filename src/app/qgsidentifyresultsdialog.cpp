@@ -57,6 +57,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
+#include "qgsguiutils.h"
 #include "qgshighlight.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgsidentifyresultsdialog.h"
@@ -367,6 +368,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1, Qt::AscendingOrder );
+  lstResults->setIndentation( QgsGuiUtils::scaleIconSize( 12 ) );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 

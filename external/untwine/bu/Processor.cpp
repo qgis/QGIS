@@ -136,7 +136,7 @@ std::cerr << m_vi.key() << " Accepted/Rejected/num points = " <<
 }
 
 
-bool Processor::acceptable(int pointId, GridKey key)
+bool Processor::acceptable(int /* pointId */, GridKey key)
 {
     VoxelInfo::Grid& grid = m_vi.grid();
 

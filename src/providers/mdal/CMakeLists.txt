@@ -40,6 +40,7 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_logger.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_logger.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_dynamic_driver.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
@@ -57,6 +58,7 @@ if (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_dynamic_driver.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
@@ -79,7 +81,6 @@ if (WITH_INTERNAL_MDAL)
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_hec2d.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_flo2d.hpp
     )
-    set(MDAL_DEPS ${MDAL_DEPS} )
     set (HAVE_HDF5 TRUE)
   endif()
 
@@ -173,7 +174,9 @@ include_directories (
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/project
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
@@ -190,6 +193,10 @@ target_link_libraries (mdalprovider
   qgis_core
   ${MDAL_LIBRARY}
 )
+
+if (WITH_INTERNAL_MDAL)
+  target_link_libraries(mdalprovider ${CMAKE_DL_LIBS})
+endif()
 
 if (WITH_GUI)
   target_link_libraries (mdalprovider

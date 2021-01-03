@@ -17,10 +17,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include <pdal/util/ThreadPool.hpp>
-
 #include "BuTypes.hpp"
 #include "OctantInfo.hpp"
+#include "../untwine/ThreadPool.hpp"
 
 namespace untwine
 {
@@ -55,7 +54,7 @@ private:
     std::condition_variable m_cv;
     std::unordered_map<VoxelKey, OctantInfo> m_completes;
     std::queue<OctantInfo> m_queue;
-    pdal::ThreadPool m_pool;
+    ThreadPool m_pool;
     uint64_t m_totalPoints;
     ProgressWriter *m_progress;
     //

@@ -23,6 +23,7 @@
 
 struct QgsXyzConnection;
 
+class QgsXyzSourceWidget;
 
 class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 {
@@ -43,6 +44,8 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
   private:
     QString mBaseKey;
     QString mCredentialsBaseKey;
+
+    QgsXyzSourceWidget *mSourceWidget = nullptr;
 };
 
 #endif // QGSXYZCONNECTIONDIALOG_H

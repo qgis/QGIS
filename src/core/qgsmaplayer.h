@@ -1335,6 +1335,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     % End
 #endif
 
+    /**
+     * Returns the parent project if this map layer is added to a project.
+     * Otherwise returns NULLPTR
+     *
+     * \since QGIS 3.18
+     */
+    QgsProject *project() const;
+
   signals:
 
     /**

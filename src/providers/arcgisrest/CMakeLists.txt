@@ -1,15 +1,20 @@
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/network
   ${CMAKE_SOURCE_DIR}/src/core/pal
+  ${CMAKE_SOURCE_DIR}/src/core/project
+  ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
+  ${CMAKE_SOURCE_DIR}/src/core/vector
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
@@ -37,18 +42,17 @@ endif()
 ###############################################################################
 
 set (AFS_SRCS
-  qgsarcgisrestutils.cpp
-  qgsafsdataitems.cpp
   qgsafsfeatureiterator.cpp
   qgsafsprovider.cpp
   qgsafsshareddata.cpp
+  qgsarcgisrestdataitems.cpp
 )
 if (WITH_GUI)
   set(AFS_SRCS ${AFS_SRCS}
-    qgsafsprovidergui.cpp
-    qgsafsdataitemguiprovider.cpp
-    qgsafssourceselect.cpp
-    qgsarcgisservicesourceselect.cpp
+    qgsarcgisrestdataitemguiprovider.cpp
+    qgsarcgisrestprovidergui.cpp
+    qgsarcgisrestsourceselect.cpp
+    qgsnewarcgisrestconnection.cpp
   )
 endif()
 
@@ -83,19 +87,8 @@ install (TARGETS arcgisfeatureserverprovider
 ###############################################################################
 
 set (AMS_SRCS
-  qgsarcgisrestutils.cpp
-  qgsamsdataitems.cpp
   qgsamsprovider.cpp
 )
-
-if (WITH_GUI)
-  set(AMS_SRCS ${AMS_SRCS}
-    qgsamsprovidergui.cpp
-    qgsamsdataitemguiprovider.cpp
-    qgsamssourceselect.cpp
-    qgsarcgisservicesourceselect.cpp
-  )
-endif()
 
 add_library(arcgismapserverprovider MODULE ${AMS_SRCS})
 
@@ -103,13 +96,6 @@ target_link_libraries(arcgismapserverprovider
   qgis_core
   ${QCA_LIBRARY}
 )
-
-if (WITH_GUI)
-  target_link_libraries(arcgismapserverprovider
-    qgis_gui
-  )
-  add_dependencies(arcgismapserverprovider ui)
-endif()
 
 install (TARGETS arcgismapserverprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

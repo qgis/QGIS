@@ -95,8 +95,12 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     ~QgsCoordinateReferenceSystemPrivate()
     {
 #if PROJ_VERSION_MAJOR>=6
-      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
-      cleanPjObjects();
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+      if ( !mProjObjects.empty() || mPj )
+      {
+        locker.changeMode( QgsReadWriteLocker::Write );
+        cleanPjObjects();
+      }
 #else
       OSRDestroySpatialReference( mCRS );
 #endif

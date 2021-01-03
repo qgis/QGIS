@@ -1319,6 +1319,8 @@ QgsRectangle QgsMapCanvas::optimalExtentForPointLayer( QgsVectorLayer *layer, co
 
 void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
 {
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+
   if ( !layer )
   {
     // use current layer by default
@@ -1332,6 +1334,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
 
   if ( rect.isNull() )
   {
+    cursorOverride.release();
     emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
     return;
   }

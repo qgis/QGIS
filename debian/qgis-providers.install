@@ -1,4 +1,5 @@
 usr/lib/qgis/crssync
+usr/lib/qgis/untwine
 usr/lib/qgis/plugins/libarcgisfeatureserverprovider.so
 usr/lib/qgis/plugins/libarcgismapserverprovider.so
 usr/lib/qgis/plugins/libbasicauthmethod.so

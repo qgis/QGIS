@@ -294,14 +294,20 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
               switch ( source )
               {
                 case ValueAttribute:
-                  point.setZ( attributeValue );
-                  break;
-
-                case ValueZ:
+                  if ( point.is3D() )
+                    point.setZ( attributeValue );
+                  else
+                    point.addZValue( attributeValue );
                   break;
 
                 case ValueM:
-                  point.setZ( point.m() );
+                  if ( point.is3D() )
+                    point.setZ( point.m() );
+                  else
+                    point.addZValue( point.m() );
+                  break;
+
+                case ValueZ:
                   break;
               }
             }

@@ -653,7 +653,7 @@ class CORE_EXPORT QgsMeshDatasetGroup
     //! Returns whether all the datasets contain \a count values
     bool checkValueCountPerDataset( int count ) const;
 
-    //! Calculates the statictics (minimum and maximum)
+    //! Calculates the statistics (minimum and maximum)
     void calculateStatistic();
 
     //! Returns the dataset group variable name which this dataset group depends on

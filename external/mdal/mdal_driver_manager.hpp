@@ -44,6 +44,8 @@ namespace MDAL
       std::shared_ptr<MDAL::Driver> driver( const std::string &driverName ) const;
       std::shared_ptr<MDAL::Driver> driver( size_t index ) const;
 
+      void loadDynamicDrivers();
+
     private:
       DriverManager();
 

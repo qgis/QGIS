@@ -59,6 +59,7 @@
 #include "qgsnumericformatguiregistry.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgssubsetstringeditorproviderregistry.h"
+#include "qgsprovidersourcewidgetproviderregistry.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -84,6 +85,11 @@ QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
 QgsSubsetStringEditorProviderRegistry *QgsGui::subsetStringEditorProviderRegistry()
 {
   return instance()->mSubsetStringEditorProviderRegistry;
+}
+
+QgsProviderSourceWidgetProviderRegistry *QgsGui::sourceWidgetProviderRegistry()
+{
+  return instance()->mProviderSourceWidgetProviderRegistry;
 }
 
 QgsShortcutsManager *QgsGui::shortcutsManager()
@@ -191,6 +197,7 @@ QgsGui::~QgsGui()
   delete mProviderGuiRegistry;
   delete mCodeEditorColorSchemeRegistry;
   delete mSubsetStringEditorProviderRegistry;
+  delete mProviderSourceWidgetProviderRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -245,11 +252,13 @@ QgsGui::QgsGui()
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mNumericFormatGuiRegistry = new QgsNumericFormatGuiRegistry();
   mSubsetStringEditorProviderRegistry = new QgsSubsetStringEditorProviderRegistry();
+  mProviderSourceWidgetProviderRegistry = new QgsProviderSourceWidgetProviderRegistry();
 
   mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();
