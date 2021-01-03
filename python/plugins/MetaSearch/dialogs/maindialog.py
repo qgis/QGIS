@@ -554,6 +554,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # disable only service buttons
         self.reset_buttons(True, False, False)
 
+        self.rubber_band.reset()
+
         if not self.treeRecords.selectedItems():
             return
 
