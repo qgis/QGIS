@@ -451,7 +451,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QDomElement createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value );
     static QgsStringMap getVendorOptionList( QDomElement &element );
 
+    //! Parses the properties from XML and returns a map
     static QVariantMap parseProperties( const QDomElement &element );
+    //! Saves the map of properties to XML
     static void saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element );
 
     //! Reads a collection of symbols from XML and returns them in a map. Caller is responsible for deleting returned symbols.

@@ -22,6 +22,9 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
     QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );

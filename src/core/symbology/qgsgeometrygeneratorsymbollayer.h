@@ -28,6 +28,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
   public:
     ~QgsGeometryGeneratorSymbolLayer() override;
 
+    //! Creates the symbol layer
     static QgsSymbolLayer *create( const QVariantMap &properties ) SIP_FACTORY;
 
     QString layerType() const override;

@@ -50,6 +50,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 
     QgsVectorFieldSymbolLayer();
 
+    //! Creates the symbol layer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 

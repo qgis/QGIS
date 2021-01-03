@@ -701,6 +701,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
                          const QString &variantName = QString(), bool inverted = false,
                          bool doLoadFile = true );
 
+    //! Creates the symbol layer
     static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**

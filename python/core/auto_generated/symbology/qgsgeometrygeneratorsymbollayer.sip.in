@@ -18,6 +18,9 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
     ~QgsGeometryGeneratorSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
 
     virtual QString layerType() const;
 

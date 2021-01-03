@@ -306,6 +306,9 @@ Shall be reimplemented by subclasses to create a deep copy of the instance.
 %End
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+%Docstring
+Saves the symbol layer as SLD
+%End
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 

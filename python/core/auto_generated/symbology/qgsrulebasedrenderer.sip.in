@@ -279,6 +279,9 @@ clone this rule, return new instance
 %End
 
         void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+%Docstring
+Saves the symbol layer as SLD
+%End
 
         static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring

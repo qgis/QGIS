@@ -463,7 +463,13 @@ Creates a OGC Expression element based on the provided function expression
     static QgsStringMap getVendorOptionList( QDomElement &element );
 
     static QVariantMap parseProperties( const QDomElement &element );
+%Docstring
+Parses the properties from XML and returns a map
+%End
     static void saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element );
+%Docstring
+Saves the map of properties to XML
+%End
 
     static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring

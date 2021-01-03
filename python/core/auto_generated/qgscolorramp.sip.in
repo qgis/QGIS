@@ -763,6 +763,9 @@ Constructor for QgsCptCityColorRamp
 %End
 
     static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
 
     static QString typeString();
 %Docstring

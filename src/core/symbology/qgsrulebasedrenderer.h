@@ -303,6 +303,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! clone this rule, return new instance
         QgsRuleBasedRenderer::Rule *clone() const SIP_FACTORY;
 
+        //! Saves the symbol layer as SLD
         void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 
         /**

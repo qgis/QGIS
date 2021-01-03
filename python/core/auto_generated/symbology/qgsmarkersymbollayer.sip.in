@@ -542,6 +542,9 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates the symbol
+%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
