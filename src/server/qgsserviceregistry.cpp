@@ -360,7 +360,7 @@ bool QgsServiceRegistry::registerApi( QgsServerApi *api )
     return false;
   }
 
-  QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2" ).arg( name, version ) );
+  QgsMessageLog::logMessage( QStringLiteral( "Adding API %1 %2" ).arg( name, version ), QString(), Qgis::MessageLevel::Info );
   mApis.insert( key, std::shared_ptr<QgsServerApi>( api ) );
 
   // Check the default version
