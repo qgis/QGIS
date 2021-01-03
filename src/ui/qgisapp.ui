@@ -137,7 +137,7 @@
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
     <addaction name="mActionZoomToAllSelected"/>
-    <addaction name="mActionZoomToLayer"/>
+    <addaction name="mActionZoomToLayers"/>
     <addaction name="mActionZoomActualSize"/>
     <addaction name="mActionZoomLast"/>
     <addaction name="mActionZoomNext"/>
