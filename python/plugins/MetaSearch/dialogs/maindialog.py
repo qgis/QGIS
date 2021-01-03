@@ -98,7 +98,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.rubber_band.setWidth(5)
 
         # form inputs
-        self.startfrom = 0
+        self.startfrom = 1
         self.maxrecords = 10
         self.timeout = 10
         self.disable_ssl_verification = False
@@ -450,7 +450,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.catalog_password = self.settings.value('%s/password' % key)
 
         # start position and number of records to return
-        self.startfrom = 0
+        self.startfrom = 1
         self.maxrecords = self.spnRecords.value()
 
         # set timeout
@@ -511,10 +511,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         self.treeRecords.clear()
 
-        position = self.catalog.results['returned'] + self.startfrom
+        position = self.catalog.results['returned'] + self.startfrom - 1
 
         msg = self.tr('Showing {0} - {1} of %n result(s)', 'number of results',
-                      self.catalog.results['matches']).format(self.startfrom + 1,
+                      self.catalog.results['matches']).format(self.startfrom,
                                                               position)
 
         self.lblResults.setText(msg)
@@ -651,24 +651,24 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         caller = self.sender().objectName()
 
         if caller == 'btnFirst':
-            self.startfrom = 0
+            self.startfrom = 1
         elif caller == 'btnLast':
-            self.startfrom = self.catalog.results['matches'] - self.maxrecords
+            self.startfrom = self.catalog.results['matches'] - self.maxrecords + 1
         elif caller == 'btnNext':
-            self.startfrom += self.maxrecords
-            if self.startfrom >= self.catalog.results["matches"]:
+            if self.startfrom > self.catalog.results["matches"] - self.maxrecords:
                 msg = self.tr('End of results. Go to start?')
                 res = QMessageBox.information(self, self.tr('Navigation'),
                                               msg,
                                               (QMessageBox.Ok |
                                                QMessageBox.Cancel))
                 if res == QMessageBox.Ok:
-                    self.startfrom = 0
+                    self.startfrom = 1
                 else:
                     return
+            else:
+                self.startfrom += self.maxrecords
         elif caller == "btnPrev":
-            self.startfrom -= self.maxrecords
-            if self.startfrom <= 0:
+            if self.startfrom == 1:
                 msg = self.tr('Start of results. Go to end?')
                 res = QMessageBox.information(self, self.tr('Navigation'),
                                               msg,
@@ -676,9 +676,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                                                QMessageBox.Cancel))
                 if res == QMessageBox.Ok:
                     self.startfrom = (self.catalog.results['matches'] -
-                                      self.maxrecords)
+                                      self.maxrecords + 1)
                 else:
                     return
+            elif self.startfrom <= self.maxrecords:
+                self.startfrom = 1
+            else:
+                self.startfrom -= self.maxrecords
 
         try:
             with OverrideCursor(Qt.WaitCursor):
