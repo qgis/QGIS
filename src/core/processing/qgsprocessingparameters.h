@@ -1732,7 +1732,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
  * An input file or folder parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefinition, public QgsFileFilterGenerator
 {
   public:
 
@@ -1762,6 +1762,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Returns the parameter behavior (e.g. File or Folder).

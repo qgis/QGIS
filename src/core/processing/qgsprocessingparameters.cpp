@@ -3299,6 +3299,26 @@ QString QgsProcessingParameterFile::asPythonString( const QgsProcessing::PythonO
   return QString();
 }
 
+QString QgsProcessingParameterFile::createFileFilter() const
+{
+  switch ( mBehavior )
+  {
+    case File:
+    {
+      if ( !mFileFilter.isEmpty() )
+        return mFileFilter != QObject::tr( "All files (*.*)" ) ? mFileFilter + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" ) : mFileFilter;
+      else if ( !mExtension.isEmpty() )
+        return QObject::tr( "%1 files" ).arg( mExtension.toUpper() ) + QStringLiteral( " (*." ) + mExtension.toLower() +  QStringLiteral( ");;" ) + QObject::tr( "All files (*.*)" );
+      else
+        return QObject::tr( "All files (*.*)" );
+    }
+
+    case Folder:
+      return QString();
+  }
+  return QString();
+}
+
 void QgsProcessingParameterFile::setExtension( const QString &extension )
 {
   mExtension = extension;
