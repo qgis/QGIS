@@ -29,6 +29,7 @@
 #include "qgspointcloudindex.h"
 #include "qgsidentifycontext.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsmapclippingregion.h"
 
 #include <QDomElement>
 #include <QString>
@@ -77,6 +78,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudAttributeCollection mLayerAttributes;
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
+    QList< QgsMapClippingRegion > mClippingRegions;
+
 };
 
 #endif // QGSPOINTCLOUDLAYERRENDERER_H
