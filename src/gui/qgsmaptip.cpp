@@ -25,6 +25,8 @@
 #include "qgsapplication.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 // Qt includes
 #include <QPoint>
@@ -134,7 +136,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
                 "background-color: %1;"
                 "margin: 0;"
                 "font: %2pt \"%3\";"
-                "color: %4;" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily ).arg( textColor );
+                "color: %4;" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily, textColor );
 
   containerStyle = QString(
                      "display: inline-block;"
@@ -208,11 +210,28 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
   context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 
+  QString temporalFilter;
+  if ( mapCanvas->mapSettings().isTemporal() )
+  {
+    if ( !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) )
+      return QString();
+
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( vlayer );
+    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, mapCanvas->temporalRange() );
+  }
+
   QString mapTip = vlayer->mapTipTemplate();
   QString tipString;
   QgsExpression exp( vlayer->displayExpression() );
   QgsFeature feature;
-  QgsFeatureRequest request = QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect );
+
+  QgsFeatureRequest request;
+  request.setFilterRect( r );
+  request.setFlags( QgsFeatureRequest::ExactIntersect );
+  if ( !temporalFilter.isEmpty() )
+    request.setFilterExpression( temporalFilter );
+
   if ( mapTip.isEmpty() )
   {
     exp.prepare( &context );
@@ -233,7 +252,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     const QString filterExpression = renderer->filter( vlayer->fields() );
     if ( ! filterExpression.isEmpty() )
     {
-      request.setFilterExpression( filterExpression );
+      request.combineFilterExpression( filterExpression );
     }
   }
 
