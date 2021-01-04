@@ -284,8 +284,10 @@ class CORE_EXPORT QgsPointCloudRenderer
     /**
      * Returns the list of visible points of the point cloud layer \a layer and an extent defined by
      * a geometry in the 2D plane \a geometry.
+     *
+     * \warning The \a geometry value must be specified in the render context's destination CRS, not the layer's native CRS!
      */
-    QVector<QVariantMap> identify( QgsPointCloudLayer *layer, const QgsRenderContext &context,  const QgsGeometry &geometry ) SIP_SKIP;
+    QVector<QVariantMap> identify( QgsPointCloudLayer *layer, const QgsRenderContext &context, const QgsGeometry &geometry ) SIP_SKIP;
 
     /**
      * Checks whether the point holding \a pointAttributes attributes will be rendered

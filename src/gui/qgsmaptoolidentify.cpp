@@ -508,25 +508,12 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
   Q_UNUSED( identifyContext )
-  QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
   QgsPointCloudRenderer *renderer = layer->renderer();
 
-  QgsGeometry transformedGeometry = geometry;
-
-  if ( ct.isValid() )
-  {
-    try
-    {
-      transformedGeometry.transform( ct );
-    }
-    catch ( QgsCsException & )
-    {
-      return false;
-    }
-  }
-
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
-  const QVector<QVariantMap> points = renderer->identify( layer, context, transformedGeometry );
+  context.setCoordinateTransform( QgsCoordinateTransform( layer->crs(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() ) );
+
+  const QVector<QVariantMap> points = renderer->identify( layer, context, geometry );
   int id = 0;
   const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
   for ( const QVariantMap &pt : points )

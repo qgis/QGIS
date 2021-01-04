@@ -204,17 +204,20 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
 
   const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
 
-  QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
+  const QgsRectangle rootNodeExtentLayerCoords = index->nodeMapExtent( root );
+  QgsRectangle rootNodeExtentMapCoords;
   try
   {
-    rootNodeExtentMapCoords = renderContext.coordinateTransform().transformBoundingBox( index->nodeMapExtent( root ) );
+    rootNodeExtentMapCoords = renderContext.coordinateTransform().transformBoundingBox( rootNodeExtentLayerCoords );
   }
   catch ( QgsCsException & )
   {
     QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
+    rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
   }
 
-  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span(); // in map coords
+  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
+  const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / index->span();
 
   double mapUnitsPerPixel = renderContext.mapToPixel().mapUnitsPerPixel();
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maxErrorPixels < 0.0 ) )
@@ -223,7 +226,8 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     return selectedPoints;
   }
 
-  double maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
+  const double maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
+  const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates * rootErrorInLayerCoordinates / rootErrorInMapCoordinates;
 
   QgsGeometry selectionGeometry = geometry;
   if ( geometry.type() == QgsWkbTypes::PointGeometry )
@@ -260,11 +264,20 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     }
   }
 
-  selectedPoints = layer->dataProvider()->identify( maxErrorInMapCoordinates, selectionGeometry, renderContext.zRange() );
+  // selection geometry must be in layer CRS for QgsPointCloudDataProvider::identify
+  try
+  {
+    selectionGeometry.transform( renderContext.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+    return selectedPoints;
+  }
+
+  selectedPoints = layer->dataProvider()->identify( maxErrorInLayerCoordinates, selectionGeometry, renderContext.zRange() );
 
   selectedPoints.erase( std::remove_if( selectedPoints.begin(), selectedPoints.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), selectedPoints.end() );
 
   return selectedPoints;
 }
-
-
