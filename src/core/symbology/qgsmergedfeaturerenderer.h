@@ -98,8 +98,7 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
 
     /**
      * Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
-     * \returns a new renderer if the conversion was possible, otherwise 0.
-     * \since QGIS 2.5
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
     static QgsMergedFeatureRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

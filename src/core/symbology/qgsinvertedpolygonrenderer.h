@@ -77,7 +77,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsMergedFeatureRenderer
 
     /**
      * Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
-     * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      * \since QGIS 2.5
      */
     static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;

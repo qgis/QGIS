@@ -544,7 +544,7 @@ take a rule and create a list of new rules with intervals of scales given by the
 %Docstring
 creates a QgsRuleBasedRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End
