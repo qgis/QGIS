@@ -1,4 +1,4 @@
-    /***************************************************************************
+/***************************************************************************
                          qgsalgorithmextractbylocation.cpp
                          ---------------------
     begin                : April 2017
@@ -312,10 +312,10 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
             break;
         }
         if ( isMatch )
-            break;
+          break;
       }
 
-      if ( isMatch  )
+      if ( isMatch )
       {
         foundSet.insert( testFeature.id() );
         handleFeatureFunction( testFeature );
@@ -517,6 +517,5 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
 }
 
 ///@endcond
-
 
 
