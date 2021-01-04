@@ -230,28 +230,33 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   {
     double x = geometry.asPoint().x();
     double y = geometry.asPoint().y();
-    if ( pointSymbol() == QgsPointCloudRenderer::PointSymbol::Square )
+    switch ( pointSymbol() )
     {
-      QgsPointXY deviceCoords = renderContext.mapToPixel().transform( QgsPointXY( x, y ) );
-      QgsPointXY point1( deviceCoords.x() - 2 * pointSize(), deviceCoords.y() - 2 * pointSize() );
-      QgsPointXY point2( deviceCoords.x() + 2 * pointSize(), deviceCoords.y() + 2 * pointSize() );
-      QgsPointXY point1MapCoords = renderContext.mapToPixel().toMapCoordinates( point1.x(), point1.y() );
-      QgsPointXY point2MapCoords = renderContext.mapToPixel().toMapCoordinates( point2.x(), point2.y() );
-      QgsRectangle pointRect( point1MapCoords, point2MapCoords );
-      selectionGeometry = QgsGeometry::fromRect( pointRect );
-    }
-    else if ( pointSymbol() == QgsPointCloudRenderer::PointSymbol::Circle )
-    {
-      QgsPoint centerMapCoords( x, y );
-      QgsPointXY deviceCoords = renderContext.mapToPixel().transform( centerMapCoords );
-      QgsPoint point1( deviceCoords.x(), deviceCoords.y() - 2 * pointSize() );
-      QgsPoint point2( deviceCoords.x(), deviceCoords.y() + 2 * pointSize() );
-      QgsPointXY point1MapCoords = renderContext.mapToPixel().toMapCoordinates( point1.x(), point1.y() );
-      QgsPointXY point2MapCoords = renderContext.mapToPixel().toMapCoordinates( point2.x(), point2.y() );
-      QgsCircle circle = QgsCircle::from2Points( QgsPoint( point1MapCoords ), QgsPoint( point2MapCoords ) );
-      std::unique_ptr<QgsPolygon> polygon( circle.toPolygon( 6 ) );
-      QgsGeometry circleGeometry( std::move( polygon ) );
-      selectionGeometry = circleGeometry;
+      case QgsPointCloudRenderer::PointSymbol::Square:
+      {
+        QgsPointXY deviceCoords = renderContext.mapToPixel().transform( QgsPointXY( x, y ) );
+        QgsPointXY point1( deviceCoords.x() - 2 * pointSize(), deviceCoords.y() - 2 * pointSize() );
+        QgsPointXY point2( deviceCoords.x() + 2 * pointSize(), deviceCoords.y() + 2 * pointSize() );
+        QgsPointXY point1MapCoords = renderContext.mapToPixel().toMapCoordinates( point1.x(), point1.y() );
+        QgsPointXY point2MapCoords = renderContext.mapToPixel().toMapCoordinates( point2.x(), point2.y() );
+        QgsRectangle pointRect( point1MapCoords, point2MapCoords );
+        selectionGeometry = QgsGeometry::fromRect( pointRect );
+        break;
+      }
+      case QgsPointCloudRenderer::PointSymbol::Circle:
+      {
+        QgsPoint centerMapCoords( x, y );
+        QgsPointXY deviceCoords = renderContext.mapToPixel().transform( centerMapCoords );
+        QgsPoint point1( deviceCoords.x(), deviceCoords.y() - 2 * pointSize() );
+        QgsPoint point2( deviceCoords.x(), deviceCoords.y() + 2 * pointSize() );
+        QgsPointXY point1MapCoords = renderContext.mapToPixel().toMapCoordinates( point1.x(), point1.y() );
+        QgsPointXY point2MapCoords = renderContext.mapToPixel().toMapCoordinates( point2.x(), point2.y() );
+        QgsCircle circle = QgsCircle::from2Points( QgsPoint( point1MapCoords ), QgsPoint( point2MapCoords ) );
+        std::unique_ptr<QgsPolygon> polygon( circle.toPolygon( 6 ) );
+        QgsGeometry circleGeometry( std::move( polygon ) );
+        selectionGeometry = circleGeometry;
+        break;
+      }
     }
   }
 
