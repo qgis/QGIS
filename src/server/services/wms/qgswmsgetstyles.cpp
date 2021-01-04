@@ -183,7 +183,7 @@ namespace QgsWms
           {
             QString currentStyle = vlayer->styleManager()->currentStyle();
 
-            QgsStringMap props;
+            QVariantMap props;
             if ( vlayer->hasScaleBasedVisibility() )
             {
               props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( vlayer->maximumScale() );
