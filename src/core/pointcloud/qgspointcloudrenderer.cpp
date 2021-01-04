@@ -202,7 +202,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   const IndexedPointCloudNode root = index->root();
 
-  const float maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
+  const double maxErrorPixels = renderContext.convertToPainterUnits( maximumScreenError(), maximumScreenErrorUnit() );// in pixels
 
   QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
   try
@@ -214,7 +214,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     QgsDebugMsg( QStringLiteral( "Could not transform node extent to map CRS" ) );
   }
 
-  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span(); // in map coords
+  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span(); // in map coords
 
   double mapUnitsPerPixel = renderContext.mapToPixel().mapUnitsPerPixel();
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maxErrorPixels < 0.0 ) )
@@ -223,7 +223,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     return selectedPoints;
   }
 
-  float maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
+  double maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
 
   QgsGeometry selectionGeometry = geometry;
   if ( geometry.type() == QgsWkbTypes::PointGeometry )
