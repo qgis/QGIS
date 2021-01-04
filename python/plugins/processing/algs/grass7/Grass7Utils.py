@@ -31,7 +31,8 @@ import sys
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingUtils,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsCoordinateReferenceSystem)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder, isWindows, isMac, mkdir
@@ -81,6 +82,18 @@ class Grass7Utils:
         else:
             batchFile = os.path.join(gisdbase, 'grass_batch_job.sh')
         return batchFile
+
+    @staticmethod
+    def exportCrsWktToFile(crs):
+        """
+        Exports a crs as a WKT definition to a text file, and returns the path
+        to this file
+        """
+        wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+        wkt_file = QgsProcessingUtils.generateTempFilename('crs.prj')
+        with open(wkt_file, 'wt') as f:
+            f.write(wkt)
+        return wkt_file
 
     @staticmethod
     def installedVersion(run=False):

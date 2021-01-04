@@ -21,8 +21,11 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'October 2017'
 __copyright__ = '(C) 2017, Médéric Ribreux'
 
+from processing.algs.grass7.Grass7Utils import Grass7Utils
+
 
 def processOutputs(alg, parameters, context, feedback):
     crs = alg.parameterAsCrs(parameters, 'sourceproj', context)
 
-    alg.commands.insert(0, 'g.proj -c proj4="{}"'.format(crs.toProj()))
+    wkt_file_name = Grass7Utils.exportCrsWktToFile(crs)
+    alg.commands.insert(0, 'g.proj -c wkt="{}"'.format(wkt_file_name))
