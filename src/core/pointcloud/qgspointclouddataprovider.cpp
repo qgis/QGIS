@@ -184,7 +184,7 @@ QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, con
 /**
 * Retrieves the x & y values for the point at index \a i.
 */
-static void _pointXY( const char *ptr, int i, int pointRecordSize, int xOffset, int yOffset, QgsVector3D indexScale, QgsVector3D indexOffset, double &x, double &y )
+static void _pointXY( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, int yOffset, const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y )
 {
   const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * pointRecordSize + xOffset );
   const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * pointRecordSize + yOffset );
@@ -195,7 +195,7 @@ static void _pointXY( const char *ptr, int i, int pointRecordSize, int xOffset, 
 /**
 * Retrieves the z value for the point at index \a i.
 */
-static double _pointZ( const char *ptr, int i, int pointRecordSize, int zOffset, QgsVector3D indexScale, QgsVector3D indexOffset )
+static double _pointZ( const char *ptr, int i, std::size_t pointRecordSize, int zOffset, const QgsVector3D &indexScale, const QgsVector3D &indexOffset )
 {
   const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * pointRecordSize + zOffset );
   return indexOffset.z() + indexScale.z() * iz;
@@ -305,7 +305,7 @@ struct MapIndexedPointCloudNode
       }
     }
     return acceptedPoints;
-  };
+  }
 
   QgsPointCloudRequest &mRequest;
   QgsVector3D mIndexScale;
@@ -328,7 +328,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   const IndexedPointCloudNode root = index->root();
 
   QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
-  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
+  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
 
   QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxErrorInMapCoords, rootErrorInMapCoordinates, extentGeometry, extentZRange );
 
@@ -347,10 +347,10 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
 QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
   const QgsPointCloudIndex *pc,
   IndexedPointCloudNode n,
-  float maxError,
-  float nodeError,
+  double maxError,
+  double nodeError,
   const QgsGeometry &extentGeometry,
-  const QgsDoubleRange extentZRange )
+  const QgsDoubleRange &extentZRange )
 {
   QVector<IndexedPointCloudNode> nodes;
 
@@ -363,7 +363,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
   nodes.append( n );
 
-  float childrenError = nodeError / 2.0f;
+  double childrenError = nodeError / 2.0;
   if ( childrenError < maxError )
     return nodes;
 

@@ -343,7 +343,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     void indexGenerationStateChanged( PointCloudIndexGenerationState state );
 
   private:
-    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, float maxError, float nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange extentZRange );
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 };
 
 #endif // QGSMESHDATAPROVIDER_H
