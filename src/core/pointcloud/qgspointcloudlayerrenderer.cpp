@@ -51,7 +51,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     mOffset = mLayer->dataProvider()->index()->offset();
   }
 
-  if ( const QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() ) )
+  if ( const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() ) )
   {
     mZOffset = elevationProps->zOffset();
     mZScale = elevationProps->zScale();
@@ -119,7 +119,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   const IndexedPointCloudNode root = pc->root();
 
-  const float maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
+  const double maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
 
   const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
   QgsRectangle rootNodeExtentMapCoords;
@@ -133,7 +133,7 @@ bool QgsPointCloudLayerRenderer::render()
     rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
   }
 
-  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
+  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
 
   double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
@@ -141,7 +141,7 @@ bool QgsPointCloudLayerRenderer::render()
     QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
     return false;
   }
-  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+  double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
   const QVector<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
 
   QgsPointCloudRequest request;
@@ -186,8 +186,8 @@ bool QgsPointCloudLayerRenderer::forceRasterRender() const
 QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
     const QgsRenderContext &context,
     IndexedPointCloudNode n,
-    float maxErrorPixels,
-    float nodeErrorPixels )
+    double maxErrorPixels,
+    double nodeErrorPixels )
 {
   QVector<IndexedPointCloudNode> nodes;
 
@@ -207,7 +207,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
 
   nodes.append( n );
 
-  float childrenErrorPixels = nodeErrorPixels / 2.0f;
+  double childrenErrorPixels = nodeErrorPixels / 2.0;
   if ( childrenErrorPixels < maxErrorPixels )
     return nodes;
 
