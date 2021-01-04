@@ -527,17 +527,27 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
   }
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
-  QVector<QMap<QString, QVariant>> points = renderer->identify( layer, context, transformedGeometry );
+  const QVector<QVariantMap> points = renderer->identify( layer, context, transformedGeometry );
   int id = 0;
-  QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
-  for ( QMap<QString, QVariant> pt : points )
+  const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
+  for ( const QVariantMap &pt : points )
   {
-    // Apply elevation properties
-    pt["Z"] = pt["Z"].toReal() * elevationProps->zScale() + elevationProps->zOffset();
     // TODO: replace this conversion with something better
     QMap<QString, QString> ptStr;
-    for ( QString key : pt.keys() )
-      ptStr[key] = pt[key].toString();
+    for ( auto attrIt = pt.constBegin(); attrIt != pt.constEnd(); ++attrIt )
+    {
+      if ( attrIt.key().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0
+           && ( !qgsDoubleNear( elevationProps->zScale(), 1 ) || !qgsDoubleNear( elevationProps->zOffset(), 0 ) ) )
+      {
+        // Apply elevation properties
+        ptStr[ tr( "Z (original)" ) ] = attrIt.value().toString();
+        ptStr[ tr( "Z (adjusted)" ) ] = QString::number( attrIt.value().toDouble() * elevationProps->zScale() + elevationProps->zOffset() );
+      }
+      else
+      {
+        ptStr[attrIt.key()] = attrIt.value().toString();
+      }
+    }
     QgsMapToolIdentify::IdentifyResult res( layer, QString::number( id ), ptStr, ptStr );
     results->append( res );
     ++id;
