@@ -19,6 +19,7 @@
 
 #include "BuTypes.hpp"
 #include "OctantInfo.hpp"
+#include "Stats.hpp"
 #include "../untwine/ThreadPool.hpp"
 
 namespace untwine
@@ -42,9 +43,10 @@ public:
     void setProgress(ProgressWriter *progress);
     void queue(const OctantInfo& o);
     void run();
-    void logOctant(const VoxelKey& k, int cnt);
+    void logOctant(const VoxelKey& k, int cnt, const IndexedStats& istats);
     uint64_t totalPoints() const
         { return m_totalPoints; }
+    Stats *stats(const std::string& name);
 
 private:
     const int LevelBreak = 4;
@@ -56,6 +58,7 @@ private:
     std::queue<OctantInfo> m_queue;
     ThreadPool m_pool;
     uint64_t m_totalPoints;
+    std::map<std::string, Stats> m_stats;
     ProgressWriter *m_progress;
     //
     std::unordered_map<VoxelKey, int> m_written;

@@ -35,6 +35,7 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuPyramid.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Processor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PyramidManager.cpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/Stats.cpp
 
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/BufferCache.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Cell.cpp
@@ -58,6 +59,7 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PointAccessor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Processor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PyramidManager.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/Stats.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/VoxelInfo.hpp
 
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/BufferCache.hpp

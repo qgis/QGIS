@@ -45,6 +45,8 @@ void addArgs(pdal::ProgramArgs& programArgs, Options& options, pdal::Arg * &temp
         options.progressFd);
     programArgs.add("dims", "Dimensions to load. Note that X, Y and Z are always "
         "loaded.", options.dimNames);
+    programArgs.add("stats", "Generate statistics for dimensions in the manner of Entwine.",
+        options.stats);
 }
 
 bool handleOptions(pdal::StringList& arglist, Options& options)
@@ -115,11 +117,18 @@ int main(int argc, char *argv[])
 
     ProgressWriter progress(options.progressFd);
 
-    epf::Epf preflight;
-    preflight.run(options, progress);
+    try
+    {
+        epf::Epf preflight;
+        preflight.run(options, progress);
 
-    bu::BuPyramid builder;
-    builder.run(options, progress);
+        bu::BuPyramid builder;
+        builder.run(options, progress);
+    }
+    catch (const char *s)
+    {
+        std::cerr << "Error: " << s << "\n";
+    }
 
     return 0;
 }

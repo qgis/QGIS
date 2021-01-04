@@ -35,6 +35,7 @@ struct BaseInfo
     int maxLevel;
     DimInfoList dimInfo;
     pdal::SpatialReference srs;
+    bool stats;
 };
 
 } // namespace bu
