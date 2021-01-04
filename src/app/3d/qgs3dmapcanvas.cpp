@@ -274,5 +274,6 @@ void Qgs3DMapCanvas::mouseReleased( QMouseEvent *event )
   rayWorld = rayWorld.normalized();
 //  qDebug() << "rayEye: " << rayEye;
 //  qDebug() << "rayWorld: " << rayWorld;
-  mScene->onRayCasted( QVector3D( rayEye ), rayWorld );
+  QVector4D rayOrigin = viewMatrix.inverted() * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+  mScene->onRayCasted( QVector3D( rayOrigin ), rayWorld );
 }

@@ -622,9 +622,14 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
   emit styleChanged();
 }
 
-QVector<QMap<QString, QVariant>> QgsPointCloudLayer::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection )
+QVector<QMap<QString, QVariant>> QgsPointCloudLayer::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx )
 {
-  QVector<QMap<QString, QVariant>> points = mDataProvider->getPointsOnRay( rayOrigin, rayDirection );
-  qDebug() << __PRETTY_FUNCTION__;
+  qDebug() << __PRETTY_FUNCTION__ << rayOrigin << " " << rayDirection;
+  QVector<QMap<QString, QVariant>> points;
+  QVector3D adjutedRayOrigin = QVector3D( rayOrigin.x(), rayOrigin.y(), ( rayOrigin.z() - mElevationProperties->zOffset() ) / mElevationProperties->zScale() );
+  QVector3D adjutedRayDirection = QVector3D( rayDirection.x(), rayDirection.y(), rayDirection.z() / mElevationProperties->zScale() );
+  adjutedRayDirection.normalize();
+
+  points = mDataProvider->getPointsOnRay( adjutedRayOrigin, adjutedRayDirection, maxScreenError, cameraFov, screenSizePx );
   return points;
 }

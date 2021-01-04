@@ -219,6 +219,8 @@ If the point is a 2D point (no z-coordinate), then the containment test
 will be performed on the x/y extent of the box only.
 %End
 
+    float distanceFromPoint( double x, double y, double z );
+
     QgsRectangle toRectangle() const;
 %Docstring
 Converts the box to a 2D rectangle.

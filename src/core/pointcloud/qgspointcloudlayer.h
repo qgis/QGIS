@@ -167,7 +167,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void setRenderer( QgsPointCloudRenderer *renderer SIP_TRANSFER );
 
-    QVector<QMap<QString, QVariant>> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection );
+    QVector<QMap<QString, QVariant>> getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx );
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
 
