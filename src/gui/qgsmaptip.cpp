@@ -187,7 +187,7 @@ void QgsMapTip::clear( QgsMapCanvas * )
 QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
+  if ( !vlayer || !vlayer->isSpatial() )
     return QString();
 
   double searchRadius = QgsMapTool::searchRadiusMU( mapCanvas );
