@@ -80,8 +80,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
   QgsTemporalNavigationObject navigator;
   navigator.setTemporalExtents( settings.animationRange );
-  navigator.setFrameTimeStep( settings.frameTimeStep );
-  navigator.setFrameTimeStepUnit( settings.frameTimeStepUnit );
+  navigator.setFrameDuration( QgsInterval( settings.frameTimeStep, settings.frameTimeStepUnit ) );
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
 
@@ -144,54 +143,49 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 }
 
 
-QDateTime QgsTemporalUtils::calculateFrameTime( const QDateTime &start, const long long frame, const double timeStep, const QgsUnitTypes::TemporalUnit timeStepUnit )
+QDateTime QgsTemporalUtils::calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval interval )
 {
 
   double unused;
-  bool isFractional = fabs( modf( timeStep, &unused ) ) > 0.00001;
+  const bool isFractional = !qgsDoubleNear( fabs( modf( interval.originalDuration(), &unused ) ), 0.0 );
 
-  if ( isFractional )
+  if ( isFractional || interval.originalUnit() == QgsUnitTypes::TemporalUnit::TemporalUnknownUnit )
   {
-    double duration = QgsInterval( timeStep, timeStepUnit ).seconds();
-    return start.addSecs( frame * duration );
+    return start + interval;
   }
   else
   {
-    switch ( timeStepUnit )
+    switch ( interval.originalUnit() )
     {
       case QgsUnitTypes::TemporalUnit::TemporalMilliseconds:
-        return start.addMSecs( frame * timeStep );
+        return start.addMSecs( frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalSeconds:
-        return start.addSecs( frame * timeStep );
+        return start.addSecs( frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalMinutes:
-        return start.addSecs( 60 * frame * timeStep );
+        return start.addSecs( 60 * frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalHours:
-        return start.addSecs( 3600 * frame * timeStep );
+        return start.addSecs( 3600 * frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalDays:
-        return start.addDays( frame * timeStep );
+        return start.addDays( frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalWeeks:
-        return start.addDays( 7 * frame * timeStep );
+        return start.addDays( 7 * frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalMonths:
-        return start.addMonths( frame * timeStep );
+        return start.addMonths( frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalYears:
-        return start.addYears( frame * timeStep );
+        return start.addYears( frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalDecades:
-        return start.addYears( 10 * frame * timeStep );
+        return start.addYears( 10 * frame * interval.originalDuration() );
         break;
       case QgsUnitTypes::TemporalUnit::TemporalCenturies:
-        return start.addYears( 100 * frame * timeStep );
-        break;
-      case QgsUnitTypes::TemporalUnit::TemporalUnknownUnit:
-        Q_ASSERT( false );
-        return start;
+        return start.addYears( 100 * frame * interval.originalDuration() );
         break;
     }
   }
