@@ -260,7 +260,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     }
   }
 
-  selectedPoints = layer->dataProvider()->identify( maxErrorInMapCoordinates, selectionGeometry );
+  selectedPoints = layer->dataProvider()->identify( maxErrorInMapCoordinates, selectionGeometry, renderContext.zRange() );
 
   selectedPoints.erase( std::remove_if( selectedPoints.begin(), selectedPoints.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), selectedPoints.end() );
 
