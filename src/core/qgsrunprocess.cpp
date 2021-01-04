@@ -36,6 +36,13 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 
   mCommand = action;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  QStringList arguments = QProcess::splitCommand( action );
+  const QString command = arguments.value( 0 );
+  if ( !arguments.isEmpty() )
+    arguments.removeFirst();
+#endif
+
   mProcess = new QProcess;
 
   if ( capture )
@@ -63,11 +70,19 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
     }
 
     // start the process!
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     mProcess->start( action );
+#else
+    mProcess->start( command, arguments );
+#endif
   }
   else
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     if ( ! mProcess->startDetached( action ) ) // let the program run by itself
+#else
+    if ( ! mProcess->startDetached( command, arguments ) ) // let the program run by itself
+#endif
     {
       QMessageBox::critical( nullptr, tr( "Action" ),
                              tr( "Unable to run command\n%1" ).arg( action ),
