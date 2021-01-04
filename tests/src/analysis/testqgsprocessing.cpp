@@ -3730,6 +3730,19 @@ void TestQgsProcessing::parameterFile()
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->behavior(), def->behavior() );
+
+  // create file filter
+  // folder type
+  QCOMPARE( def->createFileFilter(), QString() );
+  def.reset( new QgsProcessingParameterFile( "optional", QString(), QgsProcessingParameterFile::File, QString(), QString( "/home/me" ),  true ) );
+  // no filter/extension
+  QCOMPARE( def->createFileFilter(), QStringLiteral( "All files (*.*)" ) );
+  def->setExtension( QStringLiteral( "png" ) );
+  QCOMPARE( def->createFileFilter(), QStringLiteral( "PNG files (*.png);;All files (*.*)" ) );
+  def->setFileFilter( QStringLiteral( "PNG Files (*.png);;BMP Files (*.bmp)" ) );
+  QCOMPARE( def->createFileFilter(), QStringLiteral( "PNG Files (*.png);;BMP Files (*.bmp);;All files (*.*)" ) );
+  def->setFileFilter( QStringLiteral( "All files (*.*)" ) );
+  QCOMPARE( def->createFileFilter(), QStringLiteral( "All files (*.*)" ) );
 }
 
 void TestQgsProcessing::parameterMatrix()
