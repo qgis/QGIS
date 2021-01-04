@@ -22,6 +22,7 @@ struct Options
     int level;
     int progressFd;
     StringList dimNames;
+    bool stats;
 };
 
 const std::string MetadataFilename {"info2.txt"};

@@ -17,6 +17,7 @@
 
 #include "BuTypes.hpp"
 #include "PointAccessor.hpp"
+#include "Stats.hpp"
 #include "VoxelInfo.hpp"
 
 namespace untwine
@@ -53,7 +54,7 @@ private:
     void appendCompressed(pdal::PointViewPtr view, const DimInfoList& dims, const FileInfo& fi,
         IndexIter begin, IndexIter end);
     void flushCompressed(pdal::PointTableRef table, pdal::PointViewPtr view,
-        const OctantInfo& oi);
+        const OctantInfo& oi, IndexedStats& stats);
 
     VoxelInfo m_vi;
     const BaseInfo& m_b;
