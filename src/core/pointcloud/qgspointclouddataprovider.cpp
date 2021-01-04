@@ -19,7 +19,11 @@
 #include "qgspointclouddataprovider.h"
 #include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
+#include "qgspointcloudrequest.h"
+#include "qgsgeometryengine.h"
 #include <mutex>
+
+#include <QtConcurrent/QtConcurrentMap>
 
 QgsPointCloudDataProvider::QgsPointCloudDataProvider(
   const QString &uri,
@@ -175,4 +179,200 @@ QVariantList QgsPointCloudDataProvider::metadataClasses( const QString & ) const
 QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, const QVariant &, QgsStatisticalSummary::Statistic ) const
 {
   return QVariant();
+}
+
+/**
+* Retrieves the x & y values for the point at index \a i.
+*/
+static void _pointXY( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, int yOffset, const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y )
+{
+  const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * pointRecordSize + xOffset );
+  const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * pointRecordSize + yOffset );
+  x = indexOffset.x() + indexScale.x() * ix;
+  y = indexOffset.y() + indexScale.y() * iy;
+}
+
+/**
+* Retrieves the z value for the point at index \a i.
+*/
+static double _pointZ( const char *ptr, int i, std::size_t pointRecordSize, int zOffset, const QgsVector3D &indexScale, const QgsVector3D &indexOffset )
+{
+  const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * pointRecordSize + zOffset );
+  return indexOffset.z() + indexScale.z() * iz;
+}
+
+/**
+* Retrieves all the attributes of a point
+*/
+QVariantMap _attributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection )
+{
+  QVariantMap map;
+  const QVector<QgsPointCloudAttribute> attributes = attributeCollection.attributes();
+  for ( const QgsPointCloudAttribute &attr : attributes )
+  {
+    QString attributeName = attr.name();
+    int attributeOffset;
+    attributeCollection.find( attributeName, attributeOffset );
+    switch ( attr.type() )
+    {
+      case QgsPointCloudAttribute::Char:
+      {
+        const char value = *( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+
+      case QgsPointCloudAttribute::Int32:
+      {
+        const qint32 value = *reinterpret_cast< const qint32 * >( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+
+      case QgsPointCloudAttribute::Short:
+      {
+        const short value = *reinterpret_cast< const short * >( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+
+      case QgsPointCloudAttribute::UShort:
+      {
+        const unsigned short value = *reinterpret_cast< const unsigned short * >( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+
+      case QgsPointCloudAttribute::Float:
+      {
+        const float value = *reinterpret_cast< const float * >( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+
+      case QgsPointCloudAttribute::Double:
+      {
+        const double value = *reinterpret_cast< const double * >( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+    }
+  }
+  return map;
+}
+
+struct MapIndexedPointCloudNode
+{
+  typedef QVector<QMap<QString, QVariant>> result_type;
+
+  MapIndexedPointCloudNode( QgsPointCloudRequest &request, const QgsVector3D &indexScale, const QgsVector3D &indexOffset,
+                            const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index, int pointsLimit )
+    : mRequest( request ), mIndexScale( indexScale ), mIndexOffset( indexOffset ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index ), mPointsLimit( pointsLimit )
+  { }
+
+  QVector<QVariantMap> operator()( IndexedPointCloudNode n )
+  {
+    QVector<QVariantMap> acceptedPoints;
+    std::unique_ptr<QgsPointCloudBlock> block( mIndex->nodeData( n, mRequest ) );
+
+    if ( !block || pointsCount == mPointsLimit )
+      return acceptedPoints;
+
+    const char *ptr = block->data();
+    QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+    const std::size_t recordSize = blockAttributes.pointRecordSize();
+    int xOffset, yOffset, zOffset;
+    blockAttributes.find( QStringLiteral( "X" ), xOffset );
+    blockAttributes.find( QStringLiteral( "Y" ), yOffset );
+    blockAttributes.find( QStringLiteral( "Z" ), zOffset );
+    std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( mExtentGeometry.constGet() ) );
+    extentEngine->prepareGeometry();
+    for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
+    {
+      double x, y, z;
+      _pointXY( ptr, i, recordSize, xOffset, yOffset, mIndexScale, mIndexOffset, x, y );
+      z = _pointZ( ptr, i, recordSize, zOffset, mIndexScale, mIndexOffset );
+      QgsPoint pointXY( x, y );
+
+      if ( mZRange.contains( z ) && extentEngine->contains( &pointXY ) )
+      {
+        QVariantMap pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
+        pointAttr[ QStringLiteral( "X" ) ] = x;
+        pointAttr[ QStringLiteral( "Y" ) ] = y;
+        pointAttr[ QStringLiteral( "Z" ) ] = z;
+        pointsCount++;
+        acceptedPoints.push_back( pointAttr );
+      }
+    }
+    return acceptedPoints;
+  }
+
+  QgsPointCloudRequest &mRequest;
+  QgsVector3D mIndexScale;
+  QgsVector3D mIndexOffset;
+  const QgsGeometry &mExtentGeometry;
+  const QgsDoubleRange &mZRange;
+  QgsPointCloudIndex *mIndex = nullptr;
+  int mPointsLimit;
+  int pointsCount = 0;
+};
+
+QVector<QVariantMap> QgsPointCloudDataProvider::identify(
+  double maxError,
+  const QgsGeometry &extentGeometry,
+  const QgsDoubleRange &extentZRange, int pointsLimit )
+{
+  QVector<QVariantMap> acceptedPoints;
+
+  QgsPointCloudIndex *index = this->index();
+  const IndexedPointCloudNode root = index->root();
+
+  QgsRectangle rootNodeExtent = index->nodeMapExtent( root );
+  const double rootError = rootNodeExtent.width() / index->span();
+
+  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxError, rootError, extentGeometry, extentZRange );
+
+  QgsPointCloudAttributeCollection attributeCollection = index->attributes();
+  QgsPointCloudRequest request;
+  request.setAttributes( attributeCollection );
+
+  acceptedPoints = QtConcurrent::blockingMappedReduced( nodes,
+                   MapIndexedPointCloudNode( request, index->scale(), index->offset(), extentGeometry, extentZRange, index, pointsLimit ),
+                   qgis::overload<const QVector<QMap<QString, QVariant>>&>::of( &QVector<QMap<QString, QVariant>>::append ),
+                   QtConcurrent::UnorderedReduce );
+
+  return acceptedPoints;
+}
+
+QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
+  const QgsPointCloudIndex *pc,
+  IndexedPointCloudNode n,
+  double maxError,
+  double nodeError,
+  const QgsGeometry &extentGeometry,
+  const QgsDoubleRange &extentZRange )
+{
+  QVector<IndexedPointCloudNode> nodes;
+
+  const QgsDoubleRange nodeZRange = pc->nodeZRange( n );
+  if ( !extentZRange.overlaps( nodeZRange ) )
+    return nodes;
+
+  if ( !extentGeometry.intersects( pc->nodeMapExtent( n ) ) )
+    return nodes;
+
+  nodes.append( n );
+
+  double childrenError = nodeError / 2.0;
+  if ( childrenError < maxError )
+    return nodes;
+
+  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
+  for ( const IndexedPointCloudNode &nn : children )
+  {
+    if ( extentGeometry.intersects( pc->nodeMapExtent( nn ) ) )
+      nodes += traverseTree( pc, nn, maxError, childrenError, extentGeometry, extentZRange );
+  }
+
+  return nodes;
 }

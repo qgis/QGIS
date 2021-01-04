@@ -24,6 +24,7 @@
 #include "qgsstatisticalsummary.h"
 #include <memory>
 
+class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
@@ -72,6 +73,53 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the list of points of the point cloud according to a zoom level
+     * defined by \a maxError (in layer coordinates), an extent \a geometry in the 2D plane
+     * and a range \a extentZRange for z values. The function will try to limit
+     * the number of points returned to \a pointsLimit points
+     *
+     * \a maxErrorPixels : maximum accepted error factor in pixels
+     *
+     * \note this function does not handle elevation properties and you need to
+     * change elevation coordinates yourself after returning from the function
+     */
+    QVector<QVariantMap> identify( double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
+#else
+
+    /**
+     * Returns the list of points of the point cloud according to a zoom level
+     * defined by \a maxError (in layer coordinates), an extent \a geometry in the 2D plane
+     * and a range \a extentZRange for z values. The function will try to limit
+     * the number of points returned to \a pointsLimit points
+     *
+     * \a maxErrorPixels : maximum accepted error factor in pixels
+     *
+     * \note this function does not handle elevation properties and you need to
+     * change elevation coordinates yourself after returning from the function
+     */
+    SIP_PYLIST identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
+    % MethodCode
+    {
+      QVector<QMap<QString, QVariant>> res = sipCpp->identify( a0, *a1, *a2, a3 );
+      sipRes = PyList_New( res.size() );
+      for ( int i = 0; i < res.size(); ++i )
+      {
+        PyObject *dict = PyDict_New();
+        for ( QString key : res[i].keys() )
+        {
+          PyObject *keyObj = sipConvertFromNewType( new QString( key ), sipType_QString, Py_None );
+          PyObject *valObj = sipConvertFromNewType( new QVariant( res[i][key] ), sipType_QVariant, Py_None );
+          PyDict_SetItem( dict, keyObj, valObj );
+        }
+        PyList_SET_ITEM( sipRes, i, dict );
+      }
+    }
+    % End
+#endif
 
     /**
      * Returns flags containing the supported capabilities for the data provider.
@@ -293,6 +341,9 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * Emitted when point cloud generation state is changed
      */
     void indexGenerationStateChanged( PointCloudIndexGenerationState state );
+
+  private:
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

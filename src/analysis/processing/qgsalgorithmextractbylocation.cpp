@@ -277,9 +277,10 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
         engine->prepareGeometry();
       }
 
+      bool isMatch = false;
+
       for ( Predicate predicate : qgis::as_const( predicates ) )
       {
-        bool isMatch = false;
         switch ( predicate )
         {
           case Intersects:
@@ -311,10 +312,13 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
             break;
         }
         if ( isMatch )
-        {
-          foundSet.insert( testFeature.id() );
-          handleFeatureFunction( testFeature );
-        }
+          break;
+      }
+
+      if ( isMatch )
+      {
+        foundSet.insert( testFeature.id() );
+        handleFeatureFunction( testFeature );
       }
 
     }
@@ -513,6 +517,5 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
 }
 
 ///@endcond
-
 
 

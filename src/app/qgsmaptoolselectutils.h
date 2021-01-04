@@ -189,6 +189,7 @@ namespace QgsMapToolSelectUtils
         QgsCoordinateTransform ct;
         QgsRenderContext context;
         std::unique_ptr<QgsFeatureRenderer> featureRenderer;
+        QString filterString;
         QgsVectorLayer::SelectBehavior selectBehavior;
         QgsFeatureIds existingSelection;
       };

@@ -1,0 +1,11 @@
+{
+  "name": "array_majority",
+  "type": "function",
+  "groups": ["Arrays"],
+  "description": "Returns an array containing the most common value in an array. The returned array may contain more than one value if multiple values occur equally often.",
+  "arguments": [ {"arg":"array","description":"an array"} ],
+  "examples": [ 
+    { "expression":"array_majority(array(0,1,42,42,43))", "returns":"[ 42 ]"},
+    { "expression":"array_majority(array(0,0,1,2,2,42))", "returns":"[ 0, 2 ]"}
+  ]
+}

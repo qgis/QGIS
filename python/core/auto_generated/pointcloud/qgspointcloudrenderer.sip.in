@@ -201,6 +201,14 @@ and generate a proper subclass.
 Renders a ``block`` of point cloud data using the specified render ``context``.
 %End
 
+
+    virtual bool willRenderPoint( const QMap<QString, QVariant> &pointAttributes );
+%Docstring
+Checks whether the point holding ``pointAttributes`` attributes will be rendered
+By default if not overridden in the subclass renderer will return true
+( the renderer is responsible for the filtering behavior )
+%End
+
     static QgsPointCloudRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a renderer from an XML ``element``.

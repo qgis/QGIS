@@ -150,9 +150,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( layer && layer->isSpatial() )
       {
-        QAction *zoomToLayer = actions->actionZoomToLayer( mCanvas, menu );
-        zoomToLayer->setEnabled( layer->isValid() );
-        menu->addAction( zoomToLayer );
+
+        QAction *zoomToLayers = actions->actionZoomToLayers( mCanvas, menu );
+        zoomToLayers->setEnabled( layer->isValid() );
+        menu->addAction( zoomToLayers );
         if ( vlayer )
         {
           QAction *actionZoomSelected = actions->actionZoomToSelection( mCanvas, menu );

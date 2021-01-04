@@ -111,7 +111,9 @@ QString getFullProjString( PJ *obj )
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
 {
-  d = new QgsCoordinateReferenceSystemPrivate();
+  static QgsCoordinateReferenceSystem nullCrs = QgsCoordinateReferenceSystem( QString() );
+
+  d = nullCrs.d;
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QString &definition )
@@ -288,7 +290,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   locker.unlock();
 
   bool result = false;
-  QRegularExpression reCrsId( QStringLiteral( "^(epsg|esri|osgeo|ignf|zangi|iau2000|postgis|internal|user)\\:(\\w+)$" ), QRegularExpression::CaseInsensitiveOption );
+  const thread_local QRegularExpression reCrsId( QStringLiteral( "^(epsg|esri|osgeo|ignf|zangi|iau2000|postgis|internal|user)\\:(\\w+)$" ), QRegularExpression::CaseInsensitiveOption );
   QRegularExpressionMatch match = reCrsId.match( definition );
   if ( match.capturedStart() == 0 )
   {
@@ -316,7 +318,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   }
   else
   {
-    QRegularExpression reCrsStr( "^(?:(wkt|proj4|proj)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression reCrsStr( QStringLiteral( "^(?:(wkt|proj4|proj)\\:)?(.+)$" ), QRegularExpression::CaseInsensitiveOption );
     match = reCrsStr.match( definition );
     if ( match.capturedStart() == 0 )
     {
@@ -405,8 +407,8 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   QString wmsCrs = crs;
 
-  QRegExp re_uri( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)", Qt::CaseInsensitive );
-  QRegExp re_urn( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
+  thread_local const QRegExp re_uri( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ), Qt::CaseInsensitive );
+  thread_local const QRegExp re_urn( QStringLiteral( "urn:ogc:def:crs:([^:]+).+([^:]+)" ), Qt::CaseInsensitive );
   if ( re_uri.exactMatch( wmsCrs ) )
   {
     wmsCrs = re_uri.cap( 1 ) + ':' + re_uri.cap( 2 );
@@ -417,8 +419,8 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   }
   else
   {
-    re_urn.setPattern( QStringLiteral( "(user|custom|qgis):(\\d+)" ) );
-    if ( re_urn.exactMatch( wmsCrs ) && createFromSrsId( re_urn.cap( 2 ).toInt() ) )
+    thread_local const QRegExp re_urn_custom( QStringLiteral( "(user|custom|qgis):(\\d+)" ), Qt::CaseInsensitive );
+    if ( re_urn_custom.exactMatch( wmsCrs ) && createFromSrsId( re_urn.cap( 2 ).toInt() ) )
     {
       locker.changeMode( QgsReadWriteLocker::Write );
       if ( !sDisableOgcCache )
@@ -1028,8 +1030,8 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
 #else
   Q_UNUSED( identify )
 
-  QRegExp myProjRegExp( "\\+proj=(\\S+)" );
-  int myStart = myProjRegExp.indexIn( myProj4String );
+  QRegExp projRegExp( QStringLiteral( "\\+proj=(\\S+)" ) );
+  int myStart = projRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
@@ -1039,9 +1041,9 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     return d->mIsValid;
   }
 
-  d->mProjectionAcronym = myProjRegExp.cap( 1 );
+  d->mProjectionAcronym = projRegExp.cap( 1 );
 
-  QRegExp myEllipseRegExp( "\\+ellps=(\\S+)" );
+  QRegExp myEllipseRegExp( QStringLiteral( "\\+ellps=(\\S+)" ) );
   myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
@@ -1052,7 +1054,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     d->mEllipsoidAcronym = myEllipseRegExp.cap( 1 );
   }
 
-  QRegExp myAxisRegExp( "\\+a=(\\S+)" );
+  QRegExp myAxisRegExp( QStringLiteral( "\\+a=(\\S+)" ) );
   myStart = myAxisRegExp.indexIn( myProj4String );
 
   long mySrsId = 0;
@@ -1068,8 +1070,8 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     // Ticket #722 - aaronr
     // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
     // First we check for lat_1 and lat_2
-    QRegExp myLat1RegExp( "\\+lat_1=\\S+" );
-    QRegExp myLat2RegExp( "\\+lat_2=\\S+" );
+    QRegExp myLat1RegExp( QStringLiteral( "\\+lat_1=\\S+" ) );
+    QRegExp myLat2RegExp( QStringLiteral( "\\+lat_2=\\S+" ) );
     int myStart1 = 0;
     int myLength1 = 0;
     int myStart2 = 0;
@@ -1116,7 +1118,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    const QRegExp regExp( "\\s+(?=\\+)" );
+    thread_local const QRegularExpression regExp( "\\s+(?=\\+)" );
     {
       const auto constSplit = myProj4String.split( regExp, QString::SkipEmptyParts );
       for ( const QString &param : constSplit )
@@ -2437,19 +2439,21 @@ bool testIsGeographic( PJ *crs )
 
 void getOperationAndEllipsoidFromProjString( const QString &proj, QString &operation, QString &ellipsoid )
 {
-  QRegExp projRegExp( "\\+proj=(\\S+)" );
-  if ( projRegExp.indexIn( proj ) < 0 )
+  thread_local const QRegularExpression projRegExp( QStringLiteral( "\\+proj=(\\S+)" ) );
+  const QRegularExpressionMatch projMatch = projRegExp.match( proj );
+  if ( !projMatch.hasMatch() )
   {
     QgsDebugMsgLevel( QStringLiteral( "no +proj argument found [%2]" ).arg( proj ), 2 );
     return;
   }
-  operation = projRegExp.cap( 1 );
+  operation = projMatch.captured( 1 );
 
-  QRegExp ellipseRegExp( "\\+(?:ellps|datum)=(\\S+)" );
+  thread_local const QRegularExpression ellipseRegExp( QStringLiteral( "\\+(?:ellps|datum)=(\\S+)" ) );
+  const QRegularExpressionMatch ellipseMatch = projRegExp.match( proj );
   QString ellps;
-  if ( ellipseRegExp.indexIn( proj ) >= 0 )
+  if ( !ellipseMatch.hasMatch() )
   {
-    ellipsoid = ellipseRegExp.cap( 1 );
+    ellipsoid = ellipseMatch.captured( 1 );
   }
   else
   {
@@ -2458,7 +2462,7 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
     // and will result in oddities within other areas of QGIS (e.g. project ellipsoid won't be correctly
     // set for these CRSes). Better just hack around and make the constraint happy for now,
     // and hope that the definitions get corrected in future.
-    ellipsoid = "";
+    ellipsoid.clear();
   }
 }
 

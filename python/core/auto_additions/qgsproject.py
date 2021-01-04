@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/core/qgsproject.h
+# The following has been generated automatically from src/core/project/qgsproject.h
 # monkey patching scoped based enum
 QgsProject.FlagDontResolveLayers = QgsProject.ReadFlag.FlagDontResolveLayers
 QgsProject.ReadFlag.FlagDontResolveLayers.__doc__ = "Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required."

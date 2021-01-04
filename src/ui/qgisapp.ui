@@ -91,7 +91,7 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuMeasure">
+    <widget class="QMenu" name="mMenuMeasure">
      <property name="title">
       <string>Measure</string>
      </property>
@@ -99,7 +99,7 @@
      <addaction name="mActionMeasureArea"/>
      <addaction name="mActionMeasureAngle"/>
     </widget>
-    <widget class="QMenu" name="menuDecorations">
+    <widget class="QMenu" name="mMenuDecorations">
      <property name="title">
       <string>&amp;Decorations</string>
      </property>
@@ -122,6 +122,18 @@
      <addaction name="mActionPreviewDeuteranope"/>
      <addaction name="mActionPreviewTritanope"/>
     </widget>
+    <widget class="QMenu" name="mMenuLayerVisibility">
+     <property name="title">
+      <string>Layer visibility</string>
+     </property>
+     <addaction name="mActionShowAllLayers"/>
+     <addaction name="mActionHideAllLayers"/>
+     <addaction name="mActionShowSelectedLayers"/>
+     <addaction name="mActionHideSelectedLayers"/>
+     <addaction name="mActionToggleSelectedLayers"/>
+     <addaction name="mActionToggleSelectedLayersIndependently"/>
+     <addaction name="mActionHideDeselectedLayers"/>
+    </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="mActionNew3DMapCanvas"/>
     <addaction name="mActionPan"/>
@@ -130,17 +142,17 @@
     <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
     <addaction name="mActionIdentify"/>
-    <addaction name="menuMeasure"/>
+    <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
-    <addaction name="mActionZoomToLayer"/>
+    <addaction name="mActionZoomToLayers"/>
     <addaction name="mActionZoomActualSize"/>
     <addaction name="mActionZoomLast"/>
     <addaction name="mActionZoomNext"/>
     <addaction name="separator"/>
-    <addaction name="menuDecorations"/>
+    <addaction name="mMenuDecorations"/>
     <addaction name="mMenuPreviewMode"/>
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
@@ -148,14 +160,7 @@
     <addaction name="mActionShowBookmarkManager"/>
     <addaction name="mActionDraw"/>
     <addaction name="separator"/>
-    <addaction name="mActionShowAllLayers"/>
-    <addaction name="mActionHideAllLayers"/>
-    <addaction name="mActionShowSelectedLayers"/>
-    <addaction name="mActionHideSelectedLayers"/>
-    <addaction name="mActionToggleSelectedLayers"/>
-    <addaction name="mActionToggleSelectedLayersIndependently"/>
-    <addaction name="mActionHideDeselectedLayers"/>
-    <addaction name="separator"/>
+    <addaction name="mMenuLayerVisibility"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -289,7 +294,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <widget class="QMenu" name="menuSelect">
+    <widget class="QMenu" name="mMenuSelect">
      <property name="title">
       <string>Select</string>
      </property>
@@ -357,6 +362,35 @@
      <addaction name="mActionHtmlAnnotation"/>
      <addaction name="mActionSvgAnnotation"/>
     </widget>
+    <widget class="QMenu" name="mMenuEditAttributes">
+     <property name="title">
+      <string>Edit Attributes</string>
+     </property>
+     <addaction name="mActionMultiEditAttributes"/>
+     <addaction name="mActionMergeFeatureAttributes"/>
+    </widget>
+    <widget class="QMenu" name="mMenuEditGeometry">
+     <property name="title">
+      <string>Edit Geometry</string>
+     </property>
+     <addaction name="mActionMoveFeature"/>
+     <addaction name="mActionMoveFeatureCopy"/>
+     <addaction name="mActionRotateFeature"/>
+     <addaction name="mActionSimplifyFeature"/>
+     <addaction name="mActionAddRing"/>
+     <addaction name="mActionAddPart"/>
+     <addaction name="mActionFillRing"/>
+     <addaction name="mActionDeleteRing"/>
+     <addaction name="mActionDeletePart"/>
+     <addaction name="mActionReshapeFeatures"/>
+     <addaction name="mActionOffsetCurve"/>
+     <addaction name="mActionSplitFeatures"/>
+     <addaction name="mActionSplitParts"/>
+     <addaction name="mActionMergeFeatures"/>
+     <addaction name="mActionVertexTool"/>
+     <addaction name="mActionReverseLine"/>
+     <addaction name="mActionTrimExtendFeature"/>
+    </widget>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
     <addaction name="separator"/>
@@ -364,7 +398,8 @@
     <addaction name="mActionCopyFeatures"/>
     <addaction name="mActionPasteFeatures"/>
     <addaction name="mMenuPasteAs"/>
-    <addaction name="menuSelect"/>
+    <addaction name="mActionDeleteSelected"/>
+    <addaction name="mMenuSelect"/>
     <addaction name="separator"/>
     <addaction name="mActionAddFeature"/>
     <addaction name="mActionCircularStringCurvePoint"/>
@@ -374,29 +409,11 @@
     <addaction name="mMenuRegularPolygon"/>
     <addaction name="mMenuEllipse"/>
     <addaction name="mMenuAnnotation"/>
-    <addaction name="mActionMoveFeature"/>
-    <addaction name="mActionMoveFeatureCopy"/>
-    <addaction name="mActionDeleteSelected"/>
-    <addaction name="mActionMultiEditAttributes"/>
     <addaction name="separator"/>
-    <addaction name="mActionRotateFeature"/>
-    <addaction name="mActionSimplifyFeature"/>
-    <addaction name="mActionAddRing"/>
-    <addaction name="mActionAddPart"/>
-    <addaction name="mActionFillRing"/>
-    <addaction name="mActionDeleteRing"/>
-    <addaction name="mActionDeletePart"/>
-    <addaction name="mActionReshapeFeatures"/>
-    <addaction name="mActionOffsetCurve"/>
-    <addaction name="mActionSplitFeatures"/>
-    <addaction name="mActionSplitParts"/>
-    <addaction name="mActionMergeFeatures"/>
-    <addaction name="mActionMergeFeatureAttributes"/>
-    <addaction name="mActionVertexTool"/>
+    <addaction name="mMenuEditAttributes"/>
+    <addaction name="mMenuEditGeometry"/>
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
-    <addaction name="mActionReverseLine"/>
-    <addaction name="mActionTrimExtendFeature"/>
    </widget>
    <widget class="QMenu" name="mMeshMenu">
     <property name="title">
@@ -538,7 +555,7 @@
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomFullExtent"/>
    <addaction name="mActionZoomToSelected"/>
-   <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomToLayers"/>
    <addaction name="mActionZoomActualSize"/>
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
@@ -1353,6 +1370,15 @@
    </property>
    <property name="text">
     <string>Zoom to &amp;Layer</string>
+   </property>
+  </action>
+  <action name="mActionZoomToLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;Layer(s)</string>
    </property>
   </action>
   <action name="mActionZoomToSelected">

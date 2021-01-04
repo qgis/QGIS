@@ -48,33 +48,33 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
     case QgsPointCloudAttribute::Short:
     {
       short val = short( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( short ) );
+      memcpy( s + position, reinterpret_cast<char * >( &val ), sizeof( short ) );
       break;
     }
 
     case QgsPointCloudAttribute::UShort:
     {
       unsigned short val = static_cast< unsigned short>( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( unsigned short ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( unsigned short ) );
       break;
     }
 
     case QgsPointCloudAttribute::Float:
     {
       float val = float( value );
-      memcpy( s + position, ( char * )( &val ),  sizeof( float ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ),  sizeof( float ) );
       break;
     }
     case QgsPointCloudAttribute::Int32:
     {
       qint32 val = qint32( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( qint32 ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( qint32 ) );
       break;
     }
     case QgsPointCloudAttribute::Double:
     {
       double val = double( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( double ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( double ) );
       break;
     }
   }
@@ -100,27 +100,27 @@ bool _serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Data
     }
     case QgsPointCloudAttribute::Short:
     {
-      short val = *( short * )( input + inputPosition );
+      const short val = *reinterpret_cast< const short * >( input + inputPosition );
       return _storeToStream<short>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::UShort:
     {
-      unsigned short val = *reinterpret_cast< const unsigned short * >( input + inputPosition );
+      const unsigned short val = *reinterpret_cast< const unsigned short * >( input + inputPosition );
       return _storeToStream<unsigned short>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Float:
     {
-      float val = *( float * )( input + inputPosition );
+      const float val = *reinterpret_cast< const float * >( input + inputPosition );
       return _storeToStream<float>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Int32:
     {
-      qint32 val = *( qint32 * )( input + inputPosition );
+      const qint32 val = *reinterpret_cast<const qint32 * >( input + inputPosition );
       return _storeToStream<qint32>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Double:
     {
-      double val = *( double * )( input + inputPosition );
+      const double val = *reinterpret_cast< const double * >( input + inputPosition );
       return _storeToStream<double>( data, outputPosition, outputType, val );
     }
   }
@@ -301,7 +301,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     PointSourceId,
     Red,
     Green,
-    Blue
+    Blue,
+    MissingOrUnknown
   };
 
   struct RequestedAttributeDetails
@@ -383,7 +384,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     }
     else
     {
-      // what to do here? store 0?
+      // this can possibly happen -- e.g. if a style built using a different point cloud format references an attribute which isn't available from the laz file
+      requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::MissingOrUnknown, QgsPointCloudAttribute::Char, 1 ) );
     }
   }
 
@@ -441,6 +443,10 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
           break;
         case LazAttribute::Blue:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
+          break;
+        case LazAttribute::MissingOrUnknown:
+          // just store 0 for unknown/missing attributes
+          dataBuffer[ outputOffset ] = 0;
           break;
       }
 
