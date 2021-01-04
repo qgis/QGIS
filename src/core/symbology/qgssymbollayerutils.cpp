@@ -4577,14 +4577,14 @@ void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument &doc, QDomElement &
   if ( !props.value( QStringLiteral( "scaleMinDenom" ), QString() ).toString().isEmpty() )
   {
     QDomElement scaleMinDenomElem = doc.createElement( QStringLiteral( "se:MinScaleDenominator" ) );
-    scaleMinDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMinDenom" ) ).toDouble() ) ) );
+    scaleMinDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMinDenom" ) ).toString().toDouble() ) ) );
     ruleElem.appendChild( scaleMinDenomElem );
   }
 
   if ( !props.value( QStringLiteral( "scaleMaxDenom" ), QString() ).toString().isEmpty() )
   {
     QDomElement scaleMaxDenomElem = doc.createElement( QStringLiteral( "se:MaxScaleDenominator" ) );
-    scaleMaxDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMaxDenom" ) ).toDouble() ) ) );
+    scaleMaxDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMaxDenom" ) ).toString().toDouble() ) ) );
     ruleElem.appendChild( scaleMaxDenomElem );
   }
 }
@@ -4594,7 +4594,7 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( double mScaleMinDenom, double 
   if ( !qgsDoubleNear( mScaleMinDenom, 0 ) )
   {
     bool ok;
-    double parentScaleMinDenom = props.value( QStringLiteral( "scaleMinDenom" ), QStringLiteral( "0" ) ).toDouble( &ok );
+    double parentScaleMinDenom = props.value( QStringLiteral( "scaleMinDenom" ), QStringLiteral( "0" ) ).toString().toDouble( &ok );
     if ( !ok || parentScaleMinDenom <= 0 )
       props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mScaleMinDenom );
     else
@@ -4604,7 +4604,7 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( double mScaleMinDenom, double 
   if ( !qgsDoubleNear( mScaleMaxDenom, 0 ) )
   {
     bool ok;
-    double parentScaleMaxDenom = props.value( QStringLiteral( "scaleMaxDenom" ), QStringLiteral( "0" ) ).toDouble( &ok );
+    double parentScaleMaxDenom = props.value( QStringLiteral( "scaleMaxDenom" ), QStringLiteral( "0" ) ).toString().toDouble( &ok );
     if ( !ok || parentScaleMaxDenom <= 0 )
       props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mScaleMaxDenom );
     else
