@@ -92,13 +92,13 @@ bool QgsEptPointCloudIndex::loadSchema( QFile &f )
   if ( bounds.size() != 6 )
     return false;
 
-  const QJsonArray bounds_conforming = result.value( QLatin1String( "boundsConforming" ) ).toArray();
-  if ( bounds.size() != 6 )
+  const QJsonArray boundsConforming = result.value( QLatin1String( "boundsConforming" ) ).toArray();
+  if ( boundsConforming.size() != 6 )
     return false;
-  mExtent.set( bounds_conforming[0].toDouble(), bounds_conforming[1].toDouble(),
-               bounds_conforming[3].toDouble(), bounds_conforming[4].toDouble() );
-  mZMin = bounds_conforming[2].toDouble();
-  mZMax = bounds_conforming[5].toDouble();
+  mExtent.set( boundsConforming[0].toDouble(), boundsConforming[1].toDouble(),
+               boundsConforming[3].toDouble(), boundsConforming[4].toDouble() );
+  mZMin = boundsConforming[2].toDouble();
+  mZMax = boundsConforming[5].toDouble();
 
   const QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
   QgsPointCloudAttributeCollection attributes;
