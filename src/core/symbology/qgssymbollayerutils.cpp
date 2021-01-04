@@ -1239,8 +1239,8 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
     // if there are any paths in properties, convert them from absolute to relative
     QgsApplication::symbolLayerRegistry()->resolvePaths( layer->layerType(), props, context.pathResolver(), true );
 
-    QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
-    propEl.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
+    saveProperties( props, doc, layerEl );
+
     if ( layer->paintEffect() && !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
 
@@ -2951,7 +2951,7 @@ QgsStringMap QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
 
 QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 {
-  QVariant newSymbols = QgsXmlUtils::readVariant( element ).toMap();
+  QVariant newSymbols = QgsXmlUtils::readVariant( element );
   if ( newSymbols.type() == QVariant::Map )
   {
     return newSymbols.toMap();
@@ -2982,7 +2982,8 @@ void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, 
   element.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
 
   // -----
-  // let's do this to try to keep some backward compatibility to open project on QGIS <= 3.16
+  // let's do this to try to keep some backward compatibility
+  // to open a project saved on 3.18+ in QGIS <= 3.16
   // TODO QGIS 4: remove
   for ( QVariantMap::iterator it = props.begin(); it != props.end(); ++it )
   {
