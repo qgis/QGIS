@@ -31,7 +31,7 @@
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmessagelog.h"
 #include "qgscircle.h"
-
+#include "qgsmapclippingutils.h"
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -58,6 +58,8 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   }
 
   mCloudExtent = mLayer->dataProvider()->polygonBounds();
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 bool QgsPointCloudLayerRenderer::render()
@@ -69,6 +71,14 @@ bool QgsPointCloudLayerRenderer::render()
 
   QgsScopedQPainterState painterState( painter );
   context.renderContext().setPainterFlagsUsingContext( painter );
+
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
 
   if ( mRenderer->type() == QLatin1String( "extent" ) )
   {
