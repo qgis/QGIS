@@ -190,6 +190,11 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   if ( !vlayer || !vlayer->isSpatial() )
     return QString();
 
+  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) )
+  {
+    return QString();
+  }
+
   double searchRadius = QgsMapTool::searchRadiusMU( mapCanvas );
 
   QgsRectangle r;
