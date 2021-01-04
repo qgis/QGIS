@@ -385,7 +385,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     else
     {
       // this can possibly happen -- e.g. if a style built using a different point cloud format references an attribute which isn't available from the laz file
-      requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::MissingOrUnknown, QgsPointCloudAttribute::Char, 1 ) );
+      requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::MissingOrUnknown, requestedAttribute.type(), requestedAttribute.size() ) );
     }
   }
 
@@ -446,7 +446,7 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
           break;
         case LazAttribute::MissingOrUnknown:
           // just store 0 for unknown/missing attributes
-          dataBuffer[ outputOffset ] = 0;
+          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
           break;
       }
 

@@ -181,24 +181,55 @@ QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &, con
   return QVariant();
 }
 
-/**
-* Retrieves the x & y values for the point at index \a i.
-*/
-static void _pointXY( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, int yOffset, const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y )
+template <typename T>
+void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
 {
-  const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * pointRecordSize + xOffset );
-  const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * pointRecordSize + yOffset );
-  x = indexOffset.x() + indexScale.x() * ix;
-  y = indexOffset.y() + indexScale.y() * iy;
+  switch ( type )
+  {
+    case QgsPointCloudAttribute::Char:
+      value = *( data + offset );
+      break;
+
+    case QgsPointCloudAttribute::Int32:
+      value = *reinterpret_cast< const qint32 * >( data + offset );
+      break;
+
+    case QgsPointCloudAttribute::Short:
+    {
+      value = *reinterpret_cast< const short * >( data + offset );
+    }
+    break;
+
+    case QgsPointCloudAttribute::UShort:
+      value = *reinterpret_cast< const unsigned short * >( data + offset );
+      break;
+
+    case QgsPointCloudAttribute::Float:
+      value = static_cast< T >( *reinterpret_cast< const float * >( data + offset ) );
+      break;
+
+    case QgsPointCloudAttribute::Double:
+      value = *reinterpret_cast< const double * >( data + offset );
+      break;
+  }
 }
 
 /**
-* Retrieves the z value for the point at index \a i.
+* Retrieves the x, y, z values for the point at index \a i.
 */
-static double _pointZ( const char *ptr, int i, std::size_t pointRecordSize, int zOffset, const QgsVector3D &indexScale, const QgsVector3D &indexOffset )
+static void _pointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
+                       int yOffset, QgsPointCloudAttribute::DataType yType,
+                       int zOffset, QgsPointCloudAttribute::DataType zType,
+                       const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z )
 {
-  const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * pointRecordSize + zOffset );
-  return indexOffset.z() + indexScale.z() * iz;
+  _attribute( ptr, i * pointRecordSize + xOffset, xType, x );
+  x = indexOffset.x() + indexScale.x() * x;
+
+  _attribute( ptr, i * pointRecordSize + yOffset, yType, y );
+  y = indexOffset.y() + indexScale.y() * y;
+
+  _attribute( ptr, i * pointRecordSize + zOffset, zType, z );
+  z = indexOffset.z() + indexScale.z() * z;
 }
 
 /**
@@ -282,16 +313,15 @@ struct MapIndexedPointCloudNode
     QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
     int xOffset, yOffset, zOffset;
-    blockAttributes.find( QStringLiteral( "X" ), xOffset );
-    blockAttributes.find( QStringLiteral( "Y" ), yOffset );
-    blockAttributes.find( QStringLiteral( "Z" ), zOffset );
+    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
     std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( mExtentGeometry.constGet() ) );
     extentEngine->prepareGeometry();
     for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
     {
       double x, y, z;
-      _pointXY( ptr, i, recordSize, xOffset, yOffset, mIndexScale, mIndexOffset, x, y );
-      z = _pointZ( ptr, i, recordSize, zOffset, mIndexScale, mIndexOffset );
+      _pointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, mIndexScale, mIndexOffset, x, y, z );
       QgsPoint pointXY( x, y );
 
       if ( mZRange.contains( z ) && extentEngine->contains( &pointXY ) )
