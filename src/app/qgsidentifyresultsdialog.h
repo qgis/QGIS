@@ -168,7 +168,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     /**
      * Adds results from point cloud layer
-     * \since QGIS 3.6
+     * \since QGIS 3.18
      */
     void addFeature( QgsPointCloudLayer *layer,
                      const QString &label,
