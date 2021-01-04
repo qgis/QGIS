@@ -204,10 +204,11 @@ static double _pointZ( const char *ptr, int i, int pointRecordSize, int zOffset,
 /**
 * Retrieves all the attributes of a point
 */
-QMap<QString, QVariant> _attributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection )
+QVariantMap _attributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection )
 {
-  QMap<QString, QVariant> map;
-  for ( QgsPointCloudAttribute attr : attributeCollection.attributes() )
+  QVariantMap map;
+  const QVector<QgsPointCloudAttribute> attributes = attributeCollection.attributes();
+  for ( const QgsPointCloudAttribute &attr : attributes )
   {
     QString attributeName = attr.name();
     int attributeOffset;
@@ -269,9 +270,9 @@ struct MapIndexedPointCloudNode
     : mRequest( request ), mIndexScale( indexScale ), mIndexOffset( indexOffset ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index ), mPointsLimit( pointsLimit )
   { }
 
-  QVector<QMap<QString, QVariant>> operator()( const IndexedPointCloudNode &n )
+  QVector<QVariantMap> operator()( IndexedPointCloudNode n )
   {
-    QVector<QMap<QString, QVariant>> acceptedPoints;
+    QVector<QVariantMap> acceptedPoints;
     std::unique_ptr<QgsPointCloudBlock> block( mIndex->nodeData( n, mRequest ) );
 
     if ( !block || pointsCount == mPointsLimit )
@@ -295,7 +296,7 @@ struct MapIndexedPointCloudNode
 
       if ( mZRange.contains( z ) && extentEngine->contains( &pointXY ) )
       {
-        QMap<QString, QVariant> pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
+        QVariantMap pointAttr = _attributeMap( ptr, i * recordSize, blockAttributes );
         pointAttr[ QStringLiteral( "X" ) ] = x;
         pointAttr[ QStringLiteral( "Y" ) ] = y;
         pointAttr[ QStringLiteral( "Z" ) ] = z;
@@ -316,12 +317,12 @@ struct MapIndexedPointCloudNode
   int pointsCount = 0;
 };
 
-QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::identify(
-                                float maxErrorInMapCoords,
-                                const QgsGeometry &extentGeometry,
-                                const QgsDoubleRange extentZRange, int pointsLimit )
+QVector<QVariantMap> QgsPointCloudDataProvider::identify(
+  double maxErrorInMapCoords,
+  const QgsGeometry &extentGeometry,
+  const QgsDoubleRange &extentZRange, int pointsLimit )
 {
-  QVector<QMap<QString, QVariant>> acceptedPoints;
+  QVector<QVariantMap> acceptedPoints;
 
   QgsPointCloudIndex *index = this->index();
   const IndexedPointCloudNode root = index->root();

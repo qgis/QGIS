@@ -134,7 +134,7 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
   context.incrementPointsRendered( rendered );
 }
 
-bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QMap<QString, QVariant> &pointAttributes )
+bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointAttributes )
 {
   if ( !pointAttributes.contains( mAttribute ) )
     return false;
