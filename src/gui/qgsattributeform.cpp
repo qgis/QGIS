@@ -1644,7 +1644,7 @@ void QgsAttributeForm::init()
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
     for ( const QgsRelation &rel : relations )
     {
-      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( rel, mContext );
+      QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( QStringLiteral( "basic" ), rel, mContext );
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
