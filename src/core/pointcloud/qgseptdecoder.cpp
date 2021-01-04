@@ -301,7 +301,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     PointSourceId,
     Red,
     Green,
-    Blue
+    Blue,
+    MissingOrUnknown
   };
 
   struct RequestedAttributeDetails
@@ -383,7 +384,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     }
     else
     {
-      // what to do here? store 0?
+      // this can possibly happen -- e.g. if a style built using a different point cloud format references an attribute which isn't available from the laz file
+      requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::MissingOrUnknown, QgsPointCloudAttribute::Char, 1 ) );
     }
   }
 
@@ -441,6 +443,10 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
           break;
         case LazAttribute::Blue:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
+          break;
+        case LazAttribute::MissingOrUnknown:
+          // just store 0 for unknown/missing attributes
+          dataBuffer[ outputOffset ] = 0;
           break;
       }
 
