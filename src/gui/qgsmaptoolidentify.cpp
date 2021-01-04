@@ -520,7 +520,6 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
   const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() );
   for ( const QVariantMap &pt : points )
   {
-    // TODO: replace this conversion with something better
     QMap<QString, QString> ptStr;
     for ( auto attrIt = pt.constBegin(); attrIt != pt.constEnd(); ++attrIt )
     {
@@ -530,6 +529,10 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
         // Apply elevation properties
         ptStr[ tr( "Z (original)" ) ] = attrIt.value().toString();
         ptStr[ tr( "Z (adjusted)" ) ] = QString::number( attrIt.value().toDouble() * elevationProps->zScale() + elevationProps->zOffset() );
+      }
+      else if ( attrIt.key().compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+      {
+        ptStr[ attrIt.key() ] = QStringLiteral( "%1 (%2)" ).arg( attrIt.value().toString(), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( attrIt.value().toInt() ) );
       }
       else
       {
