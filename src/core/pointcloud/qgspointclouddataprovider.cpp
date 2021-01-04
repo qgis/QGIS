@@ -22,6 +22,7 @@
 #include "qgspointcloudrequest.h"
 #include "qgsgeometryengine.h"
 #include <mutex>
+#include <QDebug>
 
 #include <QtConcurrent/QtConcurrentMap>
 
@@ -406,26 +407,95 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
   return nodes;
 }
-QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection )
+QVector<QMap<QString, QVariant>> QgsPointCloudDataProvider::getPointsOnRay( const QVector3D &rayOrigin, const QVector3D &rayDirection, double maxScreenError, double cameraFov, int screenSizePx )
 {
   QVector<QMap<QString, QVariant>> points;
+  qDebug() << "Ray: " << rayOrigin << " " << rayDirection;
+  QgsPointCloudIndex *index = this->index();
+  IndexedPointCloudNode root = index->root();
+  QgsRectangle rootNodeExtentMapCoords = index->nodeMapExtent( root );
+  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / index->span();
+
+  QVector<IndexedPointCloudNode> nodes = getNodesIntersectingWithRay( index, root, maxScreenError, rootErrorInMapCoordinates, cameraFov, screenSizePx, rayOrigin, rayDirection );
+  qDebug() << "Intersected nodes: " << nodes.size();
   return points;
+}
+
+bool __boxIntesects( const QgsBox3d &box, const QVector3D &rayOrigin, const QVector3D &rayDirection )
+{
+  double tminX = box.xMinimum() - rayOrigin.x(), tmaxX = box.xMaximum() - rayOrigin.x();
+  double tminY = box.yMinimum() - rayOrigin.y(), tmaxY = box.yMaximum() - rayOrigin.y();
+  double tminZ = box.zMinimum() - rayOrigin.z(), tmaxZ = box.zMaximum() - rayOrigin.z();
+  if ( rayDirection.x() < 0 ) std::swap( tminX, tmaxX );
+  if ( rayDirection.y() < 0 ) std::swap( tminY, tmaxY );
+  if ( rayDirection.z() < 0 ) std::swap( tminZ, tmaxZ );
+  if ( rayDirection.x() != 0 )
+  {
+    tminX /= rayDirection.x();
+    tmaxX /= rayDirection.x();
+  }
+  else
+  {
+    tminX = std::numeric_limits<double>::lowest();
+    tmaxX = std::numeric_limits<double>::max();
+  }
+  if ( rayDirection.y() != 0 )
+  {
+    tminY /= rayDirection.y();
+    tmaxY /= rayDirection.y();
+  }
+  else
+  {
+    tminY = std::numeric_limits<double>::lowest();
+    tmaxY = std::numeric_limits<double>::max();
+  }
+  if ( rayDirection.z() != 0 )
+  {
+    tminZ /= rayDirection.z();
+    tmaxZ /= rayDirection.z();
+  }
+  else
+  {
+    tminZ = std::numeric_limits<double>::lowest();
+    tmaxZ = std::numeric_limits<double>::max();
+  }
+  QgsDoubleRange tRange( qMax( qMax( tminX, tminY ), tminZ ), qMin( qMin( tmaxX, tmaxY ), tmaxZ ) );
+  return !tRange.isEmpty();
 }
 
 QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::getNodesIntersectingWithRay(
   const QgsPointCloudIndex *pc, IndexedPointCloudNode n,
-  const QVector3D &rayOrigin, const QVector3D &rayDirectione )
+  double maxError, double nodeError, double cameraFov, int screenSizePx,
+  const QVector3D &rayOrigin, const QVector3D &rayDirection )
 {
   QVector<IndexedPointCloudNode> nodes;
 
-  // TODO: check if the node actually intersects with the ray
+  QgsRectangle n2DExtent = pc->nodeMapExtent( n );
+  QgsDoubleRange zRange = pc->nodeZRange( n );
+  QgsBox3d box( n2DExtent.xMinimum(), n2DExtent.yMinimum(), zRange.lower(), n2DExtent.xMaximum(), n2DExtent.yMaximum(), zRange.upper() );
+
+  // calculate screen space error:
+  float distance = box.distanceFromPoint( rayOrigin.x(), rayOrigin.y(), rayOrigin.z() );
+  qDebug() << "Node error: " << nodeError;
+  float phi = nodeError * screenSizePx / ( 2 * distance * tan( cameraFov * M_PI / ( 2 * 180 ) ) );
+
+  if ( !__boxIntesects( box, rayOrigin, rayDirection ) )
+  {
+    return nodes;
+  }
 
   nodes.append( n );
+
+  float childrenError = nodeError / 2.0f;
+  if ( phi < maxError )
+    return nodes;
+
+  qDebug() << "Passed";
 
   const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
   for ( const IndexedPointCloudNode &nn : children )
   {
-    nodes += getNodesIntersectingWithRay( pc, nn, rayOrigin, rayDirectione );
+    nodes += getNodesIntersectingWithRay( pc, nn, maxError, childrenError, cameraFov, screenSizePx, rayOrigin, rayDirection );
   }
 
   return nodes;

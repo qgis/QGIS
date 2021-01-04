@@ -1099,15 +1099,32 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   }
 }
 
-void Qgs3DMapScene::onRayCasted( const QVector3D &rayOrigin, QVector3D &rayDirection )
+void Qgs3DMapScene::onRayCasted( const QVector3D &rayOrigin, const QVector3D &rayDirection )
 {
-  qDebug() << __PRETTY_FUNCTION__;
+  qDebug() << __PRETTY_FUNCTION__ << " "  << rayOrigin << " " << rayDirection;
+//  QVector3D point2 = rayOrigin + rayOrigin.length() * rayDirection.normalized();
+  qDebug() << "Origin: " << mMap.origin().x() << " " << mMap.origin().y() << " " << mMap.origin().z();
+  QgsVector3D originMapCoords = mMap.worldToMapCoordinates( rayOrigin );
+  QgsVector3D pointMapCoords = mMap.worldToMapCoordinates( rayOrigin + rayOrigin.length() * rayDirection.normalized() );
+  QgsVector3D directionMapCoords = pointMapCoords - originMapCoords;
+  directionMapCoords.normalize();
+
+
+  QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
+  QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
+
+  QRect rect = mCameraController->viewport();
+  int screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct? (see _sceneState)
+  float fov = mCameraController->camera()->fieldOfView();
+
   for ( QgsMapLayer *layer : mMap.layers() )
   {
     if ( layer->type() != QgsMapLayerType::PointCloudLayer ) continue;
     if ( QgsPointCloudLayer *pc = dynamic_cast<QgsPointCloudLayer *>( layer ) )
     {
-      pc->getPointsOnRay( rayOrigin, rayDirection );
+      QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( pc->renderer3D() );
+      double maxScreenError = renderer->maximumScreenError();
+      pc->getPointsOnRay( rayOriginMapCoords, rayDirectionMapCoords, maxScreenError, fov, screenSizePx );
     }
   }
 }

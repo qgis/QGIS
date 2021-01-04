@@ -18,7 +18,6 @@
 #include "qgsbox3d.h"
 #include "qgspoint.h"
 
-
 QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax )
   : mBounds2d( xmin, ymin, xmax, ymax )
   , mZmin( zmin )
@@ -124,4 +123,12 @@ bool QgsBox3d::operator==( const QgsBox3d &other ) const
   return mBounds2d == other.mBounds2d &&
          qgsDoubleNear( mZmin, other.mZmin ) &&
          qgsDoubleNear( mZmax, other.mZmax );
+}
+
+float QgsBox3d::distanceFromPoint( double x, double y, double z )
+{
+  float dx = std::max( mBounds2d.xMinimum() - x, std::max( 0., x - mBounds2d.xMaximum() ) );
+  float dy = std::max( mBounds2d.yMinimum() - y, std::max( 0., y - mBounds2d.yMaximum() ) );
+  float dz = std::max( mZmin - z, std::max( 0., z - mZmax ) );
+  return sqrt( dx * dx + dy * dy + dz * dz );
 }

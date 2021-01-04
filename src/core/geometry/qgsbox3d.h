@@ -198,6 +198,8 @@ class CORE_EXPORT QgsBox3d
      */
     bool contains( const QgsPoint &point ) const;
 
+    float distanceFromPoint( double x, double y, double z );
+
     /**
      * Converts the box to a 2D rectangle.
      */

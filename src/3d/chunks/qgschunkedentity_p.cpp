@@ -54,6 +54,16 @@ static float screenSpaceError( float epsilon, float distance, float screenSize, 
    *       camera
    */
   float phi = epsilon * screenSize / ( 2 * distance * tan( fov * M_PI / ( 2 * 180 ) ) );
+  {
+    static int k = 0;
+    if ( k % 20 == 0 )
+    {
+      qDebug() << "screenSize: " << screenSize;
+      qDebug() << "fov: " << fov;
+      qDebug() << "epsilon: " << epsilon;
+    }
+    ++k;
+  }
   return phi;
 }
 

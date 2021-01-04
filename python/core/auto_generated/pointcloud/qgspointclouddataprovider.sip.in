@@ -56,7 +56,6 @@ Ctor
 
     ~QgsPointCloudDataProvider();
 
-
     SIP_PYLIST identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
 %Docstring
 Returns the list of points of the point cloud according to a zoom level
@@ -88,6 +87,7 @@ the number of points returned to ``pointsLimit`` points
       }
     }
 %End
+    QVector<IndexedPointCloudNode> getNodesIntersectingWithRay( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, double cameraFov, int screenSizePx, const QVector3D &rayOrigin, const QVector3D &rayDirection );
 
     virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
 %Docstring
@@ -168,7 +168,6 @@ This method returns a new renderer and the caller takes ownership of the returne
 Only providers which report the CreateRenderer capability will return a 2D renderer. Other
 providers will return ``None``.
 %End
-
 
     SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 %Docstring
