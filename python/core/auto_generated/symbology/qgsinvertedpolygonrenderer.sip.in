@@ -74,7 +74,7 @@ Creates a renderer out of an XML, for loading
 %Docstring
 Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End
