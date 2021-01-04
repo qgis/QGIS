@@ -343,7 +343,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     if ( isTemporal && ( index.group() == activeScalarGroup  || index.group() == activeVectorGroup ) )
       resultName.append( tr( " (active)" ) );
 
-    const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
+    const IdentifyResult result( layer,
                                  resultName,
                                  attribute,
                                  derivedAttributes );
@@ -374,7 +374,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     derivedGeometry.insert( tr( "Point on Edge Y" ), QString::number( pointOnEdge.y() ) );
   }
 
-  const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
+  const IdentifyResult result( layer,
                                tr( "Geometry" ),
                                derivedAttributesForPoint( QgsPoint( point ) ),
                                derivedGeometry );
@@ -419,7 +419,6 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
   int featureCount = 0;
 
-  QgsFeatureList featureList;
   std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
@@ -486,7 +485,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
               QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
               derivedAttributes.insert( tr( "Feature ID" ), FID_TO_STRING( f.id() ) );
 
-              results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), layerName, fFields, f, derivedAttributes ) );
+              results->append( IdentifyResult( layer, layerName, fFields, f, derivedAttributes ) );
 
               featureCount++;
             }
@@ -508,7 +507,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
 bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
-  Q_UNUSED( identifyContext );
+  Q_UNUSED( identifyContext )
   QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
   QgsPointCloudRenderer *renderer = layer->renderer();
 
